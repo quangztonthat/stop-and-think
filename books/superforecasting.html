@@ -1,0 +1,930 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Superforecasting — Sách tương tác</title>
+<meta name="description" content="Phân tích chuyên sâu &quot;Superforecasting&quot; (Philip Tetlock) — vì sao người thường có thể dự đoán tốt hơn chuyên gia. Bởi Quang Ton.">
+<link rel="icon" type="image/svg+xml" href="../favicon.svg">
+<link rel="canonical" href="https://stop-and-think.pages.dev/superforecasting">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Stop &amp; Think">
+<meta property="og:locale" content="vi_VN">
+<meta property="og:title" content="Superforecasting — Sách tương tác | Stop &amp; Think">
+<meta property="og:description" content="Phân tích chuyên sâu Superforecasting của Philip Tetlock — 10 nguyên tắc của những người dự đoán xuất sắc. Bởi Quang Ton.">
+<meta property="og:url" content="https://stop-and-think.pages.dev/superforecasting">
+<meta property="og:image" content="https://stop-and-think.pages.dev/og-image.svg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,700;9..144,900&family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root { --ink: #1a1410; --paper: #f5ede0; --paper-dark: #ebe1cf; --accent: #8b3a2b; --accent-2: #2d4a5c; --gold: #c4923c; --muted: #4a3f33; --line: #5e2418; }
+* { margin: 0; padding: 0; box-sizing: border-box; }
+em { font-style: normal; }
+html { scroll-behavior: smooth; }
+body { background: var(--paper); color: var(--ink); font-family: 'Fraunces', Georgia, serif; font-size: 17px; line-height: 1.6; overflow-x: hidden; -webkit-font-smoothing: antialiased; }
+
+.nav-bar { position: fixed; top: 0; left: 0; right: 0; background: rgba(245, 237, 224, 0.95); backdrop-filter: blur(12px); border-bottom: 1px solid var(--line); z-index: 100; padding: 14px 32px; display: flex; justify-content: space-between; align-items: center; }
+.nav-logo { font-family: 'Fraunces', serif; font-weight: 700; font-size: 20px; letter-spacing: -0.02em; font-style: normal; color: var(--ink); text-decoration: none; transition: opacity 0.2s; }
+.nav-logo:hover { opacity: 0.7; }
+.nav-logo span { color: var(--accent); }
+.nav-links { display: flex; gap: 24px; font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.08em; }
+.nav-links a { color: var(--ink); text-decoration: none; transition: color 0.2s; cursor: pointer; }
+.nav-links a:hover { color: var(--accent); }
+.nav-links a.active { color: var(--accent); font-weight: 600; }
+.progress-bar { position: fixed; top: 56px; left: 0; height: 3px; background: var(--accent); z-index: 99; transition: width 0.1s; }
+
+.breadcrumb-bar { padding: 90px 8% 0; font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); position: relative; z-index: 2; }
+.breadcrumb-bar a { color: var(--muted); text-decoration: none; transition: color 0.2s; }
+.breadcrumb-bar a:hover { color: var(--accent); }
+.breadcrumb-bar span { margin: 0 8px; opacity: 0.4; }
+.breadcrumb-bar .current { color: var(--ink); font-weight: 600; }
+
+.hero { min-height: 100vh; padding: 32px 8% 80px; display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; position: relative; border-bottom: 2px solid var(--line); }
+.hero-meta { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); margin-bottom: 24px; display: flex; gap: 16px; align-items: center; }
+.hero-meta::before { content: ''; width: 24px; height: 1px; background: var(--ink); }
+.hero h1 { font-family: 'Fraunces', serif; font-size: clamp(48px, 7vw, 110px); font-weight: 700; line-height: 0.95; letter-spacing: -0.04em; margin-bottom: 32px; }
+.hero h1 .italic { font-style: normal; color: var(--accent); font-weight: inherit; }
+.hero-sub { font-size: 24px; font-weight: 300; font-style: normal; color: var(--muted); max-width: 560px; margin-bottom: 48px; line-height: 1.5; }
+.hero-sub strong { color: var(--accent); font-weight: 500; }
+.hero-author { font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; border-top: 1px solid var(--line); padding-top: 16px; display: inline-block; }
+
+.hero-visual { position: relative; height: 600px; display: flex; align-items: center; justify-content: center; }
+.hero-chart { width: 480px; height: 480px; position: relative; }
+.hero-chart svg { width: 100%; height: 100%; overflow: visible; }
+.hero-tag { position: absolute; font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; background: var(--ink); color: var(--paper); padding: 6px 12px; }
+.tag-1 { top: 60px; right: 20px; transform: rotate(8deg); }
+.tag-2 { bottom: 60px; left: 0; transform: rotate(-6deg); }
+.tag-3 { top: 50%; right: -10px; transform: rotate(-10deg); }
+
+.section { padding: 100px 8%; border-bottom: 2px solid var(--line); position: relative; }
+.section-label { display: inline-block; font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); margin-bottom: 24px; padding-left: 36px; position: relative; }
+.section-label::before { content: '◆'; position: absolute; left: 0; color: var(--accent); }
+.section-title { font-family: 'Fraunces', serif; font-size: clamp(36px, 5vw, 72px); font-weight: 700; line-height: 1.1; letter-spacing: -0.025em; margin-bottom: 32px; max-width: 1100px; }
+.section-title em { font-style: normal; color: var(--accent); font-weight: inherit; }
+.thesis-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; max-width: 1300px; }
+.thesis-title-small { font-family: 'Fraunces', serif; font-size: clamp(28px, 3.5vw, 44px); font-weight: 700; letter-spacing: -0.02em; line-height: 1.2; margin-bottom: 24px; }
+.thesis-title-small em { font-style: normal; color: var(--accent); }
+.thesis-viz { position: relative; width: 100%; max-width: 520px; aspect-ratio: 1; margin: 0 auto; }
+.thesis-viz svg { width: 100%; height: 100%; overflow: visible; }
+@media (max-width: 800px) { .thesis-grid { grid-template-columns: 1fr; gap: 64px; } .thesis-viz { max-width: 400px; } }
+
+.section-intro { font-family: 'Fraunces', Georgia, serif; font-size: 22px; font-weight: 300; line-height: 1.55; color: var(--muted); max-width: 760px; margin-bottom: 56px; }
+.section-intro strong { color: var(--accent); font-weight: 500; }
+
+.thesis-quote { background: var(--ink); color: var(--paper); padding: 80px 8%; text-align: center; border-bottom: 2px solid var(--line); }
+.thesis-mark { font-family: 'Fraunces', serif; font-size: 96px; color: var(--gold); line-height: 0.5; margin-bottom: 24px; font-weight: 700; }
+.thesis-text { font-family: 'Fraunces', serif; font-size: clamp(28px, 4vw, 48px); font-weight: 300; font-style: normal; line-height: 1.3; max-width: 1000px; margin: 0 auto 32px; }
+.thesis-text em { color: var(--gold); font-style: normal; font-weight: 700; }
+.thesis-author { font-family: 'JetBrains Mono', monospace; font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold); }
+
+/* Fox vs Hedgehog */
+.compare-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin: 48px 0; }
+.compare-card { padding: 40px; border: 2px solid var(--ink); }
+.compare-card.hedgehog { background: var(--paper-dark); }
+.compare-card.fox { background: var(--ink); color: var(--paper); border-color: var(--gold); }
+.compare-label { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: 16px; opacity: 0.7; }
+.compare-name { font-family: 'Fraunces', serif; font-size: 32px; font-weight: 700; margin-bottom: 8px; }
+.compare-name em { font-style: normal; color: var(--accent); }
+.compare-card.fox .compare-name em { color: var(--gold); }
+.compare-tagline { font-size: 16px; font-style: normal; margin-bottom: 24px; opacity: 0.85; }
+.compare-list { list-style: none; padding: 0; }
+.compare-list li { padding: 12px 0; border-bottom: 1px solid rgba(0,0,0,0.1); font-size: 16px; font-weight: 300; line-height: 1.5; padding-left: 22px; position: relative; }
+.compare-card.fox .compare-list li { border-bottom-color: rgba(255,255,255,0.1); }
+.compare-list li::before { content: '→'; position: absolute; left: 0; color: var(--accent); font-weight: 700; }
+.compare-card.fox .compare-list li::before { color: var(--gold); }
+
+/* 10 commandments */
+.commands-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 14px; margin: 40px 0; }
+.command-card { padding: 24px; background: var(--paper); border: 1.5px solid var(--ink); transition: all 0.3s; }
+.command-card:hover { transform: translate(-2px, -2px); box-shadow: 4px 4px 0 var(--accent); background: var(--paper-dark); }
+.command-num { font-family: 'Fraunces', serif; font-size: 32px; font-weight: 700; font-style: normal; color: var(--accent); line-height: 1; margin-bottom: 8px; }
+.command-title { font-family: 'Fraunces', serif; font-size: 17px; font-weight: 700; line-height: 1.3; margin-bottom: 8px; }
+.command-desc { font-size: 14px; font-weight: 300; line-height: 1.5; color: var(--muted); }
+
+/* Brier score */
+.brier-box { margin-top: 40px; padding: 32px; background: var(--paper-dark); border-left: 4px solid var(--gold); }
+.brier-title { font-family: 'Fraunces', serif; font-size: 22px; font-weight: 700; font-style: normal; margin-bottom: 12px; }
+.brier-formula { padding: 16px 20px; background: var(--ink); color: var(--paper); font-family: 'JetBrains Mono', monospace; font-size: 14px; line-height: 1.6; margin: 16px 0; letter-spacing: 0.05em; }
+
+/* Chapters */
+.rule-section { margin-bottom: 64px; }
+.rule-header { background: var(--ink); color: var(--paper); padding: 24px 32px; margin-bottom: 24px; position: relative; }
+.rule-header::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 6px; background: var(--accent); }
+.rule-num { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.2em; color: var(--gold); margin-bottom: 6px; }
+.rule-title { font-family: 'Fraunces', serif; font-size: 28px; font-weight: 700; font-style: normal; line-height: 1.2; margin-bottom: 6px; }
+.rule-sub { font-family: 'Inter', sans-serif; font-size: 14px; opacity: 0.7; }
+.chapter-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 16px; }
+.chapter-card { border: 1.5px solid var(--ink); padding: 24px; background: var(--paper); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+.chapter-card:hover { transform: translate(-3px, -3px); box-shadow: 6px 6px 0 var(--accent); background: var(--paper-dark); }
+.chapter-num { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.2em; color: var(--accent); margin-bottom: 8px; }
+.chapter-title { font-family: 'Fraunces', serif; font-size: 20px; font-weight: 700; line-height: 1.2; margin-bottom: 10px; }
+.chapter-desc { font-size: 16px; font-weight: 300; line-height: 1.6; color: var(--muted); }
+.chapter-desc strong { color: var(--accent); font-weight: 500; }
+.chapter-key { display: inline-block; font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; background: var(--ink); color: var(--paper); padding: 3px 8px; margin: 8px 4px 0 0; }
+
+.flashcard-deck { max-width: 720px; margin: 40px auto; perspective: 2000px; }
+.flashcard { position: relative; width: 100%; height: 360px; cursor: pointer; transition: transform 0.6s; transform-style: preserve-3d; }
+.flashcard.flipped { transform: rotateY(180deg); }
+.flashcard-face { position: absolute; inset: 0; backface-visibility: hidden; display: flex; align-items: center; justify-content: center; padding: 48px; border: 2px solid var(--ink); background: var(--paper); text-align: center; }
+.flashcard-face.back { transform: rotateY(180deg); background: var(--ink); color: var(--paper); border-color: var(--accent); }
+.flashcard-q { font-family: 'Fraunces', serif; font-size: clamp(22px, 3vw, 32px); font-weight: 600; line-height: 1.3; }
+.flashcard-a { font-family: 'Fraunces', serif; font-size: clamp(16px, 2vw, 20px); font-weight: 300; line-height: 1.5; font-style: normal; }
+.flashcard-controls { display: flex; justify-content: space-between; align-items: center; margin-top: 32px; font-family: 'JetBrains Mono', monospace; font-size: 12px; }
+.flashcard-btn { padding: 12px 24px; background: var(--ink); color: var(--paper); border: none; font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; transition: all 0.2s; }
+.flashcard-btn:hover { background: var(--accent); }
+.flashcard-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+.flashcard-counter { color: var(--muted); letter-spacing: 0.15em; }
+
+.quiz-question { margin-bottom: 48px; }
+.quiz-q-text { font-family: 'Fraunces', serif; font-size: 22px; font-weight: 600; line-height: 1.3; margin-bottom: 20px; }
+.quiz-options { display: flex; flex-direction: column; gap: 12px; }
+.quiz-option { padding: 16px 20px; border: 1.5px solid var(--ink); background: var(--paper); cursor: pointer; font-size: 16px; line-height: 1.4; transition: all 0.2s; }
+.quiz-option:hover { background: var(--paper-dark); }
+.quiz-option.correct { background: var(--accent-2); color: var(--paper); border-color: var(--accent-2); pointer-events: none; }
+.quiz-option.wrong { background: var(--accent); color: var(--paper); border-color: var(--accent); pointer-events: none; }
+.quiz-option.disabled { pointer-events: none; opacity: 0.5; }
+.quiz-feedback { margin-top: 16px; padding: 16px; background: var(--paper-dark); border-left: 3px solid var(--gold); font-style: normal; font-size: 15px; display: none; }
+.quiz-feedback.show { display: block; }
+
+.action-cats { display: flex; gap: 8px; margin-bottom: 32px; flex-wrap: wrap; }
+.action-cat-btn { padding: 10px 18px; background: transparent; border: 1.5px solid var(--ink); font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; transition: all 0.2s; }
+.action-cat-btn.active, .action-cat-btn:hover { background: var(--ink); color: var(--paper); }
+.actions-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; }
+.action-card { padding: 24px; background: var(--paper); border: 1.5px solid var(--ink); display: flex; gap: 16px; align-items: flex-start; transition: all 0.2s; }
+.action-card:hover { background: var(--paper-dark); transform: translate(-2px, -2px); box-shadow: 4px 4px 0 var(--accent); }
+.action-num { font-family: 'Fraunces', serif; font-size: 36px; font-weight: 700; font-style: normal; color: var(--accent); line-height: 1; flex-shrink: 0; width: 56px; }
+.action-content { flex: 1; }
+.action-title { font-family: 'Fraunces', serif; font-size: 17px; font-weight: 700; line-height: 1.3; margin-bottom: 6px; }
+.action-desc { font-size: 15px; font-weight: 300; line-height: 1.6; color: var(--muted); }
+
+.journal-prompts-nav { display: flex; gap: 8px; margin-bottom: 24px; justify-content: center; }
+.journal-dot { width: 36px; height: 36px; border: 1.5px solid var(--ink); display: flex; align-items: center; justify-content: center; font-family: 'JetBrains Mono', monospace; font-size: 13px; cursor: pointer; transition: all 0.2s; }
+.journal-dot.active, .journal-dot:hover { background: var(--ink); color: var(--paper); }
+.journal-prompt { display: none; max-width: 820px; margin: 0 auto; }
+.journal-prompt.active { display: block; }
+.journal-q { font-family: 'Fraunces', serif; font-size: clamp(22px, 3vw, 32px); font-weight: 600; font-style: normal; line-height: 1.3; margin-bottom: 20px; }
+.journal-help { padding: 20px 24px; background: var(--paper-dark); border-left: 3px solid var(--accent); font-size: 15px; line-height: 1.6; margin-bottom: 24px; font-style: normal; }
+.journal-textarea { width: 100%; min-height: 200px; padding: 20px; border: 1.5px solid var(--ink); background: var(--paper); font-family: 'Fraunces', serif; font-size: 17px; line-height: 1.6; resize: vertical; }
+.journal-textarea:focus { outline: none; border-color: var(--accent); }
+
+.footer { padding: 80px 8% 60px; background: var(--ink); color: var(--paper); text-align: center; }
+.footer-quote { font-family: 'Fraunces', serif; font-size: clamp(22px, 3vw, 32px); font-weight: 300; font-style: normal; max-width: 800px; margin: 0 auto 32px; line-height: 1.3; }
+.footer-author { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold); }
+.footer-back { margin-top: 48px; display: flex; gap: 24px; justify-content: center; flex-wrap: wrap; }
+.footer-back a { font-family: 'JetBrains Mono', monospace; font-size: 12px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--paper); text-decoration: none; padding: 12px 24px; border: 1px solid rgba(245, 237, 224, 0.3); transition: all 0.2s; }
+.footer-back a:hover { background: var(--accent); border-color: var(--accent); }
+.footer-meta { margin-top: 60px; padding-top: 32px; border-top: 1px solid rgba(245, 240, 230, 0.2); font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.15em; color: var(--muted); }
+
+@media (max-width: 900px) {
+  .hero { grid-template-columns: 1fr; padding: 24px 6% 40px; }
+  .hero-visual { height: 400px; order: -1; }
+  .hero-chart { width: 320px; height: 320px; }
+  .section { padding: 60px 6%; }
+  .compare-grid { grid-template-columns: 1fr; }
+  .nav-links { gap: 12px; font-size: 11px; }
+  .nav-links a:not(.always-show) { display: none; }
+  .breadcrumb-bar { padding: 80px 6% 0; }
+}
+@media (max-width: 600px) { .nav-bar { padding: 12px 16px; } .footer { padding: 60px 6% 40px; } }
+
+/* ============ COMMENTS ============ */
+.comment-form-wrap { max-width: 760px; margin-bottom: 48px; }
+.comment-form { background: var(--paper); border: 2px solid var(--ink); padding: 28px; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+.comment-form input[type="text"], .comment-form input[type="email"], .comment-form textarea { width: 100%; padding: 12px 14px; border: 1.5px solid var(--ink); background: var(--paper-dark); font-family: 'Fraunces', Georgia, serif; font-size: 16px; line-height: 1.5; color: var(--ink); resize: vertical; }
+.comment-form input:focus, .comment-form textarea:focus { outline: none; border-color: var(--accent); background: var(--paper); }
+.form-bottom { display: flex; justify-content: space-between; align-items: center; margin-top: 14px; flex-wrap: wrap; gap: 12px; }
+.form-hint { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.1em; color: var(--muted); }
+.form-submit { padding: 12px 24px; background: var(--ink); color: var(--paper); border: none; font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; transition: all 0.2s; }
+.form-submit:hover { background: var(--accent); }
+.form-submit:disabled { opacity: 0.5; cursor: not-allowed; }
+.form-message { margin-top: 16px; padding: 14px 18px; font-size: 15px; line-height: 1.5; display: none; }
+.form-message.show { display: block; }
+.form-message.success { background: var(--paper-dark); border-left: 3px solid var(--gold); color: var(--ink); }
+.form-message.error { background: var(--paper-dark); border-left: 3px solid var(--accent); color: var(--accent); }
+.comments-list { max-width: 760px; }
+.comments-loading, .comments-empty { font-size: 16px; color: var(--muted); padding: 24px 0; font-style: normal; }
+.comment-item { padding: 20px 24px; border-left: 2px solid var(--ink); background: var(--paper); margin-bottom: 14px; transition: border-color 0.2s; }
+.comment-item:hover { border-left-color: var(--accent); }
+.comment-item.is-reply { margin-left: 36px; border-left-color: var(--gold); background: var(--paper-dark); }
+.comment-head { display: flex; gap: 12px; align-items: baseline; margin-bottom: 8px; flex-wrap: wrap; }
+.comment-author { font-family: 'Fraunces', serif; font-size: 17px; font-weight: 700; color: var(--ink); }
+.comment-time { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--muted); letter-spacing: 0.05em; }
+.comment-body { font-size: 16px; line-height: 1.6; color: var(--ink); white-space: pre-wrap; word-break: break-word; }
+.comment-actions { margin-top: 10px; }
+.comment-reply-btn { background: none; border: none; padding: 0; font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); cursor: pointer; }
+.comment-reply-btn:hover { text-decoration: underline; }
+.reply-indicator { display: inline-block; padding: 4px 10px; background: var(--paper-dark); border: 1px solid var(--ink); font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 8px; }
+.reply-indicator button { background: none; border: none; cursor: pointer; color: var(--accent); margin-left: 8px; font-weight: 700; }
+@media (max-width: 600px) { .form-row { grid-template-columns: 1fr; } .comment-item.is-reply { margin-left: 16px; } }
+
+</style>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Book",
+  "name": "Superforecasting",
+  "author": {
+    "@type": "Person",
+    "name": "Philip Tetlock"
+  },
+  "datePublished": "2015",
+  "url": "https://stop-and-think.pages.dev/superforecasting",
+  "image": "https://stop-and-think.pages.dev/og-image.svg",
+  "review": {
+    "@type": "Review",
+    "author": {
+      "@type": "Person",
+      "name": "Quang Ton"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "Stop & Think"
+    },
+    "url": "https://stop-and-think.pages.dev/superforecasting"
+  }
+}
+</script>
+</head>
+<body>
+
+<nav class="nav-bar">
+  <a href="../index.html" class="nav-logo" title="Về trang chủ">Super<span>forecasting</span><em>.</em></a>
+  <div class="nav-links">
+    <a onclick="scrollTo2('thesis')">Luận điểm</a>
+    <a onclick="scrollTo2('framework')">Framework</a>
+    <a onclick="scrollTo2('chapters')">Chương</a>
+    <a onclick="scrollTo2('flashcards')">Flashcard</a>
+    <a onclick="scrollTo2('quiz')">Quiz</a>
+    <a onclick="scrollTo2('actions')" class="always-show">Actions</a>
+  </div>
+</nav>
+<div class="progress-bar" id="progressBar" style="width: 0%"></div>
+
+<main>
+
+<div class="breadcrumb-bar">
+  <a href="../index.html">Stop &amp; Think</a><span>›</span><a href="../pages/tu-duy.html">Tư duy</a><span>›</span><span class="current">Superforecasting</span>
+</div>
+
+<section class="hero">
+  <div>
+    <div class="hero-meta">2015 · Philip Tetlock &amp; Dan Gardner · Crown · ~20 phút đọc</div>
+    <h1>Super<br><span class="italic">forecasting.</span></h1>
+    <p class="hero-sub">Vì sao những <strong>người thường</strong> có thể dự đoán tương lai chính xác hơn <strong>chuyên gia tình báo</strong>? Câu trả lời không phải IQ — là cách nghĩ.</p>
+    <div class="hero-author">Đọc · Đo · Dự đoán tốt hơn</div>
+  </div>
+  <div class="hero-visual">
+    <div class="hero-chart">
+      <svg viewBox="0 0 480 480">
+        <line x1="60" y1="80" x2="60" y2="420" stroke="var(--ink)" stroke-width="1.5"/>
+        <line x1="60" y1="420" x2="420" y2="420" stroke="var(--ink)" stroke-width="1.5"/>
+        <line x1="60" y1="200" x2="420" y2="200" stroke="var(--ink)" stroke-width="0.5" opacity="0.2" stroke-dasharray="4 4"/>
+        <text x="60" y="450" font-family="JetBrains Mono, monospace" font-size="11" fill="var(--muted)">Năm 1</text>
+        <text x="240" y="450" font-family="JetBrains Mono, monospace" font-size="11" fill="var(--muted)">Năm 2</text>
+        <text x="395" y="450" font-family="JetBrains Mono, monospace" font-size="11" fill="var(--muted)">Năm 4</text>
+        <text x="20" y="100" font-family="JetBrains Mono, monospace" font-size="11" fill="var(--muted)" transform="rotate(-90 30 100)">Độ chính xác</text>
+
+        <path d="M 60 380 Q 150 280 250 200 Q 340 130 400 80" fill="none" stroke="var(--accent)" stroke-width="4" stroke-linecap="round"/>
+        <path d="M 60 380 Q 150 360 250 320 Q 340 290 400 270" fill="none" stroke="var(--gold)" stroke-width="3" stroke-dasharray="6 4" opacity="0.7"/>
+
+        <text x="280" y="120" font-family="Fraunces, serif" font-size="13" font-weight="700" fill="var(--accent)">Superforecaster</text>
+        <text x="280" y="280" font-family="Fraunces, serif" font-size="13" font-weight="500" fill="var(--gold)">Chuyên gia trung bình</text>
+
+        <circle cx="400" cy="80" r="8" fill="var(--accent)"/>
+        <circle cx="400" cy="270" r="6" fill="var(--gold)"/>
+      </svg>
+    </div>
+    <div class="hero-tag tag-1">FOX MINDSET</div>
+    <div class="hero-tag tag-2">10 NGUYÊN TẮC</div>
+    <div class="hero-tag tag-3">BRIER SCORE</div>
+  </div>
+</section>
+
+<section class="section" id="thesis">
+  <div class="section-label">Luận điểm trung tâm</div>
+  <div class="thesis-grid">
+    <div>
+      <h2 class="thesis-title-small">Dự đoán <em>không phải</em> tài năng. Là <em>kỹ năng học được</em>.</h2>
+      <p class="section-intro">Tetlock (Đại học Pennsylvania) đã làm nghiên cứu 20 năm về dự đoán chuyên gia. Kết quả: <strong>chuyên gia trung bình dự đoán không tốt hơn xúc xắc</strong>. IARPA — cơ quan tình báo Mỹ — tổ chức "Good Judgment Project": tournament 4 năm, 20.000 người thường so kè dự đoán sự kiện thế giới với chuyên gia tình báo (có quyền truy cập tài liệu mật). Top 2% người thường — gọi là "superforecasters" — đánh bại chuyên gia tình báo <strong>30% chính xác hơn</strong>. Họ không thông minh hơn (IQ trung bình). Họ chỉ <em>nghĩ khác</em>.</p>
+    </div>
+    <div class="thesis-viz">
+      <svg viewBox="0 0 600 600" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="sf-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--accent)"/>
+          </marker>
+        </defs>
+        <circle cx="300" cy="300" r="200" fill="none" stroke="var(--ink)" stroke-width="0.5" opacity="0.06"/>
+        <circle cx="300" cy="300" r="160" fill="none" stroke="var(--accent)" stroke-width="2" opacity="0.3" stroke-dasharray="2 6"/>
+
+        <path d="M 300,140 A 160,160 0 0,1 460,300" fill="none" stroke="var(--accent)" stroke-width="2.5" marker-end="url(#sf-arrow)"/>
+        <path d="M 460,300 A 160,160 0 0,1 300,460" fill="none" stroke="var(--accent)" stroke-width="2.5" marker-end="url(#sf-arrow)"/>
+        <path d="M 300,460 A 160,160 0 0,1 140,300" fill="none" stroke="var(--accent)" stroke-width="2.5" marker-end="url(#sf-arrow)"/>
+        <path d="M 140,300 A 160,160 0 0,1 300,140" fill="none" stroke="var(--accent)" stroke-width="2.5" marker-end="url(#sf-arrow)"/>
+
+        <circle cx="300" cy="140" r="22" fill="var(--accent)"/>
+        <text x="300" y="148" text-anchor="middle" font-family="Fraunces, serif" font-size="18" font-weight="700" fill="var(--paper)">01</text>
+        <circle cx="460" cy="300" r="22" fill="var(--accent)"/>
+        <text x="460" y="308" text-anchor="middle" font-family="Fraunces, serif" font-size="18" font-weight="700" fill="var(--paper)">02</text>
+        <circle cx="300" cy="460" r="22" fill="var(--accent)"/>
+        <text x="300" y="468" text-anchor="middle" font-family="Fraunces, serif" font-size="18" font-weight="700" fill="var(--paper)">03</text>
+        <circle cx="140" cy="300" r="22" fill="var(--accent)"/>
+        <text x="140" y="308" text-anchor="middle" font-family="Fraunces, serif" font-size="18" font-weight="700" fill="var(--paper)">04</text>
+
+        <text x="300" y="50" text-anchor="middle" font-family="Fraunces, serif" font-size="22" font-weight="700" fill="var(--ink)">Cáo</text>
+        <text x="300" y="75" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" fill="var(--muted)" letter-spacing="3">FOX</text>
+
+        <text x="495" y="296" text-anchor="start" font-family="Fraunces, serif" font-size="22" font-weight="700" fill="var(--ink)">Phân nhỏ</text>
+        <text x="495" y="320" text-anchor="start" font-family="JetBrains Mono, monospace" font-size="11" fill="var(--muted)" letter-spacing="3">FERMIIZE</text>
+
+        <text x="300" y="535" text-anchor="middle" font-family="Fraunces, serif" font-size="22" font-weight="700" fill="var(--ink)">Cập nhật</text>
+        <text x="300" y="560" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" fill="var(--muted)" letter-spacing="3">UPDATE</text>
+
+        <text x="105" y="296" text-anchor="end" font-family="Fraunces, serif" font-size="22" font-weight="700" fill="var(--ink)">Đo</text>
+        <text x="105" y="320" text-anchor="end" font-family="JetBrains Mono, monospace" font-size="11" fill="var(--muted)" letter-spacing="3">SCORE</text>
+
+        <text x="300" y="320" text-anchor="middle" font-family="Fraunces, serif" font-size="50" font-weight="300" fill="var(--accent)" opacity="0.25">⊕</text>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<div class="thesis-quote">
+  <div class="thesis-mark">"</div>
+  <div class="thesis-text">Niềm tin là <em>giả thuyết</em> để kiểm tra — không phải <em>kho báu</em> để bảo vệ.</div>
+  <div class="thesis-author">— Philip Tetlock, Superforecasting</div>
+</div>
+
+<section class="section" id="framework">
+  <div class="section-label">Framework 01 / Hai mô hình tư duy</div>
+  <h2 class="section-title">Bạn là <em>cáo</em> hay <em>nhím</em>?</h2>
+  <p class="section-intro">Tetlock dựa trên ẩn dụ của Isaiah Berlin (từ thơ Hy Lạp cổ): "Cáo biết nhiều thứ. Nhím biết một thứ lớn." Chuyên gia "nhím" — có một lý thuyết lớn, áp dụng mọi nơi — dự đoán sai nhiều nhất. Người "cáo" — kéo từ nhiều mô hình, không cam kết với 1 framework — dự đoán đúng nhiều hơn. <strong>Tất cả superforecasters đều là cáo.</strong></p>
+
+  <div class="compare-grid">
+    <div class="compare-card hedgehog">
+      <div class="compare-label">Mô hình 01 (kém)</div>
+      <div class="compare-name">Nhím · <em>Hedgehog</em></div>
+      <div class="compare-tagline">"Tôi có 1 ý tưởng lớn giải thích mọi thứ."</div>
+      <ul class="compare-list">
+        <li>Cam kết với 1 lý thuyết/ý thức hệ</li>
+        <li>Lọc thông tin qua framework đó</li>
+        <li>Ý kiến mạnh, dứt khoát, dễ kể</li>
+        <li>Truyền hình thích — có "câu chốt"</li>
+        <li>Dự đoán cực đoan hơn — sai nhiều hơn</li>
+        <li>Khi sai, đổ lỗi ngoài, không sửa lý thuyết</li>
+      </ul>
+    </div>
+    <div class="compare-card fox">
+      <div class="compare-label">Mô hình 02 (giỏi)</div>
+      <div class="compare-name">Cáo · <em>Fox</em></div>
+      <div class="compare-tagline">"Tôi kéo từ nhiều mô hình tùy tình huống."</div>
+      <ul class="compare-list">
+        <li>Không cam kết với lý thuyết duy nhất</li>
+        <li>Tổng hợp từ nhiều góc nhìn khác nhau</li>
+        <li>Dự đoán cẩn trọng, có khoảng tin cậy</li>
+        <li>Truyền hình ghét — không có sound bite</li>
+        <li>Dự đoán vừa phải — đúng nhiều hơn</li>
+        <li>Khi sai, sửa niềm tin, không phải đổ lỗi</li>
+      </ul>
+    </div>
+  </div>
+
+  <p class="section-intro" style="margin-top: 32px;"><strong>Vấn đề thực tế:</strong> Truyền thông và xã hội thưởng cho nhím (đậm sắc, dễ nhớ, truyền tải) — không thưởng cho cáo. Nhưng nếu mục tiêu của bạn là <em>nghĩ chính xác</em> (không phải nổi tiếng) — cáo thắng. Một test đơn giản: bạn đã đổi ý 3 lần lớn trong 5 năm qua chưa? Cáo: có. Nhím: chắc chắn không.</p>
+</section>
+
+<section class="section">
+  <div class="section-label">Framework 02 / 10 nguyên tắc của Superforecaster</div>
+  <h2 class="section-title">10 nguyên tắc bạn có thể <em>áp dụng ngay</em></h2>
+  <p class="section-intro">Tetlock chưng cất phương pháp của các superforecasters thành 10 nguyên tắc. Không phải bí mật — là những thói quen tư duy có thể luyện. Người mới bắt đầu áp dụng 5/10 cũng đã đánh bại đa số chuyên gia.</p>
+
+  <div class="commands-grid">
+    <div class="command-card">
+      <div class="command-num">01</div>
+      <div class="command-title">Triage</div>
+      <div class="command-desc">Tập trung vào câu hỏi vùng "Goldilocks" — không quá dễ, không quá khó. Câu dễ ai cũng đoán được; câu quá khó (kiểu chứng khoán 5 năm) ngẫu nhiên thắng.</div>
+    </div>
+    <div class="command-card">
+      <div class="command-num">02</div>
+      <div class="command-title">Phân nhỏ</div>
+      <div class="command-desc">Chia câu hỏi lớn thành các câu nhỏ có thể trả lời. "Có chiến tranh không?" → "Có khủng hoảng X không?" → "Bên Y có động viên không?"</div>
+    </div>
+    <div class="command-card">
+      <div class="command-num">03</div>
+      <div class="command-title">Outside in</div>
+      <div class="command-desc">Trước khi chú ý đặc thù tình huống, hỏi: <em>tỷ lệ cơ bản</em> của loại sự kiện này là bao nhiêu? Đa số quên bước này — nhảy thẳng vào chi tiết.</div>
+    </div>
+    <div class="command-card">
+      <div class="command-num">04</div>
+      <div class="command-title">Cập nhật, không cố thủ</div>
+      <div class="command-desc">Khi có thông tin mới, điều chỉnh xác suất — đừng nhảy quá xa hay phớt lờ. Xác suất nên đi <em>từng bước nhỏ</em>, dựa trên độ mạnh của bằng chứng.</div>
+    </div>
+    <div class="command-card">
+      <div class="command-num">05</div>
+      <div class="command-title">Tổng hợp nhiều góc</div>
+      <div class="command-desc">Nhiều cách phân tích cùng câu hỏi từ góc khác nhau. Nếu 5 cách đều ra cùng kết luận — tin tưởng cao. Nếu trái nhau — kết luận cẩn trọng.</div>
+    </div>
+    <div class="command-card">
+      <div class="command-num">06</div>
+      <div class="command-title">Cân bằng tự tin</div>
+      <div class="command-desc">Quá tự tin: ngừng học. Quá nhút nhát: không quyết định. Tìm điểm cân bằng — sẵn sàng nói "60%" thay vì "có thể có thể không".</div>
+    </div>
+    <div class="command-card">
+      <div class="command-num">07</div>
+      <div class="command-title">Cân bằng phán đoán</div>
+      <div class="command-desc">Hai sai lầm: phớt lờ trí trực giác (thông thường có giá trị) hoặc hoàn toàn dựa vào nó (dễ bị thiên kiến). Dùng cả 2 — kiểm tra lẫn nhau.</div>
+    </div>
+    <div class="command-card">
+      <div class="command-num">08</div>
+      <div class="command-title">Tìm sai để học</div>
+      <div class="command-desc">Sau mỗi dự đoán sai, không tự bào chữa. Hỏi: thông tin nào tôi đã có thể có? Quy trình nào tôi có thể đổi? Đây là sự khác biệt số 1.</div>
+    </div>
+    <div class="command-card">
+      <div class="command-num">09</div>
+      <div class="command-title">Đội nhóm tốt hơn</div>
+      <div class="command-desc">Superforecaster làm theo nhóm tốt hơn 23%. Điều kiện: nhóm dám bất đồng, tôn trọng đa quan điểm — không phải nhóm yes-man.</div>
+    </div>
+    <div class="command-card">
+      <div class="command-num">10</div>
+      <div class="command-title">Beta vĩnh viễn</div>
+      <div class="command-desc">Không có "đã giỏi". Luôn ở phiên bản beta — sẵn sàng đổi mô hình, học công cụ mới, sửa thói quen tệ. Growth mindset là động lực số 1.</div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="section-label">Framework 03 / Brier Score — Đo dự đoán</div>
+  <h2 class="section-title">Cách <em>đo</em> dự đoán của bạn theo thời gian</h2>
+  <p class="section-intro">Không đo = không cải thiện. Brier Score là cách nhà khí tượng đo độ chính xác dự đoán. Càng nhỏ càng tốt. Score 0 = hoàn hảo. Score 0.5 = tệ như xúc xắc. Superforecaster trung bình ~0.25. Chuyên gia tình báo ~0.37.</p>
+
+  <div class="brier-box">
+    <div class="brier-title">Công thức Brier Score (đơn giản)</div>
+    <div class="brier-formula">Brier Score = (Xác suất bạn đoán − Kết quả thực)²<br><br>Ví dụ:<br>Bạn đoán 80% mưa — có mưa: (0.8 − 1)² = 0.04 (tốt)<br>Bạn đoán 80% mưa — không mưa: (0.8 − 0)² = 0.64 (tệ)<br>Bạn đoán 50% — không có gì học: (0.5 − x)² = 0.25 (trung bình)</div>
+    <p>Đặc điểm: bị phạt nặng nếu tự tin sai. Khen thưởng nếu vừa <em>chính xác</em> vừa <em>quyết định</em>. Trung bình hóa nhiều dự đoán = số tổng. Theo dõi 30 dự đoán bạn sẽ biết bạn đang ở đâu.</p>
+  </div>
+</section>
+
+<section class="section" id="chapters">
+  <div class="section-label">12 chương — 4 chủ đề lớn</div>
+  <h2 class="section-title">Bản đồ <em>chi tiết</em> của cuốn sách</h2>
+  <p class="section-intro">Tetlock không lý thuyết suông — sách dựa trên dữ liệu 20 năm GJP (Good Judgment Project). 11 chương: nửa đầu chứng minh dự đoán dài hạn của chuyên gia kém hơn ngẫu nhiên; nửa sau giải thích vì sao một số "người thường" thắng họ.</p>
+
+  <div class="rule-section">
+    <div class="rule-header">
+      <div class="rule-num">PHẦN I — VẤN ĐỀ</div>
+      <div class="rule-title">Vì sao chuyên gia dự đoán tệ</div>
+      <div class="rule-sub">Khám phá nghịch lý: chuyên môn không = dự đoán tốt</div>
+    </div>
+    <div class="chapter-grid">
+      <div class="chapter-card">
+        <div class="chapter-num">CHƯƠNG 01</div>
+        <div class="chapter-title">Người hoài nghi lạc quan</div>
+        <div class="chapter-desc">Tetlock: tôi tin dự đoán tốt là <strong>kỹ năng học được</strong>, không phải tài năng. 20 năm nghiên cứu cho thấy: chuyên gia trung bình dự đoán bằng xúc xắc. Nhưng có người trên đỉnh — và họ làm được vì cách nghĩ.</div>
+        <span class="chapter-key">Optimistic skeptic</span>
+      </div>
+      <div class="chapter-card">
+        <div class="chapter-num">CHƯƠNG 02</div>
+        <div class="chapter-title">Ảo tưởng kiến thức</div>
+        <div class="chapter-desc">Đa số chuyên gia bị "narrative bias" — kể chuyện đẹp về quá khứ rồi nghĩ đã hiểu. Hindsight bias: sau sự kiện, mọi thứ "hiển nhiên". Chính ảo tưởng này khiến họ tự tin sai về tương lai.</div>
+        <span class="chapter-key">Hindsight</span><span class="chapter-key">Narrative</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="rule-section">
+    <div class="rule-header">
+      <div class="rule-num">PHẦN II — ĐO LƯỜNG</div>
+      <div class="rule-title">Đo dự đoán mới cải thiện được</div>
+      <div class="rule-sub">Không có Brier Score, không có cách biết ai giỏi</div>
+    </div>
+    <div class="chapter-grid">
+      <div class="chapter-card">
+        <div class="chapter-num">CHƯƠNG 03</div>
+        <div class="chapter-title">Đếm điểm</div>
+        <div class="chapter-desc">Brier Score: đo độ chính xác dự đoán. Càng nhỏ càng tốt. 0 = hoàn hảo, 0.5 = xúc xắc. Cho phép so sánh khách quan giữa người. Lần đầu trong lịch sử có cách đo.</div>
+        <span class="chapter-key">Brier score</span>
+      </div>
+      <div class="chapter-card">
+        <div class="chapter-num">CHƯƠNG 04</div>
+        <div class="chapter-title">Superforecasters</div>
+        <div class="chapter-desc">Trong 20.000 người tham gia Good Judgment Project, top 2% — superforecasters — đánh bại chuyên gia tình báo Mỹ 30%. Không phải IQ cao bất thường. Là cách nghĩ.</div>
+        <span class="chapter-key">Top 2%</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="rule-section">
+    <div class="rule-header">
+      <div class="rule-num">PHẦN III — ĐẶC ĐIỂM</div>
+      <div class="rule-title">Họ khác chúng ta thế nào?</div>
+      <div class="rule-sub">3 myth bị bác bỏ và đặc điểm thật của superforecasters</div>
+    </div>
+    <div class="chapter-grid">
+      <div class="chapter-card">
+        <div class="chapter-num">CHƯƠNG 05</div>
+        <div class="chapter-title">Siêu thông minh?</div>
+        <div class="chapter-desc">Không. IQ trung bình của superforecasters là 130 — cao hơn trung bình nhưng không phải thiên tài. IQ trên 130 thêm chỉ giúp 5%. Cách nghĩ quan trọng hơn nhiều.</div>
+        <span class="chapter-key">IQ myth</span>
+      </div>
+      <div class="chapter-card">
+        <div class="chapter-num">CHƯƠNG 06</div>
+        <div class="chapter-title">Siêu giỏi toán?</div>
+        <div class="chapter-desc">Không. Họ giỏi cộng trừ. Không cần advanced statistics. Họ dùng "Fermi-ize" — chia bài toán phức tạp thành câu hỏi nhỏ có thể đoán. Đây là kỹ năng có thể học trong 1 tuần.</div>
+        <span class="chapter-key">Fermi</span>
+      </div>
+      <div class="chapter-card">
+        <div class="chapter-num">CHƯƠNG 07</div>
+        <div class="chapter-title">Siêu nghiện tin tức?</div>
+        <div class="chapter-desc">Không hẳn. Họ đọc rộng — không phải nhiều. Khác biệt: cách XỬ LÝ thông tin. Họ tổng hợp nhiều nguồn, không cam kết với một narrative. Họ là <em>cáo</em>, không phải <em>nhím</em>.</div>
+        <span class="chapter-key">Fox vs Hedgehog</span>
+      </div>
+      <div class="chapter-card">
+        <div class="chapter-num">CHƯƠNG 08</div>
+        <div class="chapter-title">Beta vĩnh viễn</div>
+        <div class="chapter-desc">Đặc điểm rõ nhất: Growth Mindset (Carol Dweck). Sau mỗi dự đoán sai, họ không bào chữa — họ điều tra. Quy trình nào sai? Thông tin gì tôi bỏ qua? Họ luôn ở "beta", không bao giờ "đã hoàn thiện".</div>
+        <span class="chapter-key">Growth mindset</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="rule-section">
+    <div class="rule-header">
+      <div class="rule-num">PHẦN IV — ÁP DỤNG</div>
+      <div class="rule-title">Mở rộng và giới hạn</div>
+      <div class="rule-sub">Cách áp dụng cho nhóm, lãnh đạo và những giới hạn của phương pháp</div>
+    </div>
+    <div class="chapter-grid">
+      <div class="chapter-card">
+        <div class="chapter-num">CHƯƠNG 09</div>
+        <div class="chapter-title">Đội siêu</div>
+        <div class="chapter-desc">Superforecaster làm theo nhóm tốt hơn 23%. Điều kiện: dám bất đồng, đa quan điểm, không group-think. Quy tắc: trộn nhóm — không cùng loại tính cách. Nhóm yes-man tệ hơn cá nhân.</div>
+        <span class="chapter-key">Superteams</span>
+      </div>
+      <div class="chapter-card">
+        <div class="chapter-num">CHƯƠNG 10</div>
+        <div class="chapter-title">Nan đề lãnh đạo</div>
+        <div class="chapter-desc">Lãnh đạo cần: (a) quyết đoán (lãnh đạo) và (b) cởi mở với không chắc chắn (siêu dự đoán). Hai tính chất xung đột. Giải pháp: quyết đoán về <em>mục tiêu</em>, cởi mở về <em>cách</em>.</div>
+        <span class="chapter-key">Leader paradox</span>
+      </div>
+      <div class="chapter-card">
+        <div class="chapter-num">CHƯƠNG 11</div>
+        <div class="chapter-title">Họ thực sự super không?</div>
+        <div class="chapter-desc">Giới hạn: họ giỏi với câu hỏi 1 tháng - 1 năm. Câu 5+ năm — ai cũng tệ. Khoa học, công nghệ, sự kiện đột phá vẫn không thể đoán. Khiêm tốn về phạm vi áp dụng.</div>
+        <span class="chapter-key">Limits</span>
+      </div>
+      <div class="chapter-card">
+        <div class="chapter-num">CHƯƠNG 12</div>
+        <div class="chapter-title">Tiếp theo là gì?</div>
+        <div class="chapter-desc">Cuộc cách mạng trong dự đoán đã bắt đầu. Doanh nghiệp, chính phủ đang triển khai. Công cụ thưa các bạn vẽ. Không phải xem tương lai như định mệnh — xem nó như xác suất bạn có thể tính toán.</div>
+        <span class="chapter-key">Future</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="flashcards">
+  <div class="section-label">Flashcards / 10 khái niệm cốt lõi</div>
+  <h2 class="section-title">Test trí nhớ <em>chủ động</em></h2>
+  <p class="section-intro">Tetlock có 10 commandments cuối sách + nhiều idea rải rác. 10 thẻ này tổng hợp các commandment quan trọng nhất. Idea 06 (Bayes thinking) khó tiêu hóa nhất — dừng lâu.</p>
+
+  <div class="flashcard-deck">
+    <div class="flashcard" id="flashcard" onclick="flipCard()">
+      <div class="flashcard-face front"><div class="flashcard-q" id="flashQ"></div></div>
+      <div class="flashcard-face back"><div class="flashcard-a" id="flashA"></div></div>
+    </div>
+    <div class="flashcard-controls">
+      <button class="flashcard-btn" onclick="prevCard()" id="prevBtn">← Trước</button>
+      <span class="flashcard-counter" id="cardCounter">1 / 10</span>
+      <button class="flashcard-btn" onclick="nextCard()" id="nextBtn">Tiếp →</button>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="quiz">
+  <div class="section-label">Quiz / 6 câu test hiểu biết</div>
+  <h2 class="section-title">Bạn có <em>thực sự hiểu</em> Tetlock?</h2>
+  <p class="section-intro">10 câu — Tetlock có nhiều idea trùng dễ confuse. Quiz này tách rõ: foxes vs hedgehogs, system 1 vs 2, Bayes update. Sai 3+ = idea bị blur trong đầu.</p>
+
+  <div id="quizContainer"></div>
+</section>
+
+<section class="section" id="actions">
+  <div class="section-label">15 Actions / Áp dụng vào quyết định của bạn</div>
+  <h2 class="section-title">15 hành động <em>cụ thể</em></h2>
+  <p class="section-intro">Tetlock kết sách bằng 10 commandments — hầu hết là về habit dự đoán. 15 hành động này áp dụng cho người không chuyên: cách track dự đoán cá nhân, cách update niềm tin theo Bayes. Chọn 3 cho 30 ngày.</p>
+
+  <div class="action-cats">
+    <button class="action-cat-btn active" onclick="filterActions('all', this)">Tất cả</button>
+    <button class="action-cat-btn" onclick="filterActions('mindset', this)">Tư duy (1-5)</button>
+    <button class="action-cat-btn" onclick="filterActions('method', this)">Phương pháp (6-10)</button>
+    <button class="action-cat-btn" onclick="filterActions('habit', this)">Thói quen (11-15)</button>
+  </div>
+
+  <div class="actions-grid" id="actionsGrid"></div>
+</section>
+
+<section class="section" id="journal">
+  <div class="section-label">Nhật ký riêng / Viết để hiểu thêm</div>
+  <h2 class="section-title">Viết để <em>thấm sâu</em></h2>
+  <p class="section-intro">5 câu hỏi để bạn track dự đoán cá nhân giống GJP. Tetlock: superforecasters "viết tất cả prediction kèm probability". Đây là habit khó nhưng đáng — vì 6 tháng sau bạn có dữ liệu thật về calibration của mình.</p>
+
+  <div class="journal-prompts-nav">
+    <div class="journal-dot active" onclick="switchPrompt(0, this)">1</div>
+    <div class="journal-dot" onclick="switchPrompt(1, this)">2</div>
+    <div class="journal-dot" onclick="switchPrompt(2, this)">3</div>
+    <div class="journal-dot" onclick="switchPrompt(3, this)">4</div>
+    <div class="journal-dot" onclick="switchPrompt(4, this)">5</div>
+  </div>
+
+  <div id="promptsContainer"></div>
+</section>
+
+
+<!-- COMMENTS -->
+<section class="section" id="comments">
+  <div class="section-label">Thảo luận / Cộng đồng</div>
+  <h2 class="section-title">Bạn nghĩ gì? <em>Để lại comment</em></h2>
+  <p class="section-intro">Mình đọc tất cả. Email chỉ dùng để xác nhận, không hiển thị công khai. Sau khi click link xác nhận trong email, comment sẽ hiển thị ngay.</p>
+  <div class="comment-form-wrap">
+    <form id="commentForm" class="comment-form">
+      <div class="reply-indicator" id="replyIndicator" style="display:none">Đang trả lời <span id="replyTo"></span><button type="button" id="replyCancel">×</button></div>
+      <div class="form-row">
+        <input id="cf-name" type="text" maxlength="80" placeholder="Tên hiển thị" required>
+        <input id="cf-email" type="email" maxlength="120" placeholder="Email (không hiển thị)" required>
+      </div>
+      <textarea id="cf-content" maxlength="2000" rows="5" placeholder="Suy nghĩ của bạn..." required></textarea>
+      <input id="cf-parent" type="hidden" value="">
+      <!-- Honeypot: bots fill this, humans don't see it -->
+      <div style="position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden" aria-hidden="true">
+        <label for="cf-website">Website (leave blank)</label>
+        <input id="cf-website" type="text" name="website" tabindex="-1" autocomplete="off">
+      </div>
+      <div class="form-bottom">
+        <span class="form-hint">Tối đa 2000 ký tự</span>
+        <button type="submit" class="form-submit" id="cf-submit">Gửi comment →</button>
+      </div>
+      <div class="form-message" id="cf-message"></div>
+    </form>
+  </div>
+  <div class="comments-list" id="commentsList">
+    <div class="comments-loading">Đang tải comment...</div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="footer-quote">"Niềm tin là giả thuyết — không phải kho báu. Sửa khi có bằng chứng. Không sửa khi tự ái."</div>
+  <div class="footer-author">— Quang Ton, sau khi đọc Tetlock</div>
+  <div class="footer-back">
+    <a href="../pages/tu-duy.html">← Quay lại Tư duy</a>
+    <a href="../index.html">Stop &amp; Think</a>
+  </div>
+  <div class="footer-meta">
+    © 2026 · Stop &amp; Think · By Quang Ton
+  </div>
+</footer>
+
+</main>
+
+<script>
+const flashcards = [
+  { q: "Good Judgment Project là gì? Phát hiện chính?", a: "Tournament 4 năm do IARPA tổ chức. 20.000 người thường so kè dự đoán sự kiện thế giới với chuyên gia tình báo. Top 2% — superforecasters — đánh bại chuyên gia 30% chính xác hơn. IQ trung bình. Cách nghĩ khác." },
+  { q: "Cáo vs Nhím — sự khác biệt cốt lõi?", a: "Nhím: cam kết 1 lý thuyết lớn, ý kiến mạnh, dứt khoát. Truyền hình thích — sai nhiều. Cáo: kéo từ nhiều mô hình, dự đoán cẩn trọng, có khoảng tin cậy. Truyền hình ghét — đúng nhiều. Tất cả superforecasters đều là cáo." },
+  { q: "Brier Score đo gì? Càng tốt thì điểm thế nào?", a: "Brier Score = (Xác suất đoán − Kết quả thực)². Càng nhỏ càng tốt. 0 = hoàn hảo, 0.5 = tệ như xúc xắc. Superforecaster ~0.25, chuyên gia tình báo ~0.37. Bị phạt nặng nếu tự tin sai. Trung bình nhiều dự đoán = số tổng đáng tin." },
+  { q: "Fermi-ize là gì? Tại sao quan trọng?", a: "Chia câu hỏi lớn không thể trả lời thành các câu nhỏ có thể trả lời. Lấy từ Enrico Fermi: 'Chicago có bao nhiêu thợ piano?' → 'Bao nhiêu nhà?' × 'Bao nhiêu nhà có piano?' × 'Bao nhiêu cần điều chỉnh/năm?' Superforecasters dùng cộng trừ — không cần advanced math." },
+  { q: "Outside view vs Inside view — khác biệt là gì?", a: "Inside view: nhảy thẳng vào chi tiết tình huống. 'Dự án này có 50% thành công vì A, B, C.' Outside view: trước hết hỏi 'tỷ lệ cơ bản của loại sự kiện này?' '70% startup phá sản trong 3 năm — bắt đầu từ đó.' Phần lớn người phớt lờ outside view." },
+  { q: "Superforecasters có IQ siêu cao không?", a: "Không. IQ trung bình là 130 — cao hơn trung bình nhưng không phải thiên tài. IQ > 130 thêm chỉ giúp 5%. Cách nghĩ (fox mindset, fermi-ize, update incremental) quan trọng hơn IQ thô." },
+  { q: "Khi có thông tin mới, cách cập nhật xác suất đúng là gì?", a: "Bayesian update: điều chỉnh từng bước nhỏ dựa vào độ mạnh của bằng chứng. Đa số sai 1 trong 2: (a) quá thận trọng — không cập nhật đủ, hoặc (b) quá kích — nhảy 0 → 100%. Đúng: từ 30% → 35% → 40% nếu bằng chứng yếu, hoặc 30% → 60% nếu bằng chứng mạnh." },
+  { q: "Vì sao 'beta vĩnh viễn' là đặc điểm số 1 của superforecasters?", a: "Họ luôn coi mình ở phiên bản beta — không bao giờ 'đã giỏi'. Sau mỗi dự đoán sai, không bào chữa — điều tra: thông tin nào bỏ qua? Quy trình nào sửa? Đây là Growth Mindset của Carol Dweck. Đặc điểm rõ rệt nhất phân biệt họ với chuyên gia 'đã thành tựu'." },
+  { q: "Vì sao đội superforecaster tốt hơn cá nhân 23%?", a: "Điều kiện: dám bất đồng + đa quan điểm + không group-think. Trộn nhóm — đa loại tính cách. Mỗi người mang góc khác nhau, kiểm tra điểm mù lẫn nhau. Nhóm yes-man hoặc cùng background tệ hơn cá nhân (echo chamber)." },
+  { q: "Giới hạn của Superforecasting là gì?", a: "Họ giỏi với câu hỏi 1 tháng - 1 năm. Câu 5+ năm — ai cũng tệ (chuỗi nhân quả phức tạp). Khoa học, công nghệ, sự kiện đột phá (black swan) vẫn không thể đoán. Phương pháp đúng cho dự đoán <em>chiến thuật</em>, không phải <em>tầm nhìn dài hạn</em>." }
+];
+
+const quizQuestions = [
+  {
+    q: "Bạn được hỏi: 'Việt Nam có vào WTO trước 2030 không?' Theo Tetlock, bước đầu tiên là gì?",
+    options: [
+      "Đọc tin tức về quan hệ thương mại",
+      "Outside view: tỷ lệ cơ bản — bao nhiêu nước đang ngoài WTO đã vào trong 5 năm? Bắt đầu từ đây trước khi vào chi tiết Việt Nam",
+      "Hỏi chuyên gia kinh tế",
+      "Phân tích chính sách hiện tại"
+    ],
+    correct: 1,
+    explain: "Đa số nhảy thẳng vào inside view (chi tiết tình huống). Outside view đầu tiên buộc bạn đặt anchor đúng. Nếu base rate là 'trong 5 năm có 3/30 nước ngoài WTO vào' = 10% — bạn bắt đầu từ 10%, sau đó điều chỉnh dựa trên đặc thù VN. Nếu nhảy thẳng vào 'VN có nền kinh tế tốt' → có thể đoán 60% — quá lạc quan. Outside view = anchor đúng."
+  },
+  {
+    q: "Bạn dự đoán 80% công ty bạn sẽ đạt KPI Q4. Tháng 11, 1 đối thủ ra mắt sản phẩm tốt hơn. Theo Tetlock, cập nhật đúng là...",
+    options: [
+      "Bỏ dự đoán cũ — đối thủ đã thắng",
+      "Cập nhật từng bước nhỏ: 80% → 65-70% (bằng chứng đáng kể nhưng chưa quyết định). Nếu mất khách hàng cụ thể → 50%. Đừng nhảy quá xa lúc đầu",
+      "Giữ 80% — KPI là về công ty mình, không phải đối thủ",
+      "Đợi báo cáo Q4 ra rồi mới cập nhật"
+    ],
+    correct: 1,
+    explain: "Bayesian update đúng: từng bước nhỏ dựa vào độ mạnh bằng chứng. Đối thủ ra sản phẩm = bằng chứng đáng kể nhưng chưa quyết định (chưa biết khách hàng có chuyển không). Cập nhật 10-15%. Nếu sau 2 tuần thấy mất 30% lead → cập nhật thêm 15-20%. 'Bỏ dự đoán cũ' (overreact) và 'giữ nguyên' (ignore) đều sai."
+  },
+  {
+    q: "Bạn ra quyết định lớn — đầu tư BĐS. Theo 10 nguyên tắc, bước nào QUAN TRỌNG nhất nhưng đa số bỏ qua?",
+    options: [
+      "Tìm tư vấn",
+      "Đo Brier Score: ghi xác suất bạn nghĩ giá lên/xuống/giữ — kèm lý do. Sau 12 tháng kiểm tra. Không có dữ liệu cá nhân = không có cách biết bạn giỏi/dở",
+      "Đọc thị trường",
+      "So sánh với đầu tư khác"
+    ],
+    correct: 1,
+    explain: "Brier Score là cốt lõi — nhưng đa số người không bao giờ đo. Không đo = không cải thiện. Phán đoán không có feedback → niềm tin sai vĩnh viễn về việc mình giỏi dự đoán. Sau 12 tháng tracking 30 dự đoán nhỏ — bạn sẽ có Brier score thực — biết chính xác mình ở đâu vs xúc xắc."
+  },
+  {
+    q: "Đồng nghiệp dự đoán 'CHẮC CHẮN giá BTC sẽ vượt 100k$ năm 2026'. Theo Tetlock, dấu hiệu họ là...",
+    options: [
+      "Có insight đặc biệt",
+      "Có thể là Hedgehog (Nhím) — cam kết 1 lý thuyết lớn ('blockchain sẽ cai trị thế giới'). Dự đoán cực đoan, không có khoảng tin cậy. Lịch sử: hedgehog sai nhiều hơn fox",
+      "Đáng nghe — họ tự tin",
+      "Đáng đầu tư theo"
+    ],
+    correct: 1,
+    explain: "'Chắc chắn' về tương lai bất định = dấu hiệu hedgehog. Fox sẽ nói '60% giá vượt 100k$ — tùy: chính sách Fed, regulation, market sentiment'. Hedgehog dễ kể, dễ thuyết phục, nhưng lịch sử cho thấy sai nhiều hơn. Quy tắc: càng tự tin về tương lai, càng nên cẩn trọng. Họ có thể đúng — nhưng không vì họ có method tốt."
+  },
+  {
+    q: "Bạn trong nhóm 5 người dự đoán dự án. Tất cả đồng ý 'sẽ thành công'. Theo Tetlock, đây là...",
+    options: [
+      "Tốt — đồng thuận = chắc chắn",
+      "Cảnh báo — có thể group-think. Quy tắc Tetlock: nếu nhóm đồng thuận quá nhanh, trộn thêm người khác background. Hoặc giao 1 người làm 'devil's advocate' bắt buộc tìm lý do dự án thất bại",
+      "Bình thường",
+      "Báo lãnh đạo"
+    ],
+    correct: 1,
+    explain: "Đồng thuận quá nhanh = dấu hiệu group-think. Đội superforecaster tốt nhất khi có bất đồng + đa quan điểm. Trộn nhóm: gen Z + boomer, sales + engineering, optimist + pessimist. Devil's advocate là kỹ thuật cổ điển — buộc nhóm xem mặt khác. Đồng thuận giả tạo nguy hiểm hơn bất đồng thật."
+  },
+  {
+    q: "Bạn dự đoán sai 5 lần liên tiếp. Theo Tetlock (Beta vĩnh viễn), phản ứng đúng là...",
+    options: [
+      "'Tôi không có khả năng dự đoán' — bỏ",
+      "'Tôi xui' — tiếp tục như cũ",
+      "Điều tra 5 lần sai: pattern là gì? (Quá lạc quan? Phớt lờ outside view? Không cập nhật?) Thay đổi quy trình cụ thể, không phải chỉ 'cố gắng hơn'",
+      "Thử method khác hoàn toàn"
+    ],
+    correct: 2,
+    explain: "Beta vĩnh viễn = sửa quy trình, không tự bỏ cuộc cũng không bào chữa. Phản ứng phổ biến: 'tôi tệ' (giving up) hoặc 'xui' (denial). Cả hai đều bỏ lỡ bài học. Đúng: phân tích cụ thể 5 sai. Quá lạc quan → tự calibrate xuống 10%. Phớt lờ outside view → buộc bản thân làm bước đầu tiên. Sửa quy trình > sửa cảm xúc."
+  }
+];
+
+const actions = [
+  { num: 1, cat: 'mindset', title: 'Đổi từ Nhím sang Cáo — kéo từ nhiều mô hình', desc: 'Mỗi câu hỏi quan trọng — kéo ít nhất 3 mô hình khác nhau. Kinh tế? Tâm lý? Lịch sử? Sinh học? Đa số người dùng 1 mô hình mặc định. Cáo dùng nhiều — và biết khi nào dùng cái nào.' },
+  { num: 2, cat: 'mindset', title: 'Bỏ "chắc chắn" khỏi từ vựng — thay bằng %', desc: 'Mỗi câu "tôi chắc chắn", "rõ ràng", "không có cách nào khác" → thay "tôi tin 80%". Sau 1 tuần bạn sẽ thấy mình quá tự tin về nhiều thứ. Calibrate là bước đầu tiên.' },
+  { num: 3, cat: 'mindset', title: 'Niềm tin = giả thuyết, không phải kho báu', desc: 'Câu mantra Tetlock. Mỗi niềm tin trong đầu — coi nó như giả thuyết kiểm tra được. Sẵn sàng sửa khi có bằng chứng. Bám vào niềm tin sai vì "đã tin lâu" = sai lầm cơ bản.' },
+  { num: 4, cat: 'mindset', title: 'Khi sai, sửa quy trình — không sửa cảm xúc', desc: 'Cảm xúc thông thường: "tôi tệ" hoặc "tôi xui". Cả hai bỏ lỡ bài học. Hỏi: thông tin nào tôi đã có thể có? Quy trình nào tôi sẽ thay đổi? Cảm xúc tan, quy trình ở lại.' },
+  { num: 5, cat: 'mindset', title: 'Trở thành "beta vĩnh viễn" — không bao giờ đã giỏi', desc: 'Mỗi quý: review 5 dự đoán sai gần nhất. Pattern là gì? Đổi gì trong cách bạn nghĩ? Không có "đã thành thạo" — chỉ có "đang cải thiện". Đặc điểm số 1 của superforecasters.' },
+  { num: 6, cat: 'method', title: 'Tập Fermi-ize: chia bài toán lớn thành câu nhỏ', desc: 'Mỗi tuần chọn 1 câu hỏi lớn (kinh doanh/chính trị/cá nhân). Chia thành 3-5 câu nhỏ có thể đoán. Đoán từng cái + xác suất. Tổng hợp. Sau 4 tuần bạn sẽ tự nhiên Fermi-ize.' },
+  { num: 7, cat: 'method', title: 'Áp dụng Outside View — base rate trước', desc: 'Mỗi quyết định: trước khi vào chi tiết, hỏi tỷ lệ cơ bản. "Bao nhiêu startup tương tự thành công?" "Bao nhiêu dự án phần mềm xong đúng hạn?" Base rate là anchor. Đa số sai vì phớt lờ.' },
+  { num: 8, cat: 'method', title: 'Cập nhật xác suất từng bước nhỏ', desc: 'Khi có thông tin mới: 30% → 35% (bằng chứng yếu) hoặc 30% → 50% (bằng chứng mạnh). Không nhảy 0→100%. Bayesian thinking. Cảm thấy ngại đổi ý? Đó là dấu hiệu đúng.' },
+  { num: 9, cat: 'method', title: 'Tổng hợp từ 3+ góc nhìn cho mỗi quyết định lớn', desc: 'Mỗi quyết định lớn: tìm 3+ cách phân tích khác nhau. Tài chính + chiến lược + nhân sự. Hoặc tâm lý + kinh tế + lịch sử. Nếu 3 góc đồng ý — tin cao. Trái nhau — kết luận cẩn trọng.' },
+  { num: 10, cat: 'method', title: 'Pre-mortem: tưởng tượng quyết định đã thất bại', desc: 'Trước khi quyết: "Một năm sau, quyết định này thất bại. Tại sao?" Viết 5 lý do. Đa số sẽ lộ rủi ro bạn đang phớt lờ. Sửa kế hoạch trước khi thực hiện.' },
+  { num: 11, cat: 'habit', title: 'Tracking 30 dự đoán cá nhân trong 12 tháng', desc: 'Tạo file Google Sheet. Cột: dự đoán + xác suất + ngày + kết quả. Mỗi tuần thêm 1-2. Sau 12 tháng tính Brier Score. Đây là cách duy nhất biết bạn ở đâu.' },
+  { num: 12, cat: 'habit', title: 'Đọc rộng — không nhiều', desc: 'Superforecasters không đọc nhiều hơn người khác. Họ đọc <em>khác loại</em>. Đăng ký 1 newsletter từ ngành xa bạn (kinh tế nếu bạn dev; tâm lý nếu bạn finance). Mở ra góc nhìn cáo.' },
+  { num: 13, cat: 'habit', title: 'Tham gia/tạo nhóm dự đoán có bất đồng', desc: '3-5 người. Đa background. Mỗi tuần dự đoán 1 sự kiện. Quy tắc: phải nói % cụ thể + lý do. Phê bình lập luận, không phê bình người. Sau 6 tháng cả nhóm sẽ giỏi hơn cá nhân 23%.' },
+  { num: 14, cat: 'habit', title: 'Mỗi quyết định: viết "tại sao tôi quyết thế này"', desc: 'Trước khi biết kết quả. Lý do, thông tin, độ tự tin %. Sau 6 tháng review. Bạn sẽ thấy: lúc đó "rõ ràng" thực ra rất mơ hồ. Chống hindsight bias.' },
+  { num: 15, cat: 'habit', title: 'Mỗi quý 1 lần: meta-review pattern sai lầm', desc: 'Quý 1 lần, 90 phút. Xem lại tracking. Pattern sai: bạn quá lạc quan? Phớt lờ outside view? Không cập nhật? Đổi 1 thói quen cụ thể trong quý sau. Beta vĩnh viễn.' }
+];
+
+const journalPrompts = [
+  { q: "Bạn là Cáo hay Nhím? Liệt kê 3 niềm tin lớn của bạn — bạn đã đổi ý cái nào trong 3 năm qua?", help: "Nhím: khó kể được niềm tin đã đổi. Cáo: nhiều. Câu hỏi này là test trực tiếp. Nếu bạn không nhớ lần đổi ý nào — đó là dấu hiệu Nhím. Đừng đẹp hóa — sự thật quan trọng hơn." },
+  { q: "Một dự đoán bạn đã sai gần đây — không bào chữa, điều tra: thông tin nào tôi đã có thể có?", help: "Tránh: 'tôi xui', 'không ai đoán được'. Tập trung: tin tức/data có sẵn lúc đó tôi đã bỏ qua? Cảm xúc nào (lạc quan/sợ) làm tôi thiên lệch? Quy trình nào tôi sẽ đổi cho lần sau? Cụ thể, không cảm tính." },
+  { q: "Chọn 1 sự kiện sẽ xảy ra trong 6 tháng tới — đoán xác suất + lý do", help: "Bầu cử? Sản phẩm ra? Công ty IPO? Tỷ giá? Viết: (a) sự kiện cụ thể có thể đo, (b) xác suất % (không phải 'có thể'), (c) lý do từ 3 góc nhìn khác nhau, (d) cập nhật xác suất khi nào? Quay lại sau 6 tháng — Brier Score đầu tiên." },
+  { q: "Outside View — chọn 1 quyết định bạn đang cân nhắc. Tỷ lệ cơ bản là gì?", help: "Đầu tư cổ phiếu? Tỷ lệ cổ phiếu vượt index 5 năm = ~30%. Khởi nghiệp? Startup sống sót 5 năm = ~10%. Đổi nghề? Đa số người đổi nghề có hối tiếc 6 tháng đầu — nhưng 18 tháng sau thường không. Tìm base rate, đặt làm anchor, rồi mới điều chỉnh." },
+  { q: "Pre-mortem — Một quyết định lớn bạn đang cân nhắc đã THẤT BẠI sau 1 năm. Tại sao?", help: "Tưởng tượng cụ thể. Viết 5 lý do thất bại — không lọc. Lý do nào dễ tránh nhất? (Đó là rủi ro để giải quyết trước.) Lý do nào không thể tránh? (Đó là 'cost of doing business' — chấp nhận hay không?) Câu hỏi này thường tiết lộ rủi ro bạn đã phớt lờ." }
+];
+
+let currentCard = 0; let isFlipped = false;
+function showCard(i) { const card = document.getElementById('flashcard'); card.classList.remove('flipped'); isFlipped = false; setTimeout(() => { document.getElementById('flashQ').textContent = flashcards[i].q; document.getElementById('flashA').textContent = flashcards[i].a; document.getElementById('cardCounter').textContent = `${i + 1} / ${flashcards.length}`; document.getElementById('prevBtn').disabled = i === 0; document.getElementById('nextBtn').disabled = i === flashcards.length - 1; }, 50); }
+function flipCard() { isFlipped = !isFlipped; document.getElementById('flashcard').classList.toggle('flipped'); }
+function prevCard() { if (currentCard > 0) { currentCard--; showCard(currentCard); } }
+function nextCard() { if (currentCard < flashcards.length - 1) { currentCard++; showCard(currentCard); } }
+function renderQuiz() { const container = document.getElementById('quizContainer'); quizQuestions.forEach((q, idx) => { const div = document.createElement('div'); div.className = 'quiz-question'; div.innerHTML = `<div class="quiz-q-text">${idx + 1}. ${q.q}</div><div class="quiz-options">${q.options.map((opt, i) => `<div class="quiz-option" onclick="answerQuiz(${idx}, ${i})">${String.fromCharCode(65 + i)}. ${opt}</div>`).join('')}</div><div class="quiz-feedback" id="feedback-${idx}">${q.explain}</div>`; container.appendChild(div); }); }
+function answerQuiz(qIdx, optIdx) { const q = quizQuestions[qIdx]; const options = document.querySelectorAll('.quiz-question')[qIdx].querySelectorAll('.quiz-option'); options.forEach((opt, i) => { if (i === q.correct) opt.classList.add('correct'); else if (i === optIdx) opt.classList.add('wrong'); else opt.classList.add('disabled'); }); document.getElementById(`feedback-${qIdx}`).classList.add('show'); }
+function renderActions(filter = 'all') { const grid = document.getElementById('actionsGrid'); grid.innerHTML = ''; actions.forEach(a => { if (filter !== 'all' && a.cat !== filter) return; const div = document.createElement('div'); div.className = 'action-card'; div.innerHTML = `<div class="action-num">${String(a.num).padStart(2, '0')}</div><div class="action-content"><div class="action-title">${a.title}</div><div class="action-desc">${a.desc}</div></div>`; grid.appendChild(div); }); }
+function filterActions(cat, btn) { document.querySelectorAll('.action-cat-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); renderActions(cat); }
+function renderPrompts() { const container = document.getElementById('promptsContainer'); journalPrompts.forEach((p, i) => { const div = document.createElement('div'); div.className = 'journal-prompt' + (i === 0 ? ' active' : ''); div.id = `prompt-${i}`; div.innerHTML = `<div class="journal-q">${i + 1}. ${p.q}</div><div class="journal-help">💡 Gợi ý: ${p.help}</div><textarea class="journal-textarea" placeholder="Viết câu trả lời của bạn ở đây..."></textarea>`; container.appendChild(div); }); }
+function switchPrompt(i, dot) { document.querySelectorAll('.journal-dot').forEach(d => d.classList.remove('active')); dot.classList.add('active'); document.querySelectorAll('.journal-prompt').forEach(p => p.classList.remove('active')); document.getElementById(`prompt-${i}`).classList.add('active'); }
+function scrollTo2(id) { const el = document.getElementById(id); if (el) window.scrollTo({ top: el.offsetTop - 80, behavior: 'smooth' }); }
+window.addEventListener('scroll', () => { const total = document.documentElement.scrollHeight - window.innerHeight; const pct = (window.scrollY / total) * 100; document.getElementById('progressBar').style.width = pct + '%'; });
+showCard(0); renderQuiz(); renderActions(); renderPrompts();
+</script>
+
+<script>
+(function() {
+  const COMMENTS_PAGE_ID = "superforecasting";
+  async function loadComments() {
+    const list = document.getElementById('commentsList');
+    if (!list) return;
+    list.innerHTML = '<div class="comments-loading">Đang tải comment...</div>';
+    try {
+      const res = await fetch('/api/comments?page=' + COMMENTS_PAGE_ID);
+      if (!res.ok) throw new Error('fetch failed');
+      const data = await res.json();
+      renderCommentsList(data.comments || []);
+    } catch (e) {
+      list.innerHTML = '<div class="comments-empty">Không tải được comment. Thử lại sau.</div>';
+    }
+  }
+  function renderCommentsList(items) {
+    const list = document.getElementById('commentsList');
+    if (!items.length) {
+      list.innerHTML = '<div class="comments-empty">Chưa có comment nào — bạn là người đầu tiên.</div>';
+      return;
+    }
+    const byId = {};
+    items.forEach(c => { c.replies = []; byId[c.id] = c; });
+    const roots = [];
+    items.forEach(c => {
+      if (c.parent_id && byId[c.parent_id]) byId[c.parent_id].replies.push(c);
+      else roots.push(c);
+    });
+    list.innerHTML = roots.map(c => renderNode(c, false)).join('');
+  }
+  function renderNode(c, isReply) {
+    const replies = (c.replies || []).map(r => renderNode(r, true)).join('');
+    return '<div class="comment-item ' + (isReply ? 'is-reply' : '') + '" id="comment-' + c.id + '"><div class="comment-head"><span class="comment-author">' + esc(c.author_name) + '</span><span class="comment-time">' + fmtTime(c.created_at) + '</span></div><div class="comment-body">' + esc(c.content) + '</div><div class="comment-actions"><button class="comment-reply-btn" onclick="window.__cmt_setReply(' + c.id + ', ' + JSON.stringify(c.author_name).replace(/"/g, '&quot;') + ')">↳ Trả lời</button></div></div>' + replies;
+  }
+  window.__cmt_setReply = function(id, name) {
+    document.getElementById('cf-parent').value = id;
+    document.getElementById('replyIndicator').style.display = 'inline-block';
+    document.getElementById('replyTo').textContent = name;
+    document.getElementById('cf-content').focus();
+    document.getElementById('comments').scrollIntoView({behavior: 'smooth', block: 'start'});
+  };
+  function cancelReply() {
+    document.getElementById('cf-parent').value = '';
+    document.getElementById('replyIndicator').style.display = 'none';
+  }
+  function fmtTime(unix) {
+    const d = new Date(unix * 1000);
+    const diff = Date.now()/1000 - unix;
+    if (diff < 60) return 'vừa xong';
+    if (diff < 3600) return Math.floor(diff/60) + ' phút trước';
+    if (diff < 86400) return Math.floor(diff/3600) + ' giờ trước';
+    if (diff < 604800) return Math.floor(diff/86400) + ' ngày trước';
+    return d.toLocaleDateString('vi-VN');
+  }
+  function esc(s) {
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+  }
+  const form = document.getElementById('commentForm');
+  if (form) {
+    form.addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const submitBtn = document.getElementById('cf-submit');
+      const msg = document.getElementById('cf-message');
+      msg.className = 'form-message';
+      const payload = {
+        pageId: COMMENTS_PAGE_ID,
+        name: document.getElementById('cf-name').value.trim(),
+        email: document.getElementById('cf-email').value.trim(),
+        content: document.getElementById('cf-content').value.trim(),
+        parentId: document.getElementById('cf-parent').value || null,
+        website: document.getElementById('cf-website').value
+      };
+      if (!payload.name || !payload.email || !payload.content) {
+        msg.textContent = 'Vui lòng nhập đủ tên, email, nội dung.';
+        msg.classList.add('show', 'error');
+        return;
+      }
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Đang gửi...';
+      try {
+        const res = await fetch('/api/comments', {
+          method: 'POST',
+          headers: {'content-type': 'application/json'},
+          body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Lỗi gửi');
+        msg.textContent = data.message || 'Đã gửi. Check email để xác nhận.';
+        msg.classList.add('show', 'success');
+        document.getElementById('cf-content').value = '';
+        cancelReply();
+      } catch (err) {
+        msg.textContent = err.message || 'Lỗi gửi comment. Thử lại sau.';
+        msg.classList.add('show', 'error');
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Gửi comment →';
+      }
+    });
+    document.getElementById('replyCancel').addEventListener('click', cancelReply);
+    loadComments();
+  }
+})();
+</script>
+
+<!-- Library widgets: search + related books -->
+<script src="/assets/books-data.js"></script>
+<script src="/assets/library.js"></script>
+
+<!-- CF Analytics (with owner opt-out) --><script>(function(){try{var q=new URLSearchParams(location.search);if(q.get('notrack')==='1'){localStorage.setItem('st_no_track','1');}if(q.get('notrack')==='0'){localStorage.removeItem('st_no_track');}if(localStorage.getItem('st_no_track')==='1'){return;}}catch(e){}var s=document.createElement('script');s.defer=true;s.src='https://static.cloudflareinsights.com/beacon.min.js';s.setAttribute('data-cf-beacon','{"token":"8c50242b708f48ad8c7bc39b1144e20c"}');document.head.appendChild(s);})();</script>
+
+  <script src="../edit-mode.js"></script>
+<script src="/assets/nav-spy.js" defer></script>
+</body>
+</html>

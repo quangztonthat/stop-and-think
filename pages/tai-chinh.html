@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tài chính — Stop &amp; Think</title>
+<meta name="description" content="Sách về tiền, đầu tư, tài chính cá nhân — phân tích bởi Quang Ton, người làm tư vấn tài chính.">
+<link rel="icon" type="image/svg+xml" href="../favicon.svg">
+<link rel="canonical" href="https://stop-and-think.pages.dev/tai-chinh">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Stop &amp; Think">
+<meta property="og:locale" content="vi_VN">
+<meta property="og:title" content="Tài chính — Stop &amp; Think">
+<meta property="og:description" content="Sách về tiền, đầu tư, tài chính cá nhân — phân tích bởi Quang Ton, người làm tư vấn tài chính.">
+<meta property="og:url" content="https://stop-and-think.pages.dev/tai-chinh">
+<meta property="og:image" content="https://stop-and-think.pages.dev/og-image.svg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,700;9..144,900&family=Manrope:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --rust: #8b3a2b; --rust-deep: #5e2418;
+  --copper: #c4923c; --copper-light: #d9b073;
+  --navy: #2d4a5c; --navy-deep: #1f3340;
+  --cream: #f5ede0; --cream-soft: #ebe1cf;
+  --ink: #1a1410; --muted: #4a3f33;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+em { font-style: normal; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--cream); color: var(--ink);
+  font-family: 'Fraunces', Georgia, serif;
+  font-size: 19px; line-height: 1.6;
+  overflow-x: hidden; -webkit-font-smoothing: antialiased;
+}
+main { position: relative; z-index: 2; }
+
+.nav {
+  position: fixed; top: 0; left: 0; right: 0;
+  background: rgba(245, 237, 224, 0.92); backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(26, 20, 16, 0.1);
+  z-index: 100; padding: 18px 40px;
+  display: flex; justify-content: space-between; align-items: center;
+}
+.nav-brand {
+  font-family: 'Fraunces', serif;
+  font-size: 22px; font-weight: 600;
+  letter-spacing: -0.02em;
+  display: flex; align-items: center; gap: 10px;
+  text-decoration: none; color: var(--ink);
+}
+.nav-brand .amp { color: var(--rust); font-style: normal; font-weight: 300; }
+.nav-brand .dot { width: 6px; height: 6px; background: var(--copper); border-radius: 50%; }
+.nav-links { display: flex; gap: 36px; font-family: 'Manrope', sans-serif; font-size: 12px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.16em; }
+.nav-links a { color: var(--ink); text-decoration: none; transition: color 0.2s; position: relative; }
+.nav-links a::after { content: ''; position: absolute; bottom: -4px; left: 0; width: 0; height: 1px; background: var(--rust); transition: width 0.3s; }
+.nav-links a:hover { color: var(--rust); }
+.nav-links a:hover::after { width: 100%; }
+.nav-links a.active { color: var(--rust); }
+.nav-links a.active::after { width: 100%; }
+
+/* CATEGORY HERO */
+.cat-hero {
+  padding: 140px 8% 80px;
+  background: #2d4a5c;
+  color: #f5ede0;
+  position: relative;
+  overflow: hidden;
+  border-bottom: 2px solid var(--ink);
+}
+.cat-hero::before {
+  content: '';
+  position: absolute;
+  top: -100px; right: -100px;
+  width: 500px; height: 500px;
+  background: radial-gradient(circle, rgba(196, 146, 60, 0.2) 0%, transparent 70%);
+}
+.breadcrumb {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  margin-bottom: 32px;
+  opacity: 0.7;
+  position: relative;
+  z-index: 2;
+}
+.breadcrumb a { color: var(--cream); text-decoration: none; }
+.breadcrumb a:hover { opacity: 1; text-decoration: underline; }
+.breadcrumb span { margin: 0 8px; opacity: 0.5; }
+
+.cat-hero-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  align-items: center;
+  position: relative;
+  z-index: 2;
+}
+.cat-num-big {
+  font-family: 'Fraunces', serif;
+  font-style: normal;
+  font-size: 14px;
+  letter-spacing: 0.05em;
+  margin-bottom: 16px;
+  opacity: 0.7;
+}
+.cat-hero h1 {
+  font-family: 'Fraunces', serif;
+  font-size: clamp(72px, 11vw, 160px);
+  font-weight: 500;
+  line-height: 0.9;
+  letter-spacing: -0.04em;
+  margin-bottom: 32px;
+}
+.cat-hero h1 em { font-style: normal; font-weight: inherit; color: inherit; }
+.cat-hero-tagline {
+  font-size: 22px;
+  font-weight: 300;
+  font-style: normal;
+  line-height: 1.4;
+  opacity: 0.9;
+  max-width: 480px;
+}
+
+.cat-intro-block {
+  background: rgba(0,0,0,0.15);
+  padding: 40px;
+  border-left: 4px solid var(--copper);
+}
+.cat-intro-block h3 {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--copper);
+  margin-bottom: 20px;
+}
+.cat-intro-block p {
+  font-size: 18px;
+  line-height: 1.6;
+  margin-bottom: 14px;
+}
+.cat-intro-block p:last-child { margin-bottom: 0; }
+
+/* BOOKS */
+.books-section { padding: 100px 8%; }
+
+.books-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  margin-bottom: 60px;
+  flex-wrap: wrap;
+  gap: 24px;
+}
+.books-header h2 {
+  font-family: 'Fraunces', serif;
+  font-size: clamp(40px, 5vw, 64px);
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+.books-header h2 em { font-style: normal; color: var(--rust); }
+.books-count {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.books-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 28px;
+}
+.book-card { background: var(--cream-soft); border: 1.5px solid var(--ink); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); text-decoration: none; color: var(--ink); display: flex; flex-direction: column; }
+.book-card:hover { transform: translate(-4px, -4px); box-shadow: 8px 8px 0 var(--rust); }
+.book-cover { height: 280px; display: flex; flex-direction: column; justify-content: space-between; padding: 28px; }
+.cover-rust { background: var(--rust); color: var(--cream); }
+.cover-navy { background: var(--navy); color: var(--cream); }
+.cover-copper { background: var(--copper); color: var(--ink); }
+.book-cover-num { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.2em; opacity: 0.7; }
+.book-cover-title { font-family: 'Fraunces', serif; font-size: 36px; font-weight: 600; line-height: 0.95; letter-spacing: -0.02em; }
+.book-cover-title em { font-style: normal; font-weight: inherit; }
+.book-cover-author { font-family: 'Manrope', sans-serif; font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; opacity: 0.85; }
+.book-meta { padding: 24px 28px 28px; border-top: 1.5px solid var(--ink); flex: 1; display: flex; flex-direction: column; }
+.book-tag-row { display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
+.book-tag { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; padding: 3px 8px; border: 1px solid var(--muted); color: var(--muted); }
+.book-card-summary { font-size: 16px; line-height: 1.5; font-style: normal; flex: 1; margin-bottom: 16px; }
+.book-card-foot { display: flex; justify-content: space-between; align-items: center; font-family: 'Manrope', sans-serif; font-size: 11px; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: var(--rust); padding-top: 12px; border-top: 1px dashed rgba(26, 20, 16, 0.2); }
+.book-card-foot .arrow { transition: transform 0.3s; font-size: 16px; }
+.book-card:hover .arrow { transform: translateX(6px); }
+
+.book-card.coming-soon { background: transparent; border: 1.5px dashed rgba(26, 20, 16, 0.3); }
+.book-card.coming-soon:hover { transform: none; box-shadow: none; }
+.coming-soon-cover { height: 280px; display: flex; align-items: center; justify-content: center; background: rgba(26, 20, 16, 0.03); position: relative; }
+.coming-soon-cover::before { content: '+'; font-family: 'Fraunces', serif; font-size: 80px; font-weight: 300; color: var(--muted); opacity: 0.3; }
+
+/* OTHER CATEGORIES */
+.other-cats {
+  padding: 80px 8%;
+  background: var(--cream-soft);
+  border-top: 1px solid rgba(26, 20, 16, 0.15);
+}
+.other-cats h3 {
+  font-family: 'Fraunces', serif;
+  font-size: 32px;
+  font-weight: 500;
+  margin-bottom: 32px;
+}
+.other-cats h3 em { font-style: normal; color: var(--rust); }
+.other-cats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+.other-cat-link {
+  background: var(--cream);
+  border: 1.5px solid var(--ink);
+  padding: 24px;
+  text-decoration: none;
+  color: var(--ink);
+  transition: all 0.3s;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.other-cat-link:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 4px 4px 0 var(--ink);
+}
+.other-cat-name {
+  font-family: 'Fraunces', serif;
+  font-size: 24px;
+  font-weight: 600;
+  font-style: normal;
+}
+.other-cat-arrow { font-size: 18px; opacity: 0.5; }
+
+/* FOOTER */
+.footer { padding: 60px 8% 40px; background: var(--ink); color: var(--cream); text-align: center; }
+.footer-brand { font-family: 'Fraunces', serif; font-size: 28px; font-weight: 500; margin-bottom: 12px; }
+.footer-brand .amp { color: var(--copper); font-style: normal; }
+.footer p { font-style: normal; opacity: 0.7; font-size: 16px; }
+.footer-bottom { margin-top: 32px; padding-top: 24px; border-top: 1px solid rgba(245, 237, 224, 0.2); font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.1em; opacity: 0.5; }
+
+@media (max-width: 1024px) {
+  .cat-hero-grid { grid-template-columns: 1fr; gap: 48px; }
+  .books-grid { grid-template-columns: 1fr 1fr; }
+  .other-cats-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 640px) {
+  .nav { padding: 14px 20px; }
+  .nav-links { display: none; }
+  .cat-hero { padding: 100px 6% 60px; }
+  .books-section { padding: 60px 6%; }
+  .books-grid { grid-template-columns: 1fr; }
+  .cat-intro-block { padding: 28px; }
+  .other-cats { padding: 60px 6%; }
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a href="../index.html" class="nav-brand">
+    <div class="dot"></div>
+    Stop <span class="amp">&amp;</span> Think
+  </a>
+  <div class="nav-links">
+    <a href="../index.html#categories">Thể loại</a>
+    <a href="../index.html#latest">Mới nhất</a>
+    <a href="../index.html#about">Quang Ton</a>
+  </div>
+</nav>
+
+<main>
+
+<!-- CATEGORY HERO -->
+<section class="cat-hero">
+  <div class="breadcrumb">
+    <a href="../index.html">Stop &amp; Think</a><span>›</span>Tài chính
+  </div>
+  
+  <div class="cat-hero-grid">
+    <div>
+      <div class="cat-num-big">— Thể loại 02 / 04</div>
+      <h1>Tài <em>chính</em>.</h1>
+      <p class="cat-hero-tagline">Tiền không chỉ là <em>con số</em>.</p>
+    </div>
+    
+    <div class="cat-intro-block">
+      <h3>Về thể loại này</h3>
+      <p>Tài chính không chỉ là toán học. Phần lớn quyết định về tiền của con người là <strong>cảm tính</strong>: "bất động sản chỉ tăng", "vàng là an toàn", "chứng khoán là cờ bạc". Đây là niềm tin, không phải dữ liệu.</p>
+      <p>Sách trong thể loại này không dạy làm giàu nhanh. Chúng dạy cách nhìn tiền như một <strong>công cụ</strong> — không phải tôn giáo, không phải ma quỷ — và ra quyết định dựa trên logic thay vì cảm xúc.</p>
+    </div>
+  </div>
+</section>
+
+<!-- BOOKS -->
+<section class="books-section">
+  <div class="books-header">
+    <h2>Sách <em>trong thể loại này</em></h2>
+    <div class="books-count">3 cuốn · cập nhật hàng tuần</div>
+  </div>
+
+  <div class="books-grid">
+    <a href="../books/fooled-by-randomness.html" class="book-card">
+      <div class="book-cover cover-navy">
+        <div class="book-cover-num">Vol. 02 · 2026</div>
+        <div><div class="book-cover-title">Fooled by<br><em>Randomness</em></div></div>
+        <div class="book-cover-author">Nassim Taleb · 2001/2004</div>
+      </div>
+      <div class="book-meta">
+        <div class="book-tag-row">
+          <span class="book-tag">14 chương</span>
+          <span class="book-tag">3 frameworks</span>
+          <span class="book-tag">18 actions</span>
+        </div>
+        <p class="book-card-summary">Vai trò ẩn của may rủi trong cuộc sống và thị trường — và vì sao bộ não ta được lập trình để không thấy nó.</p>
+        <div class="book-card-foot">
+          <span>Đọc phân tích</span>
+          <span class="arrow">→</span>
+        </div>
+      </div>
+    </a>
+
+    <a href="../books/thinking-in-bets.html" class="book-card">
+      <div class="book-cover cover-navy">
+        <div class="book-cover-num">Vol. 07 · 2026</div>
+        <div><div class="book-cover-title">Thinking<br><em>in Bets</em></div></div>
+        <div class="book-cover-author">Annie Duke · 2018</div>
+      </div>
+      <div class="book-meta">
+        <div class="book-tag-row">
+          <span class="book-tag">6 chương</span>
+          <span class="book-tag">3 frameworks</span>
+          <span class="book-tag">15 actions</span>
+        </div>
+        <p class="book-card-summary">Mọi quyết định là một cú đặt cược. Đừng đánh giá quyết định bằng kết quả — đó là cách chắc chắn ra sai lầm tiếp theo.</p>
+        <div class="book-card-foot">
+          <span>Đọc phân tích</span>
+          <span class="arrow">→</span>
+        </div>
+      </div>
+    </a>
+
+    <a href="../books/psychology-of-money.html" class="book-card">
+      <div class="book-cover cover-navy">
+        <div class="book-cover-num">Vol. 13 · 2026</div>
+        <div><div class="book-cover-title">Psychology<br><em>of Money</em></div></div>
+        <div class="book-cover-author">Morgan Housel · 2020</div>
+      </div>
+      <div class="book-meta">
+        <div class="book-tag-row">
+          <span class="book-tag">20 essay</span>
+          <span class="book-tag">Behavior &gt; IQ</span>
+          <span class="book-tag">Compounding</span>
+        </div>
+        <p class="book-card-summary">Làm tốt với tiền liên quan ít đến IQ và rất nhiều đến hành vi. 20 essay về cách con người thật sự suy nghĩ về tiền.</p>
+        <div class="book-card-foot">
+          <span>Đọc phân tích</span>
+          <span class="arrow">→</span>
+        </div>
+      </div>
+    </a>
+  </div>
+</section>
+
+<!-- OTHER CATEGORIES -->
+<section class="other-cats">
+  <h3>Khám phá <em>thể loại khác</em></h3>
+  <div class="other-cats-grid">
+    <a href="tu-duy.html" class="other-cat-link">
+      <span class="other-cat-name">Tư duy</span>
+      <span class="other-cat-arrow">→</span>
+    </a>
+    <a href="su-nghiep.html" class="other-cat-link">
+      <span class="other-cat-name">Sự nghiệp</span>
+      <span class="other-cat-arrow">→</span>
+    </a>
+    <a href="triet-ly-song.html" class="other-cat-link">
+      <span class="other-cat-name">Triết lý sống</span>
+      <span class="other-cat-arrow">→</span>
+    </a>
+  </div>
+</section>
+
+</main>
+
+<footer class="footer">
+  <div class="footer-brand">Stop <span class="amp">&amp;</span> Think</div>
+  <p>Một thư viện những cuốn sách buộc ta dừng lại — không phải để biết thêm, mà để nghĩ lại.</p>
+  <div class="footer-bottom">© 2026 · Stop &amp; Think · By Quang Ton</div>
+</footer>
+
+<!-- Library widgets: search + related books -->
+<script src="/assets/books-data.js"></script>
+<script src="/assets/library.js"></script>
+
+<!-- CF Analytics (with owner opt-out) --><script>(function(){try{var q=new URLSearchParams(location.search);if(q.get('notrack')==='1'){localStorage.setItem('st_no_track','1');}if(q.get('notrack')==='0'){localStorage.removeItem('st_no_track');}if(localStorage.getItem('st_no_track')==='1'){return;}}catch(e){}var s=document.createElement('script');s.defer=true;s.src='https://static.cloudflareinsights.com/beacon.min.js';s.setAttribute('data-cf-beacon','{"token":"8c50242b708f48ad8c7bc39b1144e20c"}');document.head.appendChild(s);})();</script>
+
+  <script src="../edit-mode.js"></script>
+</body>
+</html>

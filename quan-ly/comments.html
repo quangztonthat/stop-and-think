@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin — Stop &amp; Think</title>
+<meta name="robots" content="noindex,nofollow">
+<link rel="icon" type="image/svg+xml" href="../favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink: #1a1410; --paper: #f5ede0; --paper-dark: #ebe1cf;
+  --accent: #8b3a2b; --accent-2: #2d4a5c; --gold: #c4923c;
+  --muted: #4a3f33; --line: #5e2418;
+  --green: #4a7c59; --red: #a0392a;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: var(--paper); color: var(--ink); font-family: 'Fraunces', Georgia, serif; font-size: 16px; line-height: 1.5; -webkit-font-smoothing: antialiased; }
+
+.topbar { padding: 14px 32px; background: var(--ink); color: var(--paper); display: flex; justify-content: space-between; align-items: center; }
+.topbar-brand { font-family: 'Fraunces', serif; font-size: 18px; font-weight: 700; }
+.topbar-brand span { color: var(--gold); }
+.topbar-tabs { display: flex; gap: 8px; }
+.tab-btn { background: transparent; border: 1px solid rgba(245,237,224,0.3); color: var(--paper); padding: 8px 16px; font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; cursor: pointer; }
+.tab-btn.active { background: var(--paper); color: var(--ink); border-color: var(--paper); }
+.tab-btn:hover:not(.active) { background: rgba(245,237,224,0.1); }
+.btn-logout { background: transparent; border: 1px solid rgba(245,237,224,0.3); color: var(--paper); padding: 6px 14px; font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; }
+.btn-logout:hover { background: var(--accent); border-color: var(--accent); }
+
+.login-wrap { max-width: 420px; margin: 80px auto; padding: 40px 32px; border: 2px solid var(--ink); background: var(--paper-dark); }
+.login-wrap h1 { font-family: 'Fraunces', serif; font-size: 32px; font-weight: 700; margin-bottom: 12px; }
+.login-wrap p { color: var(--muted); margin-bottom: 24px; font-size: 15px; }
+.login-input { width: 100%; padding: 14px 16px; border: 1.5px solid var(--ink); background: var(--paper); font-family: 'Fraunces', serif; font-size: 16px; margin-bottom: 16px; }
+.login-input:focus { outline: none; border-color: var(--accent); }
+.login-btn { width: 100%; padding: 14px; background: var(--ink); color: var(--paper); border: none; font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase; cursor: pointer; }
+.login-btn:hover { background: var(--accent); }
+.login-error { padding: 12px 16px; background: rgba(160,57,42,0.1); border-left: 3px solid var(--red); color: var(--red); font-size: 14px; margin-bottom: 16px; display: none; }
+.login-error.show { display: block; }
+
+.dash { padding: 24px 32px; max-width: 1400px; margin: 0 auto; display: none; }
+.dash.show { display: block; }
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+
+.stats-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin-bottom: 24px; }
+.stat-card { padding: 18px 24px; background: var(--paper-dark); border: 1.5px solid var(--ink); }
+.stat-num { font-family: 'Fraunces', serif; font-size: 36px; font-weight: 700; line-height: 1; }
+.stat-label { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); margin-top: 6px; }
+.stat-sub { font-size: 13px; color: var(--muted); margin-top: 4px; }
+
+.section-title { font-family: 'Fraunces', serif; font-size: 22px; font-weight: 700; margin: 32px 0 16px; }
+.section-title-row { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 8px; margin: 32px 0 16px; }
+.section-title-row h3 { font-family: 'Fraunces', serif; font-size: 22px; font-weight: 700; }
+.section-title-row .meta { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--muted); }
+
+/* Filters & search */
+.filters-row { display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; align-items: center; }
+.filter-group { display: flex; gap: 6px; }
+.filter-btn { padding: 8px 14px; background: transparent; border: 1.5px solid var(--ink); font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; }
+.filter-btn.active { background: var(--ink); color: var(--paper); }
+.filter-select { padding: 8px 12px; border: 1.5px solid var(--ink); background: var(--paper); font-family: 'JetBrains Mono', monospace; font-size: 12px; }
+.search-input { padding: 8px 14px; border: 1.5px solid var(--ink); background: var(--paper); font-family: 'Fraunces', serif; font-size: 14px; flex: 1; min-width: 200px; }
+.refresh-btn { padding: 8px 16px; background: var(--gold); border: 1.5px solid var(--ink); font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; }
+.refresh-btn:hover { background: var(--ink); color: var(--paper); }
+
+/* Comments table */
+.comments-table { width: 100%; border-collapse: collapse; background: var(--paper-dark); border: 1.5px solid var(--ink); }
+.comments-table th { background: var(--ink); color: var(--paper); padding: 12px 14px; text-align: left; font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; font-weight: 500; }
+.comments-table td { padding: 14px; vertical-align: top; border-bottom: 1px solid rgba(0,0,0,0.08); font-size: 14px; }
+.comments-table tr:hover td { background: var(--paper); }
+.cell-id { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--muted); white-space: nowrap; }
+.cell-page { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--accent); white-space: nowrap; }
+.cell-author { font-family: 'Fraunces', serif; font-weight: 700; }
+.cell-email { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--muted); }
+.cell-time { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--muted); white-space: nowrap; }
+.cell-content { max-width: 360px; cursor: pointer; }
+.cell-content.truncate { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.cell-content.full { white-space: pre-wrap; word-break: break-word; }
+.status-badge { display: inline-block; padding: 3px 10px; font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; }
+.status-pending { background: rgba(196,146,60,0.2); color: var(--gold); border: 1px solid var(--gold); }
+.status-approved { background: rgba(74,124,89,0.15); color: var(--green); border: 1px solid var(--green); }
+.cell-actions { white-space: nowrap; }
+.action-btn { padding: 6px 10px; margin-right: 4px; border: none; font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; }
+.action-approve { background: var(--green); color: var(--paper); }
+.action-approve:hover { background: #3a6347; }
+.action-unapprove { background: var(--gold); color: var(--ink); }
+.action-delete { background: var(--red); color: var(--paper); }
+.action-delete:hover { background: #7a2a20; }
+
+.empty-state { padding: 60px 32px; text-align: center; color: var(--muted); font-size: 16px; }
+.loading-state { padding: 40px; text-align: center; color: var(--muted); font-family: 'JetBrains Mono', monospace; font-size: 12px; letter-spacing: 0.15em; text-transform: uppercase; }
+
+.toast { position: fixed; bottom: 24px; right: 24px; padding: 14px 20px; background: var(--ink); color: var(--paper); font-size: 14px; box-shadow: 0 4px 12px rgba(0,0,0,0.2); z-index: 1000; opacity: 0; transition: opacity 0.3s; }
+.toast.show { opacity: 1; }
+.toast.success { background: var(--green); }
+.toast.error { background: var(--red); }
+
+/* Analytics specific */
+.bar-chart { display: flex; flex-direction: column; gap: 6px; padding: 20px; background: var(--paper-dark); border: 1.5px solid var(--ink); }
+.bar-row { display: grid; grid-template-columns: minmax(120px, 200px) 1fr 56px; gap: 12px; align-items: center; font-size: 14px; }
+.bar-label { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.bar-fill-wrap { background: var(--paper); border: 1px solid var(--muted); height: 22px; position: relative; }
+.bar-fill { background: var(--accent); height: 100%; transition: width 0.4s; }
+.bar-count { font-family: 'JetBrains Mono', monospace; font-size: 12px; text-align: right; color: var(--muted); }
+
+.daily-chart { background: var(--paper-dark); border: 1.5px solid var(--ink); padding: 20px; }
+.daily-bars { display: flex; align-items: flex-end; gap: 2px; height: 120px; margin-bottom: 8px; }
+.daily-bar { flex: 1; background: var(--accent); min-height: 1px; position: relative; transition: opacity 0.2s; }
+.daily-bar:hover { opacity: 0.7; }
+.daily-bar:hover::after {
+  content: attr(data-tooltip);
+  position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%);
+  background: var(--ink); color: var(--paper); padding: 4px 8px; font-family: 'JetBrains Mono', monospace; font-size: 10px;
+  white-space: nowrap; z-index: 10; margin-bottom: 4px;
+}
+.daily-axis { display: flex; justify-content: space-between; font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--muted); }
+
+.cf-link { display: inline-flex; align-items: center; gap: 8px; padding: 12px 20px; background: var(--ink); color: var(--paper); font-family: 'JetBrains Mono', monospace; font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; text-decoration: none; }
+.cf-link:hover { background: var(--accent); }
+
+.config-notice { padding: 16px 20px; background: rgba(196,146,60,0.1); border-left: 3px solid var(--gold); color: var(--ink); font-size: 14px; line-height: 1.5; }
+.config-notice code { font-family: 'JetBrains Mono', monospace; background: var(--paper-dark); padding: 1px 6px; border-radius: 0; font-size: 12px; }
+
+.recent-list { background: var(--paper-dark); border: 1.5px solid var(--ink); padding: 16px 20px; }
+.recent-item { padding: 10px 0; border-bottom: 1px dashed rgba(0,0,0,0.1); font-size: 14px; }
+.recent-item:last-child { border-bottom: none; }
+.recent-meta { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--muted); margin-bottom: 4px; }
+.recent-text { color: var(--ink); white-space: pre-wrap; word-break: break-word; }
+
+@media (max-width: 900px) {
+  .topbar { padding: 12px 16px; }
+  .dash { padding: 16px; }
+  .comments-table th:nth-child(4), .comments-table td:nth-child(4) { display: none; }
+  .cell-content { max-width: 200px; }
+}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="loginScreen" class="login-wrap">
+  <h1>Admin · Stop &amp; Think</h1>
+  <p>Đăng nhập để moderate comment và xem analytics.</p>
+  <div class="login-error" id="loginError"></div>
+  <form id="loginForm">
+    <input type="password" id="passwordInput" class="login-input" placeholder="Admin password" autofocus required>
+    <button type="submit" class="login-btn">Đăng nhập</button>
+  </form>
+</div>
+
+<!-- DASHBOARD -->
+<div id="dashboard" class="dash"></div>
+
+<div id="toast" class="toast"></div>
+
+<script>
+const API_COMMENTS = '/api/quan-ly/comments';
+const API_STATS = '/api/quan-ly/stats';
+const TOKEN_KEY = 'st_qly_token';
+
+let token = sessionStorage.getItem(TOKEN_KEY) || '';
+let currentTab = 'comments';
+let currentFilter = { status: 'all', page: 'all', search: '' };
+let allComments = [];
+
+document.getElementById('loginForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const pwd = document.getElementById('passwordInput').value.trim();
+  const errEl = document.getElementById('loginError');
+  errEl.classList.remove('show');
+  try {
+    const res = await fetch(API_COMMENTS + '?status=pending', { headers: { 'Authorization': 'Bearer ' + pwd } });
+    if (res.status === 401) {
+      errEl.textContent = 'Sai password.';
+      errEl.classList.add('show');
+      return;
+    }
+    if (!res.ok) throw new Error('API error: ' + res.status);
+    token = pwd;
+    sessionStorage.setItem(TOKEN_KEY, token);
+    showDashboard();
+  } catch (err) {
+    errEl.textContent = 'Lỗi: ' + err.message;
+    errEl.classList.add('show');
+  }
+});
+
+function showDashboard() {
+  document.getElementById('loginScreen').style.display = 'none';
+  const dash = document.getElementById('dashboard');
+  dash.classList.add('show');
+  if (!dash.dataset.rendered) {
+    dash.innerHTML = renderShell();
+    dash.dataset.rendered = '1';
+    bindEvents();
+    switchTab('comments');
+  }
+}
+
+function renderShell() {
+  return `
+    <div class="topbar" style="margin: -24px -32px 24px;">
+      <div class="topbar-brand">Stop <span>&amp;</span> Think · Admin</div>
+      <div class="topbar-tabs">
+        <button class="tab-btn active" data-tab="comments">Comments</button>
+        <button class="tab-btn" data-tab="analytics">Analytics</button>
+      </div>
+      <button class="btn-logout" id="logoutBtn">Đăng xuất</button>
+    </div>
+
+    <div class="tab-content active" id="tab-comments">
+      <div class="stats-row" id="commentStatsRow"></div>
+      <div class="filters-row">
+        <div class="filter-group" id="statusFilters">
+          <button class="filter-btn active" data-status="all">Tất cả</button>
+          <button class="filter-btn" data-status="pending">Pending</button>
+          <button class="filter-btn" data-status="approved">Approved</button>
+        </div>
+        <select class="filter-select" id="pageFilter">
+          <option value="all">Tất cả trang</option>
+        </select>
+        <input class="search-input" id="searchInput" placeholder="Search tên / email / nội dung...">
+        <button class="refresh-btn" id="refreshBtn">↻ Refresh</button>
+      </div>
+      <div id="commentsContainer"><div class="loading-state">Đang tải...</div></div>
+    </div>
+
+    <div class="tab-content" id="tab-analytics">
+      <div class="loading-state">Đang tải analytics...</div>
+    </div>
+  `;
+}
+
+function bindEvents() {
+  document.getElementById('logoutBtn').addEventListener('click', () => {
+    sessionStorage.removeItem(TOKEN_KEY);
+    location.reload();
+  });
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => switchTab(btn.dataset.tab));
+  });
+  document.getElementById('refreshBtn').addEventListener('click', loadComments);
+  document.getElementById('searchInput').addEventListener('input', (e) => {
+    currentFilter.search = e.target.value.toLowerCase();
+    renderTable();
+  });
+  document.getElementById('pageFilter').addEventListener('change', (e) => {
+    currentFilter.page = e.target.value;
+    loadComments();
+  });
+  document.querySelectorAll('#statusFilters .filter-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('#statusFilters .filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      currentFilter.status = btn.dataset.status;
+      loadComments();
+    });
+  });
+}
+
+function switchTab(name) {
+  currentTab = name;
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === name));
+  document.querySelectorAll('.tab-content').forEach(c => c.classList.toggle('active', c.id === 'tab-' + name));
+  if (name === 'comments') loadComments();
+  else if (name === 'analytics') loadAnalytics();
+}
+
+// ─── COMMENTS TAB ───
+async function loadComments() {
+  const container = document.getElementById('commentsContainer');
+  container.innerHTML = '<div class="loading-state">Đang tải...</div>';
+  try {
+    const params = new URLSearchParams();
+    params.set('status', currentFilter.status);
+    params.set('page', currentFilter.page);
+    const res = await fetch(API_COMMENTS + '?' + params.toString(), {
+      headers: { 'Authorization': 'Bearer ' + token }
+    });
+    if (res.status === 401) { sessionStorage.removeItem(TOKEN_KEY); location.reload(); return; }
+    if (!res.ok) throw new Error('API error: ' + res.status);
+    const data = await res.json();
+    allComments = data.comments || [];
+    renderCommentStats(data.counts || {});
+    renderPageFilter(data.pages || []);
+    renderTable();
+  } catch (err) {
+    container.innerHTML = `<div class="empty-state">Lỗi: ${escapeHtml(err.message)}</div>`;
+  }
+}
+
+function renderCommentStats(counts) {
+  const total = (counts.pending || 0) + (counts.approved || 0);
+  document.getElementById('commentStatsRow').innerHTML = `
+    <div class="stat-card"><div class="stat-num">${total}</div><div class="stat-label">Tổng comment</div></div>
+    <div class="stat-card"><div class="stat-num" style="color: var(--gold)">${counts.pending || 0}</div><div class="stat-label">Pending</div></div>
+    <div class="stat-card"><div class="stat-num" style="color: var(--green)">${counts.approved || 0}</div><div class="stat-label">Approved</div></div>
+  `;
+}
+
+
+function renderPageFilter(pages) {
+  const select = document.getElementById('pageFilter');
+  const current = select.value || 'all';
+  const opts = ['<option value="all">Tất cả trang</option>'];
+  pages.forEach(p => {
+    opts.push(`<option value="${escapeAttr(p.page_id)}" ${p.page_id === current ? 'selected' : ''}>${escapeHtml(p.page_id)} (${p.c})</option>`);
+  });
+  select.innerHTML = opts.join('');
+}
+
+function renderTable() {
+  const container = document.getElementById('commentsContainer');
+  const search = currentFilter.search;
+  const filtered = search
+    ? allComments.filter(c =>
+        (c.author_name && c.author_name.toLowerCase().includes(search)) ||
+        (c.author_email && c.author_email.toLowerCase().includes(search)) ||
+        (c.content && c.content.toLowerCase().includes(search))
+      )
+    : allComments;
+  if (!filtered.length) { container.innerHTML = '<div class="empty-state">Không có comment nào.</div>'; return; }
+  const rows = filtered.map(c => `
+    <tr id="row-${c.id}">
+      <td class="cell-id">#${c.id}</td>
+      <td class="cell-page">${escapeHtml(c.page_id)}</td>
+      <td><div class="cell-author">${escapeHtml(c.author_name)}</div><div class="cell-email">${escapeHtml(c.author_email)}</div></td>
+      <td class="cell-time">${formatTime(c.created_at)}${c.parent_id ? `<br>↳ reply #${c.parent_id}` : ''}</td>
+      <td><span class="status-badge status-${c.status}">${c.status}</span></td>
+      <td class="cell-content truncate" onclick="toggleExpand(${c.id})">${escapeHtml(c.content)}</td>
+      <td class="cell-actions">
+        ${c.status === 'pending'
+          ? `<button class="action-btn action-approve" onclick="moderate(${c.id}, 'approve')">✓ Approve</button>`
+          : `<button class="action-btn action-unapprove" onclick="moderate(${c.id}, 'unapprove')">↺ Unapprove</button>`}
+        <button class="action-btn action-delete" onclick="confirmDelete(${c.id})">✕ Delete</button>
+      </td>
+    </tr>
+  `).join('');
+  container.innerHTML = `
+    <table class="comments-table">
+      <thead><tr><th>ID</th><th>Page</th><th>Người gửi</th><th>Thời gian</th><th>Status</th><th>Nội dung</th><th>Actions</th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table>
+  `;
+}
+
+function toggleExpand(id) {
+  const row = document.getElementById('row-' + id);
+  const cell = row.querySelector('.cell-content');
+  cell.classList.toggle('truncate'); cell.classList.toggle('full');
+}
+
+async function moderate(id, action) {
+  try {
+    const res = await fetch(API_COMMENTS, {
+      method: 'POST',
+      headers: { 'Authorization': 'Bearer ' + token, 'content-type': 'application/json' },
+      body: JSON.stringify({ id, action })
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Failed');
+    showToast(data.message || 'Done', 'success');
+    await loadComments();
+  } catch (err) { showToast('Lỗi: ' + err.message, 'error'); }
+}
+
+function confirmDelete(id) {
+  if (confirm('Xóa comment #' + id + '?')) moderate(id, 'delete');
+}
+
+async function loadAnalytics() {
+  const container = document.getElementById('tab-analytics');
+  container.innerHTML = '<div class="loading-state">Đang tải analytics...</div>';
+  try {
+    const res = await fetch(API_STATS, { headers: { 'Authorization': 'Bearer ' + token } });
+    if (res.status === 401) { sessionStorage.removeItem(TOKEN_KEY); location.reload(); return; }
+    if (!res.ok) throw new Error('API error: ' + res.status);
+    const data = await res.json();
+    renderAnalytics(data);
+  } catch (err) {
+    container.innerHTML = `<div class="empty-state">Lỗi: ${escapeHtml(err.message)}</div>`;
+  }
+}
+
+function renderAnalytics(data) {
+  const c = data.comments || {};
+  const counts = c.counts || {};
+  const periods = c.periods || {};
+  const html = `
+    <h3 class="section-title" style="margin-top: 0">Comment engagement</h3>
+    <div class="stats-row">
+      <div class="stat-card"><div class="stat-num">${counts.total || 0}</div><div class="stat-label">Tổng</div></div>
+      <div class="stat-card"><div class="stat-num">${periods.d1 || 0}</div><div class="stat-label">24 giờ qua</div></div>
+      <div class="stat-card"><div class="stat-num">${periods.d7 || 0}</div><div class="stat-label">7 ngày qua</div></div>
+      <div class="stat-card"><div class="stat-num">${periods.d30 || 0}</div><div class="stat-label">30 ngày qua</div></div>
+      <div class="stat-card"><div class="stat-num" style="color: var(--gold)">${counts.pending || 0}</div><div class="stat-label">Pending verify</div></div>
+    </div>
+
+    <div class="section-title-row"><h3>Comment theo sách</h3><span class="meta">all-time, top 10</span></div>
+    ${renderBarChart(c.perPage || [], r => r.page_id, r => r.c, 'Chưa có comment')}
+
+    <div class="section-title-row"><h3>Comment theo ngày</h3><span class="meta">30 ngày gần nhất</span></div>
+    ${renderDailyChart(c.dailyTrend || [])}
+
+    <div class="section-title-row"><h3>Top commenter</h3><span class="meta">30 ngày gần nhất</span></div>
+    ${renderTopCommenters(c.topCommenters || [])}
+
+    <div class="section-title-row"><h3>Comment gần đây</h3><span class="meta">10 mới nhất</span></div>
+    ${renderRecentComments(c.recent || [])}
+
+    <h3 class="section-title">Web traffic</h3>
+    ${renderWebStats(data.web, data.cloudflareLink)}
+  `;
+  document.getElementById('tab-analytics').innerHTML = html;
+}
+
+function renderBarChart(items, labelFn, valueFn, emptyText) {
+  if (!items.length) return `<div class="empty-state">${emptyText || 'Không có dữ liệu'}</div>`;
+  const max = Math.max(...items.map(valueFn), 1);
+  return `<div class="bar-chart">${items.map(r => `
+    <div class="bar-row">
+      <div class="bar-label">${escapeHtml(labelFn(r))}</div>
+      <div class="bar-fill-wrap"><div class="bar-fill" style="width: ${(valueFn(r) / max * 100).toFixed(1)}%"></div></div>
+      <div class="bar-count">${valueFn(r)}</div>
+    </div>
+  `).join('')}</div>`;
+}
+
+function renderDailyChart(trend) {
+  if (!trend.length) return `<div class="empty-state">Chưa có activity 30 ngày qua</div>`;
+  const map = {};
+  trend.forEach(r => map[r.day] = r.c);
+  const days = [];
+  const today = new Date();
+  for (let i = 29; i >= 0; i--) {
+    const d = new Date(today.getTime() - i * 86400000);
+    const key = d.toISOString().slice(0, 10);
+    days.push({ day: key, count: map[key] || 0 });
+  }
+  const max = Math.max(...days.map(d => d.count), 1);
+  return `<div class="daily-chart">
+    <div class="daily-bars">${days.map(d => `
+      <div class="daily-bar" style="height: ${(d.count / max * 100).toFixed(1)}%" data-tooltip="${d.day}: ${d.count} comment"></div>
+    `).join('')}</div>
+    <div class="daily-axis"><span>${days[0].day}</span><span>${days[days.length-1].day}</span></div>
+  </div>`;
+}
+
+function renderTopCommenters(items) {
+  if (!items.length) return `<div class="empty-state">Chưa có commenter nào</div>`;
+  return `<div class="recent-list">${items.map((r, i) => `
+    <div class="recent-item">
+      <div class="recent-meta">#${i+1} · ${escapeHtml(r.author_email)} · ${r.c} comment</div>
+      <div class="recent-text">${escapeHtml(r.name || '—')}</div>
+    </div>
+  `).join('')}</div>`;
+}
+
+function renderRecentComments(items) {
+  if (!items.length) return `<div class="empty-state">Chưa có comment nào</div>`;
+  return `<div class="recent-list">${items.map(c => `
+    <div class="recent-item">
+      <div class="recent-meta">#${c.id} · ${escapeHtml(c.page_id)} · ${escapeHtml(c.author_name)} · ${formatTime(c.created_at)}</div>
+      <div class="recent-text">${escapeHtml(truncate(c.content, 200))}</div>
+    </div>
+  `).join('')}</div>`;
+}
+
+function renderWebStats(web, cfLink) {
+  if (!web || !web.configured) {
+    return `
+      <div class="config-notice">
+        <strong>Chưa cấu hình Cloudflare API.</strong><br>
+        Để xem page views, top pages, country breakdown ngay tại đây — thêm 3 env vars vào Cloudflare Pages → Settings → Variables and Secrets:
+        <ul style="margin: 8px 0 0 20px; line-height: 1.7">
+          <li><code>CLOUDFLARE_API_TOKEN</code> — tạo tại <a href="https://dash.cloudflare.com/profile/api-tokens" target="_blank">dash.cloudflare.com/profile/api-tokens</a> với quyền <code>Account Analytics:Read</code></li>
+          <li><code>CLOUDFLARE_ACCOUNT_ID</code> — đã có sẵn từ URL Cloudflare dashboard</li>
+          <li><code>CLOUDFLARE_SITE_TAG</code> — lấy ở Web Analytics → Manage Site → Site Tag</li>
+        </ul>
+        <a href="${cfLink}" target="_blank" class="cf-link" style="margin-top: 16px;">→ Xem Web Analytics đầy đủ trên Cloudflare</a>
+      </div>
+    `;
+  }
+  if (web.error) {
+    return `
+      <div class="config-notice">
+        <strong>Lỗi gọi Cloudflare API:</strong> ${escapeHtml(web.error)}<br>
+        <a href="${cfLink}" target="_blank" class="cf-link" style="margin-top: 12px;">→ Xem trực tiếp trên dashboard</a>
+      </div>
+    `;
+  }
+  return `
+    <div class="stats-row">
+      <div class="stat-card"><div class="stat-num">${web.pageViews24h || 0}</div><div class="stat-label">Page views 24h</div></div>
+      <div class="stat-card"><div class="stat-num">${web.visits24h || 0}</div><div class="stat-label">Visits 24h</div></div>
+      <div class="stat-card"><div class="stat-num">${web.pageViews7d || 0}</div><div class="stat-label">Page views 7d</div></div>
+      <div class="stat-card"><div class="stat-num">${web.visits7d || 0}</div><div class="stat-label">Visits 7d</div></div>
+    </div>
+    <div class="section-title-row"><h3>Top trang</h3><span class="meta">7 ngày</span></div>
+    ${renderBarChart(web.topPages || [], r => r.path || '/', r => r.count, 'Chưa có data')}
+    <div class="section-title-row"><h3>Top quốc gia</h3><span class="meta">7 ngày</span></div>
+    ${renderBarChart(web.topCountries || [], r => r.country || 'Unknown', r => r.count, 'Chưa có data')}
+    <div class="section-title-row"><h3>Top referrers</h3><span class="meta">7 ngày</span></div>
+    ${renderBarChart(web.topReferrers || [], r => r.referer || 'Direct', r => r.count, 'Chưa có data ngoài direct')}
+    <div style="margin-top: 24px"><a href="${cfLink}" target="_blank" class="cf-link">→ Xem dashboard đầy đủ</a></div>
+  `;
+}
+
+function showToast(msg, type) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show ' + (type || '');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+function formatTime(unix) {
+  const d = new Date(unix * 1000);
+  const diff = Date.now()/1000 - unix;
+  if (diff < 3600) return Math.floor(diff/60) + ' phút trước';
+  if (diff < 86400) return Math.floor(diff/3600) + ' giờ trước';
+  return d.toLocaleString('vi-VN', {day:'2-digit', month:'2-digit', hour:'2-digit', minute:'2-digit'});
+}
+
+function truncate(s, max) {
+  if (!s) return '';
+  return s.length > max ? s.slice(0, max) + '…' : s;
+}
+
+function escapeHtml(s) {
+  return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+function escapeAttr(s) { return escapeHtml(s); }
+
+if (token) showDashboard();
+</script>
+</body>
+</html>
