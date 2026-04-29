@@ -193,6 +193,51 @@ body { background: var(--paper); color: var(--ink); font-family: 'Fraunces', Geo
   .comment-item.is-reply { margin-left: 16px; }
   .chap-row { grid-template-columns: 1fr; }
 }
+
+/* Interactive Flashcards (Think Again style) */
+.flashcard-container { max-width: 720px; margin: 32px auto; }
+.flashcard-controls { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; font-family: 'JetBrains Mono', monospace; font-size: 12px; letter-spacing: 0.1em; color: var(--muted); }
+.flashcard-counter strong { color: var(--ink); font-size: 14px; }
+.flashcard-container .flashcard { position: relative; width: 100%; min-height: 280px; perspective: 1500px; cursor: pointer; background: transparent; border: none; padding: 0; transition: none; transform: none; box-shadow: none; display: block; }
+.flashcard-container .flashcard:hover { transform: none; box-shadow: none; }
+.flashcard-face { position: absolute; inset: 0; backface-visibility: hidden; padding: 36px 32px; border: 2px solid var(--ink); display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; transition: transform 0.6s; }
+.flashcard-front { background: var(--paper-dark); transform: rotateY(0deg); }
+.flashcard-back { background: var(--accent); color: var(--paper); transform: rotateY(180deg); }
+.flashcard.flipped .flashcard-front { transform: rotateY(180deg); }
+.flashcard.flipped .flashcard-back { transform: rotateY(360deg); }
+.flashcard-tag { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.2em; color: var(--accent-2); margin-bottom: 16px; text-transform: uppercase; }
+.flashcard-back .flashcard-tag { color: var(--paper); opacity: 0.8; }
+.flashcard-question { font-family: 'Fraunces', serif; font-size: 22px; font-weight: 600; line-height: 1.35; margin-bottom: 16px; color: var(--ink); }
+.flashcard-answer { font-size: 17px; line-height: 1.55; color: var(--paper); margin-bottom: 16px; max-width: 580px; }
+.flashcard-hint { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.15em; opacity: 0.6; text-transform: uppercase; }
+.flashcard-nav { display: flex; gap: 12px; justify-content: center; margin-top: 24px; flex-wrap: wrap; }
+.fcq-btn { padding: 12px 22px; border: 1.5px solid var(--ink); background: var(--paper); color: var(--ink); font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer; transition: all 0.2s; }
+.fcq-btn:hover { background: var(--ink); color: var(--paper); }
+.fcq-btn.outline { background: transparent; }
+.fcq-btn.accent { background: var(--accent-2); color: var(--paper); border-color: var(--accent-2); }
+.fcq-btn.accent:hover { background: var(--ink); border-color: var(--ink); }
+
+/* Quiz */
+.quiz-container { max-width: 720px; margin: 32px auto; padding: 36px 32px; background: var(--paper-dark); border: 2px solid var(--ink); }
+.quiz-progress { display: flex; justify-content: space-between; font-family: 'JetBrains Mono', monospace; font-size: 12px; letter-spacing: 0.1em; color: var(--muted); margin-bottom: 12px; }
+.quiz-bar { height: 4px; background: rgba(26,20,16,0.15); margin-bottom: 24px; }
+.quiz-bar-fill { height: 100%; background: var(--accent-2); transition: width 0.4s; }
+.quiz-question { font-family: 'Fraunces', serif; font-size: 21px; font-weight: 600; line-height: 1.4; margin-bottom: 24px; color: var(--ink); }
+.quiz-options { display: flex; flex-direction: column; gap: 10px; }
+.quiz-option { display: flex; align-items: flex-start; gap: 14px; padding: 16px 18px; background: var(--paper); border: 1.5px solid var(--ink); cursor: pointer; transition: all 0.2s; text-align: left; font-family: 'Inter', sans-serif; font-size: 15px; line-height: 1.5; color: var(--ink); }
+.quiz-option:hover:not(.disabled) { background: var(--ink); color: var(--paper); }
+.quiz-option:hover:not(.disabled) .quiz-option-letter { background: var(--paper); color: var(--ink); }
+.quiz-option-letter { flex-shrink: 0; width: 28px; height: 28px; border-radius: 50%; background: var(--ink); color: var(--paper); display: flex; align-items: center; justify-content: center; font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 700; }
+.quiz-option.correct { background: var(--gold); color: var(--ink); border-color: var(--accent-deep); }
+.quiz-option.correct .quiz-option-letter { background: var(--ink); color: var(--gold); }
+.quiz-option.wrong { background: var(--accent-2); color: var(--paper); border-color: var(--accent-2); }
+.quiz-option.wrong .quiz-option-letter { background: var(--paper); color: var(--accent-2); }
+.quiz-option.disabled { cursor: not-allowed; }
+.quiz-feedback { margin-top: 20px; padding: 16px 18px; background: var(--paper); border-left: 3px solid var(--accent); font-size: 14px; line-height: 1.6; display: none; }
+.quiz-feedback.show { display: block; }
+.quiz-result { text-align: center; padding: 40px 0; }
+.quiz-score { font-family: 'Fraunces', serif; font-size: 64px; font-weight: 300; line-height: 1; color: var(--accent-2); margin-bottom: 12px; }
+.quiz-score-label { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); }
 </style>
 </head>
 <body>
@@ -629,6 +674,215 @@ body { background: var(--paper); color: var(--ink); font-family: 'Fraunces', Geo
 
   <p class="section-intro" style="margin-top: 48px; max-width: 1000px; margin-left: auto; margin-right: auto;"><span data-op-id="sapiens-bias-1">Chỗ Harari gặp phê bình mạnh từ historians: ông oversimplify, đôi chỗ cherry-pick evidence để fit narrative. "Wheat domesticated us" là provocative nhưng nhiều scholar phản đối. "Cognitive revolution 70,000 năm trước" cũng là 1 hypothesis, không phải fact đã settled. Cuốn này hay vì nó dám suy nghĩ lớn — không phải vì mọi claim đều đúng. Đọc Sapiens, đọc cùng phản biện. Đặc biệt: Christopher Ryan "Civilized to Death" và Graeber "The Dawn of Everything" là 2 phản biện đáng đọc kèm.</span></p>
 </section>
+
+<!-- FLASHCARDS -->
+<section class="section" id="flashcards">
+  <div class="section-label">Flashcards / 10 khái niệm cốt lõi</div>
+  <h2 class="section-title">10 thẻ ghi nhớ <em>cốt lõi</em></h2>
+  <p class="section-intro">10 ý mạnh nhất từ Sapiens. Click thẻ để xem đáp án; "Tôi nhớ" / "Cần học lại" để track.</p>
+  <div class="flashcard-container">
+    <div class="flashcard-controls">
+      <div class="flashcard-counter">Thẻ <strong id="cardCurrent">1</strong> / <span id="cardTotal">10</span></div>
+      <div class="flashcard-counter">Đã thuộc: <strong id="cardKnown">0</strong></div>
+    </div>
+    <div class="flashcard" id="flashcard" onclick="flipCard()">
+      <div class="flashcard-face flashcard-front">
+        <div class="flashcard-tag">Câu hỏi</div>
+        <div class="flashcard-question" id="cardQuestion"></div>
+        <div class="flashcard-hint">Click để xem đáp án</div>
+      </div>
+      <div class="flashcard-face flashcard-back">
+        <div class="flashcard-tag">Đáp án</div>
+        <div class="flashcard-answer" id="cardAnswer"></div>
+        <div class="flashcard-hint">Click để xem câu hỏi</div>
+      </div>
+    </div>
+    <div class="flashcard-nav">
+      <button class="fcq-btn outline" onclick="prevCard()">← Trước</button>
+      <button class="fcq-btn" onclick="markUnknown()">Cần học lại</button>
+      <button class="fcq-btn accent" onclick="markKnown()">Tôi nhớ ✓</button>
+      <button class="fcq-btn outline" onclick="nextCard()">Sau →</button>
+    </div>
+  </div>
+</section>
+
+<!-- QUIZ -->
+<section class="section" id="quiz">
+  <div class="section-label">Quiz / 10 câu test hiểu biết</div>
+  <h2 class="section-title">Bạn đã <em>thực sự hiểu</em>?</h2>
+  <p class="section-intro">10 câu — không kiểm tra trí nhớ, kiểm tra hiểu. Sai 1 câu → đọc lại chương đó.</p>
+  <div class="quiz-container" id="quizContainer">
+    <div class="quiz-progress">
+      <span>Câu hỏi <span id="quizCurrent">1</span> / <span id="quizTotal">10</span></span>
+      <span>Điểm: <span id="quizScore">0</span></span>
+    </div>
+    <div class="quiz-bar"><div class="quiz-bar-fill" id="quizBarFill" style="width: 10%"></div></div>
+    <div class="quiz-question" id="quizQuestion"></div>
+    <div class="quiz-options" id="quizOptions"></div>
+    <div class="quiz-feedback" id="quizFeedback"></div>
+    <div style="display: flex; justify-content: flex-end; margin-top: 24px;">
+      <button class="fcq-btn accent" id="quizNext" onclick="nextQuestion()" style="display: none;">Câu tiếp →</button>
+    </div>
+  </div>
+</section>
+
+<script>
+const flashcards = [
+  { q: "4 cuộc cách mạng định hình Sapiens là gì?", a: "(1) Cognitive Revolution ~70,000 năm trước — não đột biến, kể chuyện về fictional things. (2) Agricultural Revolution ~12,000 năm — định cư, trồng cây. (3) Unification of Humankind — empires, money, religion gắn người lại. (4) Scientific Revolution ~500 năm — \"không biết\" thành câu thần." },
+  { q: "Cognitive Revolution cho Sapiens lợi thế cốt lõi gì?", a: "Khả năng kể chuyện về fictional things — quốc gia, công ty, thần linh, tiền — đều không tồn tại trong tự nhiên. Nhờ đó hợp tác >150 người (Dunbar's number). Loài khác tối đa ~150; Sapiens triệu người vì cùng tin 1 chuyện." },
+  { q: "Shared fictions — định nghĩa Harari là gì?", a: "Niềm tin tập thể vào thứ không tồn tại vật lý: tiền, quốc gia, công ty, quyền con người, tôn giáo. Không có \"đúng/sai\" — chỉ có \"hữu hiệu/không\". Khi đủ người tin → thành thật. Khi mất tin → sụp." },
+  { q: "\"Wheat domesticated us\" — Harari nói gì gây tranh cãi?", a: "Tổ tiên hái lượm có cuộc sống cân bằng hơn nông dân. Khi định cư trồng lúa: lưng đau, dinh dưỡng kém, dịch bệnh, làm việc nặng hơn. \"Chúng ta không thuần hóa wheat — wheat thuần hóa chúng ta.\" Provocative, nhiều scholar phản đối." },
+  { q: "Money — vì sao Harari gọi là shared fiction lớn nhất?", a: "Tờ giấy xanh không có giá trị nội tại. Cả thế giới — Mỹ, VN, Hồi giáo, atheist, Phật giáo — đều tin nó có giá trị. Là hệ thống niềm tin universal nhất, vượt mọi religion. Money work vì người khác tin nó work." },
+  { q: "Empires — đóng vai trò gì trong lịch sử Sapiens?", a: "Đồng hóa văn hóa qua bạo lực + thương mại. Xóa local culture nhưng tạo ra culture chung lớn hơn. Toàn cầu hóa hiện tại = sản phẩm của 500 năm empires. Harari: empires bad cho người bị xâm chiếm, nhưng đã shape thế giới hiện tại." },
+  { q: "Religion + Ideology — Harari xếp chung loại với gì?", a: "Cả hai = shared fictions để gắn millions người. Harari coi communism, capitalism, nationalism, liberalism = \"religion\" hiện đại — đều có dogma, faith, ritual, holy text. Khác religion truyền thống chỉ ở label." },
+  { q: "Capitalism — driver gì đã chạy 500 năm qua?", a: "Niềm tin vào growth + future. Đầu tư hôm nay vì tin tomorrow lớn hơn. Trước Capitalism: \"trời cho bao nhiêu hưởng bấy nhiêu\". Sau: vay nợ, R&D, IPO. Đây là shift mindset lớn nhất — và là driver thực của khoa học/công nghệ." },
+  { q: "Power vs Happiness paradox — Harari kết luận gì?", a: "Sapiens có power gấp 1000 lần 200 năm trước. Happiness không tăng tương ứng — có nghiên cứu nói còn giảm. Suicide rate ở nước giàu cao hơn nước nghèo. Câu hỏi mở: \"có happier không?\" Harari không trả lời, để mở." },
+  { q: "Chỗ Harari gặp phê bình mạnh nhất là gì? (mình đã tag)", a: "Oversimplify + cherry-pick evidence. \"Wheat domesticated us\" provocative nhưng nhiều historian phản đối. Cognitive Revolution 70k năm là 1 hypothesis, không settled. Sapiens hay vì dám nghĩ lớn — không phải vì mọi claim đúng. Đọc kèm Graeber \"Dawn of Everything\" + Ryan \"Civilized to Death\"." }
+];
+
+const quizQuestions = [
+  {
+    q: "4 cuộc cách mạng định hình Sapiens (theo thứ tự) là gì?",
+    options: ["Stone, Bronze, Iron, Industrial", "Cognitive (~70k) → Agricultural (~12k) → Unification → Scientific (~500)", "Religion → State → Trade → Tech", "Hunter → Farmer → Worker → Coder"],
+    correct: 1,
+    explain: "Harari xếp 4 cách mạng theo thứ tự: Cognitive (não đột biến) → Agricultural (định cư) → Unification (empires/money/religion) → Scientific (khoa học hiện đại). Mỗi cuộc đẩy Sapiens lên 1 nấc."
+  },
+  {
+    q: "Cognitive Revolution cho Sapiens lợi thế cốt lõi gì?",
+    options: ["Tay khỏe hơn", "Khả năng kể chuyện về fictional things → hợp tác >150 người", "Não to hơn loài khác", "Nói được nhiều ngôn ngữ"],
+    correct: 1,
+    explain: "Loài khác tối đa ~150 cá thể (Dunbar's number). Sapiens triệu người vì cùng tin 1 fiction (quốc gia, tôn giáo, tiền). Đó là weapon thực sự — không phải sức mạnh thể chất."
+  },
+  {
+    q: "Shared fiction là gì theo Harari?",
+    options: ["Lời nói dối", "Niềm tin tập thể vào thứ không tồn tại vật lý: tiền, quốc gia, công ty, quyền", "Truyện cổ tích", "Câu chuyện trong sách"],
+    correct: 1,
+    explain: "Tiền/quốc gia/công ty/quyền con người — đều không tồn tại trong tự nhiên. Là niềm tin tập thể. Khi đủ người tin → thành thật. Khi mất tin → sụp (Liên Xô 1991)."
+  },
+  {
+    q: "\"Wheat domesticated us\" — Harari nói gì?",
+    options: ["Wheat thông minh hơn người", "Tổ tiên hái lượm có cuộc sống cân bằng hơn nông dân — Agricultural Revolution là \"history's biggest fraud\"", "Wheat là tổ tiên loài người", "Trồng wheat đầu tiên ở Mesopotamia"],
+    correct: 1,
+    explain: "Hunter-gatherer: 4-5h work/ngày, chế độ ăn đa dạng, ít bệnh. Farmer: 12h/ngày, dinh dưỡng kém (chỉ ngũ cốc), dịch bệnh từ động vật, lưng đau. Provocative — nhiều scholar phản đối."
+  },
+  {
+    q: "Vì sao Harari gọi money là \"shared fiction lớn nhất\"?",
+    options: ["Vì có nhiều tiền nhất", "Vì cả thế giới — mọi religion + atheist — đều tin nó. Universal trust system vượt mọi tôn giáo", "Vì in trên giấy", "Vì có ngân hàng đảm bảo"],
+    correct: 1,
+    explain: "Tờ giấy xanh không có giá trị nội tại. Mỹ, VN, Hồi giáo, Phật giáo, atheist — tất cả tin. Money là religion universal nhất. Work vì mọi người tin nó work."
+  },
+  {
+    q: "Empires đóng vai trò gì trong lịch sử Sapiens?",
+    options: ["Chỉ là hủy diệt", "Đồng hóa văn hóa qua bạo lực + thương mại — xóa local culture nhưng tạo ra culture chung lớn hơn", "Không quan trọng", "Chỉ đến từ phương Tây"],
+    correct: 1,
+    explain: "Roma, Mongol, British, Ottoman, Trung Hoa — empires bad cho người bị xâm chiếm. Nhưng toàn cầu hóa hiện tại = sản phẩm 500 năm empires. Harari không bênh — chỉ chỉ ra sự thật."
+  },
+  {
+    q: "Religion và Ideology — Harari xếp chung loại với gì?",
+    options: ["Khác nhau hoàn toàn", "Cả hai = shared fictions; communism, capitalism, nationalism = \"religion\" hiện đại", "Religion thật, ideology giả", "Chỉ religion truyền thống mới là religion"],
+    correct: 1,
+    explain: "Communism, capitalism, nationalism, liberalism — đều có dogma, faith, ritual, holy text. Khác religion truyền thống chỉ ở label. Đó là claim provocative làm Harari nổi tiếng + bị critique."
+  },
+  {
+    q: "Capitalism — driver thực sự đã chạy 500 năm là gì?",
+    options: ["Thị trường tự do", "Niềm tin vào growth + future — đầu tư hôm nay vì tin tomorrow lớn hơn", "Công nghệ", "Lao động giá rẻ"],
+    correct: 1,
+    explain: "Trước: \"trời cho bao nhiêu hưởng bấy nhiêu\". Sau Scientific Revolution: vay nợ, R&D, IPO. Mindset shift này là driver thực của khoa học/công nghệ — không ngược lại."
+  },
+  {
+    q: "Power vs Happiness paradox — Harari kết luận gì?",
+    options: ["Power tăng → happiness tăng tương ứng", "Power tăng 1000x trong 200 năm; happiness không tăng tương ứng — có nghiên cứu nói còn giảm", "Happiness chỉ phụ thuộc tiền", "Không có data"],
+    correct: 1,
+    explain: "Suicide rate ở nước giàu cao hơn nước nghèo. Sapiens có Internet, AI, vaccine — nhưng có happier không? Harari để mở. Câu hỏi này là cốt lõi cuốn sách."
+  },
+  {
+    q: "Chỗ Harari gặp phê bình mạnh nhất từ historians là gì? (đã tag)",
+    options: ["Quá khó hiểu", "Oversimplify + cherry-pick evidence — \"Wheat domesticated us\" và \"Cognitive Revolution 70k\" chỉ là hypothesis", "Quá western-centric", "Không đề cập religion"],
+    correct: 1,
+    explain: "Sapiens hay vì dám suy nghĩ lớn — không phải vì mọi claim đều đúng. Đọc cùng phản biện: Graeber \"Dawn of Everything\" + Ryan \"Civilized to Death\" là 2 phản biện đáng đọc kèm."
+  }
+];
+
+let currentCard = 0;
+let knownCards = new Set();
+let currentQuiz = 0;
+let quizScore = 0;
+let quizAnswered = false;
+
+function renderCard() {
+  document.getElementById('cardQuestion').textContent = flashcards[currentCard].q;
+  document.getElementById('cardAnswer').textContent = flashcards[currentCard].a;
+  document.getElementById('cardCurrent').textContent = currentCard + 1;
+  document.getElementById('cardTotal').textContent = flashcards.length;
+  document.getElementById('cardKnown').textContent = knownCards.size;
+  document.getElementById('flashcard').classList.remove('flipped');
+}
+function flipCard() { document.getElementById('flashcard').classList.toggle('flipped'); }
+function nextCard() { currentCard = (currentCard + 1) % flashcards.length; renderCard(); }
+function prevCard() { currentCard = (currentCard - 1 + flashcards.length) % flashcards.length; renderCard(); }
+function markKnown() { knownCards.add(currentCard); document.getElementById('cardKnown').textContent = knownCards.size; setTimeout(nextCard, 300); }
+function markUnknown() { knownCards.delete(currentCard); document.getElementById('cardKnown').textContent = knownCards.size; setTimeout(nextCard, 300); }
+
+function renderQuiz() {
+  if (currentQuiz >= quizQuestions.length) { showQuizResult(); return; }
+  const q = quizQuestions[currentQuiz];
+  document.getElementById('quizQuestion').textContent = q.q;
+  document.getElementById('quizCurrent').textContent = currentQuiz + 1;
+  document.getElementById('quizTotal').textContent = quizQuestions.length;
+  document.getElementById('quizScore').textContent = quizScore;
+  document.getElementById('quizBarFill').style.width = ((currentQuiz + 1) / quizQuestions.length * 100) + '%';
+  const optionsEl = document.getElementById('quizOptions');
+  optionsEl.innerHTML = '';
+  const letters = ['A', 'B', 'C', 'D'];
+  q.options.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'quiz-option';
+    btn.innerHTML = '<span class="quiz-option-letter">' + letters[i] + '</span><span>' + opt + '</span>';
+    btn.onclick = () => answerQuiz(i);
+    optionsEl.appendChild(btn);
+  });
+  document.getElementById('quizFeedback').classList.remove('show');
+  document.getElementById('quizNext').style.display = 'none';
+  quizAnswered = false;
+}
+function answerQuiz(idx) {
+  if (quizAnswered) return;
+  quizAnswered = true;
+  const q = quizQuestions[currentQuiz];
+  const options = document.querySelectorAll('.quiz-option');
+  options.forEach((opt, i) => {
+    opt.classList.add('disabled');
+    if (i === q.correct) opt.classList.add('correct');
+    if (i === idx && i !== q.correct) opt.classList.add('wrong');
+  });
+  if (idx === q.correct) quizScore++;
+  document.getElementById('quizScore').textContent = quizScore;
+  const fb = document.getElementById('quizFeedback');
+  fb.textContent = q.explain;
+  fb.classList.add('show');
+  document.getElementById('quizNext').style.display = 'inline-block';
+  if (currentQuiz === quizQuestions.length - 1) document.getElementById('quizNext').textContent = 'Xem kết quả →';
+}
+function nextQuestion() { currentQuiz++; renderQuiz(); }
+function showQuizResult() {
+  const total = quizQuestions.length;
+  const pct = Math.round(quizScore / total * 100);
+  let label, msg;
+  if (pct >= 90) { label = 'Sapiens-grade thinker'; msg = 'Tuyệt vời! Bạn thấm cuốn sách. Giờ đọc kèm phản biện: Graeber "Dawn of Everything" hoặc Ryan "Civilized to Death".'; }
+  else if (pct >= 70) { label = 'Hiểu khá tốt'; msg = 'Khá. Quay lại 4 Cách Mạng + Shared Fictions. Đọc lại chương Money + Empires.'; }
+  else if (pct >= 50) { label = 'Đang trên đường'; msg = 'Khung sườn đã có. Đọc lại Cognitive Revolution + Capitalism. Ôn flashcard.'; }
+  else { label = 'Cần ôn lại'; msg = 'Đọc lại 4 cuộc cách mạng + định nghĩa Shared Fiction. Đặc biệt: Money = niềm tin tập thể.'; }
+  document.getElementById('quizContainer').innerHTML = '<div class="quiz-result"><div class="quiz-score">' + quizScore + '/' + total + '</div><div class="quiz-score-label">' + label + '</div><p style="margin: 32px auto; max-width: 500px; font-size: 17px; line-height: 1.5;">' + msg + '</p><button class="fcq-btn accent" onclick="resetQuiz()">Làm lại quiz</button></div>';
+}
+function resetQuiz() {
+  currentQuiz = 0; quizScore = 0;
+  document.getElementById('quizContainer').innerHTML = '<div class="quiz-progress"><span>Câu hỏi <span id="quizCurrent">1</span> / <span id="quizTotal">10</span></span><span>Điểm: <span id="quizScore">0</span></span></div><div class="quiz-bar"><div class="quiz-bar-fill" id="quizBarFill" style="width: 10%"></div></div><div class="quiz-question" id="quizQuestion"></div><div class="quiz-options" id="quizOptions"></div><div class="quiz-feedback" id="quizFeedback"></div><div style="display: flex; justify-content: flex-end; margin-top: 24px;"><button class="fcq-btn accent" id="quizNext" onclick="nextQuestion()" style="display: none;">Câu tiếp →</button></div>';
+  renderQuiz();
+}
+
+renderCard();
+renderQuiz();
+</script>
 
 <footer class="footer">
   <div class="footer-quote">"Bạn không biết bạn muốn gì — vì bạn chưa từng tự hỏi. Lịch sử Sapiens chưa bao giờ dạy ta câu hỏi đó."</div>

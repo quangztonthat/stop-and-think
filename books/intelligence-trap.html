@@ -105,28 +105,51 @@ body { background: var(--paper); color: var(--ink); font-family: 'Fraunces', Geo
 .chapter-desc { font-size: 16px; font-weight: 300; line-height: 1.6; color: var(--muted); }
 .chapter-desc strong { color: var(--accent); font-weight: 500; }
 .chapter-key { display: inline-block; font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; background: var(--ink); color: var(--paper); padding: 3px 8px; margin: 8px 4px 0 0; }
-.flashcard-deck { max-width: 720px; margin: 40px auto; perspective: 2000px; }
-.flashcard { position: relative; width: 100%; height: 360px; cursor: pointer; transition: transform 0.6s; transform-style: preserve-3d; }
-.flashcard.flipped { transform: rotateY(180deg); }
-.flashcard-face { position: absolute; inset: 0; backface-visibility: hidden; display: flex; align-items: center; justify-content: center; padding: 48px; border: 2px solid var(--ink); background: var(--paper); text-align: center; }
-.flashcard-face.back { transform: rotateY(180deg); background: var(--ink); color: var(--paper); border-color: var(--accent); }
-.flashcard-q { font-family: 'Fraunces', serif; font-size: clamp(22px, 3vw, 32px); font-weight: 600; line-height: 1.3; }
-.flashcard-a { font-family: 'Fraunces', serif; font-size: clamp(16px, 2vw, 20px); font-weight: 300; line-height: 1.5; font-style: normal; }
-.flashcard-controls { display: flex; justify-content: space-between; align-items: center; margin-top: 32px; font-family: 'JetBrains Mono', monospace; font-size: 12px; }
-.flashcard-btn { padding: 12px 24px; background: var(--ink); color: var(--paper); border: none; font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; transition: all 0.2s; }
-.flashcard-btn:hover { background: var(--accent); }
-.flashcard-btn:disabled { opacity: 0.3; cursor: not-allowed; }
-.flashcard-counter { color: var(--muted); letter-spacing: 0.15em; }
-.quiz-question { margin-bottom: 48px; }
-.quiz-q-text { font-family: 'Fraunces', serif; font-size: 22px; font-weight: 600; line-height: 1.3; margin-bottom: 20px; }
-.quiz-options { display: flex; flex-direction: column; gap: 12px; }
-.quiz-option { padding: 16px 20px; border: 1.5px solid var(--ink); background: var(--paper); cursor: pointer; font-size: 16px; line-height: 1.4; transition: all 0.2s; }
-.quiz-option:hover { background: var(--paper-dark); }
-.quiz-option.correct { background: var(--accent-2); color: var(--paper); border-color: var(--accent-2); pointer-events: none; }
-.quiz-option.wrong { background: var(--accent); color: var(--paper); border-color: var(--accent); pointer-events: none; }
-.quiz-option.disabled { pointer-events: none; opacity: 0.5; }
-.quiz-feedback { margin-top: 16px; padding: 16px; background: var(--paper-dark); border-left: 3px solid var(--gold); font-style: normal; font-size: 15px; display: none; }
+/* Interactive Flashcards (Think Again style) */
+.flashcard-container { max-width: 720px; margin: 32px auto; }
+.flashcard-controls { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; font-family: 'JetBrains Mono', monospace; font-size: 12px; letter-spacing: 0.1em; color: var(--muted); }
+.flashcard-counter { color: var(--muted); letter-spacing: 0.1em; }
+.flashcard-counter strong { color: var(--ink); font-size: 14px; }
+.flashcard { position: relative; width: 100%; min-height: 280px; perspective: 1500px; cursor: pointer; background: transparent; border: none; padding: 0; transition: none; transform: none; box-shadow: none; display: block; }
+.flashcard:hover { transform: none; box-shadow: none; }
+.flashcard-face { position: absolute; inset: 0; backface-visibility: hidden; padding: 36px 32px; border: 2px solid var(--ink); display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; transition: transform 0.6s; }
+.flashcard-front { background: var(--paper-dark); transform: rotateY(0deg); }
+.flashcard-back { background: var(--accent-2); color: var(--paper); transform: rotateY(180deg); }
+.flashcard.flipped .flashcard-front { transform: rotateY(180deg); }
+.flashcard.flipped .flashcard-back { transform: rotateY(360deg); }
+.flashcard-tag { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.2em; color: var(--accent-2); margin-bottom: 16px; text-transform: uppercase; }
+.flashcard-back .flashcard-tag { color: var(--paper); opacity: 0.8; }
+.flashcard-question { font-family: 'Fraunces', serif; font-size: 22px; font-weight: 600; line-height: 1.35; margin-bottom: 16px; color: var(--ink); }
+.flashcard-answer { font-size: 17px; line-height: 1.55; color: var(--paper); margin-bottom: 16px; max-width: 580px; }
+.flashcard-hint { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.15em; opacity: 0.6; text-transform: uppercase; }
+.flashcard-nav { display: flex; gap: 12px; justify-content: center; margin-top: 24px; flex-wrap: wrap; }
+.fcq-btn { padding: 12px 22px; border: 1.5px solid var(--ink); background: var(--paper); color: var(--ink); font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer; transition: all 0.2s; }
+.fcq-btn:hover { background: var(--ink); color: var(--paper); }
+.fcq-btn.outline { background: transparent; }
+.fcq-btn.accent { background: var(--accent-2); color: var(--paper); border-color: var(--accent-2); }
+.fcq-btn.accent:hover { background: var(--ink); border-color: var(--ink); }
+
+/* Quiz */
+.quiz-container { max-width: 720px; margin: 32px auto; padding: 36px 32px; background: var(--paper-dark); border: 2px solid var(--ink); }
+.quiz-progress { display: flex; justify-content: space-between; font-family: 'JetBrains Mono', monospace; font-size: 12px; letter-spacing: 0.1em; color: var(--muted); margin-bottom: 12px; }
+.quiz-bar { height: 4px; background: rgba(26,20,16,0.15); margin-bottom: 24px; }
+.quiz-bar-fill { height: 100%; background: var(--accent-2); transition: width 0.4s; }
+.quiz-question { font-family: 'Fraunces', serif; font-size: 21px; font-weight: 600; line-height: 1.4; margin-bottom: 24px; color: var(--ink); margin-top: 0; }
+.quiz-options { display: flex; flex-direction: column; gap: 10px; }
+.quiz-option { display: flex; align-items: flex-start; gap: 14px; padding: 16px 18px; background: var(--paper); border: 1.5px solid var(--ink); cursor: pointer; transition: all 0.2s; text-align: left; font-family: 'Inter', sans-serif; font-size: 15px; line-height: 1.5; color: var(--ink); }
+.quiz-option:hover:not(.disabled) { background: var(--ink); color: var(--paper); }
+.quiz-option:hover:not(.disabled) .quiz-option-letter { background: var(--paper); color: var(--ink); }
+.quiz-option-letter { flex-shrink: 0; width: 28px; height: 28px; border-radius: 50%; background: var(--ink); color: var(--paper); display: flex; align-items: center; justify-content: center; font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 700; }
+.quiz-option.correct { background: var(--gold); color: var(--ink); border-color: var(--accent-2); }
+.quiz-option.correct .quiz-option-letter { background: var(--ink); color: var(--gold); }
+.quiz-option.wrong { background: var(--accent); color: var(--paper); border-color: var(--accent); }
+.quiz-option.wrong .quiz-option-letter { background: var(--paper); color: var(--accent); }
+.quiz-option.disabled { cursor: not-allowed; }
+.quiz-feedback { margin-top: 20px; padding: 16px 18px; background: var(--paper); border-left: 3px solid var(--accent); font-size: 14px; line-height: 1.6; display: none; }
 .quiz-feedback.show { display: block; }
+.quiz-result { text-align: center; padding: 40px 0; }
+.quiz-score { font-family: 'Fraunces', serif; font-size: 64px; font-weight: 300; line-height: 1; color: var(--accent-2); margin-bottom: 12px; }
+.quiz-score-label { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); }
 .action-cats { display: flex; gap: 8px; margin-bottom: 32px; flex-wrap: wrap; }
 .action-cat-btn { padding: 10px 18px; background: transparent; border: 1.5px solid var(--ink); font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; transition: all 0.2s; }
 .action-cat-btn.active, .action-cat-btn:hover { background: var(--ink); color: var(--paper); }
@@ -541,15 +564,28 @@ body { background: var(--paper); color: var(--ink); font-family: 'Fraunces', Geo
   <h2 class="section-title">Test trí nhớ <em>chủ động</em></h2>
   <p class="section-intro">Robson tổng hợp 60+ nghiên cứu cognitive bias. 10 thẻ là chưng cất. Idea 01 (Dunning-Kruger với người IQ cao) là counter-intuitive nhất — đọc kỹ.</p>
 
-  <div class="flashcard-deck">
-    <div class="flashcard" id="flashcard" onclick="flipCard()">
-      <div class="flashcard-face front"><div class="flashcard-q" id="flashQ"></div></div>
-      <div class="flashcard-face back"><div class="flashcard-a" id="flashA"></div></div>
-    </div>
+  <div class="flashcard-container">
     <div class="flashcard-controls">
-      <button class="flashcard-btn" onclick="prevCard()" id="prevBtn">← Trước</button>
-      <span class="flashcard-counter" id="cardCounter">1 / 10</span>
-      <button class="flashcard-btn" onclick="nextCard()" id="nextBtn">Tiếp →</button>
+      <div class="flashcard-counter">Thẻ <strong id="cardCurrent">1</strong> / <span id="cardTotal">10</span></div>
+      <div class="flashcard-counter">Đã thuộc: <strong id="cardKnown">0</strong></div>
+    </div>
+    <div class="flashcard" id="flashcard" onclick="flipCard()">
+      <div class="flashcard-face flashcard-front">
+        <div class="flashcard-tag">Câu hỏi</div>
+        <div class="flashcard-question" id="cardQuestion"></div>
+        <div class="flashcard-hint">Click để xem đáp án</div>
+      </div>
+      <div class="flashcard-face flashcard-back">
+        <div class="flashcard-tag">Đáp án</div>
+        <div class="flashcard-answer" id="cardAnswer"></div>
+        <div class="flashcard-hint">Click để xem câu hỏi</div>
+      </div>
+    </div>
+    <div class="flashcard-nav">
+      <button class="fcq-btn outline" onclick="prevCard()">← Trước</button>
+      <button class="fcq-btn" onclick="markUnknown()">Cần học lại</button>
+      <button class="fcq-btn accent" onclick="markKnown()">Tôi nhớ ✓</button>
+      <button class="fcq-btn outline" onclick="nextCard()">Sau →</button>
     </div>
   </div>
 </section>
@@ -557,9 +593,21 @@ body { background: var(--paper); color: var(--ink); font-family: 'Fraunces', Geo
 <section class="section" id="quiz">
   <div class="section-label">Quiz / 6 câu test hiểu biết</div>
   <h2 class="section-title">Bạn có <em>thực sự hiểu</em> Robson?</h2>
-  <p class="section-intro">10 câu — buộc bạn áp dụng các trap vào tình huống cụ thể, không chỉ định nghĩa. Sai 3+ = bạn nhớ tên bias nhưng không recognize chúng trong đời.</p>
+  <p class="section-intro">6 câu — buộc bạn áp dụng các trap vào tình huống cụ thể, không chỉ định nghĩa. Sai 2+ = bạn nhớ tên bias nhưng không recognize chúng trong đời.</p>
 
-  <div id="quizContainer"></div>
+  <div class="quiz-container" id="quizContainer">
+    <div class="quiz-progress">
+      <span>Câu hỏi <span id="quizCurrent">1</span> / <span id="quizTotal">6</span></span>
+      <span>Điểm: <span id="quizScore">0</span></span>
+    </div>
+    <div class="quiz-bar"><div class="quiz-bar-fill" id="quizBarFill" style="width: 16.67%"></div></div>
+    <div class="quiz-question" id="quizQuestion"></div>
+    <div class="quiz-options" id="quizOptions"></div>
+    <div class="quiz-feedback" id="quizFeedback"></div>
+    <div style="display: flex; justify-content: flex-end; margin-top: 24px;">
+      <button class="fcq-btn accent" id="quizNext" onclick="nextQuestion()" style="display: none;">Câu tiếp →</button>
+    </div>
+  </div>
 </section>
 
 <section class="section" id="actions">
@@ -748,20 +796,89 @@ const journalPrompts = [
   { q: "10 năm tới — bạn muốn IQ cao hơn hay Rationality cao hơn?", help: "IQ là phần cứng — 25 tuổi cố định. Rationality là phần mềm — luyện được. Đầu tư 1 giờ/tuần luyện skill rationality (slow thinking, confirmation flip, self-distancing) trong 10 năm = bộ não tốt hơn IQ 130 chưa luyện. Bạn cam kết được không?" }
 ];
 
-let currentCard = 0; let isFlipped = false;
-function showCard(i) { const card = document.getElementById('flashcard'); card.classList.remove('flipped'); isFlipped = false; setTimeout(() => { document.getElementById('flashQ').textContent = flashcards[i].q; document.getElementById('flashA').textContent = flashcards[i].a; document.getElementById('cardCounter').textContent = `${i + 1} / ${flashcards.length}`; document.getElementById('prevBtn').disabled = i === 0; document.getElementById('nextBtn').disabled = i === flashcards.length - 1; }, 50); }
-function flipCard() { isFlipped = !isFlipped; document.getElementById('flashcard').classList.toggle('flipped'); }
-function prevCard() { if (currentCard > 0) { currentCard--; showCard(currentCard); } }
-function nextCard() { if (currentCard < flashcards.length - 1) { currentCard++; showCard(currentCard); } }
-function renderQuiz() { const container = document.getElementById('quizContainer'); quizQuestions.forEach((q, idx) => { const div = document.createElement('div'); div.className = 'quiz-question'; div.innerHTML = `<div class="quiz-q-text">${idx + 1}. ${q.q}</div><div class="quiz-options">${q.options.map((opt, i) => `<div class="quiz-option" onclick="answerQuiz(${idx}, ${i})">${String.fromCharCode(65 + i)}. ${opt}</div>`).join('')}</div><div class="quiz-feedback" id="feedback-${idx}">${q.explain}</div>`; container.appendChild(div); }); }
-function answerQuiz(qIdx, optIdx) { const q = quizQuestions[qIdx]; const options = document.querySelectorAll('.quiz-question')[qIdx].querySelectorAll('.quiz-option'); options.forEach((opt, i) => { if (i === q.correct) opt.classList.add('correct'); else if (i === optIdx) opt.classList.add('wrong'); else opt.classList.add('disabled'); }); document.getElementById(`feedback-${qIdx}`).classList.add('show'); }
+let currentCard = 0;
+let knownCards = new Set();
+let currentQuiz = 0;
+let quizScore = 0;
+let quizAnswered = false;
+
+function renderCard() {
+  document.getElementById('cardQuestion').textContent = flashcards[currentCard].q;
+  document.getElementById('cardAnswer').textContent = flashcards[currentCard].a;
+  document.getElementById('cardCurrent').textContent = currentCard + 1;
+  document.getElementById('cardTotal').textContent = flashcards.length;
+  document.getElementById('cardKnown').textContent = knownCards.size;
+  document.getElementById('flashcard').classList.remove('flipped');
+}
+function flipCard() { document.getElementById('flashcard').classList.toggle('flipped'); }
+function nextCard() { currentCard = (currentCard + 1) % flashcards.length; renderCard(); }
+function prevCard() { currentCard = (currentCard - 1 + flashcards.length) % flashcards.length; renderCard(); }
+function markKnown() { knownCards.add(currentCard); document.getElementById('cardKnown').textContent = knownCards.size; setTimeout(nextCard, 300); }
+function markUnknown() { knownCards.delete(currentCard); document.getElementById('cardKnown').textContent = knownCards.size; setTimeout(nextCard, 300); }
+
+function renderQuiz() {
+  if (currentQuiz >= quizQuestions.length) { showQuizResult(); return; }
+  const q = quizQuestions[currentQuiz];
+  document.getElementById('quizQuestion').innerHTML = q.q;
+  document.getElementById('quizCurrent').textContent = currentQuiz + 1;
+  document.getElementById('quizTotal').textContent = quizQuestions.length;
+  document.getElementById('quizScore').textContent = quizScore;
+  document.getElementById('quizBarFill').style.width = ((currentQuiz + 1) / quizQuestions.length * 100) + '%';
+  const optionsEl = document.getElementById('quizOptions');
+  optionsEl.innerHTML = '';
+  const letters = ['A', 'B', 'C', 'D'];
+  q.options.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'quiz-option';
+    btn.innerHTML = '<span class="quiz-option-letter">' + letters[i] + '</span><span>' + opt + '</span>';
+    btn.onclick = () => answerQuiz(i);
+    optionsEl.appendChild(btn);
+  });
+  document.getElementById('quizFeedback').classList.remove('show');
+  document.getElementById('quizNext').style.display = 'none';
+  quizAnswered = false;
+}
+function answerQuiz(idx) {
+  if (quizAnswered) return;
+  quizAnswered = true;
+  const q = quizQuestions[currentQuiz];
+  const options = document.querySelectorAll('.quiz-option');
+  options.forEach((opt, i) => {
+    opt.classList.add('disabled');
+    if (i === q.correct) opt.classList.add('correct');
+    if (i === idx && i !== q.correct) opt.classList.add('wrong');
+  });
+  if (idx === q.correct) quizScore++;
+  document.getElementById('quizScore').textContent = quizScore;
+  const fb = document.getElementById('quizFeedback');
+  fb.innerHTML = q.explain;
+  fb.classList.add('show');
+  document.getElementById('quizNext').style.display = 'inline-block';
+  if (currentQuiz === quizQuestions.length - 1) document.getElementById('quizNext').textContent = 'Xem kết quả →';
+}
+function nextQuestion() { currentQuiz++; renderQuiz(); }
+function showQuizResult() {
+  const total = quizQuestions.length;
+  const pct = Math.round(quizScore / total * 100);
+  let label, msg;
+  if (pct >= 90) { label = 'Tỉnh táo trước bias'; msg = 'Tuyệt vời. Áp dụng: pick 1 action (Confirmation Flip / Self-distancing / Pre-mortem) — luyện 30 ngày.'; }
+  else if (pct >= 70) { label = 'Hiểu khá tốt'; msg = 'Khá. Đọc lại Motivated Reasoning + Self-distancing. Track 30 dự đoán để calibrate.'; }
+  else if (pct >= 50) { label = 'Đang trên đường'; msg = 'Khung sườn có. Đọc lại Confirmation Flip + Earned Dogmatism + Bullshit Kit.'; }
+  else { label = 'Cần ôn lại'; msg = 'Đọc lại Phần 1 (IQ vs RQ). Đặc biệt: motivated reasoning + 4 trap chính.'; }
+  document.getElementById('quizContainer').innerHTML = '<div class="quiz-result"><div class="quiz-score">' + quizScore + '/' + total + '</div><div class="quiz-score-label">' + label + '</div><p style="margin: 32px auto; max-width: 500px; font-size: 17px; line-height: 1.5;">' + msg + '</p><button class="fcq-btn accent" onclick="resetQuiz()">Làm lại quiz</button></div>';
+}
+function resetQuiz() {
+  currentQuiz = 0; quizScore = 0;
+  document.getElementById('quizContainer').innerHTML = '<div class="quiz-progress"><span>Câu hỏi <span id="quizCurrent">1</span> / <span id="quizTotal">' + quizQuestions.length + '</span></span><span>Điểm: <span id="quizScore">0</span></span></div><div class="quiz-bar"><div class="quiz-bar-fill" id="quizBarFill" style="width: ' + (100/quizQuestions.length) + '%"></div></div><div class="quiz-question" id="quizQuestion"></div><div class="quiz-options" id="quizOptions"></div><div class="quiz-feedback" id="quizFeedback"></div><div style="display: flex; justify-content: flex-end; margin-top: 24px;"><button class="fcq-btn accent" id="quizNext" onclick="nextQuestion()" style="display: none;">Câu tiếp →</button></div>';
+  renderQuiz();
+}
 function renderActions(filter = 'all') { const grid = document.getElementById('actionsGrid'); grid.innerHTML = ''; actions.forEach(a => { if (filter !== 'all' && a.cat !== filter) return; const div = document.createElement('div'); div.className = 'action-card'; div.innerHTML = `<div class="action-num">${String(a.num).padStart(2, '0')}</div><div class="action-content"><div class="action-title">${a.title}</div><div class="action-desc">${a.desc}</div></div>`; grid.appendChild(div); }); }
 function filterActions(cat, btn) { document.querySelectorAll('.action-cat-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); renderActions(cat); }
 function renderPrompts() { const container = document.getElementById('promptsContainer'); journalPrompts.forEach((p, i) => { const div = document.createElement('div'); div.className = 'journal-prompt' + (i === 0 ? ' active' : ''); div.id = `prompt-${i}`; div.innerHTML = `<div class="journal-q">${i + 1}. ${p.q}</div><div class="journal-help">💡 Gợi ý: ${p.help}</div><textarea class="journal-textarea" placeholder="Viết câu trả lời của bạn ở đây..."></textarea>`; container.appendChild(div); }); }
 function switchPrompt(i, dot) { document.querySelectorAll('.journal-dot').forEach(d => d.classList.remove('active')); dot.classList.add('active'); document.querySelectorAll('.journal-prompt').forEach(p => p.classList.remove('active')); document.getElementById(`prompt-${i}`).classList.add('active'); }
 function scrollTo2(id) { const el = document.getElementById(id); if (el) window.scrollTo({ top: el.offsetTop - 80, behavior: 'smooth' }); }
 window.addEventListener('scroll', () => { const total = document.documentElement.scrollHeight - window.innerHeight; const pct = (window.scrollY / total) * 100; document.getElementById('progressBar').style.width = pct + '%'; });
-showCard(0); renderQuiz(); renderActions(); renderPrompts();
+renderCard(); renderQuiz(); renderActions(); renderPrompts();
 </script>
 
 <script>

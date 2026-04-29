@@ -193,6 +193,56 @@ body { background: var(--paper); color: var(--ink); font-family: 'Fraunces', Geo
   .comment-item.is-reply { margin-left: 16px; }
   .chap-row { grid-template-columns: 1fr; }
 }
+
+/* ============ FLASHCARDS ============ */
+.flashcard-container { perspective: 1500px; margin: 40px auto; max-width: 900px; }
+.flashcard-controls { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; font-family: 'JetBrains Mono', monospace; font-size: 13px; }
+.flashcard-counter { letter-spacing: 0.1em; }
+.flashcard-counter strong { color: var(--accent); font-size: 18px; }
+.flashcard { width: 100%; height: 360px; position: relative; transform-style: preserve-3d; transition: transform 0.7s cubic-bezier(0.4, 0.0, 0.2, 1); cursor: pointer; }
+.flashcard.flipped { transform: rotateY(180deg); }
+.flashcard-face { position: absolute; inset: 0; backface-visibility: hidden; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 50px; text-align: center; border: 2px solid var(--ink); }
+.flashcard-front { background: var(--paper-dark); }
+.flashcard-back { background: var(--ink); color: var(--paper); transform: rotateY(180deg); }
+.flashcard-tag { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 24px; opacity: 0.6; }
+.flashcard-question { font-family: 'Fraunces', serif; font-size: 28px; font-weight: 500; line-height: 1.3; letter-spacing: -0.02em; max-width: 700px; }
+.flashcard-answer { font-family: 'Fraunces', serif; font-size: 20px; line-height: 1.5; max-width: 700px; font-weight: 300; }
+.flashcard-hint { position: absolute; bottom: 20px; font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; opacity: 0.5; }
+.flashcard-nav { display: flex; gap: 12px; margin-top: 24px; justify-content: center; flex-wrap: wrap; }
+.fcq-btn { padding: 14px 28px; background: var(--ink); color: var(--paper); border: 2px solid var(--ink); font-family: 'JetBrains Mono', monospace; font-size: 12px; letter-spacing: 0.15em; text-transform: uppercase; cursor: pointer; transition: all 0.2s; font-weight: 500; }
+.fcq-btn:hover { background: var(--paper); color: var(--ink); }
+.fcq-btn.outline { background: var(--paper); color: var(--ink); }
+.fcq-btn.outline:hover { background: var(--ink); color: var(--paper); }
+.fcq-btn.accent { background: var(--accent); border-color: var(--accent); }
+.fcq-btn.accent:hover { background: var(--paper); color: var(--accent); }
+
+/* ============ QUIZ ============ */
+.quiz-container { background: var(--paper-dark); padding: 50px; border: 2px solid var(--ink); max-width: 900px; margin: 0 auto; }
+.quiz-progress { display: flex; justify-content: space-between; margin-bottom: 32px; font-family: 'JetBrains Mono', monospace; font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; }
+.quiz-bar { height: 4px; background: var(--paper); margin-bottom: 32px; position: relative; }
+.quiz-bar-fill { position: absolute; inset: 0 auto 0 0; background: var(--accent); transition: width 0.4s; }
+.quiz-question { font-family: 'Fraunces', serif; font-size: 24px; font-weight: 500; line-height: 1.3; margin-bottom: 32px; }
+.quiz-options { display: flex; flex-direction: column; gap: 12px; }
+.quiz-option { padding: 18px 24px; background: var(--paper); border: 2px solid var(--ink); font-family: 'Fraunces', serif; font-size: 16px; text-align: left; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 16px; }
+.quiz-option:hover { background: var(--ink); color: var(--paper); }
+.quiz-option-letter { width: 32px; height: 32px; border: 2px solid currentColor; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 700; flex-shrink: 0; }
+.quiz-option.correct { background: var(--accent-2); color: var(--paper); border-color: var(--accent-2); pointer-events: none; }
+.quiz-option.wrong { background: var(--accent); color: var(--paper); border-color: var(--accent); pointer-events: none; }
+.quiz-option.disabled { pointer-events: none; opacity: 0.5; }
+.quiz-feedback { margin-top: 24px; padding: 20px; background: var(--ink); color: var(--paper); font-size: 15px; display: none; border-left: 4px solid var(--gold); }
+.quiz-feedback.show { display: block; }
+.quiz-result { text-align: center; padding: 40px 0; }
+.quiz-score { font-family: 'Fraunces', serif; font-size: 100px; font-weight: 700; letter-spacing: -0.05em; line-height: 1; color: var(--accent); }
+.quiz-score-label { font-family: 'JetBrains Mono', monospace; font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase; margin-top: 12px; }
+
+@media (max-width: 700px) {
+  .quiz-container { padding: 28px; }
+  .quiz-question { font-size: 20px; }
+  .flashcard-question { font-size: 22px; }
+  .flashcard-answer { font-size: 17px; }
+  .flashcard { height: 320px; }
+  .flashcard-face { padding: 28px; }
+}
 </style>
 </head>
 <body>
@@ -557,69 +607,212 @@ body { background: var(--paper); color: var(--ink); font-family: 'Fraunces', Geo
 
 <!-- FLASHCARDS -->
 <section class="section" id="flashcards">
-  <div class="section-label">Flashcards · 8 ý cần nhớ</div>
-  <h2 class="section-title">8 ý <em>đủ giữ</em> sau khi đọc xong</h2>
-  <p class="section-intro">Đọc nhiều sách mà 1 năm sau quên 95% — đó là norm. 8 flashcard này là cái mình check hàng quý để ý không trôi.</p>
-
-  <div class="flashcards-grid">
-    <div class="flashcard">
-      <div>
-        <div class="flashcard-num">FLASHCARD · 01</div>
-        <div class="flashcard-front">"10,000 hours" chỉ đúng trong kind world</div>
-      </div>
-      <div class="flashcard-back">Cờ vua, golf — yes. Business, science, art — no. Đa số đời là wicked.</div>
+  <div class="section-label">Flashcards / 10 khái niệm cốt lõi</div>
+  <h2 class="section-title">10 thẻ ghi nhớ <em>cốt lõi</em></h2>
+  <p class="section-intro">10 ý mạnh nhất từ Range. Click thẻ để xem đáp án; "Tôi nhớ" / "Cần học lại" để track.</p>
+  <div class="flashcard-container">
+    <div class="flashcard-controls">
+      <div class="flashcard-counter">Thẻ <strong id="cardCurrent">1</strong> / <span id="cardTotal">10</span></div>
+      <div class="flashcard-counter">Đã thuộc: <strong id="cardKnown">0</strong></div>
     </div>
-    <div class="flashcard">
-      <div>
-        <div class="flashcard-num">FLASHCARD · 02</div>
-        <div class="flashcard-front">Late specializer thường thắng</div>
+    <div class="flashcard" id="flashcard" onclick="flipCard()">
+      <div class="flashcard-face flashcard-front">
+        <div class="flashcard-tag">Câu hỏi</div>
+        <div class="flashcard-question" id="cardQuestion"></div>
+        <div class="flashcard-hint">Click để xem đáp án</div>
       </div>
-      <div class="flashcard-back">Federer, Van Gogh, Vera Wang — sample dài, chọn muộn, peak cao.</div>
+      <div class="flashcard-face flashcard-back">
+        <div class="flashcard-tag">Đáp án</div>
+        <div class="flashcard-answer" id="cardAnswer"></div>
+        <div class="flashcard-hint">Click để xem câu hỏi</div>
+      </div>
     </div>
-    <div class="flashcard">
-      <div>
-        <div class="flashcard-num">FLASHCARD · 03</div>
-        <div class="flashcard-front">Match quality > head start</div>
-      </div>
-      <div class="flashcard-back">Tìm đúng nghề năm 35 thắng làm sai nghề từ năm 20.</div>
-    </div>
-    <div class="flashcard">
-      <div>
-        <div class="flashcard-num">FLASHCARD · 04</div>
-        <div class="flashcard-front">Quit chiến lược ≠ thất bại</div>
-      </div>
-      <div class="flashcard-back">Grit ở sai chỗ = lãng phí đời. "Mai bắt đầu lại — vẫn chọn?" — câu test.</div>
-    </div>
-    <div class="flashcard">
-      <div>
-        <div class="flashcard-num">FLASHCARD · 05</div>
-        <div class="flashcard-front">Lateral thinking = innovation</div>
-      </div>
-      <div class="flashcard-back">Bringing ý từ field A sang field B. Đọc rộng = nguồn của idea.</div>
-    </div>
-    <div class="flashcard">
-      <div>
-        <div class="flashcard-num">FLASHCARD · 06</div>
-        <div class="flashcard-front">Outsider advantage</div>
-      </div>
-      <div class="flashcard-back">Insider biết "thường làm thế nào". Outsider hỏi "why?". Outsider thường tìm ra cách mới.</div>
-    </div>
-    <div class="flashcard">
-      <div>
-        <div class="flashcard-num">FLASHCARD · 07</div>
-        <div class="flashcard-front">Hedgehog vs Fox</div>
-      </div>
-      <div class="flashcard-back">Hedgehog: 1 ý lớn. Fox: nhiều ý nhỏ. Fox dự đoán đúng nhiều hơn — vì thế giới wicked.</div>
-    </div>
-    <div class="flashcard">
-      <div>
-        <div class="flashcard-num">FLASHCARD · 08</div>
-        <div class="flashcard-front">Drop familiar tools</div>
-      </div>
-      <div class="flashcard-back">Khi bối cảnh đổi — tool cũ giết. Wildland firefighters chết vì không bỏ rìu.</div>
+    <div class="flashcard-nav">
+      <button class="fcq-btn outline" onclick="prevCard()">← Trước</button>
+      <button class="fcq-btn" onclick="markUnknown()">Cần học lại</button>
+      <button class="fcq-btn accent" onclick="markKnown()">Tôi nhớ ✓</button>
+      <button class="fcq-btn outline" onclick="nextCard()">Sau →</button>
     </div>
   </div>
 </section>
+
+<!-- QUIZ -->
+<section class="section" id="quiz">
+  <div class="section-label">Quiz / 10 câu test hiểu biết</div>
+  <h2 class="section-title">Bạn đã <em>thực sự hiểu</em>?</h2>
+  <p class="section-intro">10 câu — không kiểm tra trí nhớ, kiểm tra hiểu. Sai 3+ câu = đọc lại 4 nguyên tắc. Sai 5+ = đọc lại toàn bộ.</p>
+  <div class="quiz-container" id="quizContainer">
+    <div class="quiz-progress">
+      <span>Câu hỏi <span id="quizCurrent">1</span> / <span id="quizTotal">10</span></span>
+      <span>Điểm: <span id="quizScore">0</span></span>
+    </div>
+    <div class="quiz-bar"><div class="quiz-bar-fill" id="quizBarFill" style="width: 10%"></div></div>
+    <div class="quiz-question" id="quizQuestion"></div>
+    <div class="quiz-options" id="quizOptions"></div>
+    <div class="quiz-feedback" id="quizFeedback"></div>
+    <div style="display: flex; justify-content: flex-end; margin-top: 24px;">
+      <button class="fcq-btn accent" id="quizNext" onclick="nextQuestion()" style="display: none;">Câu tiếp →</button>
+    </div>
+  </div>
+</section>
+
+<script>
+const flashcards = [
+  { q: "Kind world vs Wicked world khác nhau ở điểm nào?", a: "Kind: luật rõ, feedback ngay, pattern lặp (cờ vua, golf, surgery cụ thể) — early specialist thắng. Wicked: luật mơ hồ, feedback chậm, không pattern (đa số đời thật) — late specializer + range thắng." },
+  { q: "Vì sao Tiger Woods không phải mô hình chuẩn cho mọi người?", a: "Tiger thắng trong KIND world (golf — luật rõ). Đa số nghề ngày nay WICKED (business, leadership, creative). Trong wicked — Roger Federer (sample 6 môn đến 14 tuổi) là mô hình. Pattern chung: late specializer beat early." },
+  { q: "Effort Counts Twice — công thức gì?", a: "Tài năng × Nỗ lực = Kỹ năng. Kỹ năng × Nỗ lực = Thành tựu. Nỗ lực xuất hiện 2 lần — quan trọng gấp đôi tài năng theo nghĩa toán học." },
+  { q: "Sampling period là gì? Vì sao quan trọng?", a: "Tuổi trẻ là thời gian thử — không phải tối ưu. Federer chơi 6 môn đến teen, Van Gogh đến 27 chưa cầm cọ. Nghiên cứu Ofer Malamud: học sinh được sample (Scotland) thu nhập cao hơn học sinh ép chọn nghề sớm (UK)." },
+  { q: "Match quality > head start nghĩa là gì?", a: "Tìm đúng nghề năm 35 thắng làm sai nghề từ năm 20. Đổi nghề 1-2 lần ở tuổi 30 không phải 'thất bại' — đó là tìm match. Người ở sai nghề 30 năm thua người tìm đúng nghề năm 35." },
+  { q: "Lateral thinking — vì sao là nguồn gốc innovation?", a: "Mang ý từ field A sang field B. Gunpei Yokoi designed Game Boy bằng tech 10 năm cũ — thắng Sony, Sega dùng latest tech. Đa số breakthrough đến từ outsider mang ý lạ vào." },
+  { q: "Quit strategically khác Grit thế nào?", a: "Grit ở đúng chỗ = thắng. Grit ở sai chỗ = lãng phí đời. Steve Jobs bỏ Reed College sau 6 tháng. Vera Wang bỏ figure skating tuổi 19, chuyển fashion tuổi 40. Quit sớm chiến lược cho phép tìm match tốt hơn." },
+  { q: "Hedgehog vs Fox — ai dự đoán giỏi hơn?", a: "Hedgehog: 1 ý lớn, áp dụng mọi nơi. Fox: kéo từ nhiều mô hình, cẩn trọng. Trong nghiên cứu Tetlock, Fox dự đoán đúng nhiều hơn — vì thế giới wicked, không có 'one big idea' giải thích mọi thứ." },
+  { q: "Drop Your Familiar Tools — bài học gì?", a: "Khi bối cảnh thay đổi, công cụ cũ có thể giết bạn. Wildland firefighters chết vì không buông rìu khi cần chạy nhanh. Áp dụng: kỹ năng làm bạn thành công ở giai đoạn 1 có thể là rào cản giai đoạn 2. Sẵn sàng bỏ tool cũ." },
+  { q: "Việt Nam có vấn đề Range gì?", a: "Hệ thống giáo dục VN ép chọn ngành A/B/C/D ở cấp 3 → đại học chuyên sâu 1 nghề. Đào tạo cho 'kind world' khi đời thực ngày càng 'wicked'. Range chỉ áp dụng được nếu có 'cushion' (gia đình lo, không stuck income). Người nuôi gia đình từ 22 — pick 1 nghề đủ tốt trước, range sau." }
+];
+
+const quizQuestions = [
+  {
+    q: "Theo Epstein, sự khác biệt CỐT LÕI giữa 'kind world' và 'wicked world' là gì?",
+    options: ["Kind dễ hơn wicked", "Kind có luật rõ + feedback ngay + pattern lặp; wicked thì không", "Kind là cho trẻ con, wicked cho người lớn", "Cả hai cần specialization"],
+    correct: 1,
+    explain: "Kind environment (cờ vua, golf): luật rõ, feedback ngay, pattern lặp → early specialist + 10,000 hours work. Wicked (đa số đời thật): luật mơ hồ, feedback chậm, không pattern → range + late specializer thắng."
+  },
+  {
+    q: "Tiger Woods bắt đầu golf lúc 7 tháng tuổi. Federer chơi 6 môn đến tuổi teen. Theo Range, ai là mô hình chuẩn cho ĐA SỐ nghề ngày nay?",
+    options: ["Tiger — focus sớm", "Federer — sample dài", "Cả hai như nhau", "Phụ thuộc IQ"],
+    correct: 1,
+    explain: "Đa số nghề ngày nay (business, leadership, creative, science) là WICKED. Trong wicked — pattern chung là late specializer beat early. Tiger chỉ thắng trong KIND world (golf). Federer là pattern chuẩn."
+  },
+  {
+    q: "Nghiên cứu Ofer Malamud so sánh học sinh UK (chọn ngành sớm) vs Scotland (sample). Kết quả?",
+    options: ["UK thu nhập cao hơn vì chuyên sâu", "Scotland thu nhập cao hơn — match quality tốt hơn", "Bằng nhau", "Phụ thuộc ngành"],
+    correct: 1,
+    explain: "Học sinh Scotland được sample 2-3 năm trước khi chọn nghề → match quality cao hơn → thu nhập SUỐT ĐỜI cao hơn. Bị ép chọn sớm = nguy cơ stuck nghề không hợp."
+  },
+  {
+    q: "Theo Range, 'lateral thinking' tạo ra innovation thế nào?",
+    options: ["Nghĩ sâu hơn trong 1 lĩnh vực", "Mang ý từ field A sang field B — outsider advantage", "Tìm thông tin trên internet nhanh", "Hợp tác với nhiều người"],
+    correct: 1,
+    explain: "Gunpei Yokoi designed Game Boy bằng tech 10 năm cũ rẻ — thắng Sony/Sega dùng latest tech. 'Lateral thinking with withered technology'. Đa số breakthrough đến từ outsider mang ý lạ vào field."
+  },
+  {
+    q: "Theo Range, 'Quit strategically' khác 'Grit ở sai chỗ' thế nào?",
+    options: ["Không khác — đều là bỏ cuộc", "Quit chiến lược cho phép tìm match tốt hơn; Grit sai chỗ là lãng phí đời", "Quit cho người yếu, Grit cho người mạnh", "Phụ thuộc tuổi"],
+    correct: 1,
+    explain: "Grit ở đúng chỗ = thắng. Grit ở sai chỗ = sunk cost trap. Steve Jobs bỏ Reed College, Vera Wang bỏ skating tuổi 19. Câu test: 'Mai bắt đầu lại — vẫn chọn?' Nếu KHÔNG → tín hiệu, không phải excuse."
+  },
+  {
+    q: "Hedgehog vs Fox — theo nghiên cứu Philip Tetlock, ai dự đoán tương lai chính xác hơn?",
+    options: ["Hedgehog — vì có lý thuyết lớn", "Fox — vì kéo từ nhiều mô hình", "Bằng nhau", "Phụ thuộc ngành"],
+    correct: 1,
+    explain: "Hedgehog có 1 ý lớn áp dụng mọi nơi → dự đoán cực đoan, sai nhiều. Fox kéo từ nhiều mô hình, dự đoán cẩn trọng → đúng nhiều hơn. Lý do: thế giới wicked, không có 'one big idea' giải thích mọi thứ."
+  },
+  {
+    q: "Wildland firefighters đôi khi chết — không phải vì lửa, mà vì:",
+    options: ["Thiếu kinh nghiệm", "Không buông familiar tools (rìu) khi cần chạy nhanh", "Trang bị kém", "Lệnh sai từ chỉ huy"],
+    correct: 1,
+    explain: "Họ được training xài rìu — rìu thành 'familiar tool'. Khi cần chạy thoát, rìu nặng → không buông được vì identity gắn với tool. Bài học: kỹ năng tạo thành công giai đoạn 1 có thể giết ở giai đoạn 2. Sẵn sàng bỏ tool cũ."
+  },
+  {
+    q: "Theo Effort Counts Twice (Duckworth, Range cite): nỗ lực quan trọng gấp đôi tài năng — nghĩa là gì?",
+    options: ["Nỗ lực x2 = thành công", "Nỗ lực xuất hiện 2 lần trong công thức: Tài năng × Nỗ lực = Kỹ năng; Kỹ năng × Nỗ lực = Thành tựu", "Phải nỗ lực gấp đôi người khác", "Không phải tài năng quan trọng"],
+    correct: 1,
+    explain: "Phương trình 1: Tài năng × Nỗ lực = Kỹ năng. Phương trình 2: Kỹ năng × Nỗ lực = Thành tựu. Nỗ lực xuất hiện 2 lần → quan trọng gấp đôi tài năng theo nghĩa toán học."
+  },
+  {
+    q: "Việt Nam có vấn đề Range gì đặc biệt?",
+    options: ["Học sinh VN ngại đổi nghề", "Hệ thống giáo dục ép chọn A/B/C/D ở cấp 3 + đại học chuyên sâu 1 nghề", "Phụ huynh không hỗ trợ", "Trường đại học thiếu ngành"],
+    correct: 1,
+    explain: "VN đào tạo cho 'kind world' — chọn ngành sớm, chuyên sâu 1 nghề. Đời thực ngày càng wicked. Hệ quả: kỹ sư giỏi 1 framework, đổi nghề là sống lại từ 0. Range cảnh báo cái này 5 năm trước AI bùng nổ."
+  },
+  {
+    q: "Range hợp với ai NHẤT (theo phản biện trong cuốn này)?",
+    options: ["Mọi người", "Người có 'cushion' — gia đình lo, không stuck income, có thời gian sample", "Sinh viên đại học", "Người đã 30 tuổi"],
+    correct: 1,
+    explain: "Range build thesis qua case studies (Federer, Van Gogh, Vera Wang) — survivorship bias. Có hàng triệu người sample nhiều, nhảy nghề, không bao giờ tìm match. Range hợp với người có nền. Người phải nuôi gia đình từ 22 — pick 1 nghề đủ tốt trước, range sau."
+  }
+];
+
+let currentCard = 0;
+let knownCards = new Set();
+let currentQuiz = 0;
+let quizScore = 0;
+let quizAnswered = false;
+
+function renderCard() {
+  document.getElementById('cardQuestion').textContent = flashcards[currentCard].q;
+  document.getElementById('cardAnswer').textContent = flashcards[currentCard].a;
+  document.getElementById('cardCurrent').textContent = currentCard + 1;
+  document.getElementById('cardTotal').textContent = flashcards.length;
+  document.getElementById('cardKnown').textContent = knownCards.size;
+  document.getElementById('flashcard').classList.remove('flipped');
+}
+function flipCard() { document.getElementById('flashcard').classList.toggle('flipped'); }
+function nextCard() { currentCard = (currentCard + 1) % flashcards.length; renderCard(); }
+function prevCard() { currentCard = (currentCard - 1 + flashcards.length) % flashcards.length; renderCard(); }
+function markKnown() { knownCards.add(currentCard); document.getElementById('cardKnown').textContent = knownCards.size; setTimeout(nextCard, 300); }
+function markUnknown() { knownCards.delete(currentCard); document.getElementById('cardKnown').textContent = knownCards.size; setTimeout(nextCard, 300); }
+
+function renderQuiz() {
+  if (currentQuiz >= quizQuestions.length) { showQuizResult(); return; }
+  const q = quizQuestions[currentQuiz];
+  document.getElementById('quizQuestion').textContent = q.q;
+  document.getElementById('quizCurrent').textContent = currentQuiz + 1;
+  document.getElementById('quizTotal').textContent = quizQuestions.length;
+  document.getElementById('quizScore').textContent = quizScore;
+  document.getElementById('quizBarFill').style.width = ((currentQuiz + 1) / quizQuestions.length * 100) + '%';
+  const optionsEl = document.getElementById('quizOptions');
+  optionsEl.innerHTML = '';
+  const letters = ['A', 'B', 'C', 'D'];
+  q.options.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'quiz-option';
+    btn.innerHTML = '<span class="quiz-option-letter">' + letters[i] + '</span><span>' + opt + '</span>';
+    btn.onclick = () => answerQuiz(i);
+    optionsEl.appendChild(btn);
+  });
+  document.getElementById('quizFeedback').classList.remove('show');
+  document.getElementById('quizNext').style.display = 'none';
+  quizAnswered = false;
+}
+function answerQuiz(idx) {
+  if (quizAnswered) return;
+  quizAnswered = true;
+  const q = quizQuestions[currentQuiz];
+  const options = document.querySelectorAll('.quiz-option');
+  options.forEach((opt, i) => {
+    opt.classList.add('disabled');
+    if (i === q.correct) opt.classList.add('correct');
+    if (i === idx && i !== q.correct) opt.classList.add('wrong');
+  });
+  if (idx === q.correct) quizScore++;
+  document.getElementById('quizScore').textContent = quizScore;
+  const fb = document.getElementById('quizFeedback');
+  fb.textContent = q.explain;
+  fb.classList.add('show');
+  document.getElementById('quizNext').style.display = 'inline-block';
+  if (currentQuiz === quizQuestions.length - 1) document.getElementById('quizNext').textContent = 'Xem kết quả →';
+}
+function nextQuestion() { currentQuiz++; renderQuiz(); }
+function showQuizResult() {
+  const total = quizQuestions.length;
+  const pct = Math.round(quizScore / total * 100);
+  let label, msg;
+  if (pct >= 90) { label = 'Master generalist'; msg = 'Tuyệt vời! Bạn thấm Range. Giờ apply: audit 3 nghề bạn từng thử, hỏi mỗi cái cho gì lại.'; }
+  else if (pct >= 70) { label = 'Hiểu khá tốt'; msg = 'Khá. Quay lại 4 nguyên tắc + Tiger vs Roger. Ôn flashcard.'; }
+  else if (pct >= 50) { label = 'Đang trên đường'; msg = 'Khung sườn đã có. Đọc lại Hedgehog vs Fox + Lateral thinking.'; }
+  else { label = 'Cần ôn lại'; msg = 'Đọc lại Framework + Kind vs Wicked. Đặc biệt: late specialization không phải lazy — là chiến lược.'; }
+  document.getElementById('quizContainer').innerHTML = '<div class="quiz-result"><div class="quiz-score">' + quizScore + '/' + total + '</div><div class="quiz-score-label">' + label + '</div><p style="margin: 32px auto; max-width: 500px; font-size: 17px; line-height: 1.5;">' + msg + '</p><button class="fcq-btn accent" onclick="resetQuiz()">Làm lại quiz</button></div>';
+}
+function resetQuiz() {
+  currentQuiz = 0; quizScore = 0;
+  document.getElementById('quizContainer').innerHTML = '<div class="quiz-progress"><span>Câu hỏi <span id="quizCurrent">1</span> / <span id="quizTotal">10</span></span><span>Điểm: <span id="quizScore">0</span></span></div><div class="quiz-bar"><div class="quiz-bar-fill" id="quizBarFill" style="width: 10%"></div></div><div class="quiz-question" id="quizQuestion"></div><div class="quiz-options" id="quizOptions"></div><div class="quiz-feedback" id="quizFeedback"></div><div style="display: flex; justify-content: flex-end; margin-top: 24px;"><button class="fcq-btn accent" id="quizNext" onclick="nextQuestion()" style="display: none;">Câu tiếp →</button></div>';
+  renderQuiz();
+}
+
+renderCard();
+renderQuiz();
+</script>
 
 <!-- JOURNAL -->
 <section class="journal-section" id="journal">

@@ -201,6 +201,51 @@ body { background: var(--paper); color: var(--ink); font-family: 'Fraunces', Geo
   .comment-item.is-reply { margin-left: 16px; }
   .chapter-row { grid-template-columns: 1fr; }
 }
+
+/* Interactive Flashcards (Think Again style) */
+.flashcard-container { max-width: 720px; margin: 32px auto; }
+.flashcard-controls { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; font-family: 'JetBrains Mono', monospace; font-size: 12px; letter-spacing: 0.1em; color: var(--muted); }
+.flashcard-counter strong { color: var(--ink); font-size: 14px; }
+.flashcard-container .flashcard { position: relative; width: 100%; min-height: 280px; perspective: 1500px; cursor: pointer; background: transparent; border: none; padding: 0; transition: none; transform: none; box-shadow: none; display: block; }
+.flashcard-container .flashcard:hover { transform: none; box-shadow: none; }
+.flashcard-face { position: absolute; inset: 0; backface-visibility: hidden; padding: 36px 32px; border: 2px solid var(--ink); display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; transition: transform 0.6s; }
+.flashcard-front { background: var(--paper-dark); transform: rotateY(0deg); }
+.flashcard-back { background: var(--accent); color: var(--paper); transform: rotateY(180deg); }
+.flashcard.flipped .flashcard-front { transform: rotateY(180deg); }
+.flashcard.flipped .flashcard-back { transform: rotateY(360deg); }
+.flashcard-tag { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.2em; color: var(--accent); margin-bottom: 16px; text-transform: uppercase; }
+.flashcard-back .flashcard-tag { color: var(--paper); opacity: 0.8; }
+.flashcard-question { font-family: 'Fraunces', serif; font-size: 22px; font-weight: 600; line-height: 1.35; margin-bottom: 16px; color: var(--ink); }
+.flashcard-answer { font-size: 17px; line-height: 1.55; color: var(--paper); margin-bottom: 16px; max-width: 580px; }
+.flashcard-hint { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.15em; opacity: 0.6; text-transform: uppercase; }
+.flashcard-nav { display: flex; gap: 12px; justify-content: center; margin-top: 24px; flex-wrap: wrap; }
+.fcq-btn { padding: 12px 22px; border: 1.5px solid var(--ink); background: var(--paper); color: var(--ink); font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer; transition: all 0.2s; }
+.fcq-btn:hover { background: var(--ink); color: var(--paper); }
+.fcq-btn.outline { background: transparent; }
+.fcq-btn.accent { background: var(--accent); color: var(--paper); border-color: var(--accent); }
+.fcq-btn.accent:hover { background: var(--ink); border-color: var(--ink); }
+
+/* Quiz */
+.quiz-container { max-width: 720px; margin: 32px auto; padding: 36px 32px; background: var(--paper-dark); border: 2px solid var(--ink); }
+.quiz-progress { display: flex; justify-content: space-between; font-family: 'JetBrains Mono', monospace; font-size: 12px; letter-spacing: 0.1em; color: var(--muted); margin-bottom: 12px; }
+.quiz-bar { height: 4px; background: rgba(26,20,16,0.15); margin-bottom: 24px; }
+.quiz-bar-fill { height: 100%; background: var(--accent); transition: width 0.4s; }
+.quiz-question { font-family: 'Fraunces', serif; font-size: 21px; font-weight: 600; line-height: 1.4; margin-bottom: 24px; color: var(--ink); }
+.quiz-options { display: flex; flex-direction: column; gap: 10px; }
+.quiz-option { display: flex; align-items: flex-start; gap: 14px; padding: 16px 18px; background: var(--paper); border: 1.5px solid var(--ink); cursor: pointer; transition: all 0.2s; text-align: left; font-family: 'Inter', sans-serif; font-size: 15px; line-height: 1.5; color: var(--ink); }
+.quiz-option:hover:not(.disabled) { background: var(--ink); color: var(--paper); }
+.quiz-option:hover:not(.disabled) .quiz-option-letter { background: var(--paper); color: var(--ink); }
+.quiz-option-letter { flex-shrink: 0; width: 28px; height: 28px; border-radius: 50%; background: var(--ink); color: var(--paper); display: flex; align-items: center; justify-content: center; font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 700; }
+.quiz-option.correct { background: var(--gold); color: var(--ink); border-color: var(--line); }
+.quiz-option.correct .quiz-option-letter { background: var(--ink); color: var(--gold); }
+.quiz-option.wrong { background: var(--accent); color: var(--paper); border-color: var(--accent); }
+.quiz-option.wrong .quiz-option-letter { background: var(--paper); color: var(--accent); }
+.quiz-option.disabled { cursor: not-allowed; }
+.quiz-feedback { margin-top: 20px; padding: 16px 18px; background: var(--paper); border-left: 3px solid var(--accent); font-size: 14px; line-height: 1.6; display: none; }
+.quiz-feedback.show { display: block; }
+.quiz-result { text-align: center; padding: 40px 0; }
+.quiz-score { font-family: 'Fraunces', serif; font-size: 64px; font-weight: 300; line-height: 1; color: var(--accent); margin-bottom: 12px; }
+.quiz-score-label { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); }
 </style>
 </head>
 <body>
@@ -439,83 +484,212 @@ body { background: var(--paper); color: var(--ink); font-family: 'Fraunces', Geo
 
 <!-- FLASHCARDS -->
 <section class="section" id="flashcards">
-  <div class="section-label">10 thẻ ghi nhớ cốt lõi</div>
-  <h2 class="section-title">Đọc xong — <em>nhớ 10 ý này</em></h2>
-  <p class="section-intro">Mỗi flashcard là một idea độc lập. Đọc lại 1 lần/tuần trong 1 tháng — chúng sẽ ngấm vào cách bạn ra quyết định.</p>
-
-  <div class="flashcards-grid">
-    <div class="flashcard">
-      <div>
-        <div class="flashcard-num">— 01</div>
-        <div class="flashcard-front">Khoảng trống giữa kích thích và phản ứng là tự do cuối cùng của con người.</div>
-      </div>
-      <div class="flashcard-back">Bạn không kiểm soát được tình huống. Bạn kiểm soát được cách phản ứng. Đó là không gian nhỏ — nhưng đủ.</div>
+  <div class="section-label">Flashcards / 10 khái niệm cốt lõi</div>
+  <h2 class="section-title">10 thẻ ghi nhớ <em>cốt lõi</em></h2>
+  <p class="section-intro">10 ý mạnh nhất từ Man's Search for Meaning. Click thẻ để xem đáp án; "Tôi nhớ" / "Cần học lại" để track.</p>
+  <div class="flashcard-container">
+    <div class="flashcard-controls">
+      <div class="flashcard-counter">Thẻ <strong id="cardCurrent">1</strong> / <span id="cardTotal">10</span></div>
+      <div class="flashcard-counter">Đã thuộc: <strong id="cardKnown">0</strong></div>
     </div>
-    <div class="flashcard">
-      <div>
-        <div class="flashcard-num">— 02</div>
-        <div class="flashcard-front">Will to meaning &gt; will to pleasure &gt; will to power.</div>
+    <div class="flashcard" id="flashcard" onclick="flipCard()">
+      <div class="flashcard-face flashcard-front">
+        <div class="flashcard-tag">Câu hỏi</div>
+        <div class="flashcard-question" id="cardQuestion"></div>
+        <div class="flashcard-hint">Click để xem đáp án</div>
       </div>
-      <div class="flashcard-back">Ý nghĩa là động lực sâu nhất. Khoái lạc và quyền lực là sản phẩm phụ — không phải mục đích.</div>
+      <div class="flashcard-face flashcard-back">
+        <div class="flashcard-tag">Đáp án</div>
+        <div class="flashcard-answer" id="cardAnswer"></div>
+        <div class="flashcard-hint">Click để xem câu hỏi</div>
+      </div>
     </div>
-    <div class="flashcard">
-      <div>
-        <div class="flashcard-num">— 03</div>
-        <div class="flashcard-front">3 nguồn của ý nghĩa: sáng tạo, trải nghiệm, chịu đựng.</div>
-      </div>
-      <div class="flashcard-back">Cho đi (work). Nhận vào (love, beauty). Đối diện (suffering). Đa số chỉ cố nguồn 2 — thiếu 1 và 3.</div>
-    </div>
-    <div class="flashcard">
-      <div>
-        <div class="flashcard-num">— 04</div>
-        <div class="flashcard-front">Khi cái "tại sao" còn — cái "thế nào" tự tìm được.</div>
-      </div>
-      <div class="flashcard-back">Câu trích từ Nietzsche, Frankl dùng nhiều lần. Lý do mạnh khắc phục được phương tiện thiếu.</div>
-    </div>
-    <div class="flashcard">
-      <div>
-        <div class="flashcard-num">— 05</div>
-        <div class="flashcard-front">Existential vacuum: trống rỗng khi tự do dư thừa thiếu mục đích.</div>
-      </div>
-      <div class="flashcard-back">Bệnh thời đại sau khi ràng buộc truyền thống biến mất. Triệu chứng: trầm cảm, nghiện, "Sunday neurosis".</div>
-    </div>
-    <div class="flashcard">
-      <div>
-        <div class="flashcard-num">— 06</div>
-        <div class="flashcard-front">Hạnh phúc không thể là mục tiêu trực tiếp — chỉ là sản phẩm phụ.</div>
-      </div>
-      <div class="flashcard-back">Càng cố hạnh phúc, càng xa. Sống có ý nghĩa, hạnh phúc tự đến trong khoảnh khắc.</div>
-    </div>
-    <div class="flashcard">
-      <div>
-        <div class="flashcard-num">— 07</div>
-        <div class="flashcard-front">Paradoxical intention: chủ động muốn điều bạn sợ.</div>
-      </div>
-      <div class="flashcard-back">Càng cố ngủ, càng tỉnh. Càng cố nói trước đám đông không run, càng run. Mời cái sợ vào — nó thường rút.</div>
-    </div>
-    <div class="flashcard">
-      <div>
-        <div class="flashcard-num">— 08</div>
-        <div class="flashcard-front">Nỗi đau không cho ý nghĩa. Cách phản ứng với nỗi đau cho ý nghĩa.</div>
-      </div>
-      <div class="flashcard-back">Đừng tìm khổ. Khổ tránh được phải tránh. Khi không tránh được, đó là cơ hội để chọn ý nghĩa từ nó.</div>
-    </div>
-    <div class="flashcard">
-      <div>
-        <div class="flashcard-num">— 09</div>
-        <div class="flashcard-front">Tragic optimism: lạc quan vẫn nhìn thẳng vào bi kịch.</div>
-      </div>
-      <div class="flashcard-back">Khác với "think positive". Chấp nhận đau, mất, chết — vẫn tìm cái đẹp, ý nghĩa, hành động đúng.</div>
-    </div>
-    <div class="flashcard">
-      <div>
-        <div class="flashcard-num">— 10</div>
-        <div class="flashcard-front">Hỏi cuộc đời "đời muốn gì ở mình?" — không phải "mình muốn gì ở đời?"</div>
-      </div>
-      <div class="flashcard-back">Đảo ngược câu hỏi. Mỗi tình huống cụ thể đặt ra câu hỏi cho bạn. Trách nhiệm là trả lời bằng hành động.</div>
+    <div class="flashcard-nav">
+      <button class="fcq-btn outline" onclick="prevCard()">← Trước</button>
+      <button class="fcq-btn" onclick="markUnknown()">Cần học lại</button>
+      <button class="fcq-btn accent" onclick="markKnown()">Tôi nhớ ✓</button>
+      <button class="fcq-btn outline" onclick="nextCard()">Sau →</button>
     </div>
   </div>
 </section>
+
+<!-- QUIZ -->
+<section class="section" id="quiz">
+  <div class="section-label">Quiz / 10 câu test hiểu biết</div>
+  <h2 class="section-title">Bạn đã <em>thực sự hiểu</em>?</h2>
+  <p class="section-intro">10 câu — không kiểm tra trí nhớ, kiểm tra hiểu. Sai 1 câu → đọc lại chương đó.</p>
+  <div class="quiz-container" id="quizContainer">
+    <div class="quiz-progress">
+      <span>Câu hỏi <span id="quizCurrent">1</span> / <span id="quizTotal">10</span></span>
+      <span>Điểm: <span id="quizScore">0</span></span>
+    </div>
+    <div class="quiz-bar"><div class="quiz-bar-fill" id="quizBarFill" style="width: 10%"></div></div>
+    <div class="quiz-question" id="quizQuestion"></div>
+    <div class="quiz-options" id="quizOptions"></div>
+    <div class="quiz-feedback" id="quizFeedback"></div>
+    <div style="display: flex; justify-content: flex-end; margin-top: 24px;">
+      <button class="fcq-btn accent" id="quizNext" onclick="nextQuestion()" style="display: none;">Câu tiếp →</button>
+    </div>
+  </div>
+</section>
+
+<script>
+const flashcards = [
+  { q: "Frankl định nghĩa \"tự do cuối cùng\" của con người là gì?", a: "Khoảng trống giữa kích thích và phản ứng. Bạn không kiểm soát được tình huống. Bạn kiểm soát được cách phản ứng. Đó là không gian nhỏ — nhưng đủ. Trong trại tập trung, đó là tất cả những gì còn lại." },
+  { q: "Will to meaning vs will to pleasure vs will to power — Frankl xếp thế nào?", a: "Will to meaning > will to pleasure > will to power. Ý nghĩa là động lực sâu nhất. Khoái lạc (Freud) và quyền lực (Adler) là sản phẩm phụ — không phải mục đích. Frankl phản biện cả Freud + Adler." },
+  { q: "3 nguồn của ý nghĩa theo logotherapy là gì?", a: "(1) Sáng tạo — cho đi qua work, art, đóng góp. (2) Trải nghiệm — nhận vào qua love, beauty, nature. (3) Chịu đựng — đối diện suffering không tránh được. Đa số chỉ cố nguồn 2 (consume) — thiếu 1 và 3." },
+  { q: "Câu Nietzsche mà Frankl quote nhiều lần là gì?", a: "\"Khi cái tại sao còn — cái thế nào tự tìm được.\" Lý do mạnh khắc phục được phương tiện thiếu. Trong trại: ai có lý do sống (con chờ ở nhà, sách chưa viết xong) — sống lâu hơn. Ai mất lý do — chết trong vài tuần." },
+  { q: "Existential vacuum là gì?", a: "Trống rỗng khi tự do dư thừa thiếu mục đích. Bệnh thời đại sau khi ràng buộc truyền thống (tôn giáo, gia đình lớn, làng xã) biến mất. Triệu chứng: trầm cảm, nghiện, \"Sunday neurosis\" (cuối tuần rảnh — đối mặt với rỗng)." },
+  { q: "Frankl nói gì về theo đuổi hạnh phúc trực tiếp?", a: "Hạnh phúc không thể là mục tiêu trực tiếp — chỉ là sản phẩm phụ. Càng cố hạnh phúc, càng xa. Sống có ý nghĩa → hạnh phúc tự đến trong khoảnh khắc. Đây là pushback với self-help \"chase happiness\"." },
+  { q: "Paradoxical intention — kỹ thuật trị liệu Frankl đề xuất là gì?", a: "Chủ động muốn điều bạn sợ. Càng cố ngủ — càng tỉnh. Càng cố không run khi nói trước đám đông — càng run. Mời cái sợ vào (\"OK đêm nay tôi sẽ thức trắng\") — nó thường rút. Áp dụng cho insomnia, anxiety, fear of fear." },
+  { q: "Frankl nói gì về nỗi đau và ý nghĩa?", a: "Nỗi đau không tự động cho ý nghĩa. Cách phản ứng với nỗi đau cho ý nghĩa. Đừng tìm khổ — khổ tránh được phải tránh. Khi không tránh được (mất người thân, bệnh nan y) → đó là cơ hội cuối cùng để chọn ý nghĩa từ nó." },
+  { q: "Tragic optimism khác \"think positive\" thế nào?", a: "Tragic optimism: lạc quan VẪN nhìn thẳng vào bi kịch. Chấp nhận đau, mất, chết — vẫn tìm cái đẹp, ý nghĩa, hành động đúng. Khác toxic positivity (\"good vibes only\") — không né tránh tối, không bắt buộc cười khi đau." },
+  { q: "Frankl đảo ngược câu hỏi cuộc đời thế nào?", a: "Không hỏi \"mình muốn gì ở đời?\" mà hỏi \"đời muốn gì ở mình?\". Mỗi tình huống cụ thể đặt ra câu hỏi cho bạn. Trách nhiệm là trả lời bằng hành động — không phải bằng câu trả lời triết học." }
+];
+
+const quizQuestions = [
+  {
+    q: "Frankl định nghĩa \"tự do cuối cùng\" của con người là gì?",
+    options: ["Tự do ngôn luận", "Khoảng trống giữa kích thích và phản ứng — kiểm soát cách phản ứng", "Tự do đi lại", "Tự do tài chính"],
+    correct: 1,
+    explain: "Trong Auschwitz Frankl mất tất cả — gia đình, sự nghiệp, sách vừa hoàn thành. Còn lại 1 thứ: chọn cách phản ứng với khổ đau. Đó là tự do cuối cùng — không ai cướp được."
+  },
+  {
+    q: "Will to meaning vs will to pleasure vs will to power — Frankl xếp thế nào?",
+    options: ["Cả 3 ngang nhau", "Will to meaning > will to pleasure > will to power", "Pleasure quan trọng nhất", "Power là cốt lõi"],
+    correct: 1,
+    explain: "Frankl phản biện Freud (pleasure principle) + Adler (will to power). Ý nghĩa là động lực sâu nhất — khoái lạc và quyền lực là sản phẩm phụ. Người có meaning sống sót Auschwitz; người chỉ tìm pleasure/power gục trước."
+  },
+  {
+    q: "3 nguồn của ý nghĩa theo logotherapy?",
+    options: ["Tiền, tình, danh", "Sáng tạo (cho), Trải nghiệm (nhận), Chịu đựng (đối diện)", "Gia đình, sự nghiệp, sức khỏe", "Học, làm, tu"],
+    correct: 1,
+    explain: "(1) Sáng tạo — work, art, đóng góp. (2) Trải nghiệm — love, beauty, nature. (3) Chịu đựng — suffering không tránh được. Đa số chỉ cố nguồn 2 (consume) — thiếu 1 và 3 → existential vacuum."
+  },
+  {
+    q: "Câu Nietzsche Frankl quote nhiều lần?",
+    options: ["\"What doesn't kill you makes you stronger\"", "\"Khi cái tại sao còn — cái thế nào tự tìm được\"", "\"God is dead\"", "\"Become who you are\""],
+    correct: 1,
+    explain: "Trong trại: ai có lý do sống (con chờ, sách chưa viết) sống lâu hơn. Ai mất lý do chết trong vài tuần — kể cả người khỏe nhất. Lý do mạnh khắc phục được phương tiện thiếu."
+  },
+  {
+    q: "Existential vacuum là gì?",
+    options: ["Bệnh dạ dày", "Trống rỗng khi tự do dư thừa thiếu mục đích — bệnh thời đại", "Thiếu tiền", "Cô đơn xã hội"],
+    correct: 1,
+    explain: "Sau khi ràng buộc truyền thống (tôn giáo, gia đình lớn, làng) biến mất — con người được \"tự do\" nhưng không biết làm gì. Triệu chứng: trầm cảm, nghiện, \"Sunday neurosis\" — rảnh = đối mặt với rỗng."
+  },
+  {
+    q: "Frankl nói gì về theo đuổi hạnh phúc trực tiếp?",
+    options: ["Cố hết sức để hạnh phúc", "Hạnh phúc không thể là mục tiêu trực tiếp — chỉ là sản phẩm phụ; càng cố càng xa", "Hạnh phúc do gen quyết định", "Mua đồ mới sẽ hạnh phúc"],
+    correct: 1,
+    explain: "Pushback với self-help \"chase happiness\". Sống có ý nghĩa → hạnh phúc tự đến trong khoảnh khắc. Cố \"hạnh phúc\" như cố ngủ — càng cố càng tỉnh. Tập trung vào meaning, happiness sẽ tự đến."
+  },
+  {
+    q: "Paradoxical intention là kỹ thuật gì?",
+    options: ["Suy nghĩ ngược", "Chủ động muốn điều bạn sợ — \"OK đêm nay tôi sẽ thức trắng\"", "Thiền định", "Liệu pháp nhận thức"],
+    correct: 1,
+    explain: "Càng cố ngủ — càng tỉnh. Càng cố không run — càng run. Mời cái sợ vào, nó rút. Áp dụng insomnia, social anxiety, fear of fear. Frankl phát triển trước CBT 30 năm."
+  },
+  {
+    q: "Frankl nói gì về nỗi đau và ý nghĩa?",
+    options: ["Nỗi đau tự động cho ý nghĩa", "Nỗi đau không tự cho ý nghĩa; cách phản ứng với nó cho ý nghĩa. Đừng tìm khổ", "Phải chịu khổ mới có ý nghĩa", "Tránh khổ bằng mọi giá"],
+    correct: 1,
+    explain: "Nuance quan trọng. Đừng tìm khổ — khổ tránh được phải tránh. Glorify suffering = sai. Nhưng khi không tránh được (mất người thân, bệnh nan y) → đó là cơ hội cuối để chọn ý nghĩa."
+  },
+  {
+    q: "Tragic optimism khác \"think positive\" thế nào?",
+    options: ["Không khác", "Lạc quan VẪN nhìn thẳng vào bi kịch — không né tránh tối, không bắt cười khi đau", "Tragic optimism là pessimism", "Phải lạc quan 100%"],
+    correct: 1,
+    explain: "Tragic optimism chấp nhận đau, mất, chết — vẫn tìm beauty, meaning, action đúng. Khác toxic positivity (\"good vibes only\"). Frankl đã thấy Auschwitz — không thể \"think positive\" sau đó. Chỉ có tragic optimism."
+  },
+  {
+    q: "Frankl đảo ngược câu hỏi cuộc đời thế nào?",
+    options: ["Không cần hỏi", "Không hỏi \"mình muốn gì ở đời?\" — hỏi \"đời muốn gì ở mình?\". Trách nhiệm là trả lời bằng hành động", "Hỏi triết gia", "Đợi câu trả lời"],
+    correct: 1,
+    explain: "Đảo trục. Mỗi tình huống cụ thể (sếp khó, con bệnh, deadline) đặt câu hỏi cho bạn — phản ứng thế nào? Trách nhiệm là trả lời bằng action — không phải triết học. Mỗi ngày là 1 series câu hỏi từ life."
+  }
+];
+
+let currentCard = 0;
+let knownCards = new Set();
+let currentQuiz = 0;
+let quizScore = 0;
+let quizAnswered = false;
+
+function renderCard() {
+  document.getElementById('cardQuestion').textContent = flashcards[currentCard].q;
+  document.getElementById('cardAnswer').textContent = flashcards[currentCard].a;
+  document.getElementById('cardCurrent').textContent = currentCard + 1;
+  document.getElementById('cardTotal').textContent = flashcards.length;
+  document.getElementById('cardKnown').textContent = knownCards.size;
+  document.getElementById('flashcard').classList.remove('flipped');
+}
+function flipCard() { document.getElementById('flashcard').classList.toggle('flipped'); }
+function nextCard() { currentCard = (currentCard + 1) % flashcards.length; renderCard(); }
+function prevCard() { currentCard = (currentCard - 1 + flashcards.length) % flashcards.length; renderCard(); }
+function markKnown() { knownCards.add(currentCard); document.getElementById('cardKnown').textContent = knownCards.size; setTimeout(nextCard, 300); }
+function markUnknown() { knownCards.delete(currentCard); document.getElementById('cardKnown').textContent = knownCards.size; setTimeout(nextCard, 300); }
+
+function renderQuiz() {
+  if (currentQuiz >= quizQuestions.length) { showQuizResult(); return; }
+  const q = quizQuestions[currentQuiz];
+  document.getElementById('quizQuestion').textContent = q.q;
+  document.getElementById('quizCurrent').textContent = currentQuiz + 1;
+  document.getElementById('quizTotal').textContent = quizQuestions.length;
+  document.getElementById('quizScore').textContent = quizScore;
+  document.getElementById('quizBarFill').style.width = ((currentQuiz + 1) / quizQuestions.length * 100) + '%';
+  const optionsEl = document.getElementById('quizOptions');
+  optionsEl.innerHTML = '';
+  const letters = ['A', 'B', 'C', 'D'];
+  q.options.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'quiz-option';
+    btn.innerHTML = '<span class="quiz-option-letter">' + letters[i] + '</span><span>' + opt + '</span>';
+    btn.onclick = () => answerQuiz(i);
+    optionsEl.appendChild(btn);
+  });
+  document.getElementById('quizFeedback').classList.remove('show');
+  document.getElementById('quizNext').style.display = 'none';
+  quizAnswered = false;
+}
+function answerQuiz(idx) {
+  if (quizAnswered) return;
+  quizAnswered = true;
+  const q = quizQuestions[currentQuiz];
+  const options = document.querySelectorAll('.quiz-option');
+  options.forEach((opt, i) => {
+    opt.classList.add('disabled');
+    if (i === q.correct) opt.classList.add('correct');
+    if (i === idx && i !== q.correct) opt.classList.add('wrong');
+  });
+  if (idx === q.correct) quizScore++;
+  document.getElementById('quizScore').textContent = quizScore;
+  const fb = document.getElementById('quizFeedback');
+  fb.textContent = q.explain;
+  fb.classList.add('show');
+  document.getElementById('quizNext').style.display = 'inline-block';
+  if (currentQuiz === quizQuestions.length - 1) document.getElementById('quizNext').textContent = 'Xem kết quả →';
+}
+function nextQuestion() { currentQuiz++; renderQuiz(); }
+function showQuizResult() {
+  const total = quizQuestions.length;
+  const pct = Math.round(quizScore / total * 100);
+  let label, msg;
+  if (pct >= 90) { label = 'Frankl-grade'; msg = 'Tuyệt vời. Giờ apply: pick 1 framework (3 nguồn / paradoxical intention / "đời muốn gì ở mình") — thử 1 tuần.'; }
+  else if (pct >= 70) { label = 'Hiểu khá tốt'; msg = 'Khá. Đọc lại 3 nguồn ý nghĩa + tragic optimism. Audit existential vacuum tuần này.'; }
+  else if (pct >= 50) { label = 'Đang trên đường'; msg = 'Khung sườn có. Đọc lại Will to meaning + Existential vacuum + đảo câu hỏi.'; }
+  else { label = 'Cần ôn lại'; msg = 'Đọc lại Phần 2 (logotherapy). Đặc biệt: tự do cuối cùng + 3 nguồn ý nghĩa.'; }
+  document.getElementById('quizContainer').innerHTML = '<div class="quiz-result"><div class="quiz-score">' + quizScore + '/' + total + '</div><div class="quiz-score-label">' + label + '</div><p style="margin: 32px auto; max-width: 500px; font-size: 17px; line-height: 1.5;">' + msg + '</p><button class="fcq-btn accent" onclick="resetQuiz()">Làm lại quiz</button></div>';
+}
+function resetQuiz() {
+  currentQuiz = 0; quizScore = 0;
+  document.getElementById('quizContainer').innerHTML = '<div class="quiz-progress"><span>Câu hỏi <span id="quizCurrent">1</span> / <span id="quizTotal">10</span></span><span>Điểm: <span id="quizScore">0</span></span></div><div class="quiz-bar"><div class="quiz-bar-fill" id="quizBarFill" style="width: 10%"></div></div><div class="quiz-question" id="quizQuestion"></div><div class="quiz-options" id="quizOptions"></div><div class="quiz-feedback" id="quizFeedback"></div><div style="display: flex; justify-content: flex-end; margin-top: 24px;"><button class="fcq-btn accent" id="quizNext" onclick="nextQuestion()" style="display: none;">Câu tiếp →</button></div>';
+  renderQuiz();
+}
+
+renderCard();
+renderQuiz();
+</script>
 
 <!-- JOURNAL -->
 <section class="section journal-section" id="journal">

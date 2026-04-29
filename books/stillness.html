@@ -193,6 +193,51 @@ body { background: var(--paper); color: var(--ink); font-family: 'Fraunces', Geo
   .comment-item.is-reply { margin-left: 16px; }
   .chap-row { grid-template-columns: 1fr; }
 }
+
+/* Interactive Flashcards (Think Again style) */
+.flashcard-container { max-width: 720px; margin: 32px auto; }
+.flashcard-controls { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; font-family: 'JetBrains Mono', monospace; font-size: 12px; letter-spacing: 0.1em; color: var(--muted); }
+.flashcard-counter strong { color: var(--ink); font-size: 14px; }
+.flashcard-container .flashcard { position: relative; width: 100%; min-height: 280px; perspective: 1500px; cursor: pointer; background: transparent; border: none; padding: 0; transition: none; transform: none; box-shadow: none; display: block; }
+.flashcard-container .flashcard:hover { transform: none; box-shadow: none; }
+.flashcard-face { position: absolute; inset: 0; backface-visibility: hidden; padding: 36px 32px; border: 2px solid var(--ink); display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; transition: transform 0.6s; }
+.flashcard-front { background: var(--paper-dark); transform: rotateY(0deg); }
+.flashcard-back { background: var(--accent); color: var(--paper); transform: rotateY(180deg); }
+.flashcard.flipped .flashcard-front { transform: rotateY(180deg); }
+.flashcard.flipped .flashcard-back { transform: rotateY(360deg); }
+.flashcard-tag { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.2em; color: var(--accent-2); margin-bottom: 16px; text-transform: uppercase; }
+.flashcard-back .flashcard-tag { color: var(--paper); opacity: 0.8; }
+.flashcard-question { font-family: 'Fraunces', serif; font-size: 22px; font-weight: 600; line-height: 1.35; margin-bottom: 16px; color: var(--ink); }
+.flashcard-answer { font-size: 17px; line-height: 1.55; color: var(--paper); margin-bottom: 16px; max-width: 580px; }
+.flashcard-hint { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.15em; opacity: 0.6; text-transform: uppercase; }
+.flashcard-nav { display: flex; gap: 12px; justify-content: center; margin-top: 24px; flex-wrap: wrap; }
+.fcq-btn { padding: 12px 22px; border: 1.5px solid var(--ink); background: var(--paper); color: var(--ink); font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer; transition: all 0.2s; }
+.fcq-btn:hover { background: var(--ink); color: var(--paper); }
+.fcq-btn.outline { background: transparent; }
+.fcq-btn.accent { background: var(--accent-2); color: var(--paper); border-color: var(--accent-2); }
+.fcq-btn.accent:hover { background: var(--ink); border-color: var(--ink); }
+
+/* Quiz */
+.quiz-container { max-width: 720px; margin: 32px auto; padding: 36px 32px; background: var(--paper-dark); border: 2px solid var(--ink); }
+.quiz-progress { display: flex; justify-content: space-between; font-family: 'JetBrains Mono', monospace; font-size: 12px; letter-spacing: 0.1em; color: var(--muted); margin-bottom: 12px; }
+.quiz-bar { height: 4px; background: rgba(26,20,16,0.15); margin-bottom: 24px; }
+.quiz-bar-fill { height: 100%; background: var(--accent-2); transition: width 0.4s; }
+.quiz-question { font-family: 'Fraunces', serif; font-size: 21px; font-weight: 600; line-height: 1.4; margin-bottom: 24px; color: var(--ink); }
+.quiz-options { display: flex; flex-direction: column; gap: 10px; }
+.quiz-option { display: flex; align-items: flex-start; gap: 14px; padding: 16px 18px; background: var(--paper); border: 1.5px solid var(--ink); cursor: pointer; transition: all 0.2s; text-align: left; font-family: 'Inter', sans-serif; font-size: 15px; line-height: 1.5; color: var(--ink); }
+.quiz-option:hover:not(.disabled) { background: var(--ink); color: var(--paper); }
+.quiz-option:hover:not(.disabled) .quiz-option-letter { background: var(--paper); color: var(--ink); }
+.quiz-option-letter { flex-shrink: 0; width: 28px; height: 28px; border-radius: 50%; background: var(--ink); color: var(--paper); display: flex; align-items: center; justify-content: center; font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 700; }
+.quiz-option.correct { background: var(--accent); color: var(--paper); border-color: var(--accent-deep); }
+.quiz-option.correct .quiz-option-letter { background: var(--paper); color: var(--accent-deep); }
+.quiz-option.wrong { background: var(--accent-2); color: var(--paper); border-color: var(--accent-2); }
+.quiz-option.wrong .quiz-option-letter { background: var(--paper); color: var(--accent-2); }
+.quiz-option.disabled { cursor: not-allowed; }
+.quiz-feedback { margin-top: 20px; padding: 16px 18px; background: var(--paper); border-left: 3px solid var(--accent); font-size: 14px; line-height: 1.6; display: none; }
+.quiz-feedback.show { display: block; }
+.quiz-result { text-align: center; padding: 40px 0; }
+.quiz-score { font-family: 'Fraunces', serif; font-size: 64px; font-weight: 300; line-height: 1; color: var(--accent-2); margin-bottom: 12px; }
+.quiz-score-label { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); }
 </style>
 </head>
 <body>
@@ -572,69 +617,212 @@ body { background: var(--paper); color: var(--ink); font-family: 'Fraunces', Geo
 
 <!-- FLASHCARDS -->
 <section class="section" id="flashcards">
-  <div class="section-label">Flashcards · 8 ý cần nhớ</div>
-  <h2 class="section-title">8 ý <em>đủ giữ</em> sau khi đọc xong</h2>
-  <p class="section-intro">Đọc nhiều sách mà 1 năm sau quên 95% — đó là norm. 8 flashcard này là cái mình check hàng quý để ý không trôi.</p>
-
-  <div class="flashcards-grid">
-    <div class="flashcard">
-      <div>
-        <div class="flashcard-num">FLASHCARD · 01</div>
-        <div class="flashcard-front">"Tất cả vấn đề con người bắt nguồn từ không thể ngồi yên" — Pascal</div>
-      </div>
-      <div class="flashcard-back">Stillness là gốc — mọi reactivity, ego, noise đều từ thiếu nó.</div>
+  <div class="section-label">Flashcards / 10 khái niệm cốt lõi</div>
+  <h2 class="section-title">10 thẻ ghi nhớ <em>cốt lõi</em></h2>
+  <p class="section-intro">10 ý mạnh nhất từ Stillness Is the Key. Click thẻ để xem đáp án; "Tôi nhớ" / "Cần học lại" để track.</p>
+  <div class="flashcard-container">
+    <div class="flashcard-controls">
+      <div class="flashcard-counter">Thẻ <strong id="cardCurrent">1</strong> / <span id="cardTotal">10</span></div>
+      <div class="flashcard-counter">Đã thuộc: <strong id="cardKnown">0</strong></div>
     </div>
-    <div class="flashcard">
-      <div>
-        <div class="flashcard-num">FLASHCARD · 02</div>
-        <div class="flashcard-front">Mind · Spirit · Body — kiềng 3 chân</div>
+    <div class="flashcard" id="flashcard" onclick="flipCard()">
+      <div class="flashcard-face flashcard-front">
+        <div class="flashcard-tag">Câu hỏi</div>
+        <div class="flashcard-question" id="cardQuestion"></div>
+        <div class="flashcard-hint">Click để xem đáp án</div>
       </div>
-      <div class="flashcard-back">Bỏ 1 chân, 2 chân kia cũng yếu. Audit cả 3 weekly.</div>
+      <div class="flashcard-face flashcard-back">
+        <div class="flashcard-tag">Đáp án</div>
+        <div class="flashcard-answer" id="cardAnswer"></div>
+        <div class="flashcard-hint">Click để xem câu hỏi</div>
+      </div>
     </div>
-    <div class="flashcard">
-      <div>
-        <div class="flashcard-num">FLASHCARD · 03</div>
-        <div class="flashcard-front">Limit input là respecting bandwidth não</div>
-      </div>
-      <div class="flashcard-back">Cắt news 1 tuần — bạn không miss gì quan trọng. Não cảm ơn.</div>
-    </div>
-    <div class="flashcard">
-      <div>
-        <div class="flashcard-num">FLASHCARD · 04</div>
-        <div class="flashcard-front">Sleep 8h là non-negotiable</div>
-      </div>
-      <div class="flashcard-back">Sleep deficit = silent killer của judgment. "Hustle through" là sai.</div>
-    </div>
-    <div class="flashcard">
-      <div>
-        <div class="flashcard-num">FLASHCARD · 05</div>
-        <div class="flashcard-front">Walk daily, không thiết bị</div>
-      </div>
-      <div class="flashcard-back">Aristotle, Nietzsche, Jobs đều có walking practice. Không tình cờ.</div>
-    </div>
-    <div class="flashcard">
-      <div>
-        <div class="flashcard-num">FLASHCARD · 06</div>
-        <div class="flashcard-front">Beauty là food for spirit</div>
-      </div>
-      <div class="flashcard-back">Nhạc cổ điển, hoàng hôn, hoa — không "lãng phí" thời gian. Là nhiên liệu.</div>
-    </div>
-    <div class="flashcard">
-      <div>
-        <div class="flashcard-num">FLASHCARD · 07</div>
-        <div class="flashcard-front">Heal relationships > pursue more goals</div>
-      </div>
-      <div class="flashcard-back">Đa số stress đến từ unresolved relationship — không từ thiếu achievement.</div>
-    </div>
-    <div class="flashcard">
-      <div>
-        <div class="flashcard-num">FLASHCARD · 08</div>
-        <div class="flashcard-front">Doing không bền không có Being</div>
-      </div>
-      <div class="flashcard-back">Hustle 80h/tuần ngắn hạn OK. Dài hạn cần being mode để refuel.</div>
+    <div class="flashcard-nav">
+      <button class="fcq-btn outline" onclick="prevCard()">← Trước</button>
+      <button class="fcq-btn" onclick="markUnknown()">Cần học lại</button>
+      <button class="fcq-btn accent" onclick="markKnown()">Tôi nhớ ✓</button>
+      <button class="fcq-btn outline" onclick="nextCard()">Sau →</button>
     </div>
   </div>
 </section>
+
+<!-- QUIZ -->
+<section class="section" id="quiz">
+  <div class="section-label">Quiz / 10 câu test hiểu biết</div>
+  <h2 class="section-title">Bạn đã <em>thực sự hiểu</em>?</h2>
+  <p class="section-intro">10 câu — không kiểm tra trí nhớ, kiểm tra hiểu. Sai 1 câu → đọc lại chương đó.</p>
+  <div class="quiz-container" id="quizContainer">
+    <div class="quiz-progress">
+      <span>Câu hỏi <span id="quizCurrent">1</span> / <span id="quizTotal">10</span></span>
+      <span>Điểm: <span id="quizScore">0</span></span>
+    </div>
+    <div class="quiz-bar"><div class="quiz-bar-fill" id="quizBarFill" style="width: 10%"></div></div>
+    <div class="quiz-question" id="quizQuestion"></div>
+    <div class="quiz-options" id="quizOptions"></div>
+    <div class="quiz-feedback" id="quizFeedback"></div>
+    <div style="display: flex; justify-content: flex-end; margin-top: 24px;">
+      <button class="fcq-btn accent" id="quizNext" onclick="nextQuestion()" style="display: none;">Câu tiếp →</button>
+    </div>
+  </div>
+</section>
+
+<script>
+const flashcards = [
+  { q: "Pascal nói câu nào về stillness mà Holiday lấy làm trục cuốn sách?", a: "\"Tất cả vấn đề của con người bắt nguồn từ việc không thể ngồi yên một mình trong phòng.\" Stillness là gốc — mọi reactivity, ego, noise đều từ thiếu nó." },
+  { q: "Holiday cấu trúc cuốn sách theo mấy trục, là gì?", a: "3 trục: Mind (tâm trí — limit input, journal, walk), Spirit (tinh thần — virtue, beauty, relationships, higher purpose), Body (thân — sleep, walk, simple living, leisure). Kiềng 3 chân — bỏ 1, 2 cái còn lại cũng yếu." },
+  { q: "Vì sao limit input quan trọng cho stillness?", a: "Não có bandwidth giới hạn. Đọc news, scroll feed, podcast cả ngày = nuôi noise. Cắt 1 tuần — bạn không miss gì quan trọng. Holiday: respect cho não bằng cách không dump rác liên tục vào." },
+  { q: "Sleep — Holiday nói gì khác với hustle culture?", a: "Sleep 8h là non-negotiable, không phải luxury. Sleep deficit = silent killer của judgment + emotional regulation. \"Hustle through\" 5 tiếng/đêm dài hạn = sai. Người ra quyết định lớn cần ngủ trước." },
+  { q: "Walking practice — vì sao Holiday quote nhiều triết gia?", a: "Aristotle (peripatetic school dạy đi bộ), Nietzsche (\"chỉ ý nghĩ phát sinh khi đi mới đáng giá\"), Jobs (meeting đi bộ). Walking — chuyển động chậm + không thiết bị → não default mode network bật → insight đến. Không tình cờ." },
+  { q: "Beauty trong cuốn này có vai trò gì?", a: "Beauty = food for spirit. Nhạc cổ điển, hoàng hôn, art, nhà gọn — không \"lãng phí thời gian\". Là nhiên liệu cho soul. Holiday: người chỉ \"hiệu quả\" mà không có beauty → khô cằn → burnout." },
+  { q: "Heal relationships > pursue goals — Holiday giải thích sao?", a: "Đa số stress dài hạn đến từ unresolved relationship (cha mẹ, vợ/chồng, sếp cũ) — không từ thiếu achievement. Đạt thêm goals trong khi mang nặng grudge = không có stillness. Phải xử lý relationship trước." },
+  { q: "Doing/Being mode — phân biệt thế nào?", a: "Doing mode: action, output, hustle, achievement. Being mode: present, reflect, walk, journal, just be. Hustle 80h/tuần ngắn hạn OK. Dài hạn cần being để refuel — nếu chỉ doing → chạy đến burnout, không còn ai để hưởng kết quả." },
+  { q: "Chỗ Holiday hơi blind là gì? (mình đã tag)", a: "Stillness là privilege. Lincoln đi bộ rừng — ông là tổng thống. Marcus Aurelius — hoàng đế. Người chạy delivery 12h/ngày, mẹ đơn thân, sinh viên 2 jobs — không có 1h walk không thiết bị. Cuốn này áp dụng được nhưng cần realistic." },
+  { q: "Việt Nam — stillness áp dụng thế nào realistic?", a: "Thay vì retreat 7 ngày Holiday đề xuất → 5 phút khi đợi đèn đỏ không chạm phone. 10 phút trước ngủ. 1 bữa cơm không TV. Đi bộ về nhà 1 đoạn thay vì xe ôm. Stillness không phải luxury — là 30 giây nhỏ rải rác trong ngày." }
+];
+
+const quizQuestions = [
+  {
+    q: "Pascal quote mà Holiday dùng làm trục cuốn này là gì?",
+    options: ["\"Cogito ergo sum\"", "\"Tất cả vấn đề của con người bắt nguồn từ việc không thể ngồi yên một mình trong phòng\"", "\"Người không biết cô đơn không biết yên\"", "\"Stillness là sức mạnh\""],
+    correct: 1,
+    explain: "Câu này từ Blaise Pascal — toàn bộ cuốn xoay quanh nó. Holiday nói: con người hiện đại tránh stillness bằng phone, news, hustle — vì ngồi yên = đối mặt với chính mình."
+  },
+  {
+    q: "Holiday cấu trúc cuốn theo mấy trục?",
+    options: ["2 (lý thuyết + thực hành)", "3 — Mind, Spirit, Body", "4 — Mind, Heart, Body, Spirit", "5 — theo 5 thói quen"],
+    correct: 1,
+    explain: "Mind (tâm trí), Spirit (tinh thần), Body (thân) — kiềng 3 chân. Bỏ 1 chân, 2 chân kia yếu. Audit cả 3 weekly."
+  },
+  {
+    q: "Limit input nghĩa là gì trong cuốn này?",
+    options: ["Bỏ hẳn internet", "Não có bandwidth giới hạn — cắt news/scroll/podcast bừa bãi để dành cho việc quan trọng", "Chỉ đọc sách, không xem video", "Im lặng 1 ngày/tuần"],
+    correct: 1,
+    explain: "Holiday không bảo bỏ hết. Bảo respecting bandwidth: não cần khoảng trống để xử lý. Cắt news 1 tuần → bạn không miss gì quan trọng. Não cảm ơn."
+  },
+  {
+    q: "Sleep — Holiday nói khác hustle culture ở chỗ nào?",
+    options: ["Ngủ 6h là đủ", "Sleep 8h là non-negotiable — sleep deficit là silent killer của judgment", "Ngủ trưa quan trọng hơn ngủ đêm", "Người thành công ngủ ít"],
+    correct: 1,
+    explain: "Holiday quote nhiều CEO + military leader: ngủ là weapon. Decision quality giảm 30-40% sau 1 đêm thiếu ngủ. \"Hustle through\" dài hạn = sai. Người ra quyết định lớn ngủ đủ trước."
+  },
+  {
+    q: "Walking practice — Holiday quote những ai?",
+    options: ["Chỉ Aristotle", "Aristotle, Nietzsche, Jobs — và nhiều nữa", "Chỉ các nhà văn", "Phật + Khổng Tử"],
+    correct: 1,
+    explain: "Aristotle (peripatetic — dạy đi bộ), Nietzsche (\"chỉ ý nghĩ phát sinh khi đi mới đáng giá\"), Jobs (meeting đi bộ). Chuyển động chậm + không thiết bị → default mode network bật → insight đến."
+  },
+  {
+    q: "Beauty trong cuốn này có vai trò gì?",
+    options: ["Decoration — nice to have", "Food for spirit — nhiên liệu cho soul, không phải lãng phí", "Chỉ phụ nữ cần", "Cho người nghệ sĩ"],
+    correct: 1,
+    explain: "Nhạc cổ điển, hoàng hôn, art, nhà gọn — không \"lãng phí\". Là nhiên liệu. Người chỉ \"hiệu quả\" không có beauty → khô cằn → burnout. Mỗi tuần cần dose beauty."
+  },
+  {
+    q: "Holiday nói gì về relationships vs goals?",
+    options: ["Goals quan trọng hơn — career first", "Heal relationships > pursue more goals — đa số stress từ unresolved relationship", "Cân bằng 50/50", "Không bàn"],
+    correct: 1,
+    explain: "Đa số stress dài hạn từ unresolved relationship (cha mẹ, vợ/chồng, sếp cũ) — không từ thiếu achievement. Đạt thêm goals mang grudge = không có stillness. Xử lý relationship trước."
+  },
+  {
+    q: "Doing/Being mode — phân biệt cốt lõi?",
+    options: ["Doing là tốt, Being là lười", "Doing = action/output. Being = present/reflect/walk. Cần cả hai — chỉ doing → burnout", "Being chỉ cho người về hưu", "Không khác gì nhau"],
+    correct: 1,
+    explain: "Hustle 80h/tuần ngắn hạn OK. Dài hạn cần being để refuel. Chỉ doing → chạy đến burnout, không còn ai để hưởng kết quả. Schedule being như schedule meeting."
+  },
+  {
+    q: "Chỗ Holiday hơi blind (mình đã tag) là gì?",
+    options: ["Quá theo Khắc Kỷ", "Stillness là privilege — Lincoln/Marcus là tổng thống/hoàng đế; người delivery 12h/ngày không có 1h walk", "Không hiểu kỷ luật", "Quá western-centric"],
+    correct: 1,
+    explain: "Holiday và mentor giàu của ông có thời gian. Người chạy xe máy 12h/ngày, mẹ đơn thân, sinh viên 2 jobs — không có \"retreat 7 ngày\". Cuốn này áp dụng được nhưng cần realistic về điều kiện."
+  },
+  {
+    q: "Stillness áp dụng VN realistic là gì?",
+    options: ["Phải retreat 7 ngày như Holiday", "5 phút đợi đèn đỏ không phone, 10 phút trước ngủ, 1 bữa cơm không TV — 30 giây rải rác", "Chỉ cuối tuần", "Phải vào chùa"],
+    correct: 1,
+    explain: "Stillness không phải luxury 7 ngày. Là 30 giây rải rác trong ngày. Đèn đỏ không chạm phone. Bữa cơm không TV. Đi bộ 1 đoạn thay vì xe ôm. Tích lũy nhỏ → mindset đổi."
+  }
+];
+
+let currentCard = 0;
+let knownCards = new Set();
+let currentQuiz = 0;
+let quizScore = 0;
+let quizAnswered = false;
+
+function renderCard() {
+  document.getElementById('cardQuestion').textContent = flashcards[currentCard].q;
+  document.getElementById('cardAnswer').textContent = flashcards[currentCard].a;
+  document.getElementById('cardCurrent').textContent = currentCard + 1;
+  document.getElementById('cardTotal').textContent = flashcards.length;
+  document.getElementById('cardKnown').textContent = knownCards.size;
+  document.getElementById('flashcard').classList.remove('flipped');
+}
+function flipCard() { document.getElementById('flashcard').classList.toggle('flipped'); }
+function nextCard() { currentCard = (currentCard + 1) % flashcards.length; renderCard(); }
+function prevCard() { currentCard = (currentCard - 1 + flashcards.length) % flashcards.length; renderCard(); }
+function markKnown() { knownCards.add(currentCard); document.getElementById('cardKnown').textContent = knownCards.size; setTimeout(nextCard, 300); }
+function markUnknown() { knownCards.delete(currentCard); document.getElementById('cardKnown').textContent = knownCards.size; setTimeout(nextCard, 300); }
+
+function renderQuiz() {
+  if (currentQuiz >= quizQuestions.length) { showQuizResult(); return; }
+  const q = quizQuestions[currentQuiz];
+  document.getElementById('quizQuestion').textContent = q.q;
+  document.getElementById('quizCurrent').textContent = currentQuiz + 1;
+  document.getElementById('quizTotal').textContent = quizQuestions.length;
+  document.getElementById('quizScore').textContent = quizScore;
+  document.getElementById('quizBarFill').style.width = ((currentQuiz + 1) / quizQuestions.length * 100) + '%';
+  const optionsEl = document.getElementById('quizOptions');
+  optionsEl.innerHTML = '';
+  const letters = ['A', 'B', 'C', 'D'];
+  q.options.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'quiz-option';
+    btn.innerHTML = '<span class="quiz-option-letter">' + letters[i] + '</span><span>' + opt + '</span>';
+    btn.onclick = () => answerQuiz(i);
+    optionsEl.appendChild(btn);
+  });
+  document.getElementById('quizFeedback').classList.remove('show');
+  document.getElementById('quizNext').style.display = 'none';
+  quizAnswered = false;
+}
+function answerQuiz(idx) {
+  if (quizAnswered) return;
+  quizAnswered = true;
+  const q = quizQuestions[currentQuiz];
+  const options = document.querySelectorAll('.quiz-option');
+  options.forEach((opt, i) => {
+    opt.classList.add('disabled');
+    if (i === q.correct) opt.classList.add('correct');
+    if (i === idx && i !== q.correct) opt.classList.add('wrong');
+  });
+  if (idx === q.correct) quizScore++;
+  document.getElementById('quizScore').textContent = quizScore;
+  const fb = document.getElementById('quizFeedback');
+  fb.textContent = q.explain;
+  fb.classList.add('show');
+  document.getElementById('quizNext').style.display = 'inline-block';
+  if (currentQuiz === quizQuestions.length - 1) document.getElementById('quizNext').textContent = 'Xem kết quả →';
+}
+function nextQuestion() { currentQuiz++; renderQuiz(); }
+function showQuizResult() {
+  const total = quizQuestions.length;
+  const pct = Math.round(quizScore / total * 100);
+  let label, msg;
+  if (pct >= 90) { label = 'Stillness đã thấm'; msg = 'Tuyệt vời. Giờ apply: pick 1 thực hành (limit input / sleep / walk) — làm 7 ngày liền.'; }
+  else if (pct >= 70) { label = 'Hiểu khá tốt'; msg = 'Khá. Đọc lại Mind + Spirit. Audit kiềng 3 chân tuần này.'; }
+  else if (pct >= 50) { label = 'Đang trên đường'; msg = 'Khung sườn có. Đọc lại Sleep + Walk + Beauty. Áp dụng thử 5 phút stillness/ngày.'; }
+  else { label = 'Cần ôn lại'; msg = 'Đọc lại 3 trục Mind/Spirit/Body. Đặc biệt Pascal quote + Doing/Being mode.'; }
+  document.getElementById('quizContainer').innerHTML = '<div class="quiz-result"><div class="quiz-score">' + quizScore + '/' + total + '</div><div class="quiz-score-label">' + label + '</div><p style="margin: 32px auto; max-width: 500px; font-size: 17px; line-height: 1.5;">' + msg + '</p><button class="fcq-btn accent" onclick="resetQuiz()">Làm lại quiz</button></div>';
+}
+function resetQuiz() {
+  currentQuiz = 0; quizScore = 0;
+  document.getElementById('quizContainer').innerHTML = '<div class="quiz-progress"><span>Câu hỏi <span id="quizCurrent">1</span> / <span id="quizTotal">10</span></span><span>Điểm: <span id="quizScore">0</span></span></div><div class="quiz-bar"><div class="quiz-bar-fill" id="quizBarFill" style="width: 10%"></div></div><div class="quiz-question" id="quizQuestion"></div><div class="quiz-options" id="quizOptions"></div><div class="quiz-feedback" id="quizFeedback"></div><div style="display: flex; justify-content: flex-end; margin-top: 24px;"><button class="fcq-btn accent" id="quizNext" onclick="nextQuestion()" style="display: none;">Câu tiếp →</button></div>';
+  renderQuiz();
+}
+
+renderCard();
+renderQuiz();
+</script>
 
 <!-- JOURNAL -->
 <section class="journal-section" id="journal">

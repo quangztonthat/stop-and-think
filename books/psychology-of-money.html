@@ -193,6 +193,56 @@ body { background: var(--paper); color: var(--ink); font-family: 'Fraunces', Geo
   .comment-item.is-reply { margin-left: 16px; }
   .chap-row { grid-template-columns: 1fr; }
 }
+
+/* ============ FLASHCARDS ============ */
+.flashcard-container { perspective: 1500px; margin: 40px auto; max-width: 900px; }
+.flashcard-controls { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; font-family: 'JetBrains Mono', monospace; font-size: 13px; }
+.flashcard-counter { letter-spacing: 0.1em; }
+.flashcard-counter strong { color: var(--accent); font-size: 18px; }
+.flashcard { width: 100%; height: 360px; position: relative; transform-style: preserve-3d; transition: transform 0.7s cubic-bezier(0.4, 0.0, 0.2, 1); cursor: pointer; }
+.flashcard.flipped { transform: rotateY(180deg); }
+.flashcard-face { position: absolute; inset: 0; backface-visibility: hidden; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 50px; text-align: center; border: 2px solid var(--ink); }
+.flashcard-front { background: var(--paper-dark); }
+.flashcard-back { background: var(--ink); color: var(--paper); transform: rotateY(180deg); }
+.flashcard-tag { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 24px; opacity: 0.6; }
+.flashcard-question { font-family: 'Fraunces', serif; font-size: 28px; font-weight: 500; line-height: 1.3; letter-spacing: -0.02em; max-width: 700px; }
+.flashcard-answer { font-family: 'Fraunces', serif; font-size: 20px; line-height: 1.5; max-width: 700px; font-weight: 300; }
+.flashcard-hint { position: absolute; bottom: 20px; font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; opacity: 0.5; }
+.flashcard-nav { display: flex; gap: 12px; margin-top: 24px; justify-content: center; flex-wrap: wrap; }
+.fcq-btn { padding: 14px 28px; background: var(--ink); color: var(--paper); border: 2px solid var(--ink); font-family: 'JetBrains Mono', monospace; font-size: 12px; letter-spacing: 0.15em; text-transform: uppercase; cursor: pointer; transition: all 0.2s; font-weight: 500; }
+.fcq-btn:hover { background: var(--paper); color: var(--ink); }
+.fcq-btn.outline { background: var(--paper); color: var(--ink); }
+.fcq-btn.outline:hover { background: var(--ink); color: var(--paper); }
+.fcq-btn.accent { background: var(--accent); border-color: var(--accent); }
+.fcq-btn.accent:hover { background: var(--paper); color: var(--accent); }
+
+/* ============ QUIZ ============ */
+.quiz-container { background: var(--paper-dark); padding: 50px; border: 2px solid var(--ink); max-width: 900px; margin: 0 auto; }
+.quiz-progress { display: flex; justify-content: space-between; margin-bottom: 32px; font-family: 'JetBrains Mono', monospace; font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; }
+.quiz-bar { height: 4px; background: var(--paper); margin-bottom: 32px; position: relative; }
+.quiz-bar-fill { position: absolute; inset: 0 auto 0 0; background: var(--accent); transition: width 0.4s; }
+.quiz-question { font-family: 'Fraunces', serif; font-size: 24px; font-weight: 500; line-height: 1.3; margin-bottom: 32px; }
+.quiz-options { display: flex; flex-direction: column; gap: 12px; }
+.quiz-option { padding: 18px 24px; background: var(--paper); border: 2px solid var(--ink); font-family: 'Fraunces', serif; font-size: 16px; text-align: left; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 16px; }
+.quiz-option:hover { background: var(--ink); color: var(--paper); }
+.quiz-option-letter { width: 32px; height: 32px; border: 2px solid currentColor; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 700; flex-shrink: 0; }
+.quiz-option.correct { background: var(--accent-2); color: var(--paper); border-color: var(--accent-2); pointer-events: none; }
+.quiz-option.wrong { background: var(--accent); color: var(--paper); border-color: var(--accent); pointer-events: none; }
+.quiz-option.disabled { pointer-events: none; opacity: 0.5; }
+.quiz-feedback { margin-top: 24px; padding: 20px; background: var(--ink); color: var(--paper); font-size: 15px; display: none; border-left: 4px solid var(--gold); }
+.quiz-feedback.show { display: block; }
+.quiz-result { text-align: center; padding: 40px 0; }
+.quiz-score { font-family: 'Fraunces', serif; font-size: 100px; font-weight: 700; letter-spacing: -0.05em; line-height: 1; color: var(--accent); }
+.quiz-score-label { font-family: 'JetBrains Mono', monospace; font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase; margin-top: 12px; }
+
+@media (max-width: 700px) {
+  .quiz-container { padding: 28px; }
+  .quiz-question { font-size: 20px; }
+  .flashcard-question { font-size: 22px; }
+  .flashcard-answer { font-size: 17px; }
+  .flashcard { height: 320px; }
+  .flashcard-face { padding: 28px; }
+}
 </style>
 </head>
 <body>
@@ -614,69 +664,212 @@ body { background: var(--paper); color: var(--ink); font-family: 'Fraunces', Geo
 
 <!-- FLASHCARDS -->
 <section class="section" id="flashcards">
-  <div class="section-label">Flashcards · 8 ý cần nhớ</div>
-  <h2 class="section-title">8 ý <em>đủ giữ</em> sau khi đọc xong</h2>
-  <p class="section-intro">Đọc nhiều sách mà 1 năm sau quên 95% — đó là norm. 8 flashcard này là cái mình check hàng quý để ý không trôi.</p>
-
-  <div class="flashcards-grid">
-    <div class="flashcard">
-      <div>
-        <div class="flashcard-num">FLASHCARD · 01</div>
-        <div class="flashcard-front">"Tiền là về hành vi, không về IQ"</div>
-      </div>
-      <div class="flashcard-back">Genius mất kiểm soát cảm xúc → thảm họa tài chính. Người bình thường có 1-2 thói quen tốt → giàu.</div>
+  <div class="section-label">Flashcards / 10 khái niệm cốt lõi</div>
+  <h2 class="section-title">10 thẻ ghi nhớ <em>cốt lõi</em></h2>
+  <p class="section-intro">10 ý mạnh nhất từ Psychology of Money. Click thẻ để xem đáp án; "Tôi nhớ" / "Cần học lại" để track. Ôn 1 lần/tuần đến khi không cần nhìn nữa.</p>
+  <div class="flashcard-container">
+    <div class="flashcard-controls">
+      <div class="flashcard-counter">Thẻ <strong id="cardCurrent">1</strong> / <span id="cardTotal">10</span></div>
+      <div class="flashcard-counter">Đã thuộc: <strong id="cardKnown">0</strong></div>
     </div>
-    <div class="flashcard">
-      <div>
-        <div class="flashcard-num">FLASHCARD · 02</div>
-        <div class="flashcard-front">Compounding > High return</div>
+    <div class="flashcard" id="flashcard" onclick="flipCard()">
+      <div class="flashcard-face flashcard-front">
+        <div class="flashcard-tag">Câu hỏi</div>
+        <div class="flashcard-question" id="cardQuestion"></div>
+        <div class="flashcard-hint">Click để xem đáp án</div>
       </div>
-      <div class="flashcard-back">Buffett 99% tài sản kiếm sau tuổi 50. Không phải vì ông nhanh — vì ông kéo dài lãi kép 80 năm.</div>
+      <div class="flashcard-face flashcard-back">
+        <div class="flashcard-tag">Đáp án</div>
+        <div class="flashcard-answer" id="cardAnswer"></div>
+        <div class="flashcard-hint">Click để xem câu hỏi</div>
+      </div>
     </div>
-    <div class="flashcard">
-      <div>
-        <div class="flashcard-num">FLASHCARD · 03</div>
-        <div class="flashcard-front">"Đủ" là kỹ năng tài chính khó nhất</div>
-      </div>
-      <div class="flashcard-back">Goalpost không ngừng dịch. Người không biết dừng → không bao giờ thấy đủ.</div>
-    </div>
-    <div class="flashcard">
-      <div>
-        <div class="flashcard-num">FLASHCARD · 04</div>
-        <div class="flashcard-front">Wealth = không thấy được</div>
-      </div>
-      <div class="flashcard-back">Wealth là tiền KHÔNG tiêu. Người trông giàu thường đang tiêu hết.</div>
-    </div>
-    <div class="flashcard">
-      <div>
-        <div class="flashcard-num">FLASHCARD · 05</div>
-        <div class="flashcard-front">Reasonable > Rational</div>
-      </div>
-      <div class="flashcard-back">Chiến lược hợp lý mà bạn theo được > chiến lược tối ưu mà bạn bỏ giữa chừng.</div>
-    </div>
-    <div class="flashcard">
-      <div>
-        <div class="flashcard-num">FLASHCARD · 06</div>
-        <div class="flashcard-front">Room for error</div>
-      </div>
-      <div class="flashcard-back">Đừng tối ưu portfolio. Chừa cushion. Tail events đến lúc bạn ít ngờ nhất.</div>
-    </div>
-    <div class="flashcard">
-      <div>
-        <div class="flashcard-num">FLASHCARD · 07</div>
-        <div class="flashcard-front">Tails win</div>
-      </div>
-      <div class="flashcard-back">7% công ty trong S&amp;P tạo 100% lợi nhuận. Tỷ lệ "đúng" không quan trọng — size của đúng quan trọng.</div>
-    </div>
-    <div class="flashcard">
-      <div>
-        <div class="flashcard-num">FLASHCARD · 08</div>
-        <div class="flashcard-front">Bi quan có vẻ thông minh hơn</div>
-      </div>
-      <div class="flashcard-back">"Thị trường sắp sụp" nghe deep hơn "ổn rồi". Nhưng lạc quan dài hạn thắng.</div>
+    <div class="flashcard-nav">
+      <button class="fcq-btn outline" onclick="prevCard()">← Trước</button>
+      <button class="fcq-btn" onclick="markUnknown()">Cần học lại</button>
+      <button class="fcq-btn accent" onclick="markKnown()">Tôi nhớ ✓</button>
+      <button class="fcq-btn outline" onclick="nextCard()">Sau →</button>
     </div>
   </div>
 </section>
+
+<!-- QUIZ -->
+<section class="section" id="quiz">
+  <div class="section-label">Quiz / 10 câu test hiểu biết</div>
+  <h2 class="section-title">Bạn đã <em>thực sự hiểu</em>?</h2>
+  <p class="section-intro">10 câu — không kiểm tra trí nhớ, kiểm tra hiểu. Sai 3+ câu = đọc lại 4 ý cốt lõi. Sai 5+ = đọc lại toàn bộ.</p>
+  <div class="quiz-container" id="quizContainer">
+    <div class="quiz-progress">
+      <span>Câu hỏi <span id="quizCurrent">1</span> / <span id="quizTotal">10</span></span>
+      <span>Điểm: <span id="quizScore">0</span></span>
+    </div>
+    <div class="quiz-bar"><div class="quiz-bar-fill" id="quizBarFill" style="width: 10%"></div></div>
+    <div class="quiz-question" id="quizQuestion"></div>
+    <div class="quiz-options" id="quizOptions"></div>
+    <div class="quiz-feedback" id="quizFeedback"></div>
+    <div style="display: flex; justify-content: flex-end; margin-top: 24px;">
+      <button class="fcq-btn accent" id="quizNext" onclick="nextQuestion()" style="display: none;">Câu tiếp →</button>
+    </div>
+  </div>
+</section>
+
+<script>
+const flashcards = [
+  { q: "Vì sao Ronald Read (bảo vệ Vermont) chết để lại $8M trong khi Richard Fuscone (cựu PCT Merrill Lynch) phá sản?", a: "Tiền không phải về IQ — về hành vi. Read tiết kiệm + index fund + đợi 60 năm. Fuscone leverage cao + chi tiêu vượt mức. Cùng năm, kết quả ngược nhau." },
+  { q: "'No One's Crazy' nghĩa là gì?", a: "Quyết định tài chính của mỗi người đều có lý — trong context riêng. Người sinh 1950 thấy thị trường tăng 5x tuổi teen; người sinh 1990 thấy 0%. Cùng 'thị trường', khác trải nghiệm, khác niềm tin." },
+  { q: "Luck & Risk khác nhau thế nào?", a: "Cả 2 đều là 'cùng 1 lực' — cho đứa này luck, đứa kia risk. Bill Gates đi học 1 trong 300 trường có máy tính (luck). Bạn ông Kent Evans chết trẻ leo núi (risk). Đừng copy người thành công nguyên xi." },
+  { q: "Compounding — vì sao Buffett khác mọi nhà đầu tư khác?", a: "99% tài sản Buffett đến SAU tuổi 50. Không phải ông đầu tư khôn hơn — ông đầu tư LÂU hơn. Bắt đầu năm 11 tuổi, giờ 94. Lãi kép thắng vì kéo dài, không vì tỷ suất cao." },
+  { q: "'Đủ' là kỹ năng tài chính khó nhất — vì sao?", a: "Bernie Madoff đã có $50M+/năm hợp pháp trước Ponzi. Rajat Gupta có $100M trước insider trading. Không thiếu — không biết 'đủ' ở đâu. Goalpost không ngừng dịch." },
+  { q: "Tail Events — quy luật gì?", a: "7% công ty trong S&P tạo TẤT CẢ lợi nhuận; 93% trung bình 0%. Snow White của Disney mang về tiền hơn vài trăm phim. Buffett kiếm phần lớn từ ~10 quyết định trong 70 năm. 51% sai vẫn OK nếu 49% đúng đủ lớn." },
+  { q: "Get wealthy vs Stay wealthy — 2 kỹ năng đối nghịch?", a: "Get = optimism + risk-taking. Đặt cược lớn, dám sai. Stay = paranoia + frugality. Sợ mất, giữ cash, không leverage. Người trẻ học stay → không bao giờ giàu. Người giàu rồi vẫn theo get → mất tất." },
+  { q: "Wealth = không thấy được. Nghĩa là gì?", a: "Wealth là tiền KHÔNG tiêu — chưa chuyển thành xe, nhà, đồng hồ. Người trông giàu thường đang tiêu hết income. Người thật sự wealthy không cần show." },
+  { q: "Reasonable > Rational nghĩa là gì?", a: "Chiến lược 'hợp lý' (mà bạn theo được 30 năm) > chiến lược 'tối ưu' (mà bạn bỏ sau 6 tháng). Đầu tư cần 'ngủ ngon' với portfolio. Sustainability > Optimization." },
+  { q: "Việt Nam có 2 cực gì khi đầu tư?", a: "Một: thế hệ cha mẹ — vàng + đất, conservative đến mức bỏ lỡ compounding. Hai: gen Z — đu coin, FOMO, hết tiền sau crash. Housel viết cho người ở giữa: kiên nhẫn dài hạn nhưng không cứng nhắc." }
+];
+
+const quizQuestions = [
+  {
+    q: "Theo Housel, sự khác biệt CỐT LÕI giữa Ronald Read (giàu) và Richard Fuscone (phá sản) là gì?",
+    options: ["Read may mắn hơn", "Read có IQ cao hơn", "Read có hành vi tài chính tốt hơn dù không có training", "Read sống lâu hơn"],
+    correct: 2,
+    explain: "Read là bảo vệ — không có training tài chính. Fuscone là cựu PCT Merrill Lynch — training đỉnh. Khác biệt: Read SAVINGS + INDEX FUND + ĐỢI. Fuscone LEVERAGE + CHI TIÊU VƯỢT. Tiền là hành vi, không phải IQ."
+  },
+  {
+    q: "Một người sinh 1990 ở VN nói 'đầu tư crypto là tương lai'. Người sinh 1950 nói 'mua đất là an toàn'. Theo 'No One's Crazy':",
+    options: ["Người sinh 1990 đúng", "Người sinh 1950 đúng", "Cả 2 đều có lý — trong context của họ", "Cả 2 đều sai"],
+    correct: 2,
+    explain: "Mỗi người neo niềm tin theo trải nghiệm. Sinh 1950 thấy đất tăng 100x đời họ → an toàn. Sinh 1990 thấy crypto tăng 1000x → tương lai. Cả 2 hợp lý trong khung tham chiếu. Đừng phán xét — hỏi context."
+  },
+  {
+    q: "Buffett kiếm $84.5B. Bao nhiêu phần trăm đến SAU tuổi 50?",
+    options: ["~50%", "~70%", "~90%", "~99%"],
+    correct: 3,
+    explain: "99% tài sản Buffett đến sau 50 tuổi. Không phải ông trở nên thông minh hơn — ông CHỈ kéo dài lãi kép thêm 40 năm. Compounding = thời gian × tỷ suất. Phần lớn người underestimate vai trò của thời gian."
+  },
+  {
+    q: "Theo Housel, 'kỹ năng tài chính KHÓ NHẤT' là gì?",
+    options: ["Chọn cổ phiếu đúng", "Tăng tỷ suất đầu tư", "Biết khi nào 'đủ' — dừng tăng goalpost", "Diversify portfolio"],
+    correct: 2,
+    explain: "Madoff $50M+/năm hợp pháp → vẫn Ponzi. Gupta $100M → vẫn insider trading. Họ không thiếu — họ không biết 'đủ' ở đâu. Goalpost không ngừng dịch."
+  },
+  {
+    q: "Tail events định nghĩa thế giới đầu tư. Trong S&P 500 từ 1980 đến nay — bao nhiêu % công ty tạo TẤT CẢ lợi nhuận?",
+    options: ["~50%", "~30%", "~7%", "~1%"],
+    correct: 2,
+    explain: "7% công ty lớn nhất tạo 100% lợi nhuận. 93% trung bình 0%. Pattern lặp ở Disney (Snow White), Buffett portfolio. Hệ quả: đừng đếm tỷ lệ thắng — đếm size của winners."
+  },
+  {
+    q: "Get wealthy vs Stay wealthy — 2 kỹ năng đối nghịch ở chỗ nào?",
+    options: ["Cùng 1 kỹ năng", "Get = optimism + risk-taking; Stay = paranoia + frugality", "Stay khó hơn Get", "Get cần học lý thuyết, Stay cần kinh nghiệm"],
+    correct: 1,
+    explain: "Get cần ĐẶT CƯỢC — tin điều đa số không tin, dám sai. Stay cần SỢ — giữ cash, không leverage. 2 mindset đối nghịch. Người trẻ học stay → không bao giờ giàu. Người giàu rồi theo get → mất tất."
+  },
+  {
+    q: "'Wealth = không thấy được' nghĩa là gì?",
+    options: ["Người giàu giấu tiền", "Wealth = tiền KHÔNG tiêu, chưa chuyển thành tài sản show off", "Người ngoài không biết bạn giàu hay nghèo", "Phải đầu tư ẩn danh"],
+    correct: 1,
+    explain: "Wealth là phần tiền NÉN LẠI, chưa thành xe/nhà/đồng hồ. Người trông giàu thường đang tiêu hết income — wealth thấp. Người wealthy thật sự ít show vì wealth = tự do."
+  },
+  {
+    q: "'Reasonable > Rational' trong đầu tư nghĩa là gì?",
+    options: ["Phân tích rational không quan trọng", "Chiến lược bạn theo được 30 năm > chiến lược tối ưu bạn bỏ sau 6 tháng", "Chỉ dùng cảm tính", "Không cần Excel/spreadsheet"],
+    correct: 1,
+    explain: "Tối ưu trên giấy không = tốt nhất trong đời. Bạn cần ngủ ngon với portfolio. Chiến lược 60% rational nhưng theo được = thắng 95% rational nhưng bỏ. Sustainability > Optimization."
+  },
+  {
+    q: "Việt Nam có 2 cực rõ với tiền. Theo Housel, ai thắng?",
+    options: ["Cha mẹ — vàng + đất an toàn", "Gen Z — coin + crypto aggressive", "Người ở GIỮA — kiên nhẫn dài hạn nhưng không cứng nhắc", "Phụ thuộc thời điểm"],
+    correct: 2,
+    explain: "Cha mẹ quá conservative bỏ lỡ 30 năm compounding. Gen Z quá aggressive hết tiền sau crash. Cả 2 cực đều thua. Housel cho người ở giữa: index fund + ngủ ngon + tránh sai lầm lớn."
+  },
+  {
+    q: "Sai lầm tài chính LỚN NHẤT của đa số người (theo Housel) là gì?",
+    options: ["Không học đủ về investing", "Chọn sai cổ phiếu", "Không biết khi nào 'đủ' + bán khi sợ + mua khi tham", "Không có advisor giỏi"],
+    correct: 2,
+    explain: "Đa số người BIẾT đủ kiến thức. Họ thua vì hành vi: panic sell khi -30%, FOMO buy khi bạn bè khoe x10, không biết 'đủ' nên over-leverage. Đây là tâm lý — đó là điểm cuốn này nói về."
+  }
+];
+
+let currentCard = 0;
+let knownCards = new Set();
+let currentQuiz = 0;
+let quizScore = 0;
+let quizAnswered = false;
+
+function renderCard() {
+  document.getElementById('cardQuestion').textContent = flashcards[currentCard].q;
+  document.getElementById('cardAnswer').textContent = flashcards[currentCard].a;
+  document.getElementById('cardCurrent').textContent = currentCard + 1;
+  document.getElementById('cardTotal').textContent = flashcards.length;
+  document.getElementById('cardKnown').textContent = knownCards.size;
+  document.getElementById('flashcard').classList.remove('flipped');
+}
+function flipCard() { document.getElementById('flashcard').classList.toggle('flipped'); }
+function nextCard() { currentCard = (currentCard + 1) % flashcards.length; renderCard(); }
+function prevCard() { currentCard = (currentCard - 1 + flashcards.length) % flashcards.length; renderCard(); }
+function markKnown() { knownCards.add(currentCard); document.getElementById('cardKnown').textContent = knownCards.size; setTimeout(nextCard, 300); }
+function markUnknown() { knownCards.delete(currentCard); document.getElementById('cardKnown').textContent = knownCards.size; setTimeout(nextCard, 300); }
+
+function renderQuiz() {
+  if (currentQuiz >= quizQuestions.length) { showQuizResult(); return; }
+  const q = quizQuestions[currentQuiz];
+  document.getElementById('quizQuestion').textContent = q.q;
+  document.getElementById('quizCurrent').textContent = currentQuiz + 1;
+  document.getElementById('quizTotal').textContent = quizQuestions.length;
+  document.getElementById('quizScore').textContent = quizScore;
+  document.getElementById('quizBarFill').style.width = ((currentQuiz + 1) / quizQuestions.length * 100) + '%';
+  const optionsEl = document.getElementById('quizOptions');
+  optionsEl.innerHTML = '';
+  const letters = ['A', 'B', 'C', 'D'];
+  q.options.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'quiz-option';
+    btn.innerHTML = '<span class="quiz-option-letter">' + letters[i] + '</span><span>' + opt + '</span>';
+    btn.onclick = () => answerQuiz(i);
+    optionsEl.appendChild(btn);
+  });
+  document.getElementById('quizFeedback').classList.remove('show');
+  document.getElementById('quizNext').style.display = 'none';
+  quizAnswered = false;
+}
+function answerQuiz(idx) {
+  if (quizAnswered) return;
+  quizAnswered = true;
+  const q = quizQuestions[currentQuiz];
+  const options = document.querySelectorAll('.quiz-option');
+  options.forEach((opt, i) => {
+    opt.classList.add('disabled');
+    if (i === q.correct) opt.classList.add('correct');
+    if (i === idx && i !== q.correct) opt.classList.add('wrong');
+  });
+  if (idx === q.correct) quizScore++;
+  document.getElementById('quizScore').textContent = quizScore;
+  const fb = document.getElementById('quizFeedback');
+  fb.textContent = q.explain;
+  fb.classList.add('show');
+  document.getElementById('quizNext').style.display = 'inline-block';
+  if (currentQuiz === quizQuestions.length - 1) document.getElementById('quizNext').textContent = 'Xem kết quả →';
+}
+function nextQuestion() { currentQuiz++; renderQuiz(); }
+function showQuizResult() {
+  const total = quizQuestions.length;
+  const pct = Math.round(quizScore / total * 100);
+  let label, msg;
+  if (pct >= 90) { label = 'Master tài chính'; msg = 'Tuyệt vời! Bạn thấm cuốn sách. Giờ apply: review portfolio, audit chi tiêu, set "đủ" rõ ràng.'; }
+  else if (pct >= 70) { label = 'Hiểu khá tốt'; msg = 'Khá. Quay lại 4 ý cốt lõi + Get vs Stay wealthy. Ôn flashcard.'; }
+  else if (pct >= 50) { label = 'Đang trên đường'; msg = 'Khung sườn đã có. Đọc lại Tail Events + Reasonable > Rational.'; }
+  else { label = 'Cần ôn lại'; msg = 'Đọc lại Framework + 4 ý chính. Đặc biệt: kiên nhẫn + biết "đủ".'; }
+  document.getElementById('quizContainer').innerHTML = '<div class="quiz-result"><div class="quiz-score">' + quizScore + '/' + total + '</div><div class="quiz-score-label">' + label + '</div><p style="margin: 32px auto; max-width: 500px; font-size: 17px; line-height: 1.5;">' + msg + '</p><button class="fcq-btn accent" onclick="resetQuiz()">Làm lại quiz</button></div>';
+}
+function resetQuiz() {
+  currentQuiz = 0; quizScore = 0;
+  document.getElementById('quizContainer').innerHTML = '<div class="quiz-progress"><span>Câu hỏi <span id="quizCurrent">1</span> / <span id="quizTotal">10</span></span><span>Điểm: <span id="quizScore">0</span></span></div><div class="quiz-bar"><div class="quiz-bar-fill" id="quizBarFill" style="width: 10%"></div></div><div class="quiz-question" id="quizQuestion"></div><div class="quiz-options" id="quizOptions"></div><div class="quiz-feedback" id="quizFeedback"></div><div style="display: flex; justify-content: flex-end; margin-top: 24px;"><button class="fcq-btn accent" id="quizNext" onclick="nextQuestion()" style="display: none;">Câu tiếp →</button></div>';
+  renderQuiz();
+}
+
+renderCard();
+renderQuiz();
+</script>
 
 <!-- JOURNAL -->
 <section class="journal-section" id="journal">

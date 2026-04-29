@@ -193,6 +193,56 @@ body { background: var(--paper); color: var(--ink); font-family: 'Fraunces', Geo
   .comment-item.is-reply { margin-left: 16px; }
   .chap-row { grid-template-columns: 1fr; }
 }
+
+/* ============ FLASHCARDS ============ */
+.flashcard-container { perspective: 1500px; margin: 40px auto; max-width: 900px; }
+.flashcard-controls { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; font-family: 'JetBrains Mono', monospace; font-size: 13px; }
+.flashcard-counter { letter-spacing: 0.1em; }
+.flashcard-counter strong { color: var(--accent); font-size: 18px; }
+.flashcard { width: 100%; height: 360px; position: relative; transform-style: preserve-3d; transition: transform 0.7s cubic-bezier(0.4, 0.0, 0.2, 1); cursor: pointer; }
+.flashcard.flipped { transform: rotateY(180deg); }
+.flashcard-face { position: absolute; inset: 0; backface-visibility: hidden; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 50px; text-align: center; border: 2px solid var(--ink); }
+.flashcard-front { background: var(--paper-dark); }
+.flashcard-back { background: var(--ink); color: var(--paper); transform: rotateY(180deg); }
+.flashcard-tag { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 24px; opacity: 0.6; }
+.flashcard-question { font-family: 'Fraunces', serif; font-size: 28px; font-weight: 500; line-height: 1.3; letter-spacing: -0.02em; max-width: 700px; }
+.flashcard-answer { font-family: 'Fraunces', serif; font-size: 20px; line-height: 1.5; max-width: 700px; font-weight: 300; }
+.flashcard-hint { position: absolute; bottom: 20px; font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; opacity: 0.5; }
+.flashcard-nav { display: flex; gap: 12px; margin-top: 24px; justify-content: center; flex-wrap: wrap; }
+.fcq-btn { padding: 14px 28px; background: var(--ink); color: var(--paper); border: 2px solid var(--ink); font-family: 'JetBrains Mono', monospace; font-size: 12px; letter-spacing: 0.15em; text-transform: uppercase; cursor: pointer; transition: all 0.2s; font-weight: 500; }
+.fcq-btn:hover { background: var(--paper); color: var(--ink); }
+.fcq-btn.outline { background: var(--paper); color: var(--ink); }
+.fcq-btn.outline:hover { background: var(--ink); color: var(--paper); }
+.fcq-btn.accent { background: var(--accent); border-color: var(--accent); }
+.fcq-btn.accent:hover { background: var(--paper); color: var(--accent); }
+
+/* ============ QUIZ ============ */
+.quiz-container { background: var(--paper-dark); padding: 50px; border: 2px solid var(--ink); max-width: 900px; margin: 0 auto; }
+.quiz-progress { display: flex; justify-content: space-between; margin-bottom: 32px; font-family: 'JetBrains Mono', monospace; font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; }
+.quiz-bar { height: 4px; background: var(--paper); margin-bottom: 32px; position: relative; }
+.quiz-bar-fill { position: absolute; inset: 0 auto 0 0; background: var(--accent); transition: width 0.4s; }
+.quiz-question { font-family: 'Fraunces', serif; font-size: 24px; font-weight: 500; line-height: 1.3; margin-bottom: 32px; }
+.quiz-options { display: flex; flex-direction: column; gap: 12px; }
+.quiz-option { padding: 18px 24px; background: var(--paper); border: 2px solid var(--ink); font-family: 'Fraunces', serif; font-size: 16px; text-align: left; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 16px; }
+.quiz-option:hover { background: var(--ink); color: var(--paper); }
+.quiz-option-letter { width: 32px; height: 32px; border: 2px solid currentColor; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 700; flex-shrink: 0; }
+.quiz-option.correct { background: var(--accent-2); color: var(--paper); border-color: var(--accent-2); pointer-events: none; }
+.quiz-option.wrong { background: var(--accent); color: var(--paper); border-color: var(--accent); pointer-events: none; }
+.quiz-option.disabled { pointer-events: none; opacity: 0.5; }
+.quiz-feedback { margin-top: 24px; padding: 20px; background: var(--ink); color: var(--paper); font-size: 15px; display: none; border-left: 4px solid var(--gold); }
+.quiz-feedback.show { display: block; }
+.quiz-result { text-align: center; padding: 40px 0; }
+.quiz-score { font-family: 'Fraunces', serif; font-size: 100px; font-weight: 700; letter-spacing: -0.05em; line-height: 1; color: var(--accent); }
+.quiz-score-label { font-family: 'JetBrains Mono', monospace; font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase; margin-top: 12px; }
+
+@media (max-width: 700px) {
+  .quiz-container { padding: 28px; }
+  .quiz-question { font-size: 20px; }
+  .flashcard-question { font-size: 22px; }
+  .flashcard-answer { font-size: 17px; }
+  .flashcard { height: 320px; }
+  .flashcard-face { padding: 28px; }
+}
 </style>
 </head>
 <body>
@@ -515,69 +565,212 @@ body { background: var(--paper); color: var(--ink); font-family: 'Fraunces', Geo
 
 <!-- FLASHCARDS -->
 <section class="section" id="flashcards">
-  <div class="section-label">Flashcards · 8 ý cần nhớ</div>
-  <h2 class="section-title">8 ý <em>đủ giữ</em> sau khi đọc xong</h2>
-  <p class="section-intro">Đọc nhiều sách mà 1 năm sau quên 95% — đó là norm. 8 flashcard này là cái mình check hàng quý để ý không trôi.</p>
-
-  <div class="flashcards-grid">
-    <div class="flashcard">
-      <div>
-        <div class="flashcard-num">FLASHCARD · 01</div>
-        <div class="flashcard-front">Deep work = focus + push limit + new value</div>
-      </div>
-      <div class="flashcard-back">Tập trung không gián đoạn + đẩy nhận thức + tạo giá trị mới + khó sao chép.</div>
+  <div class="section-label">Flashcards / 10 khái niệm cốt lõi</div>
+  <h2 class="section-title">10 thẻ ghi nhớ <em>cốt lõi</em></h2>
+  <p class="section-intro">10 ý mạnh nhất từ Deep Work. Click thẻ để xem đáp án; "Tôi nhớ" / "Cần học lại" để track.</p>
+  <div class="flashcard-container">
+    <div class="flashcard-controls">
+      <div class="flashcard-counter">Thẻ <strong id="cardCurrent">1</strong> / <span id="cardTotal">10</span></div>
+      <div class="flashcard-counter">Đã thuộc: <strong id="cardKnown">0</strong></div>
     </div>
-    <div class="flashcard">
-      <div>
-        <div class="flashcard-num">FLASHCARD · 02</div>
-        <div class="flashcard-front">Shallow work = noise</div>
+    <div class="flashcard" id="flashcard" onclick="flipCard()">
+      <div class="flashcard-face flashcard-front">
+        <div class="flashcard-tag">Câu hỏi</div>
+        <div class="flashcard-question" id="cardQuestion"></div>
+        <div class="flashcard-hint">Click để xem đáp án</div>
       </div>
-      <div class="flashcard-back">Email, meeting, admin. Cần — nhưng đừng để chiếm 90% ngày.</div>
+      <div class="flashcard-face flashcard-back">
+        <div class="flashcard-tag">Đáp án</div>
+        <div class="flashcard-answer" id="cardAnswer"></div>
+        <div class="flashcard-hint">Click để xem câu hỏi</div>
+      </div>
     </div>
-    <div class="flashcard">
-      <div>
-        <div class="flashcard-num">FLASHCARD · 03</div>
-        <div class="flashcard-front">4 schedule strategies — pick 1</div>
-      </div>
-      <div class="flashcard-back">Monastic / Bimodal / Rhythmic / Journalistic. Đừng cố làm tất cả.</div>
-    </div>
-    <div class="flashcard">
-      <div>
-        <div class="flashcard-num">FLASHCARD · 04</div>
-        <div class="flashcard-front">Ritual giảm willpower</div>
-      </div>
-      <div class="flashcard-back">Cùng giờ, cùng nơi, cùng rules. Não không quyết định lại — chỉ thực hiện.</div>
-    </div>
-    <div class="flashcard">
-      <div>
-        <div class="flashcard-num">FLASHCARD · 05</div>
-        <div class="flashcard-front">Boredom là gym của attention</div>
-      </div>
-      <div class="flashcard-back">Mỗi lúc rỗng với phone = luyện habit "không chịu được rỗng" = giết deep.</div>
-    </div>
-    <div class="flashcard">
-      <div>
-        <div class="flashcard-num">FLASHCARD · 06</div>
-        <div class="flashcard-front">30-day social media experiment</div>
-      </div>
-      <div class="flashcard-back">Bỏ 30 ngày. Sau đó hỏi: ai để ý? Cuộc đời tôi mất gì? Đa số không mất gì.</div>
-    </div>
-    <div class="flashcard">
-      <div>
-        <div class="flashcard-num">FLASHCARD · 07</div>
-        <div class="flashcard-front">Block scheduling</div>
-      </div>
-      <div class="flashcard-back">Schedule mọi phút trong ngày. Không phải "to-do list" — là "where does this hour go?"</div>
-    </div>
-    <div class="flashcard">
-      <div>
-        <div class="flashcard-num">FLASHCARD · 08</div>
-        <div class="flashcard-front">Fixed-schedule productivity</div>
-      </div>
-      <div class="flashcard-back">Đặt giới hạn "5h chiều xong" → bắt buộc cắt shallow. Production tăng.</div>
+    <div class="flashcard-nav">
+      <button class="fcq-btn outline" onclick="prevCard()">← Trước</button>
+      <button class="fcq-btn" onclick="markUnknown()">Cần học lại</button>
+      <button class="fcq-btn accent" onclick="markKnown()">Tôi nhớ ✓</button>
+      <button class="fcq-btn outline" onclick="nextCard()">Sau →</button>
     </div>
   </div>
 </section>
+
+<!-- QUIZ -->
+<section class="section" id="quiz">
+  <div class="section-label">Quiz / 10 câu test hiểu biết</div>
+  <h2 class="section-title">Bạn đã <em>thực sự hiểu</em>?</h2>
+  <p class="section-intro">10 câu — không kiểm tra trí nhớ, kiểm tra hiểu. Sai 3+ câu = đọc lại 4 Rules. Sai 5+ = đọc lại toàn bộ.</p>
+  <div class="quiz-container" id="quizContainer">
+    <div class="quiz-progress">
+      <span>Câu hỏi <span id="quizCurrent">1</span> / <span id="quizTotal">10</span></span>
+      <span>Điểm: <span id="quizScore">0</span></span>
+    </div>
+    <div class="quiz-bar"><div class="quiz-bar-fill" id="quizBarFill" style="width: 10%"></div></div>
+    <div class="quiz-question" id="quizQuestion"></div>
+    <div class="quiz-options" id="quizOptions"></div>
+    <div class="quiz-feedback" id="quizFeedback"></div>
+    <div style="display: flex; justify-content: flex-end; margin-top: 24px;">
+      <button class="fcq-btn accent" id="quizNext" onclick="nextQuestion()" style="display: none;">Câu tiếp →</button>
+    </div>
+  </div>
+</section>
+
+<script>
+const flashcards = [
+  { q: "Deep Work khác Shallow Work ở 4 tiêu chí nào?", a: "Deep: tập trung không gián đoạn + đẩy năng lực nhận thức + tạo giá trị mới + khó sao chép. Shallow: việc logistic non-cognitive làm trong distraction, không tạo nhiều giá trị, dễ thay thế bởi AI." },
+  { q: "4 schedule strategies của Newport là gì?", a: "(1) Monastic — như Knuth không email luôn. (2) Bimodal — như Jung vài tuần deep, vài tuần social. (3) Rhythmic — block 90-min mỗi ngày (phổ biến nhất). (4) Journalistic — deep mỗi khi có khoảng (khó nhất). Pick 1." },
+  { q: "Vì sao ritual quan trọng cho deep work?", a: "Cùng giờ, cùng nơi, cùng rules → não không phải quyết định lại mỗi ngày. Giảm willpower phải bỏ ra. Mọi ngày như 1 thói quen tự động." },
+  { q: "Embrace Boredom — Newport nói gì về phone?", a: "KHÔNG bảo 'đừng dùng phone'. Nói: nếu mỗi lúc rỗng đều với phone → não luyện habit 'không chịu được rỗng' → khi cần deep, không bật Hệ 2 được. Boredom là gym của attention." },
+  { q: "30-day social media experiment hoạt động thế nào?", a: "Bỏ 30 ngày. Sau đó hỏi 2 câu: (a) Cuộc đời tôi tốt lên không khi vắng nó? (b) Có ai để ý mình vắng mặt? Nếu cả 2 = không → không quay lại. Đa số trả lời 'không'." },
+  { q: "Block Scheduling — Newport đề xuất gì?", a: "Schedule MỌI phút trong ngày. Không phải to-do list — là 'where does this hour go?'. Buộc bạn quyết định trước, không react theo email. Mỗi block có 1 mục đích cụ thể." },
+  { q: "Fixed-schedule productivity là gì?", a: "Đặt giới hạn cứng — '5h chiều tôi xong'. Deadline buộc cắt shallow. Đa số không thử vì sợ 'không xong việc'. Thực tế: production tăng vì cắt được noise." },
+  { q: "Reasonable > Rational trong deep work nghĩa là gì?", a: "Schedule strategy đơn giản (Rhythmic 90min/ngày) mà bạn theo được 6 tháng > Monastic strict mà bạn bỏ sau 2 tuần. Sustainability beat optimization." },
+  { q: "Việt Nam có rào cản đặc thù gì với Deep Work?", a: "Văn hóa công sở đo bằng 'thời gian ngồi', không phải output. Sếp đi qua thấy nhân viên không ngồi → 'trốn việc'. Open office, group chat 24/7, meeting không cần thiết. Bắt đầu nhỏ: 90 phút/sáng trước khi mọi người vào office." },
+  { q: "Chỗ Newport gặp pushback nhiều nhất là gì?", a: "Demonize collaboration + meeting. Thực tế: nhiều breakthrough đến từ va chạm — Bell Labs hành lang, Pixar mở. Newport hợp với writer/coder/researcher — solo. Manager/sales/founder cần collaboration, áp dụng phải có nuance." }
+];
+
+const quizQuestions = [
+  {
+    q: "Theo Newport, sự khác biệt CỐT LÕI giữa Deep Work và Shallow Work là gì?",
+    options: ["Deep dài hơn Shallow", "Deep đẩy năng lực nhận thức + tạo giá trị mới + khó sao chép; Shallow là logistic non-cognitive", "Deep ở văn phòng, Shallow ở nhà", "Deep cần training, Shallow không cần"],
+    correct: 1,
+    explain: "Deep = focused + push cognitive limits + create new value + hard to replicate. Shallow = email, meeting, admin — non-cognitive trong distraction. Đa số 'knowledge worker' cần 4h deep/ngày nhưng đang có 30 phút."
+  },
+  {
+    q: "Newport mô tả 4 schedule strategies. Đâu là LỜI KHUYÊN ĐÚNG?",
+    options: ["Phải làm cả 4", "Pick 1 — phù hợp cuộc sống của bạn", "Bắt đầu Monastic, dần chuyển Journalistic", "Mỗi ngày 1 cái"],
+    correct: 1,
+    explain: "Monastic / Bimodal / Rhythmic / Journalistic — pick 1 phù hợp lifestyle. Đa số người chọn Rhythmic (90min/ngày) — phổ biến nhất. Đừng cố làm cả 4 — sẽ confuse + bỏ."
+  },
+  {
+    q: "Vì sao 'ritual' quan trọng cho deep work?",
+    options: ["Để có hình ảnh chuyên nghiệp", "Để giảm willpower phải bỏ ra mỗi ngày — não tự động execute", "Vì các nhà văn lớn đều có ritual", "Để impress đồng nghiệp"],
+    correct: 1,
+    explain: "Cùng giờ, cùng nơi, cùng rules → não không quyết định lại. Tự động execute. Willpower là tài nguyên giới hạn — ritual giảm cost. Mỗi quyết định nhỏ tiết kiệm = thêm năng lượng cho deep."
+  },
+  {
+    q: "Newport nói về Embrace Boredom. Ý chính là gì?",
+    options: ["Đừng dùng phone", "Nếu mỗi lúc rỗng đều với phone, não luyện habit 'không chịu được rỗng' — giết khả năng deep", "Sống chậm hơn", "Buồn chán là tốt"],
+    correct: 1,
+    explain: "Newport KHÔNG bảo 'đừng dùng phone'. Ông nói: phone mỗi lúc rỗng = train brain to need stimulation. Khi cần deep, brain không thể 'sit with thought'. Boredom là gym của attention."
+  },
+  {
+    q: "30-day social media experiment hoạt động thế nào?",
+    options: ["Bỏ luôn không quay lại", "Bỏ 30 ngày, hỏi: (a) đời tốt lên không thiếu? (b) ai để ý mình vắng?", "Giảm 30 phút mỗi ngày", "Chỉ dùng cuối tuần"],
+    correct: 1,
+    explain: "30 ngày bỏ. Sau đó 2 câu hỏi. Nếu cả 2 = không → đừng quay lại. Đa số trả lời 'không' cả 2 — vì lợi ích nhỏ (vài bạn cũ liên lạc), tác hại lớn (1-2h/ngày + giết deep)."
+  },
+  {
+    q: "Block Scheduling khác to-do list ở đâu?",
+    options: ["Block dài hơn", "Block schedule MỌI phút trong ngày — 'where does this hour go?', không phải 'what to do?'", "Block dùng app, to-do dùng giấy", "Không khác nhau"],
+    correct: 1,
+    explain: "To-do list nói 'cần làm gì' nhưng không nói 'khi nào, bao lâu'. Block scheduling buộc bạn quyết định trước. Mỗi block có 1 purpose. Khi email đến — không react, vì không trong block."
+  },
+  {
+    q: "Fixed-schedule productivity là gì?",
+    options: ["Lịch cố định không đổi", "Đặt giới hạn cứng (vd '5h chiều tôi xong') → deadline buộc cắt shallow", "Làm 8h/ngày", "Lịch giống nhau mọi tuần"],
+    correct: 1,
+    explain: "'5h chiều tôi xong' force cắt shallow. Đa số không thử vì sợ 'không xong việc'. Thực tế: production tăng 2-3x vì cắt được meeting + email + chat noise."
+  },
+  {
+    q: "Theo cuốn này, đa số 'knowledge worker' hiện tại có bao nhiêu giờ deep/ngày?",
+    options: ["6-8 giờ", "4-5 giờ", "1-2 giờ", "30 phút"],
+    correct: 3,
+    explain: "Newport quote nghiên cứu: đa số knowledge worker thực sự có ~30 phút deep/ngày, mặc dù ở văn phòng 8-10h. Còn lại là shallow (email, meeting). Cần 4h deep — đó là đề xuất của ông."
+  },
+  {
+    q: "Việt Nam có rào cản đặc thù với Deep Work là gì?",
+    options: ["Văn phòng nhỏ", "Văn hóa công sở đo bằng 'thời gian ngồi', không phải output + open office + group chat 24/7", "Internet kém", "Lương thấp"],
+    correct: 1,
+    explain: "Sếp đi qua thấy không ngồi → 'trốn việc'. Open office + group chat 24/7 + meeting không cần thiết = tối ưu cho shallow. Bắt đầu nhỏ: 90 phút/sáng trước khi office mở."
+  },
+  {
+    q: "Chỗ Newport gặp pushback nhất là gì?",
+    options: ["Quá strict về phone", "Demonize collaboration — không phù hợp manager/sales/founder", "Chống lại work-life balance", "Quá tập trung knowledge worker"],
+    correct: 1,
+    explain: "Newport ưu tiên solo work. Bell Labs hành lang + Pixar mở chứng minh collaboration cũng tạo breakthrough. Cuốn này hợp writer/coder/researcher. Manager/sales/founder cần coordinate — áp dụng phải có nuance."
+  }
+];
+
+let currentCard = 0;
+let knownCards = new Set();
+let currentQuiz = 0;
+let quizScore = 0;
+let quizAnswered = false;
+
+function renderCard() {
+  document.getElementById('cardQuestion').textContent = flashcards[currentCard].q;
+  document.getElementById('cardAnswer').textContent = flashcards[currentCard].a;
+  document.getElementById('cardCurrent').textContent = currentCard + 1;
+  document.getElementById('cardTotal').textContent = flashcards.length;
+  document.getElementById('cardKnown').textContent = knownCards.size;
+  document.getElementById('flashcard').classList.remove('flipped');
+}
+function flipCard() { document.getElementById('flashcard').classList.toggle('flipped'); }
+function nextCard() { currentCard = (currentCard + 1) % flashcards.length; renderCard(); }
+function prevCard() { currentCard = (currentCard - 1 + flashcards.length) % flashcards.length; renderCard(); }
+function markKnown() { knownCards.add(currentCard); document.getElementById('cardKnown').textContent = knownCards.size; setTimeout(nextCard, 300); }
+function markUnknown() { knownCards.delete(currentCard); document.getElementById('cardKnown').textContent = knownCards.size; setTimeout(nextCard, 300); }
+
+function renderQuiz() {
+  if (currentQuiz >= quizQuestions.length) { showQuizResult(); return; }
+  const q = quizQuestions[currentQuiz];
+  document.getElementById('quizQuestion').textContent = q.q;
+  document.getElementById('quizCurrent').textContent = currentQuiz + 1;
+  document.getElementById('quizTotal').textContent = quizQuestions.length;
+  document.getElementById('quizScore').textContent = quizScore;
+  document.getElementById('quizBarFill').style.width = ((currentQuiz + 1) / quizQuestions.length * 100) + '%';
+  const optionsEl = document.getElementById('quizOptions');
+  optionsEl.innerHTML = '';
+  const letters = ['A', 'B', 'C', 'D'];
+  q.options.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'quiz-option';
+    btn.innerHTML = '<span class="quiz-option-letter">' + letters[i] + '</span><span>' + opt + '</span>';
+    btn.onclick = () => answerQuiz(i);
+    optionsEl.appendChild(btn);
+  });
+  document.getElementById('quizFeedback').classList.remove('show');
+  document.getElementById('quizNext').style.display = 'none';
+  quizAnswered = false;
+}
+function answerQuiz(idx) {
+  if (quizAnswered) return;
+  quizAnswered = true;
+  const q = quizQuestions[currentQuiz];
+  const options = document.querySelectorAll('.quiz-option');
+  options.forEach((opt, i) => {
+    opt.classList.add('disabled');
+    if (i === q.correct) opt.classList.add('correct');
+    if (i === idx && i !== q.correct) opt.classList.add('wrong');
+  });
+  if (idx === q.correct) quizScore++;
+  document.getElementById('quizScore').textContent = quizScore;
+  const fb = document.getElementById('quizFeedback');
+  fb.textContent = q.explain;
+  fb.classList.add('show');
+  document.getElementById('quizNext').style.display = 'inline-block';
+  if (currentQuiz === quizQuestions.length - 1) document.getElementById('quizNext').textContent = 'Xem kết quả →';
+}
+function nextQuestion() { currentQuiz++; renderQuiz(); }
+function showQuizResult() {
+  const total = quizQuestions.length;
+  const pct = Math.round(quizScore / total * 100);
+  let label, msg;
+  if (pct >= 90) { label = 'Master deep work'; msg = 'Tuyệt vời! Bạn thấm cuốn sách. Giờ apply: pick 1 schedule strategy, design ritual, block schedule tuần này.'; }
+  else if (pct >= 70) { label = 'Hiểu khá tốt'; msg = 'Khá. Quay lại 4 Rules + Embrace Boredom. Ôn flashcard.'; }
+  else if (pct >= 50) { label = 'Đang trên đường'; msg = 'Khung sườn đã có. Đọc lại Block Scheduling + Fixed-schedule productivity.'; }
+  else { label = 'Cần ôn lại'; msg = 'Đọc lại Framework + 4 Rules. Đặc biệt: Deep vs Shallow + 4 schedule strategies.'; }
+  document.getElementById('quizContainer').innerHTML = '<div class="quiz-result"><div class="quiz-score">' + quizScore + '/' + total + '</div><div class="quiz-score-label">' + label + '</div><p style="margin: 32px auto; max-width: 500px; font-size: 17px; line-height: 1.5;">' + msg + '</p><button class="fcq-btn accent" onclick="resetQuiz()">Làm lại quiz</button></div>';
+}
+function resetQuiz() {
+  currentQuiz = 0; quizScore = 0;
+  document.getElementById('quizContainer').innerHTML = '<div class="quiz-progress"><span>Câu hỏi <span id="quizCurrent">1</span> / <span id="quizTotal">10</span></span><span>Điểm: <span id="quizScore">0</span></span></div><div class="quiz-bar"><div class="quiz-bar-fill" id="quizBarFill" style="width: 10%"></div></div><div class="quiz-question" id="quizQuestion"></div><div class="quiz-options" id="quizOptions"></div><div class="quiz-feedback" id="quizFeedback"></div><div style="display: flex; justify-content: flex-end; margin-top: 24px;"><button class="fcq-btn accent" id="quizNext" onclick="nextQuestion()" style="display: none;">Câu tiếp →</button></div>';
+  renderQuiz();
+}
+
+renderCard();
+renderQuiz();
+</script>
 
 <!-- JOURNAL -->
 <section class="journal-section" id="journal">
