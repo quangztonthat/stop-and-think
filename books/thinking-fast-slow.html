@@ -1515,4 +1515,30 @@ loadPrompts();
           headers: {'content-type': 'application/json'},
           body: JSON.stringify(payload)
         });
-        const data = await res
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Lỗi gửi');
+        msg.textContent = data.message || 'Đã gửi. Check email để xác nhận.';
+        msg.classList.add('show', 'success');
+        document.getElementById('cf-content').value = '';
+        cancelReply();
+      } catch (err) {
+        msg.textContent = err.message || 'Lỗi gửi comment. Thử lại sau.';
+        msg.classList.add('show', 'error');
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Gửi comment →';
+      }
+    });
+    document.getElementById('replyCancel').addEventListener('click', cancelReply);
+    loadComments();
+  }
+})();
+</script>
+
+<!-- Library widgets: search + related books -->
+<script src="/assets/books-data.js"></script>
+<script src="/assets/library.js"></script>
+
+<script src="/assets/nav-spy.js" defer></script>
+</body>
+</html>
