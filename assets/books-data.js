@@ -254,5 +254,19 @@ window.STOP_AND_THINK_BOOKS = [
     summary: '70,000 năm Homo sapiens — 4 cuộc cách mạng và lý do chúng ta thắng: khả năng tin chuyện không có thật cùng nhau.',
     keywords: ['harari', 'sapiens', 'lich su', 'humankind', 'cognitive revolution', 'agriculture', 'fiction', 'money'],
     related: ['the-alchemist', 'search-for-meaning', 'thinking-fast-slow']
+  },
+  {
+    slug: 'the-outsiders',
+    vol: '19',
+    title: 'The Outsiders',
+    author: 'William Thorndike',
+    year: 2012,
+    readingTime: 13,
+    category: 'tai-chinh',
+    categoryLabel: 'Tài chính',
+    cover: 'navy',
+    summary: '8 CEO huyền thoại — không charisma, không nổi tiếng. Họ giàu sụ vì biết phân bổ vốn tốt nhất thời đại.',
+    keywords: ['thorndike', 'ceo', 'capital allocation', 'buffett', 'singleton', 'malone', 'graham', 'unconventional'],
+    related: ['psychology-of-money', 'fooled-by-randomness', 'thinking-in-bets']
   }
 ];
