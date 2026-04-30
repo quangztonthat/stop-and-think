@@ -145,14 +145,20 @@
 }
 `;
 
-  const styleEl = document.createElement('style');
-  styleEl.textContent = css;
-  document.head.appendChild(styleEl);
+  if (!document.querySelector('style[data-snst="library"]')) {
+    const styleEl = document.createElement('style');
+    styleEl.setAttribute('data-snst', 'library');
+    styleEl.textContent = css;
+    document.head.appendChild(styleEl);
+  }
 
-  // ─── Build search overlay ───
-  const overlay = document.createElement('div');
-  overlay.className = 'snst-overlay';
-  overlay.innerHTML = `
+  // ─── Build search overlay (or reuse if already in DOM) ───
+  let overlay = document.querySelector('.snst-overlay');
+  const overlayExisted = !!overlay;
+  if (!overlay) {
+    overlay = document.createElement('div');
+    overlay.className = 'snst-overlay';
+    overlay.innerHTML = `
     <div class="snst-modal">
       <div class="snst-modal-head">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -169,7 +175,8 @@
       </div>
     </div>
   `;
-  document.body.appendChild(overlay);
+    document.body.appendChild(overlay);
+  }
 
   const input = overlay.querySelector('.snst-input');
   const resultsBox = overlay.querySelector('.snst-results');
@@ -454,23 +461,28 @@
 
   const navEl = document.querySelector('.nav-bar') || document.querySelector('.nav');
   if (navEl) {
-    const trigger = document.createElement('button');
-    trigger.type = 'button';
-    trigger.className = 'snst-search-bar';
-    trigger.innerHTML = `
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
-      </svg>
-      <span class="snst-search-bar-text">Tìm sách...</span>
-      <kbd>Ctrl K</kbd>
-    `;
+    let trigger = navEl.querySelector('.snst-search-bar');
+    if (!trigger) {
+      trigger = document.createElement('button');
+      trigger.type = 'button';
+      trigger.className = 'snst-search-bar';
+      trigger.innerHTML = `
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+        <span class="snst-search-bar-text">Tìm sách...</span>
+        <kbd>Ctrl K</kbd>
+      `;
+      const navLinks = navEl.querySelector('.nav-links');
+      if (navLinks) navEl.insertBefore(trigger, navLinks);
+      else navEl.appendChild(trigger);
+    }
+    // Always rebind listener (works for both new + existing element from saved HTML)
     trigger.addEventListener('click', openOverlay);
-    const navLinks = navEl.querySelector('.nav-links');
-    if (navLinks) navEl.insertBefore(trigger, navLinks);
-    else navEl.appendChild(trigger);
   }
 
   function renderRelated() {
+    if (document.querySelector('.snst-related')) return;
     const m = window.location.pathname.match(/\/books\/([^.]+)\.html$/);
     if (!m) return;
     const currentSlug = m[1];
