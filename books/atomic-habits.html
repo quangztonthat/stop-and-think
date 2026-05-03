@@ -6,14 +6,14 @@
 <title>[edit] [edit] Atomic Habits — Sách tương tác</title>
 <meta content='Phân tích chuyên sâu "Atomic Habits" (James Clear) — cách hệ thống nhỏ, đều, tích lũy thay đổi cuộc đời. Bởi Quang Ton.' name="description"/>
 <link href="../favicon.svg" rel="icon" type="image/svg+xml"/>
-<link href="https://stop-and-think.pages.dev/atomic-habits" rel="canonical"/>
+<link href="https://flamindi.com/atomic-habits" rel="canonical"/>
 <meta content="article" property="og:type"/>
 <meta content="Stop &amp; Think" property="og:site_name"/>
 <meta content="vi_VN" property="og:locale"/>
 <meta content="Atomic Habits — Sách tương tác | Stop &amp; Think" property="og:title"/>
 <meta content="Phân tích chuyên sâu Atomic Habits của James Clear — 4 quy luật của thay đổi hành vi và vì sao hệ thống quan trọng hơn mục tiêu. Bởi Quang Ton." property="og:description"/>
-<meta content="https://stop-and-think.pages.dev/atomic-habits" property="og:url"/>
-<meta content="https://stop-and-think.pages.dev/og-image.svg" property="og:image"/>
+<meta content="https://flamindi.com/atomic-habits" property="og:url"/>
+<meta content="https://flamindi.com/og-image.svg" property="og:image"/>
 <meta content="summary_large_image" name="twitter:card"/>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
@@ -713,8 +713,8 @@ body {
     "name": "James Clear"
   },
   "datePublished": "2018",
-  "url": "https://stop-and-think.pages.dev/atomic-habits",
-  "image": "https://stop-and-think.pages.dev/og-image.svg",
+  "url": "https://flamindi.com/atomic-habits",
+  "image": "https://flamindi.com/og-image.svg",
   "review": {
     "@type": "Review",
     "author": {
@@ -725,7 +725,7 @@ body {
       "@type": "Organization",
       "name": "Stop & Think"
     },
-    "url": "https://stop-and-think.pages.dev/atomic-habits"
+    "url": "https://flamindi.com/atomic-habits"
   }
 }
 </script>
@@ -1928,13 +1928,45 @@ let actionsCurrentFilter = 'all';
 
 function renderActions(filter = 'all') {
   actionsCurrentFilter = filter;
+  const grid = document.getElementById('actionsGrid');
+  const preRendered = grid.querySelectorAll('.action-card');
+
+  // If HTML has pre-rendered cards (user edited content), work with DOM instead of JS array
+  if (preRendered.length > 0) {
+    // Determine category from action-num value
+    const cardsArr = Array.from(preRendered).map(card => {
+      const numText = card.querySelector('.action-num')?.textContent || '0';
+      const num = parseInt(numText, 10) || 0;
+      let cat = 'satisfying';
+      if (num >= 1 && num <= 5) cat = 'obvious';
+      else if (num >= 6 && num <= 9) cat = 'attractive';
+      else if (num >= 10 && num <= 14) cat = 'easy';
+      return { card, num, cat };
+    });
+
+    // Filter
+    const matched = cardsArr.filter(c => filter === 'all' || c.cat === filter);
+    const totalPages = Math.max(1, Math.ceil(matched.length / ACTIONS_PER_PAGE));
+    if (actionsCurrentPage > totalPages) actionsCurrentPage = 1;
+    const start = (actionsCurrentPage - 1) * ACTIONS_PER_PAGE;
+    const visibleSet = new Set(matched.slice(start, start + ACTIONS_PER_PAGE).map(c => c.card));
+
+    // Show/hide
+    cardsArr.forEach(c => {
+      c.card.style.display = visibleSet.has(c.card) ? '' : 'none';
+    });
+
+    renderActionsPager(totalPages, matched.length);
+    return;
+  }
+
+  // Fallback: render from JS data array (no pre-rendered)
   const filtered = actions.filter(a => filter === 'all' || a.cat === filter);
   const totalPages = Math.max(1, Math.ceil(filtered.length / ACTIONS_PER_PAGE));
   if (actionsCurrentPage > totalPages) actionsCurrentPage = 1;
   const start = (actionsCurrentPage - 1) * ACTIONS_PER_PAGE;
   const slice = filtered.slice(start, start + ACTIONS_PER_PAGE);
 
-  const grid = document.getElementById('actionsGrid');
   grid.innerHTML = '';
   slice.forEach(a => {
     const div = document.createElement('div');

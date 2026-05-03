@@ -96,7 +96,7 @@ export async function onRequestPost({ request, env }) {
   ).bind(pageId, parentId, name, email, content, verifyToken, ipHash, expiresAt).run();
 
   // ─── Send verification email via Resend ───
-  const siteUrl = env.SITE_URL || 'https://stop-and-think.pages.dev';
+  const siteUrl = env.SITE_URL || 'https://flamindi.com';
   const verifyUrl = `${siteUrl}/api/verify?token=${verifyToken}`;
 
   const emailResult = await sendVerificationEmail(env, {

@@ -7,14 +7,14 @@
 <title>Thinking in Bets — Sách tương tác</title>
 <meta content='Phân tích chuyên sâu "Thinking in Bets" (Annie Duke) — tách quyết định khỏi kết quả, suy nghĩ theo xác suất. Bởi Quang Ton.' name="description"/>
 <link href="../favicon.svg" rel="icon" type="image/svg+xml"/>
-<link href="https://stop-and-think.pages.dev/thinking-in-bets" rel="canonical"/>
+<link href="https://flamindi.com/thinking-in-bets" rel="canonical"/>
 <meta content="article" property="og:type"/>
 <meta content="Stop &amp; Think" property="og:site_name"/>
 <meta content="vi_VN" property="og:locale"/>
 <meta content="Thinking in Bets — Sách tương tác | Stop &amp; Think" property="og:title"/>
 <meta content="Phân tích chuyên sâu Thinking in Bets của Annie Duke — vì sao tách quyết định khỏi kết quả là kỹ năng quan trọng nhất. Bởi Quang Ton." property="og:description"/>
-<meta content="https://stop-and-think.pages.dev/thinking-in-bets" property="og:url"/>
-<meta content="https://stop-and-think.pages.dev/og-image.svg" property="og:image"/>
+<meta content="https://flamindi.com/thinking-in-bets" property="og:url"/>
+<meta content="https://flamindi.com/og-image.svg" property="og:image"/>
 <meta content="summary_large_image" name="twitter:card"/>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
@@ -191,6 +191,12 @@ body { background: var(--paper); color: var(--ink); font-family: 'Fraunces', Geo
 .action-cat-btn { padding: 10px 18px; background: transparent; border: 1.5px solid var(--ink); font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; transition: all 0.2s; }
 .action-cat-btn.active, .action-cat-btn:hover { background: var(--ink); color: var(--paper); }
 .actions-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; }
+.actions-pager { display: flex; justify-content: center; align-items: center; gap: 16px; margin-top: 28px; font-family: 'JetBrains Mono', monospace; font-size: 13px; }
+.actions-pager-btn { width: 40px; height: 40px; background: transparent; border: 1.5px solid var(--ink); color: var(--ink); cursor: pointer; font-size: 18px; line-height: 1; transition: all 0.2s; display: inline-flex; align-items: center; justify-content: center; }
+.actions-pager-btn:hover:not(:disabled) { background: var(--ink); color: var(--paper); }
+.actions-pager-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+.actions-pager-info { font-weight: 600; letter-spacing: 0.05em; }
+.actions-pager-total { color: var(--ink-light, #6b5d4f); font-weight: 400; margin-left: 6px; }
 .action-card { padding: 24px; background: var(--paper); border: 1.5px solid var(--ink); display: flex; gap: 16px; align-items: flex-start; transition: all 0.2s; }
 .action-card:hover { background: var(--paper-dark); transform: translate(-2px, -2px); box-shadow: 4px 4px 0 var(--accent); }
 .action-num { font-family: 'Fraunces', serif; font-size: 36px; font-weight: 700; font-style: normal; color: var(--accent); line-height: 1; flex-shrink: 0; width: 56px; }
@@ -272,8 +278,8 @@ body { background: var(--paper); color: var(--ink); font-family: 'Fraunces', Geo
     "name": "Annie Duke"
   },
   "datePublished": "2018",
-  "url": "https://stop-and-think.pages.dev/thinking-in-bets",
-  "image": "https://stop-and-think.pages.dev/og-image.svg",
+  "url": "https://flamindi.com/thinking-in-bets",
+  "image": "https://flamindi.com/og-image.svg",
   "review": {
     "@type": "Review",
     "author": {
@@ -284,7 +290,7 @@ body { background: var(--paper); color: var(--ink); font-family: 'Fraunces', Geo
       "@type": "Organization",
       "name": "Stop & Think"
     },
-    "url": "https://stop-and-think.pages.dev/thinking-in-bets"
+    "url": "https://flamindi.com/thinking-in-bets"
   }
 }
 </script>
@@ -855,11 +861,44 @@ function resetQuiz() {
   document.getElementById('quizContainer').innerHTML = '<div class="quiz-progress"><span>Câu hỏi <span id="quizCurrent">1</span> / <span id="quizTotal">' + quizQuestions.length + '</span></span><span>Điểm: <span id="quizScore">0</span></span></div><div class="quiz-bar"><div class="quiz-bar-fill" id="quizBarFill" style="width: ' + (100/quizQuestions.length) + '%"></div></div><div class="quiz-question" id="quizQuestion"></div><div class="quiz-options" id="quizOptions"></div><div class="quiz-feedback" id="quizFeedback"></div><div style="display: flex; justify-content: flex-end; margin-top: 24px;"><button class="fcq-btn accent" id="quizNext" onclick="nextQuestion()" style="display: none;">Câu tiếp →</button></div>';
   renderQuiz();
 }
+const ACTIONS_PER_PAGE = 6;
+let actionsCurrentPage = 1;
+let actionsCurrentFilter = 'all';
+
 function renderActions(filter = 'all') {
+  actionsCurrentFilter = filter;
   const grid = document.getElementById('actionsGrid');
+  const preRendered = grid.querySelectorAll('.action-card');
+
+  if (preRendered.length > 0) {
+    const cardsArr = Array.from(preRendered).map(card => {
+      const numText = card.querySelector('.action-num')?.textContent || '0';
+      const num = parseInt(numText, 10) || 0;
+      let cat = 'satisfying';
+      if (num >= 1 && num <= 5) cat = 'obvious';
+      else if (num >= 6 && num <= 9) cat = 'attractive';
+      else if (num >= 10 && num <= 14) cat = 'easy';
+      return { card, num, cat };
+    });
+    const matched = cardsArr.filter(c => filter === 'all' || c.cat === filter);
+    const totalPages = Math.max(1, Math.ceil(matched.length / ACTIONS_PER_PAGE));
+    if (actionsCurrentPage > totalPages) actionsCurrentPage = 1;
+    const start = (actionsCurrentPage - 1) * ACTIONS_PER_PAGE;
+    const visibleSet = new Set(matched.slice(start, start + ACTIONS_PER_PAGE).map(c => c.card));
+    cardsArr.forEach(c => {
+      c.card.style.display = visibleSet.has(c.card) ? '' : 'none';
+    });
+    renderActionsPager(totalPages, matched.length);
+    return;
+  }
+
+  const filtered = actions.filter(a => filter === 'all' || a.cat === filter);
+  const totalPages = Math.max(1, Math.ceil(filtered.length / ACTIONS_PER_PAGE));
+  if (actionsCurrentPage > totalPages) actionsCurrentPage = 1;
+  const start = (actionsCurrentPage - 1) * ACTIONS_PER_PAGE;
+  const slice = filtered.slice(start, start + ACTIONS_PER_PAGE);
   grid.innerHTML = '';
-  actions.forEach(a => {
-    if (filter !== 'all' && a.cat !== filter) return;
+  slice.forEach(a => {
     const div = document.createElement('div');
     div.className = 'action-card';
     div.innerHTML = `
@@ -871,10 +910,39 @@ function renderActions(filter = 'all') {
     `;
     grid.appendChild(div);
   });
+  renderActionsPager(totalPages, filtered.length);
+}
+
+function renderActionsPager(totalPages, totalItems) {
+  let pager = document.getElementById('actionsPager');
+  if (!pager) {
+    pager = document.createElement('div');
+    pager.id = 'actionsPager';
+    pager.className = 'actions-pager';
+    const grid = document.getElementById('actionsGrid');
+    grid.parentNode.insertBefore(pager, grid.nextSibling);
+  }
+  if (totalPages <= 1) {
+    pager.innerHTML = '';
+    pager.style.display = 'none';
+    return;
+  }
+  pager.style.display = '';
+  pager.innerHTML = `
+    <button class="actions-pager-btn" ${actionsCurrentPage === 1 ? 'disabled' : ''} onclick="changeActionsPage(-1)" aria-label="Trang truoc">&larr;</button>
+    <span class="actions-pager-info">${actionsCurrentPage} / ${totalPages} <span class="actions-pager-total">(${totalItems} muc)</span></span>
+    <button class="actions-pager-btn" ${actionsCurrentPage === totalPages ? 'disabled' : ''} onclick="changeActionsPage(1)" aria-label="Trang sau">&rarr;</button>
+  `;
+}
+
+function changeActionsPage(delta) {
+  actionsCurrentPage += delta;
+  renderActions(actionsCurrentFilter);
 }
 function filterActions(cat, btn) {
   document.querySelectorAll('.action-cat-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
+  actionsCurrentPage = 1;
   renderActions(cat);
 }
 function renderPrompts() {
