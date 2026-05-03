@@ -469,6 +469,9 @@ body {
   grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
   gap: 20px;
 }
+.chapter-tabs { display: flex; gap: 8px; margin-bottom: 32px; flex-wrap: wrap; justify-content: center; }
+.chapter-tab-btn { padding: 10px 16px; background: transparent; border: 1.5px solid var(--ink); font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer; transition: all 0.2s; color: var(--ink); }
+.chapter-tab-btn.active, .chapter-tab-btn:hover { background: var(--ink); color: var(--paper); }
 .chapter-card {
   border: 1.5px solid var(--ink);
   padding: 28px;
@@ -886,6 +889,15 @@ body {
 <h2 class="section-title" data-content-id="thinking-fast-slow-chapters-01" data-content-type="heading">Bản đồ chi tiết của cuốn sách</h2>
 <p class="section-intro" data-content-id="thinking-fast-slow-chapters-02" data-content-type="section-intro">Cuốn sách khổng lồ này dài gần năm trăm trang. Tôi đã chắt lọc ra mười bốn chương đắt giá nhất và phân bổ chúng theo đúng năm phần cấu trúc của tác giả.</p>
 <div class="chapter-part">
+<div class="chapter-tabs">
+<button class="chapter-tab-btn active" onclick="filterChapters('part1', this)">I. 2 Hệ thống</button>
+<button class="chapter-tab-btn" onclick="filterChapters('part2', this)">II. Heuristics</button>
+<button class="chapter-tab-btn" onclick="filterChapters('part3', this)">III. Quá tự tin</button>
+<button class="chapter-tab-btn" onclick="filterChapters('part4', this)">IV. Lựa chọn</button>
+<button class="chapter-tab-btn" onclick="filterChapters('part5', this)">V. 2 Bản ngã</button>
+<button class="chapter-tab-btn" onclick="filterChapters('all', this)">Tất cả</button>
+</div>
+<div class="rule-section" data-part="part1">
 <div class="part-header">PART I</div>
 <div class="part-title">Two Systems</div>
 <div class="part-sub">Hai hệ thống — nền tảng cho mọi thứ tiếp theo</div>
@@ -910,7 +922,9 @@ body {
 </div>
 </div>
 </div>
+</div>
 <div class="chapter-part">
+<div class="rule-section" data-part="part2">
 <div class="part-header">PART II</div>
 <div class="part-title">Heuristics &amp; Biases</div>
 <div class="part-sub">10+ thiên kiến nhận thức quan trọng nhất</div>
@@ -941,7 +955,9 @@ body {
 </div>
 </div>
 </div>
+</div>
 <div class="chapter-part">
+<div class="rule-section" data-part="part3">
 <div class="part-header">PART III</div>
 <div class="part-title">Overconfidence</div>
 <div class="part-sub">Vì sao chuyên gia thường sai mà vẫn tự tin</div>
@@ -966,7 +982,9 @@ body {
 </div>
 </div>
 </div>
+</div>
 <div class="chapter-part">
+<div class="rule-section" data-part="part4">
 <div class="part-header">PART IV</div>
 <div class="part-title">Choices</div>
 <div class="part-sub">Prospect Theory — phát hiện đoạt Nobel</div>
@@ -991,7 +1009,9 @@ body {
 </div>
 </div>
 </div>
+</div>
 <div class="chapter-part">
+<div class="rule-section" data-part="part5">
 <div class="part-header">PART V</div>
 <div class="part-title">Two Selves</div>
 <div class="part-sub">Hai bản ngã trong bạn — và cuộc xung đột thầm lặng</div>
@@ -1007,6 +1027,7 @@ body {
 <div class="chapter-title" data-content-id="thinking-fast-slow-chapters-17" data-content-type="chapter-desc">Cuộc đời như một cuốn tiểu thuyết</div>
 <div class="chapter-desc" data-content-id="thinking-fast-slow-chapters-32" data-content-type="chapter-desc">Khi hồi tưởng về một kỳ nghỉ, chúng ta chỉ nhớ về những khoảnh khắc thăng hoa nhất và những giây phút cuối cùng, chứ không bao giờ nhớ toàn bộ chuỗi ngày đó. Bộ nhớ của con người được thiết kế để tự động cô đặc thông tin. Đó là lý do vì sao một cái kết có hậu lại mang sức nặng khủng khiếp đến vậy.</div>
 <span class="chapter-key">Peak-end rule</span>
+</div>
 </div>
 </div>
 </div>
@@ -1133,6 +1154,13 @@ body {
 </footer>
 </main>
 <script>
+function scrollTo2(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  const top = el.getBoundingClientRect().top + window.pageYOffset - 60;
+  window.scrollTo({top, behavior: 'smooth'});
+}
+
 const flashcards = [
   {
     q: "System 1 vs SYSTEM 2 — khác biệt cốt lõi?",
@@ -1440,59 +1468,25 @@ function filterActions(cat, btn) {
   actionsCurrentPage = 1;
   renderActions(cat);
 }
-
-function loadPrompts() {
-  const container = document.getElementById('promptsContainer');
-  journalPrompts.forEach((p, i) => {
-    const div = document.createElement('div');
-    div.className = 'journal-prompt' + (i === 0 ? ' active' : '');
-    div.id = `prompt-${i}`;
-    div.innerHTML = `
-      <div class="journal-q">${p.q}</div>
-      <div class="journal-help"><strong>Gợi ý:</strong> ${p.help}</div>
-      <textarea class="journal-textarea" placeholder="Viết suy nghĩ của bạn..."></textarea>
-    `;
-    container.appendChild(div);
+function filterChapters(part, btn) {
+  document.querySelectorAll('.chapter-tab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.rule-section[data-part]').forEach(sec => {
+    sec.style.display = (part === 'all' || sec.dataset.part === part) ? '' : 'none';
   });
 }
-function switchPrompt(i, dot) {
-  document.querySelectorAll('.journal-dot').forEach(d => d.classList.remove('active'));
-  document.querySelectorAll('.journal-prompt').forEach(p => p.classList.remove('active'));
-  dot.classList.add('active');
-  document.getElementById(`prompt-${i}`).classList.add('active');
-}
 
-function scrollTo2(id) {
-  document.getElementById(id).scrollIntoView({ behavior: 'smooth', block: 'start' });
-}
-
-window.addEventListener('scroll', () => {
-  const total = document.documentElement.scrollHeight - window.innerHeight;
-  const progress = (window.scrollY / total) * 100;
-  document.getElementById('progressBar').style.width = progress + '%';
-});
-
-loadCard();
-loadQuiz();
-renderActions('all');
-loadPrompts();
-</script>
-<script>
-(function() {
-  const COMMENTS_PAGE_ID = "thinking-fast-slow";
-  async function loadComments() {
-    const list = document.getElementById('commentsList');
-    if (!list) return;
-    list.innerHTML = '<div class="comments-loading">Đang tải comment...</div>';
-    try {
-      const res = await fetch('/api/comments?page=' + COMMENTS_PAGE_ID);
-      if (!res.ok) throw new Error('fetch failed');
-      const data = await res.json();
-      renderCommentsList(data.comments || []);
-    } catch (e) {
-      list.innerHTML = '<div class="comments-empty">Không tải được comment. Thử lại sau.</div>';
+document.addEventListener('DOMContentLoaded', function() {
+  // Default: show only first part (skip Tất cả default)
+  const allBtns = document.querySelectorAll('.chapter-tab-btn');
+  for (let i = 0; i < allBtns.length; i++) {
+    const oc = allBtns[i].getAttribute('onclick') || '';
+    if (oc.indexOf("'all'") === -1 && oc.indexOf('filterChapters(') !== -1) {
+      allBtns[i].click();
+      break;
     }
   }
+});
   function renderCommentsList(items) {
     const list = document.getElementById('commentsList');
     if (!items.length) {
@@ -1580,7 +1574,6 @@ loadPrompts();
     document.getElementById('replyCancel').addEventListener('click', cancelReply);
     loadComments();
   }
-})();
 </script>
 <!-- Library widgets: search + related books -->
 <script src="/assets/books-data.js"></script>

@@ -119,10 +119,22 @@ body { background: var(--paper); color: var(--ink); font-family: 'Fraunces', Geo
 /* Chapter map */
 .chap-list { display: grid; gap: 16px; max-width: 880px; margin: 40px 0; }
 .chap-row { display: grid; grid-template-columns: 100px 1fr; gap: 24px; padding: 22px 28px; background: var(--paper-dark); border-left: 3px solid var(--accent); align-items: start; }
-.chap-num { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.15em; color: var(--accent-2); padding-top: 4px; }
-.chap-title { font-family: 'Fraunces', serif; font-size: 19px; font-weight: 600; line-height: 1.3; margin-bottom: 6px; }
-.chap-title em { font-style: normal; color: var(--accent-2); }
-.chap-desc { font-size: 15px; line-height: 1.55; color: var(--muted); }
+.rule-section { padding: 60px 0; border-top: 1px solid var(--ink-light, #d6cfc2); }
+.rule-section:first-of-type { border-top: none; padding-top: 32px; }
+.rule-header { margin-bottom: 32px; }
+.rule-num { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.15em; color: var(--accent-2); margin-bottom: 12px; text-transform: uppercase; }
+.rule-title { font-family: 'Fraunces', serif; font-size: clamp(28px, 4vw, 40px); font-weight: 700; line-height: 1.15; margin-bottom: 14px; }
+.rule-sub { font-size: 16px; line-height: 1.5; color: var(--muted); max-width: 720px; }
+.chapter-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+.chapter-card { padding: 24px; background: rgba(196, 146, 60, 0.04); border: 1px solid rgba(26, 20, 16, 0.08); transition: all 0.2s; }
+.chapter-card:hover { background: rgba(196, 146, 60, 0.08); border-color: rgba(26, 20, 16, 0.18); }
+.chapter-num { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.15em; color: var(--accent-2); margin-bottom: 8px; }
+.chapter-title { font-family: 'Fraunces', serif; font-size: 19px; font-weight: 600; line-height: 1.3; margin-bottom: 8px; }
+.chapter-desc { font-size: 14px; line-height: 1.55; color: var(--muted); }
+.chapter-tabs { display: flex; gap: 8px; margin-bottom: 32px; flex-wrap: wrap; justify-content: center; }
+.chapter-tab-btn { padding: 10px 16px; background: transparent; border: 1.5px solid var(--ink); font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer; transition: all 0.2s; color: var(--ink); }
+.chapter-tab-btn.active, .chapter-tab-btn:hover { background: var(--ink); color: var(--paper); }
+.chap-list, .chap-row, .chap-num, .chap-title, .chap-desc { display: none !important; }
 
 /* Flashcards */
 .flashcards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; margin: 32px 0; }
@@ -389,12 +401,12 @@ body { background: var(--paper); color: var(--ink); font-family: 'Fraunces', Geo
 <span class="snst-search-bar-text">Tìm sách...</span>
 <kbd>Ctrl K</kbd>
 </button><div class="nav-links">
-<a class="" onclick="document.getElementById('thesis').scrollIntoView({behavior:'smooth'})">Luận điểm</a>
-<a class="active" onclick="document.getElementById('framework').scrollIntoView({behavior:'smooth'})">Framework</a>
-<a class="" onclick="document.getElementById('chapters').scrollIntoView({behavior:'smooth'})">Chương sách</a>
-<a class="" onclick="document.getElementById('flashcards').scrollIntoView({behavior:'smooth'})">Flashcard</a>
-<a class="" onclick="document.getElementById('quiz').scrollIntoView({behavior:'smooth'})">Quiz</a>
-<a onclick="document.getElementById('journal').scrollIntoView({behavior:'smooth'})">Nhật ký</a>
+<a class="" onclick="scrollTo2('thesis')">Luận điểm</a>
+<a class="active" onclick="scrollTo2('framework')">Framework</a>
+<a class="" onclick="scrollTo2('chapters')">Chương sách</a>
+<a class="" onclick="scrollTo2('flashcards')">Flashcard</a>
+<a class="" onclick="scrollTo2('quiz')">Quiz</a>
+<a onclick="scrollTo2('journal')">Nhật ký</a>
 </div>
 </nav>
 <!-- HERO -->
@@ -618,100 +630,62 @@ body { background: var(--paper); color: var(--ink); font-family: 'Fraunces', Geo
 <h2 class="section-title" data-content-id="deep-work-chapters-01" data-content-type="heading" style="">Cấu trúc hai phần</h2>
 <p class="section-intro" data-content-id="deep-work-chapters-02" data-content-type="section-intro" style="">Cuốn sách ngắn gọn này được chia làm hai phần rõ rệt. Phần một giải thích lý do tại sao làm việc sâu lại quan trọng. Phần hai hướng dẫn bạn cách thực hành.</p>
 <p class="section-intro" data-content-id="deep-work-chapters-03" data-content-type="section-intro" style="">Cuốn sách ngắn gọn này được chia làm hai phần rõ rệt. Phần một giải thích tại sao làm việc sâu lại quan trọng. Phần hai hướng dẫn bạn cách thực hành.</p>
-<div class="chap-list">
-<div class="chap-row">
-<div class="chap-num" style="">Part 1</div>
-<div>
-<div class="chap-title" data-content-id="deep-work-chapters-04" data-content-type="chapter-desc" style="">Ý tưởng nền tảng</div>
-<div class="chap-desc" data-content-id="deep-work-chapters-13" data-content-type="chapter-desc" style="">Tại sao làm việc sâu là kỹ năng quý nhất trong nền kinh tế hiện đại.</div>
+<div class="chapter-tabs">
+<button class="chapter-tab-btn active" onclick="filterChapters('part1', this)">I. Nền tảng</button>
+<button class="chapter-tab-btn" onclick="filterChapters('part2', this)">II. 4 Quy tắc</button>
+<button class="chapter-tab-btn" onclick="filterChapters('all', this)">Tất cả</button>
 </div>
+<div class="rule-section" data-part="part1">
+<div class="rule-header">
+<div class="rule-num">PHẦN I — NỀN TẢNG</div>
+<div class="rule-title" data-content-id="deep-work-chapters-04" data-content-type="framework">Ý tưởng nền tảng</div>
+<div class="rule-sub" data-content-id="deep-work-chapters-13" data-content-type="framework">Newton viết Principia trong cabin tách biệt 18 tháng. Carl Jung xây tháp đá Bollingen để biến mất khỏi xã hội. Bill Gates đi Think Week 2 lần/năm. Câu hỏi của Newport — kỹ năng nào hiện tại đắt nhất, hiếm nhất, dễ thua máy nhất?</div>
 </div>
-<div class="chap-row">
-<div class="chap-num" style="">Ch 01</div>
-<div>
-<div class="chap-title" data-content-id="deep-work-chapters-05" data-content-type="chapter-desc" style="">Giá trị của sự tập trung</div>
-<div class="chap-desc" data-content-id="deep-work-chapters-14" data-content-type="chapter-desc" style="">Ba nhóm người chiến thắng trong nền kinh tế mới đều cần sự tập trung cao độ.</div>
+<div class="chapter-grid">
+<div class="chapter-card">
+<div class="chapter-num">CHƯƠNG 01</div>
+<div class="chapter-title" data-content-id="deep-work-chapters-05" data-content-type="chapter-desc">Giá trị của sự tập trung</div>
+<div class="chapter-desc" data-content-id="deep-work-chapters-14" data-content-type="chapter-desc">Ba nhóm thắng nền kinh tế mới — chủ vốn, siêu sao, ai-học-nhanh. 2 nhóm sau cần cùng 1 thứ: tập trung sâu. Knowledge worker trung bình đang có 40% deep / 60% shallow. Newport bảo đảo tỷ lệ là KPI nghề nghiệp lớn nhất thế kỷ 21.</div>
 </div>
+<div class="chapter-card">
+<div class="chapter-num">CHƯƠNG 02</div>
+<div class="chapter-title" data-content-id="deep-work-chapters-06" data-content-type="chapter-desc">Sự khan hiếm của làm việc sâu</div>
+<div class="chapter-desc" data-content-id="deep-work-chapters-15" data-content-type="chapter-desc">Vì sao shallow nuốt 60% giờ làm — visible busyness = signal năng suất khi kết quả khó đo. Trả lời email 5 phút trông giỏi. Đóng email 4 tiếng để viết — trông lười. Metric sai → hành vi sai → toàn ngành busy mà không làm gì.</div>
 </div>
-<div class="chap-row">
-<div class="chap-num" style="">Ch 02</div>
-<div>
-<div class="chap-title" data-content-id="deep-work-chapters-06" data-content-type="chapter-desc" style="">Sự khan hiếm của làm việc sâu</div>
-<div class="chap-desc" data-content-id="deep-work-chapters-15" data-content-type="chapter-desc" style="">Tại sao môi trường công sở hiện đại lại cổ xúy cho sự hời hợt.</div>
-</div>
-</div>
-<div class="chap-row">
-<div class="chap-num" style="">Ch 03</div>
-<div>
-<div class="chap-title" data-content-id="deep-work-chapters-07" data-content-type="chapter-desc" style="">Ý nghĩa của sự tập trung</div>
-<div class="chap-desc" data-content-id="deep-work-chapters-16" data-content-type="chapter-desc" style="">Trạng thái dòng chảy và lý do sự tập trung sâu tạo ra cảm giác thỏa mãn nhất.</div>
-</div>
-</div>
-<div class="chap-row">
-<div class="chap-num" style="">Part 2</div>
-<div>
-<div class="chap-title" data-content-id="deep-work-chapters-08" data-content-type="chapter-desc" style="">Bốn quy tắc</div>
-<div class="chap-desc" data-content-id="deep-work-chapters-17" data-content-type="chapter-desc" style="">Bốn quy tắc thực hành cốt lõi.</div>
-</div>
-</div>
-<div class="chap-row">
-<div class="chap-num" style="">Rule 1</div>
-<div>
-<div class="chap-title" data-content-id="deep-work-chapters-09" data-content-type="chapter-desc" style="">Làm việc sâu</div>
-<div class="chap-desc" data-content-id="deep-work-chapters-18" data-content-type="chapter-desc" style="">Lịch trình, nghi thức và bốn chiến lược triển khai.</div>
-</div>
-</div>
-<div class="chap-row">
-<div class="chap-num" style="">Rule 2</div>
-<div>
-<div class="chap-title" data-content-id="deep-work-chapters-10" data-content-type="chapter-desc" style="">Ôm lấy sự buồn chán</div>
-<div class="chap-desc" data-content-id="deep-work-chapters-19" data-content-type="chapter-desc" style="">Bạn phải luyện cho não chịu được sự tĩnh lặng. Không có đường tắt nào cả.</div>
-</div>
-</div>
-<div class="chap-row">
-<div class="chap-num" style="">Rule 3</div>
-<div>
-<div class="chap-title" data-content-id="deep-work-chapters-11" data-content-type="chapter-desc" style="">Từ bỏ mạng xã hội</div>
-<div class="chap-desc" data-content-id="deep-work-chapters-20" data-content-type="chapter-desc" style="">Tư duy thợ thủ công. Lựa chọn công cụ dựa trên chi phí và lợi ích thực sự.</div>
-</div>
-</div>
-<div class="chap-row">
-<div class="chap-num" style="">Rule 4</div>
-<div>
-<div class="chap-title" data-content-id="deep-work-chapters-12" data-content-type="chapter-desc" style="">Rút cạn việc nông</div>
-<div class="chap-desc" data-content-id="deep-work-chapters-21" data-content-type="chapter-desc" style="">Khối thời gian, lịch trình cố định và ngân sách cho việc lặt vặt.</div>
+<div class="chapter-card">
+<div class="chapter-num">CHƯƠNG 03</div>
+<div class="chapter-title" data-content-id="deep-work-chapters-07" data-content-type="chapter-desc">Ý nghĩa của sự tập trung</div>
+<div class="chapter-desc" data-content-id="deep-work-chapters-16" data-content-type="chapter-desc">Csikszentmihalyi: chỉ trong flow ta thấy ý nghĩa — không phải khi xem Netflix. Ý nghĩa tới từ cái khó, không phải cái dễ. Newport mượn ý này — deep work không chỉ đắt giá nghề nghiệp, mà là điều kiện để đời "có" nghĩa.</div>
 </div>
 </div>
 </div>
-<p class="section-intro" style="margin-top: 48px; max-width: 1000px; margin-left: auto; margin-right: auto;"><span data-content-id="deep-work-collaboration-1" style="">Newport hơi cực đoan khi phỉ báng việc họp hành và làm việc nhóm. Ông viết dưới lăng kính của một giáo sư làm việc độc lập. Nếu bạn làm kinh doanh hay quản lý dự án, giá trị của bạn nằm ở giao tiếp. Khi đọc cuốn này, bạn phải tự chắt lọc xem vai trò của mình cần bao nhiêu phần trăm sự tập trung sâu. Đừng áp dụng mù quáng.</span></p>
-</section>
-<!-- FLASHCARDS -->
-<section class="section" id="flashcards">
-<div class="section-label" style="">Flashcards / 10 khái niệm cốt lõi</div>
-<h2 class="section-title" data-content-id="deep-work-flashcards-01" data-content-type="heading" style="">Mười thẻ ghi nhớ cốt lõi</h2>
-<p class="section-intro" data-content-id="deep-work-flashcards-02" data-content-type="section-intro" style="">Mười ý tưởng sắc bén nhất từ cuốn sách. Lật thẻ để xem đáp án, tự kiểm tra lại trí nhớ của bạn.</p>
-<div class="flashcard-container">
-<div class="flashcard-controls">
-<div class="flashcard-counter">Thẻ <strong id="cardCurrent">1</strong> / <span id="cardTotal">10</span></div>
-<div class="flashcard-counter">Đã thuộc: <strong id="cardKnown">0</strong></div>
+<div class="rule-section" data-part="part2">
+<div class="rule-header">
+<div class="rule-num">PHẦN II — BỐN QUY TẮC</div>
+<div class="rule-title" data-content-id="deep-work-chapters-08" data-content-type="framework">Bốn quy tắc thực hành</div>
+<div class="rule-sub" data-content-id="deep-work-chapters-17" data-content-type="framework">Newport bỏ chi tiết, chốt 4 lệnh: Làm việc sâu / Ôm sự buồn chán / Bỏ mạng xã hội / Rút cạn việc nông. Không có thứ tự. Pick 1, làm 30 ngày, rồi mới nâng cấp.</div>
 </div>
-<div class="flashcard" id="flashcard" onclick="flipCard()">
-<div class="flashcard-face flashcard-front">
-<div class="flashcard-tag" style="">Câu hỏi</div>
-<div class="flashcard-question" id="cardQuestion" style="">Deep Work khác Shallow Work ở 4 tiêu chí nào?</div>
-<div class="flashcard-hint" style="">Click để xem đáp án</div>
+<div class="chapter-grid">
+<div class="chapter-card">
+<div class="chapter-num">QUY TẮC 1</div>
+<div class="chapter-title" data-content-id="deep-work-chapters-09" data-content-type="chapter-desc">Làm việc sâu</div>
+<div class="chapter-desc" data-content-id="deep-work-chapters-18" data-content-type="chapter-desc">Pick 1 trong 4 lifestyle — Monastic (đóng cửa hoàn toàn), Bimodal (5 ngày sâu / 5 ngày shallow), Rhythmic (90 phút/ngày, 6 giờ sáng), Journalistic (chen đâu sâu đó). Đa số nên Rhythmic. Phải có nghi thức bắt đầu — không có nghi thức = không có đầu chuỗi.</div>
 </div>
-<div class="flashcard-face flashcard-back">
-<div class="flashcard-tag" style="">Đáp án</div>
-<div class="flashcard-answer" id="cardAnswer" style="">Deep: tập trung không gián đoạn + đẩy năng lực nhận thức + tạo giá trị mới + khó sao chép. Shallow: việc logistic non-cognitive làm trong distraction, không tạo nhiều giá trị, dễ thay thế bởi AI.</div>
-<div class="flashcard-hint" style="">Click để xem câu hỏi</div>
+<div class="chapter-card">
+<div class="chapter-num">QUY TẮC 2</div>
+<div class="chapter-title" data-content-id="deep-work-chapters-10" data-content-type="chapter-desc">Ôm lấy sự buồn chán</div>
+<div class="chapter-desc" data-content-id="deep-work-chapters-19" data-content-type="chapter-desc">Bạn phải luyện cho não chịu được sự tĩnh lặng. Không có đường tắt nào cả.</div>
 </div>
+<div class="chapter-card">
+<div class="chapter-num">QUY TẮC 3</div>
+<div class="chapter-title" data-content-id="deep-work-chapters-11" data-content-type="chapter-desc">Từ bỏ mạng xã hội</div>
+<div class="chapter-desc" data-content-id="deep-work-chapters-20" data-content-type="chapter-desc">Tư duy thợ thủ công. Lựa chọn công cụ dựa trên chi phí và lợi ích thực sự.</div>
 </div>
-<div class="flashcard-nav">
-<button class="fcq-btn outline" onclick="prevCard()">← Trước</button>
-<button class="fcq-btn" onclick="markUnknown()">Cần học lại</button>
-<button class="fcq-btn accent" onclick="markKnown()">Tôi nhớ ✓</button>
-<button class="fcq-btn outline" onclick="nextCard()">Sau →</button>
+<div class="chapter-card">
+<div class="chapter-num">QUY TẮC 4</div>
+<div class="chapter-title" data-content-id="deep-work-chapters-12" data-content-type="chapter-desc">Rút cạn việc nông</div>
+<div class="chapter-desc" data-content-id="deep-work-chapters-21" data-content-type="chapter-desc">Schedule mọi giờ trong ngày — kể cả "nghỉ ngơi". Email max 90 phút/ngày. Test mỗi task: "Một fresh grad cần bao lâu để học làm task này?" Dưới 1 tháng → outsource hoặc batch. Trên 6 tháng → deep work, ưu tiên.</div>
+</div>
 </div>
 </div>
 </section>
@@ -735,6 +709,13 @@ body { background: var(--paper); color: var(--ink); font-family: 'Fraunces', Geo
 </div>
 </section>
 <script>
+function scrollTo2(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  const top = el.getBoundingClientRect().top + window.pageYOffset - 60;
+  window.scrollTo({top, behavior: 'smooth'});
+}
+
 const flashcards = [
   {
     q: "Deep Work khác Shallow Work ở 4 tiêu chí nào?",
@@ -1102,5 +1083,26 @@ renderQuiz();
 </div>
 <script defer="" src="/assets/nav-spy.js"></script>
 <script data-cf-beacon='{"token":"a1b2c3d4e5f6789"}' defer="" src="https://static.cloudflareinsights.com/beacon.min.js"></script>
+<script>
+function filterChapters(part, btn) {
+  document.querySelectorAll('.chapter-tab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.rule-section[data-part]').forEach(sec => {
+    sec.style.display = (part === 'all' || sec.dataset.part === part) ? '' : 'none';
+  });
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  // Default: show only first part (skip Tất cả default)
+  const allBtns = document.querySelectorAll('.chapter-tab-btn');
+  for (let i = 0; i < allBtns.length; i++) {
+    const oc = allBtns[i].getAttribute('onclick') || '';
+    if (oc.indexOf("'all'") === -1 && oc.indexOf('filterChapters(') !== -1) {
+      allBtns[i].click();
+      break;
+    }
+  }
+});
+</script>
 <script src="../edit-mode.js"></script>
 </body></html>

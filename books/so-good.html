@@ -586,6 +586,9 @@ body {
   grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
   gap: 16px;
 }
+.chapter-tabs { display: flex; gap: 8px; margin-bottom: 32px; flex-wrap: wrap; justify-content: center; }
+.chapter-tab-btn { padding: 10px 16px; background: transparent; border: 1.5px solid var(--ink); font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer; transition: all 0.2s; color: var(--ink); }
+.chapter-tab-btn.active, .chapter-tab-btn:hover { background: var(--ink); color: var(--paper); }
 
 .chapter-card {
   border: 1.5px solid var(--ink);
@@ -1010,7 +1013,14 @@ body {
 <div class="section-label">15 chương — 4 quy tắc</div>
 <h2 class="section-title" data-content-id="so-good-chapters-01" data-content-type="heading">Bản đồ <em>chi tiết</em> của cuốn sách</h2>
 <p class="section-intro" data-content-id="so-good-chapters-02" data-content-type="section-intro">Cuốn sách này đập tan ảo tưởng về việc đi theo đam mê để xây dựng lại một lộ trình sự nghiệp vững chắc hơn. Hãy đọc tuần tự để hiểu vì sao tư duy người thợ mới là chìa khóa mở ra những công việc trong mơ.</p>
-<div class="rule-section">
+<div class="chapter-tabs">
+<button class="chapter-tab-btn active" onclick="filterChapters('rule1', this)">Quy tắc 1</button>
+<button class="chapter-tab-btn" onclick="filterChapters('rule2', this)">Quy tắc 2</button>
+<button class="chapter-tab-btn" onclick="filterChapters('rule3', this)">Quy tắc 3</button>
+<button class="chapter-tab-btn" onclick="filterChapters('rule4', this)">Quy tắc 4</button>
+<button class="chapter-tab-btn" onclick="filterChapters('all', this)">Tất cả</button>
+</div>
+<div class="rule-section" data-part="rule1">
 <div class="rule-header">
 <div class="rule-num">RULE #1</div>
 <div class="rule-title" data-content-id="so-good-chapters-33" data-content-type="framework">Quy tắc một: Đừng chạy theo đam mê</div>
@@ -1037,7 +1047,7 @@ body {
 </div>
 </div>
 </div>
-<div class="rule-section">
+<div class="rule-section" data-part="rule2">
 <div class="rule-header">
 <div class="rule-num">RULE #2</div>
 <div class="rule-title" data-content-id="so-good-chapters-34" data-content-type="framework">Quy tắc hai: Hãy giỏi đến mức họ không thể phớt lờ bạn</div>
@@ -1070,7 +1080,7 @@ body {
 </div>
 </div>
 </div>
-<div class="rule-section">
+<div class="rule-section" data-part="rule3">
 <div class="rule-header">
 <div class="rule-num">RULE #3</div>
 <div class="rule-title" data-content-id="so-good-chapters-35" data-content-type="framework">Quy tắc ba: Hãy từ chối sự thăng tiến</div>
@@ -1103,7 +1113,7 @@ body {
 </div>
 </div>
 </div>
-<div class="rule-section">
+<div class="rule-section" data-part="rule4">
 <div class="rule-header">
 <div class="rule-num">RULE #4</div>
 <div class="rule-title" data-content-id="so-good-chapters-36" data-content-type="framework">Quy tắc bốn: Nghĩ nhỏ nhưng hành động lớn</div>
@@ -1259,6 +1269,13 @@ body {
 </footer>
 </main>
 <script>
+function scrollTo2(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  const top = el.getBoundingClientRect().top + window.pageYOffset - 60;
+  window.scrollTo({top, behavior: 'smooth'});
+}
+
 const flashcards = [
   {
     q: "Passion Mindset vs Craftsman Mindset — khác biệt cốt lõi?",
@@ -1567,55 +1584,25 @@ function filterActions(cat, btn) {
   actionsCurrentPage = 1;
   renderActions(cat);
 }
-
-function loadPrompts() {
-  const container = document.getElementById('promptsContainer');
-  journalPrompts.forEach((p, i) => {
-    const div = document.createElement('div');
-    div.className = 'journal-prompt' + (i === 0 ? ' active' : '');
-    div.id = `prompt-${i}`;
-    div.innerHTML = `
-      <div class="journal-q">${p.q}</div>
-      <div class="journal-help"><strong>Gợi ý:</strong> ${p.help}</div>
-      <textarea class="journal-textarea" placeholder="Viết suy nghĩ của bạn..."></textarea>
-    `;
-    container.appendChild(div);
+function filterChapters(part, btn) {
+  document.querySelectorAll('.chapter-tab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.rule-section[data-part]').forEach(sec => {
+    sec.style.display = (part === 'all' || sec.dataset.part === part) ? '' : 'none';
   });
 }
 
-function switchPrompt(i, dot) {
-  document.querySelectorAll('.journal-dot').forEach(d => d.classList.remove('active'));
-  document.querySelectorAll('.journal-prompt').forEach(p => p.classList.remove('active'));
-  dot.classList.add('active');
-  document.getElementById(`prompt-${i}`).classList.add('active');
-}
-
-function scrollTo2(id) {
-  document.getElementById(id).scrollIntoView({ behavior: 'smooth', block: 'start' });
-}
-
-window.addEventListener('scroll', () => {
-  const total = document.documentElement.scrollHeight - window.innerHeight;
-  const progress = (window.scrollY / total) * 100;
-  document.getElementById('progressBar').style.width = progress + '%';
-});
-
-
-// ─── Comments system ───
-const COMMENTS_PAGE_ID = 'so-good';
-
-async function loadComments() {
-  const list = document.getElementById('commentsList');
-  list.innerHTML = '<div class="comments-loading">Đang tải comment...</div>';
-  try {
-    const res = await fetch(`/api/comments?page=${COMMENTS_PAGE_ID}`);
-    if (!res.ok) throw new Error('fetch failed');
-    const data = await res.json();
-    renderCommentsList(data.comments || []);
-  } catch (e) {
-    list.innerHTML = '<div class="comments-empty">Không tải được comment. Thử lại sau.</div>';
+document.addEventListener('DOMContentLoaded', function() {
+  // Default: show only first part (skip Tất cả default)
+  const allBtns = document.querySelectorAll('.chapter-tab-btn');
+  for (let i = 0; i < allBtns.length; i++) {
+    const oc = allBtns[i].getAttribute('onclick') || '';
+    if (oc.indexOf("'all'") === -1 && oc.indexOf('filterChapters(') !== -1) {
+      allBtns[i].click();
+      break;
+    }
   }
-}
+});
 
 function renderCommentsList(items) {
   const list = document.getElementById('commentsList');

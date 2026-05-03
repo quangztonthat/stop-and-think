@@ -120,10 +120,22 @@ body { background: var(--paper); color: var(--ink); font-family: 'Fraunces', Geo
 /* Chapter map */
 .chap-list { display: grid; gap: 16px; max-width: 880px; margin: 40px 0; }
 .chap-row { display: grid; grid-template-columns: 100px 1fr; gap: 24px; padding: 22px 28px; background: var(--paper-dark); border-left: 3px solid var(--accent); align-items: start; }
-.chap-num { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.15em; color: var(--accent-2); padding-top: 4px; }
-.chap-title { font-family: 'Fraunces', serif; font-size: 19px; font-weight: 600; line-height: 1.3; margin-bottom: 6px; }
-.chap-title em { font-style: normal; color: var(--accent-2); }
-.chap-desc { font-size: 15px; line-height: 1.55; color: var(--muted); }
+.rule-section { padding: 60px 0; border-top: 1px solid var(--ink-light, #d6cfc2); }
+.rule-section:first-of-type { border-top: none; padding-top: 32px; }
+.rule-header { margin-bottom: 32px; }
+.rule-num { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.15em; color: var(--accent-2); margin-bottom: 12px; text-transform: uppercase; }
+.rule-title { font-family: 'Fraunces', serif; font-size: clamp(28px, 4vw, 40px); font-weight: 700; line-height: 1.15; margin-bottom: 14px; }
+.rule-sub { font-size: 16px; line-height: 1.5; color: var(--muted); max-width: 720px; }
+.chapter-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+.chapter-card { padding: 24px; background: rgba(196, 146, 60, 0.04); border: 1px solid rgba(26, 20, 16, 0.08); transition: all 0.2s; }
+.chapter-card:hover { background: rgba(196, 146, 60, 0.08); border-color: rgba(26, 20, 16, 0.18); }
+.chapter-num { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.15em; color: var(--accent-2); margin-bottom: 8px; }
+.chapter-title { font-family: 'Fraunces', serif; font-size: 19px; font-weight: 600; line-height: 1.3; margin-bottom: 8px; }
+.chapter-desc { font-size: 14px; line-height: 1.55; color: var(--muted); }
+.chapter-tabs { display: flex; gap: 8px; margin-bottom: 32px; flex-wrap: wrap; justify-content: center; }
+.chapter-tab-btn { padding: 10px 16px; background: transparent; border: 1.5px solid var(--ink); font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer; transition: all 0.2s; color: var(--ink); }
+.chapter-tab-btn.active, .chapter-tab-btn:hover { background: var(--ink); color: var(--paper); }
+.chap-list, .chap-row, .chap-num, .chap-title, .chap-desc { display: none !important; }
 
 /* Flashcards */
 .flashcards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; margin: 32px 0; }
@@ -245,12 +257,12 @@ body { background: var(--paper); color: var(--ink); font-family: 'Fraunces', Geo
 <nav class="nav-bar">
 <a class="nav-logo" href="../index.html" title="Về trang chủ">Stillness <span>Is the Key</span><em>.</em></a>
 <div class="nav-links">
-<a onclick="document.getElementById('thesis').scrollIntoView({behavior:'smooth'})">Luận điểm</a>
-<a onclick="document.getElementById('framework').scrollIntoView({behavior:'smooth'})">Framework</a>
-<a onclick="document.getElementById('chapters').scrollIntoView({behavior:'smooth'})">Chương sách</a>
-<a onclick="document.getElementById('flashcards').scrollIntoView({behavior:'smooth'})">Flashcard</a>
-<a onclick="document.getElementById('quiz').scrollIntoView({behavior:'smooth'})">Quiz</a>
-<a onclick="document.getElementById('journal').scrollIntoView({behavior:'smooth'})">Nhật ký</a>
+<a onclick="scrollTo2('thesis')">Luận điểm</a>
+<a onclick="scrollTo2('framework')">Framework</a>
+<a onclick="scrollTo2('chapters')">Chương sách</a>
+<a onclick="scrollTo2('flashcards')">Flashcard</a>
+<a onclick="scrollTo2('quiz')">Quiz</a>
+<a onclick="scrollTo2('journal')">Nhật ký</a>
 </div>
 </nav>
 <!-- HERO -->
@@ -503,121 +515,82 @@ body { background: var(--paper); color: var(--ink); font-family: 'Fraunces', Geo
 <div class="section-label">Bản đồ nội dung / Chương sách</div>
 <h2 class="section-title" data-content-id="stillness-chapters-01" data-content-type="heading">Bản đồ chi tiết của cuốn sách</h2>
 <p class="section-intro" data-content-id="stillness-chapters-02" data-content-type="section-intro">Cuốn sách ngắn gọn này được chia thành ba phần rõ rệt. Mỗi chương là một bài luận nhỏ chứa đựng những bài học quý giá và những dẫn chứng lịch sử sống động.</p>
-<div class="chap-list">
-<div class="chap-row">
-<div class="chap-num">Part 1</div>
-<div>
-<div class="chap-title" data-content-id="stillness-chapters-03" data-content-type="chapter-desc">Phần một: Tâm trí</div>
-<div class="chap-desc" data-content-id="stillness-chapters-15" data-content-type="chapter-desc">Hạn chế thông tin, dọn rỗng tâm hồn và học cách phản ứng chậm lại.</div>
+<div class="chapter-tabs">
+<button class="chapter-tab-btn active" onclick="filterChapters('part1', this)">Phần I — Tâm trí</button>
+<button class="chapter-tab-btn" onclick="filterChapters('part2', this)">Phần II — Linh hồn</button>
+<button class="chapter-tab-btn" onclick="filterChapters('part3', this)">Phần III — Cơ thể</button>
+<button class="chapter-tab-btn" onclick="filterChapters('all', this)">Tất cả</button>
 </div>
+<div class="rule-section" data-part="part1">
+<div class="rule-header">
+<div class="rule-num">PHẦN I — TÂM TRÍ</div>
+<div class="rule-title" data-content-id="stillness-chapters-03" data-content-type="framework">Phần một: Tâm trí</div>
+<div class="rule-sub" data-content-id="stillness-chapters-15" data-content-type="framework">Lincoln đọc 1 cuốn/tuần. Marcus Aurelius viết Meditations giữa trận chiến. Holiday gom 4 thực hành cho phần này — tiết chế input, dọn nội thất tâm trí, phản ứng chậm. Giai đoạn dễ nhất khi mọi thứ đang nhanh.</div>
 </div>
-<div class="chap-row">
-<div class="chap-num">Ch</div>
-<div>
-<div class="chap-title" data-content-id="stillness-chapters-04" data-content-type="chapter-desc">Tiết chế những gì bạn nạp vào</div>
-<div class="chap-desc" data-content-id="stillness-chapters-16" data-content-type="chapter-desc">Việc tiêu thụ tin tức và mạng xã hội quá đà sẽ hủy hoại khả năng đưa ra quyết định sáng suốt của bạn.</div>
+<div class="chapter-grid">
+<div class="chapter-card">
+<div class="chapter-num">CHƯƠNG 01</div>
+<div class="chapter-title" data-content-id="stillness-chapters-04" data-content-type="chapter-desc">Tiết chế những gì bạn nạp vào</div>
+<div class="chapter-desc" data-content-id="stillness-chapters-16" data-content-type="chapter-desc">Eisenhower xem báo 1 lần/sáng — D-Day. Lincoln đọc thư đối thủ rồi đốt, không reply. Knowledge worker hôm nay quẹt 150 lần/ngày, xem 5 push notification trước khi ra khỏi giường. Input rác → quyết định rác.</div>
 </div>
+<div class="chapter-card">
+<div class="chapter-num">CHƯƠNG 02</div>
+<div class="chapter-title" data-content-id="stillness-chapters-05" data-content-type="chapter-desc">Làm rỗng tâm trí</div>
+<div class="chapter-desc" data-content-id="stillness-chapters-17" data-content-type="chapter-desc">Steve Jobs walking meeting — không phải fashion, là tool ép não chuyển mode. Thoreau bỏ Walden 2 năm 2 tháng để "sống thận trọng". Walking + solo time = tiền đề cho mọi insight "đột nhiên hiểu" của 200 năm qua.</div>
 </div>
-<div class="chap-row">
-<div class="chap-num">Ch</div>
-<div>
-<div class="chap-title" data-content-id="stillness-chapters-05" data-content-type="chapter-desc">Làm rỗng tâm trí</div>
-<div class="chap-desc" data-content-id="stillness-chapters-17" data-content-type="chapter-desc">Đi bộ hằng ngày và dành thời gian để suy ngẫm là cách tốt nhất để tái tạo năng lượng cho não bộ.</div>
-</div>
-</div>
-<div class="chap-row">
-<div class="chap-num">Ch</div>
-<div>
-<div class="chap-title" data-content-id="stillness-chapters-06" data-content-type="chapter-desc">Chậm lại để tư duy</div>
-<div class="chap-desc" data-content-id="stillness-chapters-18" data-content-type="chapter-desc">Phản ứng chậm rãi luôn mang lại những nước cờ khôn ngoan hơn. Hãy nhìn vào tấm gương của Lincoln hay Marcus Aurelius.</div>
-</div>
-</div>
-<div class="chap-row">
-<div class="chap-num">Part 2</div>
-<div>
-<div class="chap-title" data-content-id="stillness-chapters-07" data-content-type="chapter-desc">Phần hai: Linh hồn</div>
-<div class="chap-desc" data-content-id="stillness-chapters-19" data-content-type="chapter-desc">Sống đức hạnh, chữa lành các mối quan hệ và tìm kiếm sự gắn kết sâu sắc.</div>
-</div>
-</div>
-<div class="chap-row">
-<div class="chap-num">Ch</div>
-<div>
-<div class="chap-title" data-content-id="stillness-chapters-08" data-content-type="chapter-desc">Lựa chọn lối sống đức hạnh</div>
-<div class="chap-desc" data-content-id="stillness-chapters-20" data-content-type="chapter-desc">Việc làm đúng đắn luôn quan trọng hơn việc làm xuất sắc trong một mục tiêu sai lầm.</div>
-</div>
-</div>
-<div class="chap-row">
-<div class="chap-num">Ch</div>
-<div>
-<div class="chap-title" data-content-id="stillness-chapters-09" data-content-type="chapter-desc">Chữa lành những tổn thương bên trong</div>
-<div class="chap-desc" data-content-id="stillness-chapters-21" data-content-type="chapter-desc">Những mô thức hành xử tiêu cực từ thời thơ ấu nếu không được giải quyết sẽ trở thành gánh nặng cho cuộc đời trưởng thành.</div>
-</div>
-</div>
-<div class="chap-row">
-<div class="chap-num">Ch</div>
-<div>
-<div class="chap-title" data-content-id="stillness-chapters-10" data-content-type="chapter-desc">Tìm kiếm vẻ đẹp xung quanh</div>
-<div class="chap-desc" data-content-id="stillness-chapters-22" data-content-type="chapter-desc">Nghệ thuật và thiên nhiên không phải là những thứ xa xỉ, chúng là thức ăn tinh thần cho linh hồn bạn.</div>
-</div>
-</div>
-<div class="chap-row">
-<div class="chap-num">Part 3</div>
-<div>
-<div class="chap-title" data-content-id="stillness-chapters-11" data-content-type="chapter-desc">Phần ba: Cơ thể</div>
-<div class="chap-desc" data-content-id="stillness-chapters-23" data-content-type="chapter-desc">Giấc ngủ, vận động và sự cô độc là những yếu tố cốt yếu để giữ gìn sức bền cho cơ thể.</div>
-</div>
-</div>
-<div class="chap-row">
-<div class="chap-num">Ch</div>
-<div>
-<div class="chap-title" data-content-id="stillness-chapters-12" data-content-type="chapter-desc">Coi giấc ngủ là thiêng liêng</div>
-<div class="chap-desc" data-content-id="stillness-chapters-24" data-content-type="chapter-desc">Thiếu ngủ là kẻ sát nhân thầm lặng sẽ tước đoạt khả năng phán đoán sáng suốt của bạn.</div>
-</div>
-</div>
-<div class="chap-row">
-<div class="chap-num">Ch</div>
-<div>
-<div class="chap-title" data-content-id="stillness-chapters-13" data-content-type="chapter-desc">Xây dựng một lịch trình kỷ luật</div>
-<div class="chap-desc" data-content-id="stillness-chapters-25" data-content-type="chapter-desc">Một thói quen hằng ngày giúp bạn tiết kiệm năng lượng cho những quyết định thực sự quan trọng.</div>
-</div>
-</div>
-<div class="chap-row">
-<div class="chap-num">Ch</div>
-<div>
-<div class="chap-title" data-content-id="stillness-chapters-14" data-content-type="chapter-desc">Trân trọng những khoảng lặng một mình</div>
-<div class="chap-desc" data-content-id="stillness-chapters-26" data-content-type="chapter-desc">Một mình không đồng nghĩa với cô đơn. Đó là không gian để bạn có thể tư duy một cách sâu sắc nhất.</div>
+<div class="chapter-card">
+<div class="chapter-num">CHƯƠNG 03</div>
+<div class="chapter-title" data-content-id="stillness-chapters-06" data-content-type="chapter-desc">Chậm lại để tư duy</div>
+<div class="chapter-desc" data-content-id="stillness-chapters-18" data-content-type="chapter-desc">Phản ứng chậm rãi luôn mang lại những nước cờ khôn ngoan hơn. Hãy nhìn vào tấm gương của Lincoln hay Marcus Aurelius.</div>
 </div>
 </div>
 </div>
-<p class="section-intro" style="margin-top: 48px; max-width: 1000px; margin-left: auto; margin-right: auto;"><span data-content-id="stillness-privilege-1">Holiday dường như đã lờ đi một thực tế phũ phàng. Sự tĩnh lặng đôi khi lại là một đặc quyền xa xỉ của những kẻ có thời gian và tiền bạc. Seneca là một tài phiệt giàu có, Marcus Aurelius là một vị hoàng đế quyền uy. Đối với một người phải lao động mười hai tiếng mỗi ngày chỉ để lo cơm ăn áo mặc, sự tĩnh lặng có vẻ là một giấc mơ xa vời. Hãy đọc cuốn sách này với sự tỉnh táo, đừng lãng mạn hóa sự tĩnh lặng khi cái bụng vẫn còn đang đói.</span></p>
-</section>
-<!-- FLASHCARDS -->
-<section class="section" id="flashcards">
-<div class="section-label">Flashcards / 10 khái niệm cốt lõi</div>
-<h2 class="section-title" data-content-id="stillness-flashcards-01" data-content-type="heading">Mười thẻ ghi nhớ cốt lõi</h2>
-<p class="section-intro" data-content-id="stillness-flashcards-02" data-content-type="section-intro">Dưới đây là mười đúc kết tinh túy nhất để bạn có được sự tĩnh lặng trong tâm trí. Hãy lật thẻ để đối chiếu và ghi nhớ chúng một cách tự nhiên.</p>
-<div class="flashcard-container">
-<div class="flashcard-controls">
-<div class="flashcard-counter">Thẻ <strong id="cardCurrent">1</strong> / <span id="cardTotal">10</span></div>
-<div class="flashcard-counter">Đã thuộc: <strong id="cardKnown">0</strong></div>
+<div class="rule-section" data-part="part2">
+<div class="rule-header">
+<div class="rule-num">PHẦN II — LINH HỒN</div>
+<div class="rule-title" data-content-id="stillness-chapters-07" data-content-type="framework">Phần hai: Linh hồn</div>
+<div class="rule-sub" data-content-id="stillness-chapters-19" data-content-type="framework">Phần khó nhất — vì không có KPI. Mr Rogers viết tay 50.000 thư trong 30 năm. Tu sĩ thiền 10 năm vẫn chưa bằng chữa lành cha mẹ. Holiday chốt 4: đức hạnh, hàn gắn, vẻ đẹp, mối quan hệ. Không kiểu Bali — đức hạnh kiểu cha lo cho con.</div>
 </div>
-<div class="flashcard" id="flashcard" onclick="flipCard()">
-<div class="flashcard-face flashcard-front">
-<div class="flashcard-tag">Câu hỏi</div>
-<div class="flashcard-question" id="cardQuestion"></div>
-<div class="flashcard-hint">Click để xem đáp án</div>
+<div class="chapter-grid">
+<div class="chapter-card">
+<div class="chapter-num">CHƯƠNG 04</div>
+<div class="chapter-title" data-content-id="stillness-chapters-08" data-content-type="chapter-desc">Lựa chọn lối sống đức hạnh</div>
+<div class="chapter-desc" data-content-id="stillness-chapters-20" data-content-type="chapter-desc">Madame Curie từ chối bằng sáng chế radium — "science thuộc nhân loại". Edison đăng ký 1093 patent. Cả 2 đều xuất sắc. Một người chọn đúng — một người chọn nhanh. Với mỗi "chọn nhanh" đời ta — cái giá tinh thần phải trả 30 năm sau.</div>
 </div>
-<div class="flashcard-face flashcard-back">
-<div class="flashcard-tag">Đáp án</div>
-<div class="flashcard-answer" id="cardAnswer"></div>
-<div class="flashcard-hint">Click để xem câu hỏi</div>
+<div class="chapter-card">
+<div class="chapter-num">CHƯƠNG 05</div>
+<div class="chapter-title" data-content-id="stillness-chapters-09" data-content-type="chapter-desc">Chữa lành những tổn thương bên trong</div>
+<div class="chapter-desc" data-content-id="stillness-chapters-21" data-content-type="chapter-desc">Tiger Woods 4 tuổi tập 8 tiếng/ngày dưới áp lực bố. 30 năm sau scandal cá nhân tan nát. Không phải mọi gốc đều ở tuổi thơ — nhưng nếu chưa làm hòa với người 6 tuổi trong bạn, bất kỳ thành tích nào cũng cảm thấy lỗ rỗng.</div>
+</div>
+<div class="chapter-card">
+<div class="chapter-num">CHƯƠNG 06</div>
+<div class="chapter-title" data-content-id="stillness-chapters-10" data-content-type="chapter-desc">Tìm kiếm vẻ đẹp xung quanh</div>
+<div class="chapter-desc" data-content-id="stillness-chapters-22" data-content-type="chapter-desc">Marina Abramović ngồi 200 giờ ở MoMA — nhìn vào mắt 1500 người lạ. Khán giả khóc. Nghệ thuật không "trang trí" — là kênh nhanh nhất cho một con người lạ thấy được phần còn lại của mình. Mỗi tuần 1 lần ghé bảo tàng/concert/rừng — là phục dược.</div>
 </div>
 </div>
-<div class="flashcard-nav">
-<button class="fcq-btn outline" onclick="prevCard()">← Trước</button>
-<button class="fcq-btn" onclick="markUnknown()">Cần học lại</button>
-<button class="fcq-btn accent" onclick="markKnown()">Tôi nhớ ✓</button>
-<button class="fcq-btn outline" onclick="nextCard()">Sau →</button>
+</div>
+<div class="rule-section" data-part="part3">
+<div class="rule-header">
+<div class="rule-num">PHẦN III — CƠ THỂ</div>
+<div class="rule-title" data-content-id="stillness-chapters-11" data-content-type="framework">Phần ba: Cơ thể</div>
+<div class="rule-sub" data-content-id="stillness-chapters-23" data-content-type="framework">Linh hồn không bay nếu cơ thể nặng. Holiday chốt 3: ngủ, vận động, cô độc. Ngắn nhất — nhưng nền cho 2 phần trên. Bỏ 1 trong 3 = phần Tâm trí + Linh hồn sụp đổ trong 6 tháng.</div>
+</div>
+<div class="chapter-grid">
+<div class="chapter-card">
+<div class="chapter-num">CHƯƠNG 07</div>
+<div class="chapter-title" data-content-id="stillness-chapters-12" data-content-type="chapter-desc">Coi giấc ngủ là thiêng liêng</div>
+<div class="chapter-desc" data-content-id="stillness-chapters-24" data-content-type="chapter-desc">Napoleon đêm trước Waterloo — mất ngủ. Matthew Walker: dưới 6 tiếng/đêm trong 1 tuần = mức say (BAC 0.05) khi ra quyết định. Một đêm xấu có thể đảo ngược 1 chiến dịch — đảo ngược 1 cuộc đời.</div>
+</div>
+<div class="chapter-card">
+<div class="chapter-num">CHƯƠNG 08</div>
+<div class="chapter-title" data-content-id="stillness-chapters-13" data-content-type="chapter-desc">Xây dựng một lịch trình kỷ luật</div>
+<div class="chapter-desc" data-content-id="stillness-chapters-25" data-content-type="chapter-desc">Obama mặc xám hoặc xanh — "quyết định trang phục là decision fatigue". Stephen King viết 6 sáng/ngày, chiều đọc, tối đi bộ — 30 năm 1 routine. Routine không nuốt sáng tạo — nó cứu sáng tạo khỏi kiệt sức.</div>
+</div>
+<div class="chapter-card">
+<div class="chapter-num">CHƯƠNG 09</div>
+<div class="chapter-title" data-content-id="stillness-chapters-14" data-content-type="chapter-desc">Trân trọng những khoảng lặng một mình</div>
+<div class="chapter-desc" data-content-id="stillness-chapters-26" data-content-type="chapter-desc">Trần Nhân Tông bỏ ngai vàng đi tu Yên Tử. Không phải trầm cảm — là chọn lựa. Solitude và loneliness — 1 chữ trong tiếng Việt, 2 thứ khác nhau hoàn toàn. 1 cái no, 1 cái rỗng. Người lớn nào cũng nên có 30 phút ALONE/ngày — không podcast, không nhạc.</div>
+</div>
 </div>
 </div>
 </section>
@@ -641,6 +614,13 @@ body { background: var(--paper); color: var(--ink); font-family: 'Fraunces', Geo
 </div>
 </section>
 <script>
+function scrollTo2(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  const top = el.getBoundingClientRect().top + window.pageYOffset - 60;
+  window.scrollTo({top, behavior: 'smooth'});
+}
+
 const flashcards = [
   {
     q: "Pascal nói câu nào về stillness mà Holiday lấy làm trục cuốn sách?",
@@ -944,6 +924,27 @@ renderQuiz();
 <script src="/assets/library.js"></script>
 <script defer="" src="/assets/nav-spy.js"></script>
 <script data-cf-beacon='{"token":"a1b2c3d4e5f6789"}' defer="" src="https://static.cloudflareinsights.com/beacon.min.js"></script>
+<script>
+function filterChapters(part, btn) {
+  document.querySelectorAll('.chapter-tab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.rule-section[data-part]').forEach(sec => {
+    sec.style.display = (part === 'all' || sec.dataset.part === part) ? '' : 'none';
+  });
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  // Default: show only first part (skip Tất cả default)
+  const allBtns = document.querySelectorAll('.chapter-tab-btn');
+  for (let i = 0; i < allBtns.length; i++) {
+    const oc = allBtns[i].getAttribute('onclick') || '';
+    if (oc.indexOf("'all'") === -1 && oc.indexOf('filterChapters(') !== -1) {
+      allBtns[i].click();
+      break;
+    }
+  }
+});
+</script>
 <script src="../edit-mode.js"></script>
 </body>
 </html>

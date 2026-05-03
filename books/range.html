@@ -120,10 +120,22 @@ body { background: var(--paper); color: var(--ink); font-family: 'Fraunces', Geo
 /* Chapter map */
 .chap-list { display: grid; gap: 16px; max-width: 880px; margin: 40px 0; }
 .chap-row { display: grid; grid-template-columns: 100px 1fr; gap: 24px; padding: 22px 28px; background: var(--paper-dark); border-left: 3px solid var(--accent); align-items: start; }
-.chap-num { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.15em; color: var(--accent-2); padding-top: 4px; }
-.chap-title { font-family: 'Fraunces', serif; font-size: 19px; font-weight: 600; line-height: 1.3; margin-bottom: 6px; }
-.chap-title em { font-style: normal; color: var(--accent-2); }
-.chap-desc { font-size: 15px; line-height: 1.55; color: var(--muted); }
+.chapter-tabs { display: flex; gap: 8px; margin-bottom: 32px; flex-wrap: wrap; justify-content: center; }
+.chapter-tab-btn { padding: 10px 16px; background: transparent; border: 1.5px solid var(--ink); font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer; transition: all 0.2s; color: var(--ink); }
+.chapter-tab-btn.active, .chapter-tab-btn:hover { background: var(--ink); color: var(--paper); }
+.chapter-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+.chapter-card { padding: 24px; background: rgba(196, 146, 60, 0.04); border: 1px solid rgba(26, 20, 16, 0.08); transition: all 0.2s; }
+.chapter-card:hover { background: rgba(196, 146, 60, 0.08); border-color: rgba(26, 20, 16, 0.18); }
+.chapter-num { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.15em; color: var(--accent-2); margin-bottom: 8px; }
+.chapter-title { font-family: 'Fraunces', serif; font-size: 19px; font-weight: 600; line-height: 1.3; margin-bottom: 8px; }
+.chapter-desc { font-size: 14px; line-height: 1.55; color: var(--muted); }
+.chapter-pager { display: flex; justify-content: center; align-items: center; gap: 16px; margin-top: 28px; font-family: 'JetBrains Mono', monospace; font-size: 13px; }
+.chapter-pager-btn { width: 40px; height: 40px; background: transparent; border: 1.5px solid var(--ink); color: var(--ink); cursor: pointer; font-size: 18px; line-height: 1; transition: all 0.2s; display: inline-flex; align-items: center; justify-content: center; }
+.chapter-pager-btn:hover:not(:disabled) { background: var(--ink); color: var(--paper); }
+.chapter-pager-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+.chapter-pager-info { font-weight: 600; letter-spacing: 0.05em; }
+.chapter-pager-total { color: var(--ink-light, #6b5d4f); font-weight: 400; margin-left: 6px; }
+.chap-row, .chap-num, .chap-title, .chap-desc { display: none !important; }
 
 /* Flashcards */
 .flashcards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; margin: 32px 0; }
@@ -250,12 +262,12 @@ body { background: var(--paper); color: var(--ink); font-family: 'Fraunces', Geo
 <nav class="nav-bar">
 <a class="nav-logo" href="../index.html" title="Về trang chủ"><span>Range</span><em>.</em></a>
 <div class="nav-links">
-<a onclick="document.getElementById('thesis').scrollIntoView({behavior:'smooth'})">Luận điểm</a>
-<a onclick="document.getElementById('framework').scrollIntoView({behavior:'smooth'})">Framework</a>
-<a onclick="document.getElementById('chapters').scrollIntoView({behavior:'smooth'})">Chương sách</a>
-<a onclick="document.getElementById('flashcards').scrollIntoView({behavior:'smooth'})">Flashcard</a>
-<a onclick="document.getElementById('quiz').scrollIntoView({behavior:'smooth'})">Quiz</a>
-<a onclick="document.getElementById('journal').scrollIntoView({behavior:'smooth'})">Nhật ký</a>
+<a onclick="scrollTo2('thesis')">Luận điểm</a>
+<a onclick="scrollTo2('framework')">Framework</a>
+<a onclick="scrollTo2('chapters')">Chương sách</a>
+<a onclick="scrollTo2('flashcards')">Flashcard</a>
+<a onclick="scrollTo2('quiz')">Quiz</a>
+<a onclick="scrollTo2('journal')">Nhật ký</a>
 </div>
 </nav>
 <!-- HERO -->
@@ -497,90 +509,66 @@ body { background: var(--paper); color: var(--ink); font-family: 'Fraunces', Geo
 <div class="section-label">Bản đồ nội dung / Chương sách</div>
 <h2 class="section-title" data-content-id="range-chapters-01" data-content-type="heading">Bản đồ chi tiết của cuốn sách</h2>
 <p class="section-intro" data-content-id="range-chapters-02" data-content-type="section-intro">Mười hai chương sách là những lát cắt từ thể thao đến khoa học. Hãy lật tìm những chương phản chiếu rõ nhất hoàn cảnh hiện tại của bạn.</p>
-<div class="chap-list">
-<div class="chap-row">
-<div class="chap-num">Intro</div>
-<div>
-<div class="chap-title" data-content-id="range-chapters-03" data-content-type="chapter-desc">Thế giới của Roger và thế giới của Tiger</div>
-<div class="chap-desc" data-content-id="range-chapters-15" data-content-type="chapter-desc">Khởi nguồn của mọi cuộc tranh luận. Liệu giai đoạn nếm thử có thực sự quan trọng hay không?</div>
+<div class="chapter-grid">
+<div class="chapter-card">
+<div class="chapter-num">CHƯƠNG INTRO</div>
+<div class="chapter-title" data-content-id="range-chapters-03" data-content-type="chapter-desc">Thế giới của Roger và thế giới của Tiger</div>
+<div class="chapter-desc" data-content-id="range-chapters-15" data-content-type="chapter-desc">Khởi nguồn của mọi cuộc tranh luận. Liệu giai đoạn nếm thử có thực sự quan trọng hay không?</div>
 </div>
+<div class="chapter-card">
+<div class="chapter-num">CHƯƠNG 01</div>
+<div class="chapter-title" data-content-id="range-chapters-04" data-content-type="chapter-desc">Giáo phái của việc xuất phát sớm</div>
+<div class="chapter-desc" data-content-id="range-chapters-16" data-content-type="chapter-desc">Xã hội tôn sùng những kẻ chạy trước. Nhưng dữ liệu thực tế lại tát thẳng vào niềm tin đó.</div>
 </div>
-<div class="chap-row">
-<div class="chap-num">Ch 01</div>
-<div>
-<div class="chap-title" data-content-id="range-chapters-04" data-content-type="chapter-desc">Giáo phái của việc xuất phát sớm</div>
-<div class="chap-desc" data-content-id="range-chapters-16" data-content-type="chapter-desc">Xã hội tôn sùng những kẻ chạy trước. Nhưng dữ liệu thực tế lại tát thẳng vào niềm tin đó.</div>
+<div class="chapter-card">
+<div class="chapter-num">CHƯƠNG 02</div>
+<div class="chapter-title" data-content-id="range-chapters-05" data-content-type="chapter-desc">Sự hình thành của thế giới hiểm độc</div>
+<div class="chapter-desc" data-content-id="range-chapters-17" data-content-type="chapter-desc">Hai thái cực môi trường: Dễ đoán và hiểm độc. Và sự thật là phần lớn cuộc đời chúng ta nằm ở vùng hiểm độc.</div>
 </div>
+<div class="chapter-card">
+<div class="chapter-num">CHƯƠNG 03</div>
+<div class="chapter-title" data-content-id="range-chapters-06" data-content-type="chapter-desc">Khi ít hơn lại là nhiều hơn</div>
+<div class="chapter-desc" data-content-id="range-chapters-18" data-content-type="chapter-desc">Những kẻ học chậm chạp thường khắc sâu kiến thức lâu hơn những người tưởng chừng học nhanh.</div>
 </div>
-<div class="chap-row">
-<div class="chap-num">Ch 02</div>
-<div>
-<div class="chap-title" data-content-id="range-chapters-05" data-content-type="chapter-desc">Sự hình thành của thế giới hiểm độc</div>
-<div class="chap-desc" data-content-id="range-chapters-17" data-content-type="chapter-desc">Hai thái cực môi trường: Dễ đoán và hiểm độc. Và sự thật là phần lớn cuộc đời chúng ta nằm ở vùng hiểm độc.</div>
+<div class="chapter-card">
+<div class="chapter-num">CHƯƠNG 04</div>
+<div class="chapter-title" data-content-id="range-chapters-07" data-content-type="chapter-desc">Học tập nhanh và chậm</div>
+<div class="chapter-desc" data-content-id="range-chapters-19" data-content-type="chapter-desc">Lợi ích của sự khó khăn. Học càng vất vả, nhớ càng dai.</div>
 </div>
+<div class="chapter-card">
+<div class="chapter-num">CHƯƠNG 06</div>
+<div class="chapter-title" data-content-id="range-chapters-08" data-content-type="chapter-desc">Rắc rối của việc quá kiên gan</div>
+<div class="chapter-desc" data-content-id="range-chapters-20" data-content-type="chapter-desc">Kiên trì đặt sai chỗ chỉ là một sự lãng phí sinh mạng. Từ bỏ có chiến lược mới là kỹ năng sinh tồn.</div>
 </div>
-<div class="chap-row">
-<div class="chap-num">Ch 03</div>
-<div>
-<div class="chap-title" data-content-id="range-chapters-06" data-content-type="chapter-desc">Khi ít hơn lại là nhiều hơn</div>
-<div class="chap-desc" data-content-id="range-chapters-18" data-content-type="chapter-desc">Những kẻ học chậm chạp thường khắc sâu kiến thức lâu hơn những người tưởng chừng học nhanh.</div>
+<div class="chapter-card">
+<div class="chapter-num">CHƯƠNG 07</div>
+<div class="chapter-title" data-content-id="range-chapters-09" data-content-type="chapter-desc">Tán tỉnh những phiên bản tiềm năng của bản thân</div>
+<div class="chapter-desc" data-content-id="range-chapters-21" data-content-type="chapter-desc">Tâm lý thử nghiệm nhiều bản ngã trước khi chốt hạ. Câu chuyện của nhà thiết kế Vera Wang.</div>
 </div>
+<div class="chapter-card">
+<div class="chapter-num">CHƯƠNG 08</div>
+<div class="chapter-title" data-content-id="range-chapters-10" data-content-type="chapter-desc">Lợi thế của kẻ ngoại đạo</div>
+<div class="chapter-desc" data-content-id="range-chapters-22" data-content-type="chapter-desc">Nền tảng Innogest. Những kẻ ngoài cuộc thường dễ dàng giải quyết các vấn đề mà dân trong nghề phải bó tay.</div>
 </div>
-<div class="chap-row">
-<div class="chap-num">Ch 04</div>
-<div>
-<div class="chap-title" data-content-id="range-chapters-07" data-content-type="chapter-desc">Học tập nhanh và chậm</div>
-<div class="chap-desc" data-content-id="range-chapters-19" data-content-type="chapter-desc">Lợi ích của sự khó khăn. Học càng vất vả, nhớ càng dai.</div>
+<div class="chapter-card">
+<div class="chapter-num">CHƯƠNG 09</div>
+<div class="chapter-title" data-content-id="range-chapters-11" data-content-type="chapter-desc">Tư duy đa chiều bằng công nghệ tàn tạ</div>
+<div class="chapter-desc" data-content-id="range-chapters-23" data-content-type="chapter-desc">Câu chuyện của Yokoi và hãng Nintendo. Ông dùng những công nghệ cũ rích để tạo ra sự khác biệt nhờ tư duy đa chiều.</div>
 </div>
+<div class="chapter-card">
+<div class="chapter-num">CHƯƠNG 10</div>
+<div class="chapter-title" data-content-id="range-chapters-12" data-content-type="chapter-desc">Bị chuyên môn đánh lừa</div>
+<div class="chapter-desc" data-content-id="range-chapters-24" data-content-type="chapter-desc">Hình tượng cáo và nhím. Tại sao các chuyên gia thường dự báo trật lất. Liên hệ với nghiên cứu của Tetlock.</div>
 </div>
-<div class="chap-row">
-<div class="chap-num">Ch 06</div>
-<div>
-<div class="chap-title" data-content-id="range-chapters-08" data-content-type="chapter-desc">Rắc rối của việc quá kiên gan</div>
-<div class="chap-desc" data-content-id="range-chapters-20" data-content-type="chapter-desc">Kiên trì đặt sai chỗ chỉ là một sự lãng phí sinh mạng. Từ bỏ có chiến lược mới là kỹ năng sinh tồn.</div>
+<div class="chapter-card">
+<div class="chapter-num">CHƯƠNG 11</div>
+<div class="chapter-title" data-content-id="range-chapters-13" data-content-type="chapter-desc">Buông bỏ những công cụ quen thuộc</div>
+<div class="chapter-desc" data-content-id="range-chapters-25" data-content-type="chapter-desc">Nhiều lính cứu hỏa rừng đã thiệt mạng chỉ vì không chịu vứt bỏ những công cụ quen thuộc khi cần chạy trốn.</div>
 </div>
-</div>
-<div class="chap-row">
-<div class="chap-num">Ch 07</div>
-<div>
-<div class="chap-title" data-content-id="range-chapters-09" data-content-type="chapter-desc">Tán tỉnh những phiên bản tiềm năng của bản thân</div>
-<div class="chap-desc" data-content-id="range-chapters-21" data-content-type="chapter-desc">Tâm lý thử nghiệm nhiều bản ngã trước khi chốt hạ. Câu chuyện của nhà thiết kế Vera Wang.</div>
-</div>
-</div>
-<div class="chap-row">
-<div class="chap-num">Ch 08</div>
-<div>
-<div class="chap-title" data-content-id="range-chapters-10" data-content-type="chapter-desc">Lợi thế của kẻ ngoại đạo</div>
-<div class="chap-desc" data-content-id="range-chapters-22" data-content-type="chapter-desc">Nền tảng Innogest. Những kẻ ngoài cuộc thường dễ dàng giải quyết các vấn đề mà dân trong nghề phải bó tay.</div>
-</div>
-</div>
-<div class="chap-row">
-<div class="chap-num">Ch 09</div>
-<div>
-<div class="chap-title" data-content-id="range-chapters-11" data-content-type="chapter-desc">Tư duy đa chiều bằng công nghệ tàn tạ</div>
-<div class="chap-desc" data-content-id="range-chapters-23" data-content-type="chapter-desc">Câu chuyện của Yokoi và hãng Nintendo. Ông dùng những công nghệ cũ rích để tạo ra sự khác biệt nhờ tư duy đa chiều.</div>
-</div>
-</div>
-<div class="chap-row">
-<div class="chap-num">Ch 10</div>
-<div>
-<div class="chap-title" data-content-id="range-chapters-12" data-content-type="chapter-desc">Bị chuyên môn đánh lừa</div>
-<div class="chap-desc" data-content-id="range-chapters-24" data-content-type="chapter-desc">Hình tượng cáo và nhím. Tại sao các chuyên gia thường dự báo trật lất. Liên hệ với nghiên cứu của Tetlock.</div>
-</div>
-</div>
-<div class="chap-row">
-<div class="chap-num">Ch 11</div>
-<div>
-<div class="chap-title" data-content-id="range-chapters-13" data-content-type="chapter-desc">Buông bỏ những công cụ quen thuộc</div>
-<div class="chap-desc" data-content-id="range-chapters-25" data-content-type="chapter-desc">Nhiều lính cứu hỏa rừng đã thiệt mạng chỉ vì không chịu vứt bỏ những công cụ quen thuộc khi cần chạy trốn.</div>
-</div>
-</div>
-<div class="chap-row">
-<div class="chap-num">Ch 12</div>
-<div>
-<div class="chap-title" data-content-id="range-chapters-14" data-content-type="chapter-desc">Những tay mơ có chủ đích</div>
-<div class="chap-desc" data-content-id="range-chapters-26" data-content-type="chapter-desc">Những người không bị bó buộc bởi các quy trình đào tạo bài bản thường nhìn thấu những điều mà giới chuyên gia luôn bỏ sót.</div>
-</div>
+<div class="chapter-card">
+<div class="chapter-num">CHƯƠNG 12</div>
+<div class="chapter-title" data-content-id="range-chapters-14" data-content-type="chapter-desc">Những tay mơ có chủ đích</div>
+<div class="chapter-desc" data-content-id="range-chapters-26" data-content-type="chapter-desc">Những người không bị bó buộc bởi các quy trình đào tạo bài bản thường nhìn thấu những điều mà giới chuyên gia luôn bỏ sót.</div>
 </div>
 </div>
 <p class="section-intro" style="margin-top: 48px; max-width: 1000px; margin-left: auto; margin-right: auto;"><span data-content-id="range-survivorship-1">Góc nhìn của Epstein chứa đựng một lỗ hổng chí mạng: thiên kiến kẻ sống sót. Ông lấy Federer làm ngọn cờ đầu. Nhưng thực tế cay đắng là có hàng vạn kẻ đi rộng cứ nhảy việc liên tục, bơi từ mảng bán hàng sang thiết kế, để rồi chết chìm với mức lương bèo bọt. Triết lý đi rộng chỉ thực sự phát huy tác dụng khi bạn đã cứng cáp ở một nghề và muốn mở rộng biên giới của mình. Nó là liều thuốc độc đối với những sinh viên mới ra trường còn rỗng tuếch kinh nghiệm.</span></p>
@@ -635,6 +623,13 @@ body { background: var(--paper); color: var(--ink); font-family: 'Fraunces', Geo
 </div>
 </section>
 <script>
+function scrollTo2(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  const top = el.getBoundingClientRect().top + window.pageYOffset - 60;
+  window.scrollTo({top, behavior: 'smooth'});
+}
+
 const flashcards = [
   {
     q: "Kind world vs Wicked world khác nhau ở điểm nào?",
@@ -870,6 +865,38 @@ function resetQuiz() {
 
 renderCard();
 renderQuiz();
+
+const CHAPTERS_PER_PAGE = 6;
+let chaptersCurrentPage = 1;
+
+function renderChaptersPage() {
+  const cards = Array.from(document.querySelectorAll('.chapter-card'));
+  const N = cards.length;
+  const totalPages = Math.max(1, Math.ceil(N / CHAPTERS_PER_PAGE));
+  if (chaptersCurrentPage > totalPages) chaptersCurrentPage = 1;
+  const start = (chaptersCurrentPage - 1) * CHAPTERS_PER_PAGE;
+  cards.forEach((c, i) => {
+    c.style.display = (i >= start && i < start + CHAPTERS_PER_PAGE) ? '' : 'none';
+  });
+  let pager = document.getElementById('chaptersPager');
+  if (!pager) {
+    pager = document.createElement('div');
+    pager.id = 'chaptersPager';
+    pager.className = 'chapter-pager';
+    const grid = document.querySelector('.chapter-grid');
+    if (grid) grid.parentNode.insertBefore(pager, grid.nextSibling);
+  }
+  if (totalPages <= 1) { pager.innerHTML = ''; pager.style.display = 'none'; return; }
+  pager.style.display = '';
+  pager.innerHTML = '<button class="chapter-pager-btn" ' + (chaptersCurrentPage===1?'disabled':'') + ' onclick="changeChapterPage(-1)">&larr;</button><span class="chapter-pager-info">' + chaptersCurrentPage + ' / ' + totalPages + ' <span class="chapter-pager-total">(' + N + ' chương)</span></span><button class="chapter-pager-btn" ' + (chaptersCurrentPage===totalPages?'disabled':'') + ' onclick="changeChapterPage(1)">&rarr;</button>';
+}
+
+function changeChapterPage(delta) {
+  chaptersCurrentPage += delta;
+  renderChaptersPage();
+}
+
+document.addEventListener('DOMContentLoaded', renderChaptersPage);
 </script>
 <!-- JOURNAL -->
 <section class="journal-section" id="journal">

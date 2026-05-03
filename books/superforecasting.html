@@ -117,6 +117,9 @@ body { background: var(--paper); color: var(--ink); font-family: 'Fraunces', Geo
 .rule-title { font-family: 'Fraunces', serif; font-size: 28px; font-weight: 700; font-style: normal; line-height: 1.2; margin-bottom: 6px; }
 .rule-sub { font-family: 'Inter', sans-serif; font-size: 14px; opacity: 0.7; }
 .chapter-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 16px; }
+.chapter-tabs { display: flex; gap: 8px; margin-bottom: 32px; flex-wrap: wrap; justify-content: center; }
+.chapter-tab-btn { padding: 10px 16px; background: transparent; border: 1.5px solid var(--ink); font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer; transition: all 0.2s; color: var(--ink); }
+.chapter-tab-btn.active, .chapter-tab-btn:hover { background: var(--ink); color: var(--paper); }
 .chapter-card { border: 1.5px solid var(--ink); padding: 24px; background: var(--paper); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
 .chapter-card:hover { transform: translate(-3px, -3px); box-shadow: 6px 6px 0 var(--accent); background: var(--paper-dark); }
 .chapter-num { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.2em; color: var(--accent); margin-bottom: 8px; }
@@ -476,7 +479,14 @@ body { background: var(--paper); color: var(--ink); font-family: 'Fraunces', Geo
 <div class="section-label">12 chương — 4 chủ đề lớn</div>
 <h2 class="section-title" data-content-id="superforecasting-chapters-01" data-content-type="heading">Bản đồ <em>chi tiết</em> của cuốn sách</h2>
 <p class="section-intro" data-content-id="superforecasting-chapters-02" data-content-type="section-intro">Cuốn sách này không sa đà vào lý thuyết viển vông mà dựa trên dữ liệu thực chiến suốt hai mươi năm. Mười hai chương sách sẽ bóc trần lý do vì sao dự đoán dài hạn của chuyên gia lại tệ hại đến thế, và quan trọng hơn, nó chỉ cho bạn cách để lật ngược thế cờ.</p>
-<div class="rule-section">
+<div class="chapter-tabs">
+<button class="chapter-tab-btn active" onclick="filterChapters('part1', this)">I. Vấn đề</button>
+<button class="chapter-tab-btn" onclick="filterChapters('part2', this)">II. Đo lường</button>
+<button class="chapter-tab-btn" onclick="filterChapters('part3', this)">III. Đặc điểm</button>
+<button class="chapter-tab-btn" onclick="filterChapters('part4', this)">IV. Áp dụng</button>
+<button class="chapter-tab-btn" onclick="filterChapters('all', this)">Tất cả</button>
+</div>
+<div class="rule-section" data-part="part1">
 <div class="rule-header">
 <div class="rule-num">PHẦN I — VẤN ĐỀ</div>
 <div class="rule-title" data-content-id="superforecasting-chapters-27" data-content-type="framework">Nghịch lý của sự chuyên nghiệp</div>
@@ -497,7 +507,7 @@ body { background: var(--paper); color: var(--ink); font-family: 'Fraunces', Geo
 </div>
 </div>
 </div>
-<div class="rule-section">
+<div class="rule-section" data-part="part2">
 <div class="rule-header">
 <div class="rule-num">PHẦN II — ĐO LƯỜNG</div>
 <div class="rule-title" data-content-id="superforecasting-chapters-28" data-content-type="framework">Sức mạnh của việc đo lường</div>
@@ -518,7 +528,7 @@ body { background: var(--paper); color: var(--ink); font-family: 'Fraunces', Geo
 </div>
 </div>
 </div>
-<div class="rule-section">
+<div class="rule-section" data-part="part3">
 <div class="rule-header">
 <div class="rule-num">PHẦN III — ĐẶC ĐIỂM</div>
 <div class="rule-title" data-content-id="superforecasting-chapters-29" data-content-type="framework">Chân dung của những siêu nhân dự báo</div>
@@ -551,7 +561,7 @@ body { background: var(--paper); color: var(--ink); font-family: 'Fraunces', Geo
 </div>
 </div>
 </div>
-<div class="rule-section">
+<div class="rule-section" data-part="part4">
 <div class="rule-header">
 <div class="rule-num">PHẦN IV — ÁP DỤNG</div>
 <div class="rule-title" data-content-id="superforecasting-chapters-30" data-content-type="framework">Mở rộng tầm nhìn và những giới hạn</div>
@@ -701,6 +711,13 @@ body { background: var(--paper); color: var(--ink); font-family: 'Fraunces', Geo
 </footer>
 </main>
 <script>
+function scrollTo2(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  const top = el.getBoundingClientRect().top + window.pageYOffset - 60;
+  window.scrollTo({top, behavior: 'smooth'});
+}
+
 const flashcards = [
   {
     q: "Good Judgment Project là gì? Phát hiện chính?",
@@ -989,28 +1006,25 @@ function filterActions(cat, btn) {
   actionsCurrentPage = 1;
   renderActions(cat);
 }
-function renderPrompts() { const container = document.getElementById('promptsContainer'); if (container.querySelector('.journal-prompt')) return; journalPrompts.forEach((p, i) => { const div = document.createElement('div'); div.className = 'journal-prompt' + (i === 0 ? ' active' : ''); div.id = `prompt-${i}`; div.innerHTML = `<div class="journal-q">${i + 1}. ${p.q}</div><div class="journal-help">💡 Gợi ý: ${p.help}</div><textarea class="journal-textarea" placeholder="Viết câu trả lời của bạn ở đây..."></textarea>`; container.appendChild(div); }); }
-function switchPrompt(i, dot) { document.querySelectorAll('.journal-dot').forEach(d => d.classList.remove('active')); dot.classList.add('active'); document.querySelectorAll('.journal-prompt').forEach(p => p.classList.remove('active')); document.getElementById(`prompt-${i}`).classList.add('active'); }
-function scrollTo2(id) { const el = document.getElementById(id); if (el) window.scrollTo({ top: el.offsetTop - 80, behavior: 'smooth' }); }
-window.addEventListener('scroll', () => { const total = document.documentElement.scrollHeight - window.innerHeight; const pct = (window.scrollY / total) * 100; document.getElementById('progressBar').style.width = pct + '%'; });
-renderCard(); renderQuiz(); renderActions(); renderPrompts();
-</script>
-<script>
-(function() {
-  const COMMENTS_PAGE_ID = "superforecasting";
-  async function loadComments() {
-    const list = document.getElementById('commentsList');
-    if (!list) return;
-    list.innerHTML = '<div class="comments-loading">Đang tải comment...</div>';
-    try {
-      const res = await fetch('/api/comments?page=' + COMMENTS_PAGE_ID);
-      if (!res.ok) throw new Error('fetch failed');
-      const data = await res.json();
-      renderCommentsList(data.comments || []);
-    } catch (e) {
-      list.innerHTML = '<div class="comments-empty">Không tải được comment. Thử lại sau.</div>';
+function filterChapters(part, btn) {
+  document.querySelectorAll('.chapter-tab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.rule-section[data-part]').forEach(sec => {
+    sec.style.display = (part === 'all' || sec.dataset.part === part) ? '' : 'none';
+  });
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  // Default: show only first part (skip Tất cả default)
+  const allBtns = document.querySelectorAll('.chapter-tab-btn');
+  for (let i = 0; i < allBtns.length; i++) {
+    const oc = allBtns[i].getAttribute('onclick') || '';
+    if (oc.indexOf("'all'") === -1 && oc.indexOf('filterChapters(') !== -1) {
+      allBtns[i].click();
+      break;
     }
   }
+});
   function renderCommentsList(items) {
     const list = document.getElementById('commentsList');
     if (!items.length) {
@@ -1098,7 +1112,6 @@ renderCard(); renderQuiz(); renderActions(); renderPrompts();
     document.getElementById('replyCancel').addEventListener('click', cancelReply);
     loadComments();
   }
-})();
 </script>
 <!-- Library widgets: search + related books -->
 <script src="/assets/books-data.js"></script>

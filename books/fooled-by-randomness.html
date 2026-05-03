@@ -537,6 +537,9 @@ body {
   grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
   gap: 20px;
 }
+.chapter-tabs { display: flex; gap: 8px; margin-bottom: 32px; flex-wrap: wrap; justify-content: center; }
+.chapter-tab-btn { padding: 10px 16px; background: transparent; border: 1.5px solid var(--ink); font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer; transition: all 0.2s; color: var(--ink); }
+.chapter-tab-btn.active, .chapter-tab-btn:hover { background: var(--ink); color: var(--paper); }
 
 .chapter-card {
   border: 1.5px solid var(--ink);
@@ -1102,6 +1105,13 @@ Expected: +$9,901/100 lần<br/>
 <h2 class="section-title" data-content-id="fooled-by-randomness-chapters-01" data-content-type="heading">Bản đồ <em>chi tiết</em> của cuốn sách</h2>
 <p class="section-intro" data-content-id="fooled-by-randomness-chapters-02" data-content-type="section-intro">Cuốn sách không được viết theo trình tự giáo trình. Taleb dẫn dắt bạn qua những mẩu chuyện về Solon, về Soros, hay về một gã môi giới kiếm được một triệu đô la rồi cháy sạch tài khoản. Sau mỗi chương, bạn hãy tự hỏi lại chính mình. Niềm tin nào của tôi vừa bị đập bỏ?</p>
 <div class="chapter-part">
+<div class="chapter-tabs">
+<button class="chapter-tab-btn active" onclick="filterChapters('part1', this)">I. Cảnh báo Solon</button>
+<button class="chapter-tab-btn" onclick="filterChapters('part2', this)">II. Khỉ gõ máy</button>
+<button class="chapter-tab-btn" onclick="filterChapters('part3', this)">III. Sáp trong tai</button>
+<button class="chapter-tab-btn" onclick="filterChapters('all', this)">Tất cả</button>
+</div>
+<div class="rule-section" data-part="part1">
 <div class="part-header">PART I</div>
 <div class="part-title">Solon's Warning</div>
 <div class="part-sub">Skewness, Asymmetry, Induction — vì sao "giàu" không có nghĩa là "khôn"</div>
@@ -1150,7 +1160,9 @@ Expected: +$9,901/100 lần<br/>
 </div>
 </div>
 </div>
+</div>
 <div class="chapter-part">
+<div class="rule-section" data-part="part2">
 <div class="part-header">PART II</div>
 <div class="part-title">Monkeys on Typewriters</div>
 <div class="part-sub">Survivorship Bias — vì sao ta đang nhìn thị trường sai cách</div>
@@ -1181,7 +1193,9 @@ Expected: +$9,901/100 lần<br/>
 </div>
 </div>
 </div>
+</div>
 <div class="chapter-part">
+<div class="rule-section" data-part="part3">
 <div class="part-header">PART III</div>
 <div class="part-title">Wax in My Ears</div>
 <div class="part-sub">Sống chung với ngẫu nhiên — Taleb's Stoicism</div>
@@ -1203,6 +1217,7 @@ Expected: +$9,901/100 lần<br/>
 <div class="chapter-title" data-content-id="fooled-by-randomness-chapters-16" data-content-type="chapter-desc">Bacchus ruồng bỏ Antony</div>
 <div class="chapter-desc" data-content-id="fooled-by-randomness-chapters-30" data-content-type="chapter-desc">Triết lý khắc kỷ không phải là gồng mình chịu đựng. Nó là cách bạn tạo ra ảo tưởng chiến thắng kiêu hãnh trước sự ngẫu nhiên vô tình. Bạn không có quyền kiểm soát kết quả, bạn chỉ làm chủ được cách mình phản ứng.</div>
 <span class="chapter-key">Stoicism</span><span class="chapter-key">Personal elegance</span>
+</div>
 </div>
 </div>
 </div>
@@ -1642,48 +1657,32 @@ function filterActions(cat, btn) {
   actionsCurrentPage = 1;
   renderActions(cat);
 }
-
-/* ============ JOURNAL ============ */
-function loadPrompts() {
-  const container = document.getElementById('promptsContainer');
-  journalPrompts.forEach((p, i) => {
-    const div = document.createElement('div');
-    div.className = 'journal-prompt' + (i === 0 ? ' active' : '');
-    div.id = `prompt-${i}`;
-    div.innerHTML = `
-      <div class="journal-q">${p.q}</div>
-      <div class="journal-help"><strong>Gợi ý:</strong> ${p.help}</div>
-      <textarea class="journal-textarea" placeholder="Viết suy nghĩ của bạn..."></textarea>
-    `;
-    container.appendChild(div);
+function filterChapters(part, btn) {
+  document.querySelectorAll('.chapter-tab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.rule-section[data-part]').forEach(sec => {
+    sec.style.display = (part === 'all' || sec.dataset.part === part) ? '' : 'none';
   });
 }
 
-function switchPrompt(i, dot) {
-  document.querySelectorAll('.journal-dot').forEach(d => d.classList.remove('active'));
-  document.querySelectorAll('.journal-prompt').forEach(p => p.classList.remove('active'));
-  dot.classList.add('active');
-  document.getElementById(`prompt-${i}`).classList.add('active');
-}
-
-/* ============ SURVIVOR GRID ============ */
-function renderSurvivorGrid() {
-  const grid = document.getElementById('survivorGrid');
-  const aliveIndexes = new Set();
-  // 23 alive out of 100 visible (representing ratio)
-  while (aliveIndexes.size < 23) {
-    aliveIndexes.add(Math.floor(Math.random() * 100));
+document.addEventListener('DOMContentLoaded', function() {
+  // Default: show only first part (skip Tất cả default)
+  const allBtns = document.querySelectorAll('.chapter-tab-btn');
+  for (let i = 0; i < allBtns.length; i++) {
+    const oc = allBtns[i].getAttribute('onclick') || '';
+    if (oc.indexOf("'all'") === -1 && oc.indexOf('filterChapters(') !== -1) {
+      allBtns[i].click();
+      break;
+    }
   }
-  for (let i = 0; i < 100; i++) {
-    const dot = document.createElement('div');
-    dot.className = 'survivor-dot' + (aliveIndexes.has(i) ? ' alive' : '');
-    grid.appendChild(dot);
-  }
-}
+});
 
 /* ============ SCROLL HELPERS ============ */
 function scrollTo2(id) {
-  document.getElementById(id).scrollIntoView({ behavior: 'smooth', block: 'start' });
+  const el = document.getElementById(id);
+  if (!el) return;
+  const top = el.getBoundingClientRect().top + window.pageYOffset - 60;
+  window.scrollTo({top, behavior: 'smooth'});
 }
 
 window.addEventListener('scroll', () => {

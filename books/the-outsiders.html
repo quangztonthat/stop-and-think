@@ -121,10 +121,22 @@ body { background: var(--paper); color: var(--ink); font-family: 'Fraunces', Geo
 /* Chapter map */
 .chap-list { display: grid; gap: 16px; margin: 48px 0; max-width: 980px; }
 .chap-row { display: grid; grid-template-columns: 80px 1fr; gap: 24px; padding: 20px 24px; background: var(--paper-dark); border-left: 3px solid var(--accent); align-items: start; }
-.chap-num { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.15em; color: var(--accent-2); padding-top: 4px; }
-.chap-title { font-family: 'Fraunces', serif; font-size: 19px; font-weight: 600; line-height: 1.3; margin-bottom: 6px; }
-.chap-title em { font-style: normal; color: var(--accent-2); }
-.chap-desc { font-size: 15px; line-height: 1.55; color: var(--muted); }
+.chapter-tabs { display: flex; gap: 8px; margin-bottom: 32px; flex-wrap: wrap; justify-content: center; }
+.chapter-tab-btn { padding: 10px 16px; background: transparent; border: 1.5px solid var(--ink); font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer; transition: all 0.2s; color: var(--ink); }
+.chapter-tab-btn.active, .chapter-tab-btn:hover { background: var(--ink); color: var(--paper); }
+.chapter-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+.chapter-card { padding: 24px; background: rgba(196, 146, 60, 0.04); border: 1px solid rgba(26, 20, 16, 0.08); transition: all 0.2s; }
+.chapter-card:hover { background: rgba(196, 146, 60, 0.08); border-color: rgba(26, 20, 16, 0.18); }
+.chapter-num { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.15em; color: var(--accent-2); margin-bottom: 8px; }
+.chapter-title { font-family: 'Fraunces', serif; font-size: 19px; font-weight: 600; line-height: 1.3; margin-bottom: 8px; }
+.chapter-desc { font-size: 14px; line-height: 1.55; color: var(--muted); }
+.chapter-pager { display: flex; justify-content: center; align-items: center; gap: 16px; margin-top: 28px; font-family: 'JetBrains Mono', monospace; font-size: 13px; }
+.chapter-pager-btn { width: 40px; height: 40px; background: transparent; border: 1.5px solid var(--ink); color: var(--ink); cursor: pointer; font-size: 18px; line-height: 1; transition: all 0.2s; display: inline-flex; align-items: center; justify-content: center; }
+.chapter-pager-btn:hover:not(:disabled) { background: var(--ink); color: var(--paper); }
+.chapter-pager-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+.chapter-pager-info { font-weight: 600; letter-spacing: 0.05em; }
+.chapter-pager-total { color: var(--ink-light, #6b5d4f); font-weight: 400; margin-left: 6px; }
+.chap-row, .chap-num, .chap-title, .chap-desc { display: none !important; }
 
 /* Footer */
 .footer { padding: 80px 8% 60px; background: var(--ink); color: var(--paper); text-align: center; }
@@ -231,12 +243,12 @@ body { background: var(--paper); color: var(--ink); font-family: 'Fraunces', Geo
 <nav class="nav-bar">
 <a class="nav-logo" href="../index.html" title="Về trang chủ"><span>Outsiders</span><em>.</em></a>
 <div class="nav-links">
-<a onclick="document.getElementById('thesis').scrollIntoView({behavior:'smooth'})">Luận điểm</a>
-<a onclick="document.getElementById('framework').scrollIntoView({behavior:'smooth'})">8 CEO</a>
-<a onclick="document.getElementById('chapters').scrollIntoView({behavior:'smooth'})">Chương sách</a>
-<a onclick="document.getElementById('flashcards').scrollIntoView({behavior:'smooth'})">Flashcard</a>
-<a onclick="document.getElementById('quiz').scrollIntoView({behavior:'smooth'})">Quiz</a>
-<a onclick="document.getElementById('journal').scrollIntoView({behavior:'smooth'})">Nhật ký</a>
+<a onclick="scrollTo2('thesis')">Luận điểm</a>
+<a onclick="scrollTo2('framework')">8 CEO</a>
+<a onclick="scrollTo2('chapters')">Chương sách</a>
+<a onclick="scrollTo2('flashcards')">Flashcard</a>
+<a onclick="scrollTo2('quiz')">Quiz</a>
+<a onclick="scrollTo2('journal')">Nhật ký</a>
 </div>
 </nav>
 <!-- HERO -->
@@ -370,18 +382,62 @@ body { background: var(--paper); color: var(--ink); font-family: 'Fraunces', Geo
 <div class="section-label">Bản đồ nội dung / 9 chương</div>
 <h2 class="section-title" data-content-id="the-outsiders-chapters-01" data-content-type="heading">Chín chương sách: Tám nghiên cứu điển hình và một bản đúc kết</h2>
 <p class="section-intro" data-content-id="the-outsiders-chapters-02" data-content-type="section-intro">Cuốn sách này nói không với những lý thuyết suông. Nó được xây dựng gần như trọn vẹn từ tám trường hợp thực chiến. Mỗi chương đều đi theo một công thức chuẩn mực: bối cảnh ngành, những quyết định sinh tử và kết quả cuối cùng. Phần đúc kết ở cuối sách sẽ phơi bày những quy luật lặp lại. Lời khuyên là hãy đọc về Singleton trước, sau đó nghiền ngẫm về Buffett và khép lại bằng chương tổng hợp tư duy.</p>
-<div class="chap-list">
-<div class="chap-row"><div class="chap-num">PREFACE</div><div><div class="chap-title" data-content-id="the-outsiders-chapters-03" data-content-type="chapter-desc">Thị trấn Singleton</div><div class="chap-desc" data-content-id="the-outsiders-chapters-14" data-content-type="chapter-desc">Giải mã lý do vì sao Henry Singleton, chứ không phải tượng đài Jack Welch, mới là tiêu chuẩn vàng thực sự của sự vĩ đại. Trích lời Buffett: Singleton sở hữu bảng thành tích quản trị vô tiền khoáng hậu nhất mọi thời đại.</div></div></div>
-<div class="chap-row"><div class="chap-num">INTRO</div><div><div class="chap-title" data-content-id="the-outsiders-chapters-04" data-content-type="chapter-desc">Kẻ phá bĩnh thông thái</div><div class="chap-desc" data-content-id="the-outsiders-chapters-15" data-content-type="chapter-desc">Định nghĩa lại tư duy ngoại hạng. Một bài toán ma trận với năm lựa chọn rót vốn và ba nguồn huy động tài chính. Bất kỳ lãnh đạo nào cũng phải đối mặt với khung tham chiếu này, nhưng thảm họa là đa số chỉ cắm đầu vào một hoặc hai ô quen thuộc.</div></div></div>
-<div class="chap-row"><div class="chap-num">Ch 1</div><div><div class="chap-title" data-content-id="the-outsiders-chapters-05" data-content-type="chapter-desc">Cỗ máy sinh lời vĩnh cửu</div><div class="chap-desc" data-content-id="the-outsiders-chapters-16" data-content-type="chapter-desc">Câu chuyện của Tom Murphy. Một bộ máy quản lý trung ương siêu mỏng, quyền lực được phân tán triệt để, và những ván cược khủng khiếp chỉ diễn ra vài lần trong một thập kỷ.</div></div></div>
-<div class="chap-row"><div class="chap-num">Ch 2</div><div><div class="chap-title" data-content-id="the-outsiders-chapters-06" data-content-type="chapter-desc">Kẻ xây dựng đế chế dị biệt</div><div class="chap-desc" data-content-id="the-outsiders-chapters-17" data-content-type="chapter-desc">Chiến thuật của Henry Singleton. Thu gom chín mươi phần trăm cổ phiếu, đóng băng mọi thương vụ khi thị trường ngáo giá, và thẳng tay rũ bỏ những mảnh ghép thừa thãi. Đây là chương sách bắt buộc phải đọc đi đọc lại nhiều lần.</div></div></div>
-<div class="chap-row"><div class="chap-num">Ch 3</div><div><div class="chap-title" data-content-id="the-outsiders-chapters-07" data-content-type="chapter-desc">Cú lội ngược dòng</div><div class="chap-desc" data-content-id="the-outsiders-chapters-18" data-content-type="chapter-desc">Sự bạo chi của Bill Anders để vực dậy ngành công nghiệp quốc phòng thời hậu Chiến tranh Lạnh. Cắt giảm bảy mươi phần trăm quân số, thanh lý gần hết các mảng kinh doanh và chỉ giữ lại những gì tinh túy nhất.</div></div></div>
-<div class="chap-row"><div class="chap-num">Ch 4</div><div><div class="chap-title" data-content-id="the-outsiders-chapters-08" data-content-type="chapter-desc">Kiến tạo giá trị giữa dòng nước xiết</div><div class="chap-desc" data-content-id="the-outsiders-chapters-19" data-content-type="chapter-desc">John Malone đã phát minh ra chỉ số EBITDA, dùng đòn bẩy nợ một cách điên cuồng, luồn lách để né thuế hợp pháp và bành trướng quyền lực thông qua hàng trăm thương vụ thâu tóm lắt nhắt.</div></div></div>
-<div class="chap-row"><div class="chap-num">Ch 5</div><div><div class="chap-title" data-content-id="the-outsiders-chapters-09" data-content-type="chapter-desc">Góa phụ cầm lái</div><div class="chap-desc" data-content-id="the-outsiders-chapters-20" data-content-type="chapter-desc">Bà Katharine Graham tiếp quản tờ báo trong nước mắt, cắp sách đi học từ Buffett, mua lại bốn mươi phần trăm cổ phần và trở thành nữ tướng đầu tiên đè bẹp sự tăng trưởng của thị trường lên tới mười tám lần.</div></div></div>
-<div class="chap-row"><div class="chap-num">Ch 6</div><div><div class="chap-title" data-content-id="the-outsiders-chapters-10" data-content-type="chapter-desc">Cuộc chơi đòn bẩy tài chính công khai</div><div class="chap-desc" data-content-id="the-outsiders-chapters-21" data-content-type="chapter-desc">Bill Stiritz đã chín lần mạnh tay chia tách công ty. Ông ban hành đạo luật lợi nhuận nội bộ mười lăm phần trăm tàn khốc và từ chối mọi cuộc gặp gỡ phù phiếm với Phố Wall.</div></div></div>
-<div class="chap-row"><div class="chap-num">Ch 7</div><div><div class="chap-title" data-content-id="the-outsiders-chapters-11" data-content-type="chapter-desc">Tối ưu hóa doanh nghiệp gia đình</div><div class="chap-desc" data-content-id="the-outsiders-chapters-22" data-content-type="chapter-desc">Dick Smith và ba lần bẻ lái ngoạn mục qua các ngành nghề khác biệt. Kỹ năng rót vốn chéo từ những ngành đang lụi tàn sang những bầu trời mới.</div></div></div>
-<div class="chap-row"><div class="chap-num">Ch 8</div><div><div class="chap-title" data-content-id="the-outsiders-chapters-12" data-content-type="chapter-desc">Nhà đầu tư ngồi ghế điều hành</div><div class="chap-desc" data-content-id="the-outsiders-chapters-23" data-content-type="chapter-desc">Warren Buffett chính là linh hồn của tư duy ngoại hạng. Duy trì mức lợi nhuận hai mươi lăm phần trăm suốt hơn nửa thế kỷ bằng sức mạnh của những đồng vốn kiên nhẫn.</div></div></div>
-<div class="chap-row"><div class="chap-num">Ch 9</div><div><div class="chap-title" data-content-id="the-outsiders-chapters-13" data-content-type="chapter-desc">Sự duy lý cực đoan</div><div class="chap-desc" data-content-id="the-outsiders-chapters-24" data-content-type="chapter-desc">Mô thức chung của cả tám người: Duy lý, hoài nghi sâu sắc Phố Wall, tầm nhìn viễn kiến, phân quyền quản lý và tư duy rạch ròi trên từng cổ phiếu.</div></div></div>
+<div class="chapter-grid">
+<div class="chapter-card">
+<div class="chapter-num">CHƯƠNG PREFACE</div>
+<div class="chapter-title" data-content-id="the-outsiders-chapters-03" data-content-type="chapter-desc">Thị trấn Singleton</div>
+<div class="chapter-desc" data-content-id="the-outsiders-chapters-14" data-content-type="chapter-desc">Giải mã lý do vì sao Henry Singleton, chứ không phải tượng đài Jack Welch, mới là tiêu chuẩn vàng thực sự của sự vĩ đại. Trích lời Buffett: Singleton sở hữu bảng thành tích quản trị vô tiền khoáng hậu nhất mọi thời đại.</div>
+</div>
+<div class="chapter-card">
+<div class="chapter-num">CHƯƠNG INTRO</div>
+<div class="chapter-title" data-content-id="the-outsiders-chapters-04" data-content-type="chapter-desc">Kẻ phá bĩnh thông thái</div>
+<div class="chapter-desc" data-content-id="the-outsiders-chapters-15" data-content-type="chapter-desc">Định nghĩa lại tư duy ngoại hạng. Một bài toán ma trận với năm lựa chọn rót vốn và ba nguồn huy động tài chính. Bất kỳ lãnh đạo nào cũng phải đối mặt với khung tham chiếu này, nhưng thảm họa là đa số chỉ cắm đầu vào một hoặc hai ô quen thuộc.</div>
+</div>
+<div class="chapter-card">
+<div class="chapter-num">CHƯƠNG 1</div>
+<div class="chapter-title" data-content-id="the-outsiders-chapters-05" data-content-type="chapter-desc">Cỗ máy sinh lời vĩnh cửu</div>
+<div class="chapter-desc" data-content-id="the-outsiders-chapters-16" data-content-type="chapter-desc">Câu chuyện của Tom Murphy. Một bộ máy quản lý trung ương siêu mỏng, quyền lực được phân tán triệt để, và những ván cược khủng khiếp chỉ diễn ra vài lần trong một thập kỷ.</div>
+</div>
+<div class="chapter-card">
+<div class="chapter-num">CHƯƠNG 2</div>
+<div class="chapter-title" data-content-id="the-outsiders-chapters-06" data-content-type="chapter-desc">Kẻ xây dựng đế chế dị biệt</div>
+<div class="chapter-desc" data-content-id="the-outsiders-chapters-17" data-content-type="chapter-desc">Chiến thuật của Henry Singleton. Thu gom chín mươi phần trăm cổ phiếu, đóng băng mọi thương vụ khi thị trường ngáo giá, và thẳng tay rũ bỏ những mảnh ghép thừa thãi. Đây là chương sách bắt buộc phải đọc đi đọc lại nhiều lần.</div>
+</div>
+<div class="chapter-card">
+<div class="chapter-num">CHƯƠNG 3</div>
+<div class="chapter-title" data-content-id="the-outsiders-chapters-07" data-content-type="chapter-desc">Cú lội ngược dòng</div>
+<div class="chapter-desc" data-content-id="the-outsiders-chapters-18" data-content-type="chapter-desc">Sự bạo chi của Bill Anders để vực dậy ngành công nghiệp quốc phòng thời hậu Chiến tranh Lạnh. Cắt giảm bảy mươi phần trăm quân số, thanh lý gần hết các mảng kinh doanh và chỉ giữ lại những gì tinh túy nhất.</div>
+</div>
+<div class="chapter-card">
+<div class="chapter-num">CHƯƠNG 4</div>
+<div class="chapter-title" data-content-id="the-outsiders-chapters-08" data-content-type="chapter-desc">Kiến tạo giá trị giữa dòng nước xiết</div>
+<div class="chapter-desc" data-content-id="the-outsiders-chapters-19" data-content-type="chapter-desc">John Malone đã phát minh ra chỉ số EBITDA, dùng đòn bẩy nợ một cách điên cuồng, luồn lách để né thuế hợp pháp và bành trướng quyền lực thông qua hàng trăm thương vụ thâu tóm lắt nhắt.</div>
+</div>
+<div class="chapter-card">
+<div class="chapter-num">CHƯƠNG 5</div>
+<div class="chapter-title" data-content-id="the-outsiders-chapters-09" data-content-type="chapter-desc">Góa phụ cầm lái</div>
+<div class="chapter-desc" data-content-id="the-outsiders-chapters-20" data-content-type="chapter-desc">Bà Katharine Graham tiếp quản tờ báo trong nước mắt, cắp sách đi học từ Buffett, mua lại bốn mươi phần trăm cổ phần và trở thành nữ tướng đầu tiên đè bẹp sự tăng trưởng của thị trường lên tới mười tám lần.</div>
+</div>
+<div class="chapter-card">
+<div class="chapter-num">CHƯƠNG 6</div>
+<div class="chapter-title" data-content-id="the-outsiders-chapters-10" data-content-type="chapter-desc">Cuộc chơi đòn bẩy tài chính công khai</div>
+<div class="chapter-desc" data-content-id="the-outsiders-chapters-21" data-content-type="chapter-desc">Bill Stiritz đã chín lần mạnh tay chia tách công ty. Ông ban hành đạo luật lợi nhuận nội bộ mười lăm phần trăm tàn khốc và từ chối mọi cuộc gặp gỡ phù phiếm với Phố Wall.</div>
+</div>
+<div class="chapter-card">
+<div class="chapter-num">CHƯƠNG 7</div>
+<div class="chapter-title" data-content-id="the-outsiders-chapters-11" data-content-type="chapter-desc">Tối ưu hóa doanh nghiệp gia đình</div>
+<div class="chapter-desc" data-content-id="the-outsiders-chapters-22" data-content-type="chapter-desc">Dick Smith và ba lần bẻ lái ngoạn mục qua các ngành nghề khác biệt. Kỹ năng rót vốn chéo từ những ngành đang lụi tàn sang những bầu trời mới.</div>
+</div>
+<div class="chapter-card">
+<div class="chapter-num">CHƯƠNG 8</div>
+<div class="chapter-title" data-content-id="the-outsiders-chapters-12" data-content-type="chapter-desc">Nhà đầu tư ngồi ghế điều hành</div>
+<div class="chapter-desc" data-content-id="the-outsiders-chapters-23" data-content-type="chapter-desc">Warren Buffett chính là linh hồn của tư duy ngoại hạng. Duy trì mức lợi nhuận hai mươi lăm phần trăm suốt hơn nửa thế kỷ bằng sức mạnh của những đồng vốn kiên nhẫn.</div>
+</div>
+<div class="chapter-card">
+<div class="chapter-num">CHƯƠNG 9</div>
+<div class="chapter-title" data-content-id="the-outsiders-chapters-13" data-content-type="chapter-desc">Sự duy lý cực đoan</div>
+<div class="chapter-desc" data-content-id="the-outsiders-chapters-24" data-content-type="chapter-desc">Mô thức chung của cả tám người: Duy lý, hoài nghi sâu sắc Phố Wall, tầm nhìn viễn kiến, phân quyền quản lý và tư duy rạch ròi trên từng cổ phiếu.</div>
+</div>
 </div>
 <p class="section-intro" style="margin-top: 48px; max-width: 1000px;"><span data-content-id="the-outsiders-survivorship-1">Thorndike đã cố tình che giấu một sự thật gai góc: Cuốn sách này sực nức mùi của thiên kiến kẻ sống sót. Tám vị giám đốc này chiến thắng, và thế là Thorndike lấy họ làm chuẩn mực. Nhưng thực tế tàn khốc là có hàng nghìn nhà quản lý khác cũng dùng đòn bẩy nợ, cũng mua lại cổ phiếu, cũng phân quyền, để rồi kéo cả công ty xuống mồ. Lịch sử không bao giờ vinh danh những kẻ thất bại đó. Tư duy ngoại hạng không phải là tấm bùa hộ mệnh. Nó chỉ phát huy tác dụng khi bạn kết hợp được với khả năng vận hành lõi, nắm bắt đúng thiên thời và cộng thêm một chút may mắn của số phận. Nhất là với các nhà khởi nghiệp tại Việt Nam, nơi quy mô thị trường còn nông và khả năng thanh khoản cổ phiếu rất èo uột, hãy đọc cuốn sách này bằng một con mắt đầy hoài nghi.</span></p>
 </section>
@@ -498,6 +554,13 @@ body { background: var(--paper); color: var(--ink); font-family: 'Fraunces', Geo
 <div class="footer-bottom">© 2026 · Stop &amp; Think · By Quang Ton</div>
 </footer>
 <script>
+function scrollTo2(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  const top = el.getBoundingClientRect().top + window.pageYOffset - 60;
+  window.scrollTo({top, behavior: 'smooth'});
+}
+
 const flashcards = [
   {
     q: "Job CEO theo Thorndike khác Job CEO truyền thống ở đâu?",
@@ -733,6 +796,38 @@ function resetQuiz() {
 
 renderCard();
 renderQuiz();
+
+const CHAPTERS_PER_PAGE = 6;
+let chaptersCurrentPage = 1;
+
+function renderChaptersPage() {
+  const cards = Array.from(document.querySelectorAll('.chapter-card'));
+  const N = cards.length;
+  const totalPages = Math.max(1, Math.ceil(N / CHAPTERS_PER_PAGE));
+  if (chaptersCurrentPage > totalPages) chaptersCurrentPage = 1;
+  const start = (chaptersCurrentPage - 1) * CHAPTERS_PER_PAGE;
+  cards.forEach((c, i) => {
+    c.style.display = (i >= start && i < start + CHAPTERS_PER_PAGE) ? '' : 'none';
+  });
+  let pager = document.getElementById('chaptersPager');
+  if (!pager) {
+    pager = document.createElement('div');
+    pager.id = 'chaptersPager';
+    pager.className = 'chapter-pager';
+    const grid = document.querySelector('.chapter-grid');
+    if (grid) grid.parentNode.insertBefore(pager, grid.nextSibling);
+  }
+  if (totalPages <= 1) { pager.innerHTML = ''; pager.style.display = 'none'; return; }
+  pager.style.display = '';
+  pager.innerHTML = '<button class="chapter-pager-btn" ' + (chaptersCurrentPage===1?'disabled':'') + ' onclick="changeChapterPage(-1)">&larr;</button><span class="chapter-pager-info">' + chaptersCurrentPage + ' / ' + totalPages + ' <span class="chapter-pager-total">(' + N + ' chương)</span></span><button class="chapter-pager-btn" ' + (chaptersCurrentPage===totalPages?'disabled':'') + ' onclick="changeChapterPage(1)">&rarr;</button>';
+}
+
+function changeChapterPage(delta) {
+  chaptersCurrentPage += delta;
+  renderChaptersPage();
+}
+
+document.addEventListener('DOMContentLoaded', renderChaptersPage);
 </script>
 <script>
 (function() {

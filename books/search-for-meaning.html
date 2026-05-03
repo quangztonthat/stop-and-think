@@ -247,18 +247,34 @@ body { background: var(--paper); color: var(--ink); font-family: 'Fraunces', Geo
 .quiz-result { text-align: center; padding: 40px 0; }
 .quiz-score { font-family: 'Fraunces', serif; font-size: 64px; font-weight: 300; line-height: 1; color: var(--accent); margin-bottom: 12px; }
 .quiz-score-label { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); }
+
+.rule-section { padding: 60px 0; border-top: 1px solid var(--ink-light, #d6cfc2); }
+.rule-section:first-of-type { border-top: none; padding-top: 32px; }
+.rule-header { margin-bottom: 32px; }
+.rule-num { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.15em; color: var(--accent-2); margin-bottom: 12px; }
+.rule-title { font-family: 'Fraunces', serif; font-size: clamp(28px, 4vw, 40px); font-weight: 700; line-height: 1.15; }
+.chapter-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+.chapter-card { padding: 24px; background: rgba(196, 146, 60, 0.04); border: 1px solid rgba(26, 20, 16, 0.08); }
+.chapter-num { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.15em; color: var(--accent-2); margin-bottom: 8px; }
+.chapter-title { font-family: 'Fraunces', serif; font-size: 19px; font-weight: 600; line-height: 1.3; margin-bottom: 8px; }
+.chapter-desc { font-size: 14px; line-height: 1.55; color: var(--muted); }
+.chapter-tabs { display: flex; gap: 8px; margin-bottom: 32px; flex-wrap: wrap; justify-content: center; }
+.chapter-tab-btn { padding: 10px 16px; background: transparent; border: 1.5px solid var(--ink); font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer; transition: all 0.2s; color: var(--ink); }
+.chapter-tab-btn.active, .chapter-tab-btn:hover { background: var(--ink); color: var(--paper); }
+.chapter-list, .chapter-row { display: none !important; }
+
 </style>
 </head>
 <body>
 <nav class="nav-bar">
 <a class="nav-logo" href="../index.html" title="Về trang chủ">Đi tìm <em>lẽ</em> <span>sống</span></a>
 <div class="nav-links">
-<a onclick="document.getElementById('thesis').scrollIntoView({behavior:'smooth'})">Luận điểm</a>
-<a onclick="document.getElementById('framework').scrollIntoView({behavior:'smooth'})">Framework</a>
-<a onclick="document.getElementById('chapters').scrollIntoView({behavior:'smooth'})">Chương</a>
-<a onclick="document.getElementById('flashcards').scrollIntoView({behavior:'smooth'})">Flashcard</a>
-<a onclick="document.getElementById('quiz').scrollIntoView({behavior:'smooth'})">Quiz</a>
-<a onclick="document.getElementById('journal').scrollIntoView({behavior:'smooth'})">Nhật ký</a>
+<a onclick="scrollTo2('thesis')">Luận điểm</a>
+<a onclick="scrollTo2('framework')">Framework</a>
+<a onclick="scrollTo2('chapters')">Chương</a>
+<a onclick="scrollTo2('flashcards')">Flashcard</a>
+<a onclick="scrollTo2('quiz')">Quiz</a>
+<a onclick="scrollTo2('journal')">Nhật ký</a>
 </div>
 </nav>
 <!-- HERO -->
@@ -440,24 +456,46 @@ body { background: var(--paper); color: var(--ink); font-family: 'Fraunces', Geo
 <div class="section-label">Bản đồ chương — Bố cục cuốn sách</div>
 <h2 class="section-title" data-content-id="search-for-meaning-chapters-01" data-content-type="heading">Bản đồ chi tiết của cuốn sách</h2>
 <p class="section-intro" data-content-id="search-for-meaning-chapters-02" data-content-type="section-intro">Đây không phải là một mớ lý thuyết tâm lý sáo rỗng. Bạn phải đọc tuần tự từ những trải nghiệm đẫm máu ở trại tập trung, bước qua phần khái niệm nền tảng, rồi mới đến cách áp dụng cho con người thời bình. Ý nghĩa chỉ thực sự vỡ lẽ khi bạn đi trọn vẹn cả ba phần.</p>
-<div class="chapter-list">
-<div class="chapter-row">
+<div class="chapter-tabs">
+<button class="chapter-tab-btn" onclick="filterChapters('part1', this)">I. Trại tập trung</button>
+<button class="chapter-tab-btn" onclick="filterChapters('part2', this)">II. Liệu pháp ý nghĩa</button>
+<button class="chapter-tab-btn" onclick="filterChapters('part3', this)">III. Lạc quan bi kịch</button>
+<button class="chapter-tab-btn active" onclick="filterChapters('all', this)">Tất cả</button>
+</div>
+<div class="rule-section" data-part="part1">
+<div class="rule-header">
+<div class="rule-num">PHẦN I</div>
+<div class="rule-title" data-content-id="search-for-meaning-chapters-04" data-content-type="chapter-desc">Sự đày đọa ở trại tập trung</div>
+</div>
+<div class="chapter-grid">
+<div class="chapter-card">
 <div class="chapter-num">PART I</div>
-<div>
 <div class="chapter-title" data-content-id="search-for-meaning-chapters-04" data-content-type="chapter-desc">Sự đày đọa ở trại tập trung</div>
 <div class="chapter-desc" data-content-id="search-for-meaning-chapters-07" data-content-type="chapter-desc">Frankl bóc trần ba giai đoạn tâm lý tàn khốc của một người tù: từ sự hoảng luận ban đầu, sự chai sạn cảm xúc để sinh tồn, cho đến những di chứng nặng nề trong ngày đầu tiên được tự do. Đây là phần câu chuyện thực tế tạo nên tên tuổi của tác phẩm.</div>
 </div>
 </div>
-<div class="chapter-row">
+</div>
+<div class="rule-section" data-part="part2">
+<div class="rule-header">
+<div class="rule-num">PHẦN II</div>
+<div class="rule-title" data-content-id="search-for-meaning-chapters-05" data-content-type="chapter-desc">Hạt nhân của Liệu pháp Ý nghĩa</div>
+</div>
+<div class="chapter-grid">
+<div class="chapter-card">
 <div class="chapter-num">PART II</div>
-<div>
 <div class="chapter-title" data-content-id="search-for-meaning-chapters-05" data-content-type="chapter-desc">Hạt nhân của Liệu pháp Ý nghĩa</div>
 <div class="chapter-desc" data-content-id="search-for-meaning-chapters-08" data-content-type="chapter-desc">Đây là phần đúc kết lý thuyết trị liệu của Frankl. Nó mổ xẻ những khái niệm cốt lõi như khoảng trống sinh tồn và ba nguồn cội của ý nghĩa. Mặc dù khô khan hơn, nhưng đây chính là chiếc chìa khóa để giải mã phần trải nghiệm đẫm nước mắt ở đầu sách.</div>
 </div>
 </div>
-<div class="chapter-row">
+</div>
+<div class="rule-section" data-part="part3">
+<div class="rule-header">
+<div class="rule-num">PHẦN III</div>
+<div class="rule-title" data-content-id="search-for-meaning-chapters-06" data-content-type="chapter-desc">Lạc quan bi kịch</div>
+</div>
+<div class="chapter-grid">
+<div class="chapter-card">
 <div class="chapter-num">PART III</div>
-<div>
 <div class="chapter-title" data-content-id="search-for-meaning-chapters-06" data-content-type="chapter-desc">Lạc quan bi kịch</div>
 <div class="chapter-desc" data-content-id="search-for-meaning-chapters-09" data-content-type="chapter-desc">Đừng nhầm lẫn giữa sự lạc quan ngây ngô cố tình chối bỏ nỗi đau với sự lạc quan bi kịch. Đó là sự thừa nhận mọi mất mát và khổ đau của kiếp người, nhưng vẫn quật cường tìm ra ý nghĩa để bước tiếp. Đây là lời giải đáp sắc sảo nhất của Frankl về bóng đen của sự tự sát.</div>
 </div>
@@ -516,6 +554,13 @@ body { background: var(--paper); color: var(--ink); font-family: 'Fraunces', Geo
 </div>
 </section>
 <script>
+function scrollTo2(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  const top = el.getBoundingClientRect().top + window.pageYOffset - 60;
+  window.scrollTo({top, behavior: 'smooth'});
+}
+
 const flashcards = [
   {
     q: "Frankl định nghĩa \"tự do cuối cùng\" của con người là gì?",
@@ -938,6 +983,27 @@ const COMMENTS_PAGE_ID = 'search-for-meaning';
 <script src="/assets/books-data.js"></script>
 <script src="/assets/library.js"></script>
 <!-- CF Analytics (with owner opt-out) --><script>(function(){try{var q=new URLSearchParams(location.search);if(q.get('notrack')==='1'){localStorage.setItem('st_no_track','1');}if(q.get('notrack')==='0'){localStorage.removeItem('st_no_track');}if(localStorage.getItem('st_no_track')==='1'){return;}}catch(e){}var s=document.createElement('script');s.defer=true;s.src='https://static.cloudflareinsights.com/beacon.min.js';s.setAttribute('data-cf-beacon','{"token":"8c50242b708f48ad8c7bc39b1144e20c"}');document.head.appendChild(s);})();</script>
+<script>
+
+function filterChapters(part, btn) {
+  document.querySelectorAll('.chapter-tab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.rule-section[data-part]').forEach(sec => {
+    sec.style.display = (part === 'all' || sec.dataset.part === part) ? '' : 'none';
+  });
+}
+document.addEventListener('DOMContentLoaded', function() {
+  const allBtns = document.querySelectorAll('.chapter-tab-btn');
+  for (let i = 0; i < allBtns.length; i++) {
+    const oc = allBtns[i].getAttribute('onclick') || '';
+    if (oc.indexOf("'all'") === -1 && oc.indexOf('filterChapters(') !== -1) {
+      allBtns[i].click();
+      break;
+    }
+  }
+});
+
+</script>
 <script src="../edit-mode.js"></script>
 <script defer="" src="/assets/nav-spy.js"></script>
 </body>

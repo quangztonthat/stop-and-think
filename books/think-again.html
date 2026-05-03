@@ -2232,7 +2232,10 @@ function saveState() {
 
 /* ============ NAVIGATION & PROGRESS ============ */
 function scrollTo2(id) {
-  document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+  const el = document.getElementById(id);
+  if (!el) return;
+  const top = el.getBoundingClientRect().top + window.pageYOffset - 60;
+  window.scrollTo({top, behavior: 'smooth'});
 }
 
 window.addEventListener('scroll', () => {

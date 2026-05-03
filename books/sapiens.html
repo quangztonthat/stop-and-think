@@ -120,10 +120,22 @@ body { background: var(--paper); color: var(--ink); font-family: 'Fraunces', Geo
 /* Chapter map */
 .chap-list { display: grid; gap: 16px; max-width: 880px; margin: 40px 0; }
 .chap-row { display: grid; grid-template-columns: 100px 1fr; gap: 24px; padding: 22px 28px; background: var(--paper-dark); border-left: 3px solid var(--accent); align-items: start; }
-.chap-num { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.15em; color: var(--accent-2); padding-top: 4px; }
-.chap-title { font-family: 'Fraunces', serif; font-size: 19px; font-weight: 600; line-height: 1.3; margin-bottom: 6px; }
-.chap-title em { font-style: normal; color: var(--accent-2); }
-.chap-desc { font-size: 15px; line-height: 1.55; color: var(--muted); }
+.chapter-tabs { display: flex; gap: 8px; margin-bottom: 32px; flex-wrap: wrap; justify-content: center; }
+.chapter-tab-btn { padding: 10px 16px; background: transparent; border: 1.5px solid var(--ink); font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer; transition: all 0.2s; color: var(--ink); }
+.chapter-tab-btn.active, .chapter-tab-btn:hover { background: var(--ink); color: var(--paper); }
+.chapter-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+.chapter-card { padding: 24px; background: rgba(196, 146, 60, 0.04); border: 1px solid rgba(26, 20, 16, 0.08); transition: all 0.2s; }
+.chapter-card:hover { background: rgba(196, 146, 60, 0.08); border-color: rgba(26, 20, 16, 0.18); }
+.chapter-num { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.15em; color: var(--accent-2); margin-bottom: 8px; }
+.chapter-title { font-family: 'Fraunces', serif; font-size: 19px; font-weight: 600; line-height: 1.3; margin-bottom: 8px; }
+.chapter-desc { font-size: 14px; line-height: 1.55; color: var(--muted); }
+.chapter-pager { display: flex; justify-content: center; align-items: center; gap: 16px; margin-top: 28px; font-family: 'JetBrains Mono', monospace; font-size: 13px; }
+.chapter-pager-btn { width: 40px; height: 40px; background: transparent; border: 1.5px solid var(--ink); color: var(--ink); cursor: pointer; font-size: 18px; line-height: 1; transition: all 0.2s; display: inline-flex; align-items: center; justify-content: center; }
+.chapter-pager-btn:hover:not(:disabled) { background: var(--ink); color: var(--paper); }
+.chapter-pager-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+.chapter-pager-info { font-weight: 600; letter-spacing: 0.05em; }
+.chapter-pager-total { color: var(--ink-light, #6b5d4f); font-weight: 400; margin-left: 6px; }
+.chap-row, .chap-num, .chap-title, .chap-desc { display: none !important; }
 
 /* Flashcards */
 .flashcards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; margin: 32px 0; }
@@ -245,12 +257,12 @@ body { background: var(--paper); color: var(--ink); font-family: 'Fraunces', Geo
 <nav class="nav-bar">
 <a class="nav-logo" href="../index.html" title="Về trang chủ"><span>Sapiens</span><em>.</em></a>
 <div class="nav-links">
-<a onclick="document.getElementById('thesis').scrollIntoView({behavior:'smooth'})">Luận điểm</a>
-<a onclick="document.getElementById('framework').scrollIntoView({behavior:'smooth'})">Framework</a>
-<a onclick="document.getElementById('chapters').scrollIntoView({behavior:'smooth'})">Chương sách</a>
-<a onclick="document.getElementById('flashcards').scrollIntoView({behavior:'smooth'})">Flashcard</a>
-<a onclick="document.getElementById('quiz').scrollIntoView({behavior:'smooth'})">Quiz</a>
-<a onclick="document.getElementById('journal').scrollIntoView({behavior:'smooth'})">Nhật ký</a>
+<a onclick="scrollTo2('thesis')">Luận điểm</a>
+<a onclick="scrollTo2('framework')">Framework</a>
+<a onclick="scrollTo2('chapters')">Chương sách</a>
+<a onclick="scrollTo2('flashcards')">Flashcard</a>
+<a onclick="scrollTo2('quiz')">Quiz</a>
+<a onclick="scrollTo2('journal')">Nhật ký</a>
 </div>
 </nav>
 <!-- HERO -->
@@ -521,125 +533,91 @@ body { background: var(--paper); color: var(--ink); font-family: 'Fraunces', Geo
 <div class="section-label">Bản đồ nội dung / Chương sách</div>
 <h2 class="section-title" data-content-id="sapiens-chapters-01" data-content-type="heading">Bản đồ chi tiết của cuốn sách</h2>
 <p class="section-intro" data-content-id="sapiens-chapters-02" data-content-type="section-intro">Cuốn sách khá đồ sộ với độ dài hơn bốn trăm rưỡi trang. Mỗi phần là một cuộc cách mạng định hình nên giống loài chúng ta. Hãy đọc theo đúng trình tự thời gian, đừng nhảy cóc nếu bạn chưa nắm vững lịch sử nền tảng.</p>
-<div class="chap-list">
-<div class="chap-row">
-<div class="chap-num">Part 1</div>
-<div>
-<div class="chap-title" data-content-id="sapiens-chapters-03" data-content-type="chapter-desc">Cách mạng Nhận thức</div>
-<div class="chap-desc" data-content-id="sapiens-chapters-20" data-content-type="chapter-desc">Bảy mươi nghìn năm trước, Sapiens thực sự trở thành Sapiens.</div>
+<div class="chapter-grid">
+<div class="chapter-card">
+<div class="chapter-num">CHƯƠNG PART 1</div>
+<div class="chapter-title" data-content-id="sapiens-chapters-03" data-content-type="chapter-desc">Cách mạng Nhận thức</div>
+<div class="chapter-desc" data-content-id="sapiens-chapters-20" data-content-type="chapter-desc">Bảy mươi nghìn năm trước, Sapiens thực sự trở thành Sapiens.</div>
 </div>
+<div class="chapter-card">
+<div class="chapter-num">CHƯƠNG 01</div>
+<div class="chapter-title" data-content-id="sapiens-chapters-04" data-content-type="chapter-desc">Một loài động vật vô danh</div>
+<div class="chapter-desc" data-content-id="sapiens-chapters-21" data-content-type="chapter-desc">Trước cuộc cách mạng, Sapiens chỉ là một sinh vật nhạt nhòa lẩn khuất giữa nhiều giống người khác.</div>
 </div>
-<div class="chap-row">
-<div class="chap-num">Ch 01</div>
-<div>
-<div class="chap-title" data-content-id="sapiens-chapters-04" data-content-type="chapter-desc">Một loài động vật vô danh</div>
-<div class="chap-desc" data-content-id="sapiens-chapters-21" data-content-type="chapter-desc">Trước cuộc cách mạng, Sapiens chỉ là một sinh vật nhạt nhòa lẩn khuất giữa nhiều giống người khác.</div>
+<div class="chapter-card">
+<div class="chapter-num">CHƯƠNG 02</div>
+<div class="chapter-title" data-content-id="sapiens-chapters-05" data-content-type="chapter-desc">Cây tri thức</div>
+<div class="chapter-desc" data-content-id="sapiens-chapters-22" data-content-type="chapter-desc">Cuộc cách mạng nhận thức bắt nguồn từ một đột biến gen, trao cho chúng ta khả năng tin vào những điều hư cấu.</div>
 </div>
+<div class="chapter-card">
+<div class="chapter-num">CHƯƠNG 03</div>
+<div class="chapter-title" data-content-id="sapiens-chapters-06" data-content-type="chapter-desc">Một ngày trong đời Adam và Eve</div>
+<div class="chapter-desc" data-content-id="sapiens-chapters-23" data-content-type="chapter-desc">Những kẻ săn bắt hái lượm có chế độ ăn uống phong phú, ít bệnh tật và chỉ làm việc ba mươi lăm giờ mỗi tuần.</div>
 </div>
-<div class="chap-row">
-<div class="chap-num">Ch 02</div>
-<div>
-<div class="chap-title" data-content-id="sapiens-chapters-05" data-content-type="chapter-desc">Cây tri thức</div>
-<div class="chap-desc" data-content-id="sapiens-chapters-22" data-content-type="chapter-desc">Cuộc cách mạng nhận thức bắt nguồn từ một đột biến gen, trao cho chúng ta khả năng tin vào những điều hư cấu.</div>
+<div class="chapter-card">
+<div class="chapter-num">CHƯƠNG 04</div>
+<div class="chapter-title" data-content-id="sapiens-chapters-07" data-content-type="chapter-desc">Trận đại hồng thủy</div>
+<div class="chapter-desc" data-content-id="sapiens-chapters-24" data-content-type="chapter-desc">Khi Sapiens đặt chân đến Úc và châu Mỹ, các loài thú khổng lồ lập tức bị xóa sổ.</div>
 </div>
+<div class="chapter-card">
+<div class="chapter-num">CHƯƠNG PART 2</div>
+<div class="chapter-title" data-content-id="sapiens-chapters-08" data-content-type="chapter-desc">Cách mạng Nông nghiệp</div>
+<div class="chapter-desc" data-content-id="sapiens-chapters-25" data-content-type="chapter-desc">Mười hai nghìn năm trước: Cú lừa lớn nhất của lịch sử.</div>
 </div>
-<div class="chap-row">
-<div class="chap-num">Ch 03</div>
-<div>
-<div class="chap-title" data-content-id="sapiens-chapters-06" data-content-type="chapter-desc">Một ngày trong đời Adam và Eve</div>
-<div class="chap-desc" data-content-id="sapiens-chapters-23" data-content-type="chapter-desc">Những kẻ săn bắt hái lượm có chế độ ăn uống phong phú, ít bệnh tật và chỉ làm việc ba mươi lăm giờ mỗi tuần.</div>
+<div class="chapter-card">
+<div class="chapter-num">CHƯƠNG 05</div>
+<div class="chapter-title" data-content-id="sapiens-chapters-09" data-content-type="chapter-desc">Cú lừa vĩ đại nhất lịch sử</div>
+<div class="chapter-desc" data-content-id="sapiens-chapters-26" data-content-type="chapter-desc">Lúa mì đã thuần hóa con người. Quy mô bầy đàn phình to, nhưng chất lượng sống của mỗi cá nhân lại sụp đổ.</div>
 </div>
+<div class="chapter-card">
+<div class="chapter-num">CHƯƠNG 07</div>
+<div class="chapter-title" data-content-id="sapiens-chapters-10" data-content-type="chapter-desc">Quá tải bộ nhớ</div>
+<div class="chapter-desc" data-content-id="sapiens-chapters-27" data-content-type="chapter-desc">Chữ viết ra đời như một công cụ bắt buộc để đối phó với sự phức tạp của một xã hội đông đúc.</div>
 </div>
-<div class="chap-row">
-<div class="chap-num">Ch 04</div>
-<div>
-<div class="chap-title" data-content-id="sapiens-chapters-07" data-content-type="chapter-desc">Trận đại hồng thủy</div>
-<div class="chap-desc" data-content-id="sapiens-chapters-24" data-content-type="chapter-desc">Khi Sapiens đặt chân đến Úc và châu Mỹ, các loài thú khổng lồ lập tức bị xóa sổ.</div>
+<div class="chapter-card">
+<div class="chapter-num">CHƯƠNG 08</div>
+<div class="chapter-title" data-content-id="sapiens-chapters-11" data-content-type="chapter-desc">Không có công lý trong lịch sử</div>
+<div class="chapter-desc" data-content-id="sapiens-chapters-28" data-content-type="chapter-desc">Phân cấp giai cấp, chế độ nô lệ hay phân biệt giới tính hoàn toàn không phải là quy luật sinh học. Chúng chỉ là những trật tự do con người tưởng tượng ra.</div>
 </div>
+<div class="chapter-card">
+<div class="chapter-num">CHƯƠNG PART 3</div>
+<div class="chapter-title" data-content-id="sapiens-chapters-12" data-content-type="chapter-desc">Sự thống nhất của nhân loại</div>
+<div class="chapter-desc" data-content-id="sapiens-chapters-29" data-content-type="chapter-desc">Tiền bạc, Đế chế và Tôn giáo là ba thế lực khổng lồ đã nấu chảy và hợp nhất loài người.</div>
 </div>
-<div class="chap-row">
-<div class="chap-num">Part 2</div>
-<div>
-<div class="chap-title" data-content-id="sapiens-chapters-08" data-content-type="chapter-desc">Cách mạng Nông nghiệp</div>
-<div class="chap-desc" data-content-id="sapiens-chapters-25" data-content-type="chapter-desc">Mười hai nghìn năm trước: Cú lừa lớn nhất của lịch sử.</div>
+<div class="chapter-card">
+<div class="chapter-num">CHƯƠNG 10</div>
+<div class="chapter-title" data-content-id="sapiens-chapters-13" data-content-type="chapter-desc">Mùi hương của tiền</div>
+<div class="chapter-desc" data-content-id="sapiens-chapters-30" data-content-type="chapter-desc">Tiền là hệ thống niềm tin tập thể tinh xảo nhất mà nhân loại từng chế tạo ra.</div>
 </div>
+<div class="chapter-card">
+<div class="chapter-num">CHƯƠNG 12</div>
+<div class="chapter-title" data-content-id="sapiens-chapters-14" data-content-type="chapter-desc">Luật lệ của Tôn giáo</div>
+<div class="chapter-desc" data-content-id="sapiens-chapters-31" data-content-type="chapter-desc">Tôn giáo là một hệ tư tưởng gắn liền với các yếu tố siêu nhiên. Ngay cả chủ nghĩa tư bản hay nhân đạo cũng mang dáng dấp của những tôn giáo hiện đại.</div>
 </div>
-<div class="chap-row">
-<div class="chap-num">Ch 05</div>
-<div>
-<div class="chap-title" data-content-id="sapiens-chapters-09" data-content-type="chapter-desc">Cú lừa vĩ đại nhất lịch sử</div>
-<div class="chap-desc" data-content-id="sapiens-chapters-26" data-content-type="chapter-desc">Lúa mì đã thuần hóa con người. Quy mô bầy đàn phình to, nhưng chất lượng sống của mỗi cá nhân lại sụp đổ.</div>
+<div class="chapter-card">
+<div class="chapter-num">CHƯƠNG PART 4</div>
+<div class="chapter-title" data-content-id="sapiens-chapters-15" data-content-type="chapter-desc">Cách mạng Khoa học</div>
+<div class="chapter-desc" data-content-id="sapiens-chapters-32" data-content-type="chapter-desc">Năm trăm năm trước, việc thừa nhận sự ngu dốt kết hợp với chủ nghĩa tư bản đã tạo ra sự tăng trưởng theo cấp số nhân.</div>
 </div>
+<div class="chapter-card">
+<div class="chapter-num">CHƯƠNG 14</div>
+<div class="chapter-title" data-content-id="sapiens-chapters-16" data-content-type="chapter-desc">Khám phá ra sự ngu dốt</div>
+<div class="chapter-desc" data-content-id="sapiens-chapters-33" data-content-type="chapter-desc">Việc dũng cảm nói câu Chúng tôi không biết chính là điểm bùng nổ của khoa học hiện đại.</div>
 </div>
-<div class="chap-row">
-<div class="chap-num">Ch 07</div>
-<div>
-<div class="chap-title" data-content-id="sapiens-chapters-10" data-content-type="chapter-desc">Quá tải bộ nhớ</div>
-<div class="chap-desc" data-content-id="sapiens-chapters-27" data-content-type="chapter-desc">Chữ viết ra đời như một công cụ bắt buộc để đối phó với sự phức tạp của một xã hội đông đúc.</div>
+<div class="chapter-card">
+<div class="chapter-num">CHƯƠNG 16</div>
+<div class="chapter-title" data-content-id="sapiens-chapters-17" data-content-type="chapter-desc">Tín điều của Chủ nghĩa Tư bản</div>
+<div class="chapter-desc" data-content-id="sapiens-chapters-34" data-content-type="chapter-desc">Sẵn sàng đổ tiền vào tương lai với niềm tin mãnh liệt vào sự tăng trưởng chính là động cơ đã kéo lịch sử đi lên trong năm trăm năm qua.</div>
 </div>
+<div class="chapter-card">
+<div class="chapter-num">CHƯƠNG 19</div>
+<div class="chapter-title" data-content-id="sapiens-chapters-18" data-content-type="chapter-desc">Và họ sống hạnh phúc mãi mãi về sau?</div>
+<div class="chapter-desc" data-content-id="sapiens-chapters-35" data-content-type="chapter-desc">Quyền lực thăng hoa, nhưng hạnh phúc thì dậm chân tại chỗ. Đây là câu hỏi bỏ ngỏ tàn nhẫn nhất của Harari.</div>
 </div>
-<div class="chap-row">
-<div class="chap-num">Ch 08</div>
-<div>
-<div class="chap-title" data-content-id="sapiens-chapters-11" data-content-type="chapter-desc">Không có công lý trong lịch sử</div>
-<div class="chap-desc" data-content-id="sapiens-chapters-28" data-content-type="chapter-desc">Phân cấp giai cấp, chế độ nô lệ hay phân biệt giới tính hoàn toàn không phải là quy luật sinh học. Chúng chỉ là những trật tự do con người tưởng tượng ra.</div>
-</div>
-</div>
-<div class="chap-row">
-<div class="chap-num">Part 3</div>
-<div>
-<div class="chap-title" data-content-id="sapiens-chapters-12" data-content-type="chapter-desc">Sự thống nhất của nhân loại</div>
-<div class="chap-desc" data-content-id="sapiens-chapters-29" data-content-type="chapter-desc">Tiền bạc, Đế chế và Tôn giáo là ba thế lực khổng lồ đã nấu chảy và hợp nhất loài người.</div>
-</div>
-</div>
-<div class="chap-row">
-<div class="chap-num">Ch 10</div>
-<div>
-<div class="chap-title" data-content-id="sapiens-chapters-13" data-content-type="chapter-desc">Mùi hương của tiền</div>
-<div class="chap-desc" data-content-id="sapiens-chapters-30" data-content-type="chapter-desc">Tiền là hệ thống niềm tin tập thể tinh xảo nhất mà nhân loại từng chế tạo ra.</div>
-</div>
-</div>
-<div class="chap-row">
-<div class="chap-num">Ch 12</div>
-<div>
-<div class="chap-title" data-content-id="sapiens-chapters-14" data-content-type="chapter-desc">Luật lệ của Tôn giáo</div>
-<div class="chap-desc" data-content-id="sapiens-chapters-31" data-content-type="chapter-desc">Tôn giáo là một hệ tư tưởng gắn liền với các yếu tố siêu nhiên. Ngay cả chủ nghĩa tư bản hay nhân đạo cũng mang dáng dấp của những tôn giáo hiện đại.</div>
-</div>
-</div>
-<div class="chap-row">
-<div class="chap-num">Part 4</div>
-<div>
-<div class="chap-title" data-content-id="sapiens-chapters-15" data-content-type="chapter-desc">Cách mạng Khoa học</div>
-<div class="chap-desc" data-content-id="sapiens-chapters-32" data-content-type="chapter-desc">Năm trăm năm trước, việc thừa nhận sự ngu dốt kết hợp với chủ nghĩa tư bản đã tạo ra sự tăng trưởng theo cấp số nhân.</div>
-</div>
-</div>
-<div class="chap-row">
-<div class="chap-num">Ch 14</div>
-<div>
-<div class="chap-title" data-content-id="sapiens-chapters-16" data-content-type="chapter-desc">Khám phá ra sự ngu dốt</div>
-<div class="chap-desc" data-content-id="sapiens-chapters-33" data-content-type="chapter-desc">Việc dũng cảm nói câu Chúng tôi không biết chính là điểm bùng nổ của khoa học hiện đại.</div>
-</div>
-</div>
-<div class="chap-row">
-<div class="chap-num">Ch 16</div>
-<div>
-<div class="chap-title" data-content-id="sapiens-chapters-17" data-content-type="chapter-desc">Tín điều của Chủ nghĩa Tư bản</div>
-<div class="chap-desc" data-content-id="sapiens-chapters-34" data-content-type="chapter-desc">Sẵn sàng đổ tiền vào tương lai với niềm tin mãnh liệt vào sự tăng trưởng chính là động cơ đã kéo lịch sử đi lên trong năm trăm năm qua.</div>
-</div>
-</div>
-<div class="chap-row">
-<div class="chap-num">Ch 19</div>
-<div>
-<div class="chap-title" data-content-id="sapiens-chapters-18" data-content-type="chapter-desc">Và họ sống hạnh phúc mãi mãi về sau?</div>
-<div class="chap-desc" data-content-id="sapiens-chapters-35" data-content-type="chapter-desc">Quyền lực thăng hoa, nhưng hạnh phúc thì dậm chân tại chỗ. Đây là câu hỏi bỏ ngỏ tàn nhẫn nhất của Harari.</div>
-</div>
-</div>
-<div class="chap-row">
-<div class="chap-num">Ch 20</div>
-<div>
-<div class="chap-title" data-content-id="sapiens-chapters-19" data-content-type="chapter-desc">Dấu chấm hết của Homo Sapiens</div>
-<div class="chap-desc" data-content-id="sapiens-chapters-36" data-content-type="chapter-desc">Con người đang tự phong thần. Công nghệ sinh học và trí tuệ nhân tạo có thể sẽ đặt dấu chấm hết cho giống loài Sapiens trong hai thế kỷ tới.</div>
-</div>
+<div class="chapter-card">
+<div class="chapter-num">CHƯƠNG 20</div>
+<div class="chapter-title" data-content-id="sapiens-chapters-19" data-content-type="chapter-desc">Dấu chấm hết của Homo Sapiens</div>
+<div class="chapter-desc" data-content-id="sapiens-chapters-36" data-content-type="chapter-desc">Con người đang tự phong thần. Công nghệ sinh học và trí tuệ nhân tạo có thể sẽ đặt dấu chấm hết cho giống loài Sapiens trong hai thế kỷ tới.</div>
 </div>
 </div>
 <p class="section-intro" style="margin-top: 48px; max-width: 1000px; margin-left: auto; margin-right: auto;"><span data-content-id="sapiens-bias-1">Quan điểm của Harari cũng vấp phải làn sóng chỉ trích gay gắt từ giới sử học. Họ cho rằng ông đã cố tình nhào nặn và tối giản hóa lịch sử để ép chúng vừa vặn vào những khuôn mẫu lý thuyết của riêng mình. Giả thuyết về cuộc Cách mạng Nhận thức cách đây bảy mươi nghìn năm vẫn là một lỗ hổng lớn vì thiếu vắng các bằng chứng hóa thạch mang tính quyết định. Lời khuyên là hãy đọc Sapiens như một bộ khung tư duy triết học để mở rộng góc nhìn, đừng tôn sùng nó như một cuốn sách giáo khoa lịch sử chuẩn mực.</span></p>
@@ -694,6 +672,13 @@ body { background: var(--paper); color: var(--ink); font-family: 'Fraunces', Geo
 </div>
 </section>
 <script>
+function scrollTo2(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  const top = el.getBoundingClientRect().top + window.pageYOffset - 60;
+  window.scrollTo({top, behavior: 'smooth'});
+}
+
 const flashcards = [
   {
     q: "4 cuộc cách mạng định hình Sapiens là gì?",
@@ -929,6 +914,38 @@ function resetQuiz() {
 
 renderCard();
 renderQuiz();
+
+const CHAPTERS_PER_PAGE = 6;
+let chaptersCurrentPage = 1;
+
+function renderChaptersPage() {
+  const cards = Array.from(document.querySelectorAll('.chapter-card'));
+  const N = cards.length;
+  const totalPages = Math.max(1, Math.ceil(N / CHAPTERS_PER_PAGE));
+  if (chaptersCurrentPage > totalPages) chaptersCurrentPage = 1;
+  const start = (chaptersCurrentPage - 1) * CHAPTERS_PER_PAGE;
+  cards.forEach((c, i) => {
+    c.style.display = (i >= start && i < start + CHAPTERS_PER_PAGE) ? '' : 'none';
+  });
+  let pager = document.getElementById('chaptersPager');
+  if (!pager) {
+    pager = document.createElement('div');
+    pager.id = 'chaptersPager';
+    pager.className = 'chapter-pager';
+    const grid = document.querySelector('.chapter-grid');
+    if (grid) grid.parentNode.insertBefore(pager, grid.nextSibling);
+  }
+  if (totalPages <= 1) { pager.innerHTML = ''; pager.style.display = 'none'; return; }
+  pager.style.display = '';
+  pager.innerHTML = '<button class="chapter-pager-btn" ' + (chaptersCurrentPage===1?'disabled':'') + ' onclick="changeChapterPage(-1)">&larr;</button><span class="chapter-pager-info">' + chaptersCurrentPage + ' / ' + totalPages + ' <span class="chapter-pager-total">(' + N + ' chương)</span></span><button class="chapter-pager-btn" ' + (chaptersCurrentPage===totalPages?'disabled':'') + ' onclick="changeChapterPage(1)">&rarr;</button>';
+}
+
+function changeChapterPage(delta) {
+  chaptersCurrentPage += delta;
+  renderChaptersPage();
+}
+
+document.addEventListener('DOMContentLoaded', renderChaptersPage);
 </script>
 <footer class="footer">
 <div class="footer-quote">"Bạn không biết bạn muốn gì — vì bạn chưa từng tự hỏi. Lịch sử Sapiens chưa bao giờ dạy ta câu hỏi đó."</div>

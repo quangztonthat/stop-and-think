@@ -523,6 +523,9 @@ body {
   grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
   gap: 16px;
 }
+.chapter-tabs { display: flex; gap: 8px; margin-bottom: 32px; flex-wrap: wrap; justify-content: center; }
+.chapter-tab-btn { padding: 10px 16px; background: transparent; border: 1.5px solid var(--ink); font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer; transition: all 0.2s; color: var(--ink); }
+.chapter-tab-btn.active, .chapter-tab-btn:hover { background: var(--ink); color: var(--paper); }
 .chapter-card {
   border: 1.5px solid var(--ink);
   padding: 24px;
@@ -1221,7 +1224,16 @@ body {
 <div class="section-label" style="">20 chương — 6 phần</div>
 <h2 class="section-title" data-content-id="atomic-habits-chapters-01" data-content-type="heading" style="">Bản đồ <em style="">chi tiết</em> của cuốn sách</h2>
 <p class="section-intro" data-content-id="atomic-habits-chapters-02" data-content-type="section-intro" style="">James Clear không đi theo lối mòn lý thuyết suông. Các chương được sắp xếp chặt chẽ theo đúng tiến trình của vòng lặp thói quen. Điều này giúp bạn hiểu thấu đáo cơ chế trước khi xắn tay vào thực hành. Bạn nên đọc lần lượt, vì mỗi phần đều là viên gạch nền tảng vững chắc cho phần kế tiếp.</p>
-<div class="rule-section">
+<div class="chapter-tabs">
+<button class="chapter-tab-btn active" onclick="filterChapters('foundation', this)">Cơ bản (1-3)</button>
+<button class="chapter-tab-btn" onclick="filterChapters('obvious', this)">1. Rõ ràng (4-7)</button>
+<button class="chapter-tab-btn" onclick="filterChapters('attractive', this)">2. Hấp dẫn (8-10)</button>
+<button class="chapter-tab-btn" onclick="filterChapters('easy', this)">3. Dễ dàng (11-14)</button>
+<button class="chapter-tab-btn" onclick="filterChapters('satisfying', this)">4. Thỏa mãn (15-17)</button>
+<button class="chapter-tab-btn" onclick="filterChapters('advanced', this)">Nâng cao (18-20)</button>
+<button class="chapter-tab-btn" onclick="filterChapters('all', this)">Tất cả (20)</button>
+</div>
+<div class="rule-section" data-part="foundation">
 <div class="rule-header">
 <div class="rule-num" style="">PHẦN I — NỀN TẢNG</div>
 <div class="rule-title" data-content-id="atomic-habits-chapters-43" data-content-type="framework" style="">Nền tảng cốt lõi</div>
@@ -1248,7 +1260,7 @@ body {
 </div>
 </div>
 </div>
-<div class="rule-section">
+<div class="rule-section" data-part="obvious">
 <div class="rule-header">
 <div class="rule-num" style="">PHẦN II — LAW #1</div>
 <div class="rule-title" data-content-id="atomic-habits-chapters-44" data-content-type="framework" style="">Làm cho nó rõ ràng</div>
@@ -1281,7 +1293,7 @@ body {
 </div>
 </div>
 </div>
-<div class="rule-section">
+<div class="rule-section" data-part="attractive">
 <div class="rule-header">
 <div class="rule-num" style="">PHẦN III — LAW #2</div>
 <div class="rule-title" data-content-id="atomic-habits-chapters-45" data-content-type="framework" style="">Làm cho nó hấp dẫn</div>
@@ -1308,7 +1320,7 @@ body {
 </div>
 </div>
 </div>
-<div class="rule-section">
+<div class="rule-section" data-part="easy">
 <div class="rule-header">
 <div class="rule-num" style="">PHẦN IV — LAW #3</div>
 <div class="rule-title" data-content-id="atomic-habits-chapters-46" data-content-type="framework" style="">Làm cho nó dễ dàng</div>
@@ -1341,7 +1353,7 @@ body {
 </div>
 </div>
 </div>
-<div class="rule-section">
+<div class="rule-section" data-part="satisfying">
 <div class="rule-header">
 <div class="rule-num" style="">PHẦN V — LAW #4</div>
 <div class="rule-title" data-content-id="atomic-habits-chapters-47" data-content-type="framework" style="">Làm cho nó thỏa mãn</div>
@@ -1368,7 +1380,7 @@ body {
 </div>
 </div>
 </div>
-<div class="rule-section">
+<div class="rule-section" data-part="advanced">
 <div class="rule-header">
 <div class="rule-num" style="">PHẦN VI — CHIẾN THUẬT NÂNG CAO</div>
 <div class="rule-title" data-content-id="atomic-habits-chapters-48" data-content-type="framework" style="">Chiến thuật nâng cao</div>
@@ -1689,6 +1701,13 @@ body {
 </footer>
 </main>
 <script>
+function scrollTo2(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  const top = el.getBoundingClientRect().top + window.pageYOffset - 60;
+  window.scrollTo({top, behavior: 'smooth'});
+}
+
 const flashcards = [
   {
     q: "Vòng lặp thói quen (habit loop) có 4 giai đoạn nào? Vai trò của mỗi giai đoạn?",
@@ -2011,69 +2030,26 @@ function changeActionsPage(delta) {
   renderActions(actionsCurrentFilter);
 }
 
-function filterActions(cat, btn) {
-  document.querySelectorAll('.action-cat-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  actionsCurrentPage = 1;
-  renderActions(cat);
-}
 
-function renderPrompts() {
-  const container = document.getElementById('promptsContainer');
-  // If DOM already has pre-rendered prompts (saved HTML), skip JS render
-  if (container.querySelector('.journal-prompt')) return;
-  journalPrompts.forEach((p, i) => {
-    const div = document.createElement('div');
-    div.className = 'journal-prompt' + (i === 0 ? ' active' : '');
-    div.id = `prompt-${i}`;
-    div.innerHTML = `
-      <div class="journal-q">${i + 1}. ${p.q}</div>
-      <div class="journal-help">💡 Gợi ý: ${p.help}</div>
-      <textarea class="journal-textarea" placeholder="Viết câu trả lời của bạn ở đây..."></textarea>
-    `;
-    container.appendChild(div);
+function filterChapters(part, btn) {
+  document.querySelectorAll('.chapter-tab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.rule-section[data-part]').forEach(sec => {
+    sec.style.display = (part === 'all' || sec.dataset.part === part) ? '' : 'none';
   });
 }
 
-function switchPrompt(i, dot) {
-  document.querySelectorAll('.journal-dot').forEach(d => d.classList.remove('active'));
-  dot.classList.add('active');
-  document.querySelectorAll('.journal-prompt').forEach(p => p.classList.remove('active'));
-  document.getElementById(`prompt-${i}`).classList.add('active');
-}
-
-function scrollTo2(id) {
-  const el = document.getElementById(id);
-  if (el) window.scrollTo({ top: el.offsetTop - 80, behavior: 'smooth' });
-}
-
-window.addEventListener('scroll', () => {
-  const total = document.documentElement.scrollHeight - window.innerHeight;
-  const pct = (window.scrollY / total) * 100;
-  document.getElementById('progressBar').style.width = pct + '%';
-});
-
-renderCard();
-renderQuiz();
-renderActions();
-renderPrompts();
-</script>
-<script>
-(function() {
-  const COMMENTS_PAGE_ID = "atomic-habits";
-  async function loadComments() {
-    const list = document.getElementById('commentsList');
-    if (!list) return;
-    list.innerHTML = '<div class="comments-loading">Đang tải comment...</div>';
-    try {
-      const res = await fetch('/api/comments?page=' + COMMENTS_PAGE_ID);
-      if (!res.ok) throw new Error('fetch failed');
-      const data = await res.json();
-      renderCommentsList(data.comments || []);
-    } catch (e) {
-      list.innerHTML = '<div class="comments-empty">Không tải được comment. Thử lại sau.</div>';
+document.addEventListener('DOMContentLoaded', function() {
+  // Default: show only first part (skip Tất cả default)
+  const allBtns = document.querySelectorAll('.chapter-tab-btn');
+  for (let i = 0; i < allBtns.length; i++) {
+    const oc = allBtns[i].getAttribute('onclick') || '';
+    if (oc.indexOf("'all'") === -1 && oc.indexOf('filterChapters(') !== -1) {
+      allBtns[i].click();
+      break;
     }
   }
+});
   function renderCommentsList(items) {
     const list = document.getElementById('commentsList');
     if (!items.length) {
@@ -2161,7 +2137,6 @@ renderPrompts();
     document.getElementById('replyCancel').addEventListener('click', cancelReply);
     loadComments();
   }
-})();
 </script>
 <!-- Library widgets: search + related books -->
 <script src="/assets/books-data.js"></script>
