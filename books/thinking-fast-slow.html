@@ -1,0 +1,1596 @@
+<!DOCTYPE html>
+
+<html lang="vi">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Thinking, Fast and Slow — Sách tương tác</title><script id="dark-mode-init">(function(){try{var t=localStorage.getItem('st-theme');if(!t){t=window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';}document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+<meta content="Phân tích chuyên sâu Thinking, Fast and Slow của Daniel Kahneman — hai hệ thống tư duy và cách bộ não quyết định. Bởi Quang Ton." name="description"/>
+<link href="../favicon.svg" rel="icon" type="image/svg+xml"/>
+<link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png"/>
+<link href="https://flamindi.com/thinking-fast-slow" rel="canonical"/>
+<meta content="article" property="og:type"/>
+<meta content="Stop &amp; Think" property="og:site_name"/>
+<meta content="vi_VN" property="og:locale"/>
+<meta content="Thinking, Fast and Slow — Sách tương tác | Stop &amp; Think" property="og:title"/>
+<meta content="Phân tích chuyên sâu Thinking, Fast and Slow của Daniel Kahneman — hai hệ thống tư duy và cách bộ não quyết định. Bởi Quang Ton." property="og:description"/>
+<meta content="https://flamindi.com/thinking-fast-slow" property="og:url"/>
+<meta content="https://flamindi.com/og-image.png" property="og:image"/>
+<meta content="summary_large_image" name="twitter:card"/>
+<link rel="preload" href="/assets/fonts/inter-vietnamese-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/fraunces-vietnamese-700-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/assets/fonts.v1.css">
+<style>
+:root {
+  --ink: #1a1410;
+  --paper: #ffffff;
+  --paper-dark: #f7f7f7;
+  --accent: #8b3a2b;
+  --accent-2: #2d4a5c;
+  --gold: #c4923c;
+  --muted: #3d3d3d;
+  --line: #5e2418;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+h1, h2, h3, h4, h5, .nav-brand, .footer-brand, .brand, .cover-brand, .cat-title, .book-cover-title, .book-title, .book-card-title, .cover-title, .chap-title, .chapter-title, .fw-name, .compare-name, .law-name, .principle h3 { font-family: 'Fraunces', Georgia, serif; }
+
+em { font-style: normal; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  font-size: 19px;
+  line-height: 1.6;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ============ NAV ============ */
+.nav-bar {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--line);
+  z-index: 100;
+  padding: 14px 32px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.nav-logo {
+  font-weight: 700;
+  font-size: 20px;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  text-decoration: none;
+  transition: opacity 0.2s;
+}
+.nav-logo:hover { opacity: 0.7; }
+.nav-logo span { color: var(--accent); }
+
+.nav-links {
+  display: flex;
+  gap: 24px;
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+.nav-links a {
+  color: var(--ink);
+  text-decoration: none;
+  transition: color 0.2s;
+  cursor: pointer;
+}
+.nav-links a:hover { color: var(--accent); }
+.nav-links a.active { color: var(--accent); font-weight: 600; }
+
+.progress-bar {
+  position: fixed;
+  top: 56px; left: 0;
+  height: 3px;
+  background: var(--accent);
+  z-index: 99;
+  transition: width 0.1s;
+}
+
+.breadcrumb-bar {
+  padding: 90px 8% 0;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--muted);
+  position: relative;
+  z-index: 2;
+}
+.breadcrumb-bar a { color: var(--muted); text-decoration: none; transition: color 0.2s; }
+.breadcrumb-bar a:hover { color: var(--accent); }
+.breadcrumb-bar span { margin: 0 8px; opacity: 0.4; }
+.breadcrumb-bar .current { color: var(--ink); font-weight: 600; opacity: 1; }
+
+/* ============ HERO ============ */
+.hero {
+  min-height: 100vh;
+  padding: 32px 8% 80px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+  align-items: center;
+  position: relative;
+  border-bottom: 2px solid var(--line);
+}
+.hero-meta {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 24px;
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+.hero-meta::before {
+  content: '';
+  width: 24px; height: 1px;
+  background: var(--ink);
+}
+.hero h1 {
+  font-size: clamp(48px, 7vw, 110px);
+  font-weight: 700;
+  line-height: 0.95;
+  letter-spacing: -0.04em;
+  margin-bottom: 32px;
+}
+.hero h1 .italic {
+  color: var(--accent);
+  font-weight: 700;
+}
+.hero-sub {
+  font-size: 24px;
+  font-weight: 400;
+  color: var(--muted);
+  max-width: 560px;
+  margin-bottom: 48px;
+  line-height: 1.5;
+}
+.hero-sub strong { color: var(--accent); font-weight: 500; }
+
+.hero-author {
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  border-top: 1px solid var(--line);
+  padding-top: 16px;
+  display: inline-block;
+}
+
+.hero-visual {
+  position: relative;
+  height: 600px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.hero-chart { width: 480px; height: 480px; position: relative; }
+.hero-chart svg { width: 100%; height: 100%; overflow: visible; }
+.hero-chart .grid-line { stroke: var(--ink); stroke-width: 0.5; opacity: 0.1; }
+.hero-chart .axis { stroke: var(--ink); stroke-width: 1.5; }
+.hero-chart .label-fast { font-size: 24px; font-weight: 700; fill: var(--accent); }
+.hero-chart .label-slow { font-size: 24px; font-weight: 700; fill: var(--accent-2); }
+.hero-chart .label-sub { font-family: 'JetBrains Mono', monospace; font-size: 11px; fill: var(--muted); letter-spacing: 0.15em; }
+
+.hero-tag {
+  position: absolute;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  background: var(--ink);
+  color: var(--paper);
+  padding: 6px 12px;
+}
+.tag-1 { top: 60px; right: 40px; transform: rotate(8deg); }
+.tag-2 { bottom: 80px; left: 20px; transform: rotate(-6deg); }
+.tag-3 { top: 50%; right: 0; transform: rotate(-10deg); }
+
+/* ============ SECTIONS ============ */
+.section {
+  padding: 100px 8%;
+  border-bottom: 2px solid var(--line);
+  position: relative;
+}
+
+.section-label {
+  display: inline-block;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 24px;
+  padding-left: 36px;
+  position: relative;
+}
+.section-label::before {
+  content: '◆';
+  position: absolute;
+  left: 0;
+  color: var(--accent);
+}
+
+.section-title {
+  font-size: clamp(36px, 5vw, 72px);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.025em;
+  margin-bottom: 32px;
+  max-width: 1100px;
+}
+.section-title em {
+  color: var(--accent);
+  font-weight: inherit;
+}
+
+.section-intro {
+  font-size: 22px;
+  font-weight: 400;
+  line-height: 1.55;
+  color: var(--muted);
+  max-width: 760px;
+  margin-bottom: 56px;
+}
+.section-intro strong { color: var(--accent); font-weight: 500; }
+
+/* THESIS GRID + SVG */
+.thesis-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  align-items: center;
+  max-width: 1300px;
+}
+.thesis-title-small {
+  font-size: clamp(28px, 3.5vw, 44px);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  margin-bottom: 24px;
+}
+.thesis-title-small em { color: var(--accent); font-weight: inherit; }
+
+.thesis-viz {
+  position: relative;
+  width: 100%;
+  max-width: 520px;
+  aspect-ratio: 1;
+  margin: 0 auto;
+}
+.thesis-viz svg { width: 100%; height: 100%; overflow: visible; }
+@media (max-width: 800px) {
+  .thesis-grid { grid-template-columns: 1fr; gap: 64px; }
+  .thesis-viz { max-width: 400px; }
+}
+
+.thesis-quote {
+  background: var(--ink);
+  color: var(--paper);
+  padding: 48px 8%;
+  text-align: center;
+  border-bottom: 2px solid var(--line);
+}
+.thesis-mark {
+  font-size: 56px;
+  color: var(--gold);
+  line-height: 0.5;
+  margin-bottom: 12px;
+  font-weight: 700;
+}
+.thesis-text {
+  font-size: clamp(28px, 4vw, 48px);
+  font-weight: 400;
+  line-height: 1.3;
+  max-width: 1000px;
+  margin: 0 auto 20px;
+}
+.thesis-text em { color: var(--gold); font-weight: 700; }
+.thesis-author {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+
+/* TWO SYSTEMS COMPARE */
+.systems-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin: 40px 0;
+}
+.system-card { padding: 40px 32px; border: 2px solid var(--ink); }
+.system-card.fast { background: var(--accent); color: var(--paper); }
+.system-card.slow { background: var(--accent-2); color: var(--paper); }
+
+.system-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  letter-spacing: 0.25em;
+  margin-bottom: 12px;
+  opacity: 0.8;
+}
+.system-name {
+  font-size: 32px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+.system-tagline {
+  font-size: 16px;
+  margin-bottom: 24px;
+  opacity: 0.9;
+}
+.system-list {
+  list-style: none;
+  padding: 0;
+}
+.system-list li {
+  padding: 12px 0 12px 20px;
+  border-bottom: 1px solid rgba(255, 255, 255,0.15);
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.5;
+  position: relative;
+}
+.system-list li::before {
+  content: '→';
+  position: absolute;
+  left: 0;
+  color: var(--gold);
+  font-weight: 700;
+}
+
+/* BIASES GRID */
+.biases-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+  margin: 40px 0;
+}
+.bias-card {
+  padding: 28px 24px;
+  background: var(--paper);
+  border: 1.5px solid var(--ink);
+  transition: all 0.2s;
+}
+.bias-card:hover { transform: translate(-3px, -3px); box-shadow: 6px 6px 0 var(--accent); background: var(--paper-dark); }
+.bias-name {
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+.bias-name-en {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  color: var(--accent);
+  margin-bottom: 14px;
+}
+.bias-desc {
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.55;
+  color: var(--muted);
+}
+.bias-desc strong { color: var(--accent); font-weight: 500; }
+
+/* PROSPECT VIZ */
+.prospect-viz {
+  margin: 48px 0;
+  padding: 48px;
+  background: var(--ink);
+  color: var(--paper);
+  border: 2px solid var(--accent);
+}
+.prospect-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+  margin: 24px 0;
+}
+.prospect-side {
+  padding: 24px;
+  background: rgba(255, 255, 255,0.06);
+  border-left: 3px solid var(--gold);
+}
+.prospect-side .label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  color: var(--gold);
+  margin-bottom: 8px;
+}
+.prospect-side .num {
+  font-size: 36px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+.prospect-side .desc { font-size: 15px; line-height: 1.5; opacity: 0.9; }
+.prospect-takeaway {
+  margin-top: 32px;
+  padding-top: 24px;
+  border-top: 1px solid rgba(255, 255, 255,0.2);
+  font-size: 17px;
+  font-style: normal;
+  line-height: 1.5;
+}
+
+/* CHAPTERS */
+.chapter-part { margin-bottom: 64px; }
+.part-header {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 8px;
+}
+.part-title {
+  font-size: 32px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+.part-sub {
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  color: var(--muted);
+  margin-bottom: 32px;
+}
+.chapter-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 20px;
+}
+.chapter-tabs { display: flex; gap: 8px; margin-bottom: 32px; flex-wrap: wrap; justify-content: center; }
+.chapter-tab-btn { padding: 10px 16px; background: transparent; border: 1.5px solid var(--ink); font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer; transition: all 0.2s; color: var(--ink); }
+.chapter-tab-btn.active, .chapter-tab-btn:hover { background: var(--ink); color: var(--paper); }
+.chapter-card {
+  border: 1.5px solid var(--ink);
+  padding: 28px;
+  background: var(--paper);
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.chapter-card:hover {
+  transform: translate(-3px, -3px);
+  box-shadow: 6px 6px 0 var(--accent);
+  background: var(--paper-dark);
+}
+.chapter-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  color: var(--accent);
+  margin-bottom: 8px;
+}
+.chapter-title {
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1.2;
+  margin-bottom: 12px;
+}
+.chapter-desc {
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.6;
+  color: var(--muted);
+}
+.chapter-desc strong { color: var(--accent); font-weight: 500; }
+.chapter-key {
+  display: inline-block;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  background: var(--ink);
+  color: var(--paper);
+  padding: 3px 8px;
+  margin: 4px 4px 0 0;
+}
+
+/* FLASHCARDS */
+/* Interactive Flashcards (Think Again style) */
+.flashcard-container { max-width: 720px; margin: 32px auto; }
+.flashcard-controls { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; font-family: 'JetBrains Mono', monospace; font-size: 12px; letter-spacing: 0.1em; color: var(--muted); }
+.flashcard-counter { color: var(--muted); letter-spacing: 0.1em; }
+.flashcard-counter strong { color: var(--ink); font-size: 14px; }
+.flashcard { position: relative; width: 100%; min-height: 280px; perspective: 1500px; cursor: pointer; background: transparent; border: none; padding: 0; transition: none; transform: none; box-shadow: none; display: block; }
+.flashcard:hover { transform: none; box-shadow: none; }
+.flashcard-face { position: absolute; inset: 0; backface-visibility: hidden; padding: 36px 32px; border: 2px solid var(--ink); display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; transition: transform 0.6s; }
+.flashcard-front { background: var(--paper-dark); transform: rotateY(0deg); }
+.flashcard-back { background: var(--accent-2); color: var(--paper); transform: rotateY(180deg); }
+.flashcard.flipped .flashcard-front { transform: rotateY(180deg); }
+.flashcard.flipped .flashcard-back { transform: rotateY(360deg); }
+.flashcard-tag { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.2em; color: var(--accent-2); margin-bottom: 16px; text-transform: uppercase; }
+.flashcard-back .flashcard-tag { color: var(--paper); opacity: 0.8; }
+.flashcard-question { font-size: 22px; font-weight: 600; line-height: 1.35; margin-bottom: 16px; color: var(--ink); }
+.flashcard-answer { font-size: 17px; line-height: 1.55; color: var(--paper); margin-bottom: 16px; max-width: 580px; }
+.flashcard-hint { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.15em; opacity: 0.6; text-transform: uppercase; }
+.flashcard-nav { display: flex; gap: 12px; justify-content: center; margin-top: 24px; flex-wrap: wrap; }
+.fcq-btn { padding: 12px 22px; border: 1.5px solid var(--ink); background: var(--paper); color: var(--ink); font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer; transition: all 0.2s; }
+.fcq-btn:hover { background: var(--ink); color: var(--paper); }
+.fcq-btn.outline { background: transparent; }
+.fcq-btn.accent { background: var(--accent-2); color: var(--paper); border-color: var(--accent-2); }
+.fcq-btn.accent:hover { background: var(--ink); border-color: var(--ink); }
+
+/* QUIZ */
+.quiz-container { max-width: 720px; margin: 32px auto; padding: 36px 32px; background: var(--paper-dark); border: 2px solid var(--ink); }
+.quiz-progress { display: flex; justify-content: space-between; font-family: 'JetBrains Mono', monospace; font-size: 12px; letter-spacing: 0.1em; color: var(--muted); margin-bottom: 12px; }
+.quiz-bar { height: 4px; background: rgba(26,20,16,0.15); margin-bottom: 24px; }
+.quiz-bar-fill { height: 100%; background: var(--accent-2); transition: width 0.4s; }
+.quiz-question { font-size: 21px; font-weight: 600; line-height: 1.4; margin-bottom: 24px; color: var(--ink); margin-top: 0; }
+.quiz-options { display: flex; flex-direction: column; gap: 10px; }
+.quiz-option { display: flex; align-items: flex-start; gap: 14px; padding: 16px 18px; background: var(--paper); border: 1.5px solid var(--ink); cursor: pointer; transition: all 0.2s; text-align: left; font-family: 'Inter', sans-serif; font-size: 15px; line-height: 1.5; color: var(--ink); }
+.quiz-option:hover:not(.disabled) { background: var(--ink); color: var(--paper); }
+.quiz-option:hover:not(.disabled) .quiz-option-letter { background: var(--paper); color: var(--ink); }
+.quiz-option-letter { flex-shrink: 0; width: 28px; height: 28px; border-radius: 50%; background: var(--ink); color: var(--paper); display: flex; align-items: center; justify-content: center; font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 700; }
+.quiz-option.correct { background: var(--gold); color: var(--ink); border-color: var(--accent-2); }
+.quiz-option.correct .quiz-option-letter { background: var(--ink); color: var(--gold); }
+.quiz-option.wrong { background: var(--accent); color: var(--paper); border-color: var(--accent); }
+.quiz-option.wrong .quiz-option-letter { background: var(--paper); color: var(--accent); }
+.quiz-option.disabled { cursor: not-allowed; }
+.quiz-feedback { margin-top: 20px; padding: 16px 18px; background: var(--paper); border-left: 3px solid var(--accent); font-size: 14px; line-height: 1.6; display: none; }
+.quiz-feedback.show { display: block; }
+.quiz-result { text-align: center; padding: 40px 0; }
+.quiz-score { font-size: 64px; font-weight: 400; line-height: 1; color: var(--accent-2); margin-bottom: 12px; }
+.quiz-score-label { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); }
+
+/* ACTIONS */
+.action-cats { display: flex; gap: 8px; margin-bottom: 32px; flex-wrap: wrap; }
+.action-cat-btn { padding: 10px 18px; background: transparent; border: 1.5px solid var(--ink); font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; transition: all 0.2s; }
+.action-cat-btn.active, .action-cat-btn:hover { background: var(--ink); color: var(--paper); }
+.actions-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; }
+.actions-pager { display: flex; justify-content: center; align-items: center; gap: 16px; margin-top: 28px; font-family: 'JetBrains Mono', monospace; font-size: 13px; }
+.actions-pager-btn { width: 40px; height: 40px; background: transparent; border: 1.5px solid var(--ink); color: var(--ink); cursor: pointer; font-size: 18px; line-height: 1; transition: all 0.2s; display: inline-flex; align-items: center; justify-content: center; }
+.actions-pager-btn:hover:not(:disabled) { background: var(--ink); color: var(--paper); }
+.actions-pager-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+.actions-pager-info { font-weight: 600; letter-spacing: 0.05em; }
+.actions-pager-total { color: var(--ink-light, #6b5d4f); font-weight: 400; margin-left: 6px; }
+.action-card { padding: 24px; background: var(--paper); border: 1.5px solid var(--ink); display: flex; gap: 16px; align-items: flex-start; transition: all 0.2s; }
+.action-card:hover { background: var(--paper-dark); transform: translate(-2px, -2px); box-shadow: 4px 4px 0 var(--accent); }
+.action-num { font-size: 36px; font-weight: 700; color: var(--accent); line-height: 1; flex-shrink: 0; width: 56px; }
+.action-content { flex: 1; }
+.action-title { font-size: 17px; font-weight: 700; line-height: 1.3; margin-bottom: 6px; }
+.action-desc { font-size: 15px; font-weight: 400; line-height: 1.6; color: var(--muted); }
+
+/* JOURNAL */
+.journal-prompts-nav { display: flex; gap: 8px; margin-bottom: 24px; justify-content: center; }
+.journal-dot { width: 36px; height: 36px; border: 1.5px solid var(--ink); display: flex; align-items: center; justify-content: center; font-family: 'JetBrains Mono', monospace; font-size: 13px; cursor: pointer; transition: all 0.2s; }
+.journal-dot.active, .journal-dot:hover { background: var(--ink); color: var(--paper); }
+.journal-prompt { display: none; max-width: 820px; margin: 0 auto; }
+.journal-prompt.active { display: block; }
+.journal-q { font-size: clamp(22px, 3vw, 32px); font-weight: 600; line-height: 1.3; margin-bottom: 20px; }
+.journal-help { padding: 20px 24px; background: var(--paper-dark); border-left: 3px solid var(--accent); font-size: 15px; line-height: 1.6; margin-bottom: 24px; }
+.journal-textarea { width: 100%; min-height: 200px; padding: 20px; border: 1.5px solid var(--ink); background: var(--paper); font-size: 17px; line-height: 1.6; resize: vertical; }
+.journal-textarea:focus { outline: none; border-color: var(--accent); }
+
+/* FOOTER */
+.footer { padding: 80px 8% 60px; background: var(--ink); color: var(--paper); text-align: center; }
+.footer-quote { font-size: clamp(22px, 3vw, 32px); font-weight: 400; max-width: 800px; margin: 0 auto 32px; line-height: 1.3; }
+.footer-author { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold); }
+.footer-back { margin-top: 48px; display: flex; gap: 24px; justify-content: center; flex-wrap: wrap; }
+.footer-back a { font-family: 'JetBrains Mono', monospace; font-size: 12px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--paper); text-decoration: none; padding: 12px 24px; border: 1px solid rgba(255, 255, 255, 0.3); transition: all 0.2s; }
+.footer-back a:hover { background: var(--accent); border-color: var(--accent); }
+.footer-meta { margin-top: 60px; padding-top: 32px; border-top: 1px solid rgba(245, 240, 230, 0.2); font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.15em; color: rgba(245, 240, 230, 0.7); }
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+  .hero { grid-template-columns: 1fr; padding: 24px 6% 40px; }
+  .hero-visual { height: 400px; order: -1; }
+  .hero-chart { width: 320px; height: 320px; }
+  .section { padding: 60px 6%; }
+  .systems-grid, .prospect-row { grid-template-columns: 1fr; }
+  .nav-links { gap: 12px; font-size: 11px; }
+  .nav-links a:not(.always-show) { display: none; }
+  .breadcrumb-bar { padding: 80px 6% 0; }
+}
+@media (max-width: 600px) {
+  .nav-bar { padding: 12px 16px; }
+  .footer { padding: 60px 6% 40px; }
+}
+
+/* ============ COMMENTS ============ */
+.comment-form-wrap { max-width: 760px; margin-bottom: 48px; }
+.comment-form { background: var(--paper); border: 2px solid var(--ink); padding: 28px; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+.comment-form input[type="text"], .comment-form input[type="email"], .comment-form textarea { width: 100%; padding: 12px 14px; border: 1.5px solid var(--ink); background: var(--paper-dark); font-size: 16px; line-height: 1.5; color: var(--ink); resize: vertical; }
+.comment-form input:focus, .comment-form textarea:focus { outline: none; border-color: var(--accent); background: var(--paper); }
+.form-bottom { display: flex; justify-content: space-between; align-items: center; margin-top: 14px; flex-wrap: wrap; gap: 12px; }
+.form-hint { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.1em; color: var(--muted); }
+.form-submit { padding: 12px 24px; background: var(--ink); color: var(--paper); border: none; font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; transition: all 0.2s; }
+.form-submit:hover { background: var(--accent); }
+.form-submit:disabled { opacity: 0.5; cursor: not-allowed; }
+.form-message { margin-top: 16px; padding: 14px 18px; font-size: 15px; line-height: 1.5; display: none; }
+.form-message.show { display: block; }
+.form-message.success { background: var(--paper-dark); border-left: 3px solid var(--gold); color: var(--ink); }
+.form-message.error { background: var(--paper-dark); border-left: 3px solid var(--accent); color: var(--accent); }
+.comments-list { max-width: 760px; }
+.comments-loading, .comments-empty { font-size: 16px; color: var(--muted); padding: 24px 0; font-style: normal; }
+.comment-item { padding: 20px 24px; border-left: 2px solid var(--ink); background: var(--paper); margin-bottom: 14px; transition: border-color 0.2s; }
+.comment-item:hover { border-left-color: var(--accent); }
+.comment-item.is-reply { margin-left: 36px; border-left-color: var(--gold); background: var(--paper-dark); }
+.comment-head { display: flex; gap: 12px; align-items: baseline; margin-bottom: 8px; flex-wrap: wrap; }
+.comment-author { font-size: 17px; font-weight: 700; color: var(--ink); }
+.comment-time { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--muted); letter-spacing: 0.05em; }
+.comment-body { font-size: 16px; line-height: 1.6; color: var(--ink); white-space: pre-wrap; word-break: break-word; }
+.comment-actions { margin-top: 10px; }
+.comment-reply-btn { background: none; border: none; padding: 0; font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); cursor: pointer; }
+.comment-reply-btn:hover { text-decoration: underline; }
+.reply-indicator { display: inline-block; padding: 4px 10px; background: var(--paper-dark); border: 1px solid var(--ink); font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 8px; }
+.reply-indicator button { background: none; border: none; cursor: pointer; color: var(--accent); margin-left: 8px; font-weight: 700; }
+@media (max-width: 600px) { .form-row { grid-template-columns: 1fr; } .comment-item.is-reply { margin-left: 16px; } }
+
+/* MOBILE_FIX_400 — narrow viewport (added by audit 2026-05-04) */
+@media (max-width: 400px) {
+  .hero-loop { width: 280px; height: 280px; }
+  .hero-tag { font-size: 10px; padding: 4px 8px; letter-spacing: 0.1em; }
+  .tag-1 { right: 10px; }
+  .tag-3 { right: 0; }
+}
+</style>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Book",
+  "name": "Thinking, Fast and Slow",
+  "author": {
+    "@type": "Person",
+    "name": "Daniel Kahneman"
+  },
+  "datePublished": "2011",
+  "url": "https://flamindi.com/thinking-fast-slow",
+  "image": "https://flamindi.com/og-image.png",
+  "review": {
+    "@type": "Review",
+    "author": {
+      "@type": "Person",
+      "name": "Quang Ton"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "Stop & Think"
+    },
+    "url": "https://flamindi.com/thinking-fast-slow"
+  }
+}
+</script>
+<link rel="stylesheet" href="../assets/dark.v5.css"/>
+<script defer src="../assets/theme.v5.js"></script>
+</head>
+<body>
+<nav class="nav-bar">
+<a class="nav-logo" href="../index.html" title="Về trang chủ">Thinking, <span>Fast and Slow</span><em>.</em></a>
+<div class="nav-links">
+<a onclick="scrollTo2('thesis')">Luận điểm</a>
+<a onclick="scrollTo2('framework')">Framework</a>
+<a onclick="scrollTo2('chapters')">Chương</a>
+<a onclick="scrollTo2('flashcards')">Flashcard</a>
+<a onclick="scrollTo2('quiz')">Quiz</a>
+<a class="always-show" onclick="scrollTo2('actions')">Actions</a>
+</div>
+</nav>
+<div class="progress-bar" id="progressBar" style="width: 0%"></div>
+<main>
+<div class="breadcrumb-bar">
+<a href="../index.html">Stop &amp; Think</a><span>›</span><a href="../pages/tu-duy.html">Tư duy</a><span>›</span><span class="current">Thinking, Fast and Slow</span>
+</div>
+<!-- HERO -->
+<section class="hero">
+<div>
+<div class="hero-meta">2011 · Daniel Kahneman · FSG · ~28 phút đọc</div>
+<h1>Thinking,<br/><span class="italic">fast and slow.</span></h1>
+<p class="hero-sub" data-content-id="thinking-fast-slow-misc-01" data-content-type="hero-sub">Bộ não của bạn vận hành theo hai chế độ. Và chế độ nhanh đang ngầm thao túng bạn nhiều hơn bạn tưởng.</p>
+<div class="hero-author">Đọc · Hiểu · Quyết định tỉnh táo</div>
+</div>
+<div class="hero-visual">
+<div class="hero-chart">
+<svg viewbox="0 0 480 480">
+<line class="grid-line" x1="60" x2="420" y1="240" y2="240"></line>
+<line class="axis" x1="240" x2="240" y1="40" y2="440"></line>
+<circle cx="160" cy="200" fill="var(--accent)" opacity="0.85" r="100"></circle>
+<circle cx="320" cy="280" fill="var(--accent-2)" opacity="0.85" r="100"></circle>
+<text class="label-fast" text-anchor="middle" x="160" y="195">HỆ 1</text>
+<text class="label-sub" text-anchor="middle" x="160" y="215">FAST</text>
+<text class="label-fast" fill="var(--paper)" font-size="13" text-anchor="middle" x="160" y="240">Nhanh · Tự động</text>
+<text class="label-slow" text-anchor="middle" x="320" y="275">HỆ 2</text>
+<text class="label-sub" text-anchor="middle" x="320" y="295">SLOW</text>
+<text class="label-slow" fill="var(--paper)" font-size="13" text-anchor="middle" x="320" y="320">Chậm · Có ý thức</text>
+</svg>
+</div>
+<div class="hero-tag tag-1">HEURISTICS</div>
+<div class="hero-tag tag-2">PROSPECT</div>
+<div class="hero-tag tag-3">BIASES</div>
+</div>
+</section>
+<!-- THESIS -->
+<section class="section" id="thesis">
+<div class="section-label">Luận điểm trung tâm</div>
+<div class="thesis-grid">
+<div>
+<h2 class="thesis-title-small" data-content-id="thinking-fast-slow-thesis-01" data-content-type="thesis">Hệ thống tư duy nhanh quyết định đại đa số mọi việc của chúng ta, ngay cả khi nó hoàn toàn sai lầm.</h2>
+<p class="section-intro" data-content-id="thinking-fast-slow-thesis-02" data-content-type="section-intro">Daniel Kahneman đã dành bốn mươi năm cuộc đời để mổ xẻ cách con người ra quyết định. Phát hiện cốt lõi của ông: Chúng ta sở hữu hai hệ thống tư duy. Hệ thống Một nhanh nhẹn, tự động và không đòi hỏi bất kỳ nỗ lực nào. Hệ thống Hai chậm chạp, có ý thức và đòi hỏi sự tập trung cao độ. Vấn đề nằm ở chỗ, Hệ thống Một đang chiếm quyền điều khiển tới chín mươi lăm phần trăm các quyết định hằng ngày. Và nó chứa đựng vô số những thiên kiến sai lệch mang tính hệ thống mà bạn không hề hay biết.</p>
+<p class="section-intro"><span data-content-id="thinking-fast-slow-thesis-1">Văn hóa người Việt rất chuộng sự nhanh gọn. Chốt mua đất, chốt cưới xin, chốt công việc, phần lớn đều được quyết định bằng Hệ thống Một chỉ vì cảm thấy hợp. Kahneman không hề hạ thấp trực giác. Ông chỉ cảnh báo rằng: Với những quyết định sinh tử, hãy đánh thức Hệ thống Hai lên để làm nhiệm vụ kiểm duyệt. Lần tới, trước khi chốt một thương vụ lớn, hãy tự hỏi: Mình có thể viết ra ba lý do cụ thể bằng các con số hay không?</span></p>
+</div>
+<div class="thesis-viz">
+<svg viewbox="0 0 600 600" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<marker id="tfs-arrow" markerheight="5" markerwidth="5" orient="auto" refx="9" refy="5" viewbox="0 0 10 10">
+<path d="M 0 0 L 10 5 L 0 10 z" fill="var(--accent)"></path>
+</marker>
+</defs>
+<circle cx="300" cy="300" fill="none" opacity="0.06" r="200" stroke="var(--ink)" stroke-width="0.5"></circle>
+<circle cx="300" cy="300" fill="none" opacity="0.3" r="160" stroke="var(--accent)" stroke-dasharray="2 6" stroke-width="2"></circle>
+<path d="M 300,140 A 160,160 0 0,1 460,300" fill="none" marker-end="url(#tfs-arrow)" stroke="var(--accent)" stroke-width="2.5"></path>
+<path d="M 460,300 A 160,160 0 0,1 300,460" fill="none" marker-end="url(#tfs-arrow)" stroke="var(--accent)" stroke-width="2.5"></path>
+<path d="M 300,460 A 160,160 0 0,1 140,300" fill="none" marker-end="url(#tfs-arrow)" stroke="var(--accent)" stroke-width="2.5"></path>
+<path d="M 140,300 A 160,160 0 0,1 300,140" fill="none" marker-end="url(#tfs-arrow)" stroke="var(--accent)" stroke-width="2.5"></path>
+<circle cx="300" cy="140" fill="var(--paper)" r="9" stroke="var(--accent)" stroke-width="3"></circle>
+<circle cx="460" cy="300" fill="var(--paper)" r="9" stroke="var(--accent)" stroke-width="3"></circle>
+<circle cx="300" cy="460" fill="var(--paper)" r="9" stroke="var(--accent)" stroke-width="3"></circle>
+<circle cx="140" cy="300" fill="var(--paper)" r="9" stroke="var(--accent)" stroke-width="3"></circle>
+<text fill="var(--ink)" font-family="Fraunces, serif" font-size="22" font-weight="700" text-anchor="middle" x="300" y="60">Nhanh</text>
+<text fill="var(--muted)" font-family="JetBrains Mono, monospace" font-size="11" letter-spacing="3" text-anchor="middle" x="300" y="85">SYSTEM 1</text>
+<text fill="var(--ink)" font-family="Fraunces, serif" font-size="22" font-weight="700" text-anchor="start" x="500" y="296">Thiên kiến</text>
+<text fill="var(--muted)" font-family="JetBrains Mono, monospace" font-size="11" letter-spacing="3" text-anchor="start" x="500" y="320">BIASES</text>
+<text fill="var(--ink)" font-family="Fraunces, serif" font-size="22" font-weight="700" text-anchor="middle" x="300" y="525">Chậm</text>
+<text fill="var(--muted)" font-family="JetBrains Mono, monospace" font-size="11" letter-spacing="3" text-anchor="middle" x="300" y="550">SYSTEM 2</text>
+<text fill="var(--ink)" font-family="Fraunces, serif" font-size="22" font-weight="700" text-anchor="end" x="100" y="296">Lựa chọn</text>
+<text fill="var(--muted)" font-family="JetBrains Mono, monospace" font-size="11" letter-spacing="3" text-anchor="end" x="100" y="320">PROSPECT</text>
+<text fill="var(--accent)" font-family="Fraunces, serif" font-size="60" font-weight="400" opacity="0.25" text-anchor="middle" x="300" y="320">⚡</text>
+</svg>
+</div>
+</div>
+</section>
+<div class="thesis-quote">
+<div class="thesis-mark">"</div>
+<div class="thesis-text" data-content-id="thinking-fast-slow-misc-08" data-content-type="thesis">Sự thông tuệ không nằm ở việc bạn không bao giờ mắc sai lầm. Nó nằm ở khả năng nhận biết khi nào tâm trí mình đang rơi vào trạng thái dễ bị đánh lừa, và biết cách đạp phanh đúng lúc.</div>
+<div class="thesis-author" data-content-id="thinking-fast-slow-misc-09" data-content-type="thesis">Daniel Kahneman, Tinh thần cốt lõi của cuốn sách</div>
+</div>
+<!-- FRAMEWORK 01: TWO SYSTEMS -->
+<section class="section" id="framework">
+<div class="section-label">Framework 01 / Hai hệ thống tư duy</div>
+<h2 class="section-title" data-content-id="thinking-fast-slow-framework-01" data-content-type="heading">Tâm trí bạn đang bị hệ thống nào kiểm soát?</h2>
+<p class="section-intro" data-content-id="thinking-fast-slow-framework-02" data-content-type="section-intro">Hai hệ thống chỉ là một phép ẩn dụ để bạn dễ hình dung, chứ không phải bộ não của chúng ta bị chẻ làm đôi. Chúng chỉ là hai chế độ vận hành của cùng một tâm trí. Bạn không thể tự do lựa chọn khi nào thì hệ thống nào hoạt động, nhưng bạn có thể học cách nhận diện và chủ động đánh thức chế độ chậm khi cần thiết.</p>
+<div class="systems-grid">
+<div class="system-card fast">
+<div class="system-num">SYSTEM 1</div>
+<div class="system-name">Hệ thống nhanh</div>
+<div class="system-tagline">"Nó nghĩ giùm bạn — kể cả khi bạn không muốn."</div>
+<ul class="system-list">
+<li data-content-id="thinking-fast-slow-framework-04" data-content-type="list-item">Phản xạ tự động, hoàn toàn không tốn sức.</li>
+<li data-content-id="thinking-fast-slow-framework-05" data-content-type="list-item">Đọc vị biểu cảm khuôn mặt của người khác chỉ trong vòng một giây.</li>
+<li>2 + 2 = ?</li>
+<li data-content-id="thinking-fast-slow-framework-06" data-content-type="list-item">Lái xe theo thói quen trên một con đường vắng vẻ.</li>
+<li data-content-id="thinking-fast-slow-framework-07" data-content-type="list-item">Đưa ra phán xét thích hoặc ghét một người ngay trong lần đầu chạm mặt.</li>
+<li data-content-id="thinking-fast-slow-framework-08" data-content-type="list-item">Khi bị những ảo giác quang học đánh lừa, bạn hoàn toàn không nhận ra là mình đang tư duy.</li>
+</ul>
+</div>
+<div class="system-card slow">
+<div class="system-num">SYSTEM 2</div>
+<div class="system-name">Hệ thống chậm</div>
+<div class="system-tagline">"Nó cần được gọi tên — và nó lười."</div>
+<ul class="system-list">
+<li data-content-id="thinking-fast-slow-framework-09" data-content-type="list-item">Đòi hỏi sự tỉnh táo và tập trung cao độ.</li>
+<li data-content-id="thinking-fast-slow-framework-10" data-content-type="list-item">Cố gắng tính nhẩm một phép nhân phức tạp trong đầu.</li>
+<li>Đậu xe vào chỗ hẹp</li>
+<li data-content-id="thinking-fast-slow-framework-11" data-content-type="list-item">Cân đo đong đếm các điều khoản giữa hai bản hợp đồng đầu tư.</li>
+<li>Viết một email khó</li>
+<li data-content-id="thinking-fast-slow-framework-12" data-content-type="list-item">Tuy nhiên, Hệ thống Hai tiêu tốn rất nhiều năng lượng và cực kỳ lười biếng trong việc kích hoạt.</li>
+</ul>
+</div>
+</div>
+<p class="section-intro" data-content-id="thinking-fast-slow-framework-03" data-content-type="section-intro" style="margin-top: 32px;">Có một sự thật là Hệ thống Hai không tự động thức giấc. Nó chỉ miễn cưỡng xuất hiện khi bạn gặp một bài toán đủ hóc búa hoặc khi bạn cố tình ép buộc nó. Trong chín mươi lăm phần trăm các quyết định hằng ngày, Hệ thống Một mới là kẻ cầm lái, và phần lớn thời gian nó làm khá tốt. Thảm họa chỉ xảy ra ở năm phần trăm những quyết định trọng đại: đầu tư tiền bạc, chọn lựa sự nghiệp hay đánh giá con người. Đó chính là lúc bạn bắt buộc phải lôi Hệ thống Hai vào cuộc.</p>
+</section>
+<!-- FRAMEWORK 02: HEURISTICS & BIASES -->
+<section class="section">
+<div class="section-label">Framework 02 / Heuristics &amp; Thiên kiến</div>
+<h2 class="section-title" data-content-id="thinking-fast-slow-misc-02" data-content-type="heading">Mười thiên kiến nguy hiểm nhất thao túng tâm trí bạn</h2>
+<p class="section-intro" data-content-id="thinking-fast-slow-misc-04" data-content-type="section-intro">Hệ thống Một luôn sử dụng những lối tắt tư duy mặc định để tiết kiệm năng lượng. Phần lớn chúng đều rất hữu ích. Nhưng có mười lối tắt luôn đẩy bạn vào những sai lầm có tính hệ thống. Nếu thấu hiểu chúng, bạn có cơ hội thoát thân. Nếu lờ đi, bạn sẽ là nạn nhân của chúng đến suốt đời.</p>
+<div class="biases-grid">
+<div class="bias-card">
+<div class="bias-name">Anchoring</div>
+<div class="bias-name-en">NEO ĐẦU</div>
+<div class="bias-desc">Số đầu tiên bạn thấy ảnh hưởng mọi đánh giá sau. Người môi giới ra giá 5 tỷ — bạn đàm 4.5 tỷ. Nhưng giá thật là 3 tỷ. <strong>Số 5 tỷ đã neo bạn.</strong></div>
+</div>
+<div class="bias-card">
+<div class="bias-name">Availability</div>
+<div class="bias-name-en">SẴN CÓ TRONG TRÍ NHỚ</div>
+<div class="bias-desc">Đánh giá xác suất bằng việc nhớ ví dụ dễ. Vừa xem tin máy bay rơi → sợ bay. Thực tế: tỷ lệ chết vì bay &lt; chết vì xe máy <strong>10,000 lần</strong>.</div>
+</div>
+<div class="bias-card">
+<div class="bias-name">Representativeness</div>
+<div class="bias-name-en">ĐẠI DIỆN</div>
+<div class="bias-desc">Đánh giá người/sự việc bằng "khớp khuôn". Linda mặc đồ hippie, đọc Marx → "có lẽ là feminist librarian". Quên rằng đa số dân số chỉ là librarian, dù mặc gì.</div>
+</div>
+<div class="bias-card">
+<div class="bias-name">Loss Aversion</div>
+<div class="bias-name-en">SỢ MẤT</div>
+<div class="bias-desc">Mất 100 đau gấp <strong>2.5 lần</strong> niềm vui khi được 100. Lý do bạn không bán cổ phiếu lỗ — không phải logic, mà tâm lý.</div>
+</div>
+<div class="bias-card">
+<div class="bias-name">Hindsight</div>
+<div class="bias-name-en">"TÔI ĐÃ BIẾT TRƯỚC"</div>
+<div class="bias-desc">Sau khi sự kiện xảy ra, ta tưởng đã biết trước. "2008 chắc chắn sẽ sụp" — nhưng cuối 2007, có ai bán hết cổ phiếu đâu? <strong>Trí nhớ tự sửa lại.</strong></div>
+</div>
+<div class="bias-card">
+<div class="bias-name">Framing</div>
+<div class="bias-name-en">ĐÓNG KHUNG</div>
+<div class="bias-desc">"90% sống sót" và "10% chết" là cùng dữ liệu — nhưng bạn chọn khác. Cách trình bày một câu hỏi <strong>thay đổi câu trả lời</strong>.</div>
+</div>
+<div class="bias-card">
+<div class="bias-name">Endowment</div>
+<div class="bias-name-en">SỞ HỮU</div>
+<div class="bias-desc">Cốc cà phê bạn đang cầm thấy đắt hơn cốc giống hệt trên kệ. Vừa sở hữu = đã bắt đầu định giá cao hơn. Trade-in xe cũ luôn bị "hớ" theo cách này.</div>
+</div>
+<div class="bias-card">
+<div class="bias-name">Regression to Mean</div>
+<div class="bias-name-en">QUY VỀ TRUNG BÌNH</div>
+<div class="bias-desc">Quý này tăng 50% — quý sau giảm. Đó không phải vì bạn quản lý kém. Đó là <strong>quy luật thống kê</strong>. Đa số khen-chê đều quy lầm sang nguyên nhân.</div>
+</div>
+<div class="bias-card">
+<div class="bias-name">Overconfidence</div>
+<div class="bias-name-en">TỰ TIN QUÁ MỨC</div>
+<div class="bias-desc">90% người lái xe nghĩ mình giỏi hơn trung bình. 90% nhà đầu tư nghĩ mình thắng thị trường. Toán không cho phép điều này — nhưng não thì cho phép.</div>
+</div>
+<div class="bias-card">
+<div class="bias-name">Planning Fallacy</div>
+<div class="bias-name-en">ẢO TƯỞNG KẾ HOẠCH</div>
+<div class="bias-desc">"Dự án này 3 tháng xong" — thực tế 9 tháng. Lặp đi lặp lại. Vì ta nhìn <strong>kế hoạch lý tưởng</strong>, không nhìn <strong>dữ liệu lịch sử</strong> các dự án tương tự.</div>
+</div>
+</div>
+</section>
+<!-- FRAMEWORK 03: PROSPECT THEORY -->
+<section class="section">
+<div class="section-label">Framework 03 / Prospect Theory — Lý thuyết lựa chọn</div>
+<h2 class="section-title" data-content-id="thinking-fast-slow-misc-03" data-content-type="heading">Vì sao bạn <em>không hành động lý trí</em> với tiền bạc?</h2>
+<p class="section-intro" data-content-id="thinking-fast-slow-misc-05" data-content-type="section-intro">Đây là phát hiện đoạt giải Nobel của Kahneman: <strong>người ta không tối đa hóa giá trị — người ta tối thiểu hóa cảm xúc đau</strong>. Mất 1 triệu đồng đau gấp 2.5 lần niềm vui khi được 1 triệu. Hệ quả: ta giữ cổ phiếu lỗ, bán cổ phiếu lãi, mua bảo hiểm quá đáng, từ chối deal có expected value dương.</p>
+<div class="prospect-viz">
+<h3 data-content-id="thinking-fast-slow-misc-07" data-content-type="heading" style="font-family: Fraunces, serif; font-size: 24px; font-weight: 700; margin-bottom: 16px;">Cuộc thí nghiệm cổ điển</h3>
+<p data-content-id="thinking-fast-slow-misc-10" data-content-type="paragraph" style="font-size: 16px; opacity: 0.9; margin-bottom: 16px;">Bạn được chọn 1 trong 2 lựa chọn. Bạn chọn cái nào?</p>
+<div class="prospect-row">
+<div class="prospect-side">
+<div class="label">LỰA CHỌN A</div>
+<div class="num">+ 1,000,000 đ</div>
+<div class="desc">Chắc chắn được 1 triệu.</div>
+</div>
+<div class="prospect-side">
+<div class="label">LỰA CHỌN B</div>
+<div class="num">50% — 2,200,000 đ</div>
+<div class="desc">50% được 2.2 triệu, 50% không được gì.</div>
+</div>
+</div>
+<div class="prospect-takeaway"><strong style="color: var(--gold);">Đa số chọn A.</strong> Mặc dù B có expected value 1.1 triệu &gt; A có 1 triệu. Người ta chọn <strong>chắc chắn</strong> vì sợ "bị mất" cái 1 triệu. Đây là <strong>loss aversion</strong>.</div>
+</div>
+<p class="section-intro" data-content-id="thinking-fast-slow-misc-06" data-content-type="section-intro"><strong>Áp dụng vào đầu tư:</strong> Bạn mua cổ phiếu 100k. Nó xuống 80k. Bạn nói "đợi nó về 100k tôi bán". Nhưng nếu hôm nay không có cổ phiếu này và có 80k tiền mặt, bạn có mua nó với giá 80k không? Nếu không → đây không phải đầu tư, đây là <strong>sợ thừa nhận lỗ</strong>.</p>
+</section>
+<!-- CHAPTERS -->
+<section class="section" id="chapters">
+<div class="section-label">14 chương — 5 phần</div>
+<h2 class="section-title" data-content-id="thinking-fast-slow-chapters-01" data-content-type="heading">Bản đồ chi tiết của cuốn sách</h2>
+<p class="section-intro" data-content-id="thinking-fast-slow-chapters-02" data-content-type="section-intro">Cuốn sách khổng lồ này dài gần năm trăm trang. Tôi đã chắt lọc ra mười bốn chương đắt giá nhất và phân bổ chúng theo đúng năm phần cấu trúc của tác giả.</p>
+<div class="chapter-part">
+<div class="chapter-tabs">
+<button class="chapter-tab-btn active" onclick="filterChapters('part1', this)">I. 2 Hệ thống</button>
+<button class="chapter-tab-btn" onclick="filterChapters('part2', this)">II. Heuristics</button>
+<button class="chapter-tab-btn" onclick="filterChapters('part3', this)">III. Quá tự tin</button>
+<button class="chapter-tab-btn" onclick="filterChapters('part4', this)">IV. Lựa chọn</button>
+<button class="chapter-tab-btn" onclick="filterChapters('part5', this)">V. 2 Bản ngã</button>
+<button class="chapter-tab-btn" onclick="filterChapters('all', this)">Tất cả</button>
+</div>
+<div class="rule-section" data-part="part1">
+<div class="part-header">PART I</div>
+<div class="part-title">Two Systems</div>
+<div class="part-sub">Hai hệ thống — nền tảng cho mọi thứ tiếp theo</div>
+<div class="chapter-grid">
+<div class="chapter-card">
+<div class="chapter-num">CHƯƠNG 01</div>
+<div class="chapter-title" data-content-id="thinking-fast-slow-chapters-03" data-content-type="chapter-desc">Những nhân vật của câu chuyện</div>
+<div class="chapter-desc" data-content-id="thinking-fast-slow-chapters-18" data-content-type="chapter-desc">Tác giả nhân cách hóa Hệ thống Một và Hệ thống Hai như hai nhân vật sống động. Hệ thống Một là một tay chơi gôn hành động theo phản xạ. Hệ thống Hai là một cỗ máy tính toán già cỗi. Cuốn sách chính là một vở kịch về sự hợp tác và xung đột không ngừng giữa hai nhân vật này.</div>
+<span class="chapter-key">System 1 vs 2</span>
+</div>
+<div class="chapter-card">
+<div class="chapter-num">CHƯƠNG 04</div>
+<div class="chapter-title" data-content-id="thinking-fast-slow-chapters-04" data-content-type="chapter-desc">Cỗ máy liên tưởng</div>
+<div class="chapter-desc" data-content-id="thinking-fast-slow-chapters-19" data-content-type="chapter-desc">Hệ thống Một vận hành hoàn toàn dựa trên sự liên tưởng. Khi ai đó nhắc đến thịt, não bạn sẽ tự động nghĩ đến việc ăn. Nhắc đến tiền, não bạn sẽ nghĩ đến việc kiếm. Mọi suy nghĩ lướt qua tâm trí bạn đều là một chuỗi liên kết tự động. Đây chính là lỗ hổng mà ngành công nghiệp quảng cáo ngày đêm khai thác.</div>
+<span class="chapter-key">Associations</span>
+</div>
+<div class="chapter-card">
+<div class="chapter-num">CHƯƠNG 07</div>
+<div class="chapter-title" data-content-id="thinking-fast-slow-chapters-05" data-content-type="chapter-desc">Cỗ máy vội vã đưa ra kết luận</div>
+<div class="chapter-desc" data-content-id="thinking-fast-slow-chapters-20" data-content-type="chapter-desc">Những gì bạn nhìn thấy là tất cả những gì tồn tại. Hệ thống Một luôn ngây thơ tin rằng mọi thông tin cần thiết đều đã được phơi bày trước mắt. Nó không bao giờ biết lùi lại và tự hỏi: Liệu có mảnh ghép nào mình đang bỏ sót không? Sự tự phụ này chính là gốc rễ của vô vàn sai lầm thảm hại.</div>
+<span class="chapter-key">WYSIATI</span>
+</div>
+</div>
+</div>
+</div>
+<div class="chapter-part">
+<div class="rule-section" data-part="part2">
+<div class="part-header">PART II</div>
+<div class="part-title">Heuristics &amp; Biases</div>
+<div class="part-sub">10+ thiên kiến nhận thức quan trọng nhất</div>
+<div class="chapter-grid">
+<div class="chapter-card">
+<div class="chapter-num">CHƯƠNG 11</div>
+<div class="chapter-title" data-content-id="thinking-fast-slow-chapters-06" data-content-type="chapter-desc">Hiệu ứng mỏ neo</div>
+<div class="chapter-desc" data-content-id="thinking-fast-slow-chapters-21" data-content-type="chapter-desc">Con số đầu tiên đập vào mắt bạn sẽ âm thầm chi phối mọi đánh giá phía sau. Một thí nghiệm đã chỉ ra rằng: Khi bị hỏi Gandhi thọ qua một trăm bốn mươi bốn tuổi phải không, rồi mới đoán tuổi thọ thật của ông, câu trả lời của nhóm này luôn cao vọt so với những người không bị mỏ neo thao túng.</div>
+<span class="chapter-key">Anchoring</span>
+</div>
+<div class="chapter-card">
+<div class="chapter-num">CHƯƠNG 12</div>
+<div class="chapter-title" data-content-id="thinking-fast-slow-chapters-07" data-content-type="chapter-desc">Khoa học về tính sẵn có</div>
+<div class="chapter-desc" data-content-id="thinking-fast-slow-chapters-22" data-content-type="chapter-desc">Chúng ta thường đánh giá xác suất của một sự việc dựa trên mức độ dễ dàng để gọi tên nó trong ký ức. Sau một vụ rơi máy bay, dư luận đồng loạt sợ hãi việc bay trên trời suốt nhiều tuần lễ. Báo chí là những tay buôn điêu luyện của cơ chế này: Một bản tin càng dễ khơi gợi ký ức, nó càng tạo ra ảo giác về sự phổ biến.</div>
+<span class="chapter-key">Availability</span>
+</div>
+<div class="chapter-card">
+<div class="chapter-num">CHƯƠNG 17</div>
+<div class="chapter-title" data-content-id="thinking-fast-slow-chapters-08" data-content-type="chapter-desc">Hồi quy về mức trung bình</div>
+<div class="chapter-desc" data-content-id="thinking-fast-slow-chapters-23" data-content-type="chapter-desc">Đây là một quy luật thống kê lạnh lùng: Những kết quả cực đoan luôn có xu hướng bị kéo ngược về mức trung bình. Nếu quý này bạn lãi năm mươi phần trăm, khả năng cực cao là quý sau lợi nhuận sẽ sụt giảm. Đừng vội ảo tưởng rằng do thị trường đảo chiều hay do bạn sa sút phong độ. Đó đơn thuần chỉ là toán học.</div>
+<span class="chapter-key">Regression</span>
+</div>
+<div class="chapter-card">
+<div class="chapter-num">CHƯƠNG 18</div>
+<div class="chapter-title" data-content-id="thinking-fast-slow-chapters-09" data-content-type="chapter-desc">Thuần hóa những dự báo trực giác</div>
+<div class="chapter-desc" data-content-id="thinking-fast-slow-chapters-24" data-content-type="chapter-desc">Trực giác của chúng ta thường tạo ra những dự báo tự tin thái quá. Cách duy nhất để thuần hóa chúng là hãy kéo phán đoán của bạn về gần với mức trung bình chung. Khi bạn tin rằng một dự án khởi nghiệp sẽ trở thành Apple thứ hai, hãy tự dội một gáo nước lạnh: Tỷ lệ để một công ty khởi nghiệp vươn tầm như Apple là chưa tới không phẩy không không một phần trăm.</div>
+<span class="chapter-key">Prediction</span>
+</div>
+</div>
+</div>
+</div>
+<div class="chapter-part">
+<div class="rule-section" data-part="part3">
+<div class="part-header">PART III</div>
+<div class="part-title">Overconfidence</div>
+<div class="part-sub">Vì sao chuyên gia thường sai mà vẫn tự tin</div>
+<div class="chapter-grid">
+<div class="chapter-card">
+<div class="chapter-num">CHƯƠNG 19</div>
+<div class="chapter-title" data-content-id="thinking-fast-slow-chapters-10" data-content-type="chapter-desc">Ảo tưởng về sự thấu hiểu</div>
+<div class="chapter-desc" data-content-id="thinking-fast-slow-chapters-25" data-content-type="chapter-desc">Ngay khi một biến cố vừa trôi qua, chúng ta lập tức ảo tưởng rằng mình đã nhìn thấu nó từ trước. Rất nhiều người vỗ ngực nói rằng họ thừa biết Lehman Brothers sẽ sụp đổ. Nhưng sự thật là chẳng ai kịp bán tháo cổ phiếu cả. Những cuốn sách lịch sử luôn vẽ ra một bức tranh nhân quả hoàn mỹ, trong khi thực tại chỉ là một mớ hỗn độn của những tiếng ồn ngẫu nhiên.</div>
+<span class="chapter-key">Hindsight bias</span>
+</div>
+<div class="chapter-card">
+<div class="chapter-num">CHƯƠNG 22</div>
+<div class="chapter-title" data-content-id="thinking-fast-slow-chapters-11" data-content-type="chapter-desc">Trực giác chuyên gia: Khi nào mới đáng tin?</div>
+<div class="chapter-desc" data-content-id="thinking-fast-slow-chapters-26" data-content-type="chapter-desc">Trực giác của một chuyên gia chỉ có giá trị khi họ hoạt động trong một môi trường có quy luật rõ ràng và nhận được phản hồi ngay lập tức. Trực giác của bác sĩ cấp cứu hay lính cứu hỏa là đáng tin. Nhưng linh cảm của một nhà đầu tư chứng khoán hay một chính trị gia dự báo bầu cử thì hoàn toàn vô giá trị.</div>
+<span class="chapter-key">Expert intuition</span>
+</div>
+<div class="chapter-card">
+<div class="chapter-num">CHƯƠNG 23</div>
+<div class="chapter-title" data-content-id="thinking-fast-slow-chapters-12" data-content-type="chapter-desc">Góc nhìn từ bên ngoài</div>
+<div class="chapter-desc" data-content-id="thinking-fast-slow-chapters-27" data-content-type="chapter-desc">Khi phải ước lượng thời gian hay chi phí cho một dự án, đừng bao giờ tự hỏi dự án này khó đến mức nào. Hãy tìm kiếm dữ liệu thực tế và hỏi: Những dự án tương tự trong quá khứ đã ngốn bao nhiêu thời gian? Góc nhìn từ bên trong luôn được phủ một lớp mật ngọt của sự lạc quan. Chỉ có góc nhìn từ bên ngoài mới nói cho bạn biết sự thật.</div>
+<span class="chapter-key">Inside vs Outside</span>
+</div>
+</div>
+</div>
+</div>
+<div class="chapter-part">
+<div class="rule-section" data-part="part4">
+<div class="part-header">PART IV</div>
+<div class="part-title">Choices</div>
+<div class="part-sub">Prospect Theory — phát hiện đoạt Nobel</div>
+<div class="chapter-grid">
+<div class="chapter-card">
+<div class="chapter-num">CHƯƠNG 26</div>
+<div class="chapter-title" data-content-id="thinking-fast-slow-chapters-13" data-content-type="chapter-desc">Lý thuyết triển vọng</div>
+<div class="chapter-desc" data-content-id="thinking-fast-slow-chapters-28" data-content-type="chapter-desc">Bản tính con người không sinh ra để tối đa hóa lợi ích, chúng ta sinh ra để trốn chạy nỗi đau. Nỗi đau khi mất tiền thường giằng xé gấp đôi niềm vui khi kiếm được số tiền tương đương. Chính vì sự hèn nhát này, chúng ta liên tục từ chối những cơ hội có kỳ vọng lợi nhuận dương chỉ vì ám ảnh bởi viễn cảnh tồi tệ nhất.</div>
+<span class="chapter-key">Prospect Theory</span>
+</div>
+<div class="chapter-card">
+<div class="chapter-num">CHƯƠNG 27</div>
+<div class="chapter-title" data-content-id="thinking-fast-slow-chapters-14" data-content-type="chapter-desc">Hiệu ứng sở hữu</div>
+<div class="chapter-desc" data-content-id="thinking-fast-slow-chapters-29" data-content-type="chapter-desc">Một ly cà phê trên tay bạn luôn có vẻ đắt giá hơn một ly cà phê giống hệt nằm trên kệ siêu thị. Ngay khoảnh khắc nắm lấy quyền sở hữu, tâm trí bạn đã tự động thổi phồng giá trị của món đồ đó lên. Đây chính là lời giải cho câu hỏi vì sao việc bán lại đồ cũ hay đổi xe luôn khiến bạn có cảm giác mình đang bị hớ.</div>
+<span class="chapter-key">Endowment</span>
+</div>
+<div class="chapter-card">
+<div class="chapter-num">CHƯƠNG 34</div>
+<div class="chapter-title" data-content-id="thinking-fast-slow-chapters-15" data-content-type="chapter-desc">Khung tham chiếu và thực tại</div>
+<div class="chapter-desc" data-content-id="thinking-fast-slow-chapters-30" data-content-type="chapter-desc">Nói rằng chín mươi phần trăm cơ hội sống sót hay mười phần trăm tỷ lệ tử vong, bản chất dữ liệu là y hệt nhau. Nhưng cách bộ não bạn đưa ra lựa chọn lại trái ngược hoàn toàn. Lớp vỏ bọc của ngôn từ có quyền năng thao túng mọi quyết định. Một tay bán hàng lọc lõi luôn biết cách đóng khung thông tin để lùa bạn vào đúng cái bẫy họ muốn.</div>
+<span class="chapter-key">Framing</span>
+</div>
+</div>
+</div>
+</div>
+<div class="chapter-part">
+<div class="rule-section" data-part="part5">
+<div class="part-header">PART V</div>
+<div class="part-title">Two Selves</div>
+<div class="part-sub">Hai bản ngã trong bạn — và cuộc xung đột thầm lặng</div>
+<div class="chapter-grid">
+<div class="chapter-card">
+<div class="chapter-num">CHƯƠNG 35</div>
+<div class="chapter-title" data-content-id="thinking-fast-slow-chapters-16" data-content-type="chapter-desc">Hai bản ngã</div>
+<div class="chapter-desc" data-content-id="thinking-fast-slow-chapters-31" data-content-type="chapter-desc">Trong bạn tồn tại hai nhân cách hoàn toàn tách biệt: Bản ngã trải nghiệm sống trong hiện tại, và Bản ngã ghi nhớ làm nhiệm vụ lưu trữ quá khứ. Trớ trêu thay, hai bản ngã này thường xuyên mâu thuẫn gay gắt với nhau. Rốt cuộc, bạn đang đưa ra những quyết định quan trọng trong đời để chiều lòng ai?</div>
+<span class="chapter-key">Experiencing vs Remembering</span>
+</div>
+<div class="chapter-card">
+<div class="chapter-num">CHƯƠNG 36</div>
+<div class="chapter-title" data-content-id="thinking-fast-slow-chapters-17" data-content-type="chapter-desc">Cuộc đời như một cuốn tiểu thuyết</div>
+<div class="chapter-desc" data-content-id="thinking-fast-slow-chapters-32" data-content-type="chapter-desc">Khi hồi tưởng về một kỳ nghỉ, chúng ta chỉ nhớ về những khoảnh khắc thăng hoa nhất và những giây phút cuối cùng, chứ không bao giờ nhớ toàn bộ chuỗi ngày đó. Bộ nhớ của con người được thiết kế để tự động cô đặc thông tin. Đó là lý do vì sao một cái kết có hậu lại mang sức nặng khủng khiếp đến vậy.</div>
+<span class="chapter-key">Peak-end rule</span>
+</div>
+</div>
+</div>
+</div>
+<p class="section-intro" style="margin-top: 48px;"><span data-content-id="thinking-fast-slow-bias-1">Kahneman đã giội một gáo nước lạnh vào những kẻ tự phụ: Việc thuộc lòng các loại thiên kiến không hề giúp bạn miễn nhiễm với chúng. Có một loại thiên kiến mù lòa, nơi tất cả chúng ta đều đinh ninh rằng chỉ có kẻ khác mới bị lừa, còn mình thì không. Hệ thống Một luôn luôn túc trực, trong khi Hệ thống Hai lại vô cùng lười biếng. Cuốn sách này không dành cho những đôi mắt đọc lướt. Chỉ cần lơ đễnh một giây, bộ não của bạn sẽ trượt dài vào một cái bẫy tư duy hoàn toàn mới.</span></p>
+</section>
+<!-- FLASHCARDS -->
+<section class="section" id="flashcards">
+<div class="section-label">Flashcards / 10 khái niệm cốt lõi</div>
+<h2 class="section-title" data-content-id="thinking-fast-slow-flashcards-01" data-content-type="heading">Mười thẻ ghi nhớ cốt lõi</h2>
+<p class="section-intro" data-content-id="thinking-fast-slow-flashcards-02" data-content-type="section-intro">Kahneman đã liệt kê hơn năm mươi loại thiên kiến khác nhau. Nhưng mười thẻ dưới đây mới là những tay chơi thực sự chi phối các quyết định sống còn của bạn. Hãy lật thẻ và nhai đi nhai lại chúng. Nếu lười biếng, chỉ cần ghi tạc năm tấm thẻ đầu tiên là bạn đã nắm trong tay tám mươi phần trăm giá trị của cuốn sách.</p>
+<div class="flashcard-container">
+<div class="flashcard-controls">
+<div class="flashcard-counter">Thẻ <strong id="cardCurrent">1</strong> / <span id="cardTotal">10</span></div>
+<div class="flashcard-counter">Đã thuộc: <strong id="cardKnown">0</strong></div>
+</div>
+<div class="flashcard" id="flashcard" onclick="flipCard()">
+<div class="flashcard-face flashcard-front">
+<div class="flashcard-tag">Câu hỏi</div>
+<div class="flashcard-question" id="cardQuestion"></div>
+<div class="flashcard-hint">Click để xem đáp án</div>
+</div>
+<div class="flashcard-face flashcard-back">
+<div class="flashcard-tag">Đáp án</div>
+<div class="flashcard-answer" id="cardAnswer"></div>
+<div class="flashcard-hint">Click để xem câu hỏi</div>
+</div>
+</div>
+<div class="flashcard-nav">
+<button class="fcq-btn outline" onclick="prevCard()">← Trước</button>
+<button class="fcq-btn" onclick="markUnknown()">Cần học lại</button>
+<button class="fcq-btn accent" onclick="markKnown()">Tôi nhớ ✓</button>
+<button class="fcq-btn outline" onclick="nextCard()">Sau →</button>
+</div>
+</div>
+</section>
+<!-- QUIZ -->
+<section class="section" id="quiz">
+<div class="section-label">Quiz / 6 câu test hiểu biết</div>
+<h2 class="section-title" data-content-id="thinking-fast-slow-quiz-01" data-content-type="heading">Bạn có thực sự <em>hiểu</em> Kahneman?</h2>
+<p class="section-intro" data-content-id="thinking-fast-slow-quiz-02" data-content-type="section-intro">6 câu — chỉ test biases ảnh hưởng đời sống thực. Anchoring, availability, prospect theory. Sai 2+ câu = bạn vẫn ra quyết định bằng Hệ 1 mà không biết.</p>
+<div class="quiz-container" id="quizContainer">
+<div class="quiz-progress">
+<span>Câu hỏi <span id="quizCurrent">1</span> / <span id="quizTotal">6</span></span>
+<span>Điểm: <span id="quizScore">0</span></span>
+</div>
+<div class="quiz-bar"><div class="quiz-bar-fill" id="quizBarFill" style="width: 16.67%"></div></div>
+<div class="quiz-question" id="quizQuestion"></div>
+<div class="quiz-options" id="quizOptions"></div>
+<div class="quiz-feedback" id="quizFeedback"></div>
+<div style="display: flex; justify-content: flex-end; margin-top: 24px;">
+<button class="fcq-btn accent" id="quizNext" onclick="nextQuestion()" style="display: none;">Câu tiếp →</button>
+</div>
+</div>
+</section>
+<!-- ACTIONS -->
+<section class="section" id="actions">
+<div class="section-label">18 Actions / Áp dụng vào quyết định của bạn</div>
+<h2 class="section-title" data-content-id="thinking-fast-slow-actions-01" data-content-type="heading">Mười tám hành động cụ thể</h2>
+<p class="section-intro" data-content-id="thinking-fast-slow-actions-02" data-content-type="section-intro">Ở cuối sách, Kahneman cảnh báo rõ ràng: Hiểu biết về thiên kiến là vô dụng nếu thiếu đi những kỹ thuật phòng vệ cụ thể. Mười tám hành động này là một tấm khiên chia làm bốn mảng: nhận diện Hệ thống Một, đánh thức Hệ thống Hai, né tránh bẫy tâm lý và ra quyết định sắc bén. Hãy chỉ chọn ba hành động để bắt đầu.</p>
+<div class="action-cats">
+<button class="action-cat-btn active" onclick="filterActions('aware', this)">Nhận diện (1-5)</button>
+<button class="action-cat-btn" onclick="filterActions('activate', this)">Kích hoạt Hệ 2 (6-10)</button>
+<button class="action-cat-btn" onclick="filterActions('bias', this)">Tránh thiên kiến (11-14)</button>
+<button class="action-cat-btn" onclick="filterActions('decide', this)">Quyết định (15-18)</button>
+<button class="action-cat-btn" onclick="filterActions('all', this)">Tất cả</button>
+</div>
+<div class="actions-grid" id="actionsGrid"></div>
+</section>
+<!-- JOURNAL -->
+<section class="section" id="journal">
+<div class="section-label">Nhật ký riêng / Viết để hiểu thêm</div>
+<h2 class="section-title" data-content-id="thinking-fast-slow-journal-01" data-content-type="heading">Viết để thấu suốt bản thân</h2>
+<p class="section-intro" data-content-id="thinking-fast-slow-journal-02" data-content-type="section-intro">Kahneman khẳng định: Dùng Hệ thống Một để tự chất vấn chính mình thường dẫn đến những đáp án sai lệch. Bạn buộc phải lôi Hệ thống Hai vào cuộc thông qua thao tác viết. Năm câu hỏi dưới đây được thiết kế để hãm phanh lối tư duy chớp nhoáng của bạn. Chúng chỉ thực sự phát huy tác dụng nếu bạn nghiêm túc đặt bút xuống.</p>
+<div class="journal-prompts-nav">
+<div class="journal-dot active" onclick="switchPrompt(0, this)">1</div>
+<div class="journal-dot" onclick="switchPrompt(1, this)">2</div>
+<div class="journal-dot" onclick="switchPrompt(2, this)">3</div>
+<div class="journal-dot" onclick="switchPrompt(3, this)">4</div>
+<div class="journal-dot" onclick="switchPrompt(4, this)">5</div>
+</div>
+<div id="promptsContainer"></div>
+</section>
+<!-- COMMENTS -->
+<section class="section" id="comments">
+<div class="section-label">Thảo luận / Cộng đồng</div>
+<h2 class="section-title" data-content-id="thinking-fast-slow-comments-01" data-content-type="heading">Góc nhìn của bạn</h2>
+<p class="section-intro" data-content-id="thinking-fast-slow-comments-02" data-content-type="section-intro">Tôi luôn lắng nghe và đón nhận mọi ý kiến phản biện từ bạn. Địa chỉ email chỉ phục vụ cho hệ thống bảo mật và tuyệt đối không bao giờ được hiển thị công khai. Ngay sau khi bạn nhấn xác nhận qua thư, quan điểm của bạn sẽ lập tức xuất hiện trên trang web.</p>
+<div class="comment-form-wrap">
+<form class="comment-form" id="commentForm">
+<div class="reply-indicator" id="replyIndicator" style="display:none">Đang trả lời <span id="replyTo"></span><button id="replyCancel" type="button">×</button></div>
+<div class="form-row">
+<input id="cf-name" maxlength="80" placeholder="Tên hiển thị" required="" type="text"/>
+<input id="cf-email" maxlength="120" placeholder="Email (không hiển thị)" required="" type="email"/>
+</div>
+<textarea id="cf-content" maxlength="2000" placeholder="Suy nghĩ của bạn..." required="" rows="5"></textarea>
+<input id="cf-parent" type="hidden" value=""/>
+<!-- Honeypot: bots fill this, humans don't see it -->
+<div aria-hidden="true" style="position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden">
+<label for="cf-website">Website (leave blank)</label>
+<input autocomplete="off" id="cf-website" name="website" tabindex="-1" type="text"/>
+</div>
+<div class="form-bottom">
+<span class="form-hint">Tối đa 2000 ký tự</span>
+<button class="form-submit" id="cf-submit" type="submit">Gửi comment →</button>
+</div>
+<div class="form-message" id="cf-message"></div>
+</form>
+</div>
+<div class="comments-list" id="commentsList">
+<div class="comments-loading">Đang tải comment...</div>
+</div>
+</section>
+<!-- FOOTER -->
+<footer class="footer">
+<div class="footer-quote">"Hiểu hai hệ thống không giúp bạn loại bỏ Hệ 1. Nó chỉ giúp bạn biết khi nào cần dừng lại — và đó đã là rất nhiều."</div>
+<div class="footer-author">— Quang Ton, sau khi đọc Kahneman</div>
+<div class="footer-back">
+<a href="../pages/tu-duy.html">← Quay lại Tư duy</a>
+<a href="../index.html">Stop &amp; Think</a>
+</div>
+<div class="footer-meta">
+    © 2026 · Stop &amp; Think · By Quang Ton
+  </div>
+</footer>
+</main>
+<script>
+function scrollTo2(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  const top = el.getBoundingClientRect().top + window.pageYOffset - 60;
+  window.scrollTo({top, behavior: 'smooth'});
+}
+
+const flashcards = [
+  {
+    q: "System 1 vs SYSTEM 2 — khác biệt cốt lõi?",
+    a: "Hệ 1: nhanh, tự động, không nỗ lực, dùng cho 95% quyết định hằng ngày. Hệ 2: chậm, có ý thức, cần tập trung, lười kích hoạt. Hệ 1 dễ sai khi gặp việc cần Hệ 2."
+  },
+  {
+    q: "WYSIATI nghĩa là gì? Vì sao quan trọng?",
+    a: "What You See Is All There Is — bạn dùng những gì thấy để kết luận, không tự hỏi 'có thông tin nào đang thiếu?'. Đây là gốc rễ của overconfidence: ta nghĩ đã có đủ dữ liệu, thực tế còn rất nhiều ẩn."
+  },
+  {
+    q: "Anchoring effect là gì? Cho ví dụ Việt Nam.",
+    a: "Số đầu tiên bạn thấy neo mọi đánh giá sau. Môi giới ra giá nhà 5 tỷ → bạn đàm 4.2 tỷ. Nhưng giá thật 3 tỷ. 5 tỷ đã neo. Cách tránh: nghiên cứu giá tham chiếu TRƯỚC khi đàm phán."
+  },
+  {
+    q: "Availability heuristic — vì sao báo chí dễ lừa ta?",
+    a: "Ta đánh giá xác suất bằng 'dễ nhớ'. Báo về tai nạn máy bay → tưởng bay nguy hiểm. Thực tế xe máy nguy hiểm hơn 10,000 lần. Cách tránh: nhìn số liệu thật, không dựa cảm giác."
+  },
+  {
+    q: "Loss Aversion — tỷ lệ đau:vui là bao nhiêu?",
+    a: "2.5:1. Mất 100,000đ đau gấp 2.5 lần niềm vui khi được 100,000đ. Hệ quả: ta giữ cổ phiếu lỗ quá lâu, từ chối deal có expected value dương vì sợ trường hợp xấu."
+  },
+  {
+    q: "Endowment Effect — vì sao mua nhà cũ thường 'hớ'?",
+    a: "Vừa sở hữu = đã định giá cao hơn người ngoài. Cốc cà phê trong tay bạn đắt hơn cốc giống hệt trên kệ. Người bán nhà cũ định giá cao vì có 'cảm tình' — không phải giá thị trường."
+  },
+  {
+    q: "Hindsight bias — sai lầm 'tôi đã biết trước'",
+    a: "Sau khi sự kiện xảy ra, trí nhớ tự sửa lại. Bạn nhớ 'tôi đã đoán Lehman sẽ phá sản'. Thực tế bạn không bán cổ phiếu. Cách tránh: ghi quyết định + lý do TRƯỚC khi biết kết quả."
+  },
+  {
+    q: "Regression to mean — vì sao kết quả đỉnh thường giảm?",
+    a: "Quy luật thống kê: kết quả cực đoan có xu hướng quay về trung bình. Quý lãi 50% → quý sau khả năng cao giảm. KHÔNG phải vì bạn 'mất phong độ'. Đó là toán."
+  },
+  {
+    q: "Outside View — cách dự đoán dự án chính xác hơn?",
+    a: "Đừng hỏi 'dự án này khó cỡ nào?' (inside view, lạc quan). Hỏi 'dự án tương tự trong quá khứ mất bao lâu?' (outside view, dùng dữ liệu thật). Pixar dự án 5 năm, dự án thực tế trung bình 5 năm — họ dùng outside view."
+  },
+  {
+    q: "Two Selves — bản ngã nào ra quyết định?",
+    a: "Bản ngã ghi nhớ (remembering self) ra quyết định, không phải bản ngã trải nghiệm. Bạn nhớ kỳ nghỉ qua đỉnh cao + phút cuối, không phải toàn bộ. Vì vậy kết thúc tốt quan trọng hơn nhiều người nghĩ. Bài học: thiết kế trải nghiệm để có 'peak' và 'end' đẹp."
+  }
+];
+
+const quizQuestions = [
+  {
+    q: "Bạn đang lái xe trên cao tốc rộng. Đột nhiên có người cắt đầu xe. Bạn phản ứng ngay. Đây là Hệ thống nào?",
+    options: [
+      "Hệ 1 — phản xạ tự động, không cần suy nghĩ",
+      "Hệ 2 — bạn quyết định cẩn thận",
+      "Cả hai hợp tác",
+      "Tùy người, không thể nói"
+    ],
+    correct: 0,
+    explain: "Phản ứng tức thời = Hệ 1. Hệ 1 giỏi với những tình huống quen thuộc, có quy luật, cần phản xạ nhanh. Hệ 2 sẽ kích hoạt sau đó để xử lý cảm xúc và đánh giá."
+  },
+  {
+    q: "Người bán bất động sản ra giá đầu tiên là 10 tỷ. Bạn biết giá thật khoảng 7 tỷ. Bạn đàm xuống 8 tỷ và nghĩ 'mình giỏi đàm phán'. Theo Kahneman?",
+    options: [
+      "Bạn đàm phán giỏi — giảm được 20%",
+      "Bạn vẫn bị anchoring — số 10 tỷ neo bạn ở khoảng 8-9 tỷ. Nếu nghiên cứu trước, bạn có thể trả 7 tỷ",
+      "Người bán đã thua — họ chỉ kiếm 8 tỷ thay vì 10",
+      "Cả hai đều sai"
+    ],
+    correct: 1,
+    explain: "Anchoring kinh điển. Số đầu tiên (10 tỷ) đã định khung mọi đàm phán sau đó. Bạn cảm thấy '8 tỷ là good deal' — nhưng thực tế giá thị trường là 7. Cách phòng vệ: nghiên cứu giá tham chiếu (comparable sales) TRƯỚC khi vào đàm phán."
+  },
+  {
+    q: "Một người bạn của bạn vừa lãi 200% từ chứng khoán năm vừa rồi. Cô ấy nói 'tôi có công thức'. Theo Kahneman, bạn nên...",
+    options: [
+      "Học công thức của cô ấy — 200% là rất giỏi",
+      "Cẩn trọng với <strong>regression to mean</strong> — kết quả cực đoan có xu hướng quay về trung bình. Cộng với <strong>survivorship bias</strong> (bạn không nghe người thua)",
+      "Đầu tư cùng cô ấy",
+      "Hỏi cô ấy chiến lược chi tiết"
+    ],
+    correct: 1,
+    explain: "200% trong 1 năm có thể là kỹ năng — hoặc may mắn (đặc biệt trong thị trường tăng mạnh). Theo regression to mean, năm sau khả năng cao kết quả giảm. Cộng với survivorship bias: bạn chỉ nghe người lãi 200%, không nghe 99 người khác mất 50%."
+  },
+  {
+    q: "Bạn được chọn: A) 100% nhận 800,000đ, hoặc B) 80% nhận 1,000,000đ + 20% không nhận gì. Đa số chọn gì? Vì sao?",
+    options: [
+      "B — vì expected value cao hơn (800k vs 800k... wait, 1M × 0.8 = 800k bằng nhau)",
+      "A — vì loss aversion làm người ta sợ rủi ro, dù expected value bằng nhau",
+      "B — vì người Việt thích cá cược",
+      "Tùy ngành nghề"
+    ],
+    correct: 1,
+    explain: "Expected value của A = 800k. Của B = 1M × 0.8 = 800k. Bằng nhau. Nhưng đa số chọn A vì SỢ trường hợp 20% không nhận gì — đó là loss aversion. Prospect Theory: người ta không tối đa giá trị, họ tối thiểu cảm xúc đau."
+  },
+  {
+    q: "Sau dịch COVID, nhiều người sợ đầu tư bất động sản 'vì 2008 đã từng sụp'. Theo Kahneman, đây là?",
+    options: [
+      "Quyết định lý trí — học từ lịch sử",
+      "Availability bias — 1 sự kiện kịch tính dễ nhớ làm người ta đánh giá xác suất sai",
+      "Hindsight bias",
+      "Anchoring"
+    ],
+    correct: 1,
+    explain: "Availability bias kinh điển. 2008 là 1 sự kiện trong 30 năm — nhưng vì nó kịch tính + được nhắc lại, ta đánh giá quá cao xác suất tái diễn. Thực tế: thống kê BĐS Việt Nam 30 năm cho thấy 80% năm tăng giá. Quyết định nên dựa số liệu, không cảm giác."
+  },
+  {
+    q: "Theo Kahneman, cách hiệu quả nhất để dự đoán thời gian hoàn thành dự án phức tạp là?",
+    options: [
+      "Lên kế hoạch chi tiết, ước tính từng task",
+      "Cộng thêm 30% buffer cho mọi ước tính",
+      "<strong>Outside view</strong> — tìm 5-10 dự án tương tự đã hoàn thành, xem trung bình mất bao lâu",
+      "Hỏi sếp"
+    ],
+    correct: 2,
+    explain: "Inside view (planning) luôn lạc quan vì ta nhìn version lý tưởng. Outside view dùng dữ liệu thật từ các dự án tương tự — và luôn cho con số CAO HƠN inside view. Pixar dùng outside view và hoàn thành đúng deadline 95% projects. Microsoft Office dùng inside view và slip 2-3 năm thường xuyên."
+  }
+];
+
+const actions = [
+  { num: 1, cat: 'aware', title: 'Đặt báo thức "tôi đang nghĩ gì?" 3 lần/ngày', desc: "Mỗi lần báo, dừng 30 giây. Hỏi: \"tôi vừa quyết định gì? Hệ 1 hay Hệ 2 quyết định?\" Sau 1 tuần, bạn sẽ shock vì 95% là Hệ 1." },
+  { num: 2, cat: 'aware', title: 'Tập "đọc lại" cảm xúc đầu tiên', desc: 'Khi gặp người mới: ghi cảm xúc đầu tiên trong đầu (thích/không, tin/nghi). Đó là Hệ 1 phán xét. Sau 5 phút trò chuyện, đối chiếu xem cảm xúc đầu có đúng không.' },
+  { num: 3, cat: 'aware', title: 'Nhận diện trạng thái "lười Hệ 2"', desc: 'Khi bạn mệt / đói / vội — Hệ 2 yếu nhất. Đừng ra quyết định lớn lúc đó. Quy tắc: không ký hợp đồng / không gửi email quan trọng sau 9pm hoặc khi đang đói.' },
+  { num: 4, cat: 'aware', title: 'Học cách "bắt" mình đang anchoring', desc: 'Khi gặp số đầu tiên (giá, thời gian, tỷ lệ), tự hỏi: "nếu không có số này, tôi sẽ đoán bao nhiêu?" Ghi đáp án trước khi đàm phán.' },
+  { num: 5, cat: 'aware', title: 'Quan sát "sub-text" của câu hỏi', desc: 'Hệ 1 thay câu hỏi khó bằng câu dễ. "Cổ phiếu này có nên mua?" → Hệ 1 chuyển sang "tôi có thích công ty này?". Hai câu khác nhau hoàn toàn.' },
+  { num: 6, cat: 'activate', title: 'Quy tắc 24h cho quyết định &gt; 10 triệu', desc: 'Mọi quyết định trên 10 triệu đồng — đợi 24h trước khi commit. Hệ 1 thường đẩy ta hành động ngay; ngủ 1 đêm cho Hệ 2 thời gian.' },
+  { num: 7, cat: 'activate', title: 'Pre-mortem trước mọi dự án lớn', desc: 'Hình dung dự án thất bại sau 1 năm. Liệt kê 5 lý do có thể fail. Sau đó hỏi: tôi nên làm gì để tránh? Đây là Outside View được bật.' },
+  { num: 8, cat: 'activate', title: 'Viết 3 lý do "có thể tôi sai"', desc: 'Trước khi đẩy quyết định, viết: "Tôi có thể sai vì... (1) (2) (3)". Đây là cách duy nhất bắt Hệ 1 nhường ghế cho Hệ 2.' },
+  { num: 9, cat: 'activate', title: 'Dùng checklist cho quyết định lặp lại', desc: 'Mua cổ phiếu, tuyển nhân viên, ký hợp đồng — checklist 10-15 items. Atul Gawande chứng minh: checklist giảm sai sót 30-50% trong y khoa.' },
+  { num: 10, cat: 'activate', title: 'Hỏi "thông tin gì tôi thiếu?"', desc: 'Phản đề của WYSIATI. Trước mọi kết luận, dừng và hỏi: "có dữ liệu nào tôi chưa biết có thể thay đổi quyết định?" 80% lần, có ít nhất 1.' },
+  { num: 11, cat: 'bias', title: 'Test bằng base rate trước khi tin trực giác', desc: 'Trước khi tin "công ty này sẽ thành Apple thứ hai", hỏi: tỷ lệ startup thành Apple là bao nhiêu? &lt;0.001%. Trực giác bạn cao hơn base rate nhiều — cẩn trọng.' },
+  { num: 12, cat: 'bias', title: 'Tách process ra khỏi outcome', desc: 'Quá trình tốt + kết quả xấu = thí nghiệm thông minh. Quá trình tệ + kết quả tốt = may mắn. Đừng học theo bản thân khi may mắn — đừng đổi chiến lược khi xui.' },
+  { num: 13, cat: 'bias', title: 'Đầu tư bằng "mua mới hôm nay" test', desc: 'Cổ phiếu lỗ — bạn nói "đợi về vốn rồi bán". Hỏi: nếu hôm nay không có cổ phiếu này, bạn có mua giá hiện tại không? Nếu không → bán ngay. Đây là vượt qua endowment effect.' },
+  { num: 14, cat: 'bias', title: 'Nhật ký quyết định ghi BEFORE outcome', desc: 'Trước mọi quyết định lớn: ghi lý do + niềm tin + độ tự tin. Sau 6 tháng đọc lại — bạn sẽ thấy hindsight bias đã sửa trí nhớ thế nào.' },
+  { num: 15, cat: 'decide', title: 'Đặt câu hỏi đúng — không phải câu dễ', desc: 'Hệ 1 thay câu khó bằng câu dễ. "Tôi nên mua nhà không?" → "Tôi có thích nhà này không?" Hai câu khác nhau. Câu đầu cần Hệ 2 phân tích, câu sau Hệ 1 trả lời ngay.' },
+  { num: 16, cat: 'decide', title: 'Frame quyết định theo nhiều cách', desc: 'Một quyết định có thể frame "90% sống sót" hay "10% chết" — chọn khác nhau. Trước khi quyết, frame ít nhất 2 cách. Nếu lựa chọn thay đổi → quyết định không thật sự lý trí.' },
+  { num: 17, cat: 'decide', title: 'Outside view cho ước lượng thời gian', desc: 'Dự án mới — đừng hỏi "tôi nghĩ mất bao lâu?". Hỏi "5 dự án tương tự gần đây mất bao lâu?". Cộng thêm 25% buffer. Dùng số đó.' },
+  { num: 18, cat: 'decide', title: 'Thiết kế "peak" và "end" của trải nghiệm', desc: 'Bản ngã ghi nhớ chỉ nhớ đỉnh cao + phút cuối. Vì vậy: kết thúc cuộc họp với ý tích cực; trang trí kỳ nghỉ có 1-2 moments đỉnh; đầu tư vào ending của sản phẩm/dịch vụ.' }
+];
+
+const journalPrompts = [
+  {
+    q: "Trong 3 quyết định lớn nhất tuần qua, bao nhiêu phần Hệ 1 quyết định? Bao nhiêu phần Hệ 2? Cụ thể bạn đã làm gì để kích hoạt Hệ 2?",
+    help: "Đa số sẽ shock khi nhận ra Hệ 1 chiếm đa số. Đó là điều bình thường. Câu hỏi quan trọng hơn: với những quyết định ảnh hưởng &gt;10 triệu / liên quan người khác — bạn có dành 5-10 phút Hệ 2 không?"
+  },
+  {
+    q: "Liệt kê 3 'thành công gần đây' và 3 'thất bại gần đây'. Cho mỗi cái: bao nhiêu phần là kỹ năng, bao nhiêu phần là may mắn? Có quá thiên về 'kỹ năng' khi thắng, 'xui' khi thua không?",
+    help: "Đây là attribution bias. Khi thắng, ta gán 'do tôi giỏi'. Khi thua, ta gán 'do hoàn cảnh'. Trung thực: nếu tỷ lệ kỹ năng/may mắn đảo nhau giữa thắng-thua, đó là dấu hiệu bias đang lái."
+  },
+  {
+    q: "Có quyết định nào bạn đang giữ lại 'vì đã đầu tư rồi'? (cổ phiếu lỗ, mối quan hệ tệ, công việc chán). Áp dụng test 'mua mới hôm nay': nếu chưa có, bạn có chọn nó với điều kiện hiện tại?",
+    help: "Sunk cost fallacy + endowment effect kết hợp. Nếu đáp án là KHÔNG, bạn đang trả giá để tránh thừa nhận đã sai. Đó là chi phí cao nhất — không phải lỗ ban đầu."
+  },
+  {
+    q: "Ghi 1 niềm tin/quan điểm bạn rất tự tin gần đây. Tự hỏi: bằng chứng nào sẽ buộc bạn đổi ý? Nếu không có gì → bạn đang ở chế độ Preacher, không phải Scientist.",
+    help: "Niềm tin không thể bị bác bỏ = không phải niềm tin lý trí, mà là identity. Cách thoát: tách identity ('tôi là người tin X') khỏi niềm tin ('có lý do X có thể đúng')."
+  },
+  {
+    q: "Chọn 3 actions từ 18 actions ở trên — cam kết áp dụng trong 30 ngày. Cụ thể: khi nào, ở đâu, đo lường thế nào?",
+    help: "3 actions cụ thể tốt hơn 18 mơ hồ. Ví dụ: 'Action 6 — Quy tắc 24h cho quyết định &gt;10tr: cuối tháng này có quyết định mua điện thoại 25tr. Em sẽ chờ 24h, viết 3 lý do mua + 3 lý do không mua, đối chiếu trước khi quyết định.'"
+  }
+];
+
+let currentCard = 0;
+let knownCards = new Set();
+let currentQuiz = 0;
+let quizScore = 0;
+let quizAnswered = false;
+
+function loadCard() {
+  document.getElementById('cardQuestion').textContent = flashcards[currentCard].q;
+  document.getElementById('cardAnswer').textContent = flashcards[currentCard].a;
+  document.getElementById('cardCurrent').textContent = currentCard + 1;
+  document.getElementById('cardTotal').textContent = flashcards.length;
+  document.getElementById('cardKnown').textContent = knownCards.size;
+  document.getElementById('flashcard').classList.remove('flipped');
+}
+function flipCard() { document.getElementById('flashcard').classList.toggle('flipped'); }
+function nextCard() { currentCard = (currentCard + 1) % flashcards.length; loadCard(); }
+function prevCard() { currentCard = (currentCard - 1 + flashcards.length) % flashcards.length; loadCard(); }
+function markKnown() { knownCards.add(currentCard); document.getElementById('cardKnown').textContent = knownCards.size; setTimeout(nextCard, 300); }
+function markUnknown() { knownCards.delete(currentCard); document.getElementById('cardKnown').textContent = knownCards.size; setTimeout(nextCard, 300); }
+
+function loadQuiz() {
+  if (currentQuiz >= quizQuestions.length) { showQuizResult(); return; }
+  const q = quizQuestions[currentQuiz];
+  document.getElementById('quizQuestion').innerHTML = q.q;
+  document.getElementById('quizCurrent').textContent = currentQuiz + 1;
+  document.getElementById('quizTotal').textContent = quizQuestions.length;
+  document.getElementById('quizScore').textContent = quizScore;
+  document.getElementById('quizBarFill').style.width = ((currentQuiz + 1) / quizQuestions.length * 100) + '%';
+  const optionsEl = document.getElementById('quizOptions');
+  optionsEl.innerHTML = '';
+  const letters = ['A', 'B', 'C', 'D'];
+  q.options.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'quiz-option';
+    btn.innerHTML = '<span class="quiz-option-letter">' + letters[i] + '</span><span>' + opt + '</span>';
+    btn.onclick = () => answerQuiz(i);
+    optionsEl.appendChild(btn);
+  });
+  document.getElementById('quizFeedback').classList.remove('show');
+  document.getElementById('quizNext').style.display = 'none';
+  quizAnswered = false;
+}
+function answerQuiz(idx) {
+  if (quizAnswered) return;
+  quizAnswered = true;
+  const q = quizQuestions[currentQuiz];
+  const options = document.querySelectorAll('.quiz-option');
+  options.forEach((opt, i) => {
+    opt.classList.add('disabled');
+    if (i === q.correct) opt.classList.add('correct');
+    if (i === idx && i !== q.correct) opt.classList.add('wrong');
+  });
+  if (idx === q.correct) quizScore++;
+  document.getElementById('quizScore').textContent = quizScore;
+  const fb = document.getElementById('quizFeedback');
+  fb.innerHTML = q.explain;
+  fb.classList.add('show');
+  document.getElementById('quizNext').style.display = 'inline-block';
+  if (currentQuiz === quizQuestions.length - 1) document.getElementById('quizNext').textContent = 'Xem kết quả →';
+}
+function nextQuestion() { currentQuiz++; loadQuiz(); }
+function showQuizResult() {
+  const total = quizQuestions.length;
+  const pct = Math.round(quizScore / total * 100);
+  let label, msg;
+  if (pct >= 90) { label = 'Tỉnh táo trước Hệ 1'; msg = 'Tuyệt. Apply: viết pre-mortem + dùng base rate cho 3 quyết định lớn nhất tháng.'; }
+  else if (pct >= 70) { label = 'Hiểu khá tốt'; msg = 'Khá. Đọc lại Anchoring + Availability + Prospect Theory.'; }
+  else if (pct >= 50) { label = 'Đang trên đường'; msg = 'Khung sườn có. Đọc lại Hệ 1 vs Hệ 2 + 5 biases chính.'; }
+  else { label = 'Cần ôn lại'; msg = 'Đọc lại Phần I + II. Đặc biệt: Anchoring + Loss aversion.'; }
+  document.getElementById('quizContainer').innerHTML = '<div class="quiz-result"><div class="quiz-score">' + quizScore + '/' + total + '</div><div class="quiz-score-label">' + label + '</div><p style="margin: 32px auto; max-width: 500px; font-size: 17px; line-height: 1.5;">' + msg + '</p><button class="fcq-btn accent" onclick="resetQuiz()">Làm lại quiz</button></div>';
+}
+function resetQuiz() {
+  currentQuiz = 0; quizScore = 0;
+  document.getElementById('quizContainer').innerHTML = '<div class="quiz-progress"><span>Câu hỏi <span id="quizCurrent">1</span> / <span id="quizTotal">' + quizQuestions.length + '</span></span><span>Điểm: <span id="quizScore">0</span></span></div><div class="quiz-bar"><div class="quiz-bar-fill" id="quizBarFill" style="width: ' + (100/quizQuestions.length) + '%"></div></div><div class="quiz-question" id="quizQuestion"></div><div class="quiz-options" id="quizOptions"></div><div class="quiz-feedback" id="quizFeedback"></div><div style="display: flex; justify-content: flex-end; margin-top: 24px;"><button class="fcq-btn accent" id="quizNext" onclick="nextQuestion()" style="display: none;">Câu tiếp →</button></div>';
+  loadQuiz();
+}
+
+const ACTIONS_PER_PAGE = 6;
+let actionsCurrentPage = 1;
+let actionsCurrentFilter = 'all';
+
+function renderActions(filter = 'all') {
+  actionsCurrentFilter = filter;
+  const grid = document.getElementById('actionsGrid');
+  const preRendered = grid.querySelectorAll('.action-card');
+
+  if (preRendered.length > 0) {
+    const cardsArr = Array.from(preRendered).map(card => {
+      const numText = card.querySelector('.action-num')?.textContent || '0';
+      const num = parseInt(numText, 10) || 0;
+      let cat = 'satisfying';
+      if (num >= 1 && num <= 5) cat = 'obvious';
+      else if (num >= 6 && num <= 9) cat = 'attractive';
+      else if (num >= 10 && num <= 14) cat = 'easy';
+      return { card, num, cat };
+    });
+    const matched = cardsArr.filter(c => filter === 'all' || c.cat === filter);
+    const totalPages = Math.max(1, Math.ceil(matched.length / ACTIONS_PER_PAGE));
+    if (actionsCurrentPage > totalPages) actionsCurrentPage = 1;
+    const start = (actionsCurrentPage - 1) * ACTIONS_PER_PAGE;
+    const visibleSet = new Set(matched.slice(start, start + ACTIONS_PER_PAGE).map(c => c.card));
+    cardsArr.forEach(c => {
+      c.card.style.display = visibleSet.has(c.card) ? '' : 'none';
+    });
+    renderActionsPager(totalPages, matched.length);
+    return;
+  }
+
+  const filtered = actions.filter(a => filter === 'all' || a.cat === filter);
+  const totalPages = Math.max(1, Math.ceil(filtered.length / ACTIONS_PER_PAGE));
+  if (actionsCurrentPage > totalPages) actionsCurrentPage = 1;
+  const start = (actionsCurrentPage - 1) * ACTIONS_PER_PAGE;
+  const slice = filtered.slice(start, start + ACTIONS_PER_PAGE);
+  grid.innerHTML = '';
+  slice.forEach(a => {
+    const div = document.createElement('div');
+    div.className = 'action-card';
+    div.innerHTML = `<div class="action-num">${String(a.num).padStart(2, '0')}</div><div class="action-content"><div class="action-title">${a.title}</div><div class="action-desc">${a.desc}</div></div>`;
+    grid.appendChild(div);
+  });
+  renderActionsPager(totalPages, filtered.length);
+}
+
+function renderActionsPager(totalPages, totalItems) {
+  let pager = document.getElementById('actionsPager');
+  if (!pager) {
+    pager = document.createElement('div');
+    pager.id = 'actionsPager';
+    pager.className = 'actions-pager';
+    const grid = document.getElementById('actionsGrid');
+    grid.parentNode.insertBefore(pager, grid.nextSibling);
+  }
+  if (totalPages <= 1) {
+    pager.innerHTML = '';
+    pager.style.display = 'none';
+    return;
+  }
+  pager.style.display = '';
+  pager.innerHTML = `<button class="actions-pager-btn" ${actionsCurrentPage === 1 ? 'disabled' : ''} onclick="changeActionsPage(-1)" aria-label="Trang truoc">&larr;</button><span class="actions-pager-info">${actionsCurrentPage} / ${totalPages} <span class="actions-pager-total">(${totalItems} muc)</span></span><button class="actions-pager-btn" ${actionsCurrentPage === totalPages ? 'disabled' : ''} onclick="changeActionsPage(1)" aria-label="Trang sau">&rarr;</button>`;
+}
+
+function changeActionsPage(delta) {
+  actionsCurrentPage += delta;
+  renderActions(actionsCurrentFilter);
+}
+function filterActions(cat, btn) {
+  document.querySelectorAll('.action-cat-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  actionsCurrentPage = 1;
+  renderActions(cat);
+}
+function filterChapters(part, btn) {
+  document.querySelectorAll('.chapter-tab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.rule-section[data-part]').forEach(sec => {
+    sec.style.display = (part === 'all' || sec.dataset.part === part) ? '' : 'none';
+  });
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  // Default: show only first part (skip Tất cả default)
+  const allBtns = document.querySelectorAll('.chapter-tab-btn');
+  for (let i = 0; i < allBtns.length; i++) {
+    const oc = allBtns[i].getAttribute('onclick') || '';
+    if (oc.indexOf("'all'") === -1 && oc.indexOf('filterChapters(') !== -1) {
+      allBtns[i].click();
+      break;
+    }
+  }
+});
+  function renderCommentsList(items) {
+    const list = document.getElementById('commentsList');
+    if (!items.length) {
+      list.innerHTML = '<div class="comments-empty">Chưa có comment nào — bạn là người đầu tiên.</div>';
+      return;
+    }
+    const byId = {};
+    items.forEach(c => { c.replies = []; byId[c.id] = c; });
+    const roots = [];
+    items.forEach(c => {
+      if (c.parent_id && byId[c.parent_id]) byId[c.parent_id].replies.push(c);
+      else roots.push(c);
+    });
+    list.innerHTML = roots.map(c => renderNode(c, false)).join('');
+  }
+  function renderNode(c, isReply) {
+    const replies = (c.replies || []).map(r => renderNode(r, true)).join('');
+    return '<div class="comment-item ' + (isReply ? 'is-reply' : '') + '" id="comment-' + c.id + '"><div class="comment-head"><span class="comment-author">' + esc(c.author_name) + '</span><span class="comment-time">' + fmtTime(c.created_at) + '</span></div><div class="comment-body">' + esc(c.content) + '</div><div class="comment-actions"><button class="comment-reply-btn" onclick="window.__cmt_setReply(' + c.id + ', ' + JSON.stringify(c.author_name).replace(/"/g, '&quot;') + ')">↳ Trả lời</button></div></div>' + replies;
+  }
+  window.__cmt_setReply = function(id, name) {
+    document.getElementById('cf-parent').value = id;
+    document.getElementById('replyIndicator').style.display = 'inline-block';
+    document.getElementById('replyTo').textContent = name;
+    document.getElementById('cf-content').focus();
+    document.getElementById('comments').scrollIntoView({behavior: 'smooth', block: 'start'});
+  };
+  function cancelReply() {
+    document.getElementById('cf-parent').value = '';
+    document.getElementById('replyIndicator').style.display = 'none';
+  }
+  function fmtTime(unix) {
+    const d = new Date(unix * 1000);
+    const diff = Date.now()/1000 - unix;
+    if (diff < 60) return 'vừa xong';
+    if (diff < 3600) return Math.floor(diff/60) + ' phút trước';
+    if (diff < 86400) return Math.floor(diff/3600) + ' giờ trước';
+    if (diff < 604800) return Math.floor(diff/86400) + ' ngày trước';
+    return d.toLocaleDateString('vi-VN');
+  }
+  function esc(s) {
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+  }
+  const form = document.getElementById('commentForm');
+  if (form) {
+    form.addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const submitBtn = document.getElementById('cf-submit');
+      const msg = document.getElementById('cf-message');
+      msg.className = 'form-message';
+      const payload = {
+        pageId: COMMENTS_PAGE_ID,
+        name: document.getElementById('cf-name').value.trim(),
+        email: document.getElementById('cf-email').value.trim(),
+        content: document.getElementById('cf-content').value.trim(),
+        parentId: document.getElementById('cf-parent').value || null,
+        website: document.getElementById('cf-website').value
+      };
+      if (!payload.name || !payload.email || !payload.content) {
+        msg.textContent = 'Vui lòng nhập đủ tên, email, nội dung.';
+        msg.classList.add('show', 'error');
+        return;
+      }
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Đang gửi...';
+      try {
+        const res = await fetch('/api/comments', {
+          method: 'POST',
+          headers: {'content-type': 'application/json'},
+          body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Lỗi gửi');
+        msg.textContent = data.message || 'Đã gửi. Check email để xác nhận.';
+        msg.classList.add('show', 'success');
+        document.getElementById('cf-content').value = '';
+        cancelReply();
+      } catch (err) {
+        msg.textContent = err.message || 'Lỗi gửi comment. Thử lại sau.';
+        msg.classList.add('show', 'error');
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Gửi comment →';
+      }
+    });
+    document.getElementById('replyCancel').addEventListener('click', cancelReply);
+    loadComments();
+  }
+</script>
+<!-- Library widgets: search + related books -->
+<script defer src="/assets/books-data.js"></script>
+<script defer src="/assets/library.v2.js"></script>
+<script defer="" src="/assets/nav-spy.js"></script>
+<script defer src="../edit-mode.js">
+// AUTO-CLICK first non-all action tab on load (added by tab audit 2026-05-04)
+document.addEventListener('DOMContentLoaded', function () {
+  var actBtns = document.querySelectorAll('.action-cat-btn');
+  for (var i = 0; i < actBtns.length; i++) {
+    var oc = actBtns[i].getAttribute('onclick') || '';
+    if (oc.indexOf("'all'") === -1 && oc.indexOf('filterActions(') !== -1) {
+      try { actBtns[i].click(); } catch (e) {}
+      break;
+    }
+  }
+});
+</script>
+</body>
+</html>
