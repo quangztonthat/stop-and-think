@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Stop &amp; Think — A library of books worth pausing for</title>
+<script id="dark-mode-init">(function(){try{var t=localStorage.getItem('st-theme');if(!t){t=window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';}document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+<meta content="A library of books that force you to pause — not just to learn more, but to think again. By Quang Ton." name="description"/>
+<link href="../favicon.svg" rel="icon" type="image/svg+xml"/>
+<link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png"/>
+<link href="https://flamindi.com/en/" rel="canonical"/>
+<link rel="alternate" hreflang="vi" href="https://flamindi.com/"/>
+<link rel="alternate" hreflang="en" href="https://flamindi.com/en/"/>
+<link rel="alternate" hreflang="x-default" href="https://flamindi.com/"/>
+<meta content="website" property="og:type"/>
+<meta content="Stop &amp; Think" property="og:site_name"/>
+<meta content="en_US" property="og:locale"/>
+<meta content="vi_VN" property="og:locale:alternate"/>
+<meta content="Stop &amp; Think — A library of books worth pausing for" property="og:title"/>
+<meta content="A library of books that force you to pause — not just to learn more, but to think again. By Quang Ton." property="og:description"/>
+<meta content="https://flamindi.com/en/" property="og:url"/>
+<meta content="https://flamindi.com/og-image.png" property="og:image"/>
+<meta content="summary_large_image" name="twitter:card"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&amp;family=Manrope:wght@300;400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --rust: #8b3a2b; --rust-deep: #5e2418;
+  --copper: #c4923c; --copper-light: #d9b073;
+  --navy: #2d4a5c; --navy-deep: #1f3340;
+  --cream: #ffffff; --cream-soft: #f7f7f7;
+  --paper: #ffffff; --paper-dark: #f7f7f7;
+  --ink: #1a1410; --muted: #3d3d3d;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+h1, h2, h3, h4, h5, .nav-brand, .footer-brand, .cat-title, .book-title, .book-card-title, .stat-num { font-family: 'Fraunces', Georgia, serif; }
+em { font-style: normal; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--cream); color: var(--ink);
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  font-size: 19px; line-height: 1.6;
+  overflow-x: hidden; -webkit-font-smoothing: antialiased;
+}
+main { position: relative; z-index: 2; }
+
+/* NAV */
+.nav {
+  position: fixed; top: 0; left: 0; right: 0;
+  background: rgba(255,255,255,0.92); backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(26,20,16,0.1);
+  z-index: 100; padding: 18px 40px;
+  display: flex; justify-content: space-between; align-items: center;
+}
+.nav-brand { font-size: 22px; font-weight: 600; letter-spacing: -0.02em; display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--ink); }
+.nav-brand .amp { color: var(--rust); font-style: normal; font-weight: 400; }
+.nav-brand .dot { width: 6px; height: 6px; background: var(--copper); border-radius: 50%; }
+.nav-links { display: flex; gap: 32px; align-items: center; font-family: 'Manrope', sans-serif; font-size: 12px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.16em; }
+.nav-links a { color: var(--ink); text-decoration: none; transition: color 0.2s; position: relative; }
+.nav-links a:hover { color: var(--rust); }
+.nav-links a.active { color: var(--rust); }
+
+/* LANG SWITCH */
+.lang-switch { display: inline-flex; gap: 6px; align-items: center; font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.1em; }
+.lang-switch a { color: var(--muted); padding: 4px 6px; text-decoration: none; }
+.lang-switch a.active { color: var(--ink); font-weight: 600; }
+.lang-switch .sep { opacity: 0.4; }
+
+/* HERO */
+.hero {
+  min-height: 50vh; padding: 100px 8% 60px;
+  display: grid; grid-template-columns: 1.3fr 1fr; gap: 60px;
+  align-items: center; border-bottom: 1px solid rgba(26,20,16,0.15);
+}
+.hero-meta { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); margin-bottom: 24px; display: flex; gap: 16px; align-items: center; }
+.hero-meta::before { content: ''; width: 40px; height: 1px; background: var(--rust); }
+.hero h1 { font-size: clamp(40px, 5.5vw, 64px); font-weight: 500; line-height: 0.92; letter-spacing: -0.04em; margin-bottom: 24px; }
+.hero h1 .amp { color: var(--rust); font-style: normal; font-weight: 400; display: inline-block; transform: translateY(-6px); }
+.hero h1 .think { font-style: normal; font-weight: 400; color: var(--navy); }
+.hero-sub { font-size: 19px; font-weight: 400; color: var(--muted); max-width: 540px; margin-bottom: 32px; line-height: 1.5; }
+.hero-sub strong { color: var(--rust); font-weight: 500; }
+.hero-cta { display: flex; gap: 16px; flex-wrap: wrap; }
+.btn-primary { background: var(--rust); color: var(--cream); border: 2px solid var(--rust); padding: 16px 32px; font-family: 'Manrope', sans-serif; font-size: 12px; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase; cursor: pointer; transition: all 0.3s; text-decoration: none; display: inline-flex; align-items: center; gap: 12px; }
+.btn-primary:hover { background: var(--rust-deep); border-color: var(--rust-deep); transform: translate(-2px,-2px); box-shadow: 4px 4px 0 var(--copper); }
+.btn-secondary { background: transparent; color: var(--ink); border: 2px solid var(--ink); padding: 16px 32px; font-family: 'Manrope', sans-serif; font-size: 12px; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase; text-decoration: none; transition: all 0.3s; }
+.btn-secondary:hover { background: var(--ink); color: var(--cream); }
+
+.hero-visual { position: relative; height: 360px; display: flex; align-items: center; justify-content: center; }
+.hero-en-card { background: var(--ink); color: var(--cream); padding: 32px 28px; border: 2px solid var(--ink); box-shadow: 8px 8px 0 var(--copper); max-width: 380px; transform: rotate(-2deg); }
+.hero-en-card .num { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.25em; color: var(--copper-light); margin-bottom: 16px; }
+.hero-en-card h2 { font-size: 28px; font-weight: 600; line-height: 1.1; letter-spacing: -0.02em; margin-bottom: 14px; }
+.hero-en-card h2 em { color: var(--copper-light); font-style: normal; }
+.hero-en-card p { font-size: 14px; line-height: 1.5; opacity: 0.85; margin-bottom: 14px; }
+.hero-en-card .meta { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.15em; color: var(--copper-light); text-transform: uppercase; }
+
+/* SECTIONS */
+.section { padding: 100px 8%; border-bottom: 2px solid rgba(26,20,16,0.1); position: relative; }
+.section-label { display: inline-block; font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--rust); margin-bottom: 24px; }
+.section-label::before { content: '◆ '; }
+.section h2 { font-size: clamp(32px, 4vw, 48px); font-weight: 500; line-height: 1.05; letter-spacing: -0.03em; margin-bottom: 24px; max-width: 880px; }
+.section h2 em { font-style: normal; color: var(--rust); }
+.section-intro { font-size: 19px; line-height: 1.55; color: var(--muted); max-width: 760px; margin-bottom: 56px; }
+
+/* CATEGORIES */
+.categories-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 28px; }
+.category-card { position: relative; padding: 32px 32px; border: 2px solid var(--ink); text-decoration: none; color: var(--ink); transition: all 0.3s; overflow: hidden; background: var(--cream); display: flex; flex-direction: column; justify-content: space-between; min-height: 200px; }
+.category-card:hover { transform: translate(-4px,-4px); box-shadow: 8px 8px 0 var(--ink); }
+.cat-bg-rust { background: var(--rust); color: var(--cream); border-color: var(--rust-deep); }
+.cat-bg-navy { background: var(--navy); color: var(--cream); border-color: var(--navy-deep); }
+.cat-bg-copper { background: var(--copper); color: var(--ink); }
+.cat-bg-cream { background: var(--cream-soft); }
+.cat-num { font-style: normal; font-size: 14px; font-weight: 500; letter-spacing: 0.05em; margin-bottom: 8px; opacity: 0.7; }
+.cat-title { font-size: 38px; font-weight: 600; letter-spacing: -0.03em; line-height: 1; margin-bottom: 10px; }
+.cat-desc { font-size: 16px; line-height: 1.5; margin-bottom: 16px; opacity: 0.85; }
+.cat-foot { display: flex; justify-content: space-between; align-items: center; font-family: 'Manrope', sans-serif; font-size: 11px; font-weight: 500; letter-spacing: 0.15em; text-transform: uppercase; margin-top: auto; }
+.cat-count { font-family: 'JetBrains Mono', monospace; opacity: 0.7; }
+.cat-arrow { font-size: 20px; }
+
+/* NOTICE BOX */
+.notice { background: var(--cream-soft); padding: 60px 8%; border-bottom: 1px solid var(--line); text-align: center; }
+.notice-inner { max-width: 720px; margin: 0 auto; }
+.notice h3 { font-size: 24px; font-weight: 600; margin-bottom: 12px; letter-spacing: -0.02em; }
+.notice p { font-size: 17px; color: var(--muted); margin-bottom: 24px; line-height: 1.55; }
+.notice .btn-secondary { font-size: 11px; padding: 12px 22px; }
+
+/* FOOTER */
+.footer { background: var(--ink); color: var(--cream); padding: 80px 8% 40px; }
+.footer-top { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 60px; padding-bottom: 60px; border-bottom: 1px solid rgba(255,255,255,0.2); }
+.footer-brand { font-size: 28px; font-weight: 500; margin-bottom: 12px; font-family: 'Fraunces', serif; }
+.footer-brand .amp { color: var(--copper); font-style: normal; }
+.footer-brand-sub { color: rgba(255,255,255,0.7); font-size: 15px; line-height: 1.5; max-width: 360px; }
+.footer-col h4 { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--copper); margin-bottom: 16px; }
+.footer-col ul { list-style: none; }
+.footer-col li { margin-bottom: 10px; }
+.footer-col a { color: rgba(255,255,255,0.85); text-decoration: none; font-size: 15px; transition: color 0.2s; }
+.footer-col a:hover { color: var(--copper-light); }
+.footer-bottom { padding-top: 28px; display: flex; justify-content: space-between; align-items: center; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: rgba(255,255,255,0.5); letter-spacing: 0.1em; flex-wrap: wrap; gap: 12px; }
+
+@media (max-width: 1024px) {
+  .hero { grid-template-columns: 1fr; padding-top: 120px; gap: 60px; }
+  .categories-grid { grid-template-columns: 1fr; }
+  .footer-top { grid-template-columns: 1fr 1fr; gap: 40px; }
+}
+@media (max-width: 640px) {
+  .nav { padding: 14px 20px; }
+  .nav-links a { display: none; }
+  .nav-links .lang-switch, .nav-links .lang-switch a { display: inline; }
+  .hero { padding: 100px 6% 60px; }
+  .section { padding: 64px 6%; }
+  .footer-top { grid-template-columns: 1fr 1fr; gap: 32px; }
+  .footer-top > :first-child { grid-column: 1 / -1; }
+  .cat-title { font-size: 32px; }
+  .category-card { padding: 24px 22px; min-height: 180px; }
+}
+</style>
+<link rel="stylesheet" href="../assets/dark.css"/>
+<script defer src="../assets/theme.js"></script>
+</head>
+<body>
+<nav class="nav">
+<a class="nav-brand" href="index.html">
+<div class="dot"></div>
+    Stop <span class="amp">&amp;</span> Think
+  </a>
+<div class="nav-links">
+<a href="#categories">Categories</a>
+<a href="about.html">About</a>
+<span class="lang-switch"><a href="../index.html">VI</a><span class="sep">·</span><a class="active" href="index.html">EN</a></span>
+</div>
+</nav>
+<main>
+
+<section class="hero">
+<div>
+<div class="hero-meta">Library · By Quang Ton</div>
+<h1>Stop <span class="amp">&amp;</span> <span class="think">think.</span></h1>
+<p class="hero-sub">A library of books that force you to pause — not just to <strong>learn more</strong>, but to <strong>think again</strong>.</p>
+<div class="hero-cta">
+<a class="btn-primary" href="#categories">Explore the library →</a>
+<a class="btn-secondary" href="about.html">Who is Quang Ton?</a>
+</div>
+</div>
+<div class="hero-visual">
+<div class="hero-en-card">
+<div class="num">— EN · NOTE</div>
+<h2>English version <em>in progress</em>.</h2>
+<p>The 19 deep book analyses are currently in Vietnamese. Each is a personal distillation — voice, contradictions, opinions intact.</p>
+<p>Categories below show what's available. Books open in Vietnamese for now; English summaries are coming.</p>
+<div class="meta">— FOLLOW @ANHBAYOFFICIAL</div>
+</div>
+</div>
+</section>
+
+<section class="section" id="categories">
+<div class="section-label">Browse by category</div>
+<h2>Four doors, each <em>a question</em>.</h2>
+<p class="section-intro">Each category is a piece of life. Click the door you live most in today.</p>
+
+<div class="categories-grid">
+<a class="category-card cat-bg-rust" href="categories/thinking.html">
+<div>
+<div class="cat-num">— 01</div>
+<div class="cat-title">Thinking</div>
+<p class="cat-desc">Books that teach you to think again about how you think.</p>
+</div>
+<div class="cat-foot">
+<span class="cat-count">5 books</span>
+<span class="cat-arrow">→</span>
+</div>
+</a>
+
+<a class="category-card cat-bg-navy" href="categories/money.html">
+<div>
+<div class="cat-num">— 02</div>
+<div class="cat-title">Money</div>
+<p class="cat-desc">Money isn't just numbers. For anyone wanting to understand it deeper than headlines and hype.</p>
+</div>
+<div class="cat-foot">
+<span class="cat-count">3 books</span>
+<span class="cat-arrow">→</span>
+</div>
+</a>
+
+<a class="category-card cat-bg-copper" href="categories/career.html">
+<div>
+<div class="cat-num">— 03</div>
+<div class="cat-title">Career</div>
+<p class="cat-desc">Career isn't destiny. For anyone asking themselves: 'Am I on the right path?'</p>
+</div>
+<div class="cat-foot">
+<span class="cat-count">6 books</span>
+<span class="cat-arrow">→</span>
+</div>
+</a>
+
+<a class="category-card cat-bg-cream" href="categories/philosophy.html">
+<div>
+<div class="cat-num">— 04</div>
+<div class="cat-title">Philosophy</div>
+<p class="cat-desc">Big questions for small lives. For anyone feeling the noise of life lacks an answer.</p>
+</div>
+<div class="cat-foot">
+<span class="cat-count">4 books</span>
+<span class="cat-arrow">→</span>
+</div>
+</a>
+</div>
+</section>
+
+<section class="notice">
+<div class="notice-inner">
+<h3>Want the full content?</h3>
+<p>The original 19 book analyses are in Vietnamese. They preserve a personal voice that translation loses. If you read Vietnamese, switch to that version below.</p>
+<a class="btn-secondary" href="../index.html">Switch to Vietnamese →</a>
+</div>
+</section>
+
+</main>
+<footer class="footer">
+<div class="footer-top">
+<div>
+<div class="footer-brand">Stop <span class="amp">&amp;</span> Think</div>
+<p class="footer-brand-sub">A library of books that force you to pause — not just to learn more, but to think again.</p>
+</div>
+<div class="footer-col">
+<h4>Categories</h4>
+<ul>
+<li><a href="categories/thinking.html">Thinking</a></li>
+<li><a href="categories/money.html">Money</a></li>
+<li><a href="categories/career.html">Career</a></li>
+<li><a href="categories/philosophy.html">Philosophy</a></li>
+</ul>
+</div>
+<div class="footer-col">
+<h4>Links</h4>
+<ul>
+<li><a href="about.html">About</a></li>
+<li><a href="/feed.xml">RSS feed</a></li>
+<li><a href="https://www.linkedin.com/in/quang-ton-that-41123856/" rel="noopener" target="_blank">LinkedIn</a></li>
+<li><a href="https://instagram.com/anhbayofficial" rel="noopener" target="_blank">Instagram</a></li>
+<li><a href="mailto:quangztonthat@gmail.com">Email</a></li>
+</ul>
+</div>
+<div class="footer-col">
+<h4>Language</h4>
+<ul>
+<li><a href="../index.html">Tiếng Việt (default)</a></li>
+<li><a href="index.html">English (in progress)</a></li>
+</ul>
+</div>
+</div>
+<div class="footer-bottom">
+<span>© 2026 · Stop &amp; Think · By Quang Ton</span>
+<span>flamindi.com</span>
+</div>
+</footer>
+</body>
+</html>
