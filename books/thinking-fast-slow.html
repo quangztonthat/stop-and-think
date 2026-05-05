@@ -1089,11 +1089,11 @@ body {
 <h2 class="section-title" data-content-id="thinking-fast-slow-actions-01" data-content-type="heading">Mười tám hành động cụ thể</h2>
 <p class="section-intro" data-content-id="thinking-fast-slow-actions-02" data-content-type="section-intro">Ở cuối sách, Kahneman cảnh báo rõ ràng: Hiểu biết về thiên kiến là vô dụng nếu thiếu đi những kỹ thuật phòng vệ cụ thể. Mười tám hành động này là một tấm khiên chia làm bốn mảng: nhận diện Hệ thống Một, đánh thức Hệ thống Hai, né tránh bẫy tâm lý và ra quyết định sắc bén. Hãy chỉ chọn ba hành động để bắt đầu.</p>
 <div class="action-cats">
-<button class="action-cat-btn active" onclick="filterActions('all', this)">Tất cả</button>
-<button class="action-cat-btn" onclick="filterActions('aware', this)">Nhận diện (1-5)</button>
+<button class="action-cat-btn active" onclick="filterActions('aware', this)">Nhận diện (1-5)</button>
 <button class="action-cat-btn" onclick="filterActions('activate', this)">Kích hoạt Hệ 2 (6-10)</button>
 <button class="action-cat-btn" onclick="filterActions('bias', this)">Tránh thiên kiến (11-14)</button>
 <button class="action-cat-btn" onclick="filterActions('decide', this)">Quyết định (15-18)</button>
+<button class="action-cat-btn" onclick="filterActions('all', this)">Tất cả</button>
 </div>
 <div class="actions-grid" id="actionsGrid"></div>
 </section>
@@ -1580,6 +1580,18 @@ document.addEventListener('DOMContentLoaded', function() {
 <script defer src="/assets/books-data.js"></script>
 <script defer src="/assets/library.js"></script>
 <script defer="" src="/assets/nav-spy.js"></script>
-<script defer src="../edit-mode.js"></script>
+<script defer src="../edit-mode.js">
+// AUTO-CLICK first non-all action tab on load (added by tab audit 2026-05-04)
+document.addEventListener('DOMContentLoaded', function () {
+  var actBtns = document.querySelectorAll('.action-cat-btn');
+  for (var i = 0; i < actBtns.length; i++) {
+    var oc = actBtns[i].getAttribute('onclick') || '';
+    if (oc.indexOf("'all'") === -1 && oc.indexOf('filterActions(') !== -1) {
+      try { actBtns[i].click(); } catch (e) {}
+      break;
+    }
+  }
+});
+</script>
 </body>
 </html>

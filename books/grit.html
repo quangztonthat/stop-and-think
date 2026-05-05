@@ -648,11 +648,11 @@ body { background: var(--paper); color: var(--ink); font-family: system-ui, -app
 <h2 class="section-title" data-content-id="grit-actions-01" data-content-type="heading">Mười sáu hành động cụ thể</h2>
 <p class="section-intro" data-content-id="grit-actions-02" data-content-type="section-intro">Những hành động này được rút ra từ các nghiên cứu thực tiễn, không phải lời khuyên sáo rỗng. Hãy chọn lấy ba hành động để thực hiện ngay trong tháng tới.</p>
 <div class="action-cats">
-<button class="action-cat-btn active" onclick="filterActions('all', this)">Tất cả</button>
-<button class="action-cat-btn" onclick="filterActions('interest', this)">Hứng thú (1-4)</button>
+<button class="action-cat-btn active" onclick="filterActions('interest', this)">Hứng thú (1-4)</button>
 <button class="action-cat-btn" onclick="filterActions('practice', this)">Luyện tập (5-8)</button>
 <button class="action-cat-btn" onclick="filterActions('purpose', this)">Mục đích (9-12)</button>
 <button class="action-cat-btn" onclick="filterActions('hope', this)">Hy vọng (13-16)</button>
+<button class="action-cat-btn" onclick="filterActions('all', this)">Tất cả</button>
 </div>
 <div class="actions-grid" id="actionsGrid"></div>
 </section>
@@ -1130,6 +1130,18 @@ document.addEventListener('DOMContentLoaded', function() {
 <script defer src="/assets/books-data.js"></script>
 <script defer src="/assets/library.js"></script>
 <script defer="" src="/assets/nav-spy.js"></script>
-<script defer src="../edit-mode.js"></script>
+<script defer src="../edit-mode.js">
+// AUTO-CLICK first non-all action tab on load (added by tab audit 2026-05-04)
+document.addEventListener('DOMContentLoaded', function () {
+  var actBtns = document.querySelectorAll('.action-cat-btn');
+  for (var i = 0; i < actBtns.length; i++) {
+    var oc = actBtns[i].getAttribute('onclick') || '';
+    if (oc.indexOf("'all'") === -1 && oc.indexOf('filterActions(') !== -1) {
+      try { actBtns[i].click(); } catch (e) {}
+      break;
+    }
+  }
+});
+</script>
 </body>
 </html>
