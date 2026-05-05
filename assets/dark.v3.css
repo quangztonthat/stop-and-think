@@ -223,3 +223,60 @@ html[data-theme="dark"] .quiz-option.is-correct { background: rgba(212, 168, 101
 html[data-theme="dark"] .quiz-option.is-wrong   { background: rgba(212, 113, 94, 0.15); border-color: var(--rust); }
 
 /* Em accent in headings was using rust — keep but lightened (already via var) */
+
+/* === ISSUE A: Inverted-bg sections (journal/etc) — text was hardcoded white === */
+/* In light mode .journal-section has DARK bg + white text.
+   In dark mode --ink becomes light → bg becomes LIGHT.
+   But hardcoded rgba(255,255,255,*) text stays white → invisible on light bg.
+   Force these to dark text. */
+html[data-theme="dark"] .journal-section .section-intro,
+html[data-theme="dark"] .journal-section .section-title { color: #1a1410 !important; }
+html[data-theme="dark"] .journal-section .journal-prompt { background: rgba(0,0,0,0.06); border-left-color: var(--rust); }
+html[data-theme="dark"] .journal-section .journal-prompt p,
+html[data-theme="dark"] .journal-section .journal-prompt-hint { color: rgba(0,0,0,0.6); }
+html[data-theme="dark"] .journal-section .journal-prompt-num { color: var(--rust); }
+
+/* === ISSUE B: Compare cards / colored bg cards — color: var(--paper) becomes dark === */
+/* These cards have brand colored bg + use var(--paper) for text.
+   --paper flips to dark in dark mode → dark text on color bg = invisible. */
+html[data-theme="dark"] .compare-card.a,
+html[data-theme="dark"] .compare-card.b,
+html[data-theme="dark"] .compare-card.a *,
+html[data-theme="dark"] .compare-card.b * { color: #f5ede0 !important; }
+
+/* Sapiens-style inline cards using var(--accent-2)/var(--navy) bg */
+html[data-theme="dark"] [style*="background: var(--accent-2)"],
+html[data-theme="dark"] [style*="background:var(--accent-2)"],
+html[data-theme="dark"] [style*="background: var(--navy)"],
+html[data-theme="dark"] [style*="background:var(--navy)"],
+html[data-theme="dark"] [style*="background: var(--rust)"],
+html[data-theme="dark"] [style*="background:var(--rust)"] { color: #f5ede0 !important; }
+html[data-theme="dark"] [style*="background: var(--accent-2)"] *,
+html[data-theme="dark"] [style*="background: var(--navy)"] *,
+html[data-theme="dark"] [style*="background: var(--rust)"] * { color: inherit; }
+
+/* === ISSUE C: Body p in dark mode — was using --muted (#a89c8a) too dim === */
+/* Boost --muted contrast in book sections */
+html[data-theme="dark"] .about-section p,
+html[data-theme="dark"] .section p,
+html[data-theme="dark"] section p { color: #c8bfae; }
+html[data-theme="dark"] .section-intro,
+html[data-theme="dark"] .about-section .intro { color: #c8bfae; }
+
+/* === ISSUE D: Table body cells dim === */
+html[data-theme="dark"] table td,
+html[data-theme="dark"] .fic-table td,
+html[data-theme="dark"] table tr { color: var(--ink); }
+html[data-theme="dark"] .fic-table tr:hover { background: rgba(236, 230, 216, 0.06); }
+
+/* === ISSUE E: Category hero tagline too faded === */
+html[data-theme="dark"] .cat-hero-tagline { color: rgba(245, 237, 224, 0.95); opacity: 1; }
+
+/* === Book covers cat-bg-* on category pages — text visibility === */
+html[data-theme="dark"] .book-cover .book-cover-title,
+html[data-theme="dark"] .book-cover.cover-rust *,
+html[data-theme="dark"] .book-cover.cover-navy *,
+html[data-theme="dark"] .cover-rust *,
+html[data-theme="dark"] .cover-navy * { color: #f5ede0; }
+html[data-theme="dark"] .cover-copper *,
+html[data-theme="dark"] .cover-cream * { color: #1a1410; }
