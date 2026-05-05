@@ -92,22 +92,58 @@ html[data-theme="dark"] .book-card, html[data-theme="dark"] .latest-card, html[d
   color: var(--ink);
 }
 
-/* Category card variants — force all text to readable ink in dark mode
-   (light mode used .cat-bg-rust { color: cream } which becomes dark-on-dark) */
-html[data-theme="dark"] .category-card.cat-bg-rust,
-html[data-theme="dark"] .category-card.cat-bg-navy,
-html[data-theme="dark"] .category-card.cat-bg-copper,
+/* Category cards in dark mode — KEEP solid colored bg from light mode.
+   Need to set BG too (else line above sets cream-soft for all .category-card).
+   Force text to literal values (not vars) since --cream is dark in dark mode. */
+html[data-theme="dark"] .category-card.cat-bg-rust   { background: var(--rust);   color: #f5ede0; }
+html[data-theme="dark"] .category-card.cat-bg-navy   { background: var(--navy);   color: #f5ede0; }
+html[data-theme="dark"] .category-card.cat-bg-copper { background: var(--copper); color: #1a1410; }
+/* rust + navy bg → light text */
+html[data-theme="dark"] .category-card.cat-bg-rust .cat-title,
+html[data-theme="dark"] .category-card.cat-bg-rust .cat-num,
+html[data-theme="dark"] .category-card.cat-bg-rust .cat-arrow,
+html[data-theme="dark"] .category-card.cat-bg-rust .cat-desc,
+html[data-theme="dark"] .category-card.cat-bg-rust .cat-count,
+html[data-theme="dark"] .category-card.cat-bg-navy .cat-title,
+html[data-theme="dark"] .category-card.cat-bg-navy .cat-num,
+html[data-theme="dark"] .category-card.cat-bg-navy .cat-arrow,
+html[data-theme="dark"] .category-card.cat-bg-navy .cat-desc,
+html[data-theme="dark"] .category-card.cat-bg-navy .cat-count { color: #f5ede0; }
+/* copper bg → dark text (matches light mode pattern) */
+html[data-theme="dark"] .category-card.cat-bg-copper .cat-title,
+html[data-theme="dark"] .category-card.cat-bg-copper .cat-num,
+html[data-theme="dark"] .category-card.cat-bg-copper .cat-arrow,
+html[data-theme="dark"] .category-card.cat-bg-copper .cat-desc,
+html[data-theme="dark"] .category-card.cat-bg-copper .cat-count { color: #1a1410; }
+/* .cat-bg-cream is the lightest card — in dark mode treat differently:
+   give it dark surface, use light text (mirrors light mode contrast) */
 html[data-theme="dark"] .category-card.cat-bg-cream {
   background: var(--cream-soft);
   color: var(--ink);
 }
-html[data-theme="dark"] .category-card .cat-title,
-html[data-theme="dark"] .category-card .cat-num,
-html[data-theme="dark"] .category-card .cat-meta,
-html[data-theme="dark"] .category-card .cat-arrow { color: var(--ink); }
-html[data-theme="dark"] .category-card.cat-bg-rust { border-color: var(--rust); }
-html[data-theme="dark"] .category-card.cat-bg-navy { border-color: var(--navy); }
-html[data-theme="dark"] .category-card.cat-bg-copper { border-color: var(--copper); }
+
+/* About-portrait card on rust bg — keep light text in dark mode */
+html[data-theme="dark"] .about-portrait,
+html[data-theme="dark"] a.about-portrait,
+html[data-theme="dark"] .about-portrait * {
+  color: #f5ede0;
+}
+html[data-theme="dark"] .about-portrait .portrait-num { color: rgba(245, 237, 224, 0.85); }
+html[data-theme="dark"] .about-portrait .portrait-role { color: rgba(245, 237, 224, 0.85); }
+
+/* Hero books on index — they have rust/copper/navy/cream bg with text */
+html[data-theme="dark"] .book-1,
+html[data-theme="dark"] .book-2,
+html[data-theme="dark"] .book-4,
+html[data-theme="dark"] .book-5 {
+  color: #f5ede0;  /* keep light text on colored book covers */
+}
+html[data-theme="dark"] .book-3 {
+  /* book-3 has cream bg in light mode — give it dark surface in dark mode */
+  background: var(--cream-soft);
+  color: var(--ink);
+}
+
 
 /* Nav bar — was hardcoded rgba(255,255,255,.92) */
 html[data-theme="dark"] .nav,
@@ -190,7 +226,4 @@ html[data-theme="dark"] .snst-related-card { background: var(--cream); border-co
 html[data-theme="dark"] .snst-related-card:hover { border-color: var(--rust); }
 
 /* Quiz answered states */
-html[data-theme="dark"] .quiz-option.is-correct { background: rgba(212, 168, 101, 0.18); border-color: var(--copper); }
-html[data-theme="dark"] .quiz-option.is-wrong   { background: rgba(212, 113, 94, 0.15); border-color: var(--rust); }
-
-/* Em accent in headings was using rust — keep but lightened (already via var) */
+html[data-theme="
