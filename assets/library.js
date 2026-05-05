@@ -29,7 +29,8 @@
   color: inherit; opacity: 0.7;
 }
 @media (max-width: 700px) {
-  .snst-search-bar { min-width: 0; padding: 7px 9px; }
+  .snst-search-bar { min-width: 0; padding: 10px 11px; min-height: 40px; min-width: 40px; justify-content: center; }
+  .snst-search-bar svg { width: 18px; height: 18px; opacity: 0.75; }
   .snst-search-bar-text { display: none; }
   .snst-search-bar kbd { display: none; }
 }
@@ -630,8 +631,4 @@
   }
 
   const __m = window.location.pathname.match(/\/books\/([^.]+)\.html$/);
-  if (__m && document.getElementById('commentsList')) loadComments(__m[1]);
-
-  window.STOP_AND_THINK_LIB = { submitComment, loadComments, openSearch: openOverlay };
-
-})();
+  if (__m && document.getElementById('com
