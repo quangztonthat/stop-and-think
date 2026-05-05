@@ -280,3 +280,59 @@ html[data-theme="dark"] .cover-rust *,
 html[data-theme="dark"] .cover-navy * { color: #f5ede0; }
 html[data-theme="dark"] .cover-copper *,
 html[data-theme="dark"] .cover-cream * { color: #1a1410; }
+
+/* === MOBILE TABLE/GRID fixes (apply both light + dark mode) === */
+@media (max-width: 640px) {
+  /* Tables: stack rows as cards instead of squeezing columns */
+  table.fic-table, table.lat-table, table.cross-table {
+    display: block;
+  }
+  table.fic-table thead, table.lat-table thead, table.cross-table thead {
+    display: none;  /* hide header row on mobile, use td-prefix instead */
+  }
+  table.fic-table tbody, table.lat-table tbody, table.cross-table tbody { display: block; }
+  table.fic-table tr, table.lat-table tr, table.cross-table tr {
+    display: block;
+    margin-bottom: 24px;
+    padding: 16px;
+    border: 1.5px solid var(--ink);
+    background: var(--paper-dark);
+  }
+  table.fic-table td, table.lat-table td, table.cross-table td {
+    display: block;
+    padding: 6px 0;
+    border: none;
+    font-size: 14px;
+    line-height: 1.55;
+  }
+  table.fic-table td:first-child, table.lat-table td:first-child, table.cross-table td:first-child {
+    font-weight: 700;
+    font-size: 16px;
+    color: var(--accent, var(--rust));
+    margin-bottom: 8px;
+    padding-bottom: 8px;
+    border-bottom: 1px dashed rgba(26,20,16,0.15);
+  }
+
+  /* Inline grids with repeat(N, 1fr) where N>=3 → stack 2 cols or 1 col */
+  [style*="repeat(4, 1fr)"],
+  [style*="repeat(4,1fr)"] {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 16px !important;
+  }
+  [style*="repeat(3, 1fr)"],
+  [style*="repeat(3,1fr)"] {
+    grid-template-columns: 1fr !important;
+    gap: 16px !important;
+  }
+}
+
+@media (max-width: 400px) {
+  /* Very narrow → single column for everything */
+  [style*="repeat(4, 1fr)"],
+  [style*="repeat(4,1fr)"],
+  [style*="repeat(3, 1fr)"],
+  [style*="repeat(3,1fr)"] {
+    grid-template-columns: 1fr !important;
+  }
+}
