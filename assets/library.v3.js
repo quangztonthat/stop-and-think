@@ -486,7 +486,8 @@
 
   function renderRelated() {
     if (document.querySelector('.snst-related')) return;
-    const m = window.location.pathname.match(/\/books\/([^.]+)\.html$/);
+    // Match /books/X.html, /books/X, /en/books/X.html, /en/books/X (Cloudflare clean URLs strip .html)
+    const m = window.location.pathname.match(/\/books\/([^./]+?)(?:\.html)?$/);
     if (!m) return;
     const currentSlug = m[1];
     const book = BOOKS.find(b => b.slug === currentSlug);
@@ -632,7 +633,7 @@
     }
   }
 
-  const __m = window.location.pathname.match(/\/books\/([^.]+)\.html$/);
+  const __m = window.location.pathname.match(/\/books\/([^./]+?)(?:\.html)?$/);
   if (__m && document.getElementById('commentsList')) loadComments(__m[1]);
 
   window.STOP_AND_THINK_LIB = { submitComment, loadComments, openSearch: openOverlay };
