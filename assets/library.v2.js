@@ -191,8 +191,10 @@
 
   function computePathDepth() {
     const path = window.location.pathname;
-    // /books/X → ../   /pages/X → ../   /admin/X → ../   /quan-ly/X → ../   /index.html → ./
-    if (/^\/(books|pages|admin|quan-ly|q-mod|moderate|docs)\//.test(path)) return '../';
+    // 2-deep paths need '../' so href "books/X.html" resolves to /[en/]books/X.html
+    // VI: /books/X, /pages/X, /admin/X, /quan-ly/X
+    // EN: /en/books/X, /en/pages/X (also 2-deep relative to /en/)
+    if (/^\/(?:en\/)?(books|pages|admin|quan-ly|q-mod|moderate|docs)\//.test(path)) return '../';
     return '';
   }
 
@@ -631,8 +633,4 @@
   }
 
   const __m = window.location.pathname.match(/\/books\/([^.]+)\.html$/);
-  if (__m && document.getElementById('commentsList')) loadComments(__m[1]);
-
-  window.STOP_AND_THINK_LIB = { submitComment, loadComments, openSearch: openOverlay };
-
-})();
+  if (__m && document.getElementById('commentsList')) loadComme
