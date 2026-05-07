@@ -157,6 +157,59 @@
   let overlay = document.querySelector('.snst-overlay');
   const overlayExisted = !!overlay;
   if (!overlay) {
+    // Locale-aware UI strings — detect /en/ prefix
+    const __isEN = /^\/en\//.test(window.location.pathname);
+    const I18N = __isEN ? {
+      searchPlaceholder: 'Search by title, author, keyword...',
+      searchBarText: 'Search books...',
+      shortcutSelect: 'navigate',
+      shortcutOpen: 'open',
+      shortcutClose: 'close',
+      emptyTitle: 'No results found.',
+      emptyHint: 'Try a different keyword — title, author, or an idea from the book',
+      relatedLabel: 'Read next / Related',
+      relatedTitle: 'After this book, <em>try these</em>',
+      readingMin: 'min',
+      readAnalysis: 'Read analysis',
+      formIncomplete: 'Please fill in name, email, and content.',
+      formSending: 'Sending...',
+      formSubmit: 'Post',
+      formSuccess: 'Sent. Check email to confirm — comment appears after confirmation.',
+      formFailGeneric: 'Send failed. Try again.',
+      formNetworkError: 'Network error — try again.',
+      replying: 'Replying to ',
+      cancelBtn: 'Cancel',
+      replyBtn: 'Reply',
+      noComments: 'No comments yet.',
+      loadCommentsFailed: "Couldn't load comments.",
+      dateLocale: 'en-US',
+    } : {
+      searchPlaceholder: 'Tìm sách theo tên, tác giả, từ khóa...',
+      searchBarText: 'Tìm sách...',
+      shortcutSelect: 'chọn',
+      shortcutOpen: 'mở',
+      shortcutClose: 'đóng',
+      emptyTitle: 'Không tìm thấy.',
+      emptyHint: 'Thử từ khóa khác — tên sách, tác giả, hoặc 1 ý trong sách',
+      relatedLabel: 'Đọc tiếp / Liên quan',
+      relatedTitle: 'Đọc xong cuốn này, <em>thử cuốn này</em>',
+      readingMin: 'phút',
+      readAnalysis: 'Đọc phân tích',
+      formIncomplete: 'Điền đầy đủ tên, email, nội dung.',
+      formSending: 'Đang gửi...',
+      formSubmit: 'Gửi',
+      formSuccess: 'Đã gửi. Mở email để xác nhận — comment sẽ hiện sau khi confirm.',
+      formFailGeneric: 'Không gửi được. Thử lại.',
+      formNetworkError: 'Lỗi mạng — thử lại.',
+      replying: 'Đang reply ',
+      cancelBtn: 'Hủy',
+      replyBtn: 'Trả lời',
+      noComments: 'Chưa có comment.',
+      loadCommentsFailed: 'Không tải được comment.',
+      dateLocale: 'vi-VN',
+    };
+    window.__STOP_THINK_I18N = I18N;
+
     overlay = document.createElement('div');
     overlay.className = 'snst-overlay';
     overlay.innerHTML = `
@@ -165,14 +218,14 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
         </svg>
-        <input class="snst-input" type="text" placeholder="Tìm sách theo tên, tác giả, từ khóa..." autocomplete="off">
+        <input class="snst-input" type="text" placeholder="${I18N.searchPlaceholder}" autocomplete="off">
         <button class="snst-close">ESC</button>
       </div>
       <div class="snst-results"></div>
       <div class="snst-shortcut">
-        <span><kbd>↑</kbd><kbd>↓</kbd> chọn</span>
-        <span><kbd>↵</kbd> mở</span>
-        <span><kbd>Esc</kbd> đóng</span>
+        <span><kbd>↑</kbd><kbd>↓</kbd> ${I18N.shortcutSelect}</span>
+        <span><kbd>↵</kbd> ${I18N.shortcutOpen}</span>
+        <span><kbd>Esc</kbd> ${I18N.shortcutClose}</span>
       </div>
     </div>
   `;
@@ -361,8 +414,9 @@
   }
 
   function renderResults(items) {
+    const I18N = window.__STOP_THINK_I18N;
     if (!items.length) {
-      resultsBox.innerHTML = '<div class="snst-empty">Khong tim thay.<br>Thu tu khoa khac.</div>'.replace('Khong tim thay', 'Không tìm thấy').replace('Thu tu khoa khac', 'Thử từ khóa khác — tên sách, tác giả, hoặc 1 ý trong sách');
+      resultsBox.innerHTML = `<div class="snst-empty">${I18N.emptyTitle}<br>${I18N.emptyHint}</div>`;
       return;
     }
     const query = normalize(input.value.trim());
@@ -473,7 +527,7 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
         </svg>
-        <span class="snst-search-bar-text">Tìm sách...</span>
+        <span class="snst-search-bar-text">${window.__STOP_THINK_I18N.searchBarText}</span>
         <kbd>Ctrl K</kbd>
       `;
       const navLinks = navEl.querySelector('.nav-links');
@@ -498,27 +552,33 @@
     if (!related.length) return;
     const sec = document.createElement('section');
     sec.className = 'snst-related';
+    const I18N = window.__STOP_THINK_I18N;
+    const __isEN = /^\/en\//.test(window.location.pathname);
     sec.innerHTML = `
-      <div class="snst-related-label">Đọc tiếp / Liên quan</div>
-      <h2 class="snst-related-title">Đọc xong cuốn này, <em>thử cuốn này</em></h2>
+      <div class="snst-related-label">${I18N.relatedLabel}</div>
+      <h2 class="snst-related-title">${I18N.relatedTitle}</h2>
       <div class="snst-related-grid">
-        ${related.map(b => `
+        ${related.map(b => {
+          const t = (__isEN && b.titleEn) ? b.titleEn : b.title;
+          const su = (__isEN && b.summaryEn) ? b.summaryEn : b.summary;
+          const cl = (__isEN && b.categoryLabelEn) ? b.categoryLabelEn : b.categoryLabel;
+          return `
           <a class="snst-related-card" href="${bookHref(b.slug)}">
             <div class="snst-related-cover snst-cover-${b.cover}">
-              <div class="snst-related-cover-num">Vol. ${b.vol} · ${b.year} · ~${b.readingTime} phút</div>
-              <div class="snst-related-cover-title">${escapeHtml(b.title)}</div>
+              <div class="snst-related-cover-num">Vol. ${b.vol} · ${b.year} · ~${b.readingTime} ${I18N.readingMin}</div>
+              <div class="snst-related-cover-title">${escapeHtml(t)}</div>
               <div class="snst-related-cover-author">${escapeHtml(b.author)}</div>
             </div>
             <div class="snst-related-meta">
-              <span class="snst-related-tag">${escapeHtml(b.categoryLabel)}</span>
-              <p class="snst-related-summary">${escapeHtml(b.summary)}</p>
+              <span class="snst-related-tag">${escapeHtml(cl)}</span>
+              <p class="snst-related-summary">${escapeHtml(su)}</p>
               <div class="snst-related-arrow">
-                <span>Đọc phân tích</span>
+                <span>${I18N.readAnalysis}</span>
                 <span>→</span>
               </div>
             </div>
           </a>
-        `).join('')}
+        `}).join('')}
       </div>
     `;
     footer.parentNode.insertBefore(sec, footer);
@@ -541,11 +601,12 @@
     const body = (document.getElementById('commentBody') || {}).value || '';
     const honeypot = (document.getElementById('cfWebsite') || {}).value || '';
     const parentId = form.dataset.parentId || null;
+    const I18N = window.__STOP_THINK_I18N;
     if (!name.trim() || !email.trim() || !body.trim()) {
-      showFormMessage(form, 'error', 'Điền đầy đủ tên, email, nội dung.');
+      showFormMessage(form, 'error', I18N.formIncomplete);
       return;
     }
-    if (btn) { btn.disabled = true; btn.textContent = 'Đang gửi...'; }
+    if (btn) { btn.disabled = true; btn.textContent = I18N.formSending; }
     try {
       const res = await fetch('/api/comments', {
         method: 'POST',
@@ -554,23 +615,24 @@
       });
       const data = await res.json().catch(() => ({}));
       if (res.ok) {
-        showFormMessage(form, 'success', 'Đã gửi. Mở email để xác nhận — comment sẽ hiện sau khi confirm.');
+        showFormMessage(form, 'success', I18N.formSuccess);
         document.getElementById('commentBody').value = '';
         delete form.dataset.parentId;
         const indicator = form.querySelector('.reply-indicator');
         if (indicator) indicator.remove();
       } else {
-        showFormMessage(form, 'error', (data && data.error) || 'Không gửi được. Thử lại.');
+        showFormMessage(form, 'error', (data && data.error) || I18N.formFailGeneric);
       }
     } catch (e) {
-      showFormMessage(form, 'error', 'Lỗi mạng — thử lại.');
+      showFormMessage(form, 'error', I18N.formNetworkError);
     } finally {
-      if (btn) { btn.disabled = false; btn.textContent = 'Gửi'; }
+      if (btn) { btn.disabled = false; btn.textContent = I18N.formSubmit; }
     }
   }
 
   function fmtTime(iso) {
-    try { return new Date(iso).toLocaleDateString('vi-VN', { year: 'numeric', month: 'short', day: 'numeric' }); }
+    const locale = (window.__STOP_THINK_I18N || {}).dateLocale || 'vi-VN';
+    try { return new Date(iso).toLocaleDateString(locale, { year: 'numeric', month: 'short', day: 'numeric' }); }
     catch { return ''; }
   }
 
@@ -584,7 +646,8 @@
       indicator.className = 'reply-indicator';
       form.insertBefore(indicator, form.firstChild);
     }
-    indicator.innerHTML = 'Đang reply ' + escapeHtml(name) + ' <button type="button">Hủy</button>';
+    const I18N = window.__STOP_THINK_I18N;
+    indicator.innerHTML = I18N.replying + escapeHtml(name) + ' <button type="button">' + I18N.cancelBtn + '</button>';
     indicator.querySelector('button').addEventListener('click', () => {
       delete form.dataset.parentId;
       indicator.remove();
@@ -598,8 +661,9 @@
     try {
       const res = await fetch('/api/comments?page=' + encodeURIComponent(pageId));
       const data = await res.json();
+      const I18N = window.__STOP_THINK_I18N;
       if (!data || !data.comments || !data.comments.length) {
-        list.innerHTML = '<div class="comments-loading">Chưa có comment.</div>';
+        list.innerHTML = '<div class="comments-loading">' + I18N.noComments + '</div>';
         return;
       }
       const items = data.comments;
@@ -618,7 +682,7 @@
             </div>
             <div class="comment-body">${escapeHtml(c.content)}</div>
             <div class="comment-actions">
-              <button class="comment-reply-btn" data-id="${c.id}" data-name="${escapeHtml(c.author_name)}">Reply</button>
+              <button class="comment-reply-btn" data-id="${c.id}" data-name="${escapeHtml(c.author_name)}">${I18N.replyBtn}</button>
             </div>
             ${(c.replies || []).map(r => renderItem(r, true)).join('')}
           </div>
@@ -629,7 +693,7 @@
         btn.addEventListener('click', () => setReplyTo(btn.dataset.id, btn.dataset.name));
       });
     } catch (e) {
-      list.innerHTML = '<div class="comments-loading">Không tải được comment.</div>';
+      list.innerHTML = '<div class="comments-loading">' + (window.__STOP_THINK_I18N || {}).loadCommentsFailed + '</div>';
     }
   }
 

@@ -1149,19 +1149,21 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     });
     document.getElementById('replyCancel').addEventListener('click', cancelReply);
-    loadComments();
+    if (typeof loadComments === 'function') loadComments();
   }
 
-// Init flashcard + quiz on load
+// Init flashcard + quiz + actions on load
 if (typeof renderCard === 'function') { try { renderCard(); } catch(e) {} }
 if (typeof renderQuiz === 'function') { try { renderQuiz(); } catch(e) {} }
+if (typeof renderActions === 'function') { try { renderActions('all'); } catch(e) {} }
 </script>
 <!-- Library widgets: search + related books -->
 <script defer="" src="/assets/books-data.js"></script>
-<script defer="" src="/assets/library.v3.js"></script>
+<script defer="" src="/assets/library.v4.js"></script>
 <script defer="" src="/assets/nav-spy.js"></script>
-<script defer="" src="../edit-mode.js">
-// AUTO-CLICK first non-all action tab on load (added by tab audit 2026-05-04)
+<script defer="" src="../edit-mode.js"></script>
+<script>
+// AUTO-CLICK first non-all action tab on load
 document.addEventListener('DOMContentLoaded', function () {
   var actBtns = document.querySelectorAll('.action-cat-btn');
   for (var i = 0; i < actBtns.length; i++) {
