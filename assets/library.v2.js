@@ -633,4 +633,8 @@
   }
 
   const __m = window.location.pathname.match(/\/books\/([^.]+)\.html$/);
-  if (__m && document.getElementById('commentsList')) loadComme
+  if (__m && document.getElementById('commentsList')) loadComments(__m[1]);
+
+  window.STOP_AND_THINK_LIB = { submitComment, loadComments, openSearch: openOverlay };
+
+})();
