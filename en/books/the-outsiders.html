@@ -510,33 +510,14 @@ body { background: var(--paper); color: var(--ink); font-family: system-ui, -app
 <div class="section-label">Private journal / Write to understand</div>
 <h2 class="section-title">5 questions <em>for founders/managers</em></h2>
 <p class="section-intro">This book is written for CEOs. You're not a CEO? It still applies — you're the CEO of your personal finance and your career. The 5 questions below force you to think about capital allocation for yourself.</p>
-<div class="journal-prompts">
-<div class="journal-prompt">
-<div class="journal-prompt-num">PROMPT · 01</div>
-<div class="journal-prompt-text">The money you earned the last 12 months — which of 5 choices did you deploy into? (1) Spending (2) Saving (3) Investing (4) Debt repayment (5) Learning/skills</div>
-<div class="journal-prompt-hint">List the % for each. Most only deploy to 1-2 buckets — Outsiders deploy strategically across all 5.</div>
+<div class="journal-prompts-nav">
+<div class="journal-dot active" onclick="switchPrompt(0, this)">1</div>
+<div class="journal-dot" onclick="switchPrompt(1, this)">2</div>
+<div class="journal-dot" onclick="switchPrompt(2, this)">3</div>
+<div class="journal-dot" onclick="switchPrompt(3, this)">4</div>
+<div class="journal-dot" onclick="switchPrompt(4, this)">5</div>
 </div>
-<div class="journal-prompt">
-<div class="journal-prompt-num">PROMPT · 02</div>
-<div class="journal-prompt-text">Singleton dared to buy back 90% of Teledyne stock when cheap. In your career/investing — when was the last time you dared to bet big on something you believed (while most said no)?</div>
-<div class="journal-prompt-hint">If you can't remember — you're in "follow the herd" mode. Outsiders do the opposite: contrarian when there's a strong reason.</div>
-</div>
-<div class="journal-prompt">
-<div class="journal-prompt-num">PROMPT · 03</div>
-<div class="journal-prompt-text">Buffett often talks about "Patient capital" — sometimes holding $100B+ cash for 1-2 years. Can you bear "doing nothing" when no opportunity is worthy?</div>
-<div class="journal-prompt-hint">Vietnam has strong FOMO — seeing friends invest in crypto/property makes your hands itch. Test patience: set the rule "only deploy when you have 3 specific reasons, written down on paper".</div>
-</div>
-<div class="journal-prompt">
-<div class="journal-prompt-num">PROMPT · 04</div>
-<div class="journal-prompt-text">Per-share value vs total revenue. Which metric are you tracking in your career — total money earned, or money/hour × meaning?</div>
-<div class="journal-prompt-hint">CEOs measuring total comp → drift into workaholism. Outsiders measure per-unit-of-life → optimize for the long term. Personal application: income/hour × meaning, not income/year.</div>
-</div>
-<div class="journal-prompt">
-<div class="journal-prompt-num">PROMPT · 05</div>
-<div class="journal-prompt-text">Smith pivoted 3 times (cinema → bottling → retail). Do you dare pivot out of a dying industry/career — instead of trying to save it?</div>
-<div class="journal-prompt-hint">Sunk cost fallacy is strongest in careers. You're 35, studied field A for 10 years. Field A is dying. Pivot to B is worth it — Outsiders do it. Most keep A "because I already invested".</div>
-</div>
-</div>
+<div id="promptsContainer"></div>
 </section>
 <!-- COMMENTS -->
 <section class="section" id="comments">
@@ -843,6 +824,103 @@ function changeChapterPage(delta) {
 }
 
 document.addEventListener('DOMContentLoaded', renderChaptersPage);
+
+
+/* ============ JOURNAL DATA ============ */
+const journalPrompts = [
+  {
+    q: 'The money you earned the last 12 months — which of 5 choices did you deploy into? (1) Spending (2) Saving (3) Investing (4) Debt repayment (5) Learning/skills'
+  },
+  {
+    q: 'Singleton dared to buy back 90% of Teledyne stock when cheap. In your career/investing — when was the last time you dared to bet big on something you believed (while most said no)?'
+  },
+  {
+    q: 'Buffett often talks about "Patient capital" — sometimes holding $100B+ cash for 1-2 years. Can you bear "doing nothing" when no opportunity is worthy?'
+  },
+  {
+    q: 'Per-share value vs total revenue. Which metric are you tracking in your career — total money earned, or money/hour × meaning?'
+  },
+  {
+    q: 'Smith pivoted 3 times (cinema → bottling → retail). Do you dare pivot out of a dying industry/career — instead of trying to save it?'
+  }
+];
+// Render journal prompt — full UI (textarea + export button + saved indicator)
+function switchPrompt(idx, dot) {
+  if (typeof journalPrompts === 'undefined' || !journalPrompts[idx]) return;
+  var p = journalPrompts[idx];
+  var c = document.getElementById('promptsContainer');
+  if (!c) return;
+  document.querySelectorAll('.journal-dot').forEach(function(d) { d.classList.remove('active'); });
+  if (dot) dot.classList.add('active');
+  var isEN = /^\/en\//.test(window.location.pathname);
+  var L = isEN
+    ? { num: 'Prompt', placeholder: 'Write your thoughts here... (auto-saved)', exportBtn: 'Export journal', saved: 'Saved ✓', noEntry: '(not yet written)' }
+    : { num: 'Câu hỏi', placeholder: 'Viết suy nghĩ của bạn ở đây... (tự động lưu)', exportBtn: 'Xuất nhật ký', saved: 'Đã lưu ✓', noEntry: '(chưa viết)' };
+  function esc(s) { return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  var num = String(idx + 1).padStart(2, '0');
+  c.innerHTML =
+    '<div class="journal-container">' +
+      '<div class="journal-prompt">' +
+        '<h3>' + L.num + ' <span id="promptNum">' + num + '</span></h3>' +
+        '<div class="journal-prompt-q" id="promptQ">' + esc(p.q) + '</div>' +
+        (p.help ? '<p class="journal-prompt-help" id="promptHelp">' + esc(p.help) + '</p>' : '') +
+      '</div>' +
+      '<div class="journal-area">' +
+        '<textarea class="journal-textarea" id="journalText" placeholder="' + L.placeholder + '"></textarea>' +
+        '<div class="journal-actions">' +
+          '<button class="btn btn-outline fcq-btn" type="button" id="journalExportBtn">' + L.exportBtn + '</button>' +
+          '<span class="journal-saved" id="journalSaved">' + L.saved + '</span>' +
+        '</div>' +
+      '</div>' +
+    '</div>';
+  try {
+    var key = 'journal_' + window.location.pathname + '_' + idx;
+    var ta = c.querySelector('textarea');
+    var savedTxt = localStorage.getItem(key);
+    if (savedTxt) ta.value = savedTxt;
+    var savedEl = document.getElementById('journalSaved');
+    var savedTimer;
+    ta.addEventListener('input', function(e) {
+      try { localStorage.setItem(key, e.target.value); } catch(_) {}
+      if (savedEl) {
+        savedEl.classList.add('show');
+        clearTimeout(savedTimer);
+        savedTimer = setTimeout(function() { savedEl.classList.remove('show'); }, 1500);
+      }
+    });
+  } catch(_) {}
+  var exportBtn = document.getElementById('journalExportBtn');
+  if (exportBtn) {
+    exportBtn.addEventListener('click', function() {
+      var slug = (window.location.pathname.match(/\/books\/([^./]+)/) || [])[1] || 'journal';
+      var lines = [(isEN ? 'JOURNAL' : 'NHẬT KÝ') + ' — ' + slug.toUpperCase(), '='.repeat(60), ''];
+      journalPrompts.forEach(function(pp, i) {
+        var k = 'journal_' + window.location.pathname + '_' + i;
+        var v = '';
+        try { v = localStorage.getItem(k) || ''; } catch(_) {}
+        lines.push('─'.repeat(60));
+        lines.push((isEN ? 'PROMPT ' : 'CÂU HỊI ') + (i + 1) + ':');
+        lines.push(pp.q);
+        lines.push('─'.repeat(60));
+        lines.push('');
+        lines.push(v || L.noEntry);
+        lines.push('');
+      });
+      var blob = new Blob([lines.join('\n')], { type: 'text/plain;charset=utf-8' });
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement('a');
+      a.href = url; a.download = slug + '-journal.txt';
+      document.body.appendChild(a); a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    });
+  }
+}
+document.addEventListener('DOMContentLoaded', function() {
+  var firstDot = document.querySelector('.journal-dot');
+  if (firstDot && typeof switchPrompt === 'function') switchPrompt(0, firstDot);
+});
+
 </script>
 <script>
 (function() {

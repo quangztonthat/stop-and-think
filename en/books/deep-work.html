@@ -961,39 +961,117 @@ function resetQuiz() {
 
 renderCard();
 renderQuiz();
+
+
+/* ============ JOURNAL DATA ============ */
+const journalPrompts = [
+  {
+    q: 'In one week — how many hours of real deep work do you actually get?'
+  },
+  {
+    q: 'Which schedule strategy (M/B/R/J) fits your life?'
+  },
+  {
+    q: 'When did you last check your phone without a specific reason?'
+  },
+  {
+    q: 'Which social media — if you quit for 30 days, would anyone really notice?'
+  },
+  {
+    q: 'If you had to be done by 5 PM — how would your day change?'
+  }
+];
+// Render journal prompt — full UI (textarea + export button + saved indicator)
+function switchPrompt(idx, dot) {
+  if (typeof journalPrompts === 'undefined' || !journalPrompts[idx]) return;
+  var p = journalPrompts[idx];
+  var c = document.getElementById('promptsContainer');
+  if (!c) return;
+  document.querySelectorAll('.journal-dot').forEach(function(d) { d.classList.remove('active'); });
+  if (dot) dot.classList.add('active');
+  var isEN = /^\/en\//.test(window.location.pathname);
+  var L = isEN
+    ? { num: 'Prompt', placeholder: 'Write your thoughts here... (auto-saved)', exportBtn: 'Export journal', saved: 'Saved ✓', noEntry: '(not yet written)' }
+    : { num: 'Câu hỏi', placeholder: 'Viết suy nghĩ của bạn ở đây... (tự động lưu)', exportBtn: 'Xuất nhật ký', saved: 'Đã lưu ✓', noEntry: '(chưa viết)' };
+  function esc(s) { return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  var num = String(idx + 1).padStart(2, '0');
+  c.innerHTML =
+    '<div class="journal-container">' +
+      '<div class="journal-prompt">' +
+        '<h3>' + L.num + ' <span id="promptNum">' + num + '</span></h3>' +
+        '<div class="journal-prompt-q" id="promptQ">' + esc(p.q) + '</div>' +
+        (p.help ? '<p class="journal-prompt-help" id="promptHelp">' + esc(p.help) + '</p>' : '') +
+      '</div>' +
+      '<div class="journal-area">' +
+        '<textarea class="journal-textarea" id="journalText" placeholder="' + L.placeholder + '"></textarea>' +
+        '<div class="journal-actions">' +
+          '<button class="btn btn-outline fcq-btn" type="button" id="journalExportBtn">' + L.exportBtn + '</button>' +
+          '<span class="journal-saved" id="journalSaved">' + L.saved + '</span>' +
+        '</div>' +
+      '</div>' +
+    '</div>';
+  try {
+    var key = 'journal_' + window.location.pathname + '_' + idx;
+    var ta = c.querySelector('textarea');
+    var savedTxt = localStorage.getItem(key);
+    if (savedTxt) ta.value = savedTxt;
+    var savedEl = document.getElementById('journalSaved');
+    var savedTimer;
+    ta.addEventListener('input', function(e) {
+      try { localStorage.setItem(key, e.target.value); } catch(_) {}
+      if (savedEl) {
+        savedEl.classList.add('show');
+        clearTimeout(savedTimer);
+        savedTimer = setTimeout(function() { savedEl.classList.remove('show'); }, 1500);
+      }
+    });
+  } catch(_) {}
+  var exportBtn = document.getElementById('journalExportBtn');
+  if (exportBtn) {
+    exportBtn.addEventListener('click', function() {
+      var slug = (window.location.pathname.match(/\/books\/([^./]+)/) || [])[1] || 'journal';
+      var lines = [(isEN ? 'JOURNAL' : 'NHẬT KÝ') + ' — ' + slug.toUpperCase(), '='.repeat(60), ''];
+      journalPrompts.forEach(function(pp, i) {
+        var k = 'journal_' + window.location.pathname + '_' + i;
+        var v = '';
+        try { v = localStorage.getItem(k) || ''; } catch(_) {}
+        lines.push('─'.repeat(60));
+        lines.push((isEN ? 'PROMPT ' : 'CÂU HỊI ') + (i + 1) + ':');
+        lines.push(pp.q);
+        lines.push('─'.repeat(60));
+        lines.push('');
+        lines.push(v || L.noEntry);
+        lines.push('');
+      });
+      var blob = new Blob([lines.join('\n')], { type: 'text/plain;charset=utf-8' });
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement('a');
+      a.href = url; a.download = slug + '-journal.txt';
+      document.body.appendChild(a); a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    });
+  }
+}
+document.addEventListener('DOMContentLoaded', function() {
+  var firstDot = document.querySelector('.journal-dot');
+  if (firstDot && typeof switchPrompt === 'function') switchPrompt(0, firstDot);
+});
+
 </script>
 <!-- JOURNAL -->
 <section class="journal-section" id="journal">
 <div class="section-label" style="">Private journal / Write to understand</div>
 <h2 class="section-title" style="">5 questions to <em style="">design your deep</em></h2>
 <p class="section-intro" style="">Newport doesn't give generic application. Design your own for your context. These 5 questions are the frame.</p>
-<div class="journal-prompts">
-<div class="journal-prompt">
-<div class="journal-prompt-num" style="">PROMPT · 01</div>
-<div class="journal-prompt-text" style="">In one week — how many hours of real deep work do you actually get?</div>
-<div class="journal-prompt-hint" style="">Be honest. Don't count time "at the office" — count time of real uninterrupted focus.</div>
+<div class="journal-prompts-nav">
+<div class="journal-dot active" onclick="switchPrompt(0, this)">1</div>
+<div class="journal-dot" onclick="switchPrompt(1, this)">2</div>
+<div class="journal-dot" onclick="switchPrompt(2, this)">3</div>
+<div class="journal-dot" onclick="switchPrompt(3, this)">4</div>
+<div class="journal-dot" onclick="switchPrompt(4, this)">5</div>
 </div>
-<div class="journal-prompt">
-<div class="journal-prompt-num" style="">PROMPT · 02</div>
-<div class="journal-prompt-text" style="">Which schedule strategy (M/B/R/J) fits your life?</div>
-<div class="journal-prompt-hint" style="">Each strategy has pros/cons. Pick 1 — don't try to mix them all.</div>
-</div>
-<div class="journal-prompt">
-<div class="journal-prompt-num" style="">PROMPT · 03</div>
-<div class="journal-prompt-text" style="">When did you last check your phone without a specific reason?</div>
-<div class="journal-prompt-hint" style="">Count for one day. Each unreasoned check = one rep training the 'can't tolerate emptiness' habit.</div>
-</div>
-<div class="journal-prompt">
-<div class="journal-prompt-num" style="">PROMPT · 04</div>
-<div class="journal-prompt-text" style="">Which social media — if you quit for 30 days, would anyone really notice?</div>
-<div class="journal-prompt-hint" style="">Real test. Most "follows" aren't "care".</div>
-</div>
-<div class="journal-prompt">
-<div class="journal-prompt-num" style="">PROMPT · 05</div>
-<div class="journal-prompt-text" style="">If you had to be done by 5 PM — how would your day change?</div>
-<div class="journal-prompt-hint" style="">Fixed-schedule forces you to cut shallow. Most don't try because they fear "I won't finish".</div>
-</div>
-</div>
+<div id="promptsContainer"></div>
 </section>
 <!-- COMMENTS -->
 <section class="section" id="comments">

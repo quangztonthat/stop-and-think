@@ -909,39 +909,117 @@ function changeChapterPage(delta) {
 }
 
 document.addEventListener('DOMContentLoaded', renderChaptersPage);
+
+
+/* ============ JOURNAL DATA ============ */
+const journalPrompts = [
+  {
+    q: 'Nghề bạn đang làm — là kind environment hay wicked? Tại sao?'
+  },
+  {
+    q: 'Lần cuối bạn áp dụng ý từ ngoài nghề vào nghề — kết quả thế nào?'
+  },
+  {
+    q: 'Có project nào bạn đang "grit through" mà thật ra nên quit?'
+  },
+  {
+    q: '3 lĩnh vực ngoài nghề bạn từng quan tâm — gần đây có touch không?'
+  },
+  {
+    q: 'Bạn 50 tuổi sẽ tự hào vì depth nghề chính, hay vì range giúp pivot 2 lần?'
+  }
+];
+// Render journal prompt — full UI (textarea + export button + saved indicator)
+function switchPrompt(idx, dot) {
+  if (typeof journalPrompts === 'undefined' || !journalPrompts[idx]) return;
+  var p = journalPrompts[idx];
+  var c = document.getElementById('promptsContainer');
+  if (!c) return;
+  document.querySelectorAll('.journal-dot').forEach(function(d) { d.classList.remove('active'); });
+  if (dot) dot.classList.add('active');
+  var isEN = /^\/en\//.test(window.location.pathname);
+  var L = isEN
+    ? { num: 'Prompt', placeholder: 'Write your thoughts here... (auto-saved)', exportBtn: 'Export journal', saved: 'Saved ✓', noEntry: '(not yet written)' }
+    : { num: 'Câu hỏi', placeholder: 'Viết suy nghĩ của bạn ở đây... (tự động lưu)', exportBtn: 'Xuất nhật ký', saved: 'Đã lưu ✓', noEntry: '(chưa viết)' };
+  function esc(s) { return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  var num = String(idx + 1).padStart(2, '0');
+  c.innerHTML =
+    '<div class="journal-container">' +
+      '<div class="journal-prompt">' +
+        '<h3>' + L.num + ' <span id="promptNum">' + num + '</span></h3>' +
+        '<div class="journal-prompt-q" id="promptQ">' + esc(p.q) + '</div>' +
+        (p.help ? '<p class="journal-prompt-help" id="promptHelp">' + esc(p.help) + '</p>' : '') +
+      '</div>' +
+      '<div class="journal-area">' +
+        '<textarea class="journal-textarea" id="journalText" placeholder="' + L.placeholder + '"></textarea>' +
+        '<div class="journal-actions">' +
+          '<button class="btn btn-outline fcq-btn" type="button" id="journalExportBtn">' + L.exportBtn + '</button>' +
+          '<span class="journal-saved" id="journalSaved">' + L.saved + '</span>' +
+        '</div>' +
+      '</div>' +
+    '</div>';
+  try {
+    var key = 'journal_' + window.location.pathname + '_' + idx;
+    var ta = c.querySelector('textarea');
+    var savedTxt = localStorage.getItem(key);
+    if (savedTxt) ta.value = savedTxt;
+    var savedEl = document.getElementById('journalSaved');
+    var savedTimer;
+    ta.addEventListener('input', function(e) {
+      try { localStorage.setItem(key, e.target.value); } catch(_) {}
+      if (savedEl) {
+        savedEl.classList.add('show');
+        clearTimeout(savedTimer);
+        savedTimer = setTimeout(function() { savedEl.classList.remove('show'); }, 1500);
+      }
+    });
+  } catch(_) {}
+  var exportBtn = document.getElementById('journalExportBtn');
+  if (exportBtn) {
+    exportBtn.addEventListener('click', function() {
+      var slug = (window.location.pathname.match(/\/books\/([^./]+)/) || [])[1] || 'journal';
+      var lines = [(isEN ? 'JOURNAL' : 'NHẬT KÝ') + ' — ' + slug.toUpperCase(), '='.repeat(60), ''];
+      journalPrompts.forEach(function(pp, i) {
+        var k = 'journal_' + window.location.pathname + '_' + i;
+        var v = '';
+        try { v = localStorage.getItem(k) || ''; } catch(_) {}
+        lines.push('─'.repeat(60));
+        lines.push((isEN ? 'PROMPT ' : 'CÂU HỊI ') + (i + 1) + ':');
+        lines.push(pp.q);
+        lines.push('─'.repeat(60));
+        lines.push('');
+        lines.push(v || L.noEntry);
+        lines.push('');
+      });
+      var blob = new Blob([lines.join('\n')], { type: 'text/plain;charset=utf-8' });
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement('a');
+      a.href = url; a.download = slug + '-journal.txt';
+      document.body.appendChild(a); a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    });
+  }
+}
+document.addEventListener('DOMContentLoaded', function() {
+  var firstDot = document.querySelector('.journal-dot');
+  if (firstDot && typeof switchPrompt === 'function') switchPrompt(0, firstDot);
+});
+
 </script>
 <!-- JOURNAL -->
 <section class="journal-section" id="journal">
 <div class="section-label">Nhật ký riêng / Viết để hiểu thêm</div>
 <h2 class="section-title">5 câu hỏi cho người đang <em>nghi</em> nghề</h2>
 <p class="section-intro">Range không nói "bỏ nghề ngay". Nó nói "biết khi nào range, khi nào depth". 5 câu này giúp bạn vẽ map.</p>
-<div class="journal-prompts">
-<div class="journal-prompt">
-<div class="journal-prompt-num">PROMPT · 01</div>
-<div class="journal-prompt-text">Nghề bạn đang làm — là kind environment hay wicked? Tại sao?</div>
-<div class="journal-prompt-hint">Kind: luật rõ, feedback ngay. Wicked: judgment, không lặp.</div>
+<div class="journal-prompts-nav">
+<div class="journal-dot active" onclick="switchPrompt(0, this)">1</div>
+<div class="journal-dot" onclick="switchPrompt(1, this)">2</div>
+<div class="journal-dot" onclick="switchPrompt(2, this)">3</div>
+<div class="journal-dot" onclick="switchPrompt(3, this)">4</div>
+<div class="journal-dot" onclick="switchPrompt(4, this)">5</div>
 </div>
-<div class="journal-prompt">
-<div class="journal-prompt-num">PROMPT · 02</div>
-<div class="journal-prompt-text">Lần cuối bạn áp dụng ý từ ngoài nghề vào nghề — kết quả thế nào?</div>
-<div class="journal-prompt-hint">Nếu chưa bao giờ — bạn đang depth-only. Đó là rủi ro trong wicked world.</div>
-</div>
-<div class="journal-prompt">
-<div class="journal-prompt-num">PROMPT · 03</div>
-<div class="journal-prompt-text">Có project nào bạn đang "grit through" mà thật ra nên quit?</div>
-<div class="journal-prompt-hint">"Mai bắt đầu lại — biết những gì giờ biết — vẫn chọn?" Nếu không → đó là tín hiệu.</div>
-</div>
-<div class="journal-prompt">
-<div class="journal-prompt-num">PROMPT · 04</div>
-<div class="journal-prompt-text">3 lĩnh vực ngoài nghề bạn từng quan tâm — gần đây có touch không?</div>
-<div class="journal-prompt-hint">Range không tự nhiên có. Cần meo dõi.</div>
-</div>
-<div class="journal-prompt">
-<div class="journal-prompt-num">PROMPT · 05</div>
-<div class="journal-prompt-text">Bạn 50 tuổi sẽ tự hào vì depth nghề chính, hay vì range giúp pivot 2 lần?</div>
-<div class="journal-prompt-hint">Đa số người 50+ tiếc đã không sample đủ ở 25.</div>
-</div>
-</div>
+<div id="promptsContainer"></div>
 </section>
 <!-- COMMENTS -->
 <section class="section" id="comments">
