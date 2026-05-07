@@ -907,30 +907,10 @@ let actionsCurrentFilter = 'all';
 function renderActions(filter = 'all') {
   actionsCurrentFilter = filter;
   const grid = document.getElementById('actionsGrid');
-  const preRendered = grid.querySelectorAll('.action-card');
 
-  if (preRendered.length > 0) {
-    const cardsArr = Array.from(preRendered).map(card => {
-      const numText = card.querySelector('.action-num')?.textContent || '0';
-      const num = parseInt(numText, 10) || 0;
-      let cat = 'satisfying';
-      if (num >= 1 && num <= 5) cat = 'obvious';
-      else if (num >= 6 && num <= 9) cat = 'attractive';
-      else if (num >= 10 && num <= 14) cat = 'easy';
-      return { card, num, cat };
-    });
-    const matched = cardsArr.filter(c => filter === 'all' || c.cat === filter);
-    const totalPages = Math.max(1, Math.ceil(matched.length / ACTIONS_PER_PAGE));
-    if (actionsCurrentPage > totalPages) actionsCurrentPage = 1;
-    const start = (actionsCurrentPage - 1) * ACTIONS_PER_PAGE;
-    const visibleSet = new Set(matched.slice(start, start + ACTIONS_PER_PAGE).map(c => c.card));
-    cardsArr.forEach(c => {
-      c.card.style.display = visibleSet.has(c.card) ? '' : 'none';
-    });
-    renderActionsPager(totalPages, matched.length);
-    return;
-  }
-
+  // Always rebuild from `actions` array (single source of truth for cat values).
+  // Previous pre-rendered fast-path used Atomic Habits cat schema (obvious/attractive/...)
+  // and broke filtering for books with different cat schemas.
   const filtered = actions.filter(a => filter === 'all' || a.cat === filter);
   const totalPages = Math.max(1, Math.ceil(filtered.length / ACTIONS_PER_PAGE));
   if (actionsCurrentPage > totalPages) actionsCurrentPage = 1;
@@ -939,8 +919,9 @@ function renderActions(filter = 'all') {
   grid.innerHTML = '';
   slice.forEach(a => {
     const div = document.createElement('div');
-    div.className = 'action-card';
+    div.className = 'action-card' + (typeof checkedActions !== 'undefined' && checkedActions.has(a.num) ? ' checked' : '');
     div.innerHTML = `<div class="action-num">${String(a.num).padStart(2, '0')}</div><div class="action-content"><div class="action-title">${a.title}</div><div class="action-desc">${a.desc}</div></div>`;
+    div.onclick = () => toggleAction(a.num, div);
     grid.appendChild(div);
   });
   renderActionsPager(totalPages, filtered.length);
