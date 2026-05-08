@@ -399,7 +399,7 @@ body { background: var(--paper); color: var(--ink); font-family: system-ui, -app
 }
 </style><link id="dark-mode-custom-link" rel="stylesheet" type="text/css"/><link id="dark-mode-general-link" rel="stylesheet" type="text/css"/><style id="dark-mode-custom-style" lang="en" type="text/css"></style><style id="dark-mode-native-style" lang="en" type="text/css"></style><style id="dark-mode-native-sheet" lang="en" type="text/css"></style><link href="/assets/dark.v5.css" rel="stylesheet"/>
 <script defer="" src="/assets/theme.v5.js"></script>
-</head>
+<link rel="stylesheet" href="/assets/vn-lens.v1.css"></head>
 <body>
 <nav class="nav-bar">
 <a class="nav-logo" href="../index.html" title="Back to home">Deep <span>Work</span><em>.</em></a>
@@ -409,14 +409,24 @@ body { background: var(--paper); color: var(--ink); font-family: system-ui, -app
 </svg>
 <span class="snst-search-bar-text">Search books...</span>
 <kbd>Ctrl K</kbd>
-</button><div class="nav-links">
-<a class="" onclick="scrollTo2('thesis')">Thesis</a>
-<a class="active" onclick="scrollTo2('framework')">Framework</a>
-<a class="" onclick="scrollTo2('chapters')">Chapters</a>
-<a class="" onclick="scrollTo2('flashcards')">Flashcard</a>
-<a class="" onclick="scrollTo2('quiz')">Quiz</a>
-<a onclick="scrollTo2('journal')">Journal</a>
+</button><div class="nav-actions">
 <span class="lang-switch"><a href="/deep-work">VI</a><span class="sep">·</span><a class="active" href="#">EN</a></span>
+<button type="button" class="theme-toggle" onclick="window.STTheme && window.STTheme.toggle()" aria-label="Toggle theme">
+  <svg class="icon-moon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+  <svg class="icon-sun" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+</button>
+<button class="nav-menu-btn" type="button" onclick="toggleNavMenu(event)" aria-label="Open menu" aria-expanded="false">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+  <span>Menu</span>
+</button>
+</div>
+<div class="nav-dropdown" id="navDropdown" role="menu" aria-hidden="true">
+<a onclick="scrollTo2('thesis'); closeNavMenu()">Thesis</a>
+<a onclick="scrollTo2('framework'); closeNavMenu()">Framework</a>
+<a onclick="scrollTo2('chapters'); closeNavMenu()">Chapters</a>
+<a onclick="scrollTo2('flashcards'); closeNavMenu()">Flashcard</a>
+<a onclick="scrollTo2('quiz'); closeNavMenu()">Quiz</a>
+<a onclick="scrollTo2('journal'); closeNavMenu()">Journal</a>
 </div>
 </nav>
 <!-- HERO -->
@@ -725,6 +735,34 @@ function scrollTo2(id) {
   const top = el.getBoundingClientRect().top + window.pageYOffset - 60;
   window.scrollTo({top, behavior: 'smooth'});
 }
+function toggleNavMenu(e) {
+  if (e) e.stopPropagation();
+  const dd = document.getElementById('navDropdown');
+  const btn = document.querySelector('.nav-menu-btn');
+  if (!dd || !btn) return;
+  const open = dd.classList.toggle('open');
+  btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+  dd.setAttribute('aria-hidden', open ? 'false' : 'true');
+}
+function closeNavMenu() {
+  const dd = document.getElementById('navDropdown');
+  const btn = document.querySelector('.nav-menu-btn');
+  if (!dd || !btn) return;
+  dd.classList.remove('open');
+  btn.setAttribute('aria-expanded', 'false');
+  dd.setAttribute('aria-hidden', 'true');
+}
+document.addEventListener('click', function(e) {
+  const dd = document.getElementById('navDropdown');
+  const btn = document.querySelector('.nav-menu-btn');
+  if (!dd || !btn) return;
+  if (!dd.classList.contains('open')) return;
+  if (dd.contains(e.target) || btn.contains(e.target)) return;
+  closeNavMenu();
+});
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') closeNavMenu();
+});
 
 const flashcards = [
   {
@@ -1137,60 +1175,4 @@ document.addEventListener('DOMContentLoaded', function() {
 </div>
 <div class="snst-related-meta">
 <span class="snst-related-tag" style="">Career</span>
-<p class="snst-related-summary" style="">Roger Federer vs Tiger Woods. In a complex world, going wide — sampling, lateral thinking, strategic quitting — beats early specialization.</p>
-<div class="snst-related-arrow">
-<span style="">Read analysis</span>
-<span style="">→</span>
-</div>
-</div>
-</a>
-</div>
-</section><footer class="footer">
-<div class="footer-quote" style="">"Focus is the beauty of this era — not because it's rare, but because it's vanishing."</div>
-<div class="footer-brand" style="">Stop <span class="amp" style="">&amp;</span> Think</div>
-<p style="">Read with another reader · By Quang Ton</p>
-<div class="footer-bottom" style="">© 2026 · Stop &amp; Think · By Quang Ton</div>
-</footer>
-<script defer="" src="/assets/books-data.js"></script>
-<script defer="" src="/assets/library.v4.js"></script><div class="snst-overlay">
-<div class="snst-modal">
-<div class="snst-modal-head">
-<svg fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
-<circle cx="11" cy="11" r="8"></circle><line x1="21" x2="16.65" y1="21" y2="16.65"></line>
-</svg>
-<input autocomplete="off" class="snst-input" placeholder="Search books by title, author, keyword..." type="text"/>
-<button class="snst-close">ESC</button>
-</div>
-<div class="snst-results"></div>
-<div class="snst-shortcut">
-<span style=""><kbd style="">↑</kbd><kbd style="">↓</kbd> navigate</span>
-<span style=""><kbd style="">↵</kbd> open</span>
-<span style=""><kbd style="">Esc</kbd> close</span>
-</div>
-</div>
-</div>
-<script defer="" src="/assets/nav-spy.js"></script>
-<script data-cf-beacon='{"token":"a1b2c3d4e5f6789"}' defer="" src="https://static.cloudflareinsights.com/beacon.min.js"></script>
-<script>
-function filterChapters(part, btn) {
-  document.querySelectorAll('.chapter-tab-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  document.querySelectorAll('.rule-section[data-part]').forEach(sec => {
-    sec.style.display = (part === 'all' || sec.dataset.part === part) ? '' : 'none';
-  });
-}
-
-document.addEventListener('DOMContentLoaded', function() {
-  // Default: show only first part (skip All default)
-  const allBtns = document.querySelectorAll('.chapter-tab-btn');
-  for (let i = 0; i < allBtns.length; i++) {
-    const oc = allBtns[i].getAttribute('onclick') || '';
-    if (oc.indexOf("'all'") === -1 && oc.indexOf('filterChapters(') !== -1) {
-      allBtns[i].click();
-      break;
-    }
-  }
-});
-</script>
-<script defer="" src="/edit-mode.js"></script>
-</body></html>
+<p class="snst-related-summary" style="">Roger Federer vs Tiger Woods. In a complex world, going wide — sampling, lateral thinking, strategic quitting — beats early spec

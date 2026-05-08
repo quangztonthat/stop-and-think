@@ -1,0 +1,748 @@
+/* ═══════════════════════════════════════════════════════
+   Vietnamese-friendly font overrides · v1 · 2026-05-08
+   Reason: JetBrains Mono loaded latin-only → VN diacritics
+   fall back to system font → looks broken. Switch affected
+   labels to Inter (VN subset loaded site-wide).
+   ═══════════════════════════════════════════════════════ */
+/* ALL labels currently using JetBrains Mono — switch to Inter for VN diacritics */
+.nav-menu-btn,
+.nav-dropdown a,
+.nav-links,
+.lang-switch,
+.hero-meta,
+.section-label,
+.thesis-author,
+.fw-tag,
+.compare-label,
+.rule-num,
+.chapter-num,
+.chapter-tab-btn,
+.flashcard-num,
+.flashcard-tag,
+.flashcard-hint,
+.flashcard-controls,
+.fcq-btn,
+.journal-prompt-num,
+.form-hint,
+.form-submit,
+.comment-time,
+.comment-reply-btn,
+.reply-indicator,
+.footer-bottom,
+.snst-search-bar-text,
+.snst-input,
+.snst-shortcut,
+.action-num,
+.action-tab-btn,
+.quiz-num,
+.quiz-tab-btn,
+.related-tag,
+.snst-related-num,
+/* Vietnam Lens section */
+.vn-lens .section-label,
+.vn-lens-num,
+.vn-lens-badge,
+.vn-lens-matrix th,
+.vn-lens-matrix td,
+.vn-lens-matrix-label,
+.vn-lens-toolkit-label,
+.vn-lens-toolkit-sub,
+.vn-lens-phrase-tag,
+.vn-lens-fix strong,
+.vn-lens-hero-col-title,
+.vn-lens-hero-divider {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
+}
+
+/* ═══════════════════════════════════════════════════════
+   Nav consolidation: Menu dropdown · v1 · 2026-05-08
+   POC on deep-work, scale to 19 books after validation
+   ═══════════════════════════════════════════════════════ */
+
+/* 3-zone nav layout: Logo (left) | Search (center) | Actions (right)
+   Covers both .nav-bar (books) and .nav (pages/index) */
+.nav-bar,
+.nav {
+  display: grid !important;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 16px;
+}
+.nav-bar > .nav-logo,
+.nav > .nav-brand { justify-self: start; grid-column: 1; grid-row: 1; }
+.nav-bar > .snst-search-bar,
+.nav > .snst-search-bar { justify-self: center; grid-column: 2; grid-row: 1; }
+.nav-bar > .nav-actions,
+.nav > .nav-actions { justify-self: end; grid-column: 3; grid-row: 1; }
+
+/* Search bar styling — applied site-wide so library.v4.js auto-inject looks consistent */
+.snst-search-bar {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: rgba(26, 20, 16, 0.06);
+  border: 1px solid rgba(26, 20, 16, 0.2);
+  padding: 7px 12px; cursor: pointer;
+  font-family: 'Inter', sans-serif; color: inherit;
+  transition: all 0.2s; min-width: 200px;
+  border-radius: 0;
+}
+.snst-search-bar:hover { background: rgba(26, 20, 16, 0.1); border-color: rgba(26, 20, 16, 0.4); }
+.snst-search-bar svg { width: 14px; height: 14px; flex-shrink: 0; opacity: 0.6; }
+.snst-search-bar-text { flex: 1; text-align: left; font-size: 13px; opacity: 0.6; font-family: 'Inter', sans-serif; }
+.snst-search-bar kbd {
+  font-family: 'Inter', sans-serif; font-size: 10px;
+  padding: 2px 6px; background: rgba(26, 20, 16, 0.08);
+  border: 1px solid rgba(26, 20, 16, 0.2); border-radius: 0;
+  color: inherit; opacity: 0.7;
+}
+
+[data-theme="dark"] .snst-search-bar {
+  background: rgba(245, 241, 235, 0.08);
+  border-color: rgba(245, 241, 235, 0.2);
+  color: #f5f1eb;
+}
+[data-theme="dark"] .snst-search-bar:hover {
+  background: rgba(245, 241, 235, 0.14);
+  border-color: rgba(245, 241, 235, 0.4);
+}
+[data-theme="dark"] .snst-search-bar kbd {
+  background: rgba(245, 241, 235, 0.08);
+  border-color: rgba(245, 241, 235, 0.2);
+  color: #f5f1eb;
+}
+
+@media (max-width: 768px) {
+  .nav-bar {
+    grid-template-columns: auto 1fr auto;
+  }
+  .nav-bar > .snst-search-bar {
+    justify-self: stretch;
+    min-width: 0;
+  }
+}
+
+@media (max-width: 520px) {
+  .nav-bar {
+    grid-template-columns: auto auto;
+    gap: 8px;
+  }
+  .nav-bar > .snst-search-bar { display: none; }
+}
+
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.nav-menu-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: transparent;
+  border: 1px solid rgba(26, 20, 16, 0.15);
+  border-radius: 4px;
+  padding: 8px 14px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--ink);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  font-weight: 600;
+}
+
+.nav-menu-btn:hover,
+.nav-menu-btn[aria-expanded="true"] {
+  background: var(--ink);
+  color: var(--paper);
+  border-color: var(--ink);
+}
+
+.nav-menu-btn svg {
+  flex-shrink: 0;
+}
+
+/* Dropdown anchored to bottom-right of nav-bar.
+   Nav-bar inline CSS uses position: fixed, which acts as positioning context
+   for absolute descendants → dropdown positions relative to nav-bar. */
+.nav-dropdown {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 16px;
+  min-width: 220px;
+  background: var(--paper);
+  border: 1px solid rgba(26, 20, 16, 0.12);
+  border-radius: 6px;
+  padding: 10px 0;
+  box-shadow: 0 12px 32px rgba(26, 20, 16, 0.15);
+  z-index: 200;
+  display: none;
+  flex-direction: column;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  animation: navDropdownFadeIn 0.15s ease;
+}
+
+.nav-dropdown.open {
+  display: flex;
+}
+
+.nav-dropdown a {
+  padding: 12px 22px;
+  text-decoration: none;
+  color: var(--ink);
+  cursor: pointer;
+  transition: all 0.12s ease;
+  font-weight: 600;
+  border-left: 3px solid transparent;
+}
+
+.nav-dropdown a:hover {
+  background: var(--paper-dark);
+  color: var(--accent-2);
+  border-left-color: var(--accent-2);
+}
+
+@keyframes navDropdownFadeIn {
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Theme toggle button — auto-injected by theme.v5.js, style harmonize */
+.nav-actions .theme-toggle {
+  background: transparent;
+  border: 1px solid rgba(26, 20, 16, 0.15);
+  border-radius: 4px;
+  padding: 6px 8px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--ink);
+  transition: all 0.15s ease;
+  margin: 0;
+  position: static;
+}
+
+.nav-actions .theme-toggle:hover {
+  background: var(--ink);
+  color: var(--paper);
+  border-color: var(--ink);
+}
+
+/* Mobile responsive nav */
+@media (max-width: 640px) {
+  .nav-actions { gap: 10px; }
+  .nav-menu-btn span { display: none; }
+  .nav-menu-btn { padding: 8px 10px; }
+  .nav-dropdown { right: 12px; left: 12px; min-width: 0; }
+}
+
+[data-theme="dark"] .nav-menu-btn {
+  border-color: rgba(245, 241, 235, 0.2);
+  color: #f5f1eb;
+}
+[data-theme="dark"] .nav-menu-btn:hover,
+[data-theme="dark"] .nav-menu-btn[aria-expanded="true"] {
+  background: #f5f1eb;
+  color: #1a1410;
+  border-color: #f5f1eb;
+}
+[data-theme="dark"] .nav-dropdown {
+  background: #1c1815;
+  border-color: rgba(245, 241, 235, 0.12);
+}
+[data-theme="dark"] .nav-dropdown a { color: #f5f1eb; }
+[data-theme="dark"] .nav-dropdown a:hover { background: #0f0d0b; }
+[data-theme="dark"] .nav-actions .theme-toggle {
+  border-color: rgba(245, 241, 235, 0.2);
+  color: #f5f1eb;
+}
+
+/* ═══════════════════════════════════════════════════════
+   Vietnam Lens — section style
+   v1 · 2026-05-08
+   ═══════════════════════════════════════════════════════ */
+
+.vn-lens {
+  background: var(--paper-dark);
+  padding: 100px 8% 120px;
+  border-top: 2px solid var(--ink);
+  position: relative;
+}
+
+.vn-lens .section-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--accent-2);
+  font-weight: 700;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.vn-lens .section-label::before {
+  content: '';
+  width: 32px;
+  height: 1px;
+  background: var(--accent-2);
+}
+
+.vn-lens .section-title {
+  font-family: 'Fraunces', Georgia, serif;
+  font-size: clamp(32px, 4vw, 48px);
+  line-height: 1.15;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 20px;
+  letter-spacing: -0.02em;
+  max-width: 900px;
+}
+
+.vn-lens .section-intro {
+  font-size: 18px;
+  line-height: 1.7;
+  color: var(--ink);
+  opacity: 0.85;
+  max-width: 760px;
+  margin-bottom: 64px;
+}
+
+/* ──────────────────────────────────────────────
+   TIER 1 — Hero contrast block (USA vs VN)
+   ────────────────────────────────────────────── */
+.vn-lens-hero {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 32px;
+  align-items: stretch;
+  margin-bottom: 80px;
+  max-width: 980px;
+}
+
+.vn-lens-hero-col {
+  background: var(--paper);
+  padding: 32px 28px;
+  border-radius: 4px;
+  border: 1px solid rgba(26, 20, 16, 0.08);
+}
+
+.vn-lens-hero-col-title {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--ink);
+  opacity: 0.5;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.vn-lens-hero-col-title .flag {
+  font-size: 22px;
+}
+
+.vn-lens-hero-col ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.vn-lens-hero-col li {
+  font-size: 16px;
+  line-height: 1.5;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(26, 20, 16, 0.06);
+  color: var(--ink);
+}
+
+.vn-lens-hero-col li:last-child { border-bottom: none; }
+
+.vn-lens-hero-col.vn li {
+  font-weight: 500;
+}
+
+.vn-lens-hero-divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--accent-2);
+  letter-spacing: 0.1em;
+}
+
+/* ──────────────────────────────────────────────
+   TIER 2 — Conflict Matrix preview table
+   ────────────────────────────────────────────── */
+.vn-lens-matrix {
+  margin-bottom: 80px;
+  max-width: 1080px;
+}
+
+.vn-lens-matrix-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink);
+  opacity: 0.5;
+  margin-bottom: 16px;
+}
+
+.vn-lens-matrix table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--paper);
+  border: 1px solid rgba(26, 20, 16, 0.1);
+}
+
+.vn-lens-matrix th {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  font-weight: 700;
+  text-align: left;
+  padding: 18px 20px;
+  border-bottom: 2px solid var(--ink);
+  color: var(--ink);
+}
+
+.vn-lens-matrix th:nth-child(1) { color: var(--accent); }
+.vn-lens-matrix th:nth-child(2) { color: var(--accent-2); }
+.vn-lens-matrix th:nth-child(3) { color: var(--gold); }
+
+.vn-lens-matrix td {
+  padding: 18px 20px;
+  font-size: 15.5px;
+  line-height: 1.5;
+  border-bottom: 1px solid rgba(26, 20, 16, 0.06);
+  vertical-align: top;
+  color: var(--ink);
+}
+
+.vn-lens-matrix tr:last-child td { border-bottom: none; }
+
+.vn-lens-matrix td:nth-child(3) {
+  font-weight: 600;
+  background: rgba(196, 146, 60, 0.06);
+}
+
+/* ──────────────────────────────────────────────
+   TIER 3 — Action Cards (deep dive)
+   ────────────────────────────────────────────── */
+.vn-lens-problems {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+  margin-bottom: 80px;
+  max-width: 1080px;
+}
+
+.vn-lens-problem {
+  background: var(--paper);
+  padding: 36px 32px;
+  border-left: 4px solid var(--accent-2);
+  position: relative;
+}
+
+.vn-lens-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  letter-spacing: 0.2em;
+  color: var(--ink);
+  opacity: 0.4;
+  margin-bottom: 8px;
+}
+
+.vn-lens-badge {
+  display: inline-block;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  background: var(--ink);
+  color: var(--paper);
+  padding: 5px 10px;
+  border-radius: 2px;
+  margin-bottom: 18px;
+  font-weight: 600;
+}
+
+.vn-lens-title {
+  font-family: 'Fraunces', Georgia, serif;
+  font-size: 24px;
+  line-height: 1.25;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 16px;
+  letter-spacing: -0.01em;
+}
+
+.vn-lens-desc {
+  font-size: 16px;
+  line-height: 1.65;
+  color: var(--ink);
+  margin-bottom: 22px;
+}
+
+.vn-lens-fix {
+  background: rgba(196, 146, 60, 0.1);
+  border-left: 3px solid var(--gold);
+  padding: 18px 20px;
+  font-size: 15.5px;
+  line-height: 1.6;
+  color: var(--ink);
+}
+
+.vn-lens-fix strong {
+  display: block;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--accent-2);
+  margin-bottom: 8px;
+  font-weight: 700;
+}
+
+.vn-lens-fix em {
+  font-style: italic;
+  color: var(--accent);
+  font-weight: 500;
+}
+
+/* ──────────────────────────────────────────────
+   TIER 4 — Toolkit (4 phrases copy-paste)
+   ────────────────────────────────────────────── */
+.vn-lens-toolkit {
+  background: var(--ink);
+  color: var(--paper);
+  padding: 56px 48px;
+  margin-bottom: 80px;
+  max-width: 1080px;
+  border-radius: 4px;
+}
+
+.vn-lens-toolkit-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.vn-lens-toolkit-label::before {
+  content: '';
+  width: 24px;
+  height: 1px;
+  background: var(--gold);
+}
+
+.vn-lens-toolkit-title {
+  font-family: 'Fraunces', Georgia, serif;
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 8px;
+  color: var(--paper);
+}
+
+.vn-lens-toolkit-sub {
+  font-size: 15px;
+  opacity: 0.7;
+  margin-bottom: 36px;
+  color: var(--paper);
+}
+
+.vn-lens-phrases {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+.vn-lens-phrase {
+  background: rgba(255, 255, 255, 0.05);
+  padding: 22px 24px;
+  border-left: 2px solid var(--gold);
+}
+
+.vn-lens-phrase-tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 10px;
+  font-weight: 700;
+}
+
+.vn-lens-phrase-text {
+  font-size: 14.5px;
+  line-height: 1.55;
+  color: var(--paper);
+  font-style: italic;
+  opacity: 0.95;
+}
+
+/* ──────────────────────────────────────────────
+   TIER 5 — Conclusion pull quote
+   ────────────────────────────────────────────── */
+.vn-lens-conclusion {
+  max-width: 880px;
+  padding: 48px 56px;
+  border-left: 4px solid var(--gold);
+  background: var(--paper);
+  margin-bottom: 0;
+}
+
+.vn-lens-conclusion-mark {
+  font-family: 'Fraunces', Georgia, serif;
+  font-size: 80px;
+  line-height: 0.5;
+  color: var(--gold);
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 700;
+}
+
+.vn-lens-conclusion p {
+  font-family: 'Fraunces', Georgia, serif;
+  font-size: 22px;
+  line-height: 1.5;
+  color: var(--ink);
+  font-style: italic;
+  margin: 0;
+  font-weight: 500;
+}
+
+/* ──────────────────────────────────────────────
+   EN placeholder
+   ────────────────────────────────────────────── */
+.vn-lens-placeholder {
+  max-width: 720px;
+  padding: 48px 56px;
+  background: var(--paper);
+  border: 1px dashed rgba(26, 20, 16, 0.2);
+  text-align: center;
+}
+
+.vn-lens-placeholder-flag {
+  font-size: 36px;
+  margin-bottom: 16px;
+}
+
+.vn-lens-placeholder p {
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--ink);
+  opacity: 0.75;
+  margin: 0 0 20px;
+}
+
+.vn-lens-placeholder a {
+  display: inline-block;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--paper);
+  background: var(--ink);
+  padding: 12px 22px;
+  border-radius: 2px;
+  font-weight: 600;
+  transition: opacity 0.2s;
+}
+
+.vn-lens-placeholder a:hover {
+  opacity: 0.85;
+}
+
+/* ──────────────────────────────────────────────
+   Mobile responsive
+   ────────────────────────────────────────────── */
+@media (max-width: 900px) {
+  .vn-lens { padding: 64px 6% 80px; }
+  .vn-lens .section-title { font-size: clamp(26px, 6vw, 36px); }
+  .vn-lens-hero { grid-template-columns: 1fr; gap: 16px; }
+  .vn-lens-hero-divider { padding: 4px 0; }
+  .vn-lens-problems { grid-template-columns: 1fr; gap: 20px; }
+  .vn-lens-problem { padding: 28px 24px; }
+  .vn-lens-title { font-size: 20px; }
+  .vn-lens-toolkit { padding: 40px 28px; }
+  .vn-lens-phrases { grid-template-columns: 1fr; gap: 16px; }
+  .vn-lens-conclusion { padding: 32px 28px; }
+  .vn-lens-conclusion p { font-size: 18px; }
+  .vn-lens-matrix { overflow-x: auto; }
+  .vn-lens-matrix table { min-width: 640px; }
+  .vn-lens-placeholder { padding: 32px 24px; }
+}
+
+@media (max-width: 640px) {
+  .vn-lens-matrix th,
+  .vn-lens-matrix td {
+    padding: 14px 12px;
+    font-size: 13px;
+  }
+}
+
+/* ──────────────────────────────────────────────
+   Dark mode
+   ────────────────────────────────────────────── */
+[data-theme="dark"] .vn-lens {
+  background: #0f0d0b;
+  border-top-color: var(--paper);
+}
+
+[data-theme="dark"] .vn-lens .section-title,
+[data-theme="dark"] .vn-lens .section-intro,
+[data-theme="dark"] .vn-lens-title,
+[data-theme="dark"] .vn-lens-desc,
+[data-theme="dark"] .vn-lens-fix,
+[data-theme="dark"] .vn-lens-conclusion p,
+[data-theme="dark"] .vn-lens-placeholder p {
+  color: #f5f1eb;
+}
+
+[data-theme="dark"] .vn-lens-hero-col,
+[data-theme="dark"] .vn-lens-problem,
+[data-theme="dark"] .vn-lens-conclusion,
+[data-theme="dark"] .vn-lens-placeholder,
+[data-theme="dark"] .vn-lens-matrix table {
+  background: #1c1815;
+  border-color: rgba(245, 241, 235, 0.1);
+}
+
+[data-theme="dark"] .vn-lens-hero-col li {
+  color: #f5f1eb;
+  border-bottom-color: rgba(245, 241, 235, 0.08);
+}
+
+[data-theme="dark"] .vn-lens-matrix td {
+  color: #f5f1eb;
+  border-bottom-color: rgba(245, 241, 235, 0.08);
+}
+
+[data-theme="dark"] .vn-lens-matrix th {
+  border-bottom-color: var(--paper);
+}
+
+[data-theme="dark"] .vn-lens-toolkit {
+  background: #050403;
+  border: 1px solid rgba(196, 146, 60, 0.3);
+}
