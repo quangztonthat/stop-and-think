@@ -395,4 +395,22 @@ window.STOP_AND_THINK_BOOKS = [
     keywords: ['damodaran', 'valuation', 'narrative', 'numbers', 'story', 'dcf', 'twitter', 'uber'],
     related: ['margin-of-safety', 'fooled-by-randomness', 'psychology-of-money']
   }
+  ,
+  {
+    slug: 'misbehaving',
+    vol: '25',
+    title: 'Misbehaving',
+    author: 'Richard Thaler',
+    year: 2015,
+    readingTime: 14,
+    category: 'tu-duy',
+    categoryLabel: 'Tu duy',
+    titleEn: 'Misbehaving',
+    summaryEn: 'Classical economics assumes Econs - rational, no emotion. Thaler proves humans are Humans - bias, emotion, systematic errors. The making of behavioral economics, Nobel 2017.',
+    categoryLabelEn: 'Thinking',
+    cover: 'navy',
+    summary: 'Kinh te co dien gia dinh con nguoi la Econ - rational. Thaler chung minh: con nguoi la Human - bias, emotion, sai he thong. Su ra doi cua kinh te hanh vi, Nobel 2017.',
+    keywords: ['thaler', 'behavioral economics', 'nudge', 'mental accounting', 'endowment', 'sunk cost', 'nobel'],
+    related: ['thinking-fast-slow', 'atomic-habits', 'thinking-in-bets']
+  }
 ];

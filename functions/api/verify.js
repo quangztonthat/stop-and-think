@@ -24,7 +24,8 @@ const PAGE_TO_PATH = {
   'stolen-focus': '/stolen-focus',
   'same-as-ever': '/same-as-ever',
   'margin-of-safety': '/margin-of-safety',
-  'narrative-and-numbers': '/narrative-and-numbers'
+  'narrative-and-numbers': '/narrative-and-numbers',
+  'misbehaving': '/misbehaving'
 };
 
 export async function onRequestGet({ request, env }) {
