@@ -26,7 +26,8 @@ const PAGE_TO_PATH = {
   'margin-of-safety': '/margin-of-safety',
   'narrative-and-numbers': '/narrative-and-numbers',
   'misbehaving': '/misbehaving',
-  'the-big-short': '/the-big-short'
+  'the-big-short': '/the-big-short',
+  'die-with-zero': '/die-with-zero'
 };
 
 export async function onRequestGet({ request, env }) {

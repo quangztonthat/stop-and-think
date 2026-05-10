@@ -431,4 +431,22 @@ window.STOP_AND_THINK_BOOKS = [
     keywords: ['lewis', 'big short', '2008 crisis', 'subprime', 'cdo', 'cds', 'burry', 'eisman', 'contrarian'],
     related: ['margin-of-safety', 'fooled-by-randomness', 'narrative-and-numbers']
   }
+  ,
+  {
+    slug: 'die-with-zero',
+    vol: '27',
+    title: 'Die with Zero',
+    author: 'Bill Perkins',
+    year: 2020,
+    readingTime: 14,
+    category: 'triet-ly-song',
+    categoryLabel: 'Triet ly song',
+    titleEn: 'Die with Zero',
+    summaryEn: 'Goal of life is not maximum money at death, but maximum fulfillment. Memory dividends compound. Time-buckets show experience window per decade. Give while alive, not in inheritance.',
+    categoryLabelEn: 'Philosophy',
+    cover: 'copper',
+    summary: 'Muc tieu doi khong phai chet voi nhieu tien nhat - ma chet voi nhieu fulfillment nhat. Memory dividend compound. Time-buckets cho experience theo decade. Cho khi con song, khong inheritance.',
+    keywords: ['perkins', 'die with zero', 'memory dividend', 'time bucket', 'fulfillment', 'inheritance', 'fire'],
+    related: ['psychology-of-money', 'same-as-ever', 'stillness']
+  }
 ];
