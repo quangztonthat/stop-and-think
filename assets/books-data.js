@@ -413,4 +413,22 @@ window.STOP_AND_THINK_BOOKS = [
     keywords: ['thaler', 'behavioral economics', 'nudge', 'mental accounting', 'endowment', 'sunk cost', 'nobel'],
     related: ['thinking-fast-slow', 'atomic-habits', 'thinking-in-bets']
   }
+  ,
+  {
+    slug: 'the-big-short',
+    vol: '26',
+    title: 'The Big Short',
+    author: 'Michael Lewis',
+    year: 2010,
+    readingTime: 14,
+    category: 'tai-chinh',
+    categoryLabel: 'Tai chinh',
+    titleEn: 'The Big Short',
+    summaryEn: '2008 mortgage crisis was not an accident. Four systems failed at once. Four outsiders saw what others refused to see, and shorted. Lessons on conviction, edge, and the cost of being right early.',
+    categoryLabelEn: 'Finance',
+    cover: 'rust',
+    summary: '2008 khong phai tai nan. 4 he thong fail cung luc. 4 outsider thay dieu nguoi khac khong muon thay - va short. Bai hoc ve conviction, edge, va cai gia cua viec dung som.',
+    keywords: ['lewis', 'big short', '2008 crisis', 'subprime', 'cdo', 'cds', 'burry', 'eisman', 'contrarian'],
+    related: ['margin-of-safety', 'fooled-by-randomness', 'narrative-and-numbers']
+  }
 ];

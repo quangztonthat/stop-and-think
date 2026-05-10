@@ -25,7 +25,8 @@ const PAGE_TO_PATH = {
   'same-as-ever': '/same-as-ever',
   'margin-of-safety': '/margin-of-safety',
   'narrative-and-numbers': '/narrative-and-numbers',
-  'misbehaving': '/misbehaving'
+  'misbehaving': '/misbehaving',
+  'the-big-short': '/the-big-short'
 };
 
 export async function onRequestGet({ request, env }) {
