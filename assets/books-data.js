@@ -377,4 +377,22 @@ window.STOP_AND_THINK_BOOKS = [
     keywords: ['klarman', 'value investing', 'margin of safety', 'mr market', 'risk', 'baupost'],
     related: ['fooled-by-randomness', 'psychology-of-money', 'the-outsiders']
   }
+  ,
+  {
+    slug: 'narrative-and-numbers',
+    vol: '24',
+    title: 'Narrative and Numbers',
+    author: 'Aswath Damodaran',
+    year: 2017,
+    readingTime: 14,
+    category: 'tai-chinh',
+    categoryLabel: 'Tài chính',
+    titleEn: 'Narrative and Numbers',
+    summaryEn: 'Stories without numbers are fairy tales. Numbers without stories are spreadsheet exercises. Damodaran\'s 6-step bridge from narrative to valuation, with case studies on Twitter, Uber, Apple.',
+    categoryLabelEn: 'Finance',
+    cover: 'copper',
+    summary: 'Câu chuyện không số = mơ mộng. Số không câu chuyện = robot. Damodaran 6-bước cầu nối story → numbers, case Twitter, Uber, Apple.',
+    keywords: ['damodaran', 'valuation', 'narrative', 'numbers', 'story', 'dcf', 'twitter', 'uber'],
+    related: ['margin-of-safety', 'fooled-by-randomness', 'psychology-of-money']
+  }
 ];

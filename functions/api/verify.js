@@ -23,7 +23,8 @@ const PAGE_TO_PATH = {
   'the-outsiders': '/the-outsiders',
   'stolen-focus': '/stolen-focus',
   'same-as-ever': '/same-as-ever',
-  'margin-of-safety': '/margin-of-safety'
+  'margin-of-safety': '/margin-of-safety',
+  'narrative-and-numbers': '/narrative-and-numbers'
 };
 
 export async function onRequestGet({ request, env }) {
