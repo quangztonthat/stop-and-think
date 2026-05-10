@@ -9,7 +9,7 @@ const ALLOWED_PAGES = new Set([
   'innovators-dilemma', 'intelligence-trap',
   'search-for-meaning', 'the-alchemist',
   'psychology-of-money', 'mindset', 'range',
-  'deep-work', 'stillness', 'sapiens'
+  'deep-work', 'stillness', 'sapiens', 'the-outsiders', 'stolen-focus', 'same-as-ever', 'margin-of-safety'
 ]);
 
 const MAX_NAME = 80;

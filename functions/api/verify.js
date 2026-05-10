@@ -19,7 +19,11 @@ const PAGE_TO_PATH = {
   'range': '/range',
   'deep-work': '/deep-work',
   'stillness': '/stillness',
-  'sapiens': '/sapiens'
+  'sapiens': '/sapiens',
+  'the-outsiders': '/the-outsiders',
+  'stolen-focus': '/stolen-focus',
+  'same-as-ever': '/same-as-ever',
+  'margin-of-safety': '/margin-of-safety'
 };
 
 export async function onRequestGet({ request, env }) {
