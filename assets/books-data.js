@@ -449,4 +449,22 @@ window.STOP_AND_THINK_BOOKS = [
     keywords: ['perkins', 'die with zero', 'memory dividend', 'time bucket', 'fulfillment', 'inheritance', 'fire'],
     related: ['psychology-of-money', 'same-as-ever', 'stillness']
   }
+  ,
+  {
+    slug: 'the-most-important-thing',
+    vol: '28',
+    title: 'The Most Important Thing',
+    author: 'Howard Marks',
+    year: 2011,
+    readingTime: 14,
+    category: 'tai-chinh',
+    categoryLabel: 'Tai chinh',
+    titleEn: 'The Most Important Thing',
+    summaryEn: 'Successful investing is not doing the right thing - it is avoiding the wrong thing. Howard Marks Oaktree, 21 lenses for second-level thinking, pendulum cycles, and asymmetric defensive investing.',
+    categoryLabelEn: 'Finance',
+    cover: 'navy',
+    summary: 'Dau tu thanh cong khong phai doing the right thing - ma avoiding the wrong thing. Howard Marks Oaktree, 21 lens cho second-level thinking, pendulum cycles, defensive investing bat doi xung.',
+    keywords: ['marks', 'oaktree', 'second-level', 'pendulum', 'defensive', 'risk', 'cycles', 'distressed'],
+    related: ['margin-of-safety', 'fooled-by-randomness', 'the-big-short']
+  }
 ];

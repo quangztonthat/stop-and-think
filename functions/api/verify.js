@@ -27,7 +27,8 @@ const PAGE_TO_PATH = {
   'narrative-and-numbers': '/narrative-and-numbers',
   'misbehaving': '/misbehaving',
   'the-big-short': '/the-big-short',
-  'die-with-zero': '/die-with-zero'
+  'die-with-zero': '/die-with-zero',
+  'the-most-important-thing': '/the-most-important-thing'
 };
 
 export async function onRequestGet({ request, env }) {
