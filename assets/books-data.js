@@ -467,4 +467,22 @@ window.STOP_AND_THINK_BOOKS = [
     keywords: ['marks', 'oaktree', 'second-level', 'pendulum', 'defensive', 'risk', 'cycles', 'distressed'],
     related: ['margin-of-safety', 'fooled-by-randomness', 'the-big-short']
   }
+  ,
+  {
+    slug: 'more-than-you-know',
+    vol: '29',
+    title: 'More Than You Know',
+    author: 'Michael J. Mauboussin',
+    year: 2006,
+    readingTime: 14,
+    category: 'tai-chinh',
+    categoryLabel: 'Tai chinh',
+    titleEn: 'More Than You Know',
+    summaryEn: 'Investing is multidisciplinary art - not just finance. 38 essays cross domain (psychology, complex systems, biology, network theory). Process over outcome, Babe Ruth effect, multiple time horizons, complexity.',
+    categoryLabelEn: 'Finance',
+    cover: 'copper',
+    summary: 'Dau tu la nghe thuat lien nganh - khong chi finance. 38 essay cross domain (psychology, complex systems, biology). Process > outcome, Babe Ruth effect, multiple time horizons, complexity.',
+    keywords: ['mauboussin', 'process', 'outcome', 'babe ruth', 'time horizon', 'complexity', 'multidisciplinary'],
+    related: ['the-most-important-thing', 'fooled-by-randomness', 'thinking-in-bets']
+  }
 ];

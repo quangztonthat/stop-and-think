@@ -28,7 +28,8 @@ const PAGE_TO_PATH = {
   'misbehaving': '/misbehaving',
   'the-big-short': '/the-big-short',
   'die-with-zero': '/die-with-zero',
-  'the-most-important-thing': '/the-most-important-thing'
+  'the-most-important-thing': '/the-most-important-thing',
+  'more-than-you-know': '/more-than-you-know'
 };
 
 export async function onRequestGet({ request, env }) {
