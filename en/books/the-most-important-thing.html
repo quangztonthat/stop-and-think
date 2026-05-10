@@ -1779,9 +1779,7 @@ function switchPrompt(idx, dot) {
   document.querySelectorAll('.journal-dot').forEach(function(d) { d.classList.remove('active'); });
   if (dot) dot.classList.add('active');
   var isEN = /^\/en\//.test(window.location.pathname);
-  var L = isEN
-    ? { num: 'Prompt', placeholder: 'Write your thoughts here... (auto-saved)', exportBtn: 'Export journal', saved: 'Saved ✓', noEntry: '(not yet written)' }
-    : { num: 'Câu hỏi', placeholder: 'Viết suy nghĩ của bạn ở đây... (tự động lưu)', exportBtn: 'Xuất nhật ký', saved: 'Đã lưu ✓', noEntry: '(chưa viết)' };
+  var L = { num: 'Prompt', placeholder: 'Write your thoughts here... (auto-saved)', exportBtn: 'Export journal', saved: 'Saved ✓', noEntry: '(not yet written)' };
   function esc(s) { return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
   var num = String(idx + 1).padStart(2, '0');
   c.innerHTML =
@@ -1819,13 +1817,13 @@ function switchPrompt(idx, dot) {
   if (exportBtn) {
     exportBtn.addEventListener('click', function() {
       var slug = (window.location.pathname.match(/\/books\/([^./]+)/) || [])[1] || 'journal';
-      var lines = [(isEN ? 'JOURNAL' : 'NHẬT KÝ') + ' — ' + slug.toUpperCase(), '='.repeat(60), ''];
+      var lines = ['JOURNAL' + ' — ' + slug.toUpperCase(), '='.repeat(60), ''];
       journalPrompts.forEach(function(pp, i) {
         var k = 'journal_' + window.location.pathname + '_' + i;
         var v = '';
         try { v = localStorage.getItem(k) || ''; } catch(_) {}
         lines.push('─'.repeat(60));
-        lines.push((isEN ? 'PROMPT ' : 'CÂU HỎI ') + (i + 1) + ':');
+        lines.push('PROMPT ' + (i + 1) + ':');
         lines.push(pp.q);
         lines.push('─'.repeat(60));
         lines.push('');
