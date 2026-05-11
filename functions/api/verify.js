@@ -21,15 +21,7 @@ const PAGE_TO_PATH = {
   'stillness': '/stillness',
   'sapiens': '/sapiens',
   'the-outsiders': '/the-outsiders',
-  'stolen-focus': '/stolen-focus',
-  'same-as-ever': '/same-as-ever',
-  'margin-of-safety': '/margin-of-safety',
-  'narrative-and-numbers': '/narrative-and-numbers',
-  'misbehaving': '/misbehaving',
-  'the-big-short': '/the-big-short',
-  'die-with-zero': '/die-with-zero',
-  'the-most-important-thing': '/the-most-important-thing',
-  'more-than-you-know': '/more-than-you-know'
+  
 };
 
 export async function onRequestGet({ request, env }) {
