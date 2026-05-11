@@ -1294,5 +1294,42 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 });
 </script>
+<script>
+// Auto-hide scroll-hint when content doesn't overflow horizontally
+(function(){
+  function updateScrollHints() {
+    document.querySelectorAll('.scroll-hint').forEach(function(hint){
+      var nxt = hint.nextElementSibling;
+      while (nxt && !(nxt.classList.contains('chapter-grid') || nxt.classList.contains('laws-grid'))) {
+        nxt = nxt.nextElementSibling;
+      }
+      if (!nxt) return;
+      // Skip if container is currently hidden (display:none from tab filter)
+      var grid = nxt;
+      var visible = grid.offsetParent !== null;
+      if (!visible) {
+        hint.style.display = '';
+        return;
+      }
+      var overflows = grid.scrollWidth > grid.clientWidth + 2;
+      hint.style.display = overflows ? '' : 'none';
+    });
+  }
+  window.addEventListener('load', updateScrollHints);
+  window.addEventListener('resize', updateScrollHints);
+  // Hook into chapter tab clicks — recheck after filter
+  document.addEventListener('click', function(e){
+    if (e.target && e.target.classList && e.target.classList.contains('chapter-tab-btn')) {
+      setTimeout(updateScrollHints, 60);
+    }
+  });
+  // Initial check
+  if (document.readyState === 'complete') {
+    updateScrollHints();
+  } else {
+    document.addEventListener('DOMContentLoaded', updateScrollHints);
+  }
+})();
+</script>
 </body>
 </html>

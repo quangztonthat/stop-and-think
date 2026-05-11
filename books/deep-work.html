@@ -1231,14 +1231,89 @@ document.addEventListener('DOMContentLoaded', function() {
 </div>
 </div>
 </a>
-<a class="snst-related-card" href="../books/range.html">
-<div class="snst-related-cover snst-cover-rust">
-<div class="snst-related-cover-num" style="">Vol. 15 · 2019 · ~14 phút</div>
-<div class="snst-related-cover-title" style="">Range</div>
-<div class="snst-related-cover-author" style="">David Epstein</div>
+</section><footer class="footer">
+<div class="footer-quote" style="">"Tập trung là vẻ đẹp của thời đại này — không phải vì hiếm, mà vì đang biến mất."</div>
+<div class="footer-brand" style="">Stop <span class="amp" style="">&amp;</span> Think</div>
+<p style="">Đọc cùng một người đọc khác · By Quang Ton</p>
+<div class="footer-bottom" style="">© 2026 · Stop &amp; Think · By Quang Ton</div>
+</footer>
+<script defer="" src="/assets/books-data.js"></script>
+<script defer="" src="/assets/library.v4.js"></script><div class="snst-overlay">
+<div class="snst-modal">
+<div class="snst-modal-head">
+<svg fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<circle cx="11" cy="11" r="8"></circle><line x1="21" x2="16.65" y1="21" y2="16.65"></line>
+</svg>
+<input autocomplete="off" class="snst-input" placeholder="Tìm sách theo tên, tác giả, từ khóa..." type="text"/>
+<button class="snst-close">ESC</button>
 </div>
-<div class="snst-related-meta">
-<span class="snst-related-tag" style="">Sự nghiệp</span>
-<p class="snst-related-summary" style="">Roger Federer vs Tiger Woods. Trong thế giới phức tạp, đi rộng — sample, lateral thinking, quit chiến lược — thắng đào sâu sớm.</p>
-<div class="snst-related-arrow">
-<
+<div class="snst-results"></div>
+<div class="snst-shortcut">
+<span style=""><kbd style="">↑</kbd><kbd style="">↓</kbd> chọn</span>
+<span style=""><kbd style="">↵</kbd> mở</span>
+<span style=""><kbd style="">Esc</kbd> đóng</span>
+</div>
+</div>
+</div>
+<script defer="" src="/assets/nav-spy.js"></script>
+<script data-cf-beacon='{"token":"a1b2c3d4e5f6789"}' defer="" src="https://static.cloudflareinsights.com/beacon.min.js"></script>
+<script>
+function filterChapters(part, btn) {
+  document.querySelectorAll('.chapter-tab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.rule-section[data-part]').forEach(sec => {
+    sec.style.display = (part === 'all' || sec.dataset.part === part) ? '' : 'none';
+  });
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  // Default: show only first part (skip Tất cả default)
+  const allBtns = document.querySelectorAll('.chapter-tab-btn');
+  for (let i = 0; i < allBtns.length; i++) {
+    const oc = allBtns[i].getAttribute('onclick') || '';
+    if (oc.indexOf("'all'") === -1 && oc.indexOf('filterChapters(') !== -1) {
+      allBtns[i].click();
+      break;
+    }
+  }
+});
+</script>
+<script defer="" src="/edit-mode.js"></script>
+<script>
+// Auto-hide scroll-hint when content doesn't overflow horizontally
+(function(){
+  function updateScrollHints() {
+    document.querySelectorAll('.scroll-hint').forEach(function(hint){
+      var nxt = hint.nextElementSibling;
+      while (nxt && !(nxt.classList.contains('chapter-grid') || nxt.classList.contains('laws-grid'))) {
+        nxt = nxt.nextElementSibling;
+      }
+      if (!nxt) return;
+      // Skip if container is currently hidden (display:none from tab filter)
+      var grid = nxt;
+      var visible = grid.offsetParent !== null;
+      if (!visible) {
+        hint.style.display = '';
+        return;
+      }
+      var overflows = grid.scrollWidth > grid.clientWidth + 2;
+      hint.style.display = overflows ? '' : 'none';
+    });
+  }
+  window.addEventListener('load', updateScrollHints);
+  window.addEventListener('resize', updateScrollHints);
+  // Hook into chapter tab clicks — recheck after filter
+  document.addEventListener('click', function(e){
+    if (e.target && e.target.classList && e.target.classList.contains('chapter-tab-btn')) {
+      setTimeout(updateScrollHints, 60);
+    }
+  });
+  // Initial check
+  if (document.readyState === 'complete') {
+    updateScrollHints();
+  } else {
+    document.addEventListener('DOMContentLoaded', updateScrollHints);
+  }
+})();
+</script>
+</body></html>
