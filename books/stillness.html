@@ -899,12 +899,14 @@ let quizScore = 0;
 let quizAnswered = false;
 
 function renderCard() {
+  var flashcardEl = document.getElementById('flashcard');
+  if (!flashcardEl) return;  // graceful skip if section missing
   document.getElementById('cardQuestion').textContent = flashcards[currentCard].q;
   document.getElementById('cardAnswer').textContent = flashcards[currentCard].a;
   document.getElementById('cardCurrent').textContent = currentCard + 1;
   document.getElementById('cardTotal').textContent = flashcards.length;
   document.getElementById('cardKnown').textContent = knownCards.size;
-  document.getElementById('flashcard').classList.remove('flipped');
+  flashcardEl.classList.remove('flipped');
 }
 function flipCard() { document.getElementById('flashcard').classList.toggle('flipped'); }
 function nextCard() { currentCard = (currentCard + 1) % flashcards.length; renderCard(); }
