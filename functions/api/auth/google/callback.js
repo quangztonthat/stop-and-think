@@ -51,7 +51,11 @@ export async function onRequestGet({ request, env }) {
     return errorPage('Link hết hạn', 'Quá 10 phút từ lúc bắt đầu đăng nhập. Thử lại.');
   }
 
-  const safeRedirect = (stateRow.redirect || '/').startsWith('/') ? stateRow.redirect : '/';
+  // Defense-in-depth: dù google.js đã validate khi lưu DB, vẫn re-check ở đây.
+  // Chặn protocol-relative URL (//evil.com) để tránh open redirect nếu DB
+  // hoặc validation phía trước bị compromise.
+  const stored = stateRow.redirect || '/';
+  const safeRedirect = stored.startsWith('/') && !stored.startsWith('//') ? stored : '/';
 
   // ─── 2. Đổi code → token ───
   const siteUrl = env.SITE_URL || `${url.protocol}//${url.host}`;

@@ -89,8 +89,9 @@
       aAcc.title = user.email || '';
       dd.appendChild(aAcc);
 
+      // href='#' để click không navigate (server endpoint chỉ chấp nhận POST).
       var aOut = document.createElement('a');
-      aOut.href = '/api/auth/logout';
+      aOut.href = '#';
       aOut.textContent = 'Đăng xuất';
       aOut.addEventListener('click', function (ev) {
         ev.preventDefault();
