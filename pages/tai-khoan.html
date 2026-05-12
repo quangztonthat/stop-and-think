@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Tài khoản — Stop &amp; Think</title>
+<script id="dark-mode-init">(function(){try{var t=localStorage.getItem('st-theme');if(!t){t=window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';}document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+<meta name="description" content="Tài khoản của bạn trên Stop & Think."/>
+<meta name="robots" content="noindex,nofollow"/>
+<link href="../favicon.svg" rel="icon" type="image/svg+xml"/>
+<link href="../apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180"/>
+<link as="font" crossorigin="" href="/assets/fonts/inter-vietnamese-400-normal.woff2" rel="preload" type="font/woff2"/>
+<link as="font" crossorigin="" href="/assets/fonts/fraunces-vietnamese-700-normal.woff2" rel="preload" type="font/woff2"/>
+<link href="/assets/fonts.v1.css" rel="stylesheet"/>
+<style>
+:root {
+  --rust: #8b3a2b; --rust-deep: #5e2418;
+  --copper: #c4923c; --copper-light: #d9b073;
+  --cream: #ffffff; --cream-soft: #f7f7f7; --paper-deep: #f5ede0;
+  --ink: #1a1410; --muted: #4a3f33;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  background: var(--paper-deep); color: var(--ink);
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  font-size: 17px; line-height: 1.6;
+  min-height: 100vh;
+  display: flex; flex-direction: column;
+}
+h1, .brand, .acc-h1 { font-family: 'Fraunces', Georgia, serif; }
+.auth-header { padding: 20px 32px; }
+.brand {
+  font-size: 20px; font-weight: 600; letter-spacing: -0.02em;
+  display: inline-flex; align-items: center; gap: 10px;
+  text-decoration: none; color: var(--ink);
+}
+.brand .dot { width: 6px; height: 6px; background: var(--copper); border-radius: 50%; }
+.brand .amp { color: var(--rust); font-style: normal; font-weight: 400; }
+.acc-wrap { flex: 1; display: flex; align-items: flex-start; justify-content: center; padding: 32px 20px 64px; }
+.acc-card {
+  width: 100%; max-width: 560px;
+  background: var(--cream-soft);
+  border: 2px solid var(--ink);
+  padding: 40px 36px;
+  position: relative;
+}
+.acc-card::before {
+  content: ''; position: absolute; top: -2px; left: -2px;
+  width: 56px; height: 4px; background: var(--rust);
+}
+.acc-tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--rust); margin-bottom: 14px;
+}
+.acc-h1 { font-size: 32px; font-weight: 700; line-height: 1.15; margin-bottom: 24px; }
+.skel { color: var(--muted); }
+
+.row {
+  display: flex; justify-content: space-between; align-items: baseline;
+  padding: 14px 0; border-bottom: 1px solid rgba(26, 20, 16, 0.12);
+  gap: 16px;
+}
+.row:last-of-type { border-bottom: none; }
+.row .k {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase;
+  color: var(--muted); flex-shrink: 0;
+}
+.row .v { font-size: 16px; text-align: right; word-break: break-word; }
+.row .v.muted { color: var(--muted); }
+
+.avatar {
+  width: 64px; height: 64px; border-radius: 50%;
+  border: 2px solid var(--ink); background: var(--paper-deep);
+  display: inline-flex; align-items: center; justify-content: center;
+  font-family: 'Fraunces', serif; font-size: 26px; font-weight: 700;
+  color: var(--rust); overflow: hidden;
+  margin-bottom: 16px;
+}
+.avatar img { width: 100%; height: 100%; object-fit: cover; }
+
+.btn-row { display: flex; gap: 12px; margin-top: 32px; flex-wrap: wrap; }
+.btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  padding: 12px 22px; font-size: 13px; font-weight: 600;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  border: 1.5px solid var(--ink); cursor: pointer;
+  font-family: 'Manrope', sans-serif;
+  transition: transform 0.15s, box-shadow 0.15s;
+  text-decoration: none;
+  background: var(--cream); color: var(--ink);
+}
+.btn:hover { transform: translate(-2px, -2px); box-shadow: 4px 4px 0 var(--copper); }
+.btn-danger { background: var(--rust); color: var(--cream); border-color: var(--rust); }
+.btn-danger:hover { box-shadow: 4px 4px 0 var(--ink); }
+.btn-ghost { background: transparent; }
+
+.badge {
+  display: inline-block; padding: 2px 8px; font-size: 11px;
+  font-family: 'JetBrains Mono', monospace; letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.badge-ok { background: rgba(196, 146, 60, 0.18); color: var(--rust-deep); }
+.badge-warn { background: rgba(139, 58, 43, 0.12); color: var(--rust); }
+
+[data-theme="dark"] body { background: #1a1410; color: #f5ede0; }
+[data-theme="dark"] .brand { color: #f5ede0; }
+[data-theme="dark"] .acc-card { background: #2a201a; border-color: #f5ede0; }
+[data-theme="dark"] .acc-card::before { background: var(--copper); }
+[data-theme="dark"] .row { border-bottom-color: rgba(245, 237, 224, 0.12); }
+[data-theme="dark"] .row .k, [data-theme="dark"] .skel, [data-theme="dark"] .row .v.muted { color: #c4b59f; }
+[data-theme="dark"] .acc-h1 { color: #f5ede0; }
+[data-theme="dark"] .avatar { background: #1a1410; border-color: #f5ede0; color: var(--copper); }
+[data-theme="dark"] .btn { background: #2a201a; color: #f5ede0; border-color: #c4b59f; }
+[data-theme="dark"] .btn-danger { background: var(--copper); color: #1a1410; border-color: var(--copper); }
+[data-theme="dark"] .badge-ok { background: rgba(196, 146, 60, 0.22); color: var(--copper-light); }
+
+@media (max-width: 480px) {
+  .acc-card { padding: 32px 22px; }
+  .acc-h1 { font-size: 26px; }
+  .row { flex-direction: column; gap: 4px; }
+  .row .v { text-align: left; }
+}
+</style>
+</head>
+<body>
+<header class="auth-header">
+  <a class="brand" href="/">
+    <span class="dot"></span>Stop <span class="amp">&amp;</span> Think
+  </a>
+</header>
+
+<main class="acc-wrap">
+  <div class="acc-card" id="card">
+    <div class="acc-tag">Tài khoản</div>
+    <h1 class="acc-h1 skel" id="welcome">Đang tải…</h1>
+    <p class="skel" id="loading">Đang kiểm tra phiên đăng nhập…</p>
+  </div>
+</main>
+
+<script>
+function initial(name, email) {
+  var src = (name || email || '?').trim();
+  return src.charAt(0).toUpperCase();
+}
+function fmtDate(unix) {
+  if (!unix) return '—';
+  var d = new Date(unix * 1000);
+  return d.toLocaleDateString('vi-VN', { year: 'numeric', month: 'long', day: 'numeric' });
+}
+function escHtml(s) {
+  return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+
+(async function () {
+  let user = null;
+  try {
+    const res = await fetch('/api/auth/me', {
+      credentials: 'include',
+      headers: { accept: 'application/json' }
+    });
+    if (res.ok) {
+      const data = await res.json();
+      user = data.user || null;
+    }
+  } catch (e) { /* network — treat as anonymous */ }
+
+  if (!user) {
+    var redir = encodeURIComponent('/tai-khoan');
+    window.location.replace('/dang-nhap?redirect=' + redir);
+    return;
+  }
+
+  // sessionStorage cache cho nav helper
+  try {
+    sessionStorage.setItem('st_user_v1', JSON.stringify({ user: user, t: Date.now() }));
+  } catch (e) {}
+
+  var firstName = (user.name || user.email || '').split(/\s+/)[0];
+  var verifyBadge = user.email_verified
+    ? '<span class="badge badge-ok">Đã xác thực</span>'
+    : '<span class="badge badge-warn">Chưa xác thực</span>';
+
+  var avatarHtml = user.avatar_url
+    ? '<img src="' + escHtml(user.avatar_url) + '" alt="">'
+    : escHtml(initial(user.name, user.email));
+
+  document.getElementById('card').innerHTML = `
+    <div class="acc-tag">Tài khoản</div>
+    <div class="avatar">${avatarHtml}</div>
+    <h1 class="acc-h1">Chào ${escHtml(firstName)}</h1>
+
+    <div class="row">
+      <span class="k">Tên</span>
+      <span class="v">${escHtml(user.name || '—')}</span>
+    </div>
+    <div class="row">
+      <span class="k">Email</span>
+      <span class="v">${escHtml(user.email || '—')} &nbsp; ${verifyBadge}</span>
+    </div>
+    ${user.created_at ? `
+    <div class="row">
+      <span class="k">Tham gia</span>
+      <span class="v muted">${fmtDate(user.created_at)}</span>
+    </div>` : ''}
+
+    <div class="btn-row">
+      <a class="btn" href="/">← Về trang chủ</a>
+      <button class="btn btn-danger" id="logoutBtn" type="button">Đăng xuất</button>
+    </div>
+  `;
+
+  document.getElementById('logoutBtn').addEventListener('click', async () => {
+    try {
+      await fetch('/api/auth/logout', { method: 'POST', credentials: 'include' });
+    } catch (e) {}
+    try { sessionStorage.removeItem('st_user_v1'); } catch (e) {}
+    window.location.href = '/';
+  });
+})();
+</script>
+</body>
+</html>

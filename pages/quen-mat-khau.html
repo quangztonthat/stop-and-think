@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Quên mật khẩu — Stop &amp; Think</title>
+<script id="dark-mode-init">(function(){try{var t=localStorage.getItem('st-theme');if(!t){t=window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';}document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+<meta name="description" content="Yêu cầu đặt lại mật khẩu Stop & Think."/>
+<meta name="robots" content="noindex,nofollow"/>
+<link href="../favicon.svg" rel="icon" type="image/svg+xml"/>
+<link as="font" crossorigin="" href="/assets/fonts/inter-vietnamese-400-normal.woff2" rel="preload" type="font/woff2"/>
+<link as="font" crossorigin="" href="/assets/fonts/fraunces-vietnamese-700-normal.woff2" rel="preload" type="font/woff2"/>
+<link href="/assets/fonts.v1.css" rel="stylesheet"/>
+<style>
+:root {
+  --rust:#8b3a2b; --rust-deep:#5e2418; --copper:#c4923c; --copper-light:#d9b073;
+  --cream:#ffffff; --cream-soft:#f7f7f7; --paper-deep:#f5ede0;
+  --ink:#1a1410; --muted:#4a3f33;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  background:var(--paper-deep); color:var(--ink);
+  font-family:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+  font-size:17px; line-height:1.6; min-height:100vh;
+  display:flex; flex-direction:column;
+}
+h1,.brand,.auth-h1 { font-family:'Fraunces',Georgia,serif; }
+.auth-header { padding:20px 32px; }
+.brand {
+  font-size:20px; font-weight:600; letter-spacing:-0.02em;
+  display:inline-flex; align-items:center; gap:10px;
+  text-decoration:none; color:var(--ink);
+}
+.brand .dot { width:6px; height:6px; background:var(--copper); border-radius:50%; }
+.brand .amp { color:var(--rust); font-style:normal; font-weight:400; }
+.auth-wrap { flex:1; display:flex; align-items:center; justify-content:center; padding:24px 20px 64px; }
+.auth-card {
+  width:100%; max-width:440px; background:var(--cream-soft);
+  border:2px solid var(--ink); padding:40px 32px; position:relative;
+}
+.auth-card::before {
+  content:''; position:absolute; top:-2px; left:-2px;
+  width:56px; height:4px; background:var(--rust);
+}
+.auth-tag {
+  font-family:'JetBrains Mono',monospace; font-size:11px;
+  letter-spacing:0.2em; text-transform:uppercase;
+  color:var(--rust); margin-bottom:14px;
+}
+.auth-h1 { font-size:30px; font-weight:700; line-height:1.15; margin-bottom:8px; }
+.auth-sub { font-size:15px; color:var(--muted); margin-bottom:28px; }
+.field { margin-bottom:16px; }
+.field label {
+  display:block; font-size:12px; letter-spacing:0.08em;
+  text-transform:uppercase; font-weight:600; color:var(--muted);
+  margin-bottom:6px;
+}
+.field input {
+  width:100%; padding:12px 14px; font-size:16px;
+  background:var(--cream); color:var(--ink);
+  border:1.5px solid var(--ink); border-radius:0;
+  font-family:inherit; outline:none;
+  transition:border-color 0.15s, box-shadow 0.15s;
+}
+.field input:focus { border-color:var(--rust); box-shadow:3px 3px 0 var(--copper-light); }
+.hp { position:absolute; left:-9999px; width:1px; height:1px; opacity:0; pointer-events:none; }
+.btn {
+  display:inline-flex; align-items:center; justify-content:center;
+  width:100%; padding:14px 20px; font-size:14px; font-weight:600;
+  letter-spacing:0.1em; text-transform:uppercase;
+  border:1.5px solid var(--ink); cursor:pointer;
+  font-family:'Manrope',sans-serif;
+  transition:transform 0.15s, box-shadow 0.15s;
+  background:var(--rust); color:var(--cream); border-color:var(--rust);
+}
+.btn:hover { transform:translate(-2px,-2px); box-shadow:4px 4px 0 var(--ink); }
+.btn:disabled { opacity:0.6; cursor:not-allowed; transform:none; box-shadow:none; }
+.msg { font-size:14px; padding:12px 14px; margin-bottom:16px; border-left:3px solid; }
+.msg-error { background:rgba(139,58,43,0.08); border-color:var(--rust); color:var(--rust-deep); }
+.msg-ok { background:rgba(196,146,60,0.12); border-color:var(--copper); color:var(--ink); }
+.auth-foot { font-size:14px; color:var(--muted); margin-top:20px; text-align:center; }
+.auth-foot a { color:var(--rust); font-weight:600; text-decoration:none; border-bottom:1px solid currentColor; }
+
+[data-theme="dark"] body { background:#1a1410; color:#f5ede0; }
+[data-theme="dark"] .brand { color:#f5ede0; }
+[data-theme="dark"] .auth-card { background:#2a201a; border-color:#f5ede0; }
+[data-theme="dark"] .auth-card::before { background:var(--copper); }
+[data-theme="dark"] .auth-h1 { color:#f5ede0; }
+[data-theme="dark"] .auth-sub, [data-theme="dark"] .auth-foot, [data-theme="dark"] .field label { color:#c4b59f; }
+[data-theme="dark"] .field input { background:#1a1410; color:#f5ede0; border-color:#c4b59f; }
+[data-theme="dark"] .field input:focus { border-color:var(--copper); }
+[data-theme="dark"] .btn { background:var(--copper); color:#1a1410; border-color:var(--copper); }
+
+@media (max-width:480px) { .auth-card { padding:32px 22px; } .auth-h1 { font-size:26px; } }
+</style>
+</head>
+<body>
+<header class="auth-header">
+  <a class="brand" href="/"><span class="dot"></span>Stop <span class="amp">&amp;</span> Think</a>
+</header>
+<main class="auth-wrap">
+  <div class="auth-card">
+    <div class="auth-tag">Quên mật khẩu</div>
+    <h1 class="auth-h1">Đặt lại mật khẩu</h1>
+    <p class="auth-sub">Nhập email — bạn sẽ nhận link đặt lại trong vòng vài phút.</p>
+
+    <div id="msg" class="msg" hidden></div>
+
+    <form id="form" novalidate>
+      <div class="hp"><label>Website<input type="text" name="website" tabindex="-1" autocomplete="off"/></label></div>
+      <div class="field">
+        <label for="f-email">Email</label>
+        <input id="f-email" name="email" type="email" required autocomplete="email" placeholder="ban@vidu.com"/>
+      </div>
+      <button id="btn" type="submit" class="btn">Gửi link đặt lại</button>
+    </form>
+
+    <p class="auth-foot">Nhớ lại rồi? <a href="/dang-nhap">Quay lại đăng nhập</a></p>
+  </div>
+</main>
+<script>
+const form = document.getElementById('form');
+const msg = document.getElementById('msg');
+const btn = document.getElementById('btn');
+function show(text, kind='error') {
+  msg.textContent = text;
+  msg.className = 'msg msg-' + (kind === 'ok' ? 'ok' : 'error');
+  msg.hidden = false;
+}
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  msg.hidden = true;
+  const fd = new FormData(form);
+  const payload = {
+    email: (fd.get('email') || '').toString().trim().toLowerCase(),
+    website: (fd.get('website') || '').toString()
+  };
+  btn.disabled = true; btn.textContent = 'Đang gửi…';
+  try {
+    const res = await fetch('/api/auth/forgot-password', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) show(data.error || 'Có lỗi xảy ra.');
+    else { show(data.message || 'Đã gửi.', 'ok'); form.reset(); }
+  } catch (_) {
+    show('Không kết nối được. Thử lại sau.');
+  } finally {
+    btn.disabled = false; btn.textContent = 'Gửi link đặt lại';
+  }
+});
+</script>
+</body>
+</html>
