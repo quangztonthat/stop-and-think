@@ -227,5 +227,10 @@ function initMiniBoards() { Chessboard('hookBoard', { position: 'r1bqkb1r/pp1p1p
 $(document).ready(() => { initBoard(); initMiniBoards(); setTimeout(()=>markStage(2),500); });
 </script>
 
+
+<!-- hoc-progress-widget -->
+<style>#hocPW{position:fixed;right:14px;bottom:14px;z-index:99999;font-family:Inter,system-ui,-apple-system,sans-serif}#hocPW button{display:inline-flex;align-items:center;gap:7px;border:1px solid #d9d2c7;background:#fff;color:#1a1410;font-size:13.5px;font-weight:600;padding:9px 15px;border-radius:999px;cursor:pointer;box-shadow:0 6px 22px -8px rgba(0,0,0,.4)}#hocPW button.done{background:#6fae5b;color:#fff;border-color:#6fae5b}</style>
+<div id="hocPW"><button type="button" id="hocPWb">…</button></div>
+<script>(function(){var PKEY='hoc:progress:v1',API='/api/hoc/progress';var id=location.pathname.replace(/^\/hoc\//,'').replace(/\/+$/,'').replace(/\.html$/,'');function L(){try{return JSON.parse(localStorage.getItem(PKEY)||'{}')}catch(e){return{}}}function S(p){try{localStorage.setItem(PKEY,JSON.stringify(p))}catch(e){}}var prog=L();var b=document.getElementById('hocPWb');function R(){var d=prog[id]===2;b.className=d?'done':'';b.textContent=d?'✓ Đã học xong':'Đánh dấu đã học';}b.addEventListener('click',function(){prog[id]=prog[id]===2?0:2;if(!prog[id])delete prog[id];S(prog);R();try{fetch(API,{method:'PUT',headers:{'content-type':'application/json'},credentials:'include',body:JSON.stringify({data:prog})}).catch(function(){})}catch(e){}});R();try{fetch(API,{credentials:'include'}).then(function(r){return r.ok?r.json():null}).then(function(j){if(j&&j.data&&typeof j.data==='object'){prog=j.data;S(prog);R();}}).catch(function(){})}catch(e){}})();</script>
 </body>
 </html>
