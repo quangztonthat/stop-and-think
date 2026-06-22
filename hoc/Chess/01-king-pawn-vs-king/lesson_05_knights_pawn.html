@@ -433,4 +433,34 @@ function updateProgress() {
 }
 
 function initMiniBoards() {
-  Chessboard('hookBoa
+  Chessboard('hookBoard', { position: START_FEN, draggable: false,
+    pieceTheme: 'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png' });
+
+  // Concept: just pawn g2, highlight g1 (target) + f1/h1 (attack)
+  Chessboard('conceptBoard', {
+    position: '8/8/8/8/8/8/6p1/8 w - - 0 1', draggable: false,
+    pieceTheme: 'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png' });
+  setTimeout(() => {
+    $('#conceptBoard .square-g1').addClass('highlight-corner');
+    $('#conceptBoard .square-f1').addClass('highlight-pawn-attack');
+    $('#conceptBoard .square-h1').addClass('highlight-pawn-attack');
+  }, 200);
+
+  Chessboard('selfTestBoard', { position: START_FEN, draggable: false,
+    pieceTheme: 'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png' });
+
+  // Q1: position after 2.Kh2 g1=Q+ (white K at h2, black Q at g1, black K at f3)
+  Chessboard('q1Board', {
+    position: '8/8/8/8/8/5k2/7K/6q1 w - - 0 3', draggable: false,
+    pieceTheme: 'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png' });
+}
+
+$(document).ready(() => {
+  initBoard();
+  initMiniBoards();
+  setTimeout(() => markStage(2), 500);
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,150 @@
+<!--
+  v2_template.html — V2 illustration-rich HTML scaffolds
+  ======================================================
+  This file holds the HTML structures the V2 assembler emits.
+  Two scaffolds: <!-- QUIZ_TAB_SCAFFOLD --> and <!-- SYNTH_TAB_SCAFFOLD -->.
+  The assembler concatenates: hero → theme knowledge tabs (rendered by
+  render_block.py) → Synthesis tab (this scaffold + render_block) →
+  Quiz tab (this scaffold, populated per theme/chapter/question).
+
+  Tab order in the tab bar:
+    theme tabs (data-tab="t1", "t2", ...) →
+    Synthesis  (data-tab="synth",  id="panel-synth") →
+    Visualize  (data-tab="visual", id="panel-visual")  [optional] →
+    Quiz       (data-tab="quiz",   id="panel-quiz")
+
+  CSS: assets/styles_v2.css   |   Renderer: assets/render_block.py
+-->
+
+
+<!-- QUIZ_TAB_SCAFFOLD ============================================
+     Quiz groups by theme in display, stored per-chapter on disk.
+     Per-question card data attrs:
+       data-correct = "0" (set to "1" on click if user picked the right option)
+       data-q-id    = "<chapter_id>-<question_index>"
+     Per-option data attrs:
+       data-q   = "<chapter_id>-<question_index>"
+       data-opt = "<option_index>"
+     The JS click handler: locks all options → adds .correct/.incorrect classes →
+     reveals .q-feedback → writes to localStorage[<book-slug>_answers]. Restore on load.
+-->
+<div class="tab-panel" id="panel-quiz">
+  <div class="ch-header">
+    <div class="ch-eyebrow">Multiple Choice Quiz</div>
+    <h1 class="ch-title">Quiz — <em>{N}</em> questions</h1>
+    <p class="ch-intro">Click to answer; feedback explains why. Progress saved.</p>
+  </div>
+  <div class="quiz-meta">
+    <span class="stat">Done: <strong id="qDone">0</strong>/<strong id="qTotal">0</strong></span>
+    <span class="stat">Correct: <strong id="qCorrect">0</strong></span>
+    <span class="stat">%: <strong id="qPct">0%</strong></span>
+    <button id="resetQuiz">Reset all</button>
+  </div>
+  <!-- Per theme -->
+  <div class="quiz-theme">
+    <h2>{theme.title}</h2>
+    <!-- Per chapter inside theme -->
+    <div class="quiz-chapter">
+      <h3 class="quiz-ch-title">{chapter.chapter_title}</h3>
+      <!-- Per question -->
+      <div class="q-card" data-correct="0" data-q-id="ch1-0">
+        <span class="q-num">Q1</span>
+        <span class="q-topic">Topic</span>
+        <div class="q-text">Question text</div>
+        <div class="q-options">
+          <div class="q-option" data-q="ch1-0" data-opt="0"><span class="letter">A</span><span class="opt-text">Option A</span></div>
+          <!-- more options -->
+        </div>
+        <div class="q-feedback" style="display:none"><strong class="q-mark"></strong> <span class="q-fb-text">Feedback text</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- SYNTH_TAB_SCAFFOLD ===========================================
+     One <section class="synth-theme"> per theme. The <h2> heading is
+     the theme title; render_block() handles each block in the
+     v2_themes/synthesis/t<N>.json file (mnemonic + deflist + table +
+     callout + warn). Quiz-meta sticky offset must match the tab bar
+     height (typically position:sticky; top:60px) — see pitfall #11.
+-->
+<div class="tab-panel" id="panel-synth" style="display:none">
+  <div class="ch-header">
+    <div class="ch-eyebrow">Tổng hợp & mẹo nhớ</div>
+    <h1 class="ch-title">Tổng hợp <em>kiến thức</em></h1>
+    <p class="ch-intro">Mnemonic và các điểm phải nhớ, gom theo chủ đề — ôn nhanh trước khi làm Quiz.</p>
+  </div>
+  <section class="synth-theme">
+    <h2>{theme_title}</h2>
+    {rendered blocks}
+  </section>
+  <!-- one section per theme -->
+</div>
+
+
+<!-- VISUAL_TAB_SCAFFOLD (optional) ===============================
+     Built by render_block.render_visual_panel(visual) from
+     v2_themes/visual.json. One <figure class="viz"> per figure:
+     eyebrow number → serif title → .viz-frame holding an authored
+     inline <svg viewBox=...> (responsive via CSS) → optional caption
+     + takeaway. Run render_block.validate_visual() before assembling
+     (checks required fields, duplicate ids, well-formed SVG XML).
+-->
+<div class="tab-panel" id="panel-visual" style="display:none">
+  <div class="ch-header">
+    <div class="ch-eyebrow">Sơ đồ & hình dung</div>
+    <h1 class="ch-title">Sơ đồ <em>hình dung</em> các điểm cốt lõi</h1>
+    <p class="ch-intro">Các sơ đồ tóm tắt cơ chế dễ nhầm nhất.</p>
+  </div>
+  <figure class="viz" id="viz-recognition">
+    <div class="viz-eyebrow">01</div>
+    <h3 class="viz-title">Figure title <em>¶refs</em></h3>
+    <div class="viz-frame"><svg viewBox="0 0 760 H">...</svg></div>
+    <figcaption class="viz-cap">caption</figcaption>
+    <div class="viz-take">takeaway</div>
+  </figure>
+  <!-- one figure per visual.json entry -->
+</div>
+
+
+<!-- TAB_BAR_HINT ================================================
+     Emit <div class="tab" data-tab="synth"> (and, if visual.json
+     exists, <div class="tab" data-tab="visual">) between the last
+     theme tab and the Quiz tab. showTab() JS handles any panel
+     generically — toggle display:none on all .tab-panel, show
+     the matching #panel-<data-tab>, add .active to the clicked .tab.
+-->
+
+
+<!-- VISUAL_CROSSLINK (recommended; supersedes embedding) =========
+     Two-way figure <-> theory linking WITHOUT duplicating figures.
+     Each gallery <figure class="viz" id="fig-<id>"> gets a back button:
+       <button class="viz-goto" data-goto="<tab>" data-anchor="<heading id>">Ly thuyet goc: <label> -></button>
+     and each linked theory heading gets a badge:
+       <div class="thy-fig-links"><button class="thy-fig-link" data-fig="fig-<id>">-> Xem so do NN</button></div>
+     Wiring (Step 6):
+       from viz import validate_visual, prepare_visual_crosslinks, render_visual_panel, VIZ_CROSSLINK_JS
+       contents = prepare_visual_crosslinks(visual, {tab: knowledge[tab]['content']}, tab_titles={...})
+       # write contents back into each knowledge tab, then render_visual_panel(visual)
+       # embed VIZ_CROSSLINK_JS inside <script> AFTER showTab() is defined
+     Per figure in visual.json add: "theory_heading": "<distinctive heading substring>".
+     CSS (.viz-goto/.thy-fig-link/scroll-margin) is already in styles_v2.css.
+-->
+
+
+<!-- CALC_TAB_SCAFFOLD (optional) ==================================
+     Built by assets/calc.py render_calc_panel(calc) from
+     v2_themes/calc.json. One <div class="calc-card"> per item, kind
+     in {worked, calculator, practice}:
+       worked      → given table → numbered .calc-steps → .calc-result
+       calculator  → .calc-io (number inputs ↔ live .calc-out-val) +
+                     formula note; recompute on input via CALC_JS
+       practice    → prompt + .calc-reveal button → hidden .calc-solution
+     Tab order in the bar (with both optional tabs present):
+       theme tabs → Synthesis → Visualize → Calculation
+                  (data-tab="calc", id="panel-calc") → Quiz
+     CSS: assets/styles_v2.css (.calc-* block).  JS: CALC_JS (append
+     once, AFTER showTab() is defined). Cross-links reuse .viz-goto
+     (calc→theory) and add .thy-calc-link (theory→calc).
+-->

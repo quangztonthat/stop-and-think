@@ -241,4 +241,15 @@ function quizCheck(btn, ok) {
 function markStage(n) { stagesCompleted.add(n); updateProgress(); }
 function updateProgress() { document.getElementById('progressFill').style.width = (stagesCompleted.size/5*100) + '%'; }
 
-f
+function initMiniBoards() {
+  Chessboard('hookBoard', { position: START_FEN, draggable: false, pieceTheme: 'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png' });
+  Chessboard('conceptBoard', { position: 'k7/P7/1K6/8/8/8/8/8 w - - 0 1', draggable: false, pieceTheme: 'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png' });
+  setTimeout(() => { ['a7', 'b7', 'b8'].forEach(sq => $('#conceptBoard .square-' + sq).addClass('highlight-attack')); $('#conceptBoard .square-a8').addClass('highlight-corner'); }, 200);
+  Chessboard('selfTestBoard', { position: START_FEN, draggable: false, pieceTheme: 'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png' });
+}
+
+$(document).ready(() => { initBoard(); initMiniBoards(); setTimeout(()=>markStage(2),500); });
+</script>
+
+</body>
+</html>
