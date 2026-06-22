@@ -21,12 +21,12 @@ export async function onRequest({ request, env, next }) {
 
   if (ok) return next(); // đúng chủ -> trả file học tĩnh dưới /hoc
 
-  // chưa đăng nhập / không phải chủ -> đẩy về trang đăng nhập, kèm ?next để quay lại
+  // chưa đăng nhập / không phải chủ -> đẩy về trang đăng nhập, kèm ?redirect để quay lại
   const u = new URL(request.url);
   return new Response(null, {
     status: 302,
     headers: {
-      Location: `/pages/dang-nhap.html?next=${encodeURIComponent(u.pathname)}`,
+      Location: `/pages/dang-nhap.html?redirect=${encodeURIComponent(u.pathname)}`,
       'cache-control': 'no-store',
     },
   });
