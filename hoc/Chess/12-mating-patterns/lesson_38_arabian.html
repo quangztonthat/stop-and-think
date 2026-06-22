@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Bài 3 (Ch12) — Chiếu hết Ả Rập</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/chessboard-js/1.0.0/chessboard-1.0.0.min.css">
+<style>
+* { box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; max-width: 980px; margin: 0 auto; padding: 24px; color: #1a1a1a; line-height: 1.6; background: #fafafa; }
+h1 { color: #1a3a52; font-size: 28px; margin: 0 0 8px; }
+h2 { color: #2c5282; font-size: 20px; margin: 32px 0 12px; padding-bottom: 6px; border-bottom: 2px solid #e1e8ed; }
+.source { color: #888; font-size: 13px; margin-bottom: 24px; }
+.nav-link { font-size: 13px; color: #2c5282; text-decoration: none; }
+.stage { background: white; border-radius: 8px; padding: 20px 24px; margin: 16px 0; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
+.stage-label { display: inline-block; background: #2c5282; color: white; font-size: 12px; font-weight: 600; padding: 3px 10px; border-radius: 12px; margin-bottom: 8px; }
+.hook-question { font-size: 17px; color: #1a3a52; background: #fff8e1; border-left: 4px solid #faad14; padding: 14px 18px; border-radius: 0 6px 6px 0; margin: 12px 0; }
+.reveal-btn { background: #faad14; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-size: 14px; }
+.hidden { display: none; }
+.board-layout { display: grid; grid-template-columns: 440px 1fr; gap: 24px; align-items: start; margin-top: 16px; }
+@media (max-width: 820px) { .board-layout { grid-template-columns: 1fr; } }
+#board { width: 420px; max-width: 100%; }
+.mini-board { width: 300px; max-width: 100%; margin: 14px auto; }
+.controls { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; justify-content: center; }
+.controls button { padding: 7px 12px; background: #2c5282; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 13px; }
+.info-panel { background: #f8f9fb; padding: 16px; border-radius: 6px; border: 1px solid #e1e8ed; min-height: 380px; }
+.move-display { font-family: monospace; font-size: 16px; color: #2c5282; font-weight: 600; margin-bottom: 8px; }
+.commentary { font-size: 14px; color: #444; margin-bottom: 12px; }
+.info-box { background: white; padding: 10px; border-radius: 4px; border: 1px solid #e1e8ed; margin: 12px 0; font-size: 13px; text-align: center; }
+.info-box.win { background: #f6ffed; border-color: #b7eb8f; color: #389e0d; font-weight: 600; }
+.self-test { background: #fff8e1; border: 2px dashed #faad14; border-radius: 6px; padding: 16px; margin-top: 16px; }
+.feedback { margin-top: 10px; padding: 10px 14px; border-radius: 4px; font-size: 14px; }
+.feedback.correct { background: #f6ffed; color: #389e0d; border-left: 4px solid #52c41a; }
+.feedback.wrong { background: #fff1f0; color: #cf1322; border-left: 4px solid #ff4d4f; }
+.quiz { background: #f0f7ff; border-left: 4px solid #2c5282; border-radius: 0 6px 6px 0; padding: 14px 18px; margin: 12px 0; }
+.quiz-q { font-weight: 600; margin-bottom: 10px; color: #1a3a52; }
+.quiz-options { display: flex; flex-direction: column; gap: 6px; }
+.quiz-option { padding: 8px 12px; background: white; border: 1px solid #c9d6e2; border-radius: 4px; cursor: pointer; text-align: left; font-size: 14px; }
+.quiz-option.correct { background: #f6ffed; border-color: #52c41a; color: #389e0d; }
+.quiz-option.wrong { background: #fff1f0; border-color: #ff4d4f; color: #cf1322; }
+.quiz-explain { margin-top: 8px; font-size: 13px; color: #555; font-style: italic; }
+.summary-card { background: linear-gradient(135deg, #1a3a52, #2c5282); color: white; padding: 20px 24px; border-radius: 8px; margin-top: 24px; }
+.summary-card h2 { color: white; border: none; margin-top: 0; }
+.summary-card ul { padding-left: 20px; }
+code { background: #f1f3f5; padding: 1px 6px; border-radius: 3px; font-family: monospace; font-size: 0.9em; }
+.summary-card code { background: rgba(255,255,255,0.2); color: white; }
+.progress-bar { height: 4px; background: #e1e8ed; border-radius: 2px; overflow: hidden; margin: 8px 0 16px; }
+.progress-fill { height: 100%; background: #52c41a; transition: width 0.3s; width: 0%; }
+</style>
+</head>
+<body>
+
+<h1>Bài 3 — Chiếu hết Ả Rập (Arabian Mate)</h1>
+<div class="source">
+  Chương 12 — Mẫu chiếu hết<br>
+  <a class="nav-link" href="../index.html">← Trang chủ</a> ·
+  <a class="nav-link" href="chapter_12_mating_patterns.html">← Chương 12</a>
+</div>
+
+<div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+
+<div class="stage">
+  <span class="stage-label">STAGE 1 · HOOK</span>
+  <h2 style="margin-top:8px">Bộ đôi Mã + Xe trong góc</h2>
+  <p>Thế cờ: Trắng Kc1 + Re7 + Nf6. Đen Kh8. Chiếu hết trong 1!</p>
+  <div id="hookBoard" class="mini-board"></div>
+  <div class="hook-question">
+    🤔 <strong>Mã Nf6 khống chế h7</strong> (chặn ô chạy thoát). Xe đi đến cột h (h7) → chiếu hết!
+    Mẫu này có TỪ THẾ KỶ 9 — sách shatranj của người Ả Rập đã ghi lại mẫu này.
+  </div>
+  <button class="reveal-btn" onclick="document.getElementById('hookAnswer').classList.remove('hidden'); markStage(1);">Hiển thị đáp án</button>
+  <div id="hookAnswer" class="hidden" style="margin-top:14px">
+    <p><strong>1.Rh7# Chiếu hết!</strong> Xe Re7→h7. Khống chế Kh8 (Xe sát cạnh). Vua đen: Kg8 bị Mã khống chế (f6 khống chế g8). Kxh7 — không được, Mã Nf6 bảo vệ h7! Chặn? Không có quân nào. <strong>CHIẾU HẾT</strong>.</p>
+  </div>
+</div>
+
+<div class="stage">
+  <span class="stage-label">STAGE 2 · CONCEPT</span>
+  <h2 style="margin-top:8px">Cách dàn quân chiếu hết Ả Rập</h2>
+  <ul>
+    <li><strong>Mẫu</strong>: Mã + Xe tấn công vua trong góc. Mã bảo vệ Xe + cắt đường chạy thoát.</li>
+    <li><strong>Vua h8 kẹt</strong>: g8 = Mã khống chế (Nf6 khống chế g8). h7 = Xe khống chế + Mã bảo vệ.</li>
+    <li><strong>Lịch sử</strong>: Sách shatranj Ả Rập (thế kỷ 9) ghi lại mẫu này → tên "chiếu hết Ả Rập".</li>
+    <li><strong>Cách dàn quân</strong>: vua đối thủ trong góc + Mã có thể đến f6/h6/f3/h3 (gần góc) + Xe cùng cánh.</li>
+  </ul>
+  <p>Quy tắc: <strong>"Mã + Xe = sát thủ vùng góc"</strong> — luôn nhớ mẫu này khi vua đối thủ ở trong góc.</p>
+</div>
+
+<div class="stage">
+  <span class="stage-label">STAGE 3 · WALKTHROUGH</span>
+  <div class="board-layout">
+    <div>
+      <div id="board"></div>
+      <div class="controls">
+        <button onclick="resetBoard()">⟨⟨ Đầu</button>
+        <button onclick="prevMove()">⟨ Lùi</button>
+        <button onclick="nextMove()">Tiến ⟩</button>
+      </div>
+    </div>
+    <div class="info-panel">
+      <div class="move-display" id="moveDisplay">Thế cờ khởi đầu</div>
+      <div class="commentary" id="commentary">Trắng Kc1 + Re7 + Nf6. Đen Kh8. Mã + Xe sẵn sàng chiếu hết trong góc!</div>
+      <div class="info-box" id="infoBox">Đến lượt: <strong>Trắng</strong></div>
+    </div>
+  </div>
+</div>
+
+<div class="stage">
+  <span class="stage-label">STAGE 4 · SELF-TEST</span>
+  <h2 style="margin-top:8px">Tại sao Kxh7 không phải là cách phòng thủ cho thế chiếu hết này?</h2>
+  <div class="self-test">
+    <div class="quiz-options" id="selfTestOptions">
+      <button class="quiz-option" onclick="checkSelfTest(this, true, 'Đúng. Mã Nf6 bảo vệ h7 (Mã khống chế: e8, g8, e4, g4, h7, h5, d7, d5). Vua KHÔNG được ăn Xe nếu Xe đang được bảo vệ. Đó là điều quan trọng nhất của mẫu này.')">Mã Nf6 bảo vệ h7 — vua không thể ăn Xe</button>
+      <button class="quiz-option" onclick="checkSelfTest(this, false, 'Sai. Cần xét đến việc bảo vệ.')">Vua không thể di chuyển</button>
+    </div>
+    <div class="feedback hidden" id="selfTestFeedback"></div>
+  </div>
+</div>
+
+<div class="stage">
+  <span class="stage-label">STAGE 5 · MINI-QUIZ</span>
+  <div class="quiz">
+    <div class="quiz-q">Q1. Chiếu hết Ả Rập gồm 2 quân nào?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" onclick="quizCheck(this, true)">Mã + Xe (Mã bảo vệ Xe + cắt đường chạy thoát)</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Hậu + Tượng</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">2 Mã</button>
+    </div>
+    <div class="quiz-explain hidden">
+      Mã + Xe = "bộ đôi Ả Rập". Mã bảo vệ Xe, khống chế các ô chạy thoát. Xe tung đòn chiếu.
+    </div>
+  </div>
+  <div class="quiz">
+    <div class="quiz-q">Q2. Chiếu hết Ả Rập có lịch sử từ khi nào?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" onclick="quizCheck(this, true)">Thế kỷ 9 — sách shatranj của người Ả Rập</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Thế kỷ 19</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Thế kỷ 20</button>
+    </div>
+    <div class="quiz-explain hidden">
+      Shatranj là tiền thân của cờ vua hiện đại, phát triển ở Ba Tư/Ả Rập từ thế kỷ 6-9. Sách tiếng Ả Rập đã ghi lại mẫu chiếu hết này.
+    </div>
+  </div>
+  <div class="quiz">
+    <div class="quiz-q">Q3. Khi nào trong ván cờ thường có chiếu hết Ả Rập?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" onclick="quizCheck(this, true)">Tàn cuộc — vua đối thủ trong góc + bạn có Mã + Xe</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Khai cuộc</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Trung cuộc tấn công trung tâm</button>
+    </div>
+    <div class="quiz-explain hidden">
+      Tàn cuộc: vua bị "rượt" về góc. Phối hợp Mã + Xe → dàn quân kiểu Ả Rập. Mẫu này không xuất hiện trong khai cuộc (vua ở trung tâm).
+    </div>
+  </div>
+</div>
+
+<div class="summary-card">
+  <h2>📌 Tóm tắt</h2>
+  <ul>
+    <li><strong>Chiếu hết Ả Rập</strong>: Mã + Xe → chiếu hết vua trong góc.</li>
+    <li><strong>Điểm mấu chốt</strong>: <code>Nf6 + Rh7</code> đấu với <code>Kh8</code>. Mã bảo vệ Xe, khống chế g8.</li>
+    <li><strong>Mẫu</strong>: <code>Rh7#</code> — Xe đến h7 cùng với Mã đã ở sẵn trên f6.</li>
+    <li><strong>Lịch sử</strong>: Sách shatranj Ả Rập thế kỷ 9. Mẫu cổ nhất trong cờ vua.</li>
+    <li><strong>Thực chiến</strong>: Nhận ra "Mã gần góc + Xe cùng cánh" — nghĩ ngay đến Ả Rập.</li>
+  </ul>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chessboard-js/1.0.0/chessboard-1.0.0.min.js"></script>
+<script>
+const START_FEN = '7k/4R3/5N2/8/8/8/8/2K5 w - - 0 1';
+const MOVES = ['Rh7#'];
+const COMMENTARY = {
+  0: { move: 'Thế cờ khởi đầu', text: 'Trắng Kc1 + Re7 + Nf6. Đen Kh8 (góc). Bộ đôi Mã + Xe sẵn sàng!' },
+  1: { move: '1. Rh7#  1-0', text: '⚔️ CHIẾU HẾT Ả RẬP! Xe Re7→h7. Chiếu Kh8. Vua đen: Kxh7 = không được vì Nf6 bảo vệ h7. Kg8 bị Mã khống chế (f6→g8). Chặn? Không có quân. Chiếu hết kinh điển từ thế kỷ 9.' }
+};
+
+let board, game, currentMove = 0, stagesCompleted = new Set();
+
+function initBoard() {
+  game = new Chess(START_FEN);
+  board = Chessboard('board', { position: START_FEN, draggable: true,
+    pieceTheme: 'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png',
+    onDrop: (s,t) => { const m = game.move({from:s,to:t,promotion:'q'}); if(!m) return 'snapback'; },
+    onSnapEnd: () => board.position(game.fen()) });
+  updateDisplay();
+}
+function nextMove() { if(currentMove>=MOVES.length) return; game.move(MOVES[currentMove]); board.position(game.fen()); currentMove++; setTimeout(updateDisplay,50); if(currentMove>=MOVES.length) markStage(3); }
+function prevMove() { if(currentMove<=0) return; game.undo(); currentMove--; board.position(game.fen()); setTimeout(updateDisplay,50); }
+function resetBoard() { game = new Chess(START_FEN); board.position(START_FEN); currentMove = 0; setTimeout(updateDisplay,50); }
+
+function updateDisplay() {
+  const cm = COMMENTARY[currentMove] || COMMENTARY[0];
+  document.getElementById('moveDisplay').textContent = cm.move;
+  document.getElementById('commentary').innerHTML = cm.text;
+  const box = document.getElementById('infoBox');
+  if (currentMove >= MOVES.length) { box.className = 'info-box win'; box.innerHTML = '1 — 0 ARABIAN MATE'; }
+  else { box.className = 'info-box'; box.innerHTML = 'Đến lượt: <strong>' + (game.turn()==='w'?'Trắng':'Đen') + '</strong>'; }
+  updateProgress();
+}
+function checkSelfTest(btn, ok, exp) {
+  document.querySelectorAll('#selfTestOptions .quiz-option').forEach(el=>el.disabled=true);
+  btn.classList.add(ok?'correct':'wrong');
+  const fb = document.getElementById('selfTestFeedback');
+  fb.classList.remove('hidden'); fb.className = 'feedback ' + (ok?'correct':'wrong');
+  fb.textContent = (ok?'✓ ':'✗ ') + exp; markStage(4);
+}
+function quizCheck(btn, ok) {
+  const q = btn.closest('.quiz');
+  q.querySelectorAll('.quiz-option').forEach(el=>el.disabled=true);
+  btn.classList.add(ok?'correct':'wrong');
+  if (!ok) q.querySelectorAll('.quiz-option').forEach(el => { if (el.getAttribute('onclick').includes('true')) el.classList.add('correct'); });
+  q.querySelector('.quiz-explain').classL

@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Bài 1 (Ch4) — Thế cờ Lucena</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/chessboard-js/1.0.0/chessboard-1.0.0.min.css">
+<style>
+* { box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; max-width: 980px; margin: 0 auto; padding: 24px; color: #1a1a1a; line-height: 1.6; background: #fafafa; }
+h1 { color: #1a3a52; font-size: 28px; margin: 0 0 8px; }
+h2 { color: #2c5282; font-size: 20px; margin: 32px 0 12px; padding-bottom: 6px; border-bottom: 2px solid #e1e8ed; }
+.source { color: #888; font-size: 13px; margin-bottom: 24px; }
+.nav-link { font-size: 13px; color: #2c5282; text-decoration: none; }
+.stage { background: white; border-radius: 8px; padding: 20px 24px; margin: 16px 0; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
+.stage-label { display: inline-block; background: #2c5282; color: white; font-size: 12px; font-weight: 600; padding: 3px 10px; border-radius: 12px; margin-bottom: 8px; }
+.hook-question { font-size: 17px; color: #1a3a52; background: #fff8e1; border-left: 4px solid #faad14; padding: 14px 18px; border-radius: 0 6px 6px 0; margin: 12px 0; }
+.reveal-btn { background: #faad14; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-size: 14px; }
+.hidden { display: none; }
+.board-layout { display: grid; grid-template-columns: 440px 1fr; gap: 24px; align-items: start; margin-top: 16px; }
+@media (max-width: 820px) { .board-layout { grid-template-columns: 1fr; } }
+#board { width: 420px; max-width: 100%; }
+.mini-board { width: 300px; max-width: 100%; margin: 14px auto; }
+.controls { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; justify-content: center; }
+.controls button { padding: 7px 12px; background: #2c5282; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 13px; }
+.info-panel { background: #f8f9fb; padding: 16px; border-radius: 6px; border: 1px solid #e1e8ed; min-height: 380px; }
+.move-display { font-family: monospace; font-size: 16px; color: #2c5282; font-weight: 600; margin-bottom: 8px; }
+.commentary { font-size: 14px; color: #444; margin-bottom: 12px; }
+.info-box { background: white; padding: 10px; border-radius: 4px; border: 1px solid #e1e8ed; margin: 12px 0; font-size: 13px; text-align: center; }
+.info-box.win { background: #f6ffed; border-color: #b7eb8f; color: #389e0d; font-weight: 600; }
+.highlight-bridge { background: rgba(255, 215, 0, 0.45) !important; box-shadow: inset 0 0 0 2px #faad14 !important; }
+.highlight-king-blue { box-shadow: inset 0 0 0 4px #1d39c4 !important; }
+.self-test { background: #fff8e1; border: 2px dashed #faad14; border-radius: 6px; padding: 16px; margin-top: 16px; }
+.self-test-question { font-weight: 600; color: #874d00; margin-bottom: 8px; }
+.feedback { margin-top: 10px; padding: 10px 14px; border-radius: 4px; font-size: 14px; }
+.feedback.correct { background: #f6ffed; color: #389e0d; border-left: 4px solid #52c41a; }
+.feedback.wrong { background: #fff1f0; color: #cf1322; border-left: 4px solid #ff4d4f; }
+.quiz { background: #f0f7ff; border-left: 4px solid #2c5282; border-radius: 0 6px 6px 0; padding: 14px 18px; margin: 12px 0; }
+.quiz-q { font-weight: 600; margin-bottom: 10px; color: #1a3a52; }
+.quiz-options { display: flex; flex-direction: column; gap: 6px; }
+.quiz-option { padding: 8px 12px; background: white; border: 1px solid #c9d6e2; border-radius: 4px; cursor: pointer; text-align: left; font-size: 14px; }
+.quiz-option.correct { background: #f6ffed; border-color: #52c41a; color: #389e0d; }
+.quiz-option.wrong { background: #fff1f0; border-color: #ff4d4f; color: #cf1322; }
+.quiz-explain { margin-top: 8px; font-size: 13px; color: #555; font-style: italic; }
+.summary-card { background: linear-gradient(135deg, #1a3a52, #2c5282); color: white; padding: 20px 24px; border-radius: 8px; margin-top: 24px; }
+.summary-card h2 { color: white; border: none; margin-top: 0; }
+.summary-card ul { padding-left: 20px; }
+code { background: #f1f3f5; padding: 1px 6px; border-radius: 3px; font-family: monospace; font-size: 0.9em; }
+.summary-card code { background: rgba(255,255,255,0.2); color: white; }
+.progress-bar { height: 4px; background: #e1e8ed; border-radius: 2px; overflow: hidden; margin: 8px 0 16px; }
+.progress-fill { height: 100%; background: #52c41a; transition: width 0.3s; width: 0%; }
+</style>
+</head>
+<body>
+
+<h1>Bài 1 — Thế cờ Lucena (Cây cầu)</h1>
+<div class="source">
+  Chương 4 — Tàn cuộc Xe<br>
+  <a class="nav-link" href="../index.html">← Trang chủ</a> ·
+  <a class="nav-link" href="chapter_04_rook_endgames.html">← Chương 4</a>
+</div>
+
+<div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+
+<div class="stage">
+  <span class="stage-label">STAGE 1 · HOOK</span>
+  <h2 style="margin-top:8px">K + R + P vs K + R — Trắng có thắng?</h2>
+  <p>Thế cờ cổ điển: Trắng Vua c8 + tốt c7 (sắp phong cấp) + Xe h1. Đen Vua f7 + Xe a2.
+     Tốt chỉ cần 1 nước phong cấp, NHƯNG vua đen + xe đen sẽ liên tục chiếu.
+     (Vua đen ở f7 — bị cắt đường đủ xa tốt cột c.)</p>
+  <div id="hookBoard" class="mini-board"></div>
+  <div class="hook-question">
+    🤔 <strong>Vua trắng kẹt ở c8 — phong cấp ngay không?</strong> Đẩy tốt c7-c8=Q
+    có khả thi không? Hay xe đen sẽ chiếu vĩnh viễn?
+  </div>
+  <button class="reveal-btn" onclick="document.getElementById('hookAnswer').classList.remove('hidden'); markStage(1);">Hiển thị đáp án</button>
+  <div id="hookAnswer" class="hidden" style="margin-top:14px">
+    <p><strong>Trắng thắng — bằng "Cây cầu Lucena".</strong> Đặt xe ở hàng 4 trước
+       (Rh4), sau đó vua đi xuống dần (Kb7, Kc6, Kd5). Khi xe đen chiếu, xe trắng
+       chen vào ở hàng 4 — đen phải ăn, trắng ăn lại, tốt phong cấp tự do.</p>
+    <p>Đây là kỹ thuật <strong>cổ điển nhất</strong> của tàn cuộc xe — học từ thế kỷ 15.</p>
+  </div>
+</div>
+
+<div class="stage">
+  <span class="stage-label">STAGE 2 · CONCEPT</span>
+  <h2 style="margin-top:8px">Xây cây cầu — 3 bước</h2>
+  <ol style="line-height: 1.8">
+    <li><strong>Đặt xe ở hàng 4</strong> (Rh4) — chuẩn bị làm "cây cầu".</li>
+    <li><strong>Vua xuống dần</strong> (Kb7 → Kc6 → Kd5) — chấp nhận bị chiếu.</li>
+    <li><strong>Cây cầu!</strong> Khi đen chiếu trên hàng 4 ngay sát vua trắng, trắng đặt xe chen vào → đen phải ăn → trắng ăn lại → tốt phong cấp.</li>
+  </ol>
+  <div class="hook-question" style="background:#f0f7ff; border-left-color:#2c5282; color:#1a3a52">
+    🌉 <strong>Tại sao gọi là "Cây cầu"?</strong> Xe trắng ở hàng 4 đóng vai trò
+    cây cầu che chở vua trắng khỏi chiếu trên hàng đó. Xe trắng chen vào giữa
+    vua và xe đen — đó là cây cầu.
+  </div>
+</div>
+
+<div class="stage">
+  <span class="stage-label">STAGE 3 · WALKTHROUGH</span>
+  <div class="board-layout">
+    <div>
+      <div id="board"></div>
+      <div class="controls">
+        <button onclick="resetBoard()">⟨⟨ Đầu</button>
+        <button onclick="prevMove()">⟨ Lùi</button>
+        <button onclick="nextMove()">Tiến ⟩</button>
+        <button onclick="goToEnd()">Cuối ⟩⟩</button>
+      </div>
+    </div>
+    <div class="info-panel">
+      <div class="move-display" id="moveDisplay">Thế cờ ban đầu</div>
+      <div class="commentary" id="commentary">Trắng Kc8 + Pc7 + Rh1 vs Đen Kf7 + Ra2. Bấm Tiến để xem cây cầu Lucena.</div>
+      <div class="info-box" id="infoBox">Đến lượt: <strong>Trắng</strong></div>
+    </div>
+  </div>
+</div>
+
+<div class="stage">
+  <span class="stage-label">STAGE 4 · SELF-TEST</span>
+  <h2 style="margin-top:8px">Tại sao 1.Rh4 là nước quan trọng nhất?</h2>
+  <div class="self-test">
+    <div class="quiz-options" id="selfTestOptions">
+      <button class="quiz-option" onclick="checkSelfTest(this, false, 'Sai. Rh4 không trực tiếp chiếu hết. Mục tiêu là chuẩn bị cho cây cầu sau khi vua trắng đi xuống.')">Để chuẩn bị chiếu hết vua đen</button>
+      <button class="quiz-option" onclick="checkSelfTest(this, true, 'Đúng! Rh4 là cây cầu tương lai. Khi vua trắng xuống đến hàng 5, xe đen sẽ chiếu trên hàng 5. Lúc đó Rd4 (chen vào cột d cùng hàng 4) sẽ chặn chiếu và buộc đổi xe.')">Đặt xe làm "cây cầu" che vua khỏi chiếu sau này</button>
+      <button class="quiz-option" onclick="checkSelfTest(this, false, 'Rh4 không đe dọa Ra2 trực tiếp. Hai xe ở hàng khác nhau.')">Để tấn công xe đen Ra2</button>
+      <button class="quiz-option" onclick="checkSelfTest(this, false, 'Tốt không cần Rh4 để phong cấp — vấn đề là sau phong cấp bị chiếu. Rh4 chuẩn bị giải quyết chiếu sau cây cầu.')">Để bảo vệ tốt c7</button>
+    </div>
+    <div class="feedback hidden" id="selfTestFeedback"></div>
+  </div>
+</div>
+
+<div class="stage">
+  <span class="stage-label">STAGE 5 · MINI-QUIZ</span>
+  <div class="quiz">
+    <div class="quiz-q">Q1. Lucena có thắng được KHÔNG nếu vua đen ở quá gần?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" onclick="quizCheck(this, false)">Có — Lucena luôn thắng</button>
+      <button class="quiz-option" onclick="quizCheck(this, true)">Không — vua đen cần bị "cắt đường" (cách ít nhất 1 cột). Nếu vua đen ở b7/d7, cây cầu thất bại.</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Không — Lucena luôn hòa</button>
+    </div>
+    <div class="quiz-explain hidden">
+      Điều kiện Lucena: vua đen phải bị cắt đường ĐỦ XA (≥2 cột) khỏi tốt. Với tốt cột c, vua đen ở f7/g7 là đủ. CẢNH BÁO: nếu vua đen ở d7 hoặc e7, sau khi đổi xe (Rxd4 Kxd4) vua đen kịp về d7 khống chế c8 → c8=Q+ Kxc8 = HÒA. Cây cầu chỉ thắng khi bên phòng thủ không kịp đưa vua về ô phong cấp.
+    </div>
+  </div>
+  <div class="quiz">
+    <div class="quiz-q">Q2. Sau Rd4 Rxd4+ Kxd4, tốt trắng ở đâu?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" onclick="quizCheck(this, true)">c7 — chuẩn bị phong cấp ở nước tiếp</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">c8 — đã phong cấp</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">c6 — vẫn ở vị trí ban đầu</button>
+    </div>
+    <div class="quiz-explain hidden">
+      Tốt không di chuyển trong toàn bộ chuỗi nước đi — vẫn ở c7 (đã ở đó từ đầu). Sau khi xe đen bị bắt, vua đen quá xa, trắng phong cấp tự do.
+    </div>
+  </div>
+  <div class="quiz">
+    <div class="quiz-q">Q3. Thuật ngữ nào mô tả Lucena chính xác nhất?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" onclick="quizCheck(this, false)">Bẫy hết nước (pat)</button>
+      <button class="quiz-option" onclick="quizCheck(this, true)">Xây cây cầu / Cây cầu</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Tam giác hóa</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Zugzwang (hết nước đi tốt)</button>
+    </div>
+    <div class="quiz-explain hidden">
+      "Xây cây cầu" là tên cổ điển. Xe trắng đặt sẵn trên hàng 4 đóng vai trò cây cầu che chở vua khỏi chiếu khi đi xuống.
+    </div>
+  </div>
+</div>
+
+<div class="summary-card">
+  <h2>📌 Tóm tắt</h2>
+  <ul>
+    <li><strong>Thế cờ Lucena</strong>: K+R+P vs K+R — thắng khi tốt ở hàng 7, vua trắng đứng phía trước, vua đen bị cắt đường.</li>
+    <li><strong>Kỹ thuật cây cầu</strong>: Đặt xe hàng 4 → vua đi xuống → xe trắng chen vào chặn chiếu → đổi xe → phong cấp.</li>
+    <li><strong>Chuỗi nước đi</strong>: 1.Rh4 (chuẩn bị) → 2.Kb7-Kc6-Kd5 (vua xuống) → 5.Rd4 (cây cầu!) → đổi xe → phong cấp.</li>
+    <li><strong>Áp dụng thực tế</strong>: Rất nhiều ván cờ kết thúc ở Lucena. Phải thuộc kỹ thuật.</li>
+  </ul>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chessboard-js/1.0.0/chessboard-1.0.0.min.js"></script>
+<script>
+const START_FEN = '2K5/2P2k2/8/8/8/8/r7/7R w - - 0 1';
+const MOVES = ['Rh4', 'Rh2', 'Kb7', 'Rb2+', 'Kc6', 'Rc2+', 'Kd5', 'Rd2+', 'Rd4', 'Rxd4+', 'Kxd4', 'Kf6', 'c8=Q'];
+const COMMENTARY = {
+  0: { move: 'Thế cờ ban đầu', text: 'Trắng Kc8 + Pc7 + Rh1 vs Đen Kf7 + Ra2. Tốt còn 1 nước nữa là phong cấp.' },
+  1: { move: '1. Rh4', text: 'Bước 1: xe lên hàng 4 chuẩn bị làm "cây cầu". Vua trắng SẼ đi xuống và bị chiếu trên các hàng — xe ở hàng 4 sẵn sàng chen vào.' },
+  2: { move: '1... Rh2', text: 'Đen đi nước chờ. Sẽ bắt đầu chiếu khi vua trắng xuống.' },
+  3: { move: '2. Kb7', text: 'Vua trắng rời c8, đi xuống. Bây giờ tốt c7 không còn vua bảo vệ trực tiếp.' },
+  4: { move: '2... Rb2+', text: 'Nước chiếu đầu tiên! Đen tấn công vua trắng từ cột b.' },
+  5: { move: '3. Kc6', text: 'Vua trắng đi xuống tiếp, ra khỏi nước chiếu.' },
+  6: { move: '3... Rc2+', text: 'Đen chiếu tiếp từ cột c.' },
+  7: { move: '4. Kd5', text: 'Vua trắng đến hàng 5 — sát xe trắng ở hàng 4. Cây cầu sắp ra tay!' },
+  8: { move: '4... Rd2+', text: 'Đen chiếu từ cột d. Trong tình huống thường, trắng phải tiếp tục chạy. Nhưng xe trắng đã sẵn sàng.' },
+  9: { move: '5. Rd4 !!', text: '🌉 CÂY CẦU! Xe trắng chen vào cột d cùng hàng 4. Chặn hoàn toàn nước chiếu. Đen phải xử lý.' },
+  10: { move: '5... Rxd4+', text: 'Đen ăn xe trắng — buộc phải, vì nếu chắn thì xe trắng vẫn ở đó. Sau khi ăn, vua trắng vẫn bị chiếu.' },
+  11: { move: '6. Kxd4', text: 'Vua trắng ăn lại xe đen! Đổi quân ngang giá (xe đổi xe). Bây giờ chỉ còn K+P vs K — thắng.' },
+  12: { move: '6... Kf6', text: 'Vua đen tiến gần — quá muộn.' },
+  13: { move: '7. c8=Q !! 1-0', text: 'Tốt phong cấp thành Hậu! Trắng có K+Q vs K. Thắng. Lucena hoàn tất.' }
+};
+
+let board, game, currentMove = 0, stagesCompleted = new Set();
+
+function initBoard() {
+  game = new Chess(START_FEN);
+  board = Chessboard('board', { position: START_FEN, draggable: true,
+    pieceTheme: 'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png',
+    onDrop: (s,t) => { const m = game.move({from:s,to:t,promotion:'q'}); if(!m) return 'snapback'; setTimeout(updateOverlays,100); },
+    onSnapEnd: () => { board.position(game.fen()); updateOverlays(); }});
+  updateDisplay();
+}
+function nextMove() { if(currentMove>=MOVES.length) return; game.move(MOVES[currentMove]); board.position(game.fen()); currentMove++; setTimeout(()=>{updateDisplay();updateOverlays();},50); if(currentMove>=MOVES.length) markStage(3); }
+function prevMove() { if(currentMove<=0) return; game.undo(); currentMove--; board.position(game.fen()); setTimeout(()=>{updateDisplay();updateOverlays();},50); }
+function resetBoard() { game = new Chess(START_FEN); board.position(START_FEN); currentMove = 0; setTimeout(()=>{updateDisplay();updateOverlays();},50); }
+function goToEnd() { while(currentMove<MOVES.length){game.move(MOVES[currentMove]);currentMove++;} board.position(game.fen()); setTimeout(()=>{updateDisplay();updateOverlays();},50); }
+
+function findPiece(p) {
+  const fen = game.fen().split(' ')[0]; const ranks = fen.split('/');
+  for (let r=0;r<8;r++) { let f=0; for (const ch of ranks[r]) {
+    if (/\d/.test(ch)) f+=parseInt(ch);
+    else { const w = ch===ch.toUpperCase(), t = ch.toUpperCase();
+      if ((p[0]==='w'&&w&&p[1]===t) || (p[0]==='b'&&!w&&p[1]===t)) return String.fromCharCode(97+f) + (8-r);
+      f++; } } }
+  return null;
+}
+
+function updateDisplay() {
+  const cm = COMMENTARY[currentMove] || COMMENTARY[0];
+  document.getElementById('moveDisplay').textContent = cm.move;
+  document.getElementById('commentary').innerHTML = cm.text;
+  const box = document.getElementById('infoBox');
+  if (currentMove >= MOVES.length) { box.className = 'info-box win'; box.innerHTML = '1 — 0 Trắng thắng'; }
+  else { box.className = 'info-box'; box.innerHTML = 'Đến lượt: <strong>' + (game.turn()==='w'?'Trắng':'Đen') + '</strong>'; }
+  updateProgress();
+}
+function updateOverlays() {
+  $('#board .square-55d63').removeClass('highlight-bridge highlight-king-blue');
+  // Highlight rank 4 as bridge
+  ['a4','b4','c4','d4','e4','f4','g4','h4'].forEach(sq => $('#board .square-' + sq).addClass('highlight-bridge'));
+  const wK = findPiece('wK'); if (wK) $('#board .square-' + wK).addClass('highlight-king-blue');
+}
+function checkSelfTest(btn, ok, exp) {
+  document.querySelectorAll('#selfTestOptions .quiz-option').forEach(el=>el.disabled=true);
+  btn.classList.add(ok?'correct':'wrong');
+  const fb = document.getElementById('selfTestFeedback');
+  fb.classList.remove('hidden'); fb.className = 'feedback ' + (ok?'correct':'wrong');
+  fb.textContent = (ok?'✓ ':'✗ ') + exp; markStage(4);
+}
+function quizCheck(btn, ok) {
+  const q = btn.closest('.quiz');
+  q.querySelectorAll('.quiz-option').forEach(el=>el.disabled=true);
+  btn.classList.add(ok?'correct':'wrong');
+  if (!ok) q.querySelectorAll('.quiz-option').forEach(el => { if (el.getAttribute('onclick').includes('true')) el.classList.add('correct'); });
+  q.querySelector('.quiz-explain').classList.remove('hidden'); markStage(5);
+}
+function markStage(n) { stagesCompleted.add(n); updateProgress(); }
+function updateProgress() { document.getElementById('progressFill').style.width = (stagesCom

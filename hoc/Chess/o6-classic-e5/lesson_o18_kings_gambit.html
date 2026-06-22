@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bài 3 (Ch6-Open) — King's Gambit</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/chessboard-js/1.0.0/chessboard-1.0.0.min.css">
+<style>
+* { box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; max-width: 980px; margin: 0 auto; padding: 24px; color: #1a1a1a; line-height: 1.6; background: #fafafa; }
+h1 { color: #1a3a52; font-size: 26px; margin: 0 0 8px; }
+h2 { color: #2c5282; font-size: 20px; margin: 32px 0 12px; padding-bottom: 6px; border-bottom: 2px solid #e1e8ed; }
+.source { color: #888; font-size: 13px; margin-bottom: 24px; }
+.nav-link { font-size: 13px; color: #2c5282; text-decoration: none; }
+.stage { background: white; border-radius: 8px; padding: 20px 24px; margin: 16px 0; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
+.stage-label { display: inline-block; background: #2c5282; color: white; font-size: 12px; font-weight: 600; padding: 3px 10px; border-radius: 12px; margin-bottom: 8px; }
+.hook-question { font-size: 17px; color: #1a3a52; background: #fff8e1; border-left: 4px solid #faad14; padding: 14px 18px; border-radius: 0 6px 6px 0; margin: 12px 0; }
+.reveal-btn { background: #faad14; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-size: 14px; }
+.hidden { display: none; }
+.board-layout { display: grid; grid-template-columns: 440px 1fr; gap: 24px; align-items: start; margin-top: 16px; }
+@media (max-width: 820px) { .board-layout { grid-template-columns: 1fr; } }
+#board { width: 420px; max-width: 100%; }
+.mini-board { width: 300px; max-width: 100%; margin: 14px auto; }
+.controls { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; justify-content: center; }
+.controls button { padding: 7px 12px; background: #2c5282; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 13px; }
+.info-panel { background: #f8f9fb; padding: 16px; border-radius: 6px; border: 1px solid #e1e8ed; min-height: 380px; }
+.move-display { font-family: monospace; font-size: 16px; color: #2c5282; font-weight: 600; margin-bottom: 8px; }
+.commentary { font-size: 14px; color: #444; margin-bottom: 12px; }
+.info-box { background: white; padding: 10px; border-radius: 4px; border: 1px solid #e1e8ed; margin: 12px 0; font-size: 13px; text-align: center; }
+.info-box.win { background: #f6ffed; border-color: #b7eb8f; color: #389e0d; font-weight: 600; }
+.hl { background: rgba(255, 215, 0, 0.45) !important; box-shadow: inset 0 0 0 2px #faad14 !important; }
+.self-test { background: #fff8e1; border: 2px dashed #faad14; border-radius: 6px; padding: 16px; margin-top: 16px; }
+.feedback { margin-top: 10px; padding: 10px 14px; border-radius: 4px; font-size: 14px; }
+.feedback.correct { background: #f6ffed; color: #389e0d; border-left: 4px solid #52c41a; }
+.feedback.wrong { background: #fff1f0; color: #cf1322; border-left: 4px solid #ff4d4f; }
+.quiz { background: #f0f7ff; border-left: 4px solid #2c5282; border-radius: 0 6px 6px 0; padding: 14px 18px; margin: 12px 0; }
+.quiz-q { font-weight: 600; margin-bottom: 10px; color: #1a3a52; }
+.quiz-options { display: flex; flex-direction: column; gap: 6px; }
+.quiz-option { padding: 8px 12px; background: white; border: 1px solid #c9d6e2; border-radius: 4px; cursor: pointer; text-align: left; font-size: 14px; }
+.quiz-option.correct { background: #f6ffed; border-color: #52c41a; color: #389e0d; }
+.quiz-option.wrong { background: #fff1f0; border-color: #ff4d4f; color: #cf1322; }
+.quiz-explain { margin-top: 8px; font-size: 13px; color: #555; font-style: italic; }
+.summary-card { background: linear-gradient(135deg, #1a3a52, #2c5282); color: white; padding: 20px 24px; border-radius: 8px; margin-top: 24px; }
+.summary-card h2 { color: white; border: none; margin-top: 0; }
+.summary-card ul { padding-left: 20px; }
+code { background: #f1f3f5; padding: 1px 6px; border-radius: 3px; font-family: monospace; font-size: 0.9em; }
+.summary-card code { background: rgba(255,255,255,0.2); color: white; }
+.progress-bar { height: 4px; background: #e1e8ed; border-radius: 2px; overflow: hidden; margin: 8px 0 16px; }
+.progress-fill { height: 100%; background: #52c41a; transition: width 0.3s; width: 0%; }
+.tag { display:inline-block; background:#fde9c8; color:#874d00; font-size:11px; font-weight:600; padding:2px 8px; border-radius:10px; margin-left:6px; }
+.movelist { font-family: monospace; font-size: 13px; background:#fff8e1; border-radius:6px; padding:8px 12px; margin-top:10px; color:#874d00; line-height:1.7; }
+</style>
+</head>
+<body>
+
+<h1>King's Gambit <span class="tag">1.e4 e5 · lãng mạn</span></h1>
+<div class="source">
+  Chương 6 (Khai cuộc) — The complete 1.e4 (Djurić–Komarov–Pantaleoni) · Nâng cao<br>
+  <a class="nav-link" href="../index-opening.html">← Trang chủ Khai cuộc</a> ·
+  <a class="nav-link" href="chapter_o6_classic.html">← Chương 6</a>
+</div>
+
+<div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+
+<div class="stage">
+  <span class="stage-label">CHẶNG 1 · DẪN NHẬP</span>
+  <h2 style="margin-top:8px">Thí tốt f để chiếm trung tâm và mở cột f</h2>
+  <p><strong>King's Gambit</strong> — khai cuộc lãng mạn cổ điển: Trắng thí tốt f ngay nước 2 để dụ tốt e5 rời đi, lấy trung tâm bằng d4 và mở cột f cho cuộc tấn công.</p>
+  <div id="hookBoard" class="mini-board"></div>
+  <div class="movelist">1.e4 e5 2.f4 — thí tốt f</div>
+  <div class="hook-question">
+    🤔 <strong>Thí tốt 2.f4 cho Trắng những gì</strong> để bù lại tốt đã mất?
+  </div>
+  <button class="reveal-btn" onclick="document.getElementById('hookAnswer').classList.remove('hidden'); markStage(1);">Hiển thị đáp án</button>
+  <div id="hookAnswer" class="hidden" style="margin-top:14px">
+    <p>Đổi lấy: (1) dụ e5 rời trung tâm để Trắng cắm <strong>d4</strong>; (2) mở <strong>cột f</strong> cho xe sau khi O-O; (3) phát triển nhanh và sáng kiến. Biến Kieseritzky: <code>2…exf4 3.Nf3 g5 4.h4 g4 5.Ne5</code> — mã chiếm ô trung tâm mạnh, nhắm f7. Rủi ro: vua trắng hở trên cột f.</p>
+  </div>
+</div>
+
+<div class="stage">
+  <span class="stage-label">CHẶNG 2 · KHÁI NIỆM</span>
+  <h2 style="margin-top:8px">Ý tưởng và rủi ro của King's Gambit</h2>
+  <ul>
+    <li><strong>Bù đắp cho tốt thí</strong>: trung tâm (d4) + cột f mở + phát triển nhanh — sáng kiến đổi lấy vật chất.</li>
+    <li><strong>3.Nf3 là nước chốt</strong>: kiểm soát ô h4, ngăn …Qh4+ phá quyền nhập thành — nước gần như bắt buộc.</li>
+    <li><strong>Rủi ro</strong>: nếu đòn tấn công lụi, Trắng thiếu tốt và vua hở; đây là khai cuộc đôi-lưỡi (double-edged).</li>
+  </ul>
+</div>
+
+<div class="stage">
+  <span class="stage-label">CHẶNG 3 · TƯƠNG TÁC TỪNG BƯỚC</span>
+  <div class="board-layout">
+    <div>
+      <div id="board"></div>
+      <div class="controls">
+        <button onclick="resetBoard()">⟨⟨ Đầu</button>
+        <button onclick="prevMove()">⟨ Lùi</button>
+        <button onclick="nextMove()">Tiến ⟩</button>
+      </div>
+    </div>
+    <div class="info-panel">
+      <div class="move-display" id="moveDisplay">Vị trí xuất phát</div>
+      <div class="commentary" id="commentary">Bấm Tiến ⟩ đi qua biến Kieseritzky cổ điển và đọc ý đồ thí quân từng nước.</div>
+      <div class="info-box" id="infoBox">Đến lượt: <strong>Trắng</strong></div>
+    </div>
+  </div>
+</div>
+
+<div class="stage">
+  <span class="stage-label">CHẶNG 4 · TỰ KIỂM TRA</span>
+  <h2 style="margin-top:8px">Vì sao 3.Nf3 gần như bắt buộc sau 2…exf4?</h2>
+  <div class="self-test">
+    <div class="quiz-options" id="selfTestOptions">
+      <button class="quiz-option" onclick="checkSelfTest(this, true, 'Đúng. Nếu không, …Qh4+ buộc g3 (rồi …Qxf4) hoặc Ke2 — Trắng mất quyền nhập thành và rối loạn. 3.Nf3 chặn ngay.')">Kiểm soát ô h4, ngăn …Qh4+ phá quyền nhập thành của Trắng</button>
+      <button class="quiz-option" onclick="checkSelfTest(this, false, 'Sai — Nf3 không chiếu; nó phòng ngừa …Qh4+.')">Vì Nf3 chiếu hết</button>
+      <button class="quiz-option" onclick="checkSelfTest(this, false, 'Sai — Nf3 chưa ăn f4; tốt đó sẽ được xử lý sau (vd …g5 giữ, hoặc Trắng đòi lại).')">Vì ăn lại tốt f4 ngay</button>
+    </div>
+    <div class="feedback hidden" id="selfTestFeedback"></div>
+  </div>
+</div>
+
+<div class="stage">
+  <span class="stage-label">CHẶNG 5 · TRẮC NGHIỆM NHANH</span>
+  <div class="quiz">
+    <div class="quiz-q">Q1. Trắng thí tốt f để được gì?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" onclick="quizCheck(this, true)">Trung tâm (d4) + cột f mở + phát triển nhanh và sáng kiến</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Một quân nhẹ miễn phí</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Chiếu hết sau 3 nước</button>
+    </div>
+    <div class="quiz-explain hidden">Đây là gambit: đổi vật chất lấy sáng kiến và trung tâm, không phải đòn thắng ép buộc.</div>
+  </div>
+  <div class="quiz">
+    <div class="quiz-q">Q2. Sau 2…exf4 3.Nf3, vì sao Đen hay chơi 3…g5?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" onclick="quizCheck(this, true)">Giữ chắc tốt f4 — xương sống phòng thủ của Đen</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Tấn công vua trắng ngay</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Chuẩn bị nhập thành</button>
+    </div>
+    <div class="quiz-explain hidden">…g5 bảo vệ tốt f4 thừa; nhưng cũng làm yếu cánh vua đen (Trắng phản công h4).</div>
+  </div>
+  <div class="quiz">
+    <div class="quiz-q">Q3. Đặc tính chung của King's Gambit?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" onclick="quizCheck(this, true)">Đôi-lưỡi (double-edged): sáng kiến lớn nhưng rủi ro nếu đòn lụi</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">An toàn, dễ hòa</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Luôn thắng cho Trắng</button>
+    </div>
+    <div class="quiz-explain hidden">Khai cuộc lãng mạn sắc bén: phần thưởng cao, rủi ro cao.</div>
+  </div>
+</div>
+
+<div class="summary-card">
+  <h2>📌 Tóm tắt</h2>
+  <ul>
+    <li><strong>Biến</strong>: <code>1.e4 e5 2.f4 exf4 3.Nf3 g5 4.h4 g4 5.Ne5</code> (Kieseritzky), tiếp <code>5…Nf6 6.Bc4 d6 7.Nxg4</code>.</li>
+    <li><strong>Ý tưởng</strong>: thí tốt f → trung tâm d4 + cột f mở + sáng kiến.</li>
+    <li><strong>3.Nf3</strong>: ngăn …Qh4+ (gần như bắt buộc).</li>
+    <li><strong>Bản chất</strong>: đôi-lưỡi — sáng kiến đổi lấy vật chất và độ an toàn vua.</li>
+  </ul>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chessboard-js/1.0.0/chessboard-1.0.0.min.js"></script>
+<script>
+const START_FEN = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
+const MOVES = ['e4','e5','f4','exf4','Nf3','g5','h4','g4','Ne5','Nf6','Bc4','d6','Nxg4'];
+const COMMENTARY = {
+  0: { move: 'Vị trí xuất phát', text: 'King\'s Gambit — khai cuộc lãng mạn: thí tốt f để chiếm trung tâm, mở cột f, phát triển nhanh tấn công.' },
+  1: { move: '1. e4', text: 'Chiếm trung tâm.' },
+  2: { move: '1… e5', text: 'Ván cờ Mở.' },
+  3: { move: '2. f4', text: 'f4!? KING\'S GAMBIT — thí tốt f: dụ e5 rời đi để Trắng cắm d4 và mở cột f cho xe.' },
+  4: { move: '2… exf4', text: '…exf4 nhận thí (King\'s Gambit Accepted) — lấy tốt nhưng nhường trung tâm.' },
+  5: { move: '3. Nf3', text: 'Nf3 — kiểm soát ô h4, ngăn …Qh4+ phá nhập thành; phát triển.' },
+  6: { move: '3… g5', text: '…g5 giữ chắc tốt f4 (xương sống phòng thủ), nhưng làm yếu cánh vua đen.' },
+  7: { move: '4. h4', text: 'h4! Đánh vào chuỗi g5 — dụ …g4 đuổi mã.' },
+  8: { move: '4… g4', text: '…g4 đuổi mã f3.' },
+  9: { move: '5. Ne5', text: 'Ne5 (Kieseritzky) — mã nhảy vào ô trung tâm mạnh, nhắm f7 và g4, không lùi.' },
+  10: { move: '5… Nf6', text: '…Nf6 phát triển, tấn công e4.' },
+  11: { move: '6. Bc4', text: 'Bc4 nhắm f7 — tăng áp lực điểm yếu chí tử.' },
+  12: { move: '6… d6', text: '…d6 đuổi mã e5.' },
+  13: { move: '7. Nxg4', text: 'Nxg4! Ăn lại tốt g4, giữ chủ động và nhắm f6. Trắng có bù đắp năng động cho tốt đã thí. TABIYA Kieseritzky.' }
+};
+let board, game, currentMove = 0, stagesCompleted = new Set();
+function initBoard() {
+  game = new Chess(START_FEN);
+  board = Chessboard('board', { position: 'start', draggable: true,
+    pieceTheme: 'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png',
+    onDrop: (s,t) => { const m = game.move({from:s,to:t,promotion:'q'}); if(!m) return 'snapback'; setTimeout(updateOverlays,100); },
+    onSnapEnd: () => { board.position(game.fen()); updateOverlays(); }});
+  updateDisplay();
+}
+function nextMove() { if(currentMove>=MOVES.length) return; game.move(MOVES[currentMove]); board.position(game.fen()); currentMove++; setTimeout(()=>{updateDisplay();updateOverlays();},50); if(currentMove>=MOVES.length) markStage(3); }
+function prevMove() { if(currentMove<=0) return; game.undo(); currentMove--; board.position(game.fen()); setTimeout(()=>{updateDisplay();updateOverlays();},50); }
+function resetBoard() { game = new Chess(START_FEN); board.position('start'); currentMove = 0; setTimeout(()=>{updateDisplay();updateOverlays();},50); }
+function updateDisplay() {
+  const cm = COMMENTARY[currentMove] || COMMENTARY[0];
+  document.getElementById('moveDisplay').textContent = cm.move;
+  document.getElementById('commentary').innerHTML = cm.text;
+  const box = document.getElementById('infoBox');
+  if (currentMove >= MOVES.length) { box.className = 'info-box win'; box.innerHTML = '★ Tabiya Kieseritzky — sáng kiến đổi lấy tốt'; }
+  else { box.className = 'info-box'; box.innerHTML = 'Đến lượt: <strong>' + (game.turn()==='w'?'Trắng':'Đen') + '</strong>'; }
+  updateProgress();
+}
+function updateOverlays() { $('#board .square-55d63').removeClass('hl'); ['f4','e5','f7'].forEach(sq => $('#board .square-' + sq).addClass('hl')); }
+function checkSelfTest(btn, ok, exp) {
+  document.querySelectorAll('#selfTestOptions .quiz-option').forEach(el=>el.disabled=true);
+  btn.classList.add(ok?'correct':'wrong');
+  const fb = document.getElementById('selfTestFeedback');
+  fb.classList.remove('hidden'); fb.className = 'feedback ' + (ok?'correct':'wrong');
+  fb.textContent = (ok?'✓ ':'✗ ') + exp; markStage(4);
+}
+function quizCheck(btn, ok) {
+  const q = btn.closest('.quiz');
+  q.querySelectorAll('.quiz-option').forEach(el=>el.disabled=true);
+  btn.classList.add(ok?'correct':'wrong');
+  if (!ok) q.querySelectorAll('.quiz-option').forEach(el => { if (el.getAttribute('onclick').includes('true')) el.classList.add('correct'); });
+  q.querySelector('.quiz-explain').classList.remove('hidden'); markStage(5);
+}
+function markStage(n) { stagesCompleted.add(n); updateProgress(); }
+function updateProgress() { document.getElementById('progressFill').style.width = (stagesCompleted.size/5*100) + '%'; }
+function initMiniBoards() { Chessboard('hookBoard', { position: 'rnbqkbnr/pppp1ppp/8/4p3/4PP2/8/PPPP2PP/RNBQKBNR', draggable: false, pieceTheme: 'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png' }); }
+$(document).ready(() => { initBoard(); initMiniBoards(); setTimeout(()=>markStage(2),500); });
+</script>
+
+</body>
+</html>

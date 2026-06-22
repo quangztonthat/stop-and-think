@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bài 4 (Ch7-Open) — Sicilian Taimanov</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/chessboard-js/1.0.0/chessboard-1.0.0.min.css">
+<style>
+* { box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; max-width: 980px; margin: 0 auto; padding: 24px; color: #1a1a1a; line-height: 1.6; background: #fafafa; }
+h1 { color: #1a3a52; font-size: 26px; margin: 0 0 8px; }
+h2 { color: #2c5282; font-size: 20px; margin: 32px 0 12px; padding-bottom: 6px; border-bottom: 2px solid #e1e8ed; }
+.source { color: #888; font-size: 13px; margin-bottom: 24px; }
+.nav-link { font-size: 13px; color: #2c5282; text-decoration: none; }
+.stage { background: white; border-radius: 8px; padding: 20px 24px; margin: 16px 0; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
+.stage-label { display: inline-block; background: #2c5282; color: white; font-size: 12px; font-weight: 600; padding: 3px 10px; border-radius: 12px; margin-bottom: 8px; }
+.hook-question { font-size: 17px; color: #1a3a52; background: #fff8e1; border-left: 4px solid #faad14; padding: 14px 18px; border-radius: 0 6px 6px 0; margin: 12px 0; }
+.reveal-btn { background: #faad14; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-size: 14px; }
+.hidden { display: none; }
+.board-layout { display: grid; grid-template-columns: 440px 1fr; gap: 24px; align-items: start; margin-top: 16px; }
+@media (max-width: 820px) { .board-layout { grid-template-columns: 1fr; } }
+#board { width: 420px; max-width: 100%; }
+.mini-board { width: 300px; max-width: 100%; margin: 14px auto; }
+.controls { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; justify-content: center; }
+.controls button { padding: 7px 12px; background: #2c5282; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 13px; }
+.info-panel { background: #f8f9fb; padding: 16px; border-radius: 6px; border: 1px solid #e1e8ed; min-height: 380px; }
+.move-display { font-family: monospace; font-size: 16px; color: #2c5282; font-weight: 600; margin-bottom: 8px; }
+.commentary { font-size: 14px; color: #444; margin-bottom: 12px; }
+.info-box { background: white; padding: 10px; border-radius: 4px; border: 1px solid #e1e8ed; margin: 12px 0; font-size: 13px; text-align: center; }
+.info-box.win { background: #f6ffed; border-color: #b7eb8f; color: #389e0d; font-weight: 600; }
+.hl { background: rgba(255, 215, 0, 0.45) !important; box-shadow: inset 0 0 0 2px #faad14 !important; }
+.self-test { background: #fff8e1; border: 2px dashed #faad14; border-radius: 6px; padding: 16px; margin-top: 16px; }
+.feedback { margin-top: 10px; padding: 10px 14px; border-radius: 4px; font-size: 14px; }
+.feedback.correct { background: #f6ffed; color: #389e0d; border-left: 4px solid #52c41a; }
+.feedback.wrong { background: #fff1f0; color: #cf1322; border-left: 4px solid #ff4d4f; }
+.quiz { background: #f0f7ff; border-left: 4px solid #2c5282; border-radius: 0 6px 6px 0; padding: 14px 18px; margin: 12px 0; }
+.quiz-q { font-weight: 600; margin-bottom: 10px; color: #1a3a52; }
+.quiz-options { display: flex; flex-direction: column; gap: 6px; }
+.quiz-option { padding: 8px 12px; background: white; border: 1px solid #c9d6e2; border-radius: 4px; cursor: pointer; text-align: left; font-size: 14px; }
+.quiz-option.correct { background: #f6ffed; border-color: #52c41a; color: #389e0d; }
+.quiz-option.wrong { background: #fff1f0; border-color: #ff4d4f; color: #cf1322; }
+.quiz-explain { margin-top: 8px; font-size: 13px; color: #555; font-style: italic; }
+.summary-card { background: linear-gradient(135deg, #1a3a52, #2c5282); color: white; padding: 20px 24px; border-radius: 8px; margin-top: 24px; }
+.summary-card h2 { color: white; border: none; margin-top: 0; }
+.summary-card ul { padding-left: 20px; }
+code { background: #f1f3f5; padding: 1px 6px; border-radius: 3px; font-family: monospace; font-size: 0.9em; }
+.summary-card code { background: rgba(255,255,255,0.2); color: white; }
+.progress-bar { height: 4px; background: #e1e8ed; border-radius: 2px; overflow: hidden; margin: 8px 0 16px; }
+.progress-fill { height: 100%; background: #52c41a; transition: width 0.3s; width: 0%; }
+.tag { display:inline-block; background:#fde9c8; color:#874d00; font-size:11px; font-weight:600; padding:2px 8px; border-radius:10px; margin-left:6px; }
+.movelist { font-family: monospace; font-size: 13px; background:#fff8e1; border-radius:6px; padding:8px 12px; margin-top:10px; color:#874d00; line-height:1.7; }
+</style>
+</head>
+<body>
+
+<h1>Sicilian Taimanov <span class="tag">1.e4 c5 · dẻo & vững</span></h1>
+<div class="source">
+  Chương 7 (Khai cuộc) — The complete 1.e4 (Djurić–Komarov–Pantaleoni) · Trung cấp → Nâng cao<br>
+  <a class="nav-link" href="../index-opening.html">← Trang chủ Khai cuộc</a> ·
+  <a class="nav-link" href="chapter_o7_survey.html">← Chương 7</a>
+</div>
+
+<div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+
+<div class="stage">
+  <span class="stage-label">CHẶNG 1 · DẪN NHẬP</span>
+  <h2 style="margin-top:8px">Bộ khung dẻo: …e6, …Nc6, …Qc7, …a6</h2>
+  <p><strong>Taimanov</strong>: Đen triển khai dẻo với …e6, …Nc6, …Qc7, …a6 — không vội cam kết cấu trúc, giữ nhiều lựa chọn (…Nf6, …Bb4, …b5) và ít bị ép lý thuyết hơn Najdorf/Dragon.</p>
+  <div id="hookBoard" class="mini-board"></div>
+  <div class="movelist">1.e4 c5 2.Nf3 Nc6 3.d4 cxd4 4.Nxd4 e6 5.Nc3 Qc7</div>
+  <div class="hook-question">
+    🤔 <strong>Vì sao Taimanov hợp người ngại học thuộc</strong> nhưng vẫn muốn chơi Sicilian?
+  </div>
+  <button class="reveal-btn" onclick="document.getElementById('hookAnswer').classList.remove('hidden'); markStage(1);">Hiển thị đáp án</button>
+  <div id="hookAnswer" class="hidden" style="margin-top:14px">
+    <p>Bộ khung …e6/…Nc6/…Qc7/…a6 rất <strong>dẻo</strong>: Đen trì hoãn …Nf6 và …d6, giữ quyền chọn (…Bb4 ghim, …b5 bành trướng, …Nge7). Hậu c7 kiểm soát e5 và cột c. Ít biến ép buộc hơn Najdorf/Dragon: <code>5…Qc7 6.Be2 a6 7.O-O Nf6</code> — vững, linh hoạt, dễ chơi theo ý tưởng.</p>
+  </div>
+</div>
+
+<div class="stage">
+  <span class="stage-label">CHẶNG 2 · KHÁI NIỆM</span>
+  <h2 style="margin-top:8px">Ý tưởng của Taimanov</h2>
+  <ul>
+    <li><strong>Triển khai dẻo</strong>: …e6 + …Nc6 + …Qc7 + …a6 giữ tối đa lựa chọn, không lộ cấu trúc sớm.</li>
+    <li><strong>Hậu c7</strong>: kiểm soát ô e5 và cột c bán mở, hỗ trợ …b5 và phối hợp phản công.</li>
+    <li><strong>Ít lý thuyết ép buộc</strong>: so với Najdorf/Dragon, Taimanov nặng ý tưởng vị trí hơn là thuộc biến — hợp người mới chơi Sicilian.</li>
+  </ul>
+</div>
+
+<div class="stage">
+  <span class="stage-label">CHẶNG 3 · TƯƠNG TÁC TỪNG BƯỚC</span>
+  <div class="board-layout">
+    <div>
+      <div id="board"></div>
+      <div class="controls">
+        <button onclick="resetBoard()">⟨⟨ Đầu</button>
+        <button onclick="prevMove()">⟨ Lùi</button>
+        <button onclick="nextMove()">Tiến ⟩</button>
+      </div>
+    </div>
+    <div class="info-panel">
+      <div class="move-display" id="moveDisplay">Vị trí xuất phát</div>
+      <div class="commentary" id="commentary">Bấm Tiến ⟩ đi qua bộ khung Taimanov và đọc vì sao mỗi nước giữ tính linh hoạt.</div>
+      <div class="info-box" id="infoBox">Đến lượt: <strong>Trắng</strong></div>
+    </div>
+  </div>
+</div>
+
+<div class="stage">
+  <span class="stage-label">CHẶNG 4 · TỰ KIỂM TRA</span>
+  <h2 style="margin-top:8px">Điểm mạnh chính của bộ khung Taimanov là gì?</h2>
+  <div class="self-test">
+    <div class="quiz-options" id="selfTestOptions">
+      <button class="quiz-option" onclick="checkSelfTest(this, true, 'Đúng. Taimanov không vội đặt tốt d6/Nf6 cố định; Đen giữ thế dẻo để phản ứng theo cách Trắng chọn, nên ít bị ép vào biến lý thuyết sắc.')">Tính linh hoạt — trì hoãn cam kết, giữ nhiều kế hoạch (…Bb4, …b5, …Nf6/…Nge7)</button>
+      <button class="quiz-option" onclick="checkSelfTest(this, false, 'Sai — Taimanov là khai cuộc vị trí, không nhắm thắng tốt sớm.')">Thắng tốt trung tâm ngay</button>
+      <button class="quiz-option" onclick="checkSelfTest(this, false, 'Sai — nó cho thế cân bằng linh hoạt, không ép hòa.')">Buộc Trắng phải hòa</button>
+    </div>
+    <div class="feedback hidden" id="selfTestFeedback"></div>
+  </div>
+</div>
+
+<div class="stage">
+  <span class="stage-label">CHẶNG 5 · TRẮC NGHIỆM NHANH</span>
+  <div class="quiz">
+    <div class="quiz-q">Q1. Bộ khung đặc trưng của Taimanov?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" onclick="quizCheck(this, true)">…e6, …Nc6, …Qc7, …a6 — triển khai dẻo</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">…g6, …Bg7 fianchetto</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">…e5 đẩy trung tâm ngay</button>
+    </div>
+    <div class="quiz-explain hidden">Taimanov nhận diện bằng …e6 + …Nc6 + …Qc7, giữ tối đa lựa chọn.</div>
+  </div>
+  <div class="quiz">
+    <div class="quiz-q">Q2. Hậu c7 làm gì?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" onclick="quizCheck(this, true)">Kiểm soát e5 và cột c bán mở, hỗ trợ …b5</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Dọa chiếu hết ngay</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Chuẩn bị nhập thành cánh hậu</button>
+    </div>
+    <div class="quiz-explain hidden">Qc7 là nước đa năng: giữ e5, áp lực cột c, phối hợp phản công cánh hậu.</div>
+  </div>
+  <div class="quiz">
+    <div class="quiz-q">Q3. Taimanov khác Najdorf/Dragon ở điểm nào?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" onclick="quizCheck(this, true)">Ít lý thuyết ép buộc hơn, nặng ý tưởng vị trí và linh hoạt</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Sắc bén và bắt buộc thuộc nhiều biến hơn</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Luôn dẫn tới đôi công</button>
+    </div>
+    <div class="quiz-explain hidden">Taimanov dẻo và vị trí hơn — phù hợp người muốn chơi Sicilian mà ngại học thuộc dày.</div>
+  </div>
+</div>
+
+<div class="summary-card">
+  <h2>📌 Tóm tắt</h2>
+  <ul>
+    <li><strong>Biến</strong>: <code>2…Nc6 3.d4 cxd4 4.Nxd4 e6 5.Nc3 Qc7 6.Be2 a6 7.O-O Nf6</code>.</li>
+    <li><strong>Ý tưởng</strong>: bộ khung dẻo …e6/…Nc6/…Qc7/…a6; Hậu c7 giữ e5 và cột c.</li>
+    <li><strong>Ưu điểm</strong>: ít lý thuyết ép buộc, nặng ý tưởng vị trí — dễ chơi.</li>
+    <li><strong>Lựa chọn</strong>: giữ ngỏ …Bb4 (ghim), …b5 (bành trướng), …Nge7 hay …Nf6.</li>
+  </ul>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chessboard-js/1.0.0/chessboard-1.0.0.min.js"></script>
+<script>
+const START_FEN = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
+const MOVES = ['e4','c5','Nf3','Nc6','d4','cxd4','Nxd4','e6','Nc3','Qc7','Be2','a6','O-O','Nf6'];
+const COMMENTARY = {
+  0: { move: 'Vị trí xuất phát', text: 'Sicilian Taimanov — bộ khung dẻo …e6/…Nc6/…Qc7/…a6, ít lý thuyết ép buộc.' },
+  1: { move: '1. e4', text: 'Chiếm trung tâm.' },
+  2: { move: '1… c5', text: 'SICILIAN — tranh trung tâm bất đối xứng.' },
+  3: { move: '2. Nf3', text: 'Phát triển, nhắm d4.' },
+  4: { move: '2… Nc6', text: '…Nc6 phát triển, kiểm soát d4/e5.' },
+  5: { move: '3. d4', text: 'Mở Open Sicilian.' },
+  6: { move: '3… cxd4', text: '…cxd4 mở cột c.' },
+  7: { move: '4. Nxd4', text: 'Mã chiếm d4.' },
+  8: { move: '4… e6', text: '…e6 — bộ khung Taimanov: mở tượng f8, giữ trung tâm dẻo, chưa cam kết …d6 hay …Nf6.' },
+  9: { move: '5. Nc3', text: 'Nc3 giữ e4, phát triển.' },
+  10: { move: '5… Qc7', text: '…Qc7! Hậu kiểm soát e5 và cột c bán mở, hỗ trợ …b5 — nước đa năng đặc trưng Taimanov.' },
+  11: { move: '6. Be2', text: 'Be2 — phát triển vững (cũng có 6.Be3, 6.g3, 6.Ndb5 sắc hơn).' },
+  12: { move: '6… a6', text: '…a6 ngăn Nb5/Bb5, chuẩn bị …b5 bành trướng.' },
+  13: { move: '7. O-O', text: 'O-O nhập thành an toàn.' },
+  14: { move: '7… Nf6', text: '…Nf6 — giờ mới ra mã, tấn công e4; Đen giữ thế dẻo, sẵn …Bb4 hoặc …b5. Vững và linh hoạt. TABIYA.' }
+};
+let board, game, currentMove = 0, stagesCompleted = new Set();
+function initBoard() {
+  game = new Chess(START_FEN);
+  board = Chessboard('board', { position: 'start', draggable: true,
+    pieceTheme: 'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png',
+    onDrop: (s,t) => { const m = game.move({from:s,to:t,promotion:'q'}); if(!m) return 'snapback'; setTimeout(updateOverlays,100); },
+    onSnapEnd: () => { board.position(game.fen()); updateOverlays(); }});
+  updateDisplay();
+}
+function nextMove() { if(currentMove>=MOVES.length) return; game.move(MOVES[currentMove]); board.position(game.fen()); currentMove++; setTimeout(()=>{updateDisplay();updateOverlays();},50); if(currentMove>=MOVES.length) markStage(3); }
+function prevMove() { if(currentMove<=0) return; game.undo(); currentMove--; board.position(game.fen()); setTimeout(()=>{updateDisplay();updateOverlays();},50); }
+function resetBoard() { game = new Chess(START_FEN); board.position('start'); currentMove = 0; setTimeout(()=>{updateDisplay();updateOverlays();},50); }
+function updateDisplay() {
+  const cm = COMMENTARY[currentMove] || COMMENTARY[0];
+  document.getElementById('moveDisplay').textContent = cm.move;
+  document.getElementById('commentary').innerHTML = cm.text;
+  const box = document.getElementById('infoBox');
+  if (currentMove >= MOVES.length) { box.className = 'info-box win'; box.innerHTML = '★ Tabiya Taimanov — dẻo, vững, ít lý thuyết'; }
+  else { box.className = 'info-box'; box.innerHTML = 'Đến lượt: <strong>' + (game.turn()==='w'?'Trắng':'Đen') + '</strong>'; }
+  updateProgress();
+}
+function updateOverlays() { $('#board .square-55d63').removeClass('hl'); ['e6','c5','e5'].forEach(sq => $('#board .square-' + sq).addClass('hl')); }
+function checkSelfTest(btn, ok, exp) {
+  document.querySelectorAll('#selfTestOptions .quiz-option').forEach(el=>el.disabled=true);
+  btn.classList.add(ok?'correct':'wrong');
+  const fb = document.getElementById('selfTestFeedback');
+  fb.classList.remove('hidden'); fb.className = 'feedback ' + (ok?'correct':'wrong');
+  fb.textContent = (ok?'✓ ':'✗ ') + exp; markStage(4);
+}
+function quizCheck(btn, ok) {
+  const q = btn.closest('.quiz');
+  q.querySelectorAll('.quiz-option').forEach(el=>el.disabled=true);
+  btn.classList.add(ok?'correct':'wrong');
+  if (!ok) q.querySelectorAll('.quiz-option').forEach(el => { if (el.getAttribute('onclick').includes('true')) el.classList.add('correct'); });
+  q.querySelector('.quiz-explain').classList.remove('hidden'); markStage(5);
+}
+function markStage(n) { stagesCompleted.add(n); updateProgress(); }
+function updateProgress() { document.getElementById('progressFill').style.width = (stagesCompleted.size/5*100) + '%'; }
+function initMiniBoards() { Chessboard('hookBoard', { position: 'r1b1kbnr/ppqp1ppp/2n1p3/8/3NP3/2N5/PPP2PPP/R1BQKB1R', draggable: false, pieceTheme: 'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png' }); }
+$(document).ready(() => { initBoard(); initMiniBoards(); setTimeout(()=>markStage(2),500); });
+</script>
+
+</body>
+</html>

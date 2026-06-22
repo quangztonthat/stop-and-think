@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bài 3 (Ch1-Open) — Petroff (KIS 5.d3)</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/chessboard-js/1.0.0/chessboard-1.0.0.min.css">
+<style>
+* { box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; max-width: 980px; margin: 0 auto; padding: 24px; color: #1a1a1a; line-height: 1.6; background: #fafafa; }
+h1 { color: #1a3a52; font-size: 26px; margin: 0 0 8px; }
+h2 { color: #2c5282; font-size: 20px; margin: 32px 0 12px; padding-bottom: 6px; border-bottom: 2px solid #e1e8ed; }
+.source { color: #888; font-size: 13px; margin-bottom: 24px; }
+.nav-link { font-size: 13px; color: #2c5282; text-decoration: none; }
+.stage { background: white; border-radius: 8px; padding: 20px 24px; margin: 16px 0; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
+.stage-label { display: inline-block; background: #2c5282; color: white; font-size: 12px; font-weight: 600; padding: 3px 10px; border-radius: 12px; margin-bottom: 8px; }
+.hook-question { font-size: 17px; color: #1a3a52; background: #fff8e1; border-left: 4px solid #faad14; padding: 14px 18px; border-radius: 0 6px 6px 0; margin: 12px 0; }
+.reveal-btn { background: #faad14; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-size: 14px; }
+.hidden { display: none; }
+.board-layout { display: grid; grid-template-columns: 440px 1fr; gap: 24px; align-items: start; margin-top: 16px; }
+@media (max-width: 820px) { .board-layout { grid-template-columns: 1fr; } }
+#board { width: 420px; max-width: 100%; }
+.mini-board { width: 300px; max-width: 100%; margin: 14px auto; }
+.controls { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; justify-content: center; }
+.controls button { padding: 7px 12px; background: #2c5282; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 13px; }
+.info-panel { background: #f8f9fb; padding: 16px; border-radius: 6px; border: 1px solid #e1e8ed; min-height: 380px; }
+.move-display { font-family: monospace; font-size: 16px; color: #2c5282; font-weight: 600; margin-bottom: 8px; }
+.commentary { font-size: 14px; color: #444; margin-bottom: 12px; }
+.info-box { background: white; padding: 10px; border-radius: 4px; border: 1px solid #e1e8ed; margin: 12px 0; font-size: 13px; text-align: center; }
+.info-box.win { background: #f6ffed; border-color: #b7eb8f; color: #389e0d; font-weight: 600; }
+.hl { background: rgba(255, 215, 0, 0.45) !important; box-shadow: inset 0 0 0 2px #faad14 !important; }
+.self-test { background: #fff8e1; border: 2px dashed #faad14; border-radius: 6px; padding: 16px; margin-top: 16px; }
+.feedback { margin-top: 10px; padding: 10px 14px; border-radius: 4px; font-size: 14px; }
+.feedback.correct { background: #f6ffed; color: #389e0d; border-left: 4px solid #52c41a; }
+.feedback.wrong { background: #fff1f0; color: #cf1322; border-left: 4px solid #ff4d4f; }
+.quiz { background: #f0f7ff; border-left: 4px solid #2c5282; border-radius: 0 6px 6px 0; padding: 14px 18px; margin: 12px 0; }
+.quiz-q { font-weight: 600; margin-bottom: 10px; color: #1a3a52; }
+.quiz-options { display: flex; flex-direction: column; gap: 6px; }
+.quiz-option { padding: 8px 12px; background: white; border: 1px solid #c9d6e2; border-radius: 4px; cursor: pointer; text-align: left; font-size: 14px; }
+.quiz-option.correct { background: #f6ffed; border-color: #52c41a; color: #389e0d; }
+.quiz-option.wrong { background: #fff1f0; border-color: #ff4d4f; color: #cf1322; }
+.quiz-explain { margin-top: 8px; font-size: 13px; color: #555; font-style: italic; }
+.summary-card { background: linear-gradient(135deg, #1a3a52, #2c5282); color: white; padding: 20px 24px; border-radius: 8px; margin-top: 24px; }
+.summary-card h2 { color: white; border: none; margin-top: 0; }
+.summary-card ul { padding-left: 20px; }
+code { background: #f1f3f5; padding: 1px 6px; border-radius: 3px; font-family: monospace; font-size: 0.9em; }
+.summary-card code { background: rgba(255,255,255,0.2); color: white; }
+.progress-bar { height: 4px; background: #e1e8ed; border-radius: 2px; overflow: hidden; margin: 8px 0 16px; }
+.progress-fill { height: 100%; background: #52c41a; transition: width 0.3s; width: 0%; }
+.tag { display:inline-block; background:#fde9c8; color:#874d00; font-size:11px; font-weight:600; padding:2px 8px; border-radius:10px; margin-left:6px; }
+.movelist { font-family: monospace; font-size: 13px; background:#fff8e1; border-radius:6px; padding:8px 12px; margin-top:10px; color:#874d00; line-height:1.7; }
+</style>
+</head>
+<body>
+
+<h1>Bài 3 — Petroff Defence <span class="tag">KIS: 5.d3</span></h1>
+<div class="source">
+  Chương 1 (Khai cuộc) — Keep It Simple 1.e4 · Trung cấp<br>
+  <a class="nav-link" href="../index-opening.html">← Trang chủ Khai cuộc</a> ·
+  <a class="nav-link" href="chapter_o1_scotch.html">← Chương 1</a>
+</div>
+
+<div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+
+<div class="stage">
+  <span class="stage-label">STAGE 1 · HOOK</span>
+  <h2 style="margin-top:8px">Khi Đen không bảo vệ e5 mà chơi 2…Nf6</h2>
+  <p>Petroff (Phòng thủ Nga): Đen <strong>không</strong> giữ tốt e5 mà phản công e4 đối xứng. Nổi tiếng vững chắc, hơi thụ động.</p>
+  <div id="hookBoard" class="mini-board"></div>
+  <div class="movelist">1.e4 e5 2.Nf3 Nf6 3.Nxe5 d6 4.Nf3 Nxe4</div>
+  <div class="hook-question">
+    🤔 <strong>Cờ đối xứng hoàn toàn.</strong> Trắng nên đuổi mã e4 cách nào để giữ "đơn giản" mà vẫn có nhịp?
+  </div>
+  <button class="reveal-btn" onclick="document.getElementById('hookAnswer').classList.remove('hidden'); markStage(1);">Hiển thị đáp án</button>
+  <div id="hookAnswer" class="hidden" style="margin-top:14px">
+    <p><strong>5.d3!</strong> (lựa chọn của KIS) — nước khiêm tốn nhưng hiệu quả: đuổi mã e4, rồi <code>6.d4</code> chiếm trung tâm với một nhịp. <code>5.d3 Nf6 6.d4 d5 7.Bd3</code> — Trắng phát triển thoải mái, cờ cân bằng nhưng dễ chơi, ít lý thuyết "bắt buộc".</p>
+  </div>
+</div>
+
+<div class="stage">
+  <span class="stage-label">STAGE 2 · CONCEPT</span>
+  <h2 style="margin-top:8px">Đối phó Petroff theo kiểu "đơn giản"</h2>
+  <ul>
+    <li><strong>Cẩn thận cái bẫy</strong>: sau 3.Nxe5, Đen phải đi <code>3…d6</code> đuổi mã TRƯỚC. Ăn ngay <code>3…Nxe4?? 4.Qe2!</code> rồi nếu <code>4…Nf6?? 5.Nc6+</code> (mở chiếu) thắng Hậu.</li>
+    <li><strong>5.d3 thay vì 5.Nc3/5.d4</strong>: tránh các biến nhiều lý thuyết. d3 đuổi mã e4 ngay; sau đó d4 chiếm trung tâm có nhịp.</li>
+    <li><strong>Mục tiêu</strong>: không "phá" Petroff (nó quá vững) mà đạt thế cân bằng dễ chơi, để bạn đánh bằng hiểu biết hơn là trí nhớ.</li>
+  </ul>
+</div>
+
+<div class="stage">
+  <span class="stage-label">STAGE 3 · WALKTHROUGH</span>
+  <div class="board-layout">
+    <div>
+      <div id="board"></div>
+      <div class="controls">
+        <button onclick="resetBoard()">⟨⟨ Đầu</button>
+        <button onclick="prevMove()">⟨ Lùi</button>
+        <button onclick="nextMove()">Tiến ⟩</button>
+      </div>
+    </div>
+    <div class="info-panel">
+      <div class="move-display" id="moveDisplay">Vị trí xuất phát</div>
+      <div class="commentary" id="commentary">Bấm "Tiến ⟩" để xem cách KIS xử lý Petroff với 5.d3.</div>
+      <div class="info-box" id="infoBox">Đến lượt: <strong>Trắng</strong></div>
+    </div>
+  </div>
+</div>
+
+<div class="stage">
+  <span class="stage-label">STAGE 4 · SELF-TEST</span>
+  <h2 style="margin-top:8px">Sau 3.Nxe5, vì sao Đen phải chơi 3…d6 trước (không 3…Nxe4 ngay)?</h2>
+  <div class="self-test">
+    <div class="quiz-options" id="selfTestOptions">
+      <button class="quiz-option" onclick="checkSelfTest(this, true, 'Đúng! 3…Nxe4?? 4.Qe2! ghim/chĩa mã e4. Nếu 4…Nf6?? 5.Nc6+! (mở chiếu của Hậu e2 trên cột e) bắt Hậu d8. Phải đuổi mã bằng …d6 trước.')">Vì 3…Nxe4?? 4.Qe2! rồi Nc6+ thắng Hậu</button>
+      <button class="quiz-option" onclick="checkSelfTest(this, false, 'Sai. Đen vẫn ăn lại được e4 — chỉ là phải đuổi mã e5 bằng …d6 trước cho đúng thứ tự.')">Vì Đen không bao giờ ăn lại được e4</button>
+      <button class="quiz-option" onclick="checkSelfTest(this, false, 'Sai. Không phạm luật; chỉ là thất sách vì cái bẫy Qe2.')">Vì 3…Nxe4 là nước phạm luật</button>
+    </div>
+    <div class="feedback hidden" id="selfTestFeedback"></div>
+  </div>
+</div>
+
+<div class="stage">
+  <span class="stage-label">STAGE 5 · MINI-QUIZ</span>
+  <div class="quiz">
+    <div class="quiz-q">Q1. Petroff (2…Nf6) có đặc điểm gì?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" onclick="quizCheck(this, true)">Đen phản công e4 đối xứng thay vì giữ e5 — rất vững, hơi thụ động</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Đen thí tốt để tấn công nhanh</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Đen bỏ phát triển để bão tốt</button>
+    </div>
+    <div class="quiz-explain hidden">Tiếng tăm "khó phá" của Petroff đến từ sự đối xứng &amp; chắc chắn; mục tiêu của Trắng là thế dễ chơi, không phải đòn nhanh.</div>
+  </div>
+  <div class="quiz">
+    <div class="quiz-q">Q2. Vì sao KIS chọn 5.d3 (không 5.Nc3 hay 5.d4)?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" onclick="quizCheck(this, true)">Đơn giản nhất: đuổi mã e4 ngay rồi d4 chiếm trung tâm có nhịp, ít lý thuyết</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Vì d3 tấn công trực tiếp vua đen</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Vì d3 thắng quân ngay</button>
+    </div>
+    <div class="quiz-explain hidden">Tinh thần "Keep It Simple": chọn nước rõ ràng, dễ nhớ, vẫn giữ thế thoải mái.</div>
+  </div>
+  <div class="quiz">
+    <div class="quiz-q">Q3. Sau 5.d3 Nf6 6.d4, Trắng đạt được gì?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" onclick="quizCheck(this, true)">Trung tâm tốt d4 + phát triển nhanh, thế cân bằng nhưng dễ chơi cho Trắng</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Ưu thế thắng cuộc rõ rệt</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Một đòn chiếu hết</button>
+    </div>
+    <div class="quiz-explain hidden">Đẩy mã e4 lùi (mất nhịp cho Đen) rồi d4 — Trắng có thêm không gian &amp; thế dễ điều quân.</div>
+  </div>
+</div>
+
+<div class="summary-card">
+  <h2>📌 Tóm tắt</h2>
+  <ul>
+    <li><strong>Line</strong>: <code>1.e4 e5 2.Nf3 Nf6 3.Nxe5 d6 4.Nf3 Nxe4 5.d3 Nf6 6.d4 d5 7.Bd3</code>.</li>
+    <li><strong>Bẫy cần nhớ</strong>: <code>3…Nxe4?? 4.Qe2! Nf6?? 5.Nc6+</code> thắng Hậu — nên Đen phải <code>3…d6</code> trước.</li>
+    <li><strong>5.d3</strong>: nước "đơn giản" đuổi mã e4 → d4 chiếm trung tâm có nhịp.</li>
+    <li><strong>Triết lý</strong>: đạt thế cân bằng dễ chơi, đánh bằng hiểu biết thay vì học thuộc.</li>
+  </ul>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chessboard-js/1.0.0/chessboard-1.0.0.min.js"></script>
+<script>
+const START_FEN = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
+const MOVES = ['e4','e5','Nf3','Nf6','Nxe5','d6','Nf3','Nxe4','d3','Nf6','d4','d5','Bd3'];
+const COMMENTARY = {
+  0: { move: 'Vị trí xuất phát', text: 'Đi tới Petroff: Đen đáp 2…Nf6.' },
+  1: { move: '1. e4', text: 'Chiếm trung tâm, mở đường tượng f1 và Hậu.' },
+  2: { move: '1… e5', text: 'Ván cờ Mở.' },
+  3: { move: '2. Nf3', text: 'Tấn công e5.' },
+  4: { move: '2… Nf6 !?', text: 'PETROFF — thay vì bảo vệ e5, Đen phản công e4 đối xứng.' },
+  5: { move: '3. Nxe5', text: 'Ăn tốt. (Lưu ý: giờ Đen phải đuổi mã bằng …d6 TRƯỚC, không 3…Nxe4?? vì 4.Qe2!)' },
+  6: { move: '3… d6', text: 'Đuổi mã e5 — thứ tự đúng.' },
+  7: { move: '4. Nf3', text: 'Mã lùi an toàn (tránh 4.Nxf7?! mạo hiểm).' },
+  8: { move: '4… Nxe4', text: 'Giờ Đen mới ăn lại e4 — cờ đối xứng hoàn toàn.' },
+  9: { move: '5. d3 !', text: 'Lựa chọn KIS: nước khiêm tốn đuổi mã e4, giữ "đơn giản" (thay 5.Nc3/5.d4 nhiều lý thuyết).' },
+  10: { move: '5… Nf6', text: 'Mã buộc lùi — Đen mất một nhịp.' },
+  11: { move: '6. d4', text: 'Giờ chiếm trung tâm với nhịp tốt.' },
+  12: { move: '6… d5', text: 'Đen giữ trung tâm đối xứng.' },
+  13: { move: '7. Bd3', text: 'Phát triển, nhắm h7, sắp O-O. Thế cân bằng nhưng Trắng thoải mái &amp; dễ chơi.' }
+};
+let board, game, currentMove = 0, stagesCompleted = new Set();
+function initBoard() {
+  game = new Chess(START_FEN);
+  board = Chessboard('board', { position: 'start', draggable: true,
+    pieceTheme: 'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png',
+    onDrop: (s,t) => { const m = game.move({from:s,to:t,promotion:'q'}); if(!m) return 'snapback'; setTimeout(updateOverlays,100); },
+    onSnapEnd: () => { board.position(game.fen()); updateOverlays(); }});
+  updateDisplay();
+}
+function nextMove() { if(currentMove>=MOVES.length) return; game.move(MOVES[currentMove]); board.position(game.fen()); currentMove++; setTimeout(()=>{updateDisplay();updateOverlays();},50); if(currentMove>=MOVES.length) markStage(3); }
+function prevMove() { if(currentMove<=0) return; game.undo(); currentMove--; board.position(game.fen()); setTimeout(()=>{updateDisplay();updateOverlays();},50); }
+function resetBoard() { game = new Chess(START_FEN); board.position('start'); currentMove = 0; setTimeout(()=>{updateDisplay();updateOverlays();},50); }
+function updateDisplay() {
+  const cm = COMMENTARY[currentMove] || COMMENTARY[0];
+  document.getElementById('moveDisplay').textContent = cm.move;
+  document.getElementById('commentary').innerHTML = cm.text;
+  const box = document.getElementById('infoBox');
+  if (currentMove >= MOVES.length) { box.className = 'info-box win'; box.innerHTML = '★ Cân bằng — Trắng dễ chơi hơn một chút'; }
+  else { box.className = 'info-box'; box.innerHTML = 'Đến lượt: <strong>' + (game.turn()==='w'?'Trắng':'Đen') + '</strong>'; }
+  updateProgress();
+}
+function updateOverlays() { $('#board .square-55d63').removeClass('hl'); ['e4','e5','d3','d4'].forEach(sq => $('#board .square-' + sq).addClass('hl')); }
+function checkSelfTest(btn, ok, exp) {
+  document.querySelectorAll('#selfTestOptions .quiz-option').forEach(el=>el.disabled=true);
+  btn.classList.add(ok?'correct':'wrong');
+  const fb = document.getElementById('selfTestFeedback');
+  fb.classList.remove('hidden'); fb.className = 'feedback ' + (ok?'correct':'wrong');
+  fb.textContent = (ok?'✓ ':'✗ ') + exp; markStage(4);
+}
+function quizCheck(btn, ok) {
+  const q = btn.closest('.quiz');
+  q.querySelectorAll('.quiz-option').forEach(el=>el.disabled=true);
+  btn.classList.add(ok?'correct':'wrong');
+  if (!ok) q.querySelectorAll('.quiz-option').forEach(el => { if (el.getAttribute('onclick').includes('true')) el.classList.add('correct'); });
+  q.querySelector('.quiz-explain').classList.remove('hidden'); markStage(5);
+}
+function markStage(n) { stagesCompleted.add(n); updateProgress(); }
+function updateProgress() { document.getElementById('progressFill').style.width = (stagesCompleted.size/5*100) + '%'; }
+function initMiniBoards() { Chessboard('hookBoard', { position: 'rnbqkb1r/ppp2ppp/3p4/8/4n3/5N2/PPPP1PPP/RNBQKB1R', draggable: false, pieceTheme: 'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png' }); }
+$(document).ready(() => { initBoard(); initMiniBoards(); setTimeout(()=>markStage(2),500); });
+</script>
+
+</body>
+</html>

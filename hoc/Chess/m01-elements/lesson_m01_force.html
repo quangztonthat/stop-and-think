@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bài 1 (Ch1-Mid) — LỰC: Đòn đôi (Royal Fork)</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/chessboard-js/1.0.0/chessboard-1.0.0.min.css">
+<style>
+* { box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; max-width: 980px; margin: 0 auto; padding: 24px; color: #1a1a1a; line-height: 1.6; background: #fafafa; }
+h1 { color: #1a3a52; font-size: 28px; margin: 0 0 8px; }
+h2 { color: #2c5282; font-size: 20px; margin: 32px 0 12px; padding-bottom: 6px; border-bottom: 2px solid #e1e8ed; }
+.source { color: #888; font-size: 13px; margin-bottom: 24px; }
+.nav-link { font-size: 13px; color: #2c5282; text-decoration: none; }
+.stage { background: white; border-radius: 8px; padding: 20px 24px; margin: 16px 0; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
+.stage-label { display: inline-block; background: #2c5282; color: white; font-size: 12px; font-weight: 600; padding: 3px 10px; border-radius: 12px; margin-bottom: 8px; }
+.hook-question { font-size: 17px; color: #1a3a52; background: #fff8e1; border-left: 4px solid #faad14; padding: 14px 18px; border-radius: 0 6px 6px 0; margin: 12px 0; }
+.reveal-btn { background: #faad14; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-size: 14px; }
+.hidden { display: none; }
+.board-layout { display: grid; grid-template-columns: 440px 1fr; gap: 24px; align-items: start; margin-top: 16px; }
+@media (max-width: 820px) { .board-layout { grid-template-columns: 1fr; } }
+#board { width: 420px; max-width: 100%; }
+.mini-board { width: 300px; max-width: 100%; margin: 14px auto; }
+.controls { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; justify-content: center; }
+.controls button { padding: 7px 12px; background: #2c5282; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 13px; }
+.info-panel { background: #f8f9fb; padding: 16px; border-radius: 6px; border: 1px solid #e1e8ed; min-height: 380px; }
+.move-display { font-family: monospace; font-size: 16px; color: #2c5282; font-weight: 600; margin-bottom: 8px; }
+.commentary { font-size: 14px; color: #444; margin-bottom: 12px; }
+.info-box { background: white; padding: 10px; border-radius: 4px; border: 1px solid #e1e8ed; margin: 12px 0; font-size: 13px; text-align: center; }
+.info-box.win { background: #f6ffed; border-color: #b7eb8f; color: #389e0d; font-weight: 600; }
+.hl { background: rgba(255, 215, 0, 0.45) !important; box-shadow: inset 0 0 0 2px #faad14 !important; }
+.self-test { background: #fff8e1; border: 2px dashed #faad14; border-radius: 6px; padding: 16px; margin-top: 16px; }
+.feedback { margin-top: 10px; padding: 10px 14px; border-radius: 4px; font-size: 14px; }
+.feedback.correct { background: #f6ffed; color: #389e0d; border-left: 4px solid #52c41a; }
+.feedback.wrong { background: #fff1f0; color: #cf1322; border-left: 4px solid #ff4d4f; }
+.quiz { background: #f0f7ff; border-left: 4px solid #2c5282; border-radius: 0 6px 6px 0; padding: 14px 18px; margin: 12px 0; }
+.quiz-q { font-weight: 600; margin-bottom: 10px; color: #1a3a52; }
+.quiz-options { display: flex; flex-direction: column; gap: 6px; }
+.quiz-option { padding: 8px 12px; background: white; border: 1px solid #c9d6e2; border-radius: 4px; cursor: pointer; text-align: left; font-size: 14px; }
+.quiz-option.correct { background: #f6ffed; border-color: #52c41a; color: #389e0d; }
+.quiz-option.wrong { background: #fff1f0; border-color: #ff4d4f; color: #cf1322; }
+.quiz-explain { margin-top: 8px; font-size: 13px; color: #555; font-style: italic; }
+.summary-card { background: linear-gradient(135deg, #1a3a52, #2c5282); color: white; padding: 20px 24px; border-radius: 8px; margin-top: 24px; }
+.summary-card h2 { color: white; border: none; margin-top: 0; }
+.summary-card ul { padding-left: 20px; }
+code { background: #f1f3f5; padding: 1px 6px; border-radius: 3px; font-family: monospace; font-size: 0.9em; }
+.summary-card code { background: rgba(255,255,255,0.2); color: white; }
+.progress-bar { height: 4px; background: #e1e8ed; border-radius: 2px; overflow: hidden; margin: 8px 0 16px; }
+.progress-fill { height: 100%; background: #52c41a; transition: width 0.3s; width: 0%; }
+.tag { display:inline-block; background:#fde9c8; color:#874d00; font-size:11px; font-weight:600; padding:2px 8px; border-radius:10px; margin-left:6px; }
+</style>
+</head>
+<body>
+
+<h1>Bài 1 — LỰC: Đòn đôi <span class="tag">Royal Fork</span></h1>
+<div class="source">
+  Chương 1 (Trung cuộc) — Ba yếu tố · NỀN TẢNG → Trung cấp<br>
+  <a class="nav-link" href="../index-middle.html">← Trang chủ Trung cuộc</a> ·
+  <a class="nav-link" href="chapter_m01_elements.html">← Chương 1</a>
+</div>
+
+<div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+
+<div class="stage">
+  <span class="stage-label">STAGE 1 · HOOK</span>
+  <h2 style="margin-top:8px">Một cú nhảy Mã — bắt cả Vua lẫn Hậu</h2>
+  <p>Đen đang <strong>hơn chất</strong> (2 Xe so với Xe + Mã). Nhưng Mã c6 của Trắng đứng sát Vua đen g8 và Hậu c8.</p>
+  <div id="hookBoard" class="mini-board"></div>
+  <div class="hook-question">
+    🤔 <strong>Vua g8 và Hậu c8.</strong> Có một ô mà Mã nhảy tới sẽ vừa CHIẾU Vua, vừa TẤN CÔNG Hậu cùng lúc. Tìm ra nó?
+  </div>
+  <button class="reveal-btn" onclick="document.getElementById('hookAnswer').classList.remove('hidden'); markStage(1);">Hiển thị đáp án</button>
+  <div id="hookAnswer" class="hidden" style="margin-top:14px">
+    <p><strong>1.Ne7+!</strong> — "Royal fork". Mã e7 chiếu Vua g8 và đồng thời nhắm Hậu c8. Đen phải né chiếu trước (<code>1...Kh8</code>), rồi <code>2.Nxc8</code> ăn Hậu. Stockfish: +5 cho Trắng — <em>ưu thế Lực lật ngược cả việc đang kém chất</em>.</p>
+  </div>
+</div>
+
+<div class="stage">
+  <span class="stage-label">STAGE 2 · CONCEPT</span>
+  <h2 style="margin-top:8px">LỰC — yếu tố thứ nhất của Znosko-Borovsky</h2>
+  <ul>
+    <li><strong>Lực (Force)</strong> = sức mạnh quân: vật chất bạn có và mức độ uy hiếp của chúng. Ưu thế lực thường <em>bền vững</em> và quyết định ván cờ (khác Thời gian — chỉ nhất thời).</li>
+    <li><strong>Công cụ chiếm lực số 1: ĐÒN ĐÔI</strong> — một quân tấn công hai mục tiêu cùng lúc; đối thủ chỉ cứu được một.</li>
+    <li><strong>Royal fork</strong>: Mã vừa chiếu Vua vừa bắt Hậu. Luôn thắng Hậu, vì luật buộc xử lý chiếu Vua trước — không kịp cứu Hậu.</li>
+  </ul>
+</div>
+
+<div class="stage">
+  <span class="stage-label">STAGE 3 · WALKTHROUGH</span>
+  <div class="board-layout">
+    <div>
+      <div id="board"></div>
+      <div class="controls">
+        <button onclick="resetBoard()">⟨⟨ Đầu</button>
+        <button onclick="prevMove()">⟨ Lùi</button>
+        <button onclick="nextMove()">Tiến ⟩</button>
+      </div>
+    </div>
+    <div class="info-panel">
+      <div class="move-display" id="moveDisplay">Thế cờ khởi đầu</div>
+      <div class="commentary" id="commentary">Mã c6 áp sát. Đen hơn chất nhưng Vua g8 + Hậu c8 nằm trong tầm một cú nhảy Mã.</div>
+      <div class="info-box" id="infoBox">Đến lượt: <strong>Trắng</strong></div>
+    </div>
+  </div>
+</div>
+
+<div class="stage">
+  <span class="stage-label">STAGE 4 · SELF-TEST</span>
+  <h2 style="margin-top:8px">Sau 1.Ne7+, vì sao Đen KHÔNG ăn được Mã e7?</h2>
+  <div class="self-test">
+    <div class="quiz-options" id="selfTestOptions">
+      <button class="quiz-option" onclick="checkSelfTest(this, true, 'Đúng! Vua g8 không kề e7; Xe f8 không đi chéo tới e7; tốt f7 bắt e6/g6 chứ không bắt e7. Không quân nào với tới → buộc Kh8 → mất Hậu.')">Không quân nào của Đen với tới ô e7</button>
+      <button class="quiz-option" onclick="checkSelfTest(this, false, 'Sai. Tốt f7 bắt chéo sang e6/g6, không bắt được e7.')">Tốt f7 ăn được nhưng sẽ thua khác</button>
+      <button class="quiz-option" onclick="checkSelfTest(this, false, 'Sai. Xe f8 đi thẳng/ngang, không tới e7 theo đường chéo.')">Xe f8 ăn e7 nhưng bị chiếu lại</button>
+    </div>
+    <div class="feedback hidden" id="selfTestFeedback"></div>
+  </div>
+</div>
+
+<div class="stage">
+  <span class="stage-label">STAGE 5 · MINI-QUIZ</span>
+  <div class="quiz">
+    <div class="quiz-q">Q1. "Đòn đôi" là gì?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" onclick="quizCheck(this, true)">Một quân tấn công ≥2 mục tiêu cùng lúc → đối thủ chỉ cứu được một</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Đánh hai nước liên tiếp vào một ô</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Hai quân cùng tấn công một mục tiêu</button>
+    </div>
+    <div class="quiz-explain hidden">Bản chất đòn đôi: một lực, hai đích. Nĩa, đòn đôi, xiên đều thuộc họ này — cách rẻ nhất để ăn quân.</div>
+  </div>
+  <div class="quiz">
+    <div class="quiz-q">Q2. Vì sao "royal fork" (Mã chiếu Vua + bắt Hậu) luôn thắng Hậu?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" onclick="quizCheck(this, false)">Vì Hậu yếu hơn Mã</button>
+      <button class="quiz-option" onclick="quizCheck(this, true)">Vì luật buộc xử lý chiếu Vua trước → không kịp cứu Hậu</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Vì Mã được phong cấp</button>
+    </div>
+    <div class="quiz-explain hidden">Chiếu Vua là ưu tiên tuyệt đối: phải né/chặn/ăn quân chiếu ngay. Trong lúc đó, Hậu bị bỏ rơi cho Mã ăn.</div>
+  </div>
+  <div class="quiz">
+    <div class="quiz-q">Q3. Trong 3 yếu tố, "Lực" khác "Thời gian" ở điểm nào?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" onclick="quizCheck(this, true)">Lực (vật chất) bền vững, lâu dài; Thời gian (nhịp) là nhất thời, phải khai thác ngay</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Chúng giống hệt nhau</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Lực chỉ tính tốt, Thời gian chỉ tính quân nặng</button>
+    </div>
+    <div class="quiz-explain hidden">Hơn quân (Lực) là tài sản giữ được lâu. Dẫn trước phát triển (Thời gian) sẽ tan biến nếu không tấn công kịp — Bài 2 sẽ cho thấy.</div>
+  </div>
+</div>
+
+<div class="summary-card">
+  <h2>📌 Tóm tắt</h2>
+  <ul>
+    <li><strong>LỰC</strong> = vật chất + sức uy hiếp. Ưu thế lực bền vững, thường quyết định ván cờ.</li>
+    <li><strong>Đòn đôi</strong> (nĩa) là công cụ chiếm lực số 1: một quân, hai mục tiêu.</li>
+    <li><strong>Royal fork</strong> (Mã chiếu Vua + bắt Hậu) luôn thắng Hậu vì chiếu được ưu tiên xử lý.</li>
+    <li><strong>Thói quen</strong>: luôn quét xem quân nào của địch không được bảo vệ, và Vua–Hậu có nằm trong tầm một cú nhảy Mã hay một đường Hậu không.</li>
+  </ul>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chessboard-js/1.0.0/chessboard-1.0.0.min.js"></script>
+<script>
+const START_FEN = 'r1q2rk1/pp3ppp/2N5/8/8/8/PP3PPP/3Q1RK1 w - - 0 1';
+const MOVES = ['Ne7+', 'Kh8', 'Nxc8', 'Raxc8'];
+const COMMENTARY = {
+  0: { move: 'Thế cờ khởi đầu', text: 'Mã c6 áp sát. Đen đang hơn chất (2 Xe vs Xe+Mã), nhưng Vua g8 và Hậu c8 cùng nằm trong tầm một cú nhảy Mã.' },
+  1: { move: '1. Ne7+ !', text: 'ĐÒN ĐÔI! Mã nhảy e7 — vừa chiếu Vua g8, vừa tấn công Hậu c8. Đen buộc xử lý chiếu trước.' },
+  2: { move: '1... Kh8', text: 'Vua né sang h8 (f8 có Xe; f7/g7/h7 là tốt). Không quân nào với tới e7 để ăn Mã.' },
+  3: { move: '2. Nxc8', text: 'Mã thu Hậu! Đổi Mã (3) lấy Hậu (9) — chênh lệch LỰC quyết định.' },
+  4: { move: '2... Raxc8', text: 'Đen ăn lại Mã bằng Xe a8. Kết toán: Trắng thắng Hậu (mất Mã) → vượt lên. Stockfish: ~+5 cho Trắng.' }
+};
+let board, game, currentMove = 0, stagesCompleted = new Set();
+function initBoard() {
+  game = new Chess(START_FEN);
+  board = Chessboard('board', { position: START_FEN, draggable: true,
+    pieceTheme: 'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png',
+    onDrop: (s,t) => { const m = game.move({from:s,to:t,promotion:'q'}); if(!m) return 'snapback'; setTimeout(updateOverlays,100); },
+    onSnapEnd: () => { board.position(game.fen()); updateOverlays(); }});
+  updateDisplay();
+}
+function nextMove() { if(currentMove>=MOVES.length) return; game.move(MOVES[currentMove]); board.position(game.fen()); currentMove++; setTimeout(()=>{updateDisplay();updateOverlays();},50); if(currentMove>=MOVES.length) markStage(3); }
+function prevMove() { if(currentMove<=0) return; game.undo(); currentMove--; board.position(game.fen()); setTimeout(()=>{updateDisplay();updateOverlays();},50); }
+function resetBoard() { game = new Chess(START_FEN); board.position(START_FEN); currentMove = 0; setTimeout(()=>{updateDisplay();updateOverlays();},50); }
+function updateDisplay() {
+  const cm = COMMENTARY[currentMove] || COMMENTARY[0];
+  document.getElementById('moveDisplay').textContent = cm.move;
+  document.getElementById('commentary').innerHTML = cm.text;
+  const box = document.getElementById('infoBox');
+  if (currentMove >= MOVES.length) { box.className = 'info-box win'; box.innerHTML = '⚡ Thắng Hậu — ưu thế Lực quyết định'; }
+  else { box.className = 'info-box'; box.innerHTML = 'Đến lượt: <strong>' + (game.turn()==='w'?'Trắng':'Đen') + '</strong>'; }
+  updateProgress();
+}
+function updateOverlays() { $('#board .square-55d63').removeClass('hl'); ['e7','c8','g8'].forEach(sq => $('#board .square-' + sq).addClass('hl')); }
+function checkSelfTest(btn, ok, exp) {
+  document.querySelectorAll('#selfTestOptions .quiz-option').forEach(el=>el.disabled=true);
+  btn.classList.add(ok?'correct':'wrong');
+  const fb = document.getElementById('selfTestFeedback');
+  fb.classList.remove('hidden'); fb.className = 'feedback ' + (ok?'correct':'wrong');
+  fb.textContent = (ok?'✓ ':'✗ ') + exp; markStage(4);
+}
+function quizCheck(btn, ok) {
+  const q = btn.closest('.quiz');
+  q.querySelectorAll('.quiz-option').forEach(el=>el.disabled=true);
+  btn.classList.add(ok?'correct':'wrong');
+  if (!ok) q.querySelectorAll('.quiz-option').forEach(el => { if (el.getAttribute('onclick').includes('true')) el.classList.add('correct'); });
+  q.querySelector('.quiz-explain').classList.remove('hidden'); markStage(5);
+}
+function markStage(n) { stagesCompleted.add(n); updateProgress(); }
+function updateProgress() { document.getElementById('progressFill').style.width = (stagesCompleted.size/5*100) + '%'; }
+function initMiniBoards() { Chessboard('hookBoard', { position: START_FEN, draggable: false, pieceTheme: 'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png' }); }
+$(document).ready(() => { initBoard(); initMiniBoards(); setTimeout(()=>markStage(2),500); });
+</script>
+
+</body>
+</html>
+                                                 

@@ -1,0 +1,1030 @@
+<!DOCTYPE html>
+<html lang="vi"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>International Valuation Standards (IVS 2025) — Nền tảng, hiểu từ gốc</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,500&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  /* Design tokens shared with ebook-to-study-html + feynman-from-study (styles_v2.css) */
+  :root{
+    --bg:#fafaf7; --bg-elevated:#ffffff; --bg-soft:#f3f3ee;
+    --border:#e0e0d8; --border-soft:#ececea; --border-strong:#d2c8b6;
+    --ink:#1a1a1f; --ink-soft:#3f3f4a; --muted:#7a7a85;
+    --accent:#b8860b; --accent-2:#8b6508; --gold:#a07c1f; --bridge:#5a6b4f;
+    --serif:"Fraunces",Georgia,"Iowan Old Style",serif;
+    --sans:"Geist",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    --mono:"Geist Mono","JetBrains Mono",Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:var(--sans);
+    font-size:19px;line-height:1.72;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}
+  .progress{position:fixed;top:0;left:0;height:3px;width:0;z-index:50;
+    background:linear-gradient(90deg,var(--gold),var(--accent));transition:width .08s linear}
+  .wrap{max-width:920px;margin:0 auto;padding:0 36px}
+  .rise{opacity:0;transform:translateY(14px);animation:rise .7s cubic-bezier(.2,.7,.3,1) forwards}
+  @keyframes rise{to{opacity:1;transform:none}}
+
+  header{padding:104px 0 60px;border-bottom:1px solid var(--border)}
+  .kicker{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.18em;
+    text-transform:uppercase;color:var(--accent);margin-bottom:26px}
+  h1{font-family:var(--serif);font-weight:600;font-size:clamp(42px,7.6vw,72px);
+    line-height:1.0;letter-spacing:-.022em;margin-bottom:28px;font-optical-sizing:auto;color:var(--ink)}
+  h1 em{font-style:italic;color:var(--accent)}
+  .core{font-family:var(--serif);font-style:italic;font-weight:400;
+    font-size:clamp(21px,3.6vw,27px);line-height:1.44;color:var(--ink-soft)}
+  .core span{font-style:normal;font-weight:600;color:var(--accent-2);
+    box-shadow:inset 0 -.5em 0 rgba(184,134,11,.16)}
+
+  /* ---- BƯỚC 0: ĐỊNH VỊ (what it is + why it's the foundation) ---- */
+  .anchor .rule{font-family:var(--serif);font-size:19px;line-height:1.5;color:var(--ink);
+    background:var(--bg-soft);border-left:3px solid var(--accent);
+    padding:18px 24px;border-radius:0 4px 4px 0;margin:0}
+  .anchor .rule em{font-style:italic;color:var(--accent-2)}
+  .anchor .rule strong{color:var(--ink);font-weight:600}
+  .anchor .why{color:var(--ink-soft)}
+
+  section{padding:72px 0;border-bottom:1px solid var(--border);position:relative}
+  .step-head{display:flex;align-items:flex-start;gap:22px;margin-bottom:34px}
+  .big-num{font-family:var(--serif);font-weight:700;font-size:62px;line-height:.8;
+    color:var(--border-strong);flex:none;font-optical-sizing:auto;letter-spacing:-.03em}
+  .step-meta{padding-top:4px}
+  .lbl{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--accent);display:block;margin-bottom:10px}
+  h2{font-family:var(--serif);font-weight:600;font-size:clamp(27px,4.4vw,37px);
+    line-height:1.12;letter-spacing:-.012em;color:var(--ink)}
+  h2 em{font-style:italic;color:var(--accent)}
+  p{margin-bottom:21px}
+  p:last-child{margin-bottom:0}
+  strong{font-weight:600;color:var(--ink)}
+  em{font-style:italic;color:var(--accent-2)}
+  .gloss{color:var(--muted);font-style:italic}
+
+  .lead::first-letter{font-family:var(--serif);font-weight:700;float:left;
+    font-size:74px;line-height:.74;padding:8px 12px 0 0;color:var(--accent)}
+
+  .sub{font-family:var(--serif);font-weight:600;font-size:17px;letter-spacing:.01em;
+    color:var(--ink);margin:34px 0 14px;display:flex;align-items:center;gap:11px}
+  .sub::before{content:"";width:18px;height:2px;background:var(--accent);flex:none;border-radius:2px}
+
+  /* ---- BƯỚC 1: VẤN ĐỀ (why it exists) ---- */
+  .problem{background:var(--bg-soft)}
+  .problem .big-num{color:#e2d6b4}
+
+  /* ---- BƯỚC 3: VÍ DỤ (concrete worked example) ---- */
+  .example-card{border:1px solid #e8c876;border-radius:4px;padding:30px 32px;margin:8px 0 28px;
+    background:linear-gradient(135deg,#fef9ed 0%,#fdf3e0 100%)}
+  .example-card .tag{font-family:var(--mono);font-weight:600;font-size:11px;
+    letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin-bottom:16px;display:block}
+  .example-card p{color:#5a4810}
+  .example-card strong{color:var(--accent-2)}
+  .example-card p:last-child{margin-bottom:0}
+
+  /* ---- DỄ NHẦM (optional clarify / boundaries) ---- */
+  .clarify{background:var(--bg-soft)}
+  .clarify .big-num{color:#d8cdb2}
+  .mix-q{margin:0 0 30px;padding-left:24px;border-left:2px solid var(--border-strong)}
+  .mix-q:last-child{margin-bottom:0}
+  .mix-q .q{font-family:var(--serif);font-style:italic;font-weight:500;
+    font-size:22px;line-height:1.35;color:var(--accent-2);margin-bottom:12px;display:block}
+  .mix-q p:last-child{margin-bottom:0}
+
+  /* ---- NỐI TIẾP (bridge to the harder concepts) ---- */
+  .bridge .big-num{color:#bcc7b2}
+  .bridge .lbl{color:var(--bridge)}
+  .bridge-card{border-left:3px solid var(--bridge);background:#f4f6f1;
+    padding:22px 26px;border-radius:0 4px 4px 0;margin-top:6px}
+  .bridge-card p:last-child{margin-bottom:0}
+  .bridge-card strong{color:#42513a}
+
+  /* ---- KỂ LẠI GỌN (refined retell) ---- */
+  .retell{background:linear-gradient(180deg,var(--bg-soft) 0%,var(--bg) 100%);border-bottom:none}
+  .retell h2{color:var(--ink)}
+  .retell strong{color:var(--accent-2)}
+  .retell .core{margin-top:6px}
+  .testbox{border:1px solid var(--border);background:var(--bg-elevated);
+    border-radius:4px;padding:28px 32px;margin-top:40px;box-shadow:0 1px 2px rgba(0,0,0,.03)}
+  .testbox h3{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--accent);margin-bottom:20px}
+  .testbox ol{margin:0;padding-left:22px;counter-reset:t}
+  .testbox li{margin-bottom:16px;color:var(--ink-soft);padding-left:6px}
+  .testbox li:last-child{margin-bottom:0}
+
+  footer{text-align:center;padding:60px 0 88px}
+  footer .mark{font-family:var(--serif);font-weight:700;color:var(--accent);
+    font-size:26px;display:block;margin-bottom:14px}
+  footer p{font-family:var(--serif);font-style:italic;color:var(--muted);font-size:17px;max-width:400px;margin:0 auto}
+
+  @media(max-width:560px){
+    body{font-size:18px}
+    header{padding:70px 0 44px}
+    section{padding:52px 0}
+    .step-head{gap:16px}
+    .big-num{font-size:46px}
+    .lead::first-letter{font-size:60px}
+  }
+</style>
+<style>
+ .tabbar{position:fixed;top:0;left:0;right:0;width:100%;box-sizing:border-box;z-index:40;background:rgba(250,250,247,.93);
+   backdrop-filter:saturate(1.1) blur(8px);-webkit-backdrop-filter:saturate(1.1) blur(8px);
+   border-bottom:1px solid var(--border);display:flex;gap:6px;overflow-x:auto;
+   padding:10px max(36px,calc((100% - 992px)/2));scrollbar-width:thin}
+ .tabbar .tab{flex:0 0 auto;display:flex;align-items:baseline;gap:9px;cursor:pointer;
+   background:transparent;border:1px solid transparent;border-radius:999px;
+   padding:8px 17px;transition:.15s;white-space:nowrap;color:var(--muted)}
+ .tabbar .tab:hover{color:var(--ink);background:var(--bg-soft)}
+ .tabbar .tab.active{color:var(--accent-2);background:var(--bg-soft);border-color:var(--border-strong)}
+ .tabbar .tn{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.1em;color:var(--accent)}
+ .tabbar .tl{font-family:var(--serif);font-weight:500;font-size:16px}
+ body{padding-top:56px} .concept-panel{display:none}
+ .concept-panel.active{display:block}
+ .concept-panel header{padding-top:50px}
+ @media(max-width:560px){.tabbar .tl{max-width:48vw;overflow:hidden;text-overflow:ellipsis}}
+ .seqnav{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:54px;padding-top:24px;border-top:1px solid var(--border)}
+ .seqbtn{font-family:var(--sans);font-size:14px;color:var(--accent-2);background:var(--bg-soft);border:1px solid var(--border-strong);border-radius:999px;padding:9px 18px;cursor:pointer;max-width:46%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;transition:.15s}
+ .seqbtn:hover{background:#fff;border-color:var(--accent)}
+ .seqnav .seq-next{margin-left:auto}
+ .tabbar .tab:focus-visible,.seqbtn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+ .concept-panel:focus{outline:none}
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+<nav class="tabbar" role="tablist" aria-label="Các khái niệm nền"><button class="tab" role="tab" id="tab-c-value-as-estimate" aria-controls="c-value-as-estimate" aria-selected="false" tabindex="-1" data-i="0"><span class="tn">01</span><span class="tl">Giá trị là gì</span></button><button class="tab" role="tab" id="tab-c-asset-is-a-right" aria-controls="c-asset-is-a-right" aria-selected="false" tabindex="-1" data-i="1"><span class="tn">02</span><span class="tl">Tài sản là quyền</span></button><button class="tab" role="tab" id="tab-c-basis-of-value" aria-controls="c-basis-of-value" aria-selected="false" tabindex="-1" data-i="2"><span class="tn">03</span><span class="tl">Cơ sở giá trị</span></button><button class="tab" role="tab" id="tab-c-observable-data" aria-controls="c-observable-data" aria-selected="false" tabindex="-1" data-i="3"><span class="tn">04</span><span class="tl">Dữ liệu quan sát</span></button><button class="tab" role="tab" id="tab-c-three-approaches" aria-controls="c-three-approaches" aria-selected="false" tabindex="-1" data-i="4"><span class="tn">05</span><span class="tl">Ba cách định giá</span></button><button class="tab" role="tab" id="tab-c-time-value-of-money" aria-controls="c-time-value-of-money" aria-selected="false" tabindex="-1" data-i="5"><span class="tn">06</span><span class="tl">Tiền theo thời gian</span></button><button class="tab" role="tab" id="tab-c-cash-flow" aria-controls="c-cash-flow" aria-selected="false" tabindex="-1" data-i="6"><span class="tn">07</span><span class="tl">Dòng tiền</span></button><button class="tab" role="tab" id="tab-c-discount-rate-and-risk" aria-controls="c-discount-rate-and-risk" aria-selected="false" tabindex="-1" data-i="7"><span class="tn">08</span><span class="tl">Tỷ lệ chiết khấu</span></button></nav>
+<div class="concept-panel" id="c-value-as-estimate" role="tabpanel" aria-labelledby="tab-c-value-as-estimate" tabindex="0"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Nền tảng · hiểu từ gốc</div>
+    <h1 class="rise" style="animation-delay:.08s">Giá trị: một ý kiến tại một ngày, không phải con số tuyệt đối</h1>
+    <p class="core rise" style="animation-delay:.16s">Giá trị không phải sự thật cố định — <span>nó là kết luận của người định giá, đúng cho một ngày.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Định vị · nó là gì &amp; vì sao học trước</span><h2>Giá trị: kết luận có điều kiện, gắn với một ngày</h2></div>
+    </div>
+    <div class="rule">Theo IVS (Glossary 10.38), <strong>giá trị</strong> (value) là <em>kết luận định lượng của người định giá</em> sau một quy trình định giá. Con số đó chốt <strong>tại một ngày định giá</strong> (valuation date, 10.32). Nó là một <em>ý kiến chuyên môn</em>, không phải con số đo được. IVS còn tách bạch: <em>giá</em> (price) là số đã hỏi, chào hay trả; và IVS nói thẳng giá với giá trị có thể khác nhau (10.21).</div>
+    <div class="sub">Vì sao đây là nền</div>
+    <div class="why"><p>Đây là viên gạch dưới cùng của cả cuốn. Mọi chuẩn mực phía sau chỉ là cách đi tới một con số giá trị. Chưa thấy giá trị là một ý kiến gắn ngày, bạn sẽ tưởng nó là sự thật duy nhất. Nắm rồi, bạn hiểu vì sao hai người định giá đàng hoàng vẫn ra hai số.</p></div>
+  </section>
+
+  <section class="problem">
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Vấn đề nó sinh ra để giải quyết</span><h2>Hỏi 'cái này đáng bao nhiêu' — sao không có một đáp án?</h2></div>
+    </div>
+    <p class="lead">Bạn hỏi một căn nhà 'đáng bao nhiêu'. Tưởng có một con số đúng duy nhất. Nhưng hỏi ngân hàng, hỏi người mua, hỏi cơ quan thuế — mỗi nơi cho một số khác. Vậy số nào mới 'thật'?</p>
+
+<p>Gốc rễ nằm ở đây. Giá trị không có sẵn trong vật như cân nặng hay chiều cao. Không ai cân được nó. Nó là một ước tính: ai đó nhìn bằng chứng rồi kết luận.</p>
+
+<div class="sub">Vì sao không chốt được một số</div>
+<p>Bằng chứng thường thiếu, và tương lai thì chưa tới. Người định giá phải suy xét, chọn giả định, rồi đưa ra ý kiến. Đổi người, đổi ngày, đổi mục đích — con số nhúc nhích theo.</p>
+
+<p>Nên trước khi đọc bất cứ con số 'giá trị' nào, ta cần biết nó là loại kết luận gì. Bước 2 sẽ lo phần đó.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Mô hình đơn giản · cách nó chạy</span><h2>Một ý kiến, gắn chặt với một ngày và một mục đích</h2></div>
+    </div>
+    <p>Giá trị là kết luận của người định giá, không phải số khắc trên đá. Nó luôn đi kèm vài ràng buộc.</p>
+
+<div class="sub">Gắn với một ngày</div>
+<p>Giá trị chỉ đúng cho ngày định giá. Thị trường đổi, tin tức tới, con số hôm nay khác con số tháng sau. Bỏ ngày ra, con số mất nghĩa.</p>
+
+<div class="sub">Là ý kiến, không phải phép đo</div>
+<p>Người định giá nhìn bằng chứng rồi suy xét. IVS gọi đây là dùng xét đoán chuyên môn và giữ thái độ hoài nghi. Hai người cẩn thận vẫn có thể kết luận lệch nhau chút ít, mà cả hai vẫn đúng chuẩn.</p>
+
+<div class="sub">Giá, chi phí, giá trị là ba thứ khác nhau</div>
+<p>Giá là số ai đó thật sự trả. Chi phí là số bỏ ra để làm ra vật. Giá trị là số nó <em>đáng</em>, theo ý kiến người định giá. Ba số này có thể chênh nhau.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví dụ cụ thể</span><h2>Cùng một căn hộ, ba con số 'giá trị'</h2></div>
+    </div>
+    <div class="example-card"><span class="tag">Bài toán</span>
+<p>Một căn hộ, cùng một ngày, đem hỏi ba nơi.</p>
+<p>Ngân hàng định giá để cho vay: ra <strong>2 tỷ</strong>. Một người mê đúng căn đó, sẵn lòng trả <strong>2,3 tỷ</strong>. Chủ cũ mua 1,5 tỷ năm xưa, sổ sách vẫn ghi <strong>1,5 tỷ</strong>.</p>
+<p>Ba con số, không số nào 'sai'. Chúng trả lời ba câu hỏi khác nhau, ở cùng một ngày.</p>
+</div>
+<p>Đời thường hơn: chiếc xe của bạn 'đáng' bao nhiêu? Số trên app rao bán, số người mua trả, số tiệm thu lại — mỗi nơi một kiểu. Bạn vẫn nói xe 'đáng' một con số, nhưng thật ra con số đó tùy câu hỏi.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. IVS định nghĩa <em>valuation</em> là hành động hình thành kết luận về giá trị tại một ngày, theo đúng chuẩn. Vì là kết luận chứ không phải sự thật, IVS bắt người định giá nêu rõ ngày, mục đích và cơ sở giá trị. Nhờ vậy người đọc biết con số này đang trả lời câu hỏi nào.</p>
+  </section>
+
+  <section class="clarify">
+    <div class="step-head">
+      <div class="big-num">≠</div>
+      <div class="step-meta"><span class="lbl">Dễ nhầm · ranh giới</span><h2>Đừng nhầm giá trị với giá</h2></div>
+    </div>
+    <div class="mix-q"><span class="q">'Giá thị trường là giá người ta trả, vậy nó với giá trị là một chứ gì?'</span><p>Không hẳn. Giá là số đã thật sự trả trong một vụ cụ thể. Giá trị là ước tính số <em>nên</em> trao đổi, trong điều kiện chuẩn. Một vụ mua vội, mua hớ, hay mua vì tình cảm — giá lệch khỏi giá trị ngay.</p></div>
+<div class="mix-q"><span class="q">'Định giá là ý kiến — vậy đoán bừa cũng được à?'</span><p>Không. Ý kiến chuyên môn khác đoán bừa ở chỗ phải dựa vào bằng chứng và lập luận chặt. IVS bắt nêu giả định, dùng dữ liệu, giữ thái độ hoài nghi. Là ý kiến, nhưng là ý kiến có kỷ luật.</p></div>
+  </section>
+
+  <section class="bridge">
+    <div class="step-head">
+      <div class="big-num">→</div>
+      <div class="step-meta"><span class="lbl">Nối tiếp · nó dẫn tới đâu</span><h2>Từ đây mở sang trang 'Giá, Chi phí, Giá trị'</h2></div>
+    </div>
+    <div class="bridge-card"><p>Giữ chắc một điều: giá trị là ý kiến, gắn ngày, khác với giá và chi phí. Trang khó <strong>'Ba từ ai cũng tưởng giống nhau: Giá, Chi phí, Giá trị'</strong> đào sâu đúng chỗ này. Vì sao ba từ ấy tách ra, và lẫn lộn chúng thì nguy hiểm thế nào.</p>
+<p>Và vì con số tùy câu hỏi, câu hỏi đầu tiên luôn là 'giá trị cho ai'. Đó chính là tab <strong>'Cơ sở giá trị'</strong> ngay sau đây.</p></div>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">✦</div>
+      <div class="step-meta"><span class="lbl">Kể lại trong một hơi</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Giá trị không nằm sẵn trong vật. Nó là ý kiến của người định giá, đúng cho một ngày và một mục đích. Đổi ngày hay đổi câu hỏi, con số đổi theo. Và nó khác hẳn giá đã trả hay chi phí bỏ ra.</p>
+<p class="core">Giá trị không phải sự thật cố định — <span>nó là kết luận của người định giá, đúng cho một ngày.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã nắm nền chưa?</h3>
+      <ol>
+        <li>Vì sao cùng một căn nhà, ngân hàng và người mua lại đưa ra hai 'giá trị' khác nhau mà không ai sai?</li>
+        <li>Giá, chi phí và giá trị khác nhau ở điểm nào?</li>
+        <li>Vì sao mọi con số giá trị đều phải gắn với một ngày định giá?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nền vững thì cái khó tự nhẹ đi. Hiểu từ gốc, không học vẹt.</p>
+  </footer>
+
+<nav class="seqnav" aria-label="Chuyển nền"><span></span><button class="seqbtn seq-next" data-nav="1">Tài sản là quyền ›</button></nav></div></div><div class="concept-panel" id="c-asset-is-a-right" role="tabpanel" aria-labelledby="tab-c-asset-is-a-right" tabindex="0"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Nền tảng · hiểu từ gốc</div>
+    <h1 class="rise" style="animation-delay:.08s">Tài sản là một <em>quyền</em>, không phải vật</h1>
+    <p class="core rise" style="animation-delay:.16s">Bạn không định giá viên gạch — <span>bạn định giá quyền hưởng lợi ích từ nó.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Định vị · nó là gì &amp; vì sao học trước</span><h2>Tài sản là quyền hưởng một lợi ích kinh tế</h2></div>
+    </div>
+    <div class="rule">Theo IVS (Glossary 10.01), <strong>tài sản</strong> (asset) là <em>quyền hưởng một lợi ích kinh tế</em> — không phải bản thân vật. Cùng một tòa nhà có thể chứa nhiều quyền: quyền sở hữu, quyền thuê, quyền thế chấp. IVS 400 (Real Property Interests) định giá <em>quyền</em> trên bất động sản, chứ không định giá đống gạch. Mặt ngược lại, <em>nợ phải trả</em> (liability, 10.16) là nghĩa vụ phải chuyển lợi ích kinh tế cho người khác.</div>
+    <div class="sub">Vì sao đây là nền</div>
+    <div class="why"><p>Người mới hay tưởng định giá là 'cái nhà đáng bao nhiêu'. Nhưng cả cuốn này định giá <em>quyền</em>, không định giá vật. Hiểu sai chỗ này, bạn sẽ lẫn khi gặp quyền thuê, cổ phần, hay tài sản vô hình. Hiểu đúng, một loạt chương sau tự mở ra.</p></div>
+  </section>
+
+  <section class="problem">
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Vấn đề nó sinh ra để giải quyết</span><h2>Cùng một tòa nhà, vì sao nhiều người 'sở hữu' khác nhau?</h2></div>
+    </div>
+    <p class="lead">Một tòa nhà đứng đó. Chủ đất sở hữu mảnh đất. Một công ty thuê 20 năm để mở cửa hàng. Ngân hàng giữ quyền siết nợ nếu chủ vỡ nợ. Cả ba cùng 'có' tòa nhà — nhưng mỗi người cầm một thứ khác nhau.</p>
+
+<p>Nếu định giá 'tòa nhà' như một cục, ta kẹt ngay. Bán cho ai? Quyền nào? Cùng đống gạch ấy, quyền thuê đáng khác, quyền sở hữu đáng khác.</p>
+
+<div class="sub">Vật thì một, quyền thì nhiều</div>
+<p>Đống gạch chỉ có một. Nhưng quyền trên nó thì chia được: sở hữu, thuê, cho thuê lại, thế chấp. Mỗi quyền cho một dòng lợi ích riêng, nên đáng một số riêng.</p>
+
+<p>Vậy câu hỏi đúng không phải 'vật này đáng bao nhiêu', mà 'quyền nào trên vật này đáng bao nhiêu'. Bước 2 chỉ cách nhìn đó.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Mô hình đơn giản · cách nó chạy</span><h2>Định giá lợi ích, không định giá vật chất</h2></div>
+    </div>
+    <p>Quy tắc gọn: cái bạn định giá là <strong>quyền hưởng lợi ích</strong>, không phải vật. Vật chỉ là chỗ lợi ích bám vào.</p>
+
+<div class="sub">Tài sản chính là quyền</div>
+<p>IVS nói thẳng: tài sản là quyền hưởng một lợi ích kinh tế. Tiền thuê chảy về, mùa màng thu được, hay đơn giản là quyền được dùng. Hết quyền đó thì hết giá trị, dù vật vẫn còn nguyên.</p>
+
+<div class="sub">Một vật, nhiều quyền chồng lên nhau</div>
+<p>Trên cùng mảnh đất có thể có nhiều quyền cùng tồn tại. Quyền sở hữu là lớn nhất. Quyền thuê nhỏ hơn, chỉ trong thời hạn. Định giá quyền nào thì đo dòng lợi ích của riêng quyền đó.</p>
+
+<div class="sub">Vô hình vẫn là tài sản</div>
+<p>Có quyền chẳng dính vật nào: thương hiệu, bằng sáng chế, hợp đồng. IVS gọi là tài sản vô hình — quyền hưởng lợi ích, không có hình hài. Vẫn định giá được, vì vẫn đẻ ra lợi ích.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví dụ cụ thể</span><h2>Mảnh đất và ba người 'có' nó</h2></div>
+    </div>
+    <div class="example-card"><span class="tag">Bài toán</span>
+<p>Một mảnh đất cho thuê.</p>
+<p>Chủ đất nhận tiền thuê mỗi năm: quyền của ông là dòng tiền thuê đó, kéo dài rất lâu. Người thuê mở quán trên đất, còn 10 năm hợp đồng: quyền của họ là 10 năm kinh doanh, hết hạn là hết.</p>
+<p>Cùng mảnh đất, hai quyền, hai con số khác hẳn. Không ai định giá 'mảnh đất' mơ hồ kiểu đó cả.</p>
+</div>
+<p>Quen thuộc hơn: vé xem phim. Bạn trả tiền không phải để 'sở hữu' rạp, mà mua <em>quyền</em> ngồi xem một suất. Quyền hết khi phim tan. Giá vé là giá của quyền đó, không phải giá cái rạp.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. IVS 400 phân biệt các loại quyền trên bất động sản: <em>freehold</em> (sở hữu lâu dài), <em>leasehold</em> (quyền thuê có thời hạn), và các quyền phụ khác. Mỗi loại có dòng lợi ích và rủi ro riêng, nên được định giá tách bạch, đúng từng quyền một.</p>
+  </section>
+
+  <section class="clarify">
+    <div class="step-head">
+      <div class="big-num">≠</div>
+      <div class="step-meta"><span class="lbl">Dễ nhầm · ranh giới</span><h2>Đừng nhầm quyền với vật</h2></div>
+    </div>
+    <div class="mix-q"><span class="q">'Định giá nhà thì cứ tính gạch, xi măng, công xây là ra chứ gì?'</span><p>Đó là <em>chi phí làm ra vật</em>, mới một góc nhìn thôi. Cái thị trường trả tiền là quyền dùng và hưởng lợi từ nhà. Một căn nhà xây tốn kém ở nơi không ai muốn ở vẫn đáng rất ít — vì quyền hưởng lợi gần như bằng không.</p></div>
+<div class="mix-q"><span class="q">'Tài sản vô hình không sờ được, sao gọi là tài sản?'</span><p>Vì tài sản là <em>quyền</em>, không phải vật sờ được. Thương hiệu cho quyền bán giá cao hơn. Bằng sáng chế cho quyền độc quyền khai thác. Không có hình, nhưng có dòng lợi ích, nên có giá trị.</p></div>
+  </section>
+
+  <section class="bridge">
+    <div class="step-head">
+      <div class="big-num">→</div>
+      <div class="step-meta"><span class="lbl">Nối tiếp · nó dẫn tới đâu</span><h2>Mở sang 'Bất động sản: định giá quyền, không phải gạch'</h2></div>
+    </div>
+    <div class="bridge-card"><p>Đây đúng là nền của trang khó <strong>'Định giá bất động sản: bạn định giá quyền, không phải gạch'</strong>. Ở đó, cùng một tòa nhà tách thành quyền sở hữu và quyền thuê, mỗi quyền một con số. Bạn vừa nắm vì sao.</p>
+<p>Nền này cũng đỡ cho phần <em>tài sản vô hình</em>. Thương hiệu là một quyền, nên đo được dòng lợi ích của riêng nó — đúng tinh thần trang 'một thương hiệu kiếm bao nhiêu'.</p></div>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">✦</div>
+      <div class="step-meta"><span class="lbl">Kể lại trong một hơi</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Bạn không định giá vật, mà định giá quyền hưởng lợi ích từ vật. Một vật có thể mang nhiều quyền: sở hữu, thuê, thế chấp — mỗi quyền một con số. Có quyền chẳng dính vật nào, như thương hiệu, vẫn là tài sản. Hết quyền là hết giá trị, dù vật còn nguyên.</p>
+<p class="core">Bạn không định giá viên gạch — <span>bạn định giá quyền hưởng lợi ích, không định giá vật.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã nắm nền chưa?</h3>
+      <ol>
+        <li>Cùng một mảnh đất, vì sao quyền của chủ đất và quyền của người thuê lại đáng hai con số khác nhau?</li>
+        <li>Vì sao một thương hiệu không sờ được vẫn được coi là tài sản và định giá được?</li>
+        <li>Nói 'định giá quyền, không định giá vật' nghĩa là gì?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nền vững thì cái khó tự nhẹ đi. Hiểu từ gốc, không học vẹt.</p>
+  </footer>
+
+<nav class="seqnav" aria-label="Chuyển nền"><button class="seqbtn seq-prev" data-nav="0">‹ Giá trị là gì</button><button class="seqbtn seq-next" data-nav="2">Cơ sở giá trị ›</button></nav></div></div><div class="concept-panel" id="c-basis-of-value" role="tabpanel" aria-labelledby="tab-c-basis-of-value" tabindex="0"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Nền tảng · hiểu từ gốc</div>
+    <h1 class="rise" style="animation-delay:.08s">Cơ sở giá trị: trước khi định giá, hỏi 'giá trị cho ai'</h1>
+    <p class="core rise" style="animation-delay:.16s">Cùng một tài sản, đổi câu hỏi — <span>đổi luôn con số. Cơ sở giá trị chính là câu hỏi đó.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Định vị · nó là gì &amp; vì sao học trước</span><h2>Cơ sở giá trị: tiền đề bạn chốt trước khi tính</h2></div>
+    </div>
+    <div class="rule">Theo IVS 102 (đoạn 10.01), <strong>cơ sở giá trị</strong> (basis of value) là <em>tiền đề nền tảng</em> mà con số giá trị dựa trên. Nó định ra giả định: bên mua bên bán là ai, có bị ép không, biết thông tin tới đâu. IVS 102 (20.02) liệt kê các cơ sở chuẩn — <em>market value</em>, <em>market rent</em>, <em>equitable value</em>, <em>investment value/worth</em>, <em>synergistic value</em>, <em>liquidation value</em>. Mỗi cơ sở trả lời một câu 'giá trị cho ai, trong hoàn cảnh nào' khác nhau.</div>
+    <div class="sub">Vì sao đây là nền</div>
+    <div class="why"><p>Đây là cái công tắc đầu tiên của mọi cuộc định giá. Chọn cơ sở nào, nó kéo theo phương pháp, giả định và con số cuối. Chưa chốt cơ sở, bạn định giá trong mơ hồ — không biết đang trả lời câu hỏi nào. Đây là nền cho gần hết các trang khó về 'giá trị'.</p></div>
+  </section>
+
+  <section class="problem">
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Vấn đề nó sinh ra để giải quyết</span><h2>Căn hộ này đáng 2 tỷ hay 2,3 tỷ?</h2></div>
+    </div>
+    <p class="lead">Bạn định giá một căn hộ. Với người mua bất kỳ trên thị trường, nó đáng 2 tỷ. Nhưng một người hàng xóm muốn gộp với căn bên cạnh, sẵn trả 2,3 tỷ. Số nào đúng? Cả hai — nhưng trả lời hai câu hỏi khác nhau.</p>
+
+<p>Đây là vấn đề gốc. 'Đáng bao nhiêu' chưa đủ rõ. Phải hỏi thêm: đáng với ai? Trong hoàn cảnh nào? Người bán có bị ép bán gấp không?</p>
+
+<div class="sub">Đổi giả định, đổi con số</div>
+<p>Vẫn căn hộ ấy, nếu chủ phải bán trong ba ngày để trả nợ, giá tụt mạnh. Nếu bán thong thả cho người trả cao nhất, giá lại khác. Cùng một vật, hoàn cảnh khác cho số khác.</p>
+
+<p>Nên trước khi tính, ta phải chốt câu hỏi. Câu hỏi đó có tên: cơ sở giá trị. Bước 2 cho thấy nó hoạt động ra sao.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Mô hình đơn giản · cách nó chạy</span><h2>Cơ sở giá trị là bộ giả định bạn chốt trước</h2></div>
+    </div>
+    <p>Cơ sở giá trị là một gói giả định. Chốt nó xong, mọi bước sau đi theo. Đổi cơ sở là đổi cả con số.</p>
+
+<div class="sub">Nó chốt ba thứ</div>
+<p>Một: bên mua bên bán là ai — người bất kỳ, hay một người cụ thể. Hai: họ có bị ép không — mua bán thong thả, hay bán tháo. Ba: họ biết tới đâu — đủ thông tin, hay mù mờ.</p>
+
+<div class="sub">Cơ sở mặc định: giá trị thị trường</div>
+<p>Phổ biến nhất là <em>market value</em>: số mà tài sản 'nên' trao đổi, giữa một người mua sẵn lòng và một người bán sẵn lòng. Mua bán sòng phẳng, không ai bị ép, cả hai đều hiểu biết. Đây là giá trị cho 'người bất kỳ', không cho riêng ai.</p>
+
+<div class="sub">Cơ sở khác, câu hỏi khác</div>
+<p>Muốn biết giá trị cho <em>một chủ cụ thể</em>, với toan tính riêng của họ: đó là <em>investment value</em>. Khi hai bên gộp lại đáng hơn tổng hai phần: đó là <em>synergistic value</em>. Mỗi cái là một câu hỏi riêng.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví dụ cụ thể</span><h2>Một căn hộ, ba cơ sở, ba con số</h2></div>
+    </div>
+    <div class="example-card"><span class="tag">Bài toán</span>
+<p>Vẫn căn hộ đó, cùng một ngày.</p>
+<p><strong>Giá trị thị trường</strong>: với người mua bất kỳ, sòng phẳng, không ép — 2 tỷ. <strong>Investment value</strong>: với ông hàng xóm muốn gộp nhà, nó đáng 2,3 tỷ vì riêng ông được lợi thêm. <strong>Liquidation value</strong>: nếu chủ buộc bán trong ba ngày, chỉ còn 1,7 tỷ.</p>
+<p>Không số nào sai. Mỗi số gắn với một cơ sở.</p>
+</div>
+<p>Như bán lại điện thoại cũ. Rao thong thả cho người trả cao nhất: một giá. Cần tiền gấp, mang ra tiệm thu ngay: giá thấp hơn hẳn. Cùng máy, khác hoàn cảnh, khác giá — đúng tinh thần cơ sở giá trị.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. IVS còn tách <em>premise of value</em> (tiền đề sử dụng): tài sản được giả định dùng theo cách nào. Có thể là công dụng cao nhất và tốt nhất, dùng hiện tại, hay thanh lý. IVS cũng loại các <em>entity-specific factors</em> (yếu tố riêng của một chủ) ra khỏi giá trị thị trường, vì giá thị trường là cho người tham gia nói chung.</p>
+  </section>
+
+  <section class="clarify">
+    <div class="step-head">
+      <div class="big-num">≠</div>
+      <div class="step-meta"><span class="lbl">Dễ nhầm · ranh giới</span><h2>Đừng nhầm các loại 'giá trị'</h2></div>
+    </div>
+    <div class="mix-q"><span class="q">'Giá trị thị trường là giá cao nhất ai đó chịu trả, đúng không?'</span><p>Không. Người trả cao nhất thường là người có lợi ích riêng — như ông hàng xóm gộp nhà. Giá trị thị trường cố tình bỏ qua người đặc biệt đó. Nó hỏi: người mua <em>bất kỳ</em> sẽ trả bao nhiêu, không phải người mê nhất.</p></div>
+<div class="mix-q"><span class="q">'Vậy chọn cơ sở nào cũng được, miễn ra số?'</span><p>Không. Cơ sở phải hợp mục đích dùng. Vay ngân hàng thì dùng giá trị thị trường. Quyết định đầu tư riêng thì dùng investment value. IVS bắt nêu rõ cơ sở và lý do — chọn sai cơ sở là sai từ gốc.</p></div>
+  </section>
+
+  <section class="bridge">
+    <div class="step-head">
+      <div class="big-num">→</div>
+      <div class="step-meta"><span class="lbl">Nối tiếp · nó dẫn tới đâu</span><h2>Mở sang 'Giá trị thị trường: vì sao bỏ qua người trả giá cao nhất'</h2></div>
+    </div>
+    <div class="bridge-card"><p>Nền này dẫn thẳng vào hai trang khó. <strong>'Giá trị thị trường: vì sao bỏ qua người trả giá cao nhất'</strong> — chính là chỗ cơ sở market value cố tình lờ đi ông hàng xóm đặc biệt.</p>
+<p>Và <strong>'Ba chữ giá trị dễ lẫn: Market, Equitable, Fair'</strong> — ba cơ sở na ná mà khác nhau ở chi tiết. Nắm 'giá trị cho ai' rồi, hai trang đó hết rối.</p></div>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">✦</div>
+      <div class="step-meta"><span class="lbl">Kể lại trong một hơi</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Hỏi 'đáng bao nhiêu' là chưa đủ. Phải hỏi 'đáng với ai, trong hoàn cảnh nào'. Câu hỏi đó là cơ sở giá trị — gói giả định bạn chốt trước: bên mua bán là ai, có bị ép không, biết tới đâu. Giá trị thị trường là cơ sở mặc định: cho người mua bất kỳ, sòng phẳng, không ép.</p>
+<p class="core">Cùng một tài sản, đổi câu hỏi — <span>đổi câu hỏi là đổi con số — cơ sở giá trị là câu hỏi đó.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã nắm nền chưa?</h3>
+      <ol>
+        <li>Vì sao cùng một căn hộ lại có thể có giá trị thị trường 2 tỷ nhưng investment value 2,3 tỷ?</li>
+        <li>Giá trị thị trường giả định những gì về người mua, người bán và hoàn cảnh?</li>
+        <li>Vì sao phải chốt cơ sở giá trị trước khi bắt đầu tính?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nền vững thì cái khó tự nhẹ đi. Hiểu từ gốc, không học vẹt.</p>
+  </footer>
+
+<nav class="seqnav" aria-label="Chuyển nền"><button class="seqbtn seq-prev" data-nav="1">‹ Tài sản là quyền</button><button class="seqbtn seq-next" data-nav="3">Dữ liệu quan sát ›</button></nav></div></div><div class="concept-panel" id="c-observable-data" role="tabpanel" aria-labelledby="tab-c-observable-data" tabindex="0"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Nền tảng · hiểu từ gốc</div>
+    <h1 class="rise" style="animation-delay:.08s">Định giá dựa vào bằng chứng: số quan sát được mạnh hơn số đoán</h1>
+    <p class="core rise" style="animation-delay:.16s">Một con số chỉ mạnh khi — <span>nó tựa vào bằng chứng thị trường thật, không phải phỏng đoán.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Định vị · nó là gì &amp; vì sao học trước</span><h2>Tối đa hóa dữ liệu quan sát được</h2></div>
+    </div>
+    <div class="rule">Theo IVS 104 (đoạn 10.03), một cuộc định giá phải <em>tối đa hóa việc dùng dữ liệu quan sát được</em>. <strong>Dữ liệu quan sát được</strong> (observable data, Glossary 10.20) là thông tin sẵn có với người tham gia thị trường, về những sự kiện hay giao dịch <em>có thật</em>. IVS 103 (10.12) nói thêm: giá từ một thị trường đang giao dịch sôi động là <em>bằng chứng mạnh nhất</em> về giá trị. Dữ liệu tốt cần: chính xác, đầy đủ, kịp thời, và truy được nguồn (104, 30.02).</div>
+    <div class="sub">Vì sao đây là nền</div>
+    <div class="why"><p>Cả ba cách định giá đều ăn cùng một thứ nhiên liệu: dữ liệu. Con số cuối chỉ chắc bằng dữ liệu đỡ dưới nó. Chưa phân biệt bằng chứng thật với phỏng đoán, bạn không chấm được một định giá đáng tin hay không. Đây là nền cho cả phần 'bậc thang dữ liệu' khó nhằn ở cuối.</p></div>
+  </section>
+
+  <section class="problem">
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Vấn đề nó sinh ra để giải quyết</span><h2>Hai người cùng nói '2 tỷ' — tin ai?</h2></div>
+    </div>
+    <p class="lead">Hai người định giá cùng đưa ra '2 tỷ' cho một căn hộ. Người thứ nhất chỉ vào năm căn y hệt vừa bán quanh đó, đều quanh 2 tỷ. Người thứ hai bảo 'tôi thấy nó đáng thế'. Cùng một con số, nhưng bạn tin ai hơn?</p>
+
+<p>Rõ ràng tin người thứ nhất. Khác biệt không nằm ở con số, mà ở thứ đỡ dưới nó. Một bên có giao dịch thật làm bằng chứng. Một bên chỉ có cảm giác.</p>
+
+<div class="sub">Vấn đề: con số nào cũng cần chỗ tựa</div>
+<p>Người định giá luôn phải chọn đầu vào: giá nào, tỷ lệ nào, giả định nào. Chọn từ giao dịch thật thì chắc. Chọn từ phỏng đoán thì lung lay. Cùng ra '2 tỷ', mà độ tin cậy khác hẳn.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Mô hình đơn giản · cách nó chạy</span><h2>Bằng chứng thật trước, phỏng đoán sau</h2></div>
+    </div>
+    <p>Quy tắc gọn: ưu tiên thứ <strong>quan sát được</strong>, dùng phỏng đoán càng ít càng tốt.</p>
+
+<div class="sub">Quan sát được nghĩa là gì</div>
+<p>Là thông tin về việc đã thật sự xảy ra, ai cũng thấy được: một căn vừa bán, một cổ phiếu vừa khớp lệnh, một giá niêm yết công khai. Không phải ý riêng trong đầu người định giá.</p>
+
+<div class="sub">Khi không có bằng chứng trực tiếp</div>
+<p>Nhiều thứ chẳng có giao dịch nào để soi: một nhà máy độc nhất, một thương hiệu riêng. Lúc đó người định giá lấy dữ liệu gần giống nhất rồi <em>điều chỉnh</em>. Càng phải chỉnh nhiều, con số càng phụ thuộc xét đoán, càng kém chắc.</p>
+
+<div class="sub">Dữ liệu tốt trông ra sao</div>
+<p>IVS đòi bốn nét: chính xác (không sai, không lệch), đầy đủ (đủ để mô tả tài sản), kịp thời (đúng với ngày định giá), và truy được nguồn. Thiếu quá nhiều thì dữ liệu không dùng được.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví dụ cụ thể</span><h2>Định giá căn hộ: bằng chứng so với cảm giác</h2></div>
+    </div>
+    <div class="example-card"><span class="tag">Bài toán</span>
+<p>Định giá một căn hộ trong khu nhiều giao dịch.</p>
+<p>Quanh đó vừa có năm căn tương tự bán ra, đều gần 2 tỷ. Đó là dữ liệu quan sát được — bằng chứng mạnh. Người định giá tựa vào đấy, chỉ chỉnh nhẹ cho khác biệt tầng, hướng.</p>
+<p>Giờ đổi sang một biệt thự cổ độc nhất, cả vùng không có căn nào giống. Không còn giao dịch để soi. Con số buộc phải dựa nhiều vào xét đoán, nên kém chắc hơn hẳn.</p>
+</div>
+<p>Như định giá điện thoại cũ. Có hàng trăm tin rao cùng đời máy: bằng chứng đầy, giá rất chắc. Còn một món đồ cổ độc bản? Chẳng có giá nào để so, người ta phải đoán — và hai người đoán có thể lệch xa.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. IVS chia đầu vào theo mức độ quan sát được. Trên cùng là giá niêm yết ở thị trường sôi động (quan sát trực tiếp); dưới đáy là ước tính nội bộ (gần như không quan sát được). Càng tụt xuống, định giá càng cần công bố và biện giải kỹ. Đây chính là 'bậc thang' mà trang công cụ tài chính khó sẽ mổ xẻ.</p>
+  </section>
+
+  <section class="clarify">
+    <div class="step-head">
+      <div class="big-num">≠</div>
+      <div class="step-meta"><span class="lbl">Dễ nhầm · ranh giới</span><h2>Đừng nhầm 'quan sát được' với 'đúng tuyệt đối'</h2></div>
+    </div>
+    <div class="mix-q"><span class="q">'Cứ có dữ liệu thật là con số chắc chắn đúng?'</span><p>Không hẳn. Bằng chứng thật làm con số <em>đáng tin hơn</em>, không phải tuyệt đối đúng. Một giao dịch lạ, một vụ mua bán giữa người nhà, vẫn có thể lệch. IVS bắt người định giá vẫn phải sàng dữ liệu với thái độ hoài nghi.</p></div>
+<div class="mix-q"><span class="q">'Không có dữ liệu quan sát thì khỏi định giá luôn?'</span><p>Không. Nhiều tài sản hiếm vẫn phải định giá. Chỉ là khi đó con số dựa nhiều vào xét đoán, nên phải nói rõ điều đó và biện giải kỹ. Nếu các đầu vào quan trọng không thể biện giải nổi, định giá coi như không đạt chuẩn.</p></div>
+  </section>
+
+  <section class="bridge">
+    <div class="step-head">
+      <div class="big-num">→</div>
+      <div class="step-meta"><span class="lbl">Nối tiếp · nó dẫn tới đâu</span><h2>Mở sang 'Bậc thang dữ liệu' của công cụ tài chính</h2></div>
+    </div>
+    <div class="bridge-card"><p>Giữ chắc: con số mạnh hay yếu là do bằng chứng đỡ dưới nó. Trang khó <strong>'Định giá thứ không có giá: bậc thang dữ liệu quan sát được'</strong> đẩy ý này tới cùng. Nó xếp đầu vào thành từng bậc, từ giá thị trường thật xuống tới ước tính trong đầu.</p>
+<p>Khi tới phần định giá theo dòng tiền, chính nguyên tắc này quyết định bạn tin tỷ lệ chiết khấu và dự báo tới đâu.</p></div>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">✦</div>
+      <div class="step-meta"><span class="lbl">Kể lại trong một hơi</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Mọi con số đều cần chỗ tựa. Tựa vào giao dịch thật, ai cũng thấy được, thì chắc. Tựa vào phỏng đoán thì lung lay. Nên định giá luôn ưu tiên dữ liệu quan sát được, và khi buộc phải đoán thì nói thẳng ra.</p>
+<p class="core">Một câu nhớ: <span>con số chỉ mạnh bằng bằng chứng đỡ dưới nó.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã nắm nền chưa?</h3>
+      <ol>
+        <li>Hai người cùng định giá '2 tỷ', vì sao một con số lại đáng tin hơn con số kia?</li>
+        <li>'Dữ liệu quan sát được' nghĩa là gì, và vì sao IVS bắt tối đa hóa nó?</li>
+        <li>Khi không có giao dịch nào để soi, người định giá làm gì, và vì sao con số khi đó kém chắc hơn?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nền vững thì cái khó tự nhẹ đi. Hiểu từ gốc, không học vẹt.</p>
+  </footer>
+
+<nav class="seqnav" aria-label="Chuyển nền"><button class="seqbtn seq-prev" data-nav="2">‹ Cơ sở giá trị</button><button class="seqbtn seq-next" data-nav="4">Ba cách định giá ›</button></nav></div></div><div class="concept-panel" id="c-three-approaches" role="tabpanel" aria-labelledby="tab-c-three-approaches" tabindex="0"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Nền tảng · hiểu từ gốc</div>
+    <h1 class="rise" style="animation-delay:.08s">Ba cửa sổ để nhìn ra một con số: so sánh, thu nhập, chi phí</h1>
+    <p class="core rise" style="animation-delay:.16s">Có ba lối tới giá trị — <span>so với cái đã bán, đo tiền nó đẻ ra, hay tính tiền làm lại.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Định vị · nó là gì &amp; vì sao học trước</span><h2>Ba cách: market, income, cost</h2></div>
+    </div>
+    <div class="rule">Theo IVS 103 (đoạn 10.01), có ba <strong>cách định giá</strong> (valuation approaches) chính: <em>market approach</em> (so sánh thị trường), <em>income approach</em> (thu nhập), và <em>cost approach</em> (chi phí). Market so tài sản với những cái tương tự vừa giao dịch (20.01). Income quy dòng tiền tương lai về một con số hôm nay (30.01). Cost dựa trên nguyên tắc: người mua không trả hơn số tiền để có một tài sản công dụng tương đương (40.01).</div>
+    <div class="sub">Vì sao đây là nền</div>
+    <div class="why"><p>Đây là tấm bản đồ của cả phần tài sản. Mỗi chuẩn mực từ IVS 200 tới 500 thực ra chỉ đang chọn và pha ba cách này. Chưa nắm ba lối cơ bản, mỗi chương sau trông như một mớ kỹ thuật rời rạc. Nắm rồi, bạn thấy chúng là biến tấu của ba ý đơn giản.</p></div>
+  </section>
+
+  <section class="problem">
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Vấn đề nó sinh ra để giải quyết</span><h2>Làm sao đặt một con số lên thứ chẳng ai đang bán?</h2></div>
+    </div>
+    <p class="lead">Sếp đưa bạn một quán cà phê và hỏi: nó đáng bao nhiêu? Quán không rao bán, nên không có sẵn giá. Bạn bắt đầu từ đâu? Hóa ra có ba lối vào, và mỗi lối hỏi một câu khác nhau.</p>
+
+<p>Vấn đề là giá trị không tự hiện ra. Bạn phải suy ra nó từ thứ mình biết. Mà thứ bạn biết lại tùy tài sản: có cái có hàng tương tự để so, có cái thì không.</p>
+
+<div class="sub">Ba câu hỏi, ba lối vào</div>
+<p>Lối một: 'quán giống vậy vừa bán bao nhiêu?'. Lối hai: 'quán này mỗi năm đẻ ra bao nhiêu tiền?'. Lối ba: 'mở lại một quán y hệt tốn bao nhiêu?'. Mỗi câu dẫn tới một con số.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Mô hình đơn giản · cách nó chạy</span><h2>So sánh, thu nhập, chi phí — ba lối tới cùng một đích</h2></div>
+    </div>
+    <p>Ba cách là ba góc nhìn vào cùng một giá trị. Không phải chọn cái mình thích, mà chọn cái hợp tài sản và có đủ dữ liệu.</p>
+
+<div class="sub">So sánh: nhìn ra chợ</div>
+<p>Tìm những tài sản tương tự vừa được mua bán, rồi soi giá của chúng. Hợp khi có nhiều giao dịch giống nhau: nhà phố, xe, cổ phiếu niêm yết. Bằng chứng thật, nên thường mạnh nhất.</p>
+
+<div class="sub">Thu nhập: nhìn vào dòng tiền</div>
+<p>Hỏi tài sản đẻ ra bao nhiêu tiền trong tương lai, rồi quy số đó về hôm nay. Hợp khi sức kiếm tiền là thứ quan trọng nhất: một tòa nhà cho thuê, một thương hiệu, một doanh nghiệp.</p>
+
+<div class="sub">Chi phí: nhìn vào tiền làm lại</div>
+<p>Hỏi cần bao nhiêu tiền để dựng lại một tài sản công dụng tương đương, rồi trừ phần đã cũ. Hợp khi không có hàng để so và tài sản không trực tiếp đẻ tiền: một nhà xưởng chuyên dụng.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví dụ cụ thể</span><h2>Định giá quán cà phê bằng ba cách</h2></div>
+    </div>
+    <div class="example-card"><span class="tag">Bài toán</span>
+<p>Vẫn quán cà phê đó. Thử cả ba lối.</p>
+<p><strong>So sánh</strong>: ba quán cỡ tương tự trong vùng vừa sang nhượng quanh 1 tỷ. <strong>Thu nhập</strong>: quán đẻ ra chừng 200 triệu tiền mặt mỗi năm; quy các năm tới về hôm nay, ra khoảng 1,1 tỷ. <strong>Chi phí</strong>: mở lại một quán y hệt tốn 900 triệu, trừ hao mòn còn 800 triệu.</p>
+<p>Ba con số gần nhau là dấu hiệu tốt. Lệch xa thì phải tìm hiểu vì sao, không trộn bừa.</p>
+</div>
+<p>Định giá một căn nhà cũng vậy. So với nhà hàng xóm vừa bán (so sánh). Tính tiền cho thuê nó mang lại (thu nhập). Hoặc cộng tiền đất với tiền xây lại trừ hao mòn (chi phí). Cùng căn nhà, ba góc nhìn.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. IVS không bắt dùng cả ba. Người định giá chọn cách hợp nhất với tài sản, dữ liệu và mục đích; có thể dùng thêm cách thứ hai để kiểm tra chéo. Khi các cách ra số lệch xa, IVS cấm lấy trung bình cho gọn — phải truy vì sao lệch rồi mới kết luận.</p>
+  </section>
+
+  <section class="clarify">
+    <div class="step-head">
+      <div class="big-num">≠</div>
+      <div class="step-meta"><span class="lbl">Dễ nhầm · ranh giới</span><h2>Đừng nhầm 'ba cách' với 'chọn cái dễ'</h2></div>
+    </div>
+    <div class="mix-q"><span class="q">'Vậy cứ chọn cách nào ra số đẹp nhất?'</span><p>Không. Cách phải hợp bản chất tài sản và dữ liệu sẵn có, không phải hợp ý muốn. Một tòa nhà cho thuê hợp cách thu nhập. Một loại nhà xưởng độc nhất hợp cách chi phí. Chọn theo tài sản, không theo con số mình thích.</p></div>
+<div class="mix-q"><span class="q">'Ba cách ra ba số khác nhau thì lấy trung bình chứ gì?'</span><p>Không nên. IVS bảo nếu các số lệch xa thì phải tìm hiểu lý do, chứ không trộn bừa. Số nào dựa trên bằng chứng chắc hơn thì tin hơn. Lấy trung bình chỉ giấu đi chỗ đang mâu thuẫn.</p></div>
+  </section>
+
+  <section class="bridge">
+    <div class="step-head">
+      <div class="big-num">→</div>
+      <div class="step-meta"><span class="lbl">Nối tiếp · nó dẫn tới đâu</span><h2>Mở sang 'Ba cách định giá: không phải chọn cái mình thích'</h2></div>
+    </div>
+    <div class="bridge-card"><p>Nền này dẫn thẳng vào trang khó <strong>'Ba cách định giá: không phải chọn cái mình thích'</strong>. Ở đó, việc chọn cách bị tài sản và dữ liệu ràng buộc, chứ không tùy hứng.</p>
+<p>Và mọi trang tài sản (IVS 200–500) đều ngồi trên ba cách này. Riêng cách <em>thu nhập</em> mở ra ba tab kế tiếp: tiền theo thời gian, dòng tiền, và tỷ lệ chiết khấu.</p></div>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">✦</div>
+      <div class="step-meta"><span class="lbl">Kể lại trong một hơi</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Có ba lối tới giá trị. So sánh: nhìn cái tương tự vừa bán. Thu nhập: đo tiền tài sản đẻ ra rồi quy về hôm nay. Chi phí: tính tiền làm lại rồi trừ hao mòn. Không chọn theo ý thích, mà chọn cách hợp tài sản và đủ dữ liệu.</p>
+<p class="core">Có ba lối tới giá trị — <span>so cái đã bán, đo tiền nó đẻ ra, hay tính tiền làm lại.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã nắm nền chưa?</h3>
+      <ol>
+        <li>Ba cách định giá hỏi ba câu hỏi khác nhau nào về cùng một tài sản?</li>
+        <li>Vì sao một tòa nhà cho thuê hợp cách thu nhập, còn một nhà xưởng độc nhất lại hợp cách chi phí?</li>
+        <li>Khi ba cách ra ba con số lệch nhau, vì sao không nên lấy trung bình?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nền vững thì cái khó tự nhẹ đi. Hiểu từ gốc, không học vẹt.</p>
+  </footer>
+
+<nav class="seqnav" aria-label="Chuyển nền"><button class="seqbtn seq-prev" data-nav="3">‹ Dữ liệu quan sát</button><button class="seqbtn seq-next" data-nav="5">Tiền theo thời gian ›</button></nav></div></div><div class="concept-panel" id="c-time-value-of-money" role="tabpanel" aria-labelledby="tab-c-time-value-of-money" tabindex="0"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Nền tảng · hiểu từ gốc</div>
+    <h1 class="rise" style="animation-delay:.08s">Tiền theo thời gian: 100 đồng năm sau nhẹ giá hơn 100 đồng hôm nay</h1>
+    <p class="core rise" style="animation-delay:.16s">Tiền có 'tuổi' — <span>cùng một con số, nhận càng muộn càng nhẹ giá.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Định vị · nó là gì &amp; vì sao học trước</span><h2>Nguyên tắc nền: tiền hôm nay nặng hơn tiền mai sau</h2></div>
+    </div>
+    <div class="rule">Nguyên tắc gốc của tài chính — <strong>giá trị tiền theo thời gian</strong>: một khoản nhận <em>hôm nay</em> đáng hơn đúng khoản đó nhận <em>trong tương lai</em>. Lý do: tiền hôm nay sinh lời được ngay. Trong cách thu nhập của IVS 103, đây là lý do phương pháp <em>DCF</em> phải <strong>chiết khấu</strong> dòng tiền tương lai về hôm nay (A20.02). IVS gọi tỷ lệ kéo về này là <em>discount rate</em> — tỷ lệ biến một khoản tiền tương lai thành giá trị hiện tại (Glossary 10.07).</div>
+    <div class="sub">Vì sao đây là nền</div>
+    <div class="why"><p>Đây là cái máy nằm giữa cách định giá thu nhập. Mọi con số 'giá trị theo dòng tiền' đều đi qua nó: DCF, value in use, định giá thương hiệu. Chưa nắm ý này, các chương dùng dòng tiền chỉ là công thức học vẹt. Nắm rồi, chúng tự sáng ra.</p></div>
+  </section>
+
+  <section class="problem">
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Vấn đề nó sinh ra để giải quyết</span><h2>Không thể cộng thẳng tiền của hai thời điểm</h2></div>
+    </div>
+    <p class="lead">Bạn được cho chọn: cầm 100 nghìn ngay bây giờ, hay cầm đúng 100 nghìn vào năm sau. Bạn chọn cái nào? Ai cũng chọn cầm ngay. Vậy trong đầu bạn, hai tờ 100 nghìn đó <em>không</em> bằng nhau — dù in cùng con số.</p>
+
+<p>Vấn đề sinh ra từ đây. Tiền ở các thời điểm khác nhau là các 'loại' khác nhau. Cộng thẳng chúng lại là sai, như cộng mét với ký.</p>
+
+<div class="sub">Vì sao tiền ngay lại hơn</div>
+<p>Có tiền ngay, bạn làm được ba việc mà người đợi năm sau không làm được. Đem gửi cho sinh lời. Mua thứ cần trước khi nó lên giá. Hoặc chỉ đơn giản là chắc ăn — tiền hứa năm sau biết đâu mất.</p>
+
+<p>Nên muốn so tiền tương lai với tiền hôm nay, ta cần một lối 'quy về cùng tuổi' rồi mới so. Lối đó là nội dung Bước 2.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Mô hình đơn giản · cách nó chạy</span><h2>Kéo tiền tương lai về hôm nay rồi mới cộng</h2></div>
+    </div>
+    <p>Mô hình chỉ có một động tác: <strong>kéo</strong> mọi khoản tiền về cùng một mốc — thường là hôm nay. Tiền càng xa trong tương lai, kéo về càng co lại nhiều.</p>
+
+<div class="sub">Lãi đi tới, chiết khấu đi lui</div>
+<p>Gửi 100 đồng, lãi 10% một năm, sang năm thành 110. Đó là đi <em>tới</em>. Giờ làm ngược: 110 đồng năm sau đáng bao nhiêu hôm nay? Đúng 100. Phép đi lui đó gọi là <em>chiết khấu</em>.</p>
+
+<div class="sub">Càng xa càng nhẹ</div>
+<p>110 đồng nhận sau một năm đáng 100 hôm nay. Cũng 110 đồng nhưng nhận sau mười năm thì đáng ít hơn nhiều. Mỗi năm trôi qua, ta lại chia thêm một lần cho '1 cộng lãi'. Thời gian càng dài, chia càng nhiều, con số càng teo.</p>
+
+<div class="sub">Một con số, hai mảnh ghép</div>
+<p>Vậy giá của tiền tương lai phụ thuộc hai thứ. Một: nhận <strong>bao xa</strong> trong tương lai. Hai: <strong>lãi</strong> dùng để kéo về là bao nhiêu. Đổi một trong hai, con số đổi theo.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví dụ cụ thể</span><h2>Thử với một lời hứa trả tiền</h2></div>
+    </div>
+    <div class="example-card"><span class="tag">Bài toán</span>
+<p>Một người hứa trả bạn <strong>121 nghìn sau hai năm</strong>. Lãi quanh đó là 10% một năm. Lời hứa ấy đáng bao nhiêu <em>hôm nay</em>?</p>
+<p>Kéo về từng năm. Lùi một năm: chia cho 1,1, còn 110. Lùi năm nữa: chia cho 1,1 lần nữa, còn <strong>100</strong>. Vậy 121 nghìn sau hai năm chỉ đáng 100 nghìn hôm nay.</p>
+<p>Đổi giả định thử xem. Nếu lãi là 20%, cùng lời hứa đó chỉ còn đáng khoảng 84 nghìn. Lãi cao hơn kéo mạnh tay hơn, nên co nhiều hơn.</p>
+</div>
+<p>Đời thường hơn: vé số trúng '1 tỷ' thường trả góp 50 triệu mỗi năm trong 20 năm. Khoản đó <em>không</em> đáng 1 tỷ hôm nay. Mười chín lần trả sau đều phải kéo về, nên teo lại. Đây đúng là cách người ta định giá một lời hứa trả dần.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Công thức gọn: giá hôm nay bằng khoản tiền chia cho <em>(1 + r)</em> mũ số năm. <em>r</em> là tỷ lệ chiết khấu. Cộng giá-hôm-nay của mọi khoản tiền tương lai lại, ta được <em>present value</em>; trừ đi vốn bỏ ra ban đầu thì thành <em>NPV</em>.</p>
+  </section>
+
+  <section class="clarify">
+    <div class="step-head">
+      <div class="big-num">≠</div>
+      <div class="step-meta"><span class="lbl">Dễ nhầm · ranh giới</span><h2>Đừng nhầm nó với lạm phát</h2></div>
+    </div>
+    <div class="mix-q"><span class="q">'Tiền mất giá theo thời gian — đó chẳng phải là lạm phát sao?'</span><p>Hai chuyện khác nhau. Lạm phát là giá hàng hóa <em>tăng lên</em>. Giá trị tiền theo thời gian vẫn đúng <strong>kể cả khi không có lạm phát</strong>. Lý do: tiền hôm nay đem sinh lời được ngay, còn tiền hứa năm sau thì chưa. Lạm phát chỉ là một lý do khiến lãi cao lên, không phải bản thân nguyên tắc.</p></div>
+<div class="mix-q"><span class="q">'Vậy chiết khấu là phạt người trả chậm à?'</span><p>Không phải phạt, chỉ là quy về cùng mốc cho công bằng khi so. Ta không nói tiền tương lai 'tệ'. Ta chỉ nói: muốn đặt nó cạnh tiền hôm nay mà cân, phải kéo về cùng tuổi trước.</p></div>
+  </section>
+
+  <section class="bridge">
+    <div class="step-head">
+      <div class="big-num">→</div>
+      <div class="step-meta"><span class="lbl">Nối tiếp · nó dẫn tới đâu</span><h2>Một máy kéo tiền — hai tab kia đưa nguyên liệu vào</h2></div>
+    </div>
+    <div class="bridge-card"><p>Viên gạch này là cái máy kéo tiền tương lai về hôm nay. Hai tab kế tiếp đưa nguyên liệu vào máy. Tab <strong>'Dòng tiền'</strong> cho biết tiền ở đâu mà kéo. Tab <strong>'Tỷ lệ chiết khấu'</strong> cho biết kéo mạnh tay tới đâu.</p>
+<p>Cả ba gặp nhau ở các trang khó như <strong>'Một thương hiệu kiếm bao nhiêu'</strong> và <strong>'Định giá đất bằng tòa nhà chưa xây'</strong>. Ở đó, người ta cộng dòng tiền tương lai, kéo từng năm về hôm nay — đúng như bạn vừa làm.</p></div>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">✦</div>
+      <div class="step-meta"><span class="lbl">Kể lại trong một hơi</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Tiền có 'tuổi'. Một đồng hôm nay hơn một đồng năm sau, vì hôm nay nó sinh lời được ngay. Nên không cộng thẳng tiền của hai thời điểm. Phải kéo tiền tương lai về hôm nay — chia cho '1 cộng lãi' mỗi năm — rồi mới cộng. Càng xa, càng teo.</p>
+<p class="core">Tiền có 'tuổi' — <span>cùng một con số, nhận càng muộn càng nhẹ giá.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã nắm nền chưa?</h3>
+      <ol>
+        <li>Vì sao 100 nghìn nhận hôm nay <em>không</em> bằng 100 nghìn nhận năm sau, dù in cùng con số?</li>
+        <li>Cùng một lời hứa trả tiền, vì sao lãi chiết khấu cao hơn lại làm giá hôm nay <em>nhỏ</em> đi?</li>
+        <li>Giá trị tiền theo thời gian khác lạm phát ở chỗ nào?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nền vững thì cái khó tự nhẹ đi. Hiểu từ gốc, không học vẹt.</p>
+  </footer>
+
+<nav class="seqnav" aria-label="Chuyển nền"><button class="seqbtn seq-prev" data-nav="4">‹ Ba cách định giá</button><button class="seqbtn seq-next" data-nav="6">Dòng tiền ›</button></nav></div></div><div class="concept-panel" id="c-cash-flow" role="tabpanel" aria-labelledby="tab-c-cash-flow" tabindex="0"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Nền tảng · hiểu từ gốc</div>
+    <h1 class="rise" style="animation-delay:.08s">Dòng tiền: số tiền thật một tài sản đẻ ra</h1>
+    <p class="core rise" style="animation-delay:.16s">Không phải lợi nhuận trên giấy — <span>mà tiền thật chảy vào tay, sau khi trừ tiền chảy ra.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Định vị · nó là gì &amp; vì sao học trước</span><h2>Dòng tiền: nguyên liệu của cách thu nhập</h2></div>
+    </div>
+    <div class="rule">Cách <strong>thu nhập</strong> (income approach) định giá một tài sản bằng <em>dòng tiền</em> nó tạo ra trong tương lai (IVS 103, 30.01). Nền tảng của cách này: nhà đầu tư bỏ tiền vì mong nhận lại tiền (30.04). <strong>Dòng tiền</strong> là tiền thật chảy vào trừ tiền thật chảy ra, nhờ có tài sản — khác với lợi nhuận kế toán. Với một tài sản riêng như thương hiệu (IVS 210), việc khó là <em>bóc riêng</em> phần tiền do chính nó đẻ ra.</div>
+    <div class="sub">Vì sao đây là nền</div>
+    <div class="why"><p>Tab 'Tiền theo thời gian' lo việc kéo tiền về hôm nay. Nhưng kéo <em>cái gì</em>? Tab này lo đúng phần đó: nguồn tiền. Nếu không biết tài sản thật sự đẻ ra bao nhiêu tiền, và bóc riêng nó thế nào, cả phép định giá theo dòng tiền treo lơ lửng. Đây là nền hay bị nhảy cóc nhất.</p></div>
+  </section>
+
+  <section class="problem">
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Vấn đề nó sinh ra để giải quyết</span><h2>Lãi trên sổ một tỷ, sao tài khoản chẳng có đồng nào?</h2></div>
+    </div>
+    <p class="lead">Một công ty khoe lãi một tỷ trong năm. Nhưng tới hạn trả lương, két lại trống. Sao lạ vậy? Vì 'lãi' trên sổ và 'tiền' trong két là hai thứ khác nhau. Bán được hàng đã tính là lãi, dù khách còn nợ chưa trả đồng nào.</p>
+
+<p>Đây là vấn đề. Định giá theo cách thu nhập cần biết tài sản mang về bao nhiêu <em>tiền thật</em>. Lấy con số lợi nhuận kế toán mà dùng thì lệch, vì trong đó có khoản chưa thành tiền.</p>
+
+<div class="sub">Còn một cái khó nữa</div>
+<p>Nhiều khi ta muốn định giá một tài sản riêng — như một thương hiệu — chứ không phải cả công ty. Lúc đó phải bóc riêng phần tiền do <em>chính nó</em> đẻ ra, tách khỏi tiền do mọi thứ khác mang lại.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Mô hình đơn giản · cách nó chạy</span><h2>Đếm tiền thật, rồi bóc riêng phần của một tài sản</h2></div>
+    </div>
+    <p>Hai động tác. Một: đếm đúng tiền thật. Hai: nếu cần, bóc riêng phần của một tài sản.</p>
+
+<div class="sub">Dòng tiền là gì</div>
+<p>Là tiền thật chảy vào trừ tiền thật chảy ra mỗi năm, nhờ có tài sản. Tiền vào tay mới tính. Tiền khách còn nợ thì chưa. Khác với lợi nhuận, vốn có cả những khoản mới ghi trên giấy.</p>
+
+<div class="sub">Vì sao không dùng lợi nhuận</div>
+<p>Lợi nhuận trộn lẫn tiền thật với khoản chưa thu, và bị khấu hao kéo xuống dù tiền không đi đâu. Cái cứu được vốn của nhà đầu tư là tiền thật về tay, nên cách thu nhập chạy trên dòng tiền.</p>
+
+<div class="sub">Bóc riêng dòng tiền của một tài sản</div>
+<p>Muốn định giá riêng một thương hiệu, hỏi: nhờ có nó, công ty thu thêm được bao nhiêu tiền? Phần tăng thêm đó là dòng tiền của riêng thương hiệu. Tách được phần này thì mới định giá riêng nó được.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví dụ cụ thể</span><h2>Bóc dòng tiền của một thương hiệu cà phê</h2></div>
+    </div>
+    <div class="example-card"><span class="tag">Bài toán</span>
+<p>Một hãng cà phê có thương hiệu mạnh. Nhờ tên tuổi, mỗi ly bán đắt hơn ly không thương hiệu 5 nghìn. Năm bán một triệu ly.</p>
+<p>Phần tiền <em>thêm</em> nhờ thương hiệu: 5 nghìn nhân một triệu, là 5 tỷ một năm. Đó là dòng tiền của riêng thương hiệu — không lẫn với tiền do máy móc hay mặt bằng mang lại.</p>
+<p>Có dòng tiền riêng này rồi, kéo các năm tới về hôm nay là ra giá trị thương hiệu.</p>
+</div>
+<p>Như một căn hộ cho thuê. Dòng tiền của nó: tiền thuê thu vào, trừ phí quản lý và sửa chữa chi ra. Phần còn lại mỗi năm là tiền thật. Đó mới là thứ đem đi kéo về hôm nay, không phải con số lợi nhuận trên sổ.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Dân trong nghề gọi tiền thật còn lại là <em>free cash flow</em> — dòng tiền tự do. Cách bóc riêng tài sản vô hình có vài kỹ thuật. Một là tính phần lợi nhuận vượt trội nhờ nó (<em>excess earnings</em>). Hai là số tiền bản quyền tiết kiệm được do tự sở hữu (<em>relief from royalty</em>). Cốt lõi không đổi: tách riêng phần tiền do chính tài sản đó đẻ ra.</p>
+  </section>
+
+  <section class="clarify">
+    <div class="step-head">
+      <div class="big-num">≠</div>
+      <div class="step-meta"><span class="lbl">Dễ nhầm · ranh giới</span><h2>Đừng nhầm dòng tiền với lợi nhuận</h2></div>
+    </div>
+    <div class="mix-q"><span class="q">'Công ty lãi to thì dòng tiền cũng to chứ gì?'</span><p>Không nhất thiết. Lãi to mà khách còn nợ đầy thì tiền chưa về két. Ngược lại, có công ty lỗ trên sổ vì khấu hao nặng, nhưng tiền thật vẫn chảy vào đều. Lãi và tiền thật có thể đi hai hướng.</p></div>
+<div class="mix-q"><span class="q">'Bóc riêng dòng tiền của một thương hiệu nghe có vẻ tùy tiện?'</span><p>Phải có kỷ luật, không tùy tiện. Câu hỏi luôn là: nhờ riêng tài sản này, tiền thật tăng thêm bao nhiêu? Phần do máy móc, mặt bằng hay con người mang lại phải gạt ra. Bóc cẩu thả thì định giá sai từ gốc.</p></div>
+  </section>
+
+  <section class="bridge">
+    <div class="step-head">
+      <div class="big-num">→</div>
+      <div class="step-meta"><span class="lbl">Nối tiếp · nó dẫn tới đâu</span><h2>Mở sang 'Một thương hiệu kiếm ra bao nhiêu'</h2></div>
+    </div>
+    <div class="bridge-card"><p>Đây chính là nền của trang khó <strong>'Một thương hiệu kiếm ra bao nhiêu? Bóc dòng tiền của riêng nó'</strong>. Ở đó, người ta tách phần tiền chỉ thương hiệu mới mang lại, rồi định giá riêng nó — đúng động tác bạn vừa làm với 5 tỷ.</p>
+<p>Có dòng tiền riêng rồi, bước cuối là kéo nó về hôm nay bằng tab <strong>'Tiền theo thời gian'</strong>. Tỷ lệ kéo về hợp lý thì lấy từ tab kế tiếp.</p></div>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">✦</div>
+      <div class="step-meta"><span class="lbl">Kể lại trong một hơi</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Dòng tiền là tiền thật chảy vào trừ tiền thật chảy ra, không phải lợi nhuận trên sổ. Cách thu nhập chạy trên tiền thật, vì đó mới là thứ về tay nhà đầu tư. Muốn định giá riêng một tài sản, bóc đúng phần tiền do chính nó đẻ ra.</p>
+<p class="core">Không phải lợi nhuận trên giấy — <span>tiền thật chảy vào tay, sau khi trừ tiền chảy ra.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã nắm nền chưa?</h3>
+      <ol>
+        <li>Vì sao một công ty lãi lớn trên sổ vẫn có thể không có tiền trong két?</li>
+        <li>Vì sao cách thu nhập dùng dòng tiền chứ không dùng lợi nhuận kế toán?</li>
+        <li>Bóc riêng dòng tiền của một thương hiệu nghĩa là làm gì?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nền vững thì cái khó tự nhẹ đi. Hiểu từ gốc, không học vẹt.</p>
+  </footer>
+
+<nav class="seqnav" aria-label="Chuyển nền"><button class="seqbtn seq-prev" data-nav="5">‹ Tiền theo thời gian</button><button class="seqbtn seq-next" data-nav="7">Tỷ lệ chiết khấu ›</button></nav></div></div><div class="concept-panel" id="c-discount-rate-and-risk" role="tabpanel" aria-labelledby="tab-c-discount-rate-and-risk" tabindex="0"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Nền tảng · hiểu từ gốc</div>
+    <h1 class="rise" style="animation-delay:.08s">Tỷ lệ chiết khấu: kéo về vì thời gian, và kéo mạnh thêm vì rủi ro</h1>
+    <p class="core rise" style="animation-delay:.16s">Kéo tiền về hôm nay bằng một tỷ lệ — <span>tỷ lệ đó gánh hai thứ: thời gian, và rủi ro.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Định vị · nó là gì &amp; vì sao học trước</span><h2>Tỷ lệ chiết khấu phản ánh cả thời gian lẫn rủi ro</h2></div>
+    </div>
+    <div class="rule">Theo IVS 103 (A20.29), tỷ lệ dùng để chiết khấu dòng tiền phải phản ánh <em>không chỉ giá trị tiền theo thời gian, mà cả rủi ro</em>. Rủi ro đó gắn với loại dòng tiền và hoạt động tương lai của tài sản. Nền tảng của cách thu nhập: nhà đầu tư đòi một mức <em>lợi suất</em> tương xứng với rủi ro họ gánh (30.04). Vậy <strong>discount rate</strong> không phải một con số trung tính — nó là 'giá' của việc chờ đợi cộng với 'giá' của sự bất định.</div>
+    <div class="sub">Vì sao đây là nền</div>
+    <div class="why"><p>Tab 'Tiền theo thời gian' đã cho cái máy kéo tiền về. Nhưng kéo <em>mạnh tới đâu</em>? Con số đó quyết định gần như tất cả: chỉ cần đổi tỷ lệ một chút, giá trị đổi rất nhiều. Chưa hiểu tỷ lệ này gánh cả rủi ro, bạn không hiểu vì sao cổ phần khó bán hay dự án mạo hiểm lại bị định giá thấp hẳn.</p></div>
+  </section>
+
+  <section class="problem">
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Vấn đề nó sinh ra để giải quyết</span><h2>Hai lời hứa cùng 110 triệu — sao một cái đáng ít hơn?</h2></div>
+    </div>
+    <p class="lead">Hai người cùng hứa trả bạn 110 triệu sau một năm. Người thứ nhất là ngân hàng lớn, chắc như đinh. Người thứ hai là một anh bạn làm ăn bấp bênh. Cùng lời hứa 110 triệu, bạn định giá hai lời hứa đó bằng nhau chứ?</p>
+
+<p>Chắc chắn không. Lời hứa của anh bạn đáng ít hơn, vì biết đâu anh ấy không trả nổi. Vậy ngoài chuyện chờ một năm, còn một thứ nữa kéo giá xuống: khả năng tiền không về.</p>
+
+<div class="sub">Chỉ tính thời gian là chưa đủ</div>
+<p>Nếu chỉ kéo về vì thời gian, hai lời hứa sẽ ra cùng một giá. Nhưng đời không vậy. Dòng tiền càng bấp bênh, ta càng phải kéo nó về mạnh tay hơn. Phần kéo thêm đó chính là giá của rủi ro.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Mô hình đơn giản · cách nó chạy</span><h2>Một tỷ lệ, hai tầng cộng lại</h2></div>
+    </div>
+    <p>Tỷ lệ chiết khấu gộp hai tầng. Tầng dưới là thời gian. Tầng trên là rủi ro. Dòng tiền càng bấp bênh, tầng trên càng dày, tỷ lệ càng cao.</p>
+
+<div class="sub">Tầng một: cái giá của sự chờ đợi</div>
+<p>Ngay cả với dòng tiền chắc chắn, chờ một năm vẫn mất giá, vì lẽ tiền theo thời gian ở tab trước. Đây là phần tối thiểu, ai cũng đòi, chỉ vì phải đợi.</p>
+
+<div class="sub">Tầng hai: giá của sự bất định</div>
+<p>Tiền hứa mà có thể không về thì đáng ít hơn tiền chắc chắn. Nhà đầu tư đòi thêm một khoản bù cho rủi ro đó. Rủi ro càng cao, khoản bù càng lớn, tỷ lệ càng nhích lên.</p>
+
+<div class="sub">Tỷ lệ cao kéo mạnh hơn</div>
+<p>Đặt hai tầng chồng lên, ta được tỷ lệ cuối. Tỷ lệ càng cao, cùng một dòng tiền tương lai bị kéo về càng nhỏ. Nên tài sản rủi ro hơn, dù hứa cùng số tiền, vẫn đáng ít hơn.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví dụ cụ thể</span><h2>Cùng 110 triệu, hai mức rủi ro</h2></div>
+    </div>
+    <div class="example-card"><span class="tag">Bài toán</span>
+<p>Hai lời hứa trả 110 triệu sau một năm.</p>
+<p><strong>Ngân hàng lớn</strong>: gần như chắc chắn. Kéo về với tỷ lệ thấp, chừng 5%. Giá hôm nay khoảng 105 triệu. <strong>Anh bạn bấp bênh</strong>: nhiều rủi ro. Kéo về với tỷ lệ cao, chừng 25%. Giá hôm nay chỉ còn khoảng 88 triệu.</p>
+<p>Cùng 110 triệu, cùng một năm. Khác nhau chỉ ở rủi ro, mà giá hôm nay lệch xa.</p>
+</div>
+<p>Cũng vậy với hai khoản đầu tư. Gửi tiết kiệm ngân hàng, lợi suất đòi hỏi thấp vì chắc. Bỏ vốn vào một quán mới mở, bạn đòi lời cao hơn nhiều — vì có thể mất trắng. Đòi lời cao chính là dùng tỷ lệ chiết khấu cao.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. IVS đòi tỷ lệ chiết khấu phải <em>khớp với loại dòng tiền</em> (A20.30). Trong định giá doanh nghiệp, một tỷ lệ hay dùng là <em>WACC</em> — chi phí vốn bình quân. IVS cũng lưu ý nhà đầu tư thường chỉ được bù cho rủi ro hệ thống, loại rủi ro không thể tránh bằng cách dàn trải danh mục (30.05).</p>
+  </section>
+
+  <section class="clarify">
+    <div class="step-head">
+      <div class="big-num">≠</div>
+      <div class="step-meta"><span class="lbl">Dễ nhầm · ranh giới</span><h2>Đừng nhầm tỷ lệ chiết khấu với lãi suất ngân hàng</h2></div>
+    </div>
+    <div class="mix-q"><span class="q">'Tỷ lệ chiết khấu chỉ là lãi suất gửi ngân hàng, đúng không?'</span><p>Lãi suất chắc chắn mới là một phần — phần thời gian. Tỷ lệ chiết khấu còn cộng thêm khoản bù rủi ro của riêng dòng tiền đó. Một dự án mạo hiểm có tỷ lệ cao hơn hẳn lãi ngân hàng, dù cùng kỳ hạn.</p></div>
+<div class="mix-q"><span class="q">'Rủi ro cao thì cứ cộng đại một số lớn vào tỷ lệ?'</span><p>Không tùy tiện. IVS đòi tỷ lệ phải khớp với loại dòng tiền và dựa trên lập luận có cơ sở. Cộng bừa một con số to là cách giấu sự lười suy nghĩ, và làm con số cuối sai lệch.</p></div>
+  </section>
+
+  <section class="bridge">
+    <div class="step-head">
+      <div class="big-num">→</div>
+      <div class="step-meta"><span class="lbl">Nối tiếp · nó dẫn tới đâu</span><h2>Mở sang 'cổ phần khó bán' và 'đất phát triển'</h2></div>
+    </div>
+    <div class="bridge-card"><p>Tầng rủi ro này là nền của hai trang khó. <strong>'Cổ phần thiểu số, khó bán: vì sao đáng ít hơn phần chia đều'</strong> — khó bán là một loại rủi ro, nên bị kéo giá xuống. Và <strong>'Định giá đất bằng tòa nhà chưa xây'</strong> — một dự án còn dang dở thì bấp bênh, nên tỷ lệ kéo về rất cao.</p>
+<p>Ba tab thu nhập khớp lại ở đây: dòng tiền là cái được kéo, thời gian và rủi ro là tỷ lệ kéo nó về.</p></div>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">✦</div>
+      <div class="step-meta"><span class="lbl">Kể lại trong một hơi</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Tỷ lệ kéo tiền về hôm nay gánh hai thứ. Thời gian: chờ thì mất giá. Rủi ro: tiền có thể không về thì đáng ít hơn. Dòng tiền càng bấp bênh, tỷ lệ càng cao, giá hôm nay càng nhỏ. Nên hai lời hứa cùng số tiền vẫn đáng khác nhau.</p>
+<p class="core">Kéo tiền về hôm nay bằng một tỷ lệ — <span>tỷ lệ đó gánh hai thứ: thời gian, và rủi ro.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã nắm nền chưa?</h3>
+      <ol>
+        <li>Hai lời hứa cùng trả 110 triệu sau một năm, vì sao một cái đáng ít hơn cái kia?</li>
+        <li>Tỷ lệ chiết khấu gồm hai tầng nào, và tầng nào lớn lên khi rủi ro tăng?</li>
+        <li>Vì sao một dự án mạo hiểm lại được định giá thấp hơn một khoản thu chắc chắn cùng số tiền?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nền vững thì cái khó tự nhẹ đi. Hiểu từ gốc, không học vẹt.</p>
+  </footer>
+
+<nav class="seqnav" aria-label="Chuyển nền"><button class="seqbtn seq-prev" data-nav="6">‹ Dòng tiền</button><span></span></nav></div></div>
+<script>
+  var bar=document.getElementById('progress');
+  function upd(){var h=document.documentElement;var s=h.scrollTop||document.body.scrollTop;
+    var max=(h.scrollHeight-h.clientHeight)||1;bar.style.width=(s/max*100)+'%';}
+  window.addEventListener('scroll',upd,{passive:true});upd();
+  var io=new IntersectionObserver(function(es){es.forEach(function(e){
+    if(e.isIntersecting){e.target.style.animation='rise .7s cubic-bezier(.2,.7,.3,1) forwards';io.unobserve(e.target);}});},{threshold:.12});
+  document.querySelectorAll('section').forEach(function(s){s.style.opacity='0';io.observe(s);});
+</script>
+
+<script>
+(function(){
+  var tabs=[].slice.call(document.querySelectorAll('.tabbar .tab'));
+  var panels=[].slice.call(document.querySelectorAll('.concept-panel'));
+  function show(i,focusTab){
+    tabs.forEach(function(t,j){var on=(j===i);t.classList.toggle('active',on);t.setAttribute('aria-selected',on?'true':'false');t.tabIndex=on?0:-1;});
+    panels.forEach(function(p,j){
+      var on=(j===i); p.classList.toggle('active',on);
+      if(on){p.querySelectorAll('section').forEach(function(s){s.style.opacity='';s.style.animation='';});}
+    });
+    try{history.replaceState(null,'','#'+panels[i].id);}catch(e){}
+    window.scrollTo(0,0); window.dispatchEvent(new Event('scroll'));
+    if(focusTab&&tabs[i])tabs[i].focus();
+  }
+  tabs.forEach(function(t){t.addEventListener('click',function(){show(+t.getAttribute('data-i'));});});
+  var tablist=document.querySelector('.tabbar');
+  if(tablist){tablist.addEventListener('keydown',function(e){
+    var cur=tabs.indexOf(document.activeElement); if(cur<0)return;
+    var nn=tabs.length,tt=-1;
+    if(e.key==='ArrowRight'||e.key==='ArrowDown')tt=(cur+1)%nn;
+    else if(e.key==='ArrowLeft'||e.key==='ArrowUp')tt=(cur-1+nn)%nn;
+    else if(e.key==='Home')tt=0; else if(e.key==='End')tt=nn-1;
+    if(tt>=0){show(tt,true);e.preventDefault();}
+  });}
+  document.querySelectorAll('.seqbtn[data-nav]').forEach(function(b){
+    b.addEventListener('click',function(){show(+b.getAttribute('data-nav'),true);});
+  });
+  var start=0; panels.forEach(function(p,j){if('#'+p.id===location.hash)start=j;});
+  show(start);
+})();
+</script>
+
+</body></html>

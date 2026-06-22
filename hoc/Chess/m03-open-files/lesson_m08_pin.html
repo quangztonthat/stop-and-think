@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bài 2 (Ch3-Mid) — Bồi đòn ghim trên cột mở</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/chessboard-js/1.0.0/chessboard-1.0.0.min.css">
+<style>
+* { box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; max-width: 980px; margin: 0 auto; padding: 24px; color: #1a1a1a; line-height: 1.6; background: #fafafa; }
+h1 { color: #1a3a52; font-size: 28px; margin: 0 0 8px; }
+h2 { color: #2c5282; font-size: 20px; margin: 32px 0 12px; padding-bottom: 6px; border-bottom: 2px solid #e1e8ed; }
+.source { color: #888; font-size: 13px; margin-bottom: 24px; }
+.nav-link { font-size: 13px; color: #2c5282; text-decoration: none; }
+.stage { background: white; border-radius: 8px; padding: 20px 24px; margin: 16px 0; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
+.stage-label { display: inline-block; background: #2c5282; color: white; font-size: 12px; font-weight: 600; padding: 3px 10px; border-radius: 12px; margin-bottom: 8px; }
+.hook-question { font-size: 17px; color: #1a3a52; background: #fff8e1; border-left: 4px solid #faad14; padding: 14px 18px; border-radius: 0 6px 6px 0; margin: 12px 0; }
+.reveal-btn { background: #faad14; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-size: 14px; }
+.hidden { display: none; }
+.board-layout { display: grid; grid-template-columns: 440px 1fr; gap: 24px; align-items: start; margin-top: 16px; }
+@media (max-width: 820px) { .board-layout { grid-template-columns: 1fr; } }
+#board { width: 420px; max-width: 100%; }
+.mini-board { width: 300px; max-width: 100%; margin: 14px auto; }
+.controls { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; justify-content: center; }
+.controls button { padding: 7px 12px; background: #2c5282; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 13px; }
+.info-panel { background: #f8f9fb; padding: 16px; border-radius: 6px; border: 1px solid #e1e8ed; min-height: 380px; }
+.move-display { font-family: monospace; font-size: 16px; color: #2c5282; font-weight: 600; margin-bottom: 8px; }
+.commentary { font-size: 14px; color: #444; margin-bottom: 12px; }
+.info-box { background: white; padding: 10px; border-radius: 4px; border: 1px solid #e1e8ed; margin: 12px 0; font-size: 13px; text-align: center; }
+.info-box.win { background: #f6ffed; border-color: #b7eb8f; color: #389e0d; font-weight: 600; }
+.hl { background: rgba(255, 215, 0, 0.45) !important; box-shadow: inset 0 0 0 2px #faad14 !important; }
+.self-test { background: #fff8e1; border: 2px dashed #faad14; border-radius: 6px; padding: 16px; margin-top: 16px; }
+.feedback { margin-top: 10px; padding: 10px 14px; border-radius: 4px; font-size: 14px; }
+.feedback.correct { background: #f6ffed; color: #389e0d; border-left: 4px solid #52c41a; }
+.feedback.wrong { background: #fff1f0; color: #cf1322; border-left: 4px solid #ff4d4f; }
+.quiz { background: #f0f7ff; border-left: 4px solid #2c5282; border-radius: 0 6px 6px 0; padding: 14px 18px; margin: 12px 0; }
+.quiz-q { font-weight: 600; margin-bottom: 10px; color: #1a3a52; }
+.quiz-options { display: flex; flex-direction: column; gap: 6px; }
+.quiz-option { padding: 8px 12px; background: white; border: 1px solid #c9d6e2; border-radius: 4px; cursor: pointer; text-align: left; font-size: 14px; }
+.quiz-option.correct { background: #f6ffed; border-color: #52c41a; color: #389e0d; }
+.quiz-option.wrong { background: #fff1f0; border-color: #ff4d4f; color: #cf1322; }
+.quiz-explain { margin-top: 8px; font-size: 13px; color: #555; font-style: italic; }
+.summary-card { background: linear-gradient(135deg, #1a3a52, #2c5282); color: white; padding: 20px 24px; border-radius: 8px; margin-top: 24px; }
+.summary-card h2 { color: white; border: none; margin-top: 0; }
+.summary-card ul { padding-left: 20px; }
+code { background: #f1f3f5; padding: 1px 6px; border-radius: 3px; font-family: monospace; font-size: 0.9em; }
+.summary-card code { background: rgba(255,255,255,0.2); color: white; }
+.progress-bar { height: 4px; background: #e1e8ed; border-radius: 2px; overflow: hidden; margin: 8px 0 16px; }
+.progress-fill { height: 100%; background: #52c41a; transition: width 0.3s; width: 0%; }
+.tag { display:inline-block; background:#fde9c8; color:#874d00; font-size:11px; font-weight:600; padding:2px 8px; border-radius:10px; margin-left:6px; }
+</style>
+</head>
+<body>
+
+<h1>Bài 2 — Bồi đòn ghim trên cột mở <span class="tag">Ghim</span></h1>
+<div class="source">
+  Chương 3 (Trung cuộc) — Cột mở & Quân mạnh · Trung cấp → Nâng cao<br>
+  <a class="nav-link" href="../index-middle.html">← Trang chủ Trung cuộc</a> ·
+  <a class="nav-link" href="chapter_m03_open_files.html">← Chương 3</a>
+</div>
+
+<div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+
+<div class="stage">
+  <span class="stage-label">STAGE 1 · HOOK</span>
+  <h2 style="margin-top:8px">Chồng thêm quân lên con bị ghim</h2>
+  <p>Mã đen d7 bị <strong>ghim</strong> trên cột d: xe d1 nhìn xuyên tới Hậu d8 phía sau. Mã không thể rời (sẽ lộ Hậu). Tượng f5 cũng nhắm d7.</p>
+  <div id="hookBoard" class="mini-board"></div>
+  <div class="hook-question">
+    🤔 <strong>Mã d7 bị tấn công 2 lần (Xe + Tượng), được giữ 1 lần (Hậu).</strong> "Bồi" thêm đòn — chuyện gì xảy ra?
+  </div>
+  <button class="reveal-btn" onclick="document.getElementById('hookAnswer').classList.remove('hidden'); markStage(1);">Hiển thị đáp án</button>
+  <div id="hookAnswer" class="hidden" style="margin-top:14px">
+    <p><strong>1.Bxd7!</strong> Nếu <code>1...Qxd7?? 2.Rxd7</code> — xe ăn Hậu (con mã bị ghim đã "che" cho Hậu, giờ Hậu phơi ra)! Đen tốt nhất chỉ còn <code>1...Qf6</code> chịu <strong>mất sạch một quân</strong>. Stockfish: Trắng thắng quyết định.</p>
+  </div>
+</div>
+
+<div class="stage">
+  <span class="stage-label">STAGE 2 · CONCEPT</span>
+  <h2 style="margin-top:8px">Ghim (pin) &amp; "bồi đòn"</h2>
+  <ul>
+    <li><strong>Ghim trên cột mở</strong>: xe trên cột mở ghim quân địch vào Hậu/Vua phía sau. Quân bị ghim gần như "tê liệt".</li>
+    <li><strong>Bồi đòn lên con bị ghim</strong>: vì nó không chạy được, hãy CHỒNG thêm quân tấn công nó (đếm: số tấn công &gt; số phòng thủ → thắng quân).</li>
+    <li><strong>Vì sao ghim thắng</strong>: ở đây mã d7 không nhúc nhích; ăn nó rồi nếu Hậu ăn lại, xe d1 thu luôn Hậu phía sau. Con bị ghim là "lá chắn" cho quân giá trị hơn.</li>
+  </ul>
+</div>
+
+<div class="stage">
+  <span class="stage-label">STAGE 3 · WALKTHROUGH</span>
+  <div class="board-layout">
+    <div>
+      <div id="board"></div>
+      <div class="controls">
+        <button onclick="resetBoard()">⟨⟨ Đầu</button>
+        <button onclick="prevMove()">⟨ Lùi</button>
+        <button onclick="nextMove()">Tiến ⟩</button>
+      </div>
+    </div>
+    <div class="info-panel">
+      <div class="move-display" id="moveDisplay">Thế cờ khởi đầu</div>
+      <div class="commentary" id="commentary">Mã d7 bị ghim (Rd1 ↔ Qd8). Tượng f5 + xe d1 = 2 đòn vào d7; chỉ Hậu d8 giữ. Cột d mở là chìa khóa.</div>
+      <div class="info-box" id="infoBox">Đến lượt: <strong>Trắng</strong></div>
+    </div>
+  </div>
+</div>
+
+<div class="stage">
+  <span class="stage-label">STAGE 4 · SELF-TEST</span>
+  <h2 style="margin-top:8px">Sau 1.Bxd7, nước ĐÚNG của Đen là gì?</h2>
+  <div class="self-test">
+    <div class="quiz-options" id="selfTestOptions">
+      <button class="quiz-option" onclick="checkSelfTest(this, true, 'Đúng! 1...Qf6 — bỏ con mã, chấp nhận kém một quân. Vì 1...Qxd7?? 2.Rxd7 mất luôn Hậu (mã bị ghim đã che cho Hậu).')">1...Qf6 — bỏ mã, chịu kém quân</button>
+      <button class="quiz-option" onclick="checkSelfTest(this, false, 'Sai. 1...Qxd7?? 2.Rxd7 — xe ăn Hậu! Đây chính là cái bẫy của đòn ghim.')">1...Qxd7 ăn lại tượng</button>
+      <button class="quiz-option" onclick="checkSelfTest(this, false, 'Sai. Mã d7 đã bị ăn rồi; và khi còn bị ghim nó cũng không di chuyển được.')">1...Nxf5 phản công</button>
+    </div>
+    <div class="feedback hidden" id="selfTestFeedback"></div>
+  </div>
+</div>
+
+<div class="stage">
+  <span class="stage-label">STAGE 5 · MINI-QUIZ</span>
+  <div class="quiz">
+    <div class="quiz-q">Q1. "Ghim" (pin) khiến quân bị ghim ra sao?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" onclick="quizCheck(this, true)">Gần như tê liệt — không thể (hoặc không nên) rời chỗ vì sẽ lộ quân giá trị phía sau</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Mạnh gấp đôi</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Được phong cấp</button>
+    </div>
+    <div class="quiz-explain hidden">Quân bị ghim đứng chắn trước Hậu/Vua; di chuyển nó sẽ phơi quân lớn ra → nó bị "đóng băng".</div>
+  </div>
+  <div class="quiz">
+    <div class="quiz-q">Q2. Nguyên tắc "bồi đòn lên con bị ghim"?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" onclick="quizCheck(this, false)">Luôn đổi ngay con bị ghim</button>
+      <button class="quiz-option" onclick="quizCheck(this, true)">Chồng thêm quân tấn công nó; khi số tấn công &gt; số phòng thủ → thắng quân</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Bỏ qua nó và tấn công chỗ khác</button>
+    </div>
+    <div class="quiz-explain hidden">Con bị ghim không chạy được, nên cứ đếm quân tấn công vs phòng thủ rồi chồng thêm tới khi thắng được nó.</div>
+  </div>
+  <div class="quiz">
+    <div class="quiz-q">Q3. Vì sao ở đây ăn con mã lại thắng cả Hậu nếu Đen ăn lại?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" onclick="quizCheck(this, true)">Mã là "lá chắn" của Hậu trên cột d; mã mất → Qxd7 thì Rxd7 thu Hậu</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Vì Hậu yếu hơn mã</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Vì xe d1 được phong hậu</button>
+    </div>
+    <div class="quiz-explain hidden">Xe d1 xuyên cột d tới Hậu d8, chỉ bị mã d7 che. Ăn mã → nếu Hậu xuống d7 ăn lại, nó tự phơi mình cho xe.</div>
+  </div>
+</div>
+
+<div class="summary-card">
+  <h2>📌 Tóm tắt</h2>
+  <ul>
+    <li><strong>Ghim trên cột mở</strong>: xe ghim quân địch vào Hậu/Vua phía sau → quân đó tê liệt.</li>
+    <li><strong>Bồi đòn</strong>: chồng thêm quân lên con bị ghim; tấn công &gt; phòng thủ = thắng quân.</li>
+    <li><strong>Đòn mẫu</strong>: <code>Bxd7!</code> — nếu <code>Qxd7?? Rxd7</code> thắng Hậu; Đen chỉ còn chịu mất một quân.</li>
+    <li><strong>Nhận diện</strong>: quân địch đứng trên cột/đường chéo mở, phía sau là Hậu hoặc Vua.</li>
+  </ul>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chessboard-js/1.0.0/chessboard-1.0.0.min.js"></script>
+<script>
+const START_FEN = '3q1rk1/pppn1ppp/8/5B2/8/8/PPP1QPPP/3R2K1 w - - 0 1';
+const MOVES = ['Bxd7', 'Qxd7', 'Rxd7'];
+const COMMENTARY = {
+  0: { move: 'Thế cờ khởi đầu', text: 'Mã d7 bị ghim trên cột d (Rd1 nhìn xuyên tới Qd8). Tượng f5 + xe d1 = 2 đòn vào d7; chỉ Hậu giữ. Cột d mở là chìa khóa.' },
+  1: { move: '1. Bxd7 !', text: 'Tượng ăn con mã bị ghim. Giờ Đen đứng trước lựa chọn nghiệt ngã.' },
+  2: { move: '1... Qxd7 ??', text: 'Đen ăn lại bằng Hậu — SAI LẦM! (Nước đúng là 1...Qf6, bỏ mã, chịu kém quân.) Hậu vừa xuống d7 tự phơi mình.' },
+  3: { move: '2. Rxd7', text: 'Xe d1 thu Hậu! Con mã bị ghim từng "che" cho Hậu — nay Hậu mất trắng. Trắng thắng Hậu + Mã đổi lấy Tượng.' }
+};
+let board, game, currentMove = 0, stagesCompleted = new Set();
+function initBoard() {
+  game = new Chess(START_FEN);
+  board = Chessboard('board', { position: START_FEN, draggable: true,
+    pieceTheme: 'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png',
+    onDrop: (s,t) => { const m = game.move({from:s,to:t,promotion:'q'}); if(!m) return 'snapback'; setTimeout(updateOverlays,100); },
+    onSnapEnd: () => { board.position(game.fen()); updateOverlays(); }});
+  updateDisplay();
+}
+function nextMove() { if(currentMove>=MOVES.length) return; game.move(MOVES[currentMove]); board.position(game.fen()); currentMove++; setTimeout(()=>{updateDisplay();updateOverlays();},50); if(currentMove>=MOVES.length) markStage(3); }
+function prevMove() { if(currentMove<=0) return; game.undo(); currentMove--; board.position(game.fen()); setTimeout(()=>{updateDisplay();updateOverlays();},50); }
+function resetBoard() { game = new Chess(START_FEN); board.position(START_FEN); currentMove = 0; setTimeout(()=>{updateDisplay();updateOverlays();},50); }
+function updateDisplay() {
+  const cm = COMMENTARY[currentMove] || COMMENTARY[0];
+  document.getElementById('moveDisplay').textContent = cm.move;
+  document.getElementById('commentary').innerHTML = cm.text;
+  const box = document.getElementById('infoBox');
+  if (currentMove >= MOVES.length) { box.className = 'info-box win'; box.innerHTML = '⚡ Thắng Hậu — sức mạnh của đòn ghim'; }
+  else { box.className = 'info-box'; box.innerHTML = 'Đến lượt: <strong>' + (game.turn()==='w'?'Trắng':'Đen') + '</strong>'; }
+  updateProgress();
+}
+function updateOverlays() { $('#board .square-55d63').removeClass('hl'); ['d1','d7','d8','f5'].forEach(sq => $('#board .square-' + sq).addClass('hl')); }
+function checkSelfTest(btn, ok, exp) {
+  document.querySelectorAll('#selfTestOptions .quiz-option').forEach(el=>el.disabled=true);
+  btn.classList.add(ok?'correct':'wrong');
+  const fb = document.getElementById('selfTestFeedback');
+  fb.classList.remove('hidden'); fb.className = 'feedback ' + (ok?'correct':'wrong');
+  fb.textContent = (ok?'✓ ':'✗ ') + exp; markStage(4);
+}
+function quizCheck(btn, ok) {
+  const q = btn.closest('.quiz');
+  q.querySelectorAll('.quiz-option').forEach(el=>el.disabled=true);
+  btn.classList.add(ok?'correct':'wrong');
+  if (!ok) q.querySelectorAll('.quiz-option').forEach(el => { if (el.getAttribute('onclick').includes('true')) el.classList.add('correct'); });
+  q.querySelector('.quiz-explain').classList.remove('hidden'); markStage(5);
+}
+function markStage(n) { stagesCompleted.add(n); updateProgress(); }
+function updateProgress() { document.getElementById('progressFill').style.width = (stagesCompleted.size/5*100) + '%'; }
+function initMiniBoards() { Chessboard('hookBoard', { position: START_FEN, draggable: false, pieceTheme: 'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png' }); }
+$(document).ready(() => { initBoard(); initMiniBoards(); setTimeout(()=>markStage(2),500); });
+</script>
+
+</body>
+</htm

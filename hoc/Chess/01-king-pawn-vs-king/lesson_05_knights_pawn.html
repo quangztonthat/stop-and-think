@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bài 5 — Phòng thủ với tốt cạnh Mã</title>
+<link rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/chessboard-js/1.0.0/chessboard-1.0.0.min.css">
+<style>
+  * { box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    max-width: 980px; margin: 0 auto; padding: 24px;
+    color: #1a1a1a; line-height: 1.6; background: #fafafa; }
+  h1 { color: #1a3a52; font-size: 28px; margin: 0 0 8px; }
+  h2 { color: #2c5282; font-size: 20px; margin: 32px 0 12px;
+       padding-bottom: 6px; border-bottom: 2px solid #e1e8ed; }
+  h3 { color: #2c5282; font-size: 16px; margin: 20px 0 8px; }
+  .source { color: #888; font-size: 13px; margin-bottom: 24px; }
+  .nav-link { font-size: 13px; color: #2c5282; text-decoration: none; }
+  .nav-link:hover { text-decoration: underline; }
+  .stage { background: white; border-radius: 8px; padding: 20px 24px;
+           margin: 16px 0; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
+  .stage-label { display: inline-block; background: #2c5282; color: white;
+    font-size: 12px; font-weight: 600; padding: 3px 10px;
+    border-radius: 12px; margin-bottom: 8px; letter-spacing: 0.5px; }
+  .hook-question { font-size: 17px; color: #1a3a52; background: #fff8e1;
+    border-left: 4px solid #faad14; padding: 14px 18px;
+    border-radius: 0 6px 6px 0; margin: 12px 0; }
+  .reveal-btn { background: #faad14; color: white; border: none;
+    padding: 8px 16px; border-radius: 4px; cursor: pointer;
+    font-size: 14px; font-weight: 500; }
+  .reveal-btn:hover { background: #d48806; }
+  .hidden { display: none; }
+  .board-layout { display: grid; grid-template-columns: 440px 1fr; gap: 24px;
+    align-items: start; margin-top: 16px; }
+  @media (max-width: 820px) { .board-layout { grid-template-columns: 1fr; } }
+  .board-col { width: 100%; }
+  #board { width: 420px; max-width: 100%; }
+  .mini-board { width: 300px; max-width: 100%; margin: 14px auto; }
+  .controls { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; justify-content: center; }
+  .controls button { padding: 7px 12px; background: #2c5282; color: white;
+    border: none; border-radius: 4px; cursor: pointer; font-size: 13px; }
+  .controls button:hover { background: #1a3a52; }
+  .controls button.toggle-on { background: #52c41a; }
+  .info-panel { background: #f8f9fb; padding: 16px; border-radius: 6px;
+    border: 1px solid #e1e8ed; min-height: 380px; }
+  .move-display { font-family: "SF Mono", Consolas, monospace;
+                  font-size: 16px; color: #2c5282; font-weight: 600; margin-bottom: 8px; }
+  .commentary { font-size: 14px; color: #444; margin-bottom: 12px; line-height: 1.55; }
+  .info-box { background: white; padding: 10px; border-radius: 4px;
+                border: 1px solid #e1e8ed; margin: 12px 0; font-size: 13px;
+                text-align: center; }
+  .info-box.draw { background: #fff7e6; border-color: #ffd591; color: #ad4e00; font-weight: 600; }
+  .highlight-corner { background: rgba(255, 215, 0, 0.45) !important;
+    box-shadow: inset 0 0 0 1px rgba(255, 165, 0, 0.6) !important; }
+  .highlight-king-blue { box-shadow: inset 0 0 0 4px #1d39c4 !important; }
+  .highlight-pawn-attack {
+    background: rgba(207, 19, 34, 0.25) !important;
+    box-shadow: inset 0 0 0 2px #cf1322 !important;
+  }
+  .self-test { background: #fff8e1; border: 2px dashed #faad14;
+    border-radius: 6px; padding: 16px; margin-top: 16px; }
+  .self-test-question { font-weight: 600; color: #874d00; margin-bottom: 8px; }
+  .feedback { margin-top: 10px; padding: 10px 14px; border-radius: 4px; font-size: 14px; }
+  .feedback.correct { background: #f6ffed; color: #389e0d; border-left: 4px solid #52c41a; }
+  .feedback.wrong { background: #fff1f0; color: #cf1322; border-left: 4px solid #ff4d4f; }
+  .quiz { background: #f0f7ff; border-left: 4px solid #2c5282;
+    border-radius: 0 6px 6px 0; padding: 14px 18px; margin: 12px 0; }
+  .quiz-q { font-weight: 600; margin-bottom: 10px; color: #1a3a52; }
+  .quiz-options { display: flex; flex-direction: column; gap: 6px; }
+  .quiz-option { padding: 8px 12px; background: white; border: 1px solid #c9d6e2;
+    border-radius: 4px; cursor: pointer; text-align: left; font-size: 14px; }
+  .quiz-option:hover { background: #f0f7ff; border-color: #2c5282; }
+  .quiz-option.correct { background: #f6ffed; border-color: #52c41a; color: #389e0d; }
+  .quiz-option.wrong { background: #fff1f0; border-color: #ff4d4f; color: #cf1322; }
+  .quiz-explain { margin-top: 8px; font-size: 13px; color: #555; font-style: italic; }
+  .summary-card { background: linear-gradient(135deg, #1a3a52, #2c5282);
+    color: white; padding: 20px 24px; border-radius: 8px; margin-top: 24px; }
+  .summary-card h2 { color: white; border: none; margin-top: 0; }
+  .summary-card ul { padding-left: 20px; }
+  .summary-card li { margin: 6px 0; }
+  code { background: #f1f3f5; padding: 1px 6px; border-radius: 3px;
+         font-family: "SF Mono", Consolas, monospace; font-size: 0.9em; }
+  .summary-card code { background: rgba(255,255,255,0.2); color: white; }
+  .progress-bar { height: 4px; background: #e1e8ed; border-radius: 2px;
+                  overflow: hidden; margin: 8px 0 16px; }
+  .progress-fill { height: 100%; background: #52c41a; transition: width 0.3s; width: 0%; }
+</style>
+</head>
+<body>
+
+<h1>Bài 5 — Phòng thủ với tốt cạnh Mã</h1>
+<div class="source">
+  Nguồn: <em>100 Endgames You Must Know</em> — Chương 1, Thế cờ 1.8 (biến thể)<br>
+  Giai đoạn: Tàn cuộc · Chủ đề: Tốt cạnh Mã đấu Vua · Trình độ: Trung cấp<br>
+  <a class="nav-link" href="../index.html">← Trang chủ</a> ·
+  <a class="nav-link" href="lesson_04_losing_opposition.html">← Bài 4: Đánh mất thế đối mặt</a>
+</div>
+
+<div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+
+<!-- ────────── STAGE 1: HOOK ────────── -->
+<div class="stage">
+  <span class="stage-label">GIAI ĐOẠN 1 · DẪN NHẬP</span>
+  <h2 style="margin-top:8px">Tốt sắp phong cấp — Trắng có cách hòa?</h2>
+  <p>Thế cờ dưới đây: Đen Vua g3 + tốt g2 (tốt cạnh Mã — cột g). Trắng chỉ có Vua h1.
+     Đến lượt Trắng.</p>
+
+  <div id="hookBoard" class="mini-board"></div>
+
+  <p>Đen gần như sắp phong cấp: chỉ cần đẩy g2-g1=Q là thắng. Trắng ở góc, không có quân
+     khác hỗ trợ. Trông như thế thua.</p>
+
+  <div class="hook-question">
+    🤔 <strong>Vậy Trắng có cách hòa không?</strong> Trực giác nói thua chắc. Nhưng tốt cạnh Mã
+    (cột b và g) có một <em>đặc điểm hình học</em> đặc biệt cứu được Trắng.
+  </div>
+  <button class="reveal-btn" onclick="document.getElementById('hookAnswer').classList.remove('hidden'); markStage(1);">
+    Hiển thị đáp án
+  </button>
+  <div id="hookAnswer" class="hidden" style="margin-top:14px">
+    <p><strong>Trắng HÒA!</strong> Bằng <strong>1.Kg1</strong> (nước duy nhất hợp lệ),
+       Vua trắng vào ngay ô phong cấp. Đen cố đẩy tốt — nhưng tốt g2 không thể tiến lên
+       g1 vì có Vua trắng ở đó. Sau vài nước xoay xở, Đen phong cấp thì Trắng bắt
+       luôn Hậu vừa phong cấp (vì Hậu không được Vua đen bảo vệ).</p>
+    <p>Đây là điểm khác biệt với tốt trung tâm: với tốt d hoặc e, bên phòng thủ không có cách
+       chiếm ô phong cấp mà không gặp vua mạnh. Với tốt cạnh Mã, vua mạnh có thể tránh.</p>
+  </div>
+</div>
+
+<!-- ────────── STAGE 2: CONCEPT ────────── -->
+<div class="stage">
+  <span class="stage-label">GIAI ĐOẠN 2 · KHÁI NIỆM</span>
+  <h2 style="margin-top:8px">Tại sao tốt cạnh Mã đặc biệt?</h2>
+  <p>Tốt cột a, h là <strong>tốt biên</strong> — luôn có nhiều trường hợp ngoại lệ dẫn đến hòa.</p>
+  <p>Tốt cột b, g là <strong>tốt cạnh Mã</strong> — gần biên đến mức một số kỹ thuật
+     hoạt động khác với tốt trung tâm:</p>
+  <ul>
+    <li>Vua bên phòng thủ có thể đến góc gần ô phong cấp</li>
+    <li>Tốt không đủ không gian để né sang bên (như ở trung tâm)</li>
+    <li>Vua bên tấn công không có cách nào phá thế cờ của bên phòng thủ mà không gây hết nước (pat)</li>
+  </ul>
+
+  <p><strong>Trong thế cờ này</strong>: Vua trắng đến <code>g1</code> = ô phong cấp. Tốt không
+     thể tiến (ô bị chặn). Đen phong cấp theo đường chéo? Không — tốt chỉ phong cấp khi đi thẳng. Đen
+     phải dùng vua đẩy Trắng ra trước. Nhưng Trắng cứ ngồi yên không nhúc nhích lâu nhất có thể.</p>
+
+  <div id="conceptBoard" class="mini-board"></div>
+  <p style="text-align:center;font-size:13px;color:#666;margin-top:6px">
+     Ô <strong style="color:#d48806">vàng</strong> = <code>g1</code> (ô phong cấp). Vua trắng
+     phải vào đây để chặn. Ô <strong style="color:#cf1322">đỏ</strong> = ô bị tốt g2 khống chế
+     (f1, h1) — vua trắng không đứng được.
+  </p>
+
+  <div class="hook-question" style="background:#f0f7ff; border-left-color:#2c5282; color:#1a3a52">
+    🔑 <strong>Quy luật:</strong> Với tốt cạnh Mã ở hàng 2 (sắp phong cấp), nếu vua bên phòng thủ
+    có thể vào ô phong cấp trước khi vua bên tấn công đến đủ gần — HÒA. Đây là kỹ thuật
+    trú ẩn trong góc dành cho tốt cạnh Mã.
+  </div>
+</div>
+
+<!-- ────────── STAGE 3: WALKTHROUGH ────────── -->
+<div class="stage">
+  <span class="stage-label">GIAI ĐOẠN 3 · TƯƠNG TÁC TỪNG BƯỚC</span>
+  <h2 style="margin-top:8px">Đi từng nước với bình luận</h2>
+  <p>Bấm <strong>Tiến ⟩</strong>. Bật <strong>🔴 Tốt khống chế</strong> để thấy ô bị tốt g2 khống chế
+     — những ô vua trắng KHÔNG được vào.</p>
+
+  <div class="board-layout">
+    <div class="board-col">
+      <div id="board"></div>
+      <div class="controls">
+        <button onclick="resetBoard()">⟨⟨ Đầu</button>
+        <button onclick="prevMove()">⟨ Lùi</button>
+        <button onclick="nextMove()">Tiến ⟩</button>
+        <button onclick="goToEnd()">Cuối ⟩⟩</button>
+        <button onclick="flipBoard()">↕ Lật</button>
+      </div>
+      <div class="controls">
+        <button id="toggleAttackBtn" class="toggle-on" onclick="toggleAttack()">🔴 Tốt khống chế: BẬT</button>
+      </div>
+    </div>
+    <div class="info-panel">
+      <div class="move-display" id="moveDisplay">Thế cờ khởi đầu</div>
+      <div class="commentary" id="commentary">
+        Trắng Kh1, Đen Kg3 + tốt g2. Bấm <strong>Tiến ⟩</strong> để xem Trắng hòa thế nào.
+      </div>
+      <div class="info-box" id="infoBox">
+        Đến lượt: <strong>Trắng</strong>. Vua trắng có 1 nước hợp lệ duy nhất.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ────────── STAGE 4: SELF-TEST ────────── -->
+<div class="stage">
+  <span class="stage-label">GIAI ĐOẠN 4 · TỰ KIỂM TRA</span>
+  <h2 style="margin-top:8px">Tại sao 1.Kg1 là nước DUY NHẤT của Trắng?</h2>
+  <p>Trắng Vua h1, đến lượt Trắng. Hãy phân tích các nước có thể.</p>
+  <div id="selfTestBoard" class="mini-board"></div>
+  <div class="self-test">
+    <div class="self-test-question">Nước nào KHÔNG hợp lệ cho Trắng? (chọn nước phạm luật)</div>
+    <div class="quiz-options" id="selfTestOptions">
+      <button class="quiz-option" onclick="checkSelfTest(this, false, 'Kg1 hoàn toàn HỢP LỆ — vua trắng vào ô phong cấp. Đây là nước cứu Trắng.')">1.Kg1 (vào ô phong cấp)</button>
+      <button class="quiz-option" onclick="checkSelfTest(this, true, 'Đúng! Kxg2? Bắt tốt nhưng đứng sát Kg3 (cách 1 cột 1 hàng) nên phạm luật vì hai Vua không được đứng sát nhau.')">1.Kxg2 (bắt tốt)</button>
+      <button class="quiz-option" onclick="checkSelfTest(this, false, 'Kh2 PHẠM LUẬT (vì Kg3 đứng sát khống chế h2). Nhưng câu hỏi yêu cầu 1 đáp án, và Kxg2 cũng phạm luật. Cả 2 đều phạm luật — nhưng Kxg2 thường được kiểm tra trước vì là nước ăn quân.')">1.Kh2 (lùi xuống)</button>
+    </div>
+    <div class="feedback hidden" id="selfTestFeedback"></div>
+    <p style="font-size:13px;color:#666;margin-top:10px">
+      Thực tế CẢ HAI Kxg2 và Kh2 đều phạm luật. Trắng CHỈ có Kg1. Đó là tại sao thế cờ này
+      ép Trắng vào nước duy nhất cứu ván cờ.
+    </p>
+  </div>
+</div>
+
+<!-- ────────── STAGE 5: MINI-QUIZ ────────── -->
+<div class="stage">
+  <span class="stage-label">GIAI ĐOẠN 5 · TRẮC NGHIỆM NHANH</span>
+  <h2 style="margin-top:8px">3 câu hỏi củng cố</h2>
+
+  <div class="quiz">
+    <div class="quiz-q">Câu 1. Sau 2.Kh2 g1=Q+, Hậu có được vua đen bảo vệ không?</div>
+    <div id="q1Board" class="mini-board" style="width:240px"></div>
+    <div class="quiz-options">
+      <button class="quiz-option" onclick="quizCheck(this, false)">Có — Kf3 cách Qg1 đúng 1 ô</button>
+      <button class="quiz-option" onclick="quizCheck(this, true)">Không — Kf3 cách Qg1 tới 2 ô (lệch 1 cột, 2 hàng) → ngoài tầm vua</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Có — vua bảo vệ mọi ô lân cận</button>
+    </div>
+    <div class="quiz-explain hidden">
+      Khoảng cách từ Kf3 đến Qg1: lệch 1 cột, 2 hàng. Vua chỉ bảo vệ 8 ô liền kề (tối đa lệch 1 cột 1 hàng). Hậu ở g1
+      nằm ngoài tầm. Vì Hậu không được bảo vệ, Trắng chơi Kxg1 ăn Hậu → HÒA.
+    </div>
+  </div>
+
+  <div class="quiz">
+    <div class="quiz-q">Câu 2. Tại sao kỹ thuật này CHỈ hoạt động với tốt cạnh Mã (cột b, g) mà không hoạt động với tốt trung tâm (cột d, e)?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" onclick="quizCheck(this, false)">Vì tốt cạnh Mã có 2 ô khống chế chéo khác nhau</button>
+      <button class="quiz-option" onclick="quizCheck(this, true)">Vì với tốt trung tâm, vua bên tấn công có không gian từ cả 2 phía → vua bên phòng thủ bị đuổi ra khỏi ô phong cấp</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Vì tốt cạnh Mã nhanh hơn</button>
+    </div>
+    <div class="quiz-explain hidden">
+      Với tốt cột d, e, vua bên tấn công có thể vòng từ phải hoặc trái → ép vua bên phòng thủ ra khỏi
+      ô phong cấp. Với tốt cột g (gần biên h), vua bên tấn công chỉ có 1 phía để công kích
+      → vua bên phòng thủ có thể trốn trong góc cột h.
+    </div>
+  </div>
+
+  <div class="quiz">
+    <div class="quiz-q">Câu 3. Trường hợp nào KHÔNG hòa với tốt cạnh Mã?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" onclick="quizCheck(this, false)">Vua bên phòng thủ ở góc gần tốt</button>
+      <button class="quiz-option" onclick="quizCheck(this, true)">Vua bên phòng thủ ở xa ô phong cấp (không kịp chạy về góc)</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Tốt ở hàng 2</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Đến lượt Đen đi</button>
+    </div>
+    <div class="quiz-explain hidden">
+      Thế hòa với tốt cạnh Mã chỉ thành công nếu vua bên phòng thủ ĐÃ Ở GÓC hoặc kịp chạy về. Nếu bên tấn công
+      có vài nhịp trước, bên phòng thủ không kịp → vẫn thua. Trong thi đấu, người ta thường
+      so sánh hàng của tốt với khoảng cách của vua bên phòng thủ để biết có hòa được không.
+    </div>
+  </div>
+</div>
+
+<div class="summary-card">
+  <h2>📌 Tóm tắt</h2>
+  <ul>
+    <li><strong>Tốt cạnh Mã</strong> = tốt cột b hoặc g — gần biên, có nhiều ngoại lệ so với tốt trung tâm.</li>
+    <li><strong>Trú ẩn trong góc</strong>: Vua bên phòng thủ vào ô phong cấp (g1 với tốt g, b1 với tốt b) → chặn tốt phong cấp.</li>
+    <li><strong>Ăn quân ngay sau khi phong cấp</strong>: Nếu tốt buộc phải phong cấp, Hậu thường không được bảo vệ → bên phòng thủ ăn lại, còn Vua đấu Vua = HÒA.</li>
+    <li><strong>Áp dụng</strong>: Khi thấy mình thua một quân tốt cạnh Mã, KHÔNG đầu hàng — kiểm tra xem có thế trú ẩn trong góc không.</li>
+    <li><strong>Lưu ý</strong>: Nguyên tắc này áp dụng khi vua bên phòng thủ đã ở GÓC hoặc kịp chạy về. Không áp dụng cho mọi thế cờ có tốt cạnh Mã.</li>
+  </ul>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chessboard-js/1.0.0/chessboard-1.0.0.min.js"></script>
+
+<script>
+const START_FEN = '8/8/8/8/8/6k1/6p1/7K w - - 0 1';
+const MOVES = ['Kg1', 'Kf3', 'Kh2', 'g1=Q+', 'Kxg1'];
+const COMMENTARY = {
+  0: { move: 'Thế cờ khởi đầu', text: 'Trắng Kh1, Đen Kg3 + tốt g2. Tốt cách 1 nước phong cấp. Trắng có 1 nước hợp lệ duy nhất.' },
+  1: { move: '1. Kg1 !', text: 'Vua trắng vào ngay ô phong cấp g1. Đây là nước CỨU ván cờ! Tốt g2 không thể tiến lên g1 (đã có vua trắng). Tốt cũng không thể ăn quân vì f1 và h1 đều trống.' },
+  2: { move: '1... Kf3', text: 'Vua đen tiến gần để cố đẩy Trắng ra. Kf3 khống chế g2 (tốt nhà được bảo vệ) và bao vây. Nhưng Trắng vẫn còn cách.' },
+  3: { move: '2. Kh2', text: 'Vua trắng phải nhường g1 (vì Kf3 khống chế g1, ở lại sẽ phạm luật sau khi Đen đi Kf3). Kh2 hợp lệ — không bị tốt g2 hay vua đen khống chế.' },
+  4: { move: '2... g1=Q+', text: 'Tốt phong cấp thành Hậu! Nhưng có chiếu Kh2 (Hậu ở g1 khống chế chéo đến h2). Có vẻ Đen thắng nhưng...' },
+  5: { move: '3. Kxg1  ½-½', text: 'Trắng BẮT Hậu! Kh2 → g1 hợp lệ vì Hậu ở g1 không được bảo vệ (Kf3 cách 1 cột 2 hàng = ngoài tầm). Sau khi bắt: Vua đấu Vua = HÒA do không đủ lực chiếu hết. Trắng đã cứu được nửa điểm từ thế thua tưởng chừng không thể.' }
+};
+
+let board, game, currentMove = 0;
+let showAttack = true;
+let stagesCompleted = new Set();
+
+function initBoard() {
+  game = new Chess(START_FEN);
+  board = Chessboard('board', {
+    position: START_FEN, draggable: true,
+    pieceTheme: 'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png',
+    onDrop: handleDrop,
+    onSnapEnd: () => { board.position(game.fen()); updateOverlays(); }
+  });
+  updateDisplay();
+}
+
+function handleDrop(s, t) {
+  const m = game.move({ from: s, to: t, promotion: 'q' });
+  if (m === null) return 'snapback';
+  setTimeout(updateOverlays, 100);
+}
+
+function nextMove() {
+  if (currentMove >= MOVES.length) return;
+  game.move(MOVES[currentMove]);
+  board.position(game.fen());
+  currentMove++;
+  setTimeout(() => { updateDisplay(); updateOverlays(); }, 50);
+  if (currentMove >= MOVES.length) markStage(3);
+}
+function prevMove() {
+  if (currentMove <= 0) return;
+  game.undo(); currentMove--;
+  board.position(game.fen());
+  setTimeout(() => { updateDisplay(); updateOverlays(); }, 50);
+}
+function resetBoard() {
+  game = new Chess(START_FEN); board.position(START_FEN); currentMove = 0;
+  setTimeout(() => { updateDisplay(); updateOverlays(); }, 50);
+}
+function goToEnd() {
+  while (currentMove < MOVES.length) { game.move(MOVES[currentMove]); currentMove++; }
+  board.position(game.fen());
+  setTimeout(() => { updateDisplay(); updateOverlays(); }, 50);
+}
+function flipBoard() { board.flip(); setTimeout(updateOverlays, 100); }
+
+function updateDisplay() {
+  const cm = COMMENTARY[currentMove] || COMMENTARY[0];
+  document.getElementById('moveDisplay').textContent = cm.move;
+  document.getElementById('commentary').innerHTML = cm.text;
+  updateInfoBox();
+  updateProgress();
+}
+
+function findPiece(piece) {
+  const fen = game.fen().split(' ')[0];
+  const ranks = fen.split('/');
+  for (let r = 0; r < 8; r++) {
+    let file = 0;
+    for (const ch of ranks[r]) {
+      if (/\d/.test(ch)) file += parseInt(ch);
+      else {
+        const isWhite = ch === ch.toUpperCase();
+        const type = ch.toUpperCase();
+        if ((piece[0] === 'w' && isWhite && piece[1] === type) ||
+            (piece[0] === 'b' && !isWhite && piece[1] === type))
+          return String.fromCharCode(97 + file) + (8 - r);
+        file++;
+      }
+    }
+  }
+  return null;
+}
+
+function updateInfoBox() {
+  const box = document.getElementById('infoBox');
+  if (currentMove >= MOVES.length) {
+    box.className = 'info-box draw';
+    box.innerHTML = '½ — ½  HÒA (Vua đấu Vua, không đủ lực chiếu hết)';
+    return;
+  }
+  const turn = game.turn() === 'w' ? 'Trắng' : 'Đen';
+  box.className = 'info-box';
+  box.innerHTML = 'Đến lượt: <strong>' + turn + '</strong>';
+}
+
+function updateOverlays() {
+  $('#board .square-55d63').removeClass('highlight-corner highlight-king-blue highlight-pawn-attack');
+  if (showAttack) {
+    const bP = findPiece('bP');
+    if (bP) {
+      const f = bP.charCodeAt(0) - 97, r = parseInt(bP[1]);
+      // black pawn attacks diagonals downward (rank-1)
+      if (f > 0) {
+        const sq = String.fromCharCode(97 + f - 1) + (r - 1);
+        $('#board .square-' + sq).addClass('highlight-pawn-attack');
+      }
+      if (f < 7) {
+        const sq = String.fromCharCode(97 + f + 1) + (r - 1);
+        $('#board .square-' + sq).addClass('highlight-pawn-attack');
+      }
+    }
+    // Highlight g1 = promotion square
+    $('#board .square-g1').addClass('highlight-corner');
+    const wK = findPiece('wK');
+    if (wK) $('#board .square-' + wK).addClass('highlight-king-blue');
+  }
+}
+
+function toggleAttack() {
+  showAttack = !showAttack;
+  const btn = document.getElementById('toggleAttackBtn');
+  btn.textContent = '🔴 Tốt khống chế: ' + (showAttack ? 'BẬT' : 'TẮT');
+  btn.className = showAttack ? 'toggle-on' : '';
+  updateOverlays();
+}
+
+function checkSelfTest(btn, ok, exp) {
+  document.querySelectorAll('#selfTestOptions .quiz-option').forEach(el => el.disabled = true);
+  btn.classList.add(ok ? 'correct' : 'wrong');
+  const fb = document.getElementById('selfTestFeedback');
+  fb.classList.remove('hidden');
+  fb.className = 'feedback ' + (ok ? 'correct' : 'wrong');
+  fb.textContent = (ok ? '✓ Đúng. ' : '✗ Sai. ') + exp;
+  markStage(4);
+}
+
+function quizCheck(btn, ok) {
+  const q = btn.closest('.quiz');
+  q.querySelectorAll('.quiz-option').forEach(el => el.disabled = true);
+  btn.classList.add(ok ? 'correct' : 'wrong');
+  if (!ok) q.querySelectorAll('.quiz-option').forEach(el => {
+    if (el.getAttribute('onclick').includes('true')) el.classList.add('correct');
+  });
+  q.querySelector('.quiz-explain').classList.remove('hidden');
+  markStage(5);
+}
+
+function markStage(n) { stagesCompleted.add(n); updateProgress(); }
+function updateProgress() {
+  document.getElementById('progressFill').style.width = (stagesCompleted.size / 5 * 100) + '%';
+}
+
+function initMiniBoards() {
+  Chessboard('hookBoa

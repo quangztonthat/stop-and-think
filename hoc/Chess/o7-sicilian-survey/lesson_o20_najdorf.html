@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bài 1 (Ch7-Open) — Sicilian Najdorf</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/chessboard-js/1.0.0/chessboard-1.0.0.min.css">
+<style>
+* { box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; max-width: 980px; margin: 0 auto; padding: 24px; color: #1a1a1a; line-height: 1.6; background: #fafafa; }
+h1 { color: #1a3a52; font-size: 26px; margin: 0 0 8px; }
+h2 { color: #2c5282; font-size: 20px; margin: 32px 0 12px; padding-bottom: 6px; border-bottom: 2px solid #e1e8ed; }
+.source { color: #888; font-size: 13px; margin-bottom: 24px; }
+.nav-link { font-size: 13px; color: #2c5282; text-decoration: none; }
+.stage { background: white; border-radius: 8px; padding: 20px 24px; margin: 16px 0; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
+.stage-label { display: inline-block; background: #2c5282; color: white; font-size: 12px; font-weight: 600; padding: 3px 10px; border-radius: 12px; margin-bottom: 8px; }
+.hook-question { font-size: 17px; color: #1a3a52; background: #fff8e1; border-left: 4px solid #faad14; padding: 14px 18px; border-radius: 0 6px 6px 0; margin: 12px 0; }
+.reveal-btn { background: #faad14; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-size: 14px; }
+.hidden { display: none; }
+.board-layout { display: grid; grid-template-columns: 440px 1fr; gap: 24px; align-items: start; margin-top: 16px; }
+@media (max-width: 820px) { .board-layout { grid-template-columns: 1fr; } }
+#board { width: 420px; max-width: 100%; }
+.mini-board { width: 300px; max-width: 100%; margin: 14px auto; }
+.controls { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; justify-content: center; }
+.controls button { padding: 7px 12px; background: #2c5282; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 13px; }
+.info-panel { background: #f8f9fb; padding: 16px; border-radius: 6px; border: 1px solid #e1e8ed; min-height: 380px; }
+.move-display { font-family: monospace; font-size: 16px; color: #2c5282; font-weight: 600; margin-bottom: 8px; }
+.commentary { font-size: 14px; color: #444; margin-bottom: 12px; }
+.info-box { background: white; padding: 10px; border-radius: 4px; border: 1px solid #e1e8ed; margin: 12px 0; font-size: 13px; text-align: center; }
+.info-box.win { background: #f6ffed; border-color: #b7eb8f; color: #389e0d; font-weight: 600; }
+.hl { background: rgba(255, 215, 0, 0.45) !important; box-shadow: inset 0 0 0 2px #faad14 !important; }
+.self-test { background: #fff8e1; border: 2px dashed #faad14; border-radius: 6px; padding: 16px; margin-top: 16px; }
+.feedback { margin-top: 10px; padding: 10px 14px; border-radius: 4px; font-size: 14px; }
+.feedback.correct { background: #f6ffed; color: #389e0d; border-left: 4px solid #52c41a; }
+.feedback.wrong { background: #fff1f0; color: #cf1322; border-left: 4px solid #ff4d4f; }
+.quiz { background: #f0f7ff; border-left: 4px solid #2c5282; border-radius: 0 6px 6px 0; padding: 14px 18px; margin: 12px 0; }
+.quiz-q { font-weight: 600; margin-bottom: 10px; color: #1a3a52; }
+.quiz-options { display: flex; flex-direction: column; gap: 6px; }
+.quiz-option { padding: 8px 12px; background: white; border: 1px solid #c9d6e2; border-radius: 4px; cursor: pointer; text-align: left; font-size: 14px; }
+.quiz-option.correct { background: #f6ffed; border-color: #52c41a; color: #389e0d; }
+.quiz-option.wrong { background: #fff1f0; border-color: #ff4d4f; color: #cf1322; }
+.quiz-explain { margin-top: 8px; font-size: 13px; color: #555; font-style: italic; }
+.summary-card { background: linear-gradient(135deg, #1a3a52, #2c5282); color: white; padding: 20px 24px; border-radius: 8px; margin-top: 24px; }
+.summary-card h2 { color: white; border: none; margin-top: 0; }
+.summary-card ul { padding-left: 20px; }
+code { background: #f1f3f5; padding: 1px 6px; border-radius: 3px; font-family: monospace; font-size: 0.9em; }
+.summary-card code { background: rgba(255,255,255,0.2); color: white; }
+.progress-bar { height: 4px; background: #e1e8ed; border-radius: 2px; overflow: hidden; margin: 8px 0 16px; }
+.progress-fill { height: 100%; background: #52c41a; transition: width 0.3s; width: 0%; }
+.tag { display:inline-block; background:#fde9c8; color:#874d00; font-size:11px; font-weight:600; padding:2px 8px; border-radius:10px; margin-left:6px; }
+.movelist { font-family: monospace; font-size: 13px; background:#fff8e1; border-radius:6px; padding:8px 12px; margin-top:10px; color:#874d00; line-height:1.7; }
+</style>
+</head>
+<body>
+
+<h1>Sicilian Najdorf <span class="tag">1.e4 c5 · linh hoạt nhất</span></h1>
+<div class="source">
+  Chương 7 (Khai cuộc) — The complete 1.e4 (Djurić–Komarov–Pantaleoni) · Nâng cao<br>
+  <a class="nav-link" href="../index-opening.html">← Trang chủ Khai cuộc</a> ·
+  <a class="nav-link" href="chapter_o7_survey.html">← Chương 7</a>
+</div>
+
+<div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+
+<div class="stage">
+  <span class="stage-label">CHẶNG 1 · DẪN NHẬP</span>
+  <h2 style="margin-top:8px">Vì sao 5…a6 là Sicilian danh tiếng nhất?</h2>
+  <p><strong>Najdorf</strong> (5…a6) là phòng thủ Sicilian được chơi nhiều nhất ở đỉnh cao. Một nước tốt khiêm tốn nhưng cực kỳ <em>linh hoạt</em>: kiểm soát b5 và chuẩn bị bung trung tâm hoặc cánh hậu.</p>
+  <div id="hookBoard" class="mini-board"></div>
+  <div class="movelist">1.e4 c5 2.Nf3 d6 3.d4 cxd4 4.Nxd4 Nf6 5.Nc3 a6</div>
+  <div class="hook-question">
+    🤔 <strong>Nước nhỏ 5…a6 chuẩn bị những kế hoạch lớn nào</strong> cho Đen?
+  </div>
+  <button class="reveal-btn" onclick="document.getElementById('hookAnswer').classList.remove('hidden'); markStage(1);">Hiển thị đáp án</button>
+  <div id="hookAnswer" class="hidden" style="margin-top:14px">
+    <p>5…a6 ngăn Nb5/Bb5, rồi mở hai hướng: <strong>…e5</strong> (chiếm trung tâm, chấp nhận hố d5) hoặc <strong>…e6</strong> (Scheveningen) cộng <strong>…b5</strong> phản công cánh hậu. Trắng đáp English Attack: <code>6.Be3 e5 7.Nb3 Be6 8.f3 Be7 9.Qd2</code> rồi O-O-O và bão tốt g4-h4 — đôi công nhập thành khác cánh.</p>
+  </div>
+</div>
+
+<div class="stage">
+  <span class="stage-label">CHẶNG 2 · KHÁI NIỆM</span>
+  <h2 style="margin-top:8px">Ý tưởng của Najdorf</h2>
+  <ul>
+    <li><strong>…a6 linh hoạt</strong>: chặn b5 (mã/tượng Trắng), giữ quyền chọn …e5 hay …e6, và chuẩn bị …b5 mở rộng cánh hậu.</li>
+    <li><strong>Đánh đổi …e5</strong>: chiếm trung tâm và đuổi mã d4, nhưng tạo ô yếu d5 và tốt lùi d6 — Đen bù bằng quân hoạt động.</li>
+    <li><strong>English Attack (đôi công)</strong>: Trắng Be3-f3-Qd2-O-O-O + g4/h4 đánh vua; Đen …b5-b4 + …Rc8 phản công — cuộc đua hai cánh.</li>
+  </ul>
+</div>
+
+<div class="stage">
+  <span class="stage-label">CHẶNG 3 · TƯƠNG TÁC TỪNG BƯỚC</span>
+  <div class="board-layout">
+    <div>
+      <div id="board"></div>
+      <div class="controls">
+        <button onclick="resetBoard()">⟨⟨ Đầu</button>
+        <button onclick="prevMove()">⟨ Lùi</button>
+        <button onclick="nextMove()">Tiến ⟩</button>
+      </div>
+    </div>
+    <div class="info-panel">
+      <div class="move-display" id="moveDisplay">Vị trí xuất phát</div>
+      <div class="commentary" id="commentary">Bấm Tiến ⟩ đi qua biến English Attack và đọc ý đồ hai bên từng nước.</div>
+      <div class="info-box" id="infoBox">Đến lượt: <strong>Trắng</strong></div>
+    </div>
+  </div>
+</div>
+
+<div class="stage">
+  <span class="stage-label">CHẶNG 4 · TỰ KIỂM TRA</span>
+  <h2 style="margin-top:8px">Sau 5…a6 6.Be3 e5, Đen được và mất gì khi đẩy …e5?</h2>
+  <div class="self-test">
+    <div class="quiz-options" id="selfTestOptions">
+      <button class="quiz-option" onclick="checkSelfTest(this, true, 'Đúng. …e5 là đánh đổi điển hình của Najdorf: giành không gian và nhịp (đuổi mã) nhưng nhượng ô d5 cho Trắng và để tốt d6 thành điểm yếu lâu dài.')">Được: chiếm trung tâm, đuổi mã d4. Mất: tạo ô yếu d5 và tốt lùi d6</button>
+      <button class="quiz-option" onclick="checkSelfTest(this, false, 'Sai — …e5 không thắng tốt; đó là đánh đổi cấu trúc.')">Được một tốt miễn phí</button>
+      <button class="quiz-option" onclick="checkSelfTest(this, false, 'Sai — …e5 không ảnh hưởng nhập thành của Đen.')">Mất quyền nhập thành</button>
+    </div>
+    <div class="feedback hidden" id="selfTestFeedback"></div>
+  </div>
+</div>
+
+<div class="stage">
+  <span class="stage-label">CHẶNG 5 · TRẮC NGHIỆM NHANH</span>
+  <div class="quiz">
+    <div class="quiz-q">Q1. Vì sao 5…a6 được coi là linh hoạt?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" onclick="quizCheck(this, true)">Chặn b5, giữ quyền chọn …e5 hoặc …e6, chuẩn bị …b5</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Vì tấn công ngay mã d4</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Vì chuẩn bị nhập thành cánh hậu</button>
+    </div>
+    <div class="quiz-explain hidden">…a6 là nước chờ đa năng: kiểm soát b5 và để ngỏ mọi kế hoạch trung tâm/cánh hậu.</div>
+  </div>
+  <div class="quiz">
+    <div class="quiz-q">Q2. Kế hoạch English Attack của Trắng là gì?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" onclick="quizCheck(this, true)">Be3, f3, Qd2, O-O-O rồi bão tốt g4/h4 đánh vua đen</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Đổi hết quân về tàn cuộc</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Đẩy c4-c5 ép trung tâm</button>
+    </div>
+    <div class="quiz-explain hidden">Nhập thành cánh hậu rồi xua tốt cánh vua — đôi công kinh điển của Najdorf hiện đại.</div>
+  </div>
+  <div class="quiz">
+    <div class="quiz-q">Q3. Trong thế đôi công (nhập thành khác cánh), điều gì quyết định?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" onclick="quizCheck(this, true)">Tốc độ: ai phá được vua đối phương trước</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Ai có nhiều tốt hơn</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Ai kiểm soát cột e</button>
+    </div>
+    <div class="quiz-explain hidden">Khi hai vua ở hai cánh, đây là cuộc đua nhịp — mỗi nhịp tấn công đáng giá.</div>
+  </div>
+</div>
+
+<div class="summary-card">
+  <h2>📌 Tóm tắt</h2>
+  <ul>
+    <li><strong>Biến</strong>: <code>1.e4 c5 2.Nf3 d6 3.d4 cxd4 4.Nxd4 Nf6 5.Nc3 a6 6.Be3 e5 7.Nb3 Be6 8.f3 Be7 9.Qd2 O-O</code> (English Attack).</li>
+    <li><strong>Ý tưởng</strong>: …a6 linh hoạt; …e5 chiếm tâm nhưng nhượng ô d5; đôi công nhập thành khác cánh.</li>
+    <li><strong>Đua nhịp</strong>: Trắng g4/h4 vs Đen …b5/…Rc8 — phá vua trước thì thắng.</li>
+    <li><strong>Khác repertoire</strong>: repertoire né Open Sicilian bằng Rossolimo/Moscow; đây là Sicilian chính danh nhất.</li>
+  </ul>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chessboard-js/1.0.0/chessboard-1.0.0.min.js"></script>
+<script>
+const START_FEN = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
+const MOVES = ['e4','c5','Nf3','d6','d4','cxd4','Nxd4','Nf6','Nc3','a6','Be3','e5','Nb3','Be6','f3','Be7','Qd2','O-O'];
+const COMMENTARY = {
+  0: { move: 'Vị trí xuất phát', text: 'Sicilian Najdorf — phòng thủ Sicilian linh hoạt và danh tiếng nhất; …a6 mở mọi kế hoạch.' },
+  1: { move: '1. e4', text: 'Chiếm trung tâm.' },
+  2: { move: '1… c5', text: 'SICILIAN — Đen tranh trung tâm bất đối xứng, nhắm mở cột c phản công.' },
+  3: { move: '2. Nf3', text: 'Phát triển, chuẩn bị d4 mở Open Sicilian.' },
+  4: { move: '2… d6', text: '…d6 chuẩn bị …Nf6 (đã có d6 đỡ e-tốt) — bộ khung Najdorf/Scheveningen.' },
+  5: { move: '3. d4', text: 'Mở Open Sicilian — đổi tốt d lấy tốt c.' },
+  6: { move: '3… cxd4', text: '…cxd4 mở cột c cho Đen.' },
+  7: { move: '4. Nxd4', text: 'Mã chiếm ô trung tâm d4.' },
+  8: { move: '4… Nf6', text: '…Nf6 tấn công e4, buộc Trắng giữ.' },
+  9: { move: '5. Nc3', text: 'Nc3 bảo vệ e4, phát triển.' },
+  10: { move: '5… a6', text: '…a6! NAJDORF — chặn Nb5/Bb5, giữ quyền chọn …e5 hay …e6, chuẩn bị …b5. Một nước nhỏ, kế hoạch lớn.' },
+  11: { move: '6. Be3', text: 'Be3 — chuẩn bị Qd2 và O-O-O (English Attack).' },
+  12: { move: '6… e5', text: '…e5! Chiếm trung tâm, đuổi mã d4 — nhưng nhượng ô d5 và để tốt d6 lùi (đánh đổi đặc trưng Najdorf).' },
+  13: { move: '7. Nb3', text: 'Nb3 — mã lùi về ô tốt, nhắm a5/c5, tránh bị …e4 đuổi.' },
+  14: { move: '7… Be6', text: '…Be6 kiểm soát ô d5 (điểm yếu), phát triển.' },
+  15: { move: '8. f3', text: 'f3 — củng cố e4, chuẩn bị g4 bão tốt; nền English Attack.' },
+  16: { move: '8… Be7', text: '…Be7 phát triển, chuẩn bị nhập thành.' },
+  17: { move: '9. Qd2', text: 'Qd2 — nối O-O-O, Hậu sẵn sàng cho Bh6 và bão tốt cánh vua.' },
+  18: { move: '9… O-O', text: '…O-O. Hai bên sắp nhập thành khác cánh: Trắng g4-h4 đánh vua, Đen …b5-b4 và …Rc8 phản công. Cuộc đua nhịp. TABIYA.' }
+};
+let board, game, currentMove = 0, stagesCompleted = new Set();
+function initBoard() {
+  game = new Chess(START_FEN);
+  board = Chessboard('board', { position: 'start', draggable: true,
+    pieceTheme: 'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png',
+    onDrop: (s,t) => { const m = game.move({from:s,to:t,promotion:'q'}); if(!m) return 'snapback'; setTimeout(updateOverlays,100); },
+    onSnapEnd: () => { board.position(game.fen()); updateOverlays(); }});
+  updateDisplay();
+}
+function nextMove() { if(currentMove>=MOVES.length) return; game.move(MOVES[currentMove]); board.position(game.fen()); currentMove++; setTimeout(()=>{updateDisplay();updateOverlays();},50); if(currentMove>=MOVES.length) markStage(3); }
+function prevMove() { if(currentMove<=0) return; game.undo(); currentMove--; board.position(game.fen()); setTimeout(()=>{updateDisplay();updateOverlays();},50); }
+function resetBoard() { game = new Chess(START_FEN); board.position('start'); currentMove = 0; setTimeout(()=>{updateDisplay();updateOverlays();},50); }
+function updateDisplay() {
+  const cm = COMMENTARY[currentMove] || COMMENTARY[0];
+  document.getElementById('moveDisplay').textContent = cm.move;
+  document.getElementById('commentary').innerHTML = cm.text;
+  const box = document.getElementById('infoBox');
+  if (currentMove >= MOVES.length) { box.className = 'info-box win'; box.innerHTML = '★ Tabiya English Attack — đôi công khác cánh'; }
+  else { box.className = 'info-box'; box.innerHTML = 'Đến lượt: <strong>' + (game.turn()==='w'?'Trắng':'Đen') + '</strong>'; }
+  updateProgress();
+}
+function updateOverlays() { $('#board .square-55d63').removeClass('hl'); ['d5','e5','a6'].forEach(sq => $('#board .square-' + sq).addClass('hl')); }
+function checkSelfTest(btn, ok, exp) {
+  document.querySelectorAll('#selfTestOptions .quiz-option').forEach(el=>el.disabled=true);
+  btn.classList.add(ok?'correct':'wrong');
+  const fb = document.getElementById('selfTestFeedback');
+  fb.classList.remove('hidden'); fb.className = 'feedback ' + (ok?'correct':'wrong');
+  fb.textContent = (ok?'✓ ':'✗ ') + exp; markStage(4);
+}
+function quizCheck(btn, ok) {
+  const q = btn.closest('.quiz');
+  q.querySelectorAll('.quiz-option').forEach(el=>el.disabled=true);
+  btn.classList.add(ok?'correct':'wrong');
+  if (!ok) q.querySelectorAll('.quiz-option').forEach(el => { if (el.getAttribute('onclick').includes('true')) el.classList.add('correct'); });
+  q.querySelector('.quiz-explain').classList.remove('hidden'); markStage(5);
+}
+function markStage(n) { stagesCompleted.add(n); updateProgress(); }
+function updateProgress() { document.getElementById('progressFill').style.width = (stagesCompleted.size/5*100) + '%'; }
+function initMiniBoards() { Chessboard('hookBoard', { position: 'rnbqkb1r/1p2pppp/p2p1n2/8/3NP3/2N5/PPP2PPP/R1BQKB1R', draggable: false, pieceTheme: 'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png' }); }
+$(document).ready(() => { initBoard(); initMiniBoards(); setTimeout(()=>markStage(2),500); });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Bài 3 (Ch9) — Hai tốt thông liên kết</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/chessboard-js/1.0.0/chessboard-1.0.0.min.css">
+<style>
+* { box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; max-width: 980px; margin: 0 auto; padding: 24px; color: #1a1a1a; line-height: 1.6; background: #fafafa; }
+h1 { color: #1a3a52; font-size: 28px; margin: 0 0 8px; }
+h2 { color: #2c5282; font-size: 20px; margin: 32px 0 12px; padding-bottom: 6px; border-bottom: 2px solid #e1e8ed; }
+.source { color: #888; font-size: 13px; margin-bottom: 24px; }
+.nav-link { font-size: 13px; color: #2c5282; text-decoration: none; }
+.stage { background: white; border-radius: 8px; padding: 20px 24px; margin: 16px 0; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
+.stage-label { display: inline-block; background: #2c5282; color: white; font-size: 12px; font-weight: 600; padding: 3px 10px; border-radius: 12px; margin-bottom: 8px; }
+.hook-question { font-size: 17px; color: #1a3a52; background: #fff8e1; border-left: 4px solid #faad14; padding: 14px 18px; border-radius: 0 6px 6px 0; margin: 12px 0; }
+.reveal-btn { background: #faad14; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-size: 14px; }
+.hidden { display: none; }
+.board-layout { display: grid; grid-template-columns: 440px 1fr; gap: 24px; align-items: start; margin-top: 16px; }
+@media (max-width: 820px) { .board-layout { grid-template-columns: 1fr; } }
+#board { width: 420px; max-width: 100%; }
+.mini-board { width: 300px; max-width: 100%; margin: 14px auto; }
+.controls { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; justify-content: center; }
+.controls button { padding: 7px 12px; background: #2c5282; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 13px; }
+.info-panel { background: #f8f9fb; padding: 16px; border-radius: 6px; border: 1px solid #e1e8ed; min-height: 380px; }
+.move-display { font-family: monospace; font-size: 16px; color: #2c5282; font-weight: 600; margin-bottom: 8px; }
+.commentary { font-size: 14px; color: #444; margin-bottom: 12px; }
+.info-box { background: white; padding: 10px; border-radius: 4px; border: 1px solid #e1e8ed; margin: 12px 0; font-size: 13px; text-align: center; }
+.info-box.win { background: #f6ffed; border-color: #b7eb8f; color: #389e0d; font-weight: 600; }
+.highlight-pawn { background: rgba(255, 215, 0, 0.45) !important; }
+.self-test { background: #fff8e1; border: 2px dashed #faad14; border-radius: 6px; padding: 16px; margin-top: 16px; }
+.self-test-question { font-weight: 600; color: #874d00; margin-bottom: 8px; }
+.feedback { margin-top: 10px; padding: 10px 14px; border-radius: 4px; font-size: 14px; }
+.feedback.correct { background: #f6ffed; color: #389e0d; border-left: 4px solid #52c41a; }
+.feedback.wrong { background: #fff1f0; color: #cf1322; border-left: 4px solid #ff4d4f; }
+.quiz { background: #f0f7ff; border-left: 4px solid #2c5282; border-radius: 0 6px 6px 0; padding: 14px 18px; margin: 12px 0; }
+.quiz-q { font-weight: 600; margin-bottom: 10px; color: #1a3a52; }
+.quiz-options { display: flex; flex-direction: column; gap: 6px; }
+.quiz-option { padding: 8px 12px; background: white; border: 1px solid #c9d6e2; border-radius: 4px; cursor: pointer; text-align: left; font-size: 14px; }
+.quiz-option.correct { background: #f6ffed; border-color: #52c41a; color: #389e0d; }
+.quiz-option.wrong { background: #fff1f0; border-color: #ff4d4f; color: #cf1322; }
+.quiz-explain { margin-top: 8px; font-size: 13px; color: #555; font-style: italic; }
+.summary-card { background: linear-gradient(135deg, #1a3a52, #2c5282); color: white; padding: 20px 24px; border-radius: 8px; margin-top: 24px; }
+.summary-card h2 { color: white; border: none; margin-top: 0; }
+.summary-card ul { padding-left: 20px; }
+code { background: #f1f3f5; padding: 1px 6px; border-radius: 3px; font-family: monospace; font-size: 0.9em; }
+.summary-card code { background: rgba(255,255,255,0.2); color: white; }
+.progress-bar { height: 4px; background: #e1e8ed; border-radius: 2px; overflow: hidden; margin: 8px 0 16px; }
+.progress-fill { height: 100%; background: #52c41a; transition: width 0.3s; width: 0%; }
+</style>
+</head>
+<body>
+
+<h1>Bài 3 — Hai tốt thông liên kết thắng cuộc</h1>
+<div class="source">
+  Chương 9 — Chiến lược tàn cuộc<br>
+  <a class="nav-link" href="../index.html">← Trang chủ</a> ·
+  <a class="nav-link" href="chapter_09_endgame_strategy.html">← Chương 9</a>
+</div>
+
+<div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+
+<div class="stage">
+  <span class="stage-label">STAGE 1 · HOOK</span>
+  <h2 style="margin-top:8px">2 tốt thông liên kết ở hàng 6 = thắng cuộc</h2>
+  <p>Thế cờ: Trắng Vua g1 + 2 tốt a6 + b6 (liên kết, hàng 6). Đen Vua f8.</p>
+  <div id="hookBoard" class="mini-board"></div>
+  <div class="hook-question">
+    🤔 <strong>Lệch số tốt (Trắng có 2, Đen có 0).</strong>
+    Tốt thông liên kết ở hàng 6 = gần như luôn thắng. Lý do: 2 tốt bảo vệ lẫn nhau,
+    tạo thành cặp tốt. Chuỗi phong cấp là tất yếu.
+  </div>
+  <button class="reveal-btn" onclick="document.getElementById('hookAnswer').classList.remove('hidden'); markStage(1);">Hiển thị đáp án</button>
+  <div id="hookAnswer" class="hidden" style="margin-top:14px">
+    <p><strong>Trắng thắng dễ dàng</strong>: 1.b7 đẩy tốt thứ nhất → phong cấp → tốt thứ hai theo sau.
+       2 tốt thông liên kết ở hàng 6 thường thắng ngay cả khi Vua phòng thủ ở gần.</p>
+  </div>
+</div>
+
+<div class="stage">
+  <span class="stage-label">STAGE 2 · CONCEPT</span>
+  <h2 style="margin-top:8px">Tốt thông liên kết — mạnh hơn tốt cô lập</h2>
+  <ul>
+    <li><strong>Bảo vệ lẫn nhau</strong>: 2 tốt cạnh nhau bảo vệ nhau qua đường ăn chéo.</li>
+    <li><strong>Sức mạnh đội hình</strong>: Cặp tốt ở hàng 6 (hoặc cao hơn) thường đánh bại một Xe (!) hoặc một quân nhẹ.</li>
+    <li><strong>Phong cấp dự phòng</strong>: Đối thủ chỉ chặn được 1 tốt phong cấp — tốt còn lại phong cấp tự do.</li>
+  </ul>
+  <p>Quy tắc thực tế: 2 tốt thông liên kết ở hàng 6 có giá trị xấp xỉ 1 Xe (mỗi tốt đóng vai trò đáng giá khoảng 5 điểm).</p>
+</div>
+
+<div class="stage">
+  <span class="stage-label">STAGE 3 · WALKTHROUGH</span>
+  <div class="board-layout">
+    <div>
+      <div id="board"></div>
+      <div class="controls">
+        <button onclick="resetBoard()">⟨⟨ Đầu</button>
+        <button onclick="prevMove()">⟨ Lùi</button>
+        <button onclick="nextMove()">Tiến ⟩</button>
+        <button onclick="goToEnd()">Cuối ⟩⟩</button>
+      </div>
+    </div>
+    <div class="info-panel">
+      <div class="move-display" id="moveDisplay">Thế cờ khởi đầu</div>
+      <div class="commentary" id="commentary">Trắng Kg1 + Pa6 + Pb6 (liên kết) đối đầu Đen Kf8.</div>
+      <div class="info-box" id="infoBox">Đến lượt: <strong>Trắng</strong></div>
+    </div>
+  </div>
+</div>
+
+<div class="stage">
+  <span class="stage-label">STAGE 4 · SELF-TEST</span>
+  <h2 style="margin-top:8px">Tại sao đẩy b7 trước (chứ không phải a7)?</h2>
+  <div class="self-test">
+    <div class="quiz-options" id="selfTestOptions">
+      <button class="quiz-option" onclick="checkSelfTest(this, true, 'Đúng. Tốt b gần Vua phòng thủ Kf8 hơn → phong cấp trước sẽ thu hút Vua đen. Sau đó tốt a phong cấp tự do. Thứ tự: đẩy tốt ở trung tâm hơn trước.')">Tốt b gần Vua đối thủ hơn → đẩy trước để thu hút sự chú ý</button>
+      <button class="quiz-option" onclick="checkSelfTest(this, false, 'Sai — thứ tự không quan trọng lắm, cả hai cách đều thắng.')">Tốt a gần hơn</button>
+      <button class="quiz-option" onclick="checkSelfTest(this, false, 'Sai — đây không phải vấn đề vị trí của Vua phòng thủ.')">Vì tốt b6 yếu</button>
+    </div>
+    <div class="feedback hidden" id="selfTestFeedback"></div>
+  </div>
+</div>
+
+<div class="stage">
+  <span class="stage-label">STAGE 5 · MINI-QUIZ</span>
+  <div class="quiz">
+    <div class="quiz-q">Q1. Tốt thông liên kết (hàng 6) so với tốt thông cô lập (hàng 6) — bên nào mạnh?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" onclick="quizCheck(this, true)">Liên kết mạnh hơn nhiều — bảo vệ lẫn nhau + 2 mối đe dọa phong cấp cùng lúc</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Cô lập mạnh hơn vì dàn trải</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Cùng sức mạnh</button>
+    </div>
+    <div class="quiz-explain hidden">
+      Tốt liên kết bảo vệ nhau theo đường chéo. Tốt cô lập cần Vua hộ tống. Liên kết = tự chủ hơn + khó bị chặn hơn.
+    </div>
+  </div>
+  <div class="quiz">
+    <div class="quiz-q">Q2. 2 tốt thông liên kết ở hàng 6 đối đầu một Xe đơn độc — kết quả?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" onclick="quizCheck(this, true)">Bên tốt thường thắng (1 tốt sẽ phong cấp)</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Xe luôn thắng (5 điểm so với 2)</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Hòa</button>
+    </div>
+    <div class="quiz-explain hidden">
+      Nguyên lý tàn cuộc nổi tiếng: 2 tốt thông liên kết ở hàng 6 có giá trị xấp xỉ một Xe. Xe chặn được 1 tốt phong cấp nhưng tốt còn lại vẫn phong cấp.
+    </div>
+  </div>
+  <div class="quiz">
+    <div class="quiz-q">Q3. So sánh Bài 9.2 (hộ tống 1 tốt) với Bài 9.3 (2 tốt liên kết) — cách làm khác nhau?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" onclick="quizCheck(this, true)">9.2: cần Vua hộ tống. 9.3: hai tốt tự bảo vệ lẫn nhau, Vua mình rảnh tay làm việc khác.</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Cùng một kỹ thuật</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">9.3 chậm hơn</button>
+    </div>
+    <div class="quiz-explain hidden">
+      Tốt đơn cần hộ tống. Tốt liên kết tự chủ — Vua mình có thể kích hoạt ở nơi khác (tấn công, dàn thế chiếu hết).
+    </div>
+  </div>
+</div>
+
+<div class="summary-card">
+  <h2>📌 Tóm tắt</h2>
+  <ul>
+    <li><strong>Tốt thông liên kết</strong> ở hàng 6 trở lên là một trong những cấu trúc dễ thắng nhất.</li>
+    <li><strong>Bảo vệ lẫn nhau</strong>: 2 tốt cạnh nhau bảo vệ nhau theo đường chéo — mạnh hơn tốt cô lập.</li>
+    <li><strong>So sánh sức mạnh</strong>: 2 tốt liên kết ở hàng 6 xấp xỉ 1 Xe (bên phòng thủ vất vả ngăn cả hai).</li>
+    <li><strong>Thực tế</strong>: nếu có thể, hãy đổi quân để đạt được cấu trúc này.</li>
+  </ul>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chessboard-js/1.0.0/chessboard-1.0.0.min.js"></script>
+<script>
+const START_FEN = '5k2/8/PP6/8/8/8/8/6K1 w - - 0 1';
+const MOVES = ['b7', 'Ke7', 'b8=Q', 'Kd7', 'a7', 'Kc6', 'a8=Q'];
+const COMMENTARY = {
+  0: { move: 'Thế cờ khởi đầu', text: 'Trắng Kg1 + Pa6 + Pb6 (liên kết) đối đầu Đen Kf8. 2 tốt sẽ phong cấp.' },
+  1: { move: '1. b7', text: 'Đẩy tốt b (gần Vua phòng thủ hơn). Tốt lên hàng 7 — còn 1 nước nữa là phong cấp.' },
+  2: { move: '1... Ke7', text: 'Đen cố tới ngăn cản.' },
+  3: { move: '2. b8=Q', text: 'Phong cấp tốt thứ nhất! Hậu + tốt a còn lại = áp đảo.' },
+  4: { move: '2... Kd7', text: 'Vua đen đi tiếp — quá muộn.' },
+  5: { move: '3. a7', text: 'Đẩy tốt thứ hai.' },
+  6: { move: '3... Kc6', text: 'Cố ngăn tốt a.' },
+  7: { move: '4. a8=Q', text: '⚔️ Cả hai tốt đã phong cấp! Vua+2 Hậu đối đầu Vua — chiếu hết dễ dàng ngay sau đó.' }
+};
+
+let board, game, currentMove = 0, stagesCompleted = new Set();
+
+function initBoard() {
+  game = new Chess(START_FEN);
+  board = Chessboard('board', { position: START_FEN, draggable: true,
+    pieceTheme: 'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png',
+    onDrop: (s,t) => { const m = game.move({from:s,to:t,promotion:'q'}); if(!m) return 'snapback'; setTimeout(updateOverlays,100); },
+    onSnapEnd: () => { board.position(game.fen()); updateOverlays(); }});
+  updateDisplay();
+}
+function nextMove() { if(currentMove>=MOVES.length) return; game.move(MOVES[currentMove]); board.position(game.fen()); currentMove++; setTimeout(()=>{updateDisplay();updateOverlays();},50); if(currentMove>=MOVES.length) markStage(3); }
+function prevMove() { if(currentMove<=0) return; game.undo(); currentMove--; board.position(game.fen()); setTimeout(()=>{updateDisplay();updateOverlays();},50); }
+function resetBoard() { game = new Chess(START_FEN); board.position(START_FEN); currentMove = 0; setTimeout(()=>{updateDisplay();updateOverlays();},50); }
+function goToEnd() { while(currentMove<MOVES.length){game.move(MOVES[currentMove]);currentMove++;} board.position(game.fen()); setTimeout(()=>{updateDisplay();updateOverlays();},50); }
+
+function updateDisplay() {
+  const cm = COMMENTARY[currentMove] || COMMENTARY[0];
+  document.getElementById('moveDisplay').textContent = cm.move;
+  document.getElementById('commentary').innerHTML = cm.text;
+  const box = document.getElementById('infoBox');
+  if (currentMove >= MOVES.length) { box.className = 'info-box win'; box.innerHTML = 'Cả hai tốt đã phong cấp!'; }
+  else { box.className = 'info-box'; box.innerHTML = 'Đến lượt: <strong>' + (game.turn()==='w'?'Trắng':'Đen') + '</strong>'; }
+  updateProgress();
+}
+function updateOverlays() {
+  $('#board .square-55d63').removeClass('highlight-pawn');
+  ['a6','a7','a8','b6','b7','b8'].forEach(sq => $('#board .square-' + sq).addClass('highlight-pawn'));
+}
+function checkSelfTest(btn, ok, exp) {
+  document.querySelectorAll('#selfTestOptions .quiz-option').forEach(el=>el.disabled=true);
+  btn.classList.add(ok?'correct':'wrong');
+  const fb = document.getElementById('selfTestFeedback');
+  fb.classList.remove('hidden'); fb.className = 'feedback ' + (ok?'correct':'wrong');
+  fb.t

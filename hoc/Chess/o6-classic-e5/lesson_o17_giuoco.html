@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bài 2 (Ch6-Open) — Giuoco Piano (Ván Ý)</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/chessboard-js/1.0.0/chessboard-1.0.0.min.css">
+<style>
+* { box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; max-width: 980px; margin: 0 auto; padding: 24px; color: #1a1a1a; line-height: 1.6; background: #fafafa; }
+h1 { color: #1a3a52; font-size: 26px; margin: 0 0 8px; }
+h2 { color: #2c5282; font-size: 20px; margin: 32px 0 12px; padding-bottom: 6px; border-bottom: 2px solid #e1e8ed; }
+.source { color: #888; font-size: 13px; margin-bottom: 24px; }
+.nav-link { font-size: 13px; color: #2c5282; text-decoration: none; }
+.stage { background: white; border-radius: 8px; padding: 20px 24px; margin: 16px 0; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
+.stage-label { display: inline-block; background: #2c5282; color: white; font-size: 12px; font-weight: 600; padding: 3px 10px; border-radius: 12px; margin-bottom: 8px; }
+.hook-question { font-size: 17px; color: #1a3a52; background: #fff8e1; border-left: 4px solid #faad14; padding: 14px 18px; border-radius: 0 6px 6px 0; margin: 12px 0; }
+.reveal-btn { background: #faad14; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-size: 14px; }
+.hidden { display: none; }
+.board-layout { display: grid; grid-template-columns: 440px 1fr; gap: 24px; align-items: start; margin-top: 16px; }
+@media (max-width: 820px) { .board-layout { grid-template-columns: 1fr; } }
+#board { width: 420px; max-width: 100%; }
+.mini-board { width: 300px; max-width: 100%; margin: 14px auto; }
+.controls { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; justify-content: center; }
+.controls button { padding: 7px 12px; background: #2c5282; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 13px; }
+.info-panel { background: #f8f9fb; padding: 16px; border-radius: 6px; border: 1px solid #e1e8ed; min-height: 380px; }
+.move-display { font-family: monospace; font-size: 16px; color: #2c5282; font-weight: 600; margin-bottom: 8px; }
+.commentary { font-size: 14px; color: #444; margin-bottom: 12px; }
+.info-box { background: white; padding: 10px; border-radius: 4px; border: 1px solid #e1e8ed; margin: 12px 0; font-size: 13px; text-align: center; }
+.info-box.win { background: #f6ffed; border-color: #b7eb8f; color: #389e0d; font-weight: 600; }
+.hl { background: rgba(255, 215, 0, 0.45) !important; box-shadow: inset 0 0 0 2px #faad14 !important; }
+.self-test { background: #fff8e1; border: 2px dashed #faad14; border-radius: 6px; padding: 16px; margin-top: 16px; }
+.feedback { margin-top: 10px; padding: 10px 14px; border-radius: 4px; font-size: 14px; }
+.feedback.correct { background: #f6ffed; color: #389e0d; border-left: 4px solid #52c41a; }
+.feedback.wrong { background: #fff1f0; color: #cf1322; border-left: 4px solid #ff4d4f; }
+.quiz { background: #f0f7ff; border-left: 4px solid #2c5282; border-radius: 0 6px 6px 0; padding: 14px 18px; margin: 12px 0; }
+.quiz-q { font-weight: 600; margin-bottom: 10px; color: #1a3a52; }
+.quiz-options { display: flex; flex-direction: column; gap: 6px; }
+.quiz-option { padding: 8px 12px; background: white; border: 1px solid #c9d6e2; border-radius: 4px; cursor: pointer; text-align: left; font-size: 14px; }
+.quiz-option.correct { background: #f6ffed; border-color: #52c41a; color: #389e0d; }
+.quiz-option.wrong { background: #fff1f0; border-color: #ff4d4f; color: #cf1322; }
+.quiz-explain { margin-top: 8px; font-size: 13px; color: #555; font-style: italic; }
+.summary-card { background: linear-gradient(135deg, #1a3a52, #2c5282); color: white; padding: 20px 24px; border-radius: 8px; margin-top: 24px; }
+.summary-card h2 { color: white; border: none; margin-top: 0; }
+.summary-card ul { padding-left: 20px; }
+code { background: #f1f3f5; padding: 1px 6px; border-radius: 3px; font-family: monospace; font-size: 0.9em; }
+.summary-card code { background: rgba(255,255,255,0.2); color: white; }
+.progress-bar { height: 4px; background: #e1e8ed; border-radius: 2px; overflow: hidden; margin: 8px 0 16px; }
+.progress-fill { height: 100%; background: #52c41a; transition: width 0.3s; width: 0%; }
+.tag { display:inline-block; background:#fde9c8; color:#874d00; font-size:11px; font-weight:600; padding:2px 8px; border-radius:10px; margin-left:6px; }
+.movelist { font-family: monospace; font-size: 13px; background:#fff8e1; border-radius:6px; padding:8px 12px; margin-top:10px; color:#874d00; line-height:1.7; }
+</style>
+</head>
+<body>
+
+<h1>Giuoco Piano — Ván Ý <span class="tag">1.e4 e5 · kinh điển</span></h1>
+<div class="source">
+  Chương 6 (Khai cuộc) — The complete 1.e4 (Djurić–Komarov–Pantaleoni) · Cơ bản → Trung cấp<br>
+  <a class="nav-link" href="../index-opening.html">← Trang chủ Khai cuộc</a> ·
+  <a class="nav-link" href="chapter_o6_classic.html">← Chương 6</a>
+</div>
+
+<div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+
+<div class="stage">
+  <span class="stage-label">CHẶNG 1 · DẪN NHẬP</span>
+  <h2 style="margin-top:8px">Ván cờ chậm rãi — tượng Ý nhắm thẳng f7</h2>
+  <p><strong>Giuoco Piano</strong> (ván cờ chậm rãi): cả hai đưa tượng ra ô tích cực (Bc4 vs Bc5), rồi đấu tranh trung tâm từ tốn bằng c3 + d4.</p>
+  <div id="hookBoard" class="mini-board"></div>
+  <div class="movelist">1.e4 e5 2.Nf3 Nc6 3.Bc4 Bc5 — tượng Ý đối xứng</div>
+  <div class="hook-question">
+    🤔 <strong>Sau 3.Bc4 Bc5, hai tượng nhắm vào đâu</strong> và Trắng chuẩn bị đòn trung tâm nào?
+  </div>
+  <button class="reveal-btn" onclick="document.getElementById('hookAnswer').classList.remove('hidden'); markStage(1);">Hiển thị đáp án</button>
+  <div id="hookAnswer" class="hidden" style="margin-top:14px">
+    <p>Tượng c4 nhắm <strong>f7</strong>, tượng c5 nhắm <strong>f2</strong> — điểm yếu hai bên. Trắng chơi <strong>4.c3</strong> chuẩn bị <strong>d4</strong> dựng trung tâm. Hiện đại thường <strong>5.d3</strong> (Pianissimo) chơi chậm, tránh lý thuyết sắc: <code>4.c3 Nf6 5.d3 d6 6.O-O O-O 7.Re1</code> rồi tái triển khai mã.</p>
+  </div>
+</div>
+
+<div class="stage">
+  <span class="stage-label">CHẶNG 2 · KHÁI NIỆM</span>
+  <h2 style="margin-top:8px">Ý tưởng của Ván Ý</h2>
+  <ul>
+    <li><strong>Tượng nhắm f7/f2</strong>: tượng c4 là quân tấn công tự nhiên nhất chống điểm yếu f7 (chỉ vua giữ).</li>
+    <li><strong>c3 + d4</strong>: Trắng muốn dựng trung tâm tốt đôi; nếu Đen kịp …d6/…a6 thì chuyển sang chơi chậm (d3).</li>
+    <li><strong>Pianissimo hiện đại (d3)</strong>: hoãn d4, giữ căng thẳng, maneuvering (Nbd2-f1-g3) — ít học thuộc, giàu ý tưởng.</li>
+  </ul>
+</div>
+
+<div class="stage">
+  <span class="stage-label">CHẶNG 3 · TƯƠNG TÁC TỪNG BƯỚC</span>
+  <div class="board-layout">
+    <div>
+      <div id="board"></div>
+      <div class="controls">
+        <button onclick="resetBoard()">⟨⟨ Đầu</button>
+        <button onclick="prevMove()">⟨ Lùi</button>
+        <button onclick="nextMove()">Tiến ⟩</button>
+      </div>
+    </div>
+    <div class="info-panel">
+      <div class="move-display" id="moveDisplay">Vị trí xuất phát</div>
+      <div class="commentary" id="commentary">Bấm Tiến ⟩ đi qua biến Giuoco Pianissimo hiện đại và đọc ý đồ từng nước.</div>
+      <div class="info-box" id="infoBox">Đến lượt: <strong>Trắng</strong></div>
+    </div>
+  </div>
+</div>
+
+<div class="stage">
+  <span class="stage-label">CHẶNG 4 · TỰ KIỂM TRA</span>
+  <h2 style="margin-top:8px">Vì sao nhiều kỳ thủ hiện đại chọn 5.d3 (Pianissimo) thay vì 5.d4 đột phá?</h2>
+  <div class="self-test">
+    <div class="quiz-options" id="selfTestOptions">
+      <button class="quiz-option" onclick="checkSelfTest(this, true, 'Đúng. 5.d3 né các biến hóa sắc bén của 5.d4, giữ thế chắc và để hai bên đấu trí về kế hoạch (tái triển khai mã, đòn d4 đúng lúc).')">Giữ trung tâm chắc, tránh lý thuyết sắc, chơi maneuvering lâu dài</button>
+      <button class="quiz-option" onclick="checkSelfTest(this, false, 'Sai — 5.d4 hoàn toàn hợp lệ; chỉ là dẫn tới lý thuyết sắc hơn.')">Vì 5.d4 là nước phạm luật</button>
+      <button class="quiz-option" onclick="checkSelfTest(this, false, 'Sai — d3 chỉ là nước phát triển chậm, không có đe dọa trực tiếp.')">Vì d3 chiếu hết ngay</button>
+    </div>
+    <div class="feedback hidden" id="selfTestFeedback"></div>
+  </div>
+</div>
+
+<div class="stage">
+  <span class="stage-label">CHẶNG 5 · TRẮC NGHIỆM NHANH</span>
+  <div class="quiz">
+    <div class="quiz-q">Q1. Tượng c4 trong Ván Ý nhắm vào điểm nào?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" onclick="quizCheck(this, true)">Điểm yếu f7 — chỉ được vua giữ</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Tốt a7</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Mã c6</button>
+    </div>
+    <div class="quiz-explain hidden">f7 là điểm yếu kinh điển trong các khai cuộc 1.e4 e5; tượng c4 ép thẳng vào đó.</div>
+  </div>
+  <div class="quiz">
+    <div class="quiz-q">Q2. Nước 4.c3 phục vụ kế hoạch gì?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" onclick="quizCheck(this, true)">Chuẩn bị d4 dựng trung tâm tốt đôi</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Mở đường cho mã b1 ra c3</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Thí tốt c</button>
+    </div>
+    <div class="quiz-explain hidden">c3 chiếm mất ô c3 của mã nhưng đổi lại chuẩn bị đòn trung tâm d4.</div>
+  </div>
+  <div class="quiz">
+    <div class="quiz-q">Q3. Tinh thần của Giuoco Pianissimo (d3) là gì?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" onclick="quizCheck(this, true)">Chơi chậm, maneuvering, ít lý thuyết, đòn d4 để dành đúng lúc</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Tấn công bão tốt ngay</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Đổi hết về tàn cuộc hòa</button>
+    </div>
+    <div class="quiz-explain hidden">Pianissimo = ván rất chậm: tích lũy vị trí rồi mới bung d4.</div>
+  </div>
+</div>
+
+<div class="summary-card">
+  <h2>📌 Tóm tắt</h2>
+  <ul>
+    <li><strong>Biến</strong>: <code>1.e4 e5 2.Nf3 Nc6 3.Bc4 Bc5 4.c3 Nf6 5.d3 d6 6.O-O O-O 7.Re1</code> — Pianissimo hiện đại.</li>
+    <li><strong>Ý tưởng</strong>: tượng nhắm f7/f2; c3 chuẩn bị d4; d3 để chơi chậm maneuvering.</li>
+    <li><strong>Kế hoạch</strong>: Nbd2-f1-g3 tái triển khai mã (mượn từ Ruy Lopez), bung d4 đúng thời điểm.</li>
+    <li><strong>Phù hợp</strong>: người mới — phát triển tự nhiên, ý tưởng rõ, ít bẫy.</li>
+  </ul>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chessboard-js/1.0.0/chessboard-1.0.0.min.js"></script>
+<script>
+const START_FEN = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
+const MOVES = ['e4','e5','Nf3','Nc6','Bc4','Bc5','c3','Nf6','d3','d6','O-O','O-O','Re1'];
+const COMMENTARY = {
+  0: { move: 'Vị trí xuất phát', text: 'Ván Ý (Giuoco Piano) — ván cờ chậm rãi: phát triển tượng tích cực, đấu trung tâm từ tốn.' },
+  1: { move: '1. e4', text: 'Chiếm trung tâm.' },
+  2: { move: '1… e5', text: 'Ván cờ Mở.' },
+  3: { move: '2. Nf3', text: 'Tấn công e5, phát triển.' },
+  4: { move: '2… Nc6', text: 'Bảo vệ e5.' },
+  5: { move: '3. Bc4', text: 'Tượng Ý — nhắm thẳng điểm yếu f7.' },
+  6: { move: '3… Bc5', text: '…Bc5 đối xứng — tượng Đen nhắm f2.' },
+  7: { move: '4. c3', text: 'c3! Chuẩn bị d4 dựng trung tâm (đặc trưng Ván Ý).' },
+  8: { move: '4… Nf6', text: '…Nf6 tấn công e4, phát triển.' },
+  9: { move: '5. d3', text: 'd3 (Pianissimo hiện đại) — giữ trung tâm chắc, chơi chậm thay vì d4 đột phá; tránh lý thuyết sắc.' },
+  10: { move: '5… d6', text: '…d6 đối xứng, chắc, mở đường tượng c8.' },
+  11: { move: '6. O-O', text: 'Nhập thành an toàn.' },
+  12: { move: '6… O-O', text: '…O-O. Thế cân bằng, đối xứng.' },
+  13: { move: '7. Re1', text: 'Re1 — chuẩn bị Nbd2-f1-g3 tái triển khai mã, để dành đòn d4. Cờ maneuvering: ý tưởng quan trọng hơn học thuộc. TABIYA.' }
+};
+let board, game, currentMove = 0, stagesCompleted = new Set();
+function initBoard() {
+  game = new Chess(START_FEN);
+  board = Chessboard('board', { position: 'start', draggable: true,
+    pieceTheme: 'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png',
+    onDrop: (s,t) => { const m = game.move({from:s,to:t,promotion:'q'}); if(!m) return 'snapback'; setTimeout(updateOverlays,100); },
+    onSnapEnd: () => { board.position(game.fen()); updateOverlays(); }});
+  updateDisplay();
+}
+function nextMove() { if(currentMove>=MOVES.length) return; game.move(MOVES[currentMove]); board.position(game.fen()); currentMove++; setTimeout(()=>{updateDisplay();updateOverlays();},50); if(currentMove>=MOVES.length) markStage(3); }
+function prevMove() { if(currentMove<=0) return; game.undo(); currentMove--; board.position(game.fen()); setTimeout(()=>{updateDisplay();updateOverlays();},50); }
+function resetBoard() { game = new Chess(START_FEN); board.position('start'); currentMove = 0; setTimeout(()=>{updateDisplay();updateOverlays();},50); }
+function updateDisplay() {
+  const cm = COMMENTARY[currentMove] || COMMENTARY[0];
+  document.getElementById('moveDisplay').textContent = cm.move;
+  document.getElementById('commentary').innerHTML = cm.text;
+  const box = document.getElementById('infoBox');
+  if (currentMove >= MOVES.length) { box.className = 'info-box win'; box.innerHTML = '★ Tabiya Pianissimo — maneuvering, đòn d4 để dành'; }
+  else { box.className = 'info-box'; box.innerHTML = 'Đến lượt: <strong>' + (game.turn()==='w'?'Trắng':'Đen') + '</strong>'; }
+  updateProgress();
+}
+function updateOverlays() { $('#board .square-55d63').removeClass('hl'); ['c4','e5','f7'].forEach(sq => $('#board .square-' + sq).addClass('hl')); }
+function checkSelfTest(btn, ok, exp) {
+  document.querySelectorAll('#selfTestOptions .quiz-option').forEach(el=>el.disabled=true);
+  btn.classList.add(ok?'correct':'wrong');
+  const fb = document.getElementById('selfTestFeedback');
+  fb.classList.remove('hidden'); fb.className = 'feedback ' + (ok?'correct':'wrong');
+  fb.textContent = (ok?'✓ ':'✗ ') + exp; markStage(4);
+}
+function quizCheck(btn, ok) {
+  const q = btn.closest('.quiz');
+  q.querySelectorAll('.quiz-option').forEach(el=>el.disabled=true);
+  btn.classList.add(ok?'correct':'wrong');
+  if (!ok) q.querySelectorAll('.quiz-option').forEach(el => { if (el.getAttribute('onclick').includes('true')) el.classList.add('correct'); });
+  q.querySelector('.quiz-explain').classList.remove('hidden'); markStage(5);
+}
+function markStage(n) { stagesCompleted.add(n); updateProgress(); }
+function updateProgress() { document.getElementById('progressFill').style.width = (stagesCompleted.size/5*100) + '%'; }
+function initMiniBoards() { Chessboard('hookBoard', { position: 'r1bqk1nr/pppp1ppp/2n5/2b1p3/2B1P3/5N2/PPPP1PPP/RNBQK2R', draggable: false, pieceTheme: 'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png' }); }
+$(document).ready(() => { initBoard(); initMiniBoards(); setTimeout(()=>markStage(2),500); });
+</script>
+
+</body>
+</html>

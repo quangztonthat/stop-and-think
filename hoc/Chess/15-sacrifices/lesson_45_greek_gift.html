@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bài 1 (Ch15) — Hy sinh tượng h7 — Greek Gift (Bxh7+)</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/chessboard-js/1.0.0/chessboard-1.0.0.min.css">
+<style>
+* { box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; max-width: 980px; margin: 0 auto; padding: 24px; color: #1a1a1a; line-height: 1.6; background: #fafafa; }
+h1 { color: #1a3a52; font-size: 28px; margin: 0 0 8px; }
+h2 { color: #2c5282; font-size: 20px; margin: 32px 0 12px; padding-bottom: 6px; border-bottom: 2px solid #e1e8ed; }
+.source { color: #888; font-size: 13px; margin-bottom: 24px; }
+.nav-link { font-size: 13px; color: #2c5282; text-decoration: none; }
+.stage { background: white; border-radius: 8px; padding: 20px 24px; margin: 16px 0; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
+.stage-label { display: inline-block; background: #2c5282; color: white; font-size: 12px; font-weight: 600; padding: 3px 10px; border-radius: 12px; margin-bottom: 8px; }
+.hook-question { font-size: 17px; color: #1a3a52; background: #fff8e1; border-left: 4px solid #faad14; padding: 14px 18px; border-radius: 0 6px 6px 0; margin: 12px 0; }
+.reveal-btn { background: #faad14; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-size: 14px; }
+.hidden { display: none; }
+.board-layout { display: grid; grid-template-columns: 440px 1fr; gap: 24px; align-items: start; margin-top: 16px; }
+@media (max-width: 820px) { .board-layout { grid-template-columns: 1fr; } }
+#board { width: 420px; max-width: 100%; }
+.mini-board { width: 300px; max-width: 100%; margin: 14px auto; }
+.controls { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; justify-content: center; }
+.controls button { padding: 7px 12px; background: #2c5282; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 13px; }
+.info-panel { background: #f8f9fb; padding: 16px; border-radius: 6px; border: 1px solid #e1e8ed; min-height: 380px; }
+.move-display { font-family: monospace; font-size: 16px; color: #2c5282; font-weight: 600; margin-bottom: 8px; }
+.commentary { font-size: 14px; color: #444; margin-bottom: 12px; }
+.info-box { background: white; padding: 10px; border-radius: 4px; border: 1px solid #e1e8ed; margin: 12px 0; font-size: 13px; text-align: center; }
+.info-box.win { background: #f6ffed; border-color: #b7eb8f; color: #389e0d; font-weight: 600; }
+.hl { background: rgba(255, 215, 0, 0.45) !important; box-shadow: inset 0 0 0 2px #faad14 !important; }
+.self-test { background: #fff8e1; border: 2px dashed #faad14; border-radius: 6px; padding: 16px; margin-top: 16px; }
+.feedback { margin-top: 10px; padding: 10px 14px; border-radius: 4px; font-size: 14px; }
+.feedback.correct { background: #f6ffed; color: #389e0d; border-left: 4px solid #52c41a; }
+.feedback.wrong { background: #fff1f0; color: #cf1322; border-left: 4px solid #ff4d4f; }
+.quiz { background: #f0f7ff; border-left: 4px solid #2c5282; border-radius: 0 6px 6px 0; padding: 14px 18px; margin: 12px 0; }
+.quiz-q { font-weight: 600; margin-bottom: 10px; color: #1a3a52; }
+.quiz-options { display: flex; flex-direction: column; gap: 6px; }
+.quiz-option { padding: 8px 12px; background: white; border: 1px solid #c9d6e2; border-radius: 4px; cursor: pointer; text-align: left; font-size: 14px; }
+.quiz-option.correct { background: #f6ffed; border-color: #52c41a; color: #389e0d; }
+.quiz-option.wrong { background: #fff1f0; border-color: #ff4d4f; color: #cf1322; }
+.quiz-explain { margin-top: 8px; font-size: 13px; color: #555; font-style: italic; }
+.summary-card { background: linear-gradient(135deg, #1a3a52, #2c5282); color: white; padding: 20px 24px; border-radius: 8px; margin-top: 24px; }
+.summary-card h2 { color: white; border: none; margin-top: 0; }
+.summary-card ul { padding-left: 20px; }
+code { background: #f1f3f5; padding: 1px 6px; border-radius: 3px; font-family: monospace; font-size: 0.9em; }
+.summary-card code { background: rgba(255,255,255,0.2); color: white; }
+.progress-bar { height: 4px; background: #e1e8ed; border-radius: 2px; overflow: hidden; margin: 8px 0 16px; }
+.progress-fill { height: 100%; background: #52c41a; transition: width 0.3s; width: 0%; }
+.tag { display:inline-block; background:#fde9c8; color:#874d00; font-size:11px; font-weight:600; padding:2px 8px; border-radius:10px; margin-left:6px; }
+</style>
+</head>
+<body>
+
+<h1>Bài 1 — Hy sinh tượng h7 — Greek Gift <span class="tag">Bxh7+</span></h1>
+<div class="source">
+  Chương 15 — Hy sinh · Trung cấp → Nâng cao<br>
+  <a class="nav-link" href="../index.html">← Trang chủ</a> ·
+  <a class="nav-link" href="chapter_15_sacrifices.html">← Chương 15</a>
+</div>
+
+<div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+
+<div class="stage">
+  <span class="stage-label">CHẶNG 1 · GỢI MỞ</span>
+  <h2 style="margin-top:8px">"Món quà Hy Lạp" — hy sinh tượng vào h7</h2>
+  <p>Trắng: Bd3, Nf3, Qe2, tốt e5. Đen vừa nhập thành (Kg8) với tốt f7/g7/h7, mã ở <strong>c6</strong> (KHÔNG phòng được h7).</p>
+  <div id="hookBoard" class="mini-board"></div>
+  <div class="hook-question">
+    🤔 <strong>h7 chỉ được vua bảo vệ.</strong> Tượng d3 nhắm thẳng h7. Nếu thí <code>Bxh7+</code>, vua ăn lại rồi mã + hậu ập tới — đủ để chiếu hết không?
+  </div>
+  <button class="reveal-btn" onclick="document.getElementById('hookAnswer').classList.remove('hidden'); markStage(1);">Hiển thị đáp án</button>
+  <div id="hookAnswer" class="hidden" style="margin-top:14px">
+    <p><strong>Có!</strong> <code>1.Bxh7+ Kxh7 2.Ng5+ Kg8 3.Qh5</code> — dọa <code>Qh7#</code>. Đen không có cách phòng đủ. Stockfish: Bxh7+ là <em>nước mạnh nhất</em>, +5.8 (thắng quyết định) dù vật chất ban đầu cân bằng.</p>
+  </div>
+</div>
+
+<div class="stage">
+  <span class="stage-label">CHẶNG 2 · KHÁI NIỆM</span>
+  <h2 style="margin-top:8px">3 điều kiện để Greek Gift "đứng vững"</h2>
+  <ul>
+    <li><strong>Vua đã nhập thành cánh vua</strong> (Kg8) với cấu trúc tốt f7-g7-h7 nguyên vẹn.</li>
+    <li><strong>Không có mã đen ở f6</strong> (hoặc f6 bị tốt e5 kiểm soát). Mã f6 sẽ vừa giữ h7 vừa chặn Hậu lên h5 — đòn sẽ hỏng.</li>
+    <li><strong>Trắng có Bd3 + Nf3 + Hậu tới h5/g4 nhanh.</strong> Thiếu một mảnh của bộ ba này, hy sinh thường không đủ lực.</li>
+  </ul>
+  <p style="background:#fff1f0;border-left:4px solid #ff4d4f;padding:10px 14px;border-radius:0 6px 6px 0">
+    ⚠️ <strong>Phản đề:</strong> nếu sau <code>Ng5+</code> Đen có thể chơi <code>...Qxg5</code> (hậu với tay tới g5) hoặc <code>...Nf6</code> về kịp — hy sinh <em>không đứng</em>. Luôn tính cụ thể, đừng thí theo phản xạ.
+  </p>
+</div>
+
+<div class="stage">
+  <span class="stage-label">CHẶNG 3 · DIỄN GIẢI</span>
+  <div class="board-layout">
+    <div>
+      <div id="board"></div>
+      <div class="controls">
+        <button onclick="resetBoard()">⟨⟨ Đầu</button>
+        <button onclick="prevMove()">⟨ Lùi</button>
+        <button onclick="nextMove()">Tiến ⟩</button>
+      </div>
+    </div>
+    <div class="info-panel">
+      <div class="move-display" id="moveDisplay">Thế cờ khởi đầu</div>
+      <div class="commentary" id="commentary">Bd3 + Nf3 + Qe2 + tốt e5. Vua đen Kg8, mã ở c6 (không giữ được h7). Bộ máy Greek Gift đã lên đạn.</div>
+      <div class="info-box" id="infoBox">Đến lượt: <strong>Trắng</strong></div>
+    </div>
+  </div>
+</div>
+
+<div class="stage">
+  <span class="stage-label">CHẶNG 4 · TỰ KIỂM TRA</span>
+  <h2 style="margin-top:8px">Nếu Đen chơi 2...Kh8?? — Trắng chiếu hết thế nào?</h2>
+  <div class="self-test">
+    <div class="quiz-options" id="selfTestOptions">
+      <button class="quiz-option" onclick="checkSelfTest(this, true, 'Đúng! 3.Qh5+ (chiếu theo cột h) Kg8 (buộc — f8 có xe đen chặn) 4.Qh7# — Ng5 yểm hộ ô h7, vua bị bịt kín.')">Qh5+ Kg8 Qh7#</button>
+      <button class="quiz-option" onclick="checkSelfTest(this, false, 'Sai. Nxf7+ chỉ thắng tốt + chĩa mã, vua g8 vẫn thoát — không chiếu hết ngay.')">Nxf7+</button>
+      <button class="quiz-option" onclick="checkSelfTest(this, false, 'Sai. Qh4 quá chậm, không tạo chiếu — Đen kịp gỡ.')">Qh4</button>
+    </div>
+    <div class="feedback hidden" id="selfTestFeedback"></div>
+  </div>
+</div>
+
+<div class="stage">
+  <span class="stage-label">CHẶNG 5 · TRẮC NGHIỆM</span>
+  <div class="quiz">
+    <div class="quiz-q">Q1. Vai trò của tốt e5 trong Greek Gift?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" onclick="quizCheck(this, true)">Kiểm soát ô f6 → mã đen không về f6 phòng h7 / chặn Hậu</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Để thí thêm một tốt cho thoáng</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Không liên quan đến đòn hy sinh</button>
+    </div>
+    <div class="quiz-explain hidden">Tốt e5 "khóa" f6. Không có mã về f6, h7 chỉ còn vua giữ, và Hậu lên h5 không bị cản → đòn đứng.</div>
+  </div>
+  <div class="quiz">
+    <div class="quiz-q">Q2. Vì sao 2...Kg6 (ra giữa bàn) thường thua nhanh hơn Kg8?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" onclick="quizCheck(this, false)">Vì mất Hậu ngay lập tức</button>
+      <button class="quiz-option" onclick="quizCheck(this, true)">Vua trần trụi giữa bàn, dính lưới chiếu Qg4 + tốt h → sập nhanh</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Vì đó là nước đi phạm luật</button>
+    </div>
+    <div class="quiz-explain hidden">Sau 2...Kg6, 3.Qg4! dựng lưới chiếu hết quanh vua lộ thiên (Stockfish +5 đến +14 tùy biến). Lùi Kg8 là "lì" nhất nhưng vẫn thua sau 3.Qh5.</div>
+  </div>
+  <div class="quiz">
+    <div class="quiz-q">Q3. Khi nào KHÔNG nên chơi Bxh7+?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" onclick="quizCheck(this, true)">Khi Đen có Nf6 giữ h7, hoặc ...Qxg5 ăn được mã sau Ng5+</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Khi mình đang hơn quân</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Khi đối thủ chưa nhập thành</button>
+    </div>
+    <div class="quiz-explain hidden">Đòn hy sinh phải được tính cụ thể. Nf6 phòng thủ hoặc ...Qxg5 phản đòn khiến Bxh7+ chỉ là thí quân vô ích.</div>
+  </div>
+</div>
+
+<div class="summary-card">
+  <h2>📌 Tóm tắt</h2>
+  <ul>
+    <li><strong>Greek Gift</strong> = <code>Bxh7+</code> (phía Đen là <code>Bxh2+</code>): thí tượng để lôi vua ra và mở đường tấn công.</li>
+    <li><strong>Combo lõi</strong>: <code>Bxh7+ Kxh7 → Ng5+ → Qh5</code> (dọa <code>Qh7#</code>).</li>
+    <li><strong>3 điều kiện</strong>: vua đã O-O, không có Nf6 phòng thủ (e5 khóa f6), Hậu tới h5/g4 kịp.</li>
+    <li><strong>Kỷ luật</strong>: tính cụ thể từng biến (Kg8 / Kg6 / Kh6 / Kh8). Thiếu một điều kiện → đừng thí.</li>
+  </ul>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chessboard-js/1.0.0/chessboard-1.0.0.min.js"></script>
+<script>
+const START_FEN = 'r1b2rk1/pppq1ppp/2n1p3/3pP3/3P4/3B1N2/PPP1QPPP/R4RK1 w - - 0 1';
+const MOVES = ['Bxh7+', 'Kxh7', 'Ng5+', 'Kg8', 'Qh5'];
+const COMMENTARY = {
+  0: { move: 'Thế cờ khởi đầu', text: 'Bd3 + Nf3 + Qe2 + tốt e5. Vua đen Kg8, mã ở c6 — h7 chỉ được vua giữ. Bộ máy Greek Gift đã lên đạn.' },
+  1: { move: '1. Bxh7+ !', text: 'HY SINH TƯỢNG! Tượng đập vào h7 với chiếu. "Món quà Hy Lạp" — mời vua ra khỏi pháo đài.' },
+  2: { move: '1... Kxh7', text: 'Đen ăn tượng (gần như buộc — nếu Kh8 thì 2.Ng5 vẫn tấn công và sẽ thắng tốt h7 + thế công).' },
+  3: { move: '2. Ng5+ !', text: 'Mã nhảy vào g5 với chiếu, đe dọa h7 và f7. Vua phải chọn ô — và ô nào cũng tệ.' },
+  4: { move: '2... Kg8', text: 'Vua "lì" nhất là lùi về g8 (Kg6/Kh6 ra giữa còn thua nhanh hơn — xem self-test).' },
+  5: { move: '3. Qh5 !', text: 'Hậu lao tới h5. ĐE DỌA 4.Qh7# (chiếu hết!). Đen không có phòng thủ đủ — nếu 3...Re8 thì 4.Qxf7+ rồi truy vua. Trắng thắng.' }
+};
+let board, game, currentMove = 0, stagesCompleted = new Set();
+function initBoard() {
+  game = new Chess(START_FEN);
+  board = Chessboard('board', { position: START_FEN, draggable: true,
+    pieceTheme: 'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png',
+    onDrop: (s,t) => { const m = game.move({from:s,to:t,promotion:'q'}); if(!m) return 'snapback'; setTimeout(updateOverlays,100); },
+    onSnapEnd: () => { board.position(game.fen()); updateOverlays(); }});
+  updateDisplay();
+}
+function nextMove() { if(currentMove>=MOVES.length) return; game.move(MOVES[currentMove]); board.position(game.fen()); currentMove++; setTimeout(()=>{updateDisplay();updateOverlays();},50); if(currentMove>=MOVES.length) markStage(3); }
+function prevMove() { if(currentMove<=0) return; game.undo(); currentMove--; board.position(game.fen()); setTimeout(()=>{updateDisplay();updateOverlays();},50); }
+function resetBoard() { game = new Chess(START_FEN); board.position(START_FEN); currentMove = 0; setTimeout(()=>{updateDisplay();updateOverlays();},50); }
+function updateDisplay() {
+  const cm = COMMENTARY[currentMove] || COMMENTARY[0];
+  document.getElementById('moveDisplay').textContent = cm.move;
+  document.getElementById('commentary').innerHTML = cm.text;
+  const box = document.getElementById('infoBox');
+  if (currentMove >= MOVES.length) { box.className = 'info-box win'; box.innerHTML = '⚡ Trắng thắng — dọa Qh7# không cản nổi'; }
+  else { box.className = 'info-box'; box.innerHTML = 'Đến lượt: <strong>' + (game.turn()==='w'?'Trắng':'Đen') + '</strong>'; }
+  updateProgress();
+}
+function updateOverlays() { $('#board .square-55d63').removeClass('hl'); ['h7','g5','h5','f7'].forEach(sq => $('#board .square-' + sq).addClass('hl')); }
+function checkSelfTest(btn, ok, exp) {
+  document.querySelectorAll('#selfTestOptions .quiz-option').forEach(el=>el.disabled=true);
+  btn.classList.add(ok?'correct':'wrong');
+  const fb = document.getElementById('selfTestFeedback');
+  fb.classList.remove('hidden'); fb.className = 'feedback ' + (ok?'correct':'wrong');
+  fb.textContent = (ok?'✓ ':'✗ ') + exp; markStage(4);
+}
+function quizCheck(btn, ok) {
+  const q = btn.closest('.quiz');
+  q.querySelectorAll('.quiz-option').forEach(el=>el.disabled=true);
+  btn.classList.add(ok?'correct':'wrong');
+  if (!ok) q.querySelectorAll('.quiz-option').forEach(el => { if (el.getAttribute('onclick').includes('true')) el.classList.add('correct'); });
+  q.querySelector('.quiz-explain').classList.remove('hidden'); markStage(5);
+}
+function markStage(n) { stagesCompleted.add(n); updateProgress(); }
+function updateProgress() { document.getElementById('progressFill').style.width = (stagesCompleted.size/5*100) + '%'; }
+function initMiniBoards() { Chessboard('hookBoard', { position: START_FEN, draggable: false, pieceTheme: 'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png' }); }
+$(document).ready(() => { initBoard(); initMin

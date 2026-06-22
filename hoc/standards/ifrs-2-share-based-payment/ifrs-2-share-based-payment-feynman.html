@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="vi"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IFRS 2 Share-based Payment — Hiểu sâu theo Feynman</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,500&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  /* Design tokens shared with ebook-to-study-html (styles_v2.css) */
+  :root{
+    --bg:#fafaf7; --bg-elevated:#ffffff; --bg-soft:#f3f3ee;
+    --border:#e0e0d8; --border-soft:#ececea; --border-strong:#d2c8b6;
+    --ink:#1a1a1f; --ink-soft:#3f3f4a; --muted:#7a7a85;
+    --accent:#b8860b; --accent-2:#8b6508; --gold:#a07c1f; --gap:#8b6508;
+    --serif:"Fraunces",Georgia,"Iowan Old Style",serif;
+    --sans:"Geist",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    --mono:"Geist Mono","JetBrains Mono",Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:var(--sans);
+    font-size:19px;line-height:1.72;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}
+  .progress{position:fixed;top:0;left:0;height:3px;width:0;z-index:50;
+    background:linear-gradient(90deg,var(--gold),var(--accent));transition:width .08s linear}
+  .wrap{max-width:920px;margin:0 auto;padding:0 36px}
+  .rise{opacity:0;transform:translateY(14px);animation:rise .7s cubic-bezier(.2,.7,.3,1) forwards}
+  @keyframes rise{to{opacity:1;transform:none}}
+
+  header{padding:104px 0 60px;border-bottom:1px solid var(--border)}
+  .kicker{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.18em;
+    text-transform:uppercase;color:var(--accent);margin-bottom:26px}
+  h1{font-family:var(--serif);font-weight:600;font-size:clamp(42px,7.6vw,72px);
+    line-height:1.0;letter-spacing:-.022em;margin-bottom:28px;font-optical-sizing:auto;color:var(--ink)}
+  h1 em{font-style:italic;color:var(--accent)}
+  .core{font-family:var(--serif);font-style:italic;font-weight:400;
+    font-size:clamp(21px,3.6vw,27px);line-height:1.44;color:var(--ink-soft)}
+  .core span{font-style:normal;font-weight:600;color:var(--accent-2);
+    box-shadow:inset 0 -.5em 0 rgba(184,134,11,.16)}
+
+  /* ---- BƯỚC 0: ANCHOR (state the rule + plan before explaining) ---- */
+  .anchor .rule{font-family:var(--serif);font-size:19px;line-height:1.5;color:var(--ink);
+    background:var(--bg-soft);border-left:3px solid var(--accent);
+    padding:18px 24px;border-radius:0 4px 4px 0;margin:0}
+  .anchor .rule em{font-style:italic;color:var(--accent-2)}
+  .anchor .rule strong{color:var(--ink);font-weight:600}
+  .anchor .approach{color:var(--ink-soft)}
+
+  section{padding:72px 0;border-bottom:1px solid var(--border);position:relative}
+  .step-head{display:flex;align-items:flex-start;gap:22px;margin-bottom:34px}
+  .big-num{font-family:var(--serif);font-weight:700;font-size:62px;line-height:.8;
+    color:var(--border-strong);flex:none;font-optical-sizing:auto;letter-spacing:-.03em}
+  .step-meta{padding-top:4px}
+  .lbl{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--accent);display:block;margin-bottom:10px}
+  h2{font-family:var(--serif);font-weight:600;font-size:clamp(27px,4.4vw,37px);
+    line-height:1.12;letter-spacing:-.012em;color:var(--ink)}
+  h2 em{font-style:italic;color:var(--accent)}
+  p{margin-bottom:21px}
+  p:last-child{margin-bottom:0}
+  strong{font-weight:600;color:var(--ink)}
+  em{font-style:italic;color:var(--accent-2)}
+  .gloss{color:var(--muted);font-style:italic}
+
+  .lead::first-letter{font-family:var(--serif);font-weight:700;float:left;
+    font-size:74px;line-height:.74;padding:8px 12px 0 0;color:var(--accent)}
+
+  .sub{font-family:var(--serif);font-weight:600;font-size:17px;letter-spacing:.01em;
+    color:var(--ink);margin:34px 0 14px;display:flex;align-items:center;gap:11px}
+  .sub::before{content:"";width:18px;height:2px;background:var(--accent);flex:none;border-radius:2px}
+
+  .gaps{background:var(--bg-soft)}
+  .gaps .big-num{color:#e2d6b4}
+  .gaps .lbl{color:var(--gap)}
+  .gap-q{margin:0 0 30px;padding-left:24px;border-left:2px solid var(--border-strong)}
+  .gap-q:last-child{margin-bottom:0}
+  .gap-q .q{font-family:var(--serif);font-style:italic;font-weight:500;
+    font-size:22px;line-height:1.35;color:var(--gap);margin-bottom:12px;display:block}
+  .gap-q p:last-child{margin-bottom:0}
+
+  .analogy-card{border:1px solid #e8c876;border-radius:4px;padding:30px 32px;margin:8px 0 28px;
+    background:linear-gradient(135deg,#fef9ed 0%,#fdf3e0 100%)}
+  .analogy-card .tag{font-family:var(--mono);font-weight:600;font-size:11px;
+    letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin-bottom:16px;display:block}
+  .analogy-card p{color:#5a4810}
+  .analogy-card strong{color:var(--accent-2)}
+  .limit{font-size:17px;line-height:1.6;color:#5a4810;
+    border-top:1px solid #e8c876;padding-top:20px;margin-top:22px}
+  .limit b{color:var(--accent-2);font-weight:600;font-family:var(--serif)}
+
+  .retell{background:linear-gradient(180deg,var(--bg-soft) 0%,var(--bg) 100%);border-bottom:none}
+  .retell h2{color:var(--ink)}
+  .retell strong{color:var(--accent-2)}
+  .retell .core{margin-top:6px}
+  .testbox{border:1px solid var(--border);background:var(--bg-elevated);
+    border-radius:4px;padding:28px 32px;margin-top:40px;box-shadow:0 1px 2px rgba(0,0,0,.03)}
+  .testbox h3{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--accent);margin-bottom:20px}
+  .testbox ol{margin:0;padding-left:22px;counter-reset:t}
+  .testbox li{margin-bottom:16px;color:var(--ink-soft);padding-left:6px}
+  .testbox li:last-child{margin-bottom:0}
+
+  footer{text-align:center;padding:60px 0 88px}
+  footer .mark{font-family:var(--serif);font-weight:700;color:var(--accent);
+    font-size:26px;display:block;margin-bottom:14px}
+  footer p{font-family:var(--serif);font-style:italic;color:var(--muted);font-size:17px;max-width:380px;margin:0 auto}
+
+  @media(max-width:560px){
+    body{font-size:18px}
+    header{padding:70px 0 44px}
+    section{padding:52px 0}
+    .step-head{gap:16px}
+    .big-num{font-size:46px}
+    .lead::first-letter{font-size:60px}
+  }
+</style>
+<style>
+ .tabbar{position:fixed;top:0;left:0;right:0;width:100%;box-sizing:border-box;z-index:40;background:rgba(250,250,247,.93);
+   backdrop-filter:saturate(1.1) blur(8px);-webkit-backdrop-filter:saturate(1.1) blur(8px);
+   border-bottom:1px solid var(--border);display:flex;gap:6px;overflow-x:auto;
+   padding:10px max(36px,calc((100% - 992px)/2));scrollbar-width:thin}
+ .tabbar .tab{flex:0 0 auto;display:flex;align-items:baseline;gap:9px;cursor:pointer;
+   background:transparent;border:1px solid transparent;border-radius:999px;
+   padding:8px 17px;transition:.15s;white-space:nowrap;color:var(--muted)}
+ .tabbar .tab:hover{color:var(--ink);background:var(--bg-soft)}
+ .tabbar .tab.active{color:var(--accent-2);background:var(--bg-soft);border-color:var(--border-strong)}
+ .tabbar .tn{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.1em;color:var(--accent)}
+ .tabbar .tl{font-family:var(--serif);font-weight:500;font-size:16px}
+ body{padding-top:56px} .concept-panel{display:none}
+ .concept-panel.active{display:block}
+ .concept-panel header{padding-top:50px}
+ @media(max-width:560px){.tabbar .tl{max-width:48vw;overflow:hidden;text-overflow:ellipsis}}
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+<nav class="tabbar" aria-label="Các khái niệm"><button class="tab" data-i="0"><span class="tn">01</span><span class="tl">Market vs Non-market</span></button><button class="tab" data-i="1"><span class="tn">02</span><span class="tl">Không bao giờ đảo</span></button><button class="tab" data-i="2"><span class="tn">03</span><span class="tl">Sửa đổi bất đối xứng</span></button><button class="tab" data-i="3"><span class="tn">04</span><span class="tl">Hủy = tăng tốc</span></button><button class="tab" data-i="4"><span class="tn">05</span><span class="tl">Net settlement thuế</span></button><button class="tab" data-i="5"><span class="tn">06</span><span class="tl">Compound = 0</span></button><button class="tab" data-i="6"><span class="tn">07</span><span class="tl">Bất đối xứng tập đoàn</span></button></nav>
+<div class="concept-panel" id="c-truot-dieu-kien-van-ghi"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Giải thích theo phương pháp Feynman</div>
+    <h1 class="rise" style="animation-delay:.08s">Trượt điều kiện mà vẫn ghi đủ chi phí</h1>
+    <p class="core rise" style="animation-delay:.16s">Cùng gọi là 'điều kiện' <span>nhưng trượt loại này thì xóa, loại kia thì không.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Điều cần hiểu &amp; cách tiếp cận</span><h2>Quy tắc: hai loại điều kiện, hai số phận</h2></div>
+    </div>
+    <div class="rule">IFRS 2 đoạn 19: điều kiện trao quyền KHÔNG phải market condition (vd điều kiện dịch vụ) không đưa vào fair value — điều chỉnh <strong>số lượng</strong>, trượt thì lũy kế về 0. Đoạn 21: <em>market condition</em> (mục tiêu giá cổ phiếu) được tính sẵn vào <strong>grant-date fair value</strong>, nên vẫn ghi chi phí cho người thỏa các điều kiện KHÁC, dù mục tiêu giá có trượt.</div>
+    <div class="sub">Cách giải thích</div>
+    <div class="approach"><p>Chỗ vấp là chữ <strong>'điều kiện'</strong>: một từ che hai cách xử lý ngược nhau. Cách giải ở đây: coi market condition như một <em>tấm vé đã hạ giá sẵn</em> vì xác suất trượt. Đã trả cho rủi ro đó rồi, nên trượt không được hoàn lại. Còn điều kiện dịch vụ chỉ là 'có làm hay không' — không làm thì không tốn gì.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Giải thích đơn giản</span><h2>Hai nhân viên, hai điều kiện, hai kết cục ngược nhau</h2></div>
+    </div>
+    <p class="lead">Hai nhân viên cùng được trao quyền chọn. Anh A có một điều kiện: làm đủ ba năm. Anh B có một điều kiện khác: giá cổ phiếu phải chạm 60 đồng. Cả hai đều ở lại đủ ba năm. Nhưng giá cổ phiếu chỉ lên 42, mục tiêu của B trượt.</p>
+
+<p>Giờ thử hỏi ngược. Nếu anh A nghỉ giữa chừng, quyền không chín, công ty xóa sạch chi phí đã ghi cho anh. Vậy anh B trượt mục tiêu giá, công ty cũng xóa chứ? KHÔNG. Chi phí của B vẫn ghi đủ.</p>
+
+<div class="sub">Vì sao một bên xóa</div>
+<p>Điều kiện dịch vụ trả lời câu 'công ty có nhận được công sức không'. Anh A nghỉ sớm, công ty không nhận đủ ba năm, nên không có gì để ghi. Hợp lý.</p>
+
+<div class="sub">Vì sao một bên không xóa</div>
+<p>Mục tiêu giá thì khác. Lúc định giá quyền chọn ngày trao, người ta đã hạ giá trị xuống để tính cả khả năng mục tiêu trượt. Tức công ty đã 'trả' cho rủi ro đó ngay từ đầu. Trượt thật thì cũng không hoàn lại.</p>
+
+<div class="sub">Cốt lõi</div>
+<p>Điều kiện gắn với việc phục vụ thì chỉnh số lượng, trượt là về 0. Điều kiện gắn với giá cổ phiếu thì nằm sẵn trong giá ngày trao, trượt vẫn ghi đủ.</p>
+  </section>
+
+  <section class="gaps">
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Chỗ vấp · Lỗ hổng</span><h2>Mấy chỗ nghe xuôi mà nghĩ kỹ chưa thông</h2></div>
+    </div>
+    <div class="gap-q"><span class="q">"Cùng là điều kiện cả, sao một bên xóa một bên không?"</span><p>Vì hai điều kiện hỏi hai câu khác nhau. Điều kiện dịch vụ hỏi 'có nhận được công sức không'. Mục tiêu giá hỏi 'cổ phiếu có lên không'. Cái đầu quyết định công ty có nhận giá trị hay không. Cái sau đã được tính sẵn vào giá, nên không hỏi lại.</p></div>
+<div class="gap-q"><span class="q">"Trượt mục tiêu giá mà vẫn ghi chi phí — chẳng phải khai khống?"</span><p>Không. Chi phí ghi cho công sức nhân viên đã bỏ ra, không ghi cho việc giá có lên hay không. Anh B đã làm đủ ba năm, công ty đã nhận đủ công sức đó. Mục tiêu giá trượt là rủi ro đã trừ sẵn trong giá, không phải lý do để quỵt công.</p></div>
+<div class="gap-q"><span class="q">"Nếu KHÔNG AI đạt mục tiêu giá — công ty vẫn ghi đủ cho tất cả?"</span><p>Đúng, miễn là họ thỏa các điều kiện khác (như ở lại đủ thời gian). Đây chính là chỗ phản trực giác nhất. Cả nhóm trượt mục tiêu giá, chi phí vẫn nằm nguyên, vì nó đã được định sẵn từ ngày trao.</p></div>
+<div class="gap-q"><span class="q">"Làm sao giá ngày trao 'biết trước' mục tiêu có thể trượt?"</span><p>Nhờ mô hình định giá. Mô hình ăn vào độ biến động và mục tiêu giá, rồi hạ giá trị quyền chọn xuống cho khớp xác suất đạt. Mục tiêu càng khó, giá càng thấp. Khả năng trượt đã nằm trong con số ngay từ đầu.</p></div>
+<div class="gap-q"><span class="q">"Chi phí giữ lại — vậy bên đối ứng trong vốn đi đâu khi quyền hết hạn?"</span><p>Bên ghi chi phí, bên kia cộng vào một quỹ trong vốn chủ sở hữu (hay gọi là quỹ dự trữ ESOP). Khi mục tiêu giá trượt và quyền hết hạn, không ai mua cổ phiếu, nên quỹ đó nằm trơ ra, hết mục đích.</p>
+<p>Chuẩn không bắt hoàn nhập chi phí (nguyên tắc không đảo, đoạn 23). Nhưng để dọn sổ, đoạn 23 cho phép một bút toán chuyển NỘI BỘ trong vốn: dời khoản đó từ quỹ dự trữ ESOP sang lợi nhuận giữ lại. Tổng vốn không đổi, không đụng vào lãi/lỗ.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví von &amp; ví dụ đời thường</span><h2>Neo vào tấm vé đã hạ giá</h2></div>
+    </div>
+    <div class="analogy-card"><span class="tag">Ví dụ trung tâm</span>
+<p>Hãy nghĩ tới một tấm vé số. Người bán đã hạ giá vé vì biết xác suất trúng thấp. Bạn mua với giá đã trừ rủi ro đó. Không trúng, bạn có đòi lại tiền vé không? Không — bạn đã trả đúng cho một cơ hội mỏng.</p>
+<p>Market condition y hệt. Giá quyền chọn ngày trao đã 'hạ' để tính khả năng mục tiêu giá trượt. Trượt thật thì cũng không hoàn lại chi phí — vì đã trừ sẵn.</p>
+<p class="limit"><b>Chỗ ví von này hỏng:</b> tấm vé số thuần ăn may, không đòi bạn làm gì. Market condition thì vẫn buộc nhân viên phục vụ đủ thời gian — trượt điều kiện DỊCH VỤ này lại xóa chi phí như thường. Ngoài ra giá quyền chọn do một mô hình tính ra, không phải giá vé cố định.</p>
+</div>
+<p>Ngược lại cho rõ: điều kiện dịch vụ giống tiền công người gác đêm. Không đi gác thì không có tiền công — không có gì để 'tính sẵn'. Nên trượt điều kiện dịch vụ là về 0, khác hẳn trượt mục tiêu giá.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Mô hình định giá quyền chọn đưa mục tiêu giá vào như một rào: xác suất chạm mục tiêu càng thấp thì grant-date fair value càng nhỏ. Vì 'chi phí kỳ vọng' đã trừ phần trượt, chuẩn không cho true-up theo kết cục của market condition (đoạn 21). Còn điều kiện không phải market thì true-up theo số thực vest (đoạn 19-20).</p>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">4</div>
+      <div class="step-meta"><span class="lbl">Kể lại gọn gàng</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Một từ 'điều kiện' che hai số phận. Điều kiện dịch vụ hỏi công ty có nhận được công sức không — không nhận thì chi phí về 0. Mục tiêu giá thì đã được hạ sẵn vào giá ngày trao, như một tấm vé đã trừ rủi ro. Nên trượt mục tiêu giá, chi phí vẫn ghi đủ, miễn là nhân viên thỏa các điều kiện khác.</p>
+<p class="core">Cùng gọi là 'điều kiện' <span>trượt mục tiêu giá vẫn ghi, vì đã trừ sẵn từ ngày trao.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã hiểu chưa?</h3>
+      <ol>
+        <li>Vì sao trượt điều kiện dịch vụ thì chi phí về 0, còn trượt mục tiêu giá thì chi phí vẫn ghi đủ?</li>
+        <li>Một grant chỉ có mục tiêu giá, kèm yêu cầu ở lại 3 năm. NV ở đủ 3 năm nhưng giá không đạt — ghi chi phí thế nào?</li>
+        <li>Mô hình định giá 'tính sẵn' khả năng trượt mục tiêu giá bằng cách nào?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nếu giải thích được cho bà ngoại hiểu, bạn mới thật sự hiểu.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-het-han-van-ghi"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Giải thích theo phương pháp Feynman</div>
+    <h1 class="rise" style="animation-delay:.08s">Quyền chọn hết hạn vô giá trị — chi phí vẫn nằm đó</h1>
+    <p class="core rise" style="animation-delay:.16s">Nhân viên không nhận được gì <span>nhưng công ty vẫn giữ nguyên chi phí đã ghi.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Điều cần hiểu &amp; cách tiếp cận</span><h2>Quy tắc: sau ngày vest, không đảo</h2></div>
+    </div>
+    <div class="rule">IFRS 2 đoạn 23: sau ngày vest, KHÔNG điều chỉnh tổng vốn chủ sở hữu — không hoàn nhập chi phí dù quyền đã vest sau đó bị forfeit, hay quyền chọn hết hạn mà không exercise. Trái lại, đoạn 30: với cash-settled, khoản nợ được đo lại tới ngày trả, nên rốt cuộc bằng đúng số tiền thực trả (có thể là 0).</div>
+    <div class="sub">Cách giải thích</div>
+    <div class="approach"><p>Chỗ vấp: quyền hết hạn vô giá trị, nhân viên cầm về số 0 — sao không xóa chi phí? Cách giải: equity-settled, công ty đã TRAO công cụ tại ngày vest, hết nghĩa vụ; giá lên xuống sau đó là chuyện của người cầm. Còn cash-settled, công ty chỉ nợ đúng số tiền cuối cùng phải trả.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Giải thích đơn giản</span><h2>Làm đủ ba năm, rồi quyền chọn thành giấy lộn</h2></div>
+    </div>
+    <p class="lead">Một nhân viên được trao quyền chọn, vest sau ba năm. Anh làm đủ, quyền chín. Nhưng rồi giá cổ phiếu rớt xuống dưới giá thực hiện. Mua theo quyền thì đắt hơn mua ngoài chợ, nên anh không exercise. Quyền hết hạn, thành giấy lộn. Anh nhận về đúng số 0.</p>
+
+<p>Vậy ba năm chi phí công ty đã ghi thì sao? Trực giác bảo: xóa đi, vì rốt cuộc chẳng ai được gì. Nhưng chuẩn nói không. Chi phí ở lại nguyên.</p>
+
+<div class="sub">Vì sao không xóa</div>
+<p>Công ty trả công bằng cách trao quyền chọn. Tại ngày vest, công ty đã trao xong. Sau đó quyền đáng bao nhiêu là chuyện của người cầm và thị trường, không phải của công ty. Công ty đã làm tròn phần mình.</p>
+
+<div class="sub">Chi phí đo cái gì</div>
+<p>Chi phí đo công sức nhân viên đã bỏ ra trong ba năm, không đo kết cục của quyền chọn. Công sức đó công ty đã nhận và dùng. Đã nhận thì đã tốn.</p>
+
+<div class="sub">Cash-settled thì ngược</div>
+<p>Nếu là thưởng tiền theo giá, công ty chỉ nợ đúng số tiền sẽ trả. Giá rớt, số tiền phải trả về 0, nên chi phí đảo về 0. Khác hẳn equity-settled.</p>
+  </section>
+
+  <section class="gaps">
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Chỗ vấp · Lỗ hổng</span><h2>Mấy chỗ nghe xuôi mà nghĩ kỹ chưa thông</h2></div>
+    </div>
+    <div class="gap-q"><span class="q">"Nhân viên chẳng nhận được gì, sao công ty vẫn giữ chi phí?"</span><p>Vì chi phí trả cho công sức, không trả cho kết cục. Nhân viên đã làm đủ ba năm, công ty đã nhận đủ công sức đó. Quyền chọn cuối cùng vô giá trị là rủi ro thị trường của người cầm, không phải lý do để công ty nói 'tôi chưa tốn gì'.</p></div>
+<div class="gap-q"><span class="q">"Giữ nguyên chi phí thế chẳng phải khai cao lên?"</span><p>Không. Bút toán đối ứng nằm trong vốn chủ sở hữu, không phải tiền mặt. Công ty đã trao công cụ vốn thật. Việc cho phép chuyển trong nội bộ vốn vẫn được, nhưng tổng vốn không đổi, và chi phí đã ghi không quay đầu.</p></div>
+<div class="gap-q"><span class="q">"Cash-settled cùng cảnh lại đảo về 0 — sao hai bên khác nhau?"</span><p>Vì bản chất nghĩa vụ khác. Equity-settled, công ty đã trao công cụ, hết nợ. Cash-settled, công ty còn nợ một số tiền, và số tiền đó bám theo giá tới ngày trả. Giá rớt thì nợ về 0, chi phí theo đó đảo về 0.</p></div>
+<div class="gap-q"><span class="q">"Ranh giới 'không đảo' bắt đầu từ mốc nào?"</span><p>Từ ngày vest. Trước ngày vest, nếu nhân viên nghỉ (trượt điều kiện dịch vụ), chi phí vẫn về 0 như thường. Sau ngày vest mới có luật 'không đảo' — vì lúc đó công cụ đã thuộc về người ta.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví von &amp; ví dụ đời thường</span><h2>Neo vào tiền công người gác đêm</h2></div>
+    </div>
+    <div class="analogy-card"><span class="tag">Ví dụ trung tâm</span>
+<p>Bạn thuê một người gác đêm cho ba đêm, trả công đầy đủ. Cả ba đêm yên ổn, không có trộm. Bạn có đòi lại tiền công vì 'công cốc' không? Không. Bạn đã mua sự canh gác, và đã nhận đủ. Kết cục có biến cố hay không là chuyện khác.</p>
+<p>Quyền chọn hết hạn vô giá trị cũng vậy. Công ty đã nhận đủ ba năm công sức. Chi phí ở lại, không vì 'rốt cuộc chẳng ai được gì' mà xóa.</p>
+<p class="limit"><b>Chỗ ví von này hỏng:</b> người gác đêm được trả bằng tiền mặt đã tiêu thật. Ở equity-settled, công ty trả bằng cổ phiếu, đối ứng vào vốn chủ sở hữu chứ không phải tiền ra. Và đúng cái 'kết cục vô giá trị' đó lại khiến cash-settled đảo chi phí về 0 — nên ví von này chỉ đúng cho nhánh equity.</p>
+</div>
+<p>Đặt cạnh nhau cho rõ: thưởng bằng quyền chọn (equity) là 'trả công gác đêm' — đã trả là xong. Thưởng tiền theo giá (cash) là 'chỉ trả nếu có việc' — không có việc thì không trả. Cùng một cái kết vô giá trị, hai cách ghi ngược nhau.</p>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">4</div>
+      <div class="step-meta"><span class="lbl">Kể lại gọn gàng</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Sau ngày vest, equity-settled không đảo. Quyền chọn hết hạn vô giá trị, nhân viên nhận số 0, nhưng chi phí ba năm vẫn nằm nguyên. Vì công ty đã trao công cụ và đã nhận đủ công sức — đã nhận thì đã tốn. Cash-settled thì ngược: chỉ nợ số tiền cuối, giá rớt thì đảo về 0.</p>
+<p class="core">Nhân viên không nhận được gì <span>đã nhận công sức thì đã tốn — kết cục của quyền không xóa được điều đó.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã hiểu chưa?</h3>
+      <ol>
+        <li>Quyền chọn đã vest hết hạn mà không exercise — vì sao công ty không hoàn nhập chi phí đã ghi?</li>
+        <li>Cùng cảnh 'rốt cuộc vô giá trị', vì sao cash-settled lại đảo chi phí về 0 còn equity-settled thì không?</li>
+        <li>Luật 'không đảo' áp dụng từ mốc nào, và trước mốc đó thì sao?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nếu giải thích được cho bà ngoại hiểu, bạn mới thật sự hiểu.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-reprice-giam-chi-phi-khong-giam"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Giải thích theo phương pháp Feynman</div>
+    <h1 class="rise" style="animation-delay:.08s">Hạ giá quyền chọn mà chi phí không hạ</h1>
+    <p class="core rise" style="animation-delay:.16s">Sửa điều khoản theo hai hướng <span>tốt hơn thì cộng, xấu hơn thì lờ.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Điều cần hiểu &amp; cách tiếp cận</span><h2>Quy tắc: sàn grant-date fair value, sửa bất đối xứng</h2></div>
+    </div>
+    <div class="rule">IFRS 2 đoạn 27 (và B42): doanh nghiệp phải ghi nhận TỐI THIỂU dịch vụ đo tại grant-date fair value gốc, bất kể mọi sửa đổi — trừ khi trượt một điều kiện vesting không phải market. B43: sửa đổi <strong>có lợi</strong> cho nhân viên thì cộng thêm <em>incremental fair value</em>. B44: sửa đổi <strong>bất lợi</strong> thì lờ đi, vẫn đo theo giá gốc.</div>
+    <div class="sub">Cách giải thích</div>
+    <div class="approach"><p>Chỗ vấp: hạ giá thực hiện làm quyền chọn đáng ít hơn — vậy chi phí phải giảm chứ? Không. Cách giải: coi grant-date fair value như một cái <em>sàn</em> công ty không được đào xuống dưới. Chất thêm lên trên thì được (tăng quyền lợi), nhưng rút xuống dưới mức đã cam kết thì không.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Giải thích đơn giản</span><h2>Cổ phiếu rớt giá, công ty hạ giá quyền chọn cho nhân viên</h2></div>
+    </div>
+    <p class="lead">Công ty trao quyền chọn, ghi chi phí theo giá ngày trao. Một năm sau cổ phiếu rớt mạnh. Quyền chọn giờ 'dưới nước' — giá thực hiện cao hơn giá chợ, gần như vô dụng. Để giữ chân nhân viên, công ty hạ giá thực hiện xuống. Quyền chọn giờ đáng ít hơn lúc trao.</p>
+
+<p>Trực giác: quyền đáng ít hơn thì chi phí ghi cũng ít đi. Sai. Chi phí gốc giữ nguyên. Còn nếu sửa làm quyền đáng HƠN, công ty phải cộng thêm.</p>
+
+<div class="sub">Cái sàn không đào xuống được</div>
+<p>Giá ngày trao là mức công ty đã cam kết cho nhân viên. Đó là sàn. Dù sau này quyền rớt giá, công ty vẫn ghi đủ phần sàn đó. Không được giảm chi phí bằng cách cắt quyền lợi nhân viên.</p>
+
+<div class="sub">Có lợi thì cộng</div>
+<p>Nếu công ty hạ giá thực hiện làm quyền đáng hơn, phần tăng thêm đó là một món quà mới. Công ty cộng nó vào chi phí, đo tại ngày sửa. Cho thêm thì gánh thêm.</p>
+
+<div class="sub">Bất lợi thì lờ</div>
+<p>Nếu sửa làm quyền đáng ít hơn, công ty bỏ qua phần giảm. Cứ tiếp tục ghi theo giá gốc như chưa sửa. Đó là tính bất đối xứng có chủ đích.</p>
+  </section>
+
+  <section class="gaps">
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Chỗ vấp · Lỗ hổng</span><h2>Mấy chỗ nghe xuôi mà nghĩ kỹ chưa thông</h2></div>
+    </div>
+    <div class="gap-q"><span class="q">"Quyền giờ đáng ít hơn, sao vẫn giữ chi phí cao?"</span><p>Vì sàn grant-date fair value là mức đã cam kết. Công ty không được tự hạ chi phí bằng cách làm xấu đi quyền lợi của nhân viên. Cho phép thế thì công ty cứ reprice xuống mỗi khi muốn 'giảm lỗ' — vô lý.</p></div>
+<div class="gap-q"><span class="q">"Bất đối xứng kiểu này nghe tùy tiện quá?"</span><p>Không tùy tiện, có chủ đích. Quy tắc đứng về phía bảo vệ con số chi phí thật. Cho thêm quyền lợi là một giao dịch mới, phải ghi. Cắt quyền lợi không được phép xóa phần đã cam kết. Lệch về một phía là cố ý.</p></div>
+<div class="gap-q"><span class="q">"Vậy hủy hẳn grant thì chi phí biến mất chứ?"</span><p>Cũng không. Hủy giữa chừng bị coi là tăng tốc: phần còn lại ghi ngay lập tức. Đây là một mặt khác của cùng nguyên tắc 'không thoát được cái sàn' — xem tab 'Hủy = tăng tốc'.</p></div>
+<div class="gap-q"><span class="q">"Giảm SỐ LƯỢNG quyền cũng bị lờ như giảm giá à?"</span><p>Không. Giảm số lượng được coi là hủy bỏ phần đó, xử lý theo luật hủy (tăng tốc phần bị cắt). Khác với giảm giá trị mỗi quyền — cái đó mới bị lờ.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví von &amp; ví dụ đời thường</span><h2>Neo vào lời hứa lương đã ký</h2></div>
+    </div>
+    <div class="analogy-card"><span class="tag">Ví dụ trung tâm</span>
+<p>Bạn ký hợp đồng trả nhân viên 20 triệu một tháng. Sau đó công ty khó khăn. Bạn có thể TĂNG lương (tốn thêm, ghi thêm). Nhưng bạn không thể 'hạ lương xuống 15 triệu' rồi nói mình chỉ còn nợ 15 — phần đã cam kết vẫn là 20.</p>
+<p>Quyền chọn y vậy. Hạ giá trị (như hạ lương) không xóa được phần đã hứa. Tăng giá trị (như tăng lương) thì gánh thêm. Sàn là con số ngày trao.</p>
+<p class="limit"><b>Chỗ ví von này hỏng:</b> lương là nghĩa vụ pháp lý cứng mà nhân viên đòi được. 'Sàn' của IFRS 2 là một quy tắc kế toán, không phải khoản nhân viên kiện đòi. Và nếu nhân viên trượt điều kiện dịch vụ thì sàn đó vẫn về 0 — khác với hợp đồng lương.</p>
+</div>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Incremental fair value (B43) = fair value công cụ đã sửa trừ fair value công cụ gốc, cả hai đo tại NGÀY SỬA. Phần này phân bổ qua thời gian còn lại, cộng vào phần gốc vẫn chạy theo lịch cũ. Sửa bất lợi (B44) bị bỏ; riêng giảm số lượng bị coi là hủy một phần (đoạn 28).</p>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">4</div>
+      <div class="step-meta"><span class="lbl">Kể lại gọn gàng</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Grant-date fair value là một cái sàn. Hạ giá quyền chọn (xấu cho nhân viên) không đào xuống dưới sàn được — chi phí gốc giữ nguyên. Tăng giá trị (tốt cho nhân viên) thì cộng thêm phần chênh. Cố ý lệch về một phía: công ty không được giảm chi phí bằng cách cắt quyền lợi người lao động.</p>
+<p class="core">Sửa điều khoản theo hai hướng <span>tốt hơn thì cộng, xấu hơn thì lờ — sàn ngày trao không đào xuống được.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã hiểu chưa?</h3>
+      <ol>
+        <li>Sau khi reprice xuống làm quyền chọn đáng ít hơn, vì sao chi phí ghi nhận không giảm?</li>
+        <li>Vì sao IFRS 2 cố ý xử lý sửa đổi bất đối xứng (có lợi cộng, bất lợi lờ)?</li>
+        <li>Giảm giá trị mỗi quyền và giảm số lượng quyền được xử lý khác nhau thế nào?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nếu giải thích được cho bà ngoại hiểu, bạn mới thật sự hiểu.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-huy-bo-tang-toc"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Giải thích theo phương pháp Feynman</div>
+    <h1 class="rise" style="animation-delay:.08s">Hủy grant giữa chừng — chi phí không biến mất, mà dồn về ngay</h1>
+    <p class="core rise" style="animation-delay:.16s">Hủy bỏ tưởng là xóa <span>hóa ra là ghi ngay tất cả phần còn lại.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Điều cần hiểu &amp; cách tiếp cận</span><h2>Quy tắc: hủy = tăng tốc trao quyền</h2></div>
+    </div>
+    <div class="rule">IFRS 2 đoạn 28(a): nếu grant bị hủy hoặc tất toán trong vesting period (không phải forfeiture do trượt điều kiện), hạch toán như <em>acceleration of vesting</em> — ghi NGAY phần lẽ ra ghi cho dịch vụ qua quãng còn lại. Đoạn 28(b): khoản trả khi hủy coi như mua lại vốn; phần vượt fair value tại ngày mua lại thì ghi là chi phí.</div>
+    <div class="sub">Cách giải thích</div>
+    <div class="approach"><p>Chỗ vấp: grant bị hủy, vậy chi phí tương lai chưa ghi thì khỏi ghi chứ? Không. Cách giải: coi việc hủy như 'quyết định trả hết một lần cho xong'. Tổng vẫn thế, chỉ dồn về hiện tại. Phải phân biệt rõ với forfeiture — nhân viên nghỉ — cái đó mới về 0.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Giải thích đơn giản</span><h2>Còn hai năm nữa mới xong, công ty hủy luôn</h2></div>
+    </div>
+    <p class="lead">Một grant trải bốn năm. Hết năm hai, công ty quyết hủy nó — không phải vì nhân viên nghỉ, mà vì công ty đổi chính sách. Phần chi phí của năm ba và năm bốn chưa ghi. Trực giác: hủy rồi thì khỏi ghi nữa.</p>
+
+<p>Sai. Công ty phải ghi NGAY toàn bộ phần còn lại, dồn vào lúc hủy. Hủy không xóa chi phí, nó chỉ kéo phần tương lai về hiện tại.</p>
+
+<div class="sub">Vì sao không xóa</div>
+<p>Chuẩn coi việc hủy là 'tăng tốc trao quyền'. Công ty đã cam kết một khoản theo giá ngày trao. Hủy ngang không cho phép trốn phần cam kết đó. Nó chỉ đổi thời điểm: thay vì rải tiếp, ghi hết bây giờ.</p>
+
+<div class="sub">Khác hẳn nhân viên nghỉ</div>
+<p>Nếu nhân viên tự nghỉ giữa chừng, quyền không chín, chi phí về 0. Đó là forfeiture. Còn công ty chủ động hủy thì không được hưởng cái về 0 đó — phải tăng tốc ghi đủ.</p>
+
+<div class="sub">Trả tiền khi hủy thì sao</div>
+<p>Nếu công ty trả tiền cho nhân viên lúc hủy, phần trong mức fair value coi như mua lại vốn, trừ thẳng vào vốn. Phần trả vượt fair value mới thành chi phí thêm.</p>
+  </section>
+
+  <section class="gaps">
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Chỗ vấp · Lỗ hổng</span><h2>Mấy chỗ nghe xuôi mà nghĩ kỹ chưa thông</h2></div>
+    </div>
+    <div class="gap-q"><span class="q">"Grant không còn nữa, sao vẫn phải ghi chi phí?"</span><p>Vì công ty đã cam kết phần chi phí đó theo giá ngày trao, và đó là một cái sàn. Hủy ngang là quyết định của công ty, không phải nhân viên bỏ cuộc. Cho hủy để thoát chi phí thì công ty cứ hủy mỗi khi muốn đẹp sổ — nên chuẩn chặn lại.</p></div>
+<div class="gap-q"><span class="q">"Khác gì nhân viên nghỉ việc giữa chừng?"</span><p>Khác hẳn. Nhân viên nghỉ là forfeiture: họ không thỏa điều kiện, công ty không nhận đủ công sức, chi phí về 0. Công ty hủy là chủ động cắt: công ty không được xóa, phải tăng tốc ghi đủ phần còn lại.</p></div>
+<div class="gap-q"><span class="q">"Trả tiền cho nhân viên khi hủy thì ghi vào đâu?"</span><p>Tách hai phần. Phần nằm trong fair value của quyền tại ngày mua lại: trừ vào vốn, như mua lại cổ phần. Phần trả VƯỢT fair value: ghi là chi phí. Trả hậu hơn giá trị thật thì phần hậu đó là chi phí thêm.</p></div>
+<div class="gap-q"><span class="q">"Hủy xong rồi cấp một grant mới thì sao?"</span><p>Nếu grant mới được xác định là thay thế cho grant bị hủy, nó được coi như một sửa đổi, không phải grant độc lập. Phần giá trị tăng thêm so với cái cũ được cộng vào — nối thẳng với tab 'Sửa đổi bất đối xứng'.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví von &amp; ví dụ đời thường</span><h2>Neo vào trả góp rồi tất toán sớm</h2></div>
+    </div>
+    <div class="analogy-card"><span class="tag">Ví dụ trung tâm</span>
+<p>Bạn mua trả góp một món đồ, còn nợ vài kỳ. Một hôm bạn quyết 'trả hết một lần cho xong'. Tổng số tiền có giảm không? Không. Bạn chỉ dồn các kỳ tương lai về trả ngay hôm nay.</p>
+<p>Hủy một grant cũng vậy. Phần chi phí của các năm còn lại không biến mất. Nó bị kéo về, ghi hết tại thời điểm hủy. Tăng tốc, không phải xóa.</p>
+<p class="limit"><b>Chỗ ví von này hỏng:</b> trả góp là nghĩa vụ tiền mặt bạn nợ người bán. Chi phí SBP đối ứng vào vốn chủ sở hữu, không phải tiền ra — chỉ phần trả vượt fair value mới thành tiền/chi phí thật. Và 'tất toán sớm' theo ý bạn khác với forfeiture (người bán lấy lại đồ vì bạn ngừng trả), cái đó mới về 0.</p>
+</div>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Đoạn 28A: nếu một non-vesting condition mà bên nào đó CÓ THỂ chọn không thỏa, việc không thỏa cũng bị coi là hủy (tăng tốc). Đoạn 28(c): grant thay thế được hạch toán như sửa đổi, incremental = fair value công cụ thay thế trừ net fair value công cụ bị hủy, tại ngày cấp thay thế.</p>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">4</div>
+      <div class="step-meta"><span class="lbl">Kể lại gọn gàng</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Hủy một grant giữa chừng không xóa chi phí. Chuẩn coi đó là tăng tốc: phần chi phí của các năm còn lại bị kéo về, ghi hết ngay lúc hủy. Như trả góp rồi tất toán sớm — tổng không đổi, chỉ dồn về hiện tại. Khác hẳn nhân viên tự nghỉ, cái đó mới về 0.</p>
+<p class="core">Hủy bỏ tưởng là xóa <span>hủy là dồn phần còn lại về ghi ngay, không phải xóa.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã hiểu chưa?</h3>
+      <ol>
+        <li>Công ty hủy grant ở năm 2 của vesting 4 năm — phần chi phí năm 3, 4 xử lý thế nào?</li>
+        <li>Vì sao công ty chủ động hủy thì phải tăng tốc, còn nhân viên nghỉ thì chi phí về 0?</li>
+        <li>Khoản tiền trả cho nhân viên khi hủy được tách và ghi vào đâu?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nếu giải thích được cho bà ngoại hiểu, bạn mới thật sự hiểu.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-tra-thue-van-equity"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Giải thích theo phương pháp Feynman</div>
+    <h1 class="rise" style="animation-delay:.08s">Trả tiền cho cơ quan thuế — vẫn 100% equity-settled</h1>
+    <p class="core rise" style="animation-delay:.16s">Một dòng tiền mặt rời công ty <span>nhưng giao dịch vẫn được coi là trả bằng cổ phiếu.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Điều cần hiểu &amp; cách tiếp cận</span><h2>Quy tắc: ngoại lệ net settlement</h2></div>
+    </div>
+    <div class="rule">IFRS 2 đoạn 34: phần thanh toán bằng tiền thì hạch toán cash-settled. NHƯNG đoạn 33F là ngoại lệ: nếu giao dịch lẽ ra equity-settled khi KHÔNG có net settlement feature, thì phân loại TOÀN BỘ là equity-settled. Đoạn 33G: phần cổ phiếu giữ lại để nộp thuế hạch toán như mua lại vốn (theo đoạn 29).</div>
+    <div class="sub">Cách giải thích</div>
+    <div class="approach"><p>Chỗ vấp: công ty giữ lại cổ phiếu, quy ra tiền, nộp cho cơ quan thuế — rõ ràng có tiền mặt đi ra, sao phần đó không cash-settled? Cách giải: việc khấu trừ thuế không đổi bản chất khoản trả, giống khấu trừ thuế từ lương. Đây là một ngoại lệ thực dụng (sửa đổi 2016) để không chẻ một award làm hai thế giới.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Giải thích đơn giản</span><h2>Giữ lại một phần cổ phiếu, bán đi nộp thuế hộ</h2></div>
+    </div>
+    <p class="lead">Nhân viên được vest 1.000 cổ phiếu. Luật thuế buộc công ty giữ lại một phần — ví dụ 300 cổ phiếu — quy ra tiền và nộp thuế thu nhập hộ nhân viên. Nhân viên nhận về 700 cổ phiếu, phần thuế đã lo xong. Có một dòng tiền mặt thật đi từ công ty tới cơ quan thuế.</p>
+
+<p>Trực giác: phần 300 cổ phiếu quy ra tiền đó là cash-settled. Sai. Chuẩn nói toàn bộ 1.000 vẫn là equity-settled.</p>
+
+<div class="sub">Net settlement feature là gì</div>
+<p>Đó là điều khoản cho phép công ty giữ lại bớt cổ phiếu để lo nghĩa vụ thuế. Thay vì giao đủ rồi bắt nhân viên tự xoay tiền nộp thuế. Một tiện ích, không phải bản chất khoản thưởng.</p>
+
+<div class="sub">Vì sao vẫn equity-settled</div>
+<p>Nếu bỏ cái tiện ích thuế đó đi, giao dịch là equity-settled trọn vẹn. Ngoại lệ nói: đừng để một thao tác thuế chẻ award làm đôi. Cứ coi toàn bộ là equity-settled.</p>
+
+<div class="sub">Phần giữ lại ghi sao</div>
+<p>Tiền nộp thuế cho phần cổ phiếu giữ lại được trừ thẳng vào vốn, như công ty mua lại chính cổ phần đó. Không thành chi phí cash-settled.</p>
+  </section>
+
+  <section class="gaps">
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Chỗ vấp · Lỗ hổng</span><h2>Mấy chỗ nghe xuôi mà nghĩ kỹ chưa thông</h2></div>
+    </div>
+    <div class="gap-q"><span class="q">"Tiền mặt đã ra cho cơ quan thuế, sao phần đó không cash-settled?"</span><p>Vì dòng tiền đó là nộp thuế hộ, không phải trả thưởng bằng tiền. Giống lương: công ty khấu trừ thuế từ lương nộp hộ bạn, lương vẫn là lương. Khấu trừ thuế không biến khoản trả thành một loại khác.</p></div>
+<div class="gap-q"><span class="q">"Lý do gì phải đặt ra ngoại lệ này?"</span><p>Để tránh rắc rối. Không có ngoại lệ, một award phải chẻ làm hai. Phần cổ phiếu giao là equity, phần giữ nộp thuế là cash. Thành ra hai cách đo, hai bộ sổ cho cùng một thứ. Sửa đổi 2016 gộp lại cho gọn và đúng bản chất.</p></div>
+<div class="gap-q"><span class="q">"Nếu luật KHÔNG bắt buộc giữ cổ phiếu nộp thuế thì sao?"</span><p>Thì ngoại lệ không áp dụng. Đoạn 33H nói rõ: chỉ khi có nghĩa vụ pháp lý phải khấu trừ mới được hưởng ngoại lệ. Giữ lại tự nguyện không nằm trong diện này.</p></div>
+<div class="gap-q"><span class="q">"Giữ lại NHIỀU hơn nghĩa vụ thuế thì phần thừa tính sao?"</span><p>Phần cổ phiếu giữ vượt nghĩa vụ thuế bị coi là cash-settled khi trả bằng tiền cho nhân viên (đoạn 33H). Ngoại lệ chỉ bảo vệ đúng phần khớp nghĩa vụ thuế, không bảo vệ phần dư.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví von &amp; ví dụ đời thường</span><h2>Neo vào khấu trừ thuế từ lương</h2></div>
+    </div>
+    <div class="analogy-card"><span class="tag">Ví dụ trung tâm</span>
+<p>Lương bạn ghi 20 triệu. Công ty giữ lại 2 triệu thuế thu nhập, nộp hộ bạn, đưa bạn 18 triệu. Khoản 2 triệu đó có biến lương của bạn thành 'không phải lương' không? Không. Vẫn là lương 20 triệu, chỉ có phần thuế đã lo hộ.</p>
+<p>Giữ lại cổ phiếu nộp thuế cũng thế. Phần giữ lại không biến award cổ phiếu thành cash-settled. Toàn bộ vẫn là equity-settled.</p>
+<p class="limit"><b>Chỗ ví von này hỏng:</b> lương vốn dĩ là tiền mặt, nên khấu trừ là chuyện đương nhiên. Award ở đây là cổ phiếu, và ngoại lệ chỉ áp khi luật BẮT BUỘC giữ lại để nộp thuế. Giữ tự nguyện, hoặc giữ vượt nghĩa vụ thuế, thì lại rơi về cash-settled — ranh giới hẹp hơn ví von này.</p>
+</div>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Đoạn 33G áp đoạn 29: tiền nộp thuế cho phần cổ phiếu giữ lại trừ vào vốn, trừ khi vượt fair value tại ngày net settlement. Đây thuộc bộ sửa đổi 2016 (Classification and Measurement), hiệu lực kỳ năm từ 1/1/2018. Đoạn 33H đặt hai ngoại trừ: không có nghĩa vụ pháp lý, và phần giữ vượt thuế.</p>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">4</div>
+      <div class="step-meta"><span class="lbl">Kể lại gọn gàng</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Công ty giữ lại bớt cổ phiếu, quy ra tiền nộp thuế hộ nhân viên. Có tiền mặt ra, nhưng toàn bộ award vẫn là equity-settled. Vì khấu trừ thuế không đổi bản chất khoản trả — y như khấu trừ thuế từ lương. Ngoại lệ 33F tránh chẻ một award làm hai thế giới, miễn là luật bắt buộc giữ.</p>
+<p class="core">Một dòng tiền mặt rời công ty <span>khấu trừ thuế không biến cổ phiếu thành tiền — vẫn equity-settled.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã hiểu chưa?</h3>
+      <ol>
+        <li>Công ty giữ lại cổ phiếu, quy ra tiền nộp thuế hộ — vì sao phần đó không phải cash-settled?</li>
+        <li>Ngoại lệ 33F không áp dụng trong trường hợp nào?</li>
+        <li>Nếu công ty giữ lại nhiều cổ phiếu hơn nghĩa vụ thuế, phần thừa hạch toán thế nào?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nếu giải thích được cho bà ngoại hiểu, bạn mới thật sự hiểu.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-phan-von-co-the-bang-khong"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Giải thích theo phương pháp Feynman</div>
+    <h1 class="rise" style="animation-delay:.08s">Cho đối tác quyền chọn — mà phần vốn có thể bằng 0</h1>
+    <p class="core rise" style="animation-delay:.16s">Có quyền lựa chọn <span>nhưng đôi khi cái quyền ấy chẳng đáng đồng nào.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Điều cần hiểu &amp; cách tiếp cận</span><h2>Quy tắc: phần vốn là phần dư</h2></div>
+    </div>
+    <div class="rule">IFRS 2 đoạn 35: khi ĐỐI TÁC được chọn nhận tiền hay cổ phiếu, doanh nghiệp đã cấp một <em>compound financial instrument</em> — gồm thành phần nợ và thành phần vốn. Đoạn 37: đo thành phần nợ TRƯỚC, thành phần vốn là PHẦN DƯ; nếu fair value hai phương án thanh toán bằng nhau thì thành phần vốn bằng 0.</div>
+    <div class="sub">Cách giải thích</div>
+    <div class="approach"><p>Chỗ vấp: có quyền lựa chọn thì thường có giá trị, sao phần vốn lại bằng 0? Cách giải: thành phần vốn chỉ là phần GIÁ TRỊ TĂNG THÊM của quyền đòi cổ phiếu so với quyền đòi tiền. Nếu cổ phiếu và tiền đáng y như nhau, cái 'tăng thêm' đó là số không.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Giải thích đơn giản</span><h2>Hai cửa cùng đáng tiền như nhau, chọn cửa nào cũng thế</h2></div>
+    </div>
+    <p class="lead">Công ty cho một nhà cung cấp quyền chọn: nhận tiền mặt, hoặc nhận cổ phiếu cùng giá trị. Có thêm một quyền lựa chọn, nghe như đối tác được lợi hơn. Vậy phần 'vốn' của cái quyền chọn cổ phiếu đó đáng bao nhiêu?</p>
+
+<p>Nếu hai cửa đáng y hệt nhau, câu trả lời là: không đáng gì. Phần vốn bằng 0.</p>
+
+<div class="sub">Một công cụ, hai mảnh</div>
+<p>Quyền chọn này gồm hai mảnh. Một quyền đòi tiền (thành phần nợ). Một quyền đòi cổ phiếu thay vì tiền (thành phần vốn). Công ty đo mảnh nợ trước, rồi mảnh vốn là phần còn lại.</p>
+
+<div class="sub">Vì sao phần vốn có thể là 0</div>
+<p>Thành phần vốn đo cái LỢI THÊM khi đòi cổ phiếu so với đòi tiền. Nếu cổ phiếu đáng đúng bằng số tiền kia, đòi cổ phiếu chẳng cho thêm gì. Phần lợi thêm là 0, nên thành phần vốn là 0.</p>
+
+<div class="sub">Khi nào phần vốn mới lớn hơn 0</div>
+<p>Khi hai cửa lệch giá trị. Nếu nhận cổ phiếu đáng hơn nhận tiền, cái quyền đổi sang cổ phiếu mới thật sự có giá. Lúc đó thành phần vốn lớn hơn 0.</p>
+  </section>
+
+  <section class="gaps">
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Chỗ vấp · Lỗ hổng</span><h2>Mấy chỗ nghe xuôi mà nghĩ kỹ chưa thông</h2></div>
+    </div>
+    <div class="gap-q"><span class="q">"Có quyền lựa chọn cơ mà, sao phần vốn lại bằng 0?"</span><p>Vì phần vốn không đo 'có quyền chọn hay không'. Nó đo cái lợi tăng thêm của một cửa so với cửa kia. Hai cửa bằng nhau thì chọn cửa nào cũng ra cùng giá trị, nên cái quyền đổi cửa chẳng thêm đồng nào.</p></div>
+<div class="gap-q"><span class="q">"Vậy hóa ra ghi như một khoản nợ thuần?"</span><p>Đúng, khi phần vốn bằng 0 thì fair value của cả công cụ chính là fair value của thành phần nợ. Cả giao dịch chạy theo luật cash-settled. Cái 'quyền chọn cổ phiếu' chỉ là trang trí, không thêm giá trị.</p></div>
+<div class="gap-q"><span class="q">"Khi nào phần vốn mới đáng kể?"</span><p>Khi nhận cổ phiếu đáng hơn nhận tiền. Ví dụ cổ phiếu kèm quyền lợi thêm, hay số cổ phiếu được tính hào phóng hơn. Lúc đó quyền đổi sang cổ phiếu có giá thật, và thành phần vốn lớn hơn 0.</p></div>
+<div class="gap-q"><span class="q">"Lúc tất toán, đối tác chọn lấy cổ phiếu thì sao?"</span><p>Công ty đo lại thành phần nợ về fair value, rồi chuyển thẳng nó sang vốn, coi như tiền mua cổ phiếu phát hành. Phần vốn đã ghi trước đó vẫn ở trong vốn. Không phát sinh lãi/lỗ từ việc đổi cửa.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví von &amp; ví dụ đời thường</span><h2>Neo vào phiếu quà 'tiền hay hàng'</h2></div>
+    </div>
+    <div class="analogy-card"><span class="tag">Ví dụ trung tâm</span>
+<p>Bạn nhận một phiếu quà: đổi lấy 100 nghìn tiền mặt, hoặc 100 nghìn hàng trong cửa hàng. Quyền được chọn đó có làm phiếu đáng hơn 100 nghìn không? Không. Hai cửa bằng nhau, chọn gì cũng 100 nghìn.</p>
+<p>Nhưng nếu '100 nghìn hàng' thực ra là hàng đáng 120 nghìn, thì quyền đổi sang hàng mới có giá. Thành phần vốn của quyền chọn cổ phiếu hoạt động đúng kiểu đó.</p>
+<p class="limit"><b>Chỗ ví von này hỏng:</b> phiếu quà có giá trị cố định, dễ so. Quyền chọn cổ phiếu có giá trị biến động theo thị trường, và thành phần vốn phải đo bằng mô hình, không nhẩm bằng mắt. Ngoài ra đây là trường hợp ĐỐI TÁC chọn; nếu DOANH NGHIỆP chọn thì luật khác hẳn (đoạn 41-43).</p>
+</div>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Đoạn 37: đo fair value thành phần nợ trước; thành phần vốn = fair value cả công cụ trừ fair value thành phần nợ. Với giao dịch bên ngoài đo trực tiếp (đoạn 35), thành phần vốn = fair value hàng/dịch vụ trừ fair value thành phần nợ. Tất toán theo đoạn 39-40.</p>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">4</div>
+      <div class="step-meta"><span class="lbl">Kể lại gọn gàng</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Cho đối tác chọn tiền hay cổ phiếu là cấp một công cụ hai mảnh: nợ và vốn. Đo nợ trước, vốn là phần dư. Thành phần vốn chỉ là cái lợi tăng thêm của đòi cổ phiếu so với đòi tiền. Hai cửa bằng nhau thì cái lợi đó là 0, nên thành phần vốn bằng 0. Chỉ khi hai cửa lệch giá, phần vốn mới lớn hơn 0.</p>
+<p class="core">Có quyền lựa chọn <span>phần vốn là cái lợi thêm của cổ phiếu so với tiền — bằng nhau thì bằng 0.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã hiểu chưa?</h3>
+      <ol>
+        <li>Đối tác được chọn tiền hay cổ phiếu cùng giá trị — vì sao thành phần vốn có thể bằng 0?</li>
+        <li>Khi thành phần vốn bằng 0, cả giao dịch được hạch toán giống loại nào?</li>
+        <li>Phải có điều kiện gì thì thành phần vốn mới lớn hơn 0?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nếu giải thích được cho bà ngoại hiểu, bạn mới thật sự hiểu.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-tap-doan-bat-doi-xung"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Giải thích theo phương pháp Feynman</div>
+    <h1 class="rise" style="animation-delay:.08s">Con không phát hành gì, không chi gì — vẫn ghi equity-settled</h1>
+    <p class="core rise" style="animation-delay:.16s">Cùng một award <span>mà công ty con và tập đoàn ghi hai con số khác nhau.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Điều cần hiểu &amp; cách tiếp cận</span><h2>Quy tắc: mỗi entity phân loại theo góc nhìn riêng</h2></div>
+    </div>
+    <div class="rule">IFRS 2 đoạn 43A: trong BCTC riêng, entity NHẬN hàng hóa/dịch vụ phân loại theo (a) bản chất award và (b) quyền, nghĩa vụ của chính nó — số có thể khác số của tập đoàn. Đoạn 43B: entity nhận ghi <strong>equity-settled</strong> nếu award là vốn của chính nó, HOẶC nó không có nghĩa vụ thanh toán. Đoạn 43C: entity ĐỨNG RA thanh toán ghi equity-settled CHỈ KHI tất toán bằng vốn của chính mình.</div>
+    <div class="sub">Cách giải thích</div>
+    <div class="approach"><p>Chỗ vấp: công ty con không phát hành cổ phiếu của mình, không chi đồng nào, sao lại equity-settled? Cách giải: 'equity-settled' với bên nhận KHÔNG có nghĩa 'tôi phát hành cổ phiếu'. Nó nghĩa là 'tôi nhận dịch vụ mà không nợ ai'. Tôi sẽ neo vào cảnh được người khác trả nợ giùm.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Giải thích đơn giản</span><h2>Mẹ trả thưởng hộ, con vẫn phải ghi sổ</h2></div>
+    </div>
+    <p class="lead">Công ty con thuê dịch vụ — nhân viên của con làm việc cho con. Công ty mẹ thưởng cho những nhân viên đó bằng cổ phiếu CỦA MẸ. Con không phát hành cổ phiếu nào. Con cũng không chi một đồng nào. Vậy trên sổ riêng của con, ghi cái gì?</p>
+
+<p>Trực giác bảo: con đâu làm gì về mặt thanh toán, chắc khỏi ghi, hoặc ghi một khoản nợ. Sai. Con ghi một khoản chi phí, đối ứng tăng vốn — tức equity-settled. Và con số con ghi có thể khác con số của cả tập đoàn.</p>
+
+<div class="sub">Equity-settled không có nghĩa 'tôi phát hành cổ phiếu'</div>
+<p>Nhiều người tưởng equity-settled là 'tôi phát cổ phiếu của mình'. Không phải. Với bên nhận, equity-settled nghĩa là nhận dịch vụ mà KHÔNG có nghĩa vụ phải trả. Con không nợ ai cả, nên là equity-settled.</p>
+
+<div class="sub">Ai trả thì kệ — con chỉ nhìn nghĩa vụ của chính con</div>
+<p>Mẹ gánh phần thưởng, con không phải trả gì. Đoạn 43B nói: con nhận dịch vụ và không có nghĩa vụ thanh toán thì ghi equity-settled. Coi như mẹ góp vốn vào con — con được trả nợ giùm.</p>
+
+<div class="sub">Vì sao số con khác số tập đoàn</div>
+<p>Mỗi bên nhìn theo góc của mình (đoạn 43A). Con đo theo quyền và nghĩa vụ riêng của con. Tập đoàn hợp nhất nhìn toàn cảnh. Hai góc nhìn khác nhau, nên hai con số có thể khác — đó là chuyện bình thường, không phải sai sót.</p>
+
+<div class="sub">Còn bên mẹ thì sao</div>
+<p>Mẹ là bên đứng ra trả. Đoạn 43C: mẹ ghi equity-settled chỉ khi trả bằng cổ phiếu của chính mẹ. Ở đây đúng là thế, nên mẹ cũng equity-settled.</p>
+  </section>
+
+  <section class="gaps">
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Chỗ vấp · Lỗ hổng</span><h2>Mấy chỗ nghe xuôi mà nghĩ kỹ chưa thông</h2></div>
+    </div>
+    <div class="gap-q"><span class="q">"Con không phát hành cổ phiếu nào, sao gọi là equity-settled?"</span><p>Vì equity-settled không định nghĩa bằng 'ai phát hành'. Nó định nghĩa bằng 'bên nhận có nợ hay không'. Con nhận dịch vụ mà không có nghĩa vụ thanh toán, nên là equity-settled. Mẹ mới là bên phát hành cổ phiếu, nhưng đó là chuyện của sổ mẹ.</p></div>
+<div class="gap-q"><span class="q">"Con không chi đồng nào, sao lại có chi phí?"</span><p>Vì chi phí đo công sức đã nhận, không đo tiền đã chi. Con đã nhận và dùng công sức của nhân viên, nên có chi phí. Bên đối ứng không phải tiền ra, mà là phần mẹ góp vốn vào con — như được tặng vốn.</p></div>
+<div class="gap-q"><span class="q">"Cùng một award, sao con và tập đoàn lại ghi khác số?"</span><p>Vì mỗi bên nhìn theo góc riêng, và đoạn 43A cho phép điều đó. Con chỉ đo lại cho thay đổi điều kiện vesting không phải market. Tập đoàn hợp nhất nhìn toàn cảnh giao dịch. Khác số là hệ quả tự nhiên, không phải lỗi ghi sổ.</p></div>
+<div class="gap-q"><span class="q">"Nếu con phải hoàn trả mẹ chi phí award thì sao?"</span><p>Con vẫn theo đoạn 43B, bất kể thỏa thuận hoàn trả nội bộ (đoạn 43D). Dòng tiền hoàn trả giữa mẹ và con không tự biến giao dịch thành cash-settled. Phân loại vẫn dựa trên award và nghĩa vụ của con.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví von &amp; ví dụ đời thường</span><h2>Neo vào chuyện được trả nợ giùm</h2></div>
+    </div>
+    <div class="analogy-card"><span class="tag">Ví dụ trung tâm</span>
+<p>Bạn cần sửa nhà, gọi thợ tới làm. Nhưng một người bạn giàu trả công cho thợ giùm bạn, bằng tài sản của anh ta. Bạn đã nhận dịch vụ sửa nhà — có chi phí thật. Nhưng bạn không nợ ai, vì đã có người trả giùm.</p>
+<p>Trên sổ của bạn: một khoản chi phí sửa nhà, đối ứng là phần được tặng vào, không phải một khoản nợ. Đó đúng là 'equity-settled' từ góc của bạn — dù bạn không phát hành gì, không chi gì.</p>
+<p class="limit"><b>Chỗ ví von này hỏng:</b> người bạn trả giùm là quan hệ cá nhân tùy hứng. Trong tập đoàn, mẹ sở hữu con. Nên khoản trả giùm được coi là mẹ GÓP VỐN vào con — ghi vào vốn chủ sở hữu, không phải quà hay thu nhập. Ngoài ra bên mẹ còn phải tự phân loại riêng (đoạn 43C), điều ví von này không chạm tới.</p>
+</div>
+<p>Đảo một chi tiết cho thấy bản lề. Nếu theo điều khoản, CON phải tự trả phần thưởng đó (vd trả lại bằng tiền), thì con CÓ nghĩa vụ — con ghi cash-settled, không còn equity nữa. Bản lề là nghĩa vụ của con, không phải hình thức mẹ trả.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Đoạn 43C nhìn từ bên thanh toán: ghi equity-settled chỉ khi tất toán bằng công cụ vốn của chính nó; trả bằng tiền hay bằng cổ phiếu của một entity khác thì cash-settled. Đoạn 43D: thỏa thuận hoàn trả nội bộ không đổi cách bên nhận phân loại theo 43B. Sau ghi nhận ban đầu, bên nhận chỉ đo lại cho thay đổi điều kiện vesting không phải market (đoạn 43B, dẫn 19-21).</p>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">4</div>
+      <div class="step-meta"><span class="lbl">Kể lại gọn gàng</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Equity-settled không có nghĩa 'tôi phát hành cổ phiếu', mà là 'tôi nhận dịch vụ và không nợ ai'. Con nhận công sức nhân viên, mẹ trả bằng cổ phiếu của mẹ. Con không phát hành gì, không chi gì, nhưng cũng không nợ ai — nên ghi chi phí, đối ứng là mẹ góp vốn vào con. Mỗi bên nhìn theo góc riêng, nên số con và số tập đoàn có thể khác nhau.</p>
+<p class="core">Cùng một award <span>equity-settled là 'nhận mà không nợ', không phải 'tự phát hành cổ phiếu'.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã hiểu chưa?</h3>
+      <ol>
+        <li>Công ty con không phát hành cổ phiếu, không chi tiền, vì sao vẫn ghi equity-settled?</li>
+        <li>Vì sao cùng một award mà số công ty con ghi có thể khác số của tập đoàn hợp nhất?</li>
+        <li>Bên đứng ra thanh toán (công ty mẹ) ghi equity-settled trong điều kiện nào?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nếu giải thích được cho bà ngoại hiểu, bạn mới thật sự hiểu.</p>
+  </footer>
+
+</div></div>
+<script>
+  var bar=document.getElementById('progress');
+  function upd(){var h=document.documentElement;var s=h.scrollTop||document.body.scrollTop;
+    var max=(h.scrollHeight-h.clientHeight)||1;bar.style.width=(s/max*100)+'%';}
+  window.addEventListener('scroll',upd,{passive:true});upd();
+  var io=new IntersectionObserver(function(es){es.forEach(function(e){
+    if(e.isIntersecting){e.target.style.animation='rise .7s cubic-bezier(.2,.7,.3,1) forwards';io.unobserve(e.target);}});},{threshold:.12});
+  document.querySelectorAll('section').forEach(function(s){s.style.opacity='0';io.observe(s);});
+</script>
+
+<script>
+(function(){
+  var tabs=[].slice.call(document.querySelectorAll('.tabbar .tab'));
+  var panels=[].slice.call(document.querySelectorAll('.concept-panel'));
+  function show(i){
+    tabs.forEach(function(t,j){t.classList.toggle('active',j===i);});
+    panels.forEach(function(p,j){
+      var on=(j===i); p.classList.toggle('active',on);
+      if(on){p.querySelectorAll('section').forEach(function(s){s.style.opacity='';s.style.animation='';});}
+    });
+    try{history.replaceState(null,'','#'+panels[i].id);}catch(e){}
+    window.scrollTo(0,0); window.dispatchEvent(new Event('scroll'));
+  }
+  tabs.forEach(function(t){t.addEventListener('click',function(){show(+t.getAttribute('data-i'));});});
+  var start=0; panels.forEach(function(p,j){if('#'+p.id===location.hash)start=j;});
+  show(start);
+})();
+</script>
+
+</body></html>

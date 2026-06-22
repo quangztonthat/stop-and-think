@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Bài 2 (Ch14) — Bẫy Mã</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/chessboard-js/1.0.0/chessboard-1.0.0.min.css">
+<style>
+* { box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; max-width: 980px; margin: 0 auto; padding: 24px; color: #1a1a1a; line-height: 1.6; background: #fafafa; }
+h1 { color: #1a3a52; font-size: 28px; margin: 0 0 8px; }
+h2 { color: #2c5282; font-size: 20px; margin: 32px 0 12px; padding-bottom: 6px; border-bottom: 2px solid #e1e8ed; }
+.source { color: #888; font-size: 13px; margin-bottom: 24px; }
+.nav-link { font-size: 13px; color: #2c5282; text-decoration: none; }
+.stage { background: white; border-radius: 8px; padding: 20px 24px; margin: 16px 0; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
+.stage-label { display: inline-block; background: #2c5282; color: white; font-size: 12px; font-weight: 600; padding: 3px 10px; border-radius: 12px; margin-bottom: 8px; }
+.hook-question { font-size: 17px; color: #1a3a52; background: #fff8e1; border-left: 4px solid #faad14; padding: 14px 18px; border-radius: 0 6px 6px 0; margin: 12px 0; }
+.reveal-btn { background: #faad14; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-size: 14px; }
+.hidden { display: none; }
+.board-layout { display: grid; grid-template-columns: 440px 1fr; gap: 24px; align-items: start; margin-top: 16px; }
+@media (max-width: 820px) { .board-layout { grid-template-columns: 1fr; } }
+#board { width: 420px; max-width: 100%; }
+.mini-board { width: 300px; max-width: 100%; margin: 14px auto; }
+.controls { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; justify-content: center; }
+.controls button { padding: 7px 12px; background: #2c5282; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 13px; }
+.info-panel { background: #f8f9fb; padding: 16px; border-radius: 6px; border: 1px solid #e1e8ed; min-height: 380px; }
+.move-display { font-family: monospace; font-size: 16px; color: #2c5282; font-weight: 600; margin-bottom: 8px; }
+.commentary { font-size: 14px; color: #444; margin-bottom: 12px; }
+.info-box { background: white; padding: 10px; border-radius: 4px; border: 1px solid #e1e8ed; margin: 12px 0; font-size: 13px; text-align: center; }
+.info-box.win { background: #f6ffed; border-color: #b7eb8f; color: #389e0d; font-weight: 600; }
+.self-test { background: #fff8e1; border: 2px dashed #faad14; border-radius: 6px; padding: 16px; margin-top: 16px; }
+.feedback { margin-top: 10px; padding: 10px 14px; border-radius: 4px; font-size: 14px; }
+.feedback.correct { background: #f6ffed; color: #389e0d; border-left: 4px solid #52c41a; }
+.feedback.wrong { background: #fff1f0; color: #cf1322; border-left: 4px solid #ff4d4f; }
+.quiz { background: #f0f7ff; border-left: 4px solid #2c5282; border-radius: 0 6px 6px 0; padding: 14px 18px; margin: 12px 0; }
+.quiz-q { font-weight: 600; margin-bottom: 10px; color: #1a3a52; }
+.quiz-options { display: flex; flex-direction: column; gap: 6px; }
+.quiz-option { padding: 8px 12px; background: white; border: 1px solid #c9d6e2; border-radius: 4px; cursor: pointer; text-align: left; font-size: 14px; }
+.quiz-option.correct { background: #f6ffed; border-color: #52c41a; color: #389e0d; }
+.quiz-option.wrong { background: #fff1f0; border-color: #ff4d4f; color: #cf1322; }
+.quiz-explain { margin-top: 8px; font-size: 13px; color: #555; font-style: italic; }
+.summary-card { background: linear-gradient(135deg, #1a3a52, #2c5282); color: white; padding: 20px 24px; border-radius: 8px; margin-top: 24px; }
+.summary-card h2 { color: white; border: none; margin-top: 0; }
+.summary-card ul { padding-left: 20px; }
+code { background: #f1f3f5; padding: 1px 6px; border-radius: 3px; font-family: monospace; font-size: 0.9em; }
+.summary-card code { background: rgba(255,255,255,0.2); color: white; }
+.progress-bar { height: 4px; background: #e1e8ed; border-radius: 2px; overflow: hidden; margin: 8px 0 16px; }
+.progress-fill { height: 100%; background: #52c41a; transition: width 0.3s; width: 0%; }
+</style>
+</head>
+<body>
+
+<h1>Bài 2 — Bẫy Mã (Trapping a Knight)</h1>
+<div class="source">
+  Chương 14 — Phối hợp nâng cao<br>
+  <a class="nav-link" href="../index.html">← Trang chủ</a> ·
+  <a class="nav-link" href="chapter_14_more_combinations.html">← Chương 14</a>
+</div>
+
+<div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+
+<div class="stage">
+  <span class="stage-label">STAGE 1 · HOOK</span>
+  <h2 style="margin-top:8px">Mã ở rìa — bẫy bắt Mã!</h2>
+  <p>Thế cờ: Trắng Kf6 + Re1. Đen Kc2 + Nh8 (Mã trong góc). Trắng muốn bắt Mã không công.</p>
+  <div id="hookBoard" class="mini-board"></div>
+  <div class="hook-question">
+    🤔 <strong>"Mã ở rìa là Mã tồi"</strong> — Mã ở góc/rìa chỉ có 2 ô để đi. Dễ bẫy!
+    Mã ở h8: chỉ đi được f7, g6. Đặt Xe ở hàng 8 → Mã kẹt. Bắt không công!
+  </div>
+  <button class="reveal-btn" onclick="document.getElementById('hookAnswer').classList.remove('hidden'); markStage(1);">Hiển thị đáp án</button>
+  <div id="hookAnswer" class="hidden" style="margin-top:14px">
+    <p><strong>1.Re8 (Xe đến hàng 8) Kc3 2.Rxh8 — Mã tiêu rồi!</strong> Mã không thể chạy thoát ở hàng 8 (Re8 khống chế các đường f7/g6 từ khu vực h8).</p>
+  </div>
+</div>
+
+<div class="stage">
+  <span class="stage-label">STAGE 2 · CONCEPT</span>
+  <h2 style="margin-top:8px">Nguyên tắc bẫy quân</h2>
+  <ul>
+    <li><strong>Mã ở rìa</strong>: chỉ 4 ô để đi (ở góc chỉ 2). Mục tiêu dễ bẫy.</li>
+    <li><strong>Tượng ở rìa</strong>: Tượng ở cột a hoặc cột h mất đường chéo → cũng có thể bị bẫy.</li>
+    <li><strong>Phương pháp</strong>: cắt các ô chạy thoát bằng Xe/Hậu → quân kẹt.</li>
+    <li><strong>Câu nói nổi tiếng</strong>: Tarrasch: "Mã ở rìa là Mã tồi, ở h3 còn tệ hơn!"</li>
+  </ul>
+  <p>Quy tắc: <strong>"Dồn quân ra rìa, rồi bẫy"</strong> — mẫu phổ biến trong tàn cuộc.</p>
+</div>
+
+<div class="stage">
+  <span class="stage-label">STAGE 3 · WALKTHROUGH</span>
+  <div class="board-layout">
+    <div>
+      <div id="board"></div>
+      <div class="controls">
+        <button onclick="resetBoard()">⟨⟨ Đầu</button>
+        <button onclick="prevMove()">⟨ Lùi</button>
+        <button onclick="nextMove()">Tiến ⟩</button>
+      </div>
+    </div>
+    <div class="info-panel">
+      <div class="move-display" id="moveDisplay">Thế cờ khởi đầu</div>
+      <div class="commentary" id="commentary">Trắng Kf6 + Re1. Đen Kc2 + Nh8 (góc). Bẫy Mã!</div>
+      <div class="info-box" id="infoBox">Đến lượt: <strong>Trắng</strong></div>
+    </div>
+  </div>
+</div>
+
+<div class="stage">
+  <span class="stage-label">STAGE 4 · SELF-TEST</span>
+  <h2 style="margin-top:8px">Tại sao Mã ở h8 dễ bị bẫy?</h2>
+  <div class="self-test">
+    <div class="quiz-options" id="selfTestOptions">
+      <button class="quiz-option" onclick="checkSelfTest(this, true, 'Đúng. Mã ở h8 chỉ đi được f7 và g6 (2 ô). Mã ở trung tâm có 8 ô. Rìa/góc = ít lựa chọn = dễ kiểm soát hết các ô chạy thoát.')">Mã ở góc chỉ có 2 ô để đi — dễ kiểm soát hết</button>
+      <button class="quiz-option" onclick="checkSelfTest(this, false, 'Sai. Mã ở trung tâm có nhiều lựa chọn.')">Mã nào cũng dễ bẫy</button>
+    </div>
+    <div class="feedback hidden" id="selfTestFeedback"></div>
+  </div>
+</div>
+
+<div class="stage">
+  <span class="stage-label">STAGE 5 · MINI-QUIZ</span>
+  <div class="quiz">
+    <div class="quiz-q">Q1. Câu nói của Tarrasch về Mã ở rìa?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" onclick="quizCheck(this, true)">"Mã ở rìa là Mã tồi" — Mã ở rìa thì yếu</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">"Mã mạnh nhất ở trung tâm"</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">"Hai Mã mạnh hơn một Mã"</button>
+    </div>
+    <div class="quiz-explain hidden">
+      Siegbert Tarrasch (1862-1934) — kiện tướng người Đức, đã đúc kết nhiều nguyên tắc thế trận. Mã ở rìa = chỉ khống chế được ít ô.
+    </div>
+  </div>
+  <div class="quiz">
+    <div class="quiz-q">Q2. Mã ở trung tâm khống chế bao nhiêu ô?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" onclick="quizCheck(this, true)">8 ô (tối đa)</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">4 ô</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">6 ô</button>
+    </div>
+    <div class="quiz-explain hidden">
+      Mã ở trung tâm (e4/d4/e5/d5) khống chế 8 ô — cơ động tối đa. Mã ở rìa = 4 ô. Mã ở góc = 2 ô.
+    </div>
+  </div>
+  <div class="quiz">
+    <div class="quiz-q">Q3. Cách bẫy Mã phổ biến?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" onclick="quizCheck(this, true)">Dồn Mã về rìa/góc, dùng tốt/Xe chặn các ô chạy thoát</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Ăn luôn</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Đe dọa vua</button>
+    </div>
+    <div class="quiz-explain hidden">
+      Phương pháp: 1) Dồn Mã ra rìa (ép các nước đi), 2) Đặt quân kiểm soát các ô chạy thoát, 3) Bắt Mã không công. Mô-típ thường gặp: Mã ở cột h bị tốt cột g + vua chặn.
+    </div>
+  </div>
+</div>
+
+<div class="summary-card">
+  <h2>📌 Tóm tắt</h2>
+  <ul>
+    <li><strong>Bẫy Mã</strong>: Mã ở rìa/góc ít lựa chọn → dễ bắt.</li>
+    <li><strong>Tarrasch</strong>: "Mã ở rìa là Mã tồi".</li>
+    <li><strong>Độ cơ động của Mã</strong>: trung tâm 8 ô, rìa 4 ô, góc 2 ô.</li>
+    <li><strong>Phương pháp</strong>: dồn ra rìa → kiểm soát các ô chạy thoát → bắt không công.</li>
+    <li><strong>Thực chiến</strong>: nếu Mã đối thủ ở rìa/góc, rà soát xem có thể bẫy được không.</li>
+  </ul>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chessboard-js/1.0.0/chessboard-1.0.0.min.js"></script>
+<script>
+const START_FEN = '7n/8/5K2/8/8/8/2k5/4R3 w - - 0 1';
+const MOVES = ['Re8','Kc3','Rxh8'];
+const COMMENTARY = {
+  0: { move: 'Thế cờ khởi đầu', text: 'Trắng Kf6 + Re1. Đen Kc2 + Nh8. Mã trong góc. Bẫy nó!' },
+  1: { move: '1. Re8', text: 'Xe Re1→e8. Đến hàng 8. Đe dọa Rxh8 ở nước sau. Mã không chạy thoát được: Nf7 bị Kf6 khống chế (khu vực e6/f6/g7), Ng6 bị Kf6 khống chế (Mã chạy g6 thì vua f6 ăn).' },
+  2: { move: '1...Kc3', text: 'Đen thử nước chờ (Kc2→Kc3). Không cứu được Mã — Mã bị kẹt.' },
+  3: { move: '2. Rxh8  +Mã không công', text: '✅ ĐÃ BẮT MÃ! Xe Re8→h8 ăn Mã. Lợi lực: +3 (Mã). Bẫy thành công. Đen không có cách đáp trả (Kf7 khống chế hàng không liên quan).' }
+};
+
+let board, game, currentMove = 0, stagesCompleted = new Set();
+
+function initBoard() {
+  game = new Chess(START_FEN);
+  board = Chessboard('board', { position: START_FEN, draggable: true,
+    pieceTheme: 'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png',
+    onDrop: (s,t) => { const m = game.move({from:s,to:t,promotion:'q'}); if(!m) return 'snapback'; },
+    onSnapEnd: () => board.position(game.fen()) });
+  updateDisplay();
+}
+function nextMove() { if(currentMove>=MOVES.length) return; game.move(MOVES[currentMove]); board.position(game.fen()); currentMove++; setTimeout(updateDisplay,50); if(currentMove>=MOVES.length) markStage(3); }
+function prevMove() { if(currentMove<=0) return; game.undo(); currentMove--; board.position(game.fen()); setTimeout(updateDisplay,50); }
+function resetBoard() { game = new Chess(START_FEN); board.position(START_FEN); currentMove = 0; setTimeout(updateDisplay,50); }
+
+function updateDisplay() {
+  const cm = COMMENTARY[currentMove] || COMMENTARY[0];
+  document.getElementById('moveDisplay').textContent = cm.move;
+  document.getElementById('commentary').innerHTML = cm.text;
+  const box = document.getElementById('infoBox');
+  if (currentMove >= MOVES.length) { box.className = 'info-box win'; box.innerHTML = '+Mã (bắt Mã không công)'; }
+  else { box.className = 'info-box'; box.innerHTML = 'Đến lượt: <strong>' + (game.turn()==='w'?'Trắng':'Đen') + '</strong>'; }
+  updateProgress();
+}
+function checkSelfTest(btn, ok, exp) {
+  document.querySelectorAll('#selfTestOptions .quiz-option').forEach(el=>el.disabled=true);
+  btn.classList.add(ok?'correct':'wrong');
+  const fb = document.getElementById('selfTestFeedback');
+  fb.classList.remove('hidden'); fb.className = 'feedback ' + (ok?'correct':'wrong');
+  fb.textContent = (ok?'✓ ':'✗ ') + exp; markStage(4);
+}
+function quizCheck(btn, ok) {
+  const q = btn.closest('.quiz');
+  q.querySelectorAll('.quiz-option').forEach(el=>el.disabled=true);
+  btn.classList.add(ok?'correct':'wrong');
+  if (!ok) q.querySelectorAll('.quiz-option').forEach(el => { if (el.getAttribute('onclick').includes('true')) el.classList.add('correct'); });
+  q.querySelector('.quiz-explain').classList.remove('hidden'); markStage(5);
+}
+function markStage(n) { stagesCompleted.add(n); updateProgress(); }
+function updateProgress() { document.getElementById('progressFill').st

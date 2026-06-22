@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Bài 2 (Ch12) — Chiếu hết Anastasia</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/chessboard-js/1.0.0/chessboard-1.0.0.min.css">
+<style>
+* { box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; max-width: 980px; margin: 0 auto; padding: 24px; color: #1a1a1a; line-height: 1.6; background: #fafafa; }
+h1 { color: #1a3a52; font-size: 28px; margin: 0 0 8px; }
+h2 { color: #2c5282; font-size: 20px; margin: 32px 0 12px; padding-bottom: 6px; border-bottom: 2px solid #e1e8ed; }
+.source { color: #888; font-size: 13px; margin-bottom: 24px; }
+.nav-link { font-size: 13px; color: #2c5282; text-decoration: none; }
+.stage { background: white; border-radius: 8px; padding: 20px 24px; margin: 16px 0; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
+.stage-label { display: inline-block; background: #2c5282; color: white; font-size: 12px; font-weight: 600; padding: 3px 10px; border-radius: 12px; margin-bottom: 8px; }
+.hook-question { font-size: 17px; color: #1a3a52; background: #fff8e1; border-left: 4px solid #faad14; padding: 14px 18px; border-radius: 0 6px 6px 0; margin: 12px 0; }
+.reveal-btn { background: #faad14; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-size: 14px; }
+.hidden { display: none; }
+.board-layout { display: grid; grid-template-columns: 440px 1fr; gap: 24px; align-items: start; margin-top: 16px; }
+@media (max-width: 820px) { .board-layout { grid-template-columns: 1fr; } }
+#board { width: 420px; max-width: 100%; }
+.mini-board { width: 300px; max-width: 100%; margin: 14px auto; }
+.controls { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; justify-content: center; }
+.controls button { padding: 7px 12px; background: #2c5282; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 13px; }
+.info-panel { background: #f8f9fb; padding: 16px; border-radius: 6px; border: 1px solid #e1e8ed; min-height: 380px; }
+.move-display { font-family: monospace; font-size: 16px; color: #2c5282; font-weight: 600; margin-bottom: 8px; }
+.commentary { font-size: 14px; color: #444; margin-bottom: 12px; }
+.info-box { background: white; padding: 10px; border-radius: 4px; border: 1px solid #e1e8ed; margin: 12px 0; font-size: 13px; text-align: center; }
+.info-box.win { background: #f6ffed; border-color: #b7eb8f; color: #389e0d; font-weight: 600; }
+.self-test { background: #fff8e1; border: 2px dashed #faad14; border-radius: 6px; padding: 16px; margin-top: 16px; }
+.feedback { margin-top: 10px; padding: 10px 14px; border-radius: 4px; font-size: 14px; }
+.feedback.correct { background: #f6ffed; color: #389e0d; border-left: 4px solid #52c41a; }
+.feedback.wrong { background: #fff1f0; color: #cf1322; border-left: 4px solid #ff4d4f; }
+.quiz { background: #f0f7ff; border-left: 4px solid #2c5282; border-radius: 0 6px 6px 0; padding: 14px 18px; margin: 12px 0; }
+.quiz-q { font-weight: 600; margin-bottom: 10px; color: #1a3a52; }
+.quiz-options { display: flex; flex-direction: column; gap: 6px; }
+.quiz-option { padding: 8px 12px; background: white; border: 1px solid #c9d6e2; border-radius: 4px; cursor: pointer; text-align: left; font-size: 14px; }
+.quiz-option.correct { background: #f6ffed; border-color: #52c41a; color: #389e0d; }
+.quiz-option.wrong { background: #fff1f0; border-color: #ff4d4f; color: #cf1322; }
+.quiz-explain { margin-top: 8px; font-size: 13px; color: #555; font-style: italic; }
+.summary-card { background: linear-gradient(135deg, #1a3a52, #2c5282); color: white; padding: 20px 24px; border-radius: 8px; margin-top: 24px; }
+.summary-card h2 { color: white; border: none; margin-top: 0; }
+.summary-card ul { padding-left: 20px; }
+code { background: #f1f3f5; padding: 1px 6px; border-radius: 3px; font-family: monospace; font-size: 0.9em; }
+.summary-card code { background: rgba(255,255,255,0.2); color: white; }
+.progress-bar { height: 4px; background: #e1e8ed; border-radius: 2px; overflow: hidden; margin: 8px 0 16px; }
+.progress-fill { height: 100%; background: #52c41a; transition: width 0.3s; width: 0%; }
+</style>
+</head>
+<body>
+
+<h1>Bài 2 — Chiếu hết Anastasia (Anastasia's Mate)</h1>
+<div class="source">
+  Chương 12 — Mẫu chiếu hết<br>
+  <a class="nav-link" href="../index.html">← Trang chủ</a> ·
+  <a class="nav-link" href="chapter_12_mating_patterns.html">← Chương 12</a>
+</div>
+
+<div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+
+<div class="stage">
+  <span class="stage-label">STAGE 1 · HOOK</span>
+  <h2 style="margin-top:8px">Bộ đôi Mã + Xe: Mã cắt đường chạy thoát, Xe tung đòn</h2>
+  <p>Thế cờ: Trắng Kg2 + Ne7 + Re1. Đen Kh7 + Pf7/Pg7. Chiếu hết trong 1!</p>
+  <div id="hookBoard" class="mini-board"></div>
+  <div class="hook-question">
+    🤔 <strong>Mã Ne7 đang "khóa" vua đen.</strong> Mã khống chế g6, g8 — vua không có đường chạy thoát sang ngang.
+    Xe đi đến cột h → chiếu hết ngay! Mẫu này tên là "chiếu hết Anastasia" (từ tiểu thuyết Đức 1803).
+  </div>
+  <button class="reveal-btn" onclick="document.getElementById('hookAnswer').classList.remove('hidden'); markStage(1);">Hiển thị đáp án</button>
+  <div id="hookAnswer" class="hidden" style="margin-top:14px">
+    <p><strong>1.Rh1# Chiếu hết!</strong> Xe Re1→h1. Khống chế Kh7. Vua đen: Kh8 bị Mã khống chế (Ne7 khống chế g8). Kg8 bị Mã khống chế. Kg6 bị Mã khống chế. f7/g7 là tốt của mình. Không chạy thoát → CHIẾU HẾT.</p>
+  </div>
+</div>
+
+<div class="stage">
+  <span class="stage-label">STAGE 2 · CONCEPT</span>
+  <h2 style="margin-top:8px">Cách dàn quân chiếu hết Anastasia</h2>
+  <ul>
+    <li><strong>Mẫu</strong>: Mã ở e7 (hoặc vị trí đối xứng) khống chế g6 + g8. Xe ở cột h chiếu hết Kh7.</li>
+    <li><strong>Vua đen kẹt</strong>: g6/g8 = Mã khống chế; tốt của mình = chặn; cột h = Xe chiếu hết.</li>
+    <li><strong>Lịch sử</strong>: Tên từ tiểu thuyết "Anastasia und das Schachspiel" (1803, Wilhelm Heinse).</li>
+    <li><strong>Cách dàn quân</strong>: vua đối thủ ở rìa (hàng 7 hoặc cột h) + Mã có thể với tới khu vực e7.</li>
+  </ul>
+  <p>Mã + Xe là "cặp bài trùng" mạnh: Mã khống chế các ô chạy thoát, Xe tung đòn quyết định cuối cùng.</p>
+</div>
+
+<div class="stage">
+  <span class="stage-label">STAGE 3 · WALKTHROUGH</span>
+  <div class="board-layout">
+    <div>
+      <div id="board"></div>
+      <div class="controls">
+        <button onclick="resetBoard()">⟨⟨ Đầu</button>
+        <button onclick="prevMove()">⟨ Lùi</button>
+        <button onclick="nextMove()">Tiến ⟩</button>
+      </div>
+    </div>
+    <div class="info-panel">
+      <div class="move-display" id="moveDisplay">Thế cờ khởi đầu</div>
+      <div class="commentary" id="commentary">Trắng Kg2 + Ne7 + Re1. Đen Kh7 + Pf7/Pg7. Mã đã "khóa" vua. Chiếu hết trong 1!</div>
+      <div class="info-box" id="infoBox">Đến lượt: <strong>Trắng</strong></div>
+    </div>
+  </div>
+</div>
+
+<div class="stage">
+  <span class="stage-label">STAGE 4 · SELF-TEST</span>
+  <h2 style="margin-top:8px">Tại sao Mã Ne7 lại cần thiết?</h2>
+  <div class="self-test">
+    <div class="quiz-options" id="selfTestOptions">
+      <button class="quiz-option" onclick="checkSelfTest(this, true, 'Đúng. Mã ở e7 khống chế g6 và g8 — chặn đường chạy thoát của Kh7. Không có Mã, vua chạy được Kg6 hoặc Kg8 → không chiếu hết.')">Mã khống chế g6 + g8 — chặn ô chạy thoát duy nhất của Kh7</button>
+      <button class="quiz-option" onclick="checkSelfTest(this, false, 'Sai. Mã có vai trò MẤU CHỐT trong mẫu này.')">Mã chỉ là lực thừa</button>
+    </div>
+    <div class="feedback hidden" id="selfTestFeedback"></div>
+  </div>
+</div>
+
+<div class="stage">
+  <span class="stage-label">STAGE 5 · MINI-QUIZ</span>
+  <div class="quiz">
+    <div class="quiz-q">Q1. Chiếu hết Anastasia cần sự phối hợp nào?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" onclick="quizCheck(this, true)">Mã + Xe (Mã kiểm soát đường chạy thoát, Xe khống chế cột h)</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Hậu + Tượng</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">2 Xe</button>
+    </div>
+    <div class="quiz-explain hidden">
+      Mã ở e7 (đối với vua đen ở h7) khống chế g6 + g8. Xe ở cột h tung đòn chiếu hết. Mẫu này được đặt tên từ tiểu thuyết Đức 1803.
+    </div>
+  </div>
+  <div class="quiz">
+    <div class="quiz-q">Q2. Tại sao chiếu hết này gọi là "Anastasia"?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" onclick="quizCheck(this, true)">Tên của tiểu thuyết "Anastasia und das Schachspiel" (1803, Heinse)</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Tên kỳ thủ Anastasia nổi tiếng</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Tên thành phố Anastasia</button>
+    </div>
+    <div class="quiz-explain hidden">
+      Wilhelm Heinse viết tiểu thuyết "Anastasia und das Schachspiel" năm 1803. Trong đó mẫu này được mô tả → đặt tên chiếu hết Anastasia.
+    </div>
+  </div>
+  <div class="quiz">
+    <div class="quiz-q">Q3. Cách dàn quân Anastasia thường gặp nhất từ thế cờ nào?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" onclick="quizCheck(this, true)">Vua đối thủ ở rìa (hàng 7 hoặc cột h) + Mã có thể với tới khu vực e7</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Vua ở trung tâm</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Tàn cuộc Vua + tốt</button>
+    </div>
+    <div class="quiz-explain hidden">
+      Vua ở góc/rìa → ít ô chạy thoát. Mã ở e7 khống chế g6 + g8 (2 ô sang ngang duy nhất của h7). Xe đến cột h = chiếu hết.
+    </div>
+  </div>
+</div>
+
+<div class="summary-card">
+  <h2>📌 Tóm tắt</h2>
+  <ul>
+    <li><strong>Chiếu hết Anastasia</strong>: phối hợp Mã + Xe → chiếu hết vua ở rìa.</li>
+    <li><strong>Điểm mấu chốt</strong>: Mã ở e7 khống chế g6/g8. Xe ở cột h. Vua h7 không chạy thoát.</li>
+    <li><strong>Mẫu</strong>: <code>Rh1#</code> hoặc tương tự — Xe đến cột h khi Mã đã khóa.</li>
+    <li><strong>Lịch sử</strong>: Tên từ tiểu thuyết Đức "Anastasia und das Schachspiel" (1803).</li>
+    <li><strong>Thực chiến</strong>: Nhận ra mẫu khi Mã ở e7/d6 + vua đối thủ ở rìa — tìm Xe → cột h.</li>
+  </ul>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chessboard-js/1.0.0/chessboard-1.0.0.min.js"></script>
+<script>
+const START_FEN = '8/4Nppk/8/8/8/8/6K1/4R3 w - - 0 1';
+const MOVES = ['Rh1#'];
+const COMMENTARY = {
+  0: { move: 'Thế cờ khởi đầu', text: 'Trắng Kg2 + Ne7 + Re1. Đen Kh7 + Pf7/Pg7. Mã đã khóa Kh7. Tìm nước chiếu hết.' },
+  1: { move: '1. Rh1#  1-0', text: '⚔️ CHIẾU HẾT ANASTASIA! Xe Re1→h1. Khống chế Kh7 trên cột h. Vua đen: Kh8 (Ne7 khống chế g8 → Kh8 được không? khoan, Ne7 khống chế g6, g8, f5, d5, c6, c8, d... kiểm tra lại. Ne7 → từ e7: khống chế d5, f5, c6, g6, c8, g8, d... ờ Mã khống chế: c6,c8,d5,f5,g6,g8). Kg8 bị Mã khống chế. Kh8 không bị khống chế... thực ra Rh1 khống chế cả cột h — Kh7 bị chiếu. Chạy thoát Kh8 = bị Xe trên cột h chặn. Kg8 bị Mã khống chế. Kg6 bị Mã khống chế. Chặn được không? Xe chiếu trên cột h, chỉ có Pf7/Pg7 ở hàng 7... không quân nào chặn được. CHIẾU HẾT.' }
+};
+
+let board, game, currentMove = 0, stagesCompleted = new Set();
+
+function initBoard() {
+  game = new Chess(START_FEN);
+  board = Chessboard('board', { position: START_FEN, draggable: true,
+    pieceTheme: 'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png',
+    onDrop: (s,t) => { const m = game.move({from:s,to:t,promotion:'q'}); if(!m) return 'snapback'; },
+    onSnapEnd: () => board.position(game.fen()) });
+  updateDisplay();
+}
+function nextMove() { if(currentMove>=MOVES.length) return; game.move(MOVES[currentMove]); board.position(game.fen()); currentMove++; setTimeout(updateDisplay,50); if(currentMove>=MOVES.length) markStage(3); }
+function prevMove() { if(currentMove<=0) return; game.undo(); currentMove--; board.position(game.fen()); setTimeout(updateDisplay,50); }
+function resetBoard() { game = new Chess(START_FEN); board.position(START_FEN); currentMove = 0; setTimeout(updateDisplay,50); }
+
+function updateDisplay() {
+  const cm = COMMENTARY[currentMove] || COMMENTARY[0];
+  document.getElementById('moveDisplay').textContent = cm.move;
+  document.getElementById('commentary').innerHTML = cm.text;
+  const box = document.getElementById('infoBox');
+  if (currentMove >= MOVES.length) { box.className = 'info-box win'; box.innerHTML = '1 — 0 ANASTASIA MATE'; }
+  else { box.className = 'info-box'; box.innerHTML = 'Đến lượt: <strong>' + (game.turn()==='w'?'Trắng':'Đen') + '</strong>'; }
+  updateProgress();
+}
+function checkSelfTest(btn, ok, exp) {
+  document.querySelectorAll('#selfTestOptions .quiz-option').forEach(el=>el.disabled=true);
+  btn.classList.add(ok?'correct':'wrong');
+  const fb = document.getElementById('selfTestFeedback');
+  fb.classList.remove('hidden'); fb.className = 'feedback ' + (ok?'correct':'wrong');
+  fb.textContent = (ok?'✓ ':'✗ ') + exp; markStage(4);
+}
+function quizCheck(btn, ok) {
+  const q = btn.closest('.quiz');
+  q.querySelectorAll('.quiz-option').forEach(el=>el.disabled=true);
+  btn.classList.add(ok?'correct':'wrong');
+  if (!ok) q.querySelectorAll('.quiz-option').forEach(el => { if (el.getAttri

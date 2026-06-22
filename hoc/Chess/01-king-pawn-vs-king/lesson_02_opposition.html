@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bài 2 — Thế đối mặt</title>
+<link rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/chessboard-js/1.0.0/chessboard-1.0.0.min.css">
+<style>
+  * { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    max-width: 980px; margin: 0 auto; padding: 24px;
+    color: #1a1a1a; line-height: 1.6; background: #fafafa;
+  }
+  h1 { color: #1a3a52; font-size: 28px; margin: 0 0 8px; }
+  h2 { color: #2c5282; font-size: 20px; margin: 32px 0 12px;
+       padding-bottom: 6px; border-bottom: 2px solid #e1e8ed; }
+  h3 { color: #2c5282; font-size: 16px; margin: 20px 0 8px; }
+  .source { color: #888; font-size: 13px; margin-bottom: 24px; }
+  .nav-link { font-size: 13px; color: #2c5282; text-decoration: none; }
+  .nav-link:hover { text-decoration: underline; }
+  .stage {
+    background: white; border-radius: 8px; padding: 20px 24px;
+    margin: 16px 0; box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  }
+  .stage-label {
+    display: inline-block; background: #2c5282; color: white;
+    font-size: 12px; font-weight: 600; padding: 3px 10px;
+    border-radius: 12px; margin-bottom: 8px; letter-spacing: 0.5px;
+  }
+  .hook-question {
+    font-size: 17px; color: #1a3a52; background: #fff8e1;
+    border-left: 4px solid #faad14; padding: 14px 18px;
+    border-radius: 0 6px 6px 0; margin: 12px 0;
+  }
+  .reveal-btn {
+    background: #faad14; color: white; border: none;
+    padding: 8px 16px; border-radius: 4px; cursor: pointer;
+    font-size: 14px; font-weight: 500;
+  }
+  .reveal-btn:hover { background: #d48806; }
+  .hidden { display: none; }
+  .board-layout {
+    display: grid; grid-template-columns: 440px 1fr; gap: 24px;
+    align-items: start; margin-top: 16px;
+  }
+  @media (max-width: 820px) { .board-layout { grid-template-columns: 1fr; } }
+  .board-col { width: 100%; }
+  #board { width: 420px; max-width: 100%; }
+  .mini-board { width: 300px; max-width: 100%; margin: 14px auto; }
+  .controls {
+    display: flex; flex-wrap: wrap; gap: 6px;
+    margin-top: 12px; justify-content: center;
+  }
+  .controls button {
+    padding: 7px 12px; background: #2c5282; color: white;
+    border: none; border-radius: 4px; cursor: pointer; font-size: 13px;
+  }
+  .controls button:hover { background: #1a3a52; }
+  .controls button.toggle-on { background: #52c41a; }
+  .controls button.toggle-on:hover { background: #389e0d; }
+  .scenario-toggle {
+    display: flex; gap: 8px; justify-content: center;
+    margin-bottom: 8px;
+  }
+  .scenario-toggle button {
+    padding: 8px 14px; border: 2px solid #c9d6e2; background: white;
+    color: #555; border-radius: 6px; cursor: pointer; font-size: 13px;
+    font-weight: 500;
+  }
+  .scenario-toggle button.active {
+    background: #2c5282; color: white; border-color: #2c5282;
+  }
+  .info-panel {
+    background: #f8f9fb; padding: 16px; border-radius: 6px;
+    border: 1px solid #e1e8ed; min-height: 380px;
+  }
+  .scenario-banner {
+    background: #e6f7ff; border: 1px solid #91d5ff; color: #1d39c4;
+    padding: 8px 12px; border-radius: 4px; font-size: 13px;
+    margin-bottom: 12px; font-weight: 500;
+  }
+  .scenario-banner.draw { background: #fff7e6; border-color: #ffd591; color: #ad4e00; }
+  .move-display {
+    font-family: "SF Mono", Consolas, monospace;
+    font-size: 16px; color: #2c5282; font-weight: 600; margin-bottom: 8px;
+  }
+  .commentary { font-size: 14px; color: #444; margin-bottom: 12px; line-height: 1.55; }
+  .opposition-status {
+    background: white; padding: 10px; border-radius: 4px;
+    border: 1px solid #e1e8ed; margin: 12px 0; font-size: 13px;
+    text-align: center;
+  }
+  .opposition-status.has-opposition { background: #f6ffed; border-color: #b7eb8f; color: #389e0d; }
+  .opposition-status.no-opposition { background: #f8f9fb; }
+  .highlight-square {
+    background: rgba(255, 215, 0, 0.45) !important;
+    box-shadow: inset 0 0 0 1px rgba(255, 165, 0, 0.6) !important;
+  }
+  .highlight-king-blue {
+    box-shadow: inset 0 0 0 4px #1d39c4 !important;
+  }
+  .highlight-key {
+    background: rgba(82, 196, 26, 0.35) !important;
+    box-shadow: inset 0 0 0 1px rgba(56, 158, 13, 0.6) !important;
+  }
+  .self-test {
+    background: #fff8e1; border: 2px dashed #faad14;
+    border-radius: 6px; padding: 16px; margin-top: 16px;
+  }
+  .self-test-question { font-weight: 600; color: #874d00; margin-bottom: 8px; }
+  .feedback {
+    margin-top: 10px; padding: 10px 14px;
+    border-radius: 4px; font-size: 14px;
+  }
+  .feedback.correct { background: #f6ffed; color: #389e0d; border-left: 4px solid #52c41a; }
+  .feedback.wrong { background: #fff1f0; color: #cf1322; border-left: 4px solid #ff4d4f; }
+  .quiz {
+    background: #f0f7ff; border-left: 4px solid #2c5282;
+    border-radius: 0 6px 6px 0; padding: 14px 18px; margin: 12px 0;
+  }
+  .quiz-q { font-weight: 600; margin-bottom: 10px; color: #1a3a52; }
+  .quiz-options { display: flex; flex-direction: column; gap: 6px; }
+  .quiz-option {
+    padding: 8px 12px; background: white; border: 1px solid #c9d6e2;
+    border-radius: 4px; cursor: pointer; text-align: left; font-size: 14px;
+    transition: all 0.15s;
+  }
+  .quiz-option:hover { background: #f0f7ff; border-color: #2c5282; }
+  .quiz-option.correct { background: #f6ffed; border-color: #52c41a; color: #389e0d; }
+  .quiz-option.wrong { background: #fff1f0; border-color: #ff4d4f; color: #cf1322; }
+  .quiz-explain { margin-top: 8px; font-size: 13px; color: #555; font-style: italic; }
+  .summary-card {
+    background: linear-gradient(135deg, #1a3a52, #2c5282);
+    color: white; padding: 20px 24px; border-radius: 8px; margin-top: 24px;
+  }
+  .summary-card h2 { color: white; border: none; margin-top: 0; }
+  .summary-card ul { padding-left: 20px; }
+  .summary-card li { margin: 6px 0; }
+  code {
+    background: #f1f3f5; padding: 1px 6px; border-radius: 3px;
+    font-family: "SF Mono", Consolas, monospace; font-size: 0.9em;
+  }
+  .summary-card code { background: rgba(255,255,255,0.2); color: white; }
+  .progress-bar { height: 4px; background: #e1e8ed; border-radius: 2px;
+                  overflow: hidden; margin: 8px 0 16px; }
+  .progress-fill { height: 100%; background: #52c41a; transition: width 0.3s; width: 0%; }
+</style>
+</head>
+<body>
+
+<h1>Bài 2 — Thế đối mặt</h1>
+<div class="source">
+  Nguồn: <em>100 Endgames You Must Know</em> — Chương 1, Thế cờ 1.4<br>
+  Giai đoạn: Tàn cuộc · Chủ đề: Vua + tốt đấu Vua · Trình độ: Nền tảng<br>
+  <a class="nav-link" href="lesson_01_rule_of_the_square.html">← Bài 1: Quy tắc Hình vuông</a>
+</div>
+
+<div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+
+<!-- ────────── STAGE 1: HOOK ────────── -->
+<div class="stage">
+  <span class="stage-label">GIAI ĐOẠN 1 · DẪN NHẬP</span>
+  <h2 style="margin-top:8px">Cùng thế cờ, hai kết quả</h2>
+  <p>Thế cờ dưới đây: Trắng có Vua g6 + tốt f6 (đã đến hàng 6 — chỉ còn 2 nước
+     là phong cấp). Đen chỉ có Vua f8 chặn ngay trước con tốt.</p>
+
+  <div id="hookBoard" class="mini-board"></div>
+
+  <div class="hook-question">
+    🤔 <strong>Câu hỏi:</strong> Trắng có thắng không? Đáp án phụ thuộc vào
+    <em>đang đến lượt ai đi</em>. Cùng vị trí quân nhưng:
+    <ul style="margin: 8px 0 0">
+      <li>Trắng đi trước → ?</li>
+      <li>Đen đi trước → ?</li>
+    </ul>
+  </div>
+  <button class="reveal-btn" onclick="document.getElementById('hookAnswer').classList.remove('hidden'); markStage(1);">
+    Hiển thị đáp án
+  </button>
+  <div id="hookAnswer" class="hidden" style="margin-top:14px">
+    <p>
+      <strong>Trắng đi trước:</strong> Trắng thắng. 1.f7! đẩy tốt, Vua đen phải nhường đường, Vua trắng vào hỗ trợ.<br>
+      <strong>Đen đi trước:</strong> Hòa! Đen đi 1...Kg8 chặn. Trắng cố gắng cũng chỉ <em>hết nước (pat)</em>.
+    </p>
+    <p style="margin-top:8px">
+      Tại sao cùng thế cờ lại có 2 kết quả? Vì khái niệm <strong>Thế đối mặt</strong>
+      (đối Vua) — một trong những khái niệm quan trọng nhất của tàn cuộc tốt.
+    </p>
+  </div>
+</div>
+
+<!-- ────────── STAGE 2: CONCEPT ────────── -->
+<div class="stage">
+  <span class="stage-label">GIAI ĐOẠN 2 · KHÁI NIỆM</span>
+  <h2 style="margin-top:8px">Thế đối mặt là gì?</h2>
+  <p>
+    Hai Vua được gọi là ở <strong>thế đối mặt</strong> (đối Vua) khi:
+  </p>
+  <ul>
+    <li>Cùng cột, cùng hàng, hoặc cùng đường chéo</li>
+    <li>Có <strong>đúng 1 ô trống</strong> giữa hai Vua</li>
+    <li>Bên <em>không phải đi</em> giữ được thế đối mặt — bên đi sau có lợi</li>
+  </ul>
+
+  <p><strong>Ví dụ trực quan:</strong> Vua Trắng ở <code>e4</code>, Vua Đen ở <code>e6</code>
+     — cùng cột e, ô <code>e5</code> trống ở giữa. Đây là thế đối mặt theo chiều dọc.</p>
+
+  <div id="conceptBoard" class="mini-board"></div>
+  <p style="text-align:center;font-size:13px;color:#666;margin-top:6px">
+     Hai Vua ở <code>e4</code> và <code>e6</code> — đối mặt cùng cột.
+     Ô <code>e5</code> (xanh) là ô trống ở giữa.
+  </p>
+
+  <div class="hook-question" style="background:#f0f7ff; border-left-color:#2c5282; color:#1a3a52">
+    🔑 <strong>Tại sao thế đối mặt quan trọng?</strong> Vua nào phải ĐI sẽ phải nhường đường —
+    nó không thể giữ nguyên vị trí. Vua kia (không đi) sẽ tiến lên hoặc giữ các ô then chốt. Trong
+    tàn cuộc tốt, thế đối mặt trên hàng 6 quyết định con tốt có phong cấp được hay không.
+  </div>
+
+  <p style="margin-top:14px"><strong>Mô thức cốt lõi cho bài này:</strong>
+     Khi tốt ở hàng 6 và Vua phòng thủ chặn ngay trước, bên đi <em>trước</em> mất
+     thế đối mặt, bên đi <em>sau</em> giữ được thế đối mặt. Vì vậy cùng thế cờ có 2 kết quả.</p>
+</div>
+
+<!-- ────────── STAGE 3: WALKTHROUGH với SCENARIO TOGGLE ────────── -->
+<div class="stage">
+  <span class="stage-label">GIAI ĐOẠN 3 · TƯƠNG TÁC TỪNG BƯỚC</span>
+  <h2 style="margin-top:8px">Hai tình huống — chuyển qua lại để so sánh</h2>
+  <p>Cùng thế cờ khởi đầu (Trắng Kg6 + Pf6, Đen Kf8). Chỉ khác lượt đi.
+     Bấm 2 nút bên dưới để chuyển tình huống.</p>
+
+  <div class="scenario-toggle">
+    <button id="btnScenarioA" class="active" onclick="switchScenario('A')">
+      Tình huống A: Trắng đi trước → Thắng
+    </button>
+    <button id="btnScenarioB" onclick="switchScenario('B')">
+      Tình huống B: Đen đi trước → Hòa
+    </button>
+  </div>
+
+  <div class="board-layout">
+    <div class="board-col">
+      <div id="board"></div>
+      <div class="controls">
+        <button onclick="resetBoard()">⟨⟨ Đầu</button>
+        <button onclick="prevMove()">⟨ Lùi</button>
+        <button onclick="nextMove()">Tiến ⟩</button>
+        <button onclick="goToEnd()">Cuối ⟩⟩</button>
+        <button onclick="flipBoard()">↕ Lật</button>
+      </div>
+      <div class="controls">
+        <button id="toggleOppBtn" class="toggle-on" onclick="toggleOpposition()">👑 Hiện thế đối mặt: BẬT</button>
+      </div>
+    </div>
+
+    <div class="info-panel">
+      <div class="scenario-banner" id="scenarioBanner">
+        Tình huống A: Trắng đi trước → kết quả thắng
+      </div>
+      <div class="move-display" id="moveDisplay">Thế cờ khởi đầu</div>
+      <div class="commentary" id="commentary">
+        Trắng Kg6 + Pf6 đấu Đen Kf8. Tốt ở hàng 6 — chỉ 2 nước nữa là phong cấp.
+        Bấm <strong>Tiến ⟩</strong> để xem.
+      </div>
+      <div class="opposition-status" id="oppStatus">
+        Đang kiểm tra thế đối mặt...
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ────────── STAGE 4: SELF-TEST ────────── -->
+<div class="stage">
+  <span class="stage-label">GIAI ĐOẠN 4 · TỰ KIỂM TRA</span>
+  <h2 style="margin-top:8px">Bạn dự đoán nước đi quan trọng nhất</h2>
+  <p>Tình huống B (Đen đi trước). Bạn cầm quân Đen. Bạn phải đi 1 nước —
+     đi nước nào để giữ hòa?</p>
+  <div id="selfTestBoard" class="mini-board"></div>
+  <div class="self-test">
+    <div class="self-test-question">Chọn nước Đen:</div>
+    <div class="quiz-options" id="selfTestOptions">
+      <button class="quiz-option" onclick="checkSelfTest(this, false, 'Ke7? Vua bước vào ô e7 — nhưng đó là ô bị tốt f6 khống chế! Nước này phạm luật.')">1...Ke7</button>
+      <button class="quiz-option" onclick="checkSelfTest(this, false, 'Ke8? Hợp lệ nhưng SAI — sau 2.f7+ Đen phải đi tiếp, cuối cùng con tốt vẫn phong cấp vì Vua trắng có thể vào hỗ trợ. Đen không có thế đối mặt.')">1...Ke8</button>
+      <button class="quiz-option" onclick="checkSelfTest(this, true, 'Đúng! Kg8 tạo thế đối mặt — hai Vua cùng cột g, ô g7 trống ở giữa. Trắng phải ĐI nên mất thế đối mặt. Sau 2.f7+ Kf8! 3.Kf6 là thế hết nước (pat). Hòa.')">1...Kg8</button>
+      <button class="quiz-option" onclick="checkSelfTest(this, false, 'Đen không thể bỏ lượt — phải đi một nước nào đó. Đáp án này sai.')">Bỏ lượt — không đi</button>
+    </div>
+    <div class="feedback hidden" id="selfTestFeedback"></div>
+  </div>
+</div>
+
+<!-- ────────── STAGE 5: MINI-QUIZ ────────── -->
+<div class="stage">
+  <span class="stage-label">GIAI ĐOẠN 5 · TRẮC NGHIỆM NHANH</span>
+  <h2 style="margin-top:8px">3 câu hỏi củng cố</h2>
+
+  <div class="quiz">
+    <div class="quiz-q">Câu 1. Vua Trắng ở <code>d4</code>, Vua Đen ở <code>d6</code>. Đến lượt Trắng. Ai giữ thế đối mặt?</div>
+    <div id="q1Board" class="mini-board" style="width:240px"></div>
+    <div class="quiz-options">
+      <button class="quiz-option" onclick="quizCheck(this, false)">Trắng giữ thế đối mặt</button>
+      <button class="quiz-option" onclick="quizCheck(this, true)">Đen giữ thế đối mặt (vì Trắng đang phải đi)</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Không bên nào — hai Vua không cùng cột/hàng</button>
+    </div>
+    <div class="quiz-explain hidden">
+      Hai Vua cùng cột d, ô d5 trống ở giữa → có thế đối mặt. Bên KHÔNG đi giữ được thế đối mặt.
+      Trắng đang phải đi → Đen giữ thế đối mặt. Trong tàn cuộc tốt, đây thường là dấu hiệu
+      bên giữ thế đối mặt (Đen) có lợi thế.
+    </div>
+  </div>
+
+  <div class="quiz">
+    <div class="quiz-q">Câu 2. Trong tàn cuộc Vua + tốt đấu Vua, thế đối mặt <strong>quyết định nhất</strong> khi con tốt ở hàng nào?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" onclick="quizCheck(this, false)">Hàng 4 (giữa bàn)</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Hàng 5</button>
+      <button class="quiz-option" onclick="quizCheck(this, true)">Hàng 6 (gần phong cấp)</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Hàng 7 (sát phong cấp)</button>
+    </div>
+    <div class="quiz-explain hidden">
+      Sách <em>100 Endgames</em> nói rõ: trong tàn cuộc Vua + tốt đấu Vua, thế đối mặt của hai Vua
+      mang tính quyết định khi con tốt đứng ở hàng 6. Lý do: tốt ở hàng 6 quá gần phong cấp nên
+      không có chỗ xoay xở — thế đối mặt quyết định luôn việc tốt phong cấp hay hết nước (pat).
+    </div>
+  </div>
+
+  <div class="quiz">
+    <div class="quiz-q">Câu 3. Tại sao 3.Kf6 (sau Kf8) lại là hòa cho Đen thay vì thắng cho Trắng?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" onclick="quizCheck(this, false)">Vì Đen được phép bỏ lượt</button>
+      <button class="quiz-option" onclick="quizCheck(this, true)">Vì Đen không có nước đi hợp lệ và không bị chiếu → hết nước (pat), tức là hòa</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Vì Trắng phải đi tiếp và không có nước tốt</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Vì con tốt không thể phong cấp khi Vua mình ở f6</button>
+    </div>
+    <div class="quiz-explain hidden">
+      Hết nước (pat) = bên đến lượt không có nước hợp lệ NHƯNG không bị chiếu. Theo luật cờ vua, đây
+      là hòa (không phải thắng cho bên kia). Sau 3.Kf6, Vua đen f8 không có ô nào để đi:
+      e7 và g7 bị Kf6 kiểm soát, e8 và g8 bị tốt f7 kiểm soát, ô f7 có tốt Trắng được Kf6 bảo vệ.
+      Đây là bẫy hết nước (pat) cổ điển — bên mạnh phải biết tránh, bên yếu phải biết tận dụng.
+    </div>
+  </div>
+</div>
+
+<!-- ────────── SUMMARY CARD ────────── -->
+<div class="summary-card">
+  <h2>📌 Tóm tắt</h2>
+  <ul>
+    <li><strong>Thế đối mặt</strong>: 2 Vua cùng cột/hàng/chéo, đúng 1 ô trống ở giữa.
+        Bên KHÔNG đi giữ được thế đối mặt.</li>
+    <li><strong>Quy tắc hàng 6</strong>: Tốt ở hàng 6 + Vua chặn ngay trước + thế đối mặt →
+        bên giữ thế đối mặt quyết định kết quả.</li>
+    <li><strong>Trắng cần</strong>: thế đối mặt để con tốt có chỗ tiến và Vua mình hỗ trợ.</li>
+    <li><strong>Đen cần</strong>: thế đối mặt để buộc Trắng rơi vào bẫy hết nước (pat).</li>
+    <li><strong>Mô thức hết nước</strong>: Vua đen f8, Vua trắng f6, tốt f7 → Đen không
+        đi được, không bị chiếu → hòa.</li>
+  </ul>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chessboard-js/1.0.0/chessboard-1.0.0.min.js"></script>
+
+<script>
+// ──────────────────────────────────────────────────────────────────
+// LESSON DATA — Position 1.4, Opposition (2 scenarios)
+// ──────────────────────────────────────────────────────────────────
+const SCENARIOS = {
+  A: {
+    name: 'Trắng đi trước → Thắng',
+    bannerClass: '',
+    fen: '5k2/8/5PK1/8/8/8/8/8 w - - 0 1',
+    moves: ['f7', 'Ke7', 'Kg7', 'Kd7', 'f8=Q'],
+    commentary: {
+      0: { move: 'Thế cờ khởi đầu (Trắng đi)',
+           text: 'Trắng Kg6, Pf6, Đen Kf8. Trắng phải ĐI — Đen giữ thế đối mặt (nhưng vô ích vì Trắng có nước phá thế).' },
+      1: { move: '1. f7 !',
+           text: 'Trắng đẩy tốt từ f6 sang f7. Vua đen ở f8 bị buộc phải rời đi — vì tốt f7 khống chế g8 và e8, Vua đen chỉ còn nước Ke7 (e8 phạm luật: bị tốt khống chế).' },
+      2: { move: '1... Ke7',
+           text: 'Vua đen sang e7 — đây là nước hợp lệ duy nhất. Đen đã rời cột f, không còn chặn được con tốt phong cấp.' },
+      3: { move: '2. Kg7 !',
+           text: 'Vua trắng sang g7 — bảo vệ ô phong cấp f8. Đen không còn cách nào ngăn con tốt.' },
+      4: { move: '2... Kd7',
+           text: 'Đen đi đâu cũng vô ích. Kd7 cố tới gần — nhưng đã quá muộn.' },
+      5: { move: '3. f8=Q  1-0',
+           text: 'Tốt phong cấp thành Hậu! Trắng có Hậu + Vua đấu Vua → tàn cuộc thắng cơ bản.' }
+    }
+  },
+  B: {
+    name: 'Đen đi trước → Hòa (hết nước, pat)',
+    bannerClass: 'draw',
+    fen: '5k2/8/5PK1/8/8/8/8/8 b - - 0 1',
+    moves: ['Kg8', 'f7+', 'Kf8', 'Kf6'],
+    commentary: {
+      0: { move: 'Thế cờ khởi đầu (Đen đi)',
+           text: 'Cùng thế cờ. Lần này ĐEN đi — Trắng giữ thế đối mặt (tạm thời). Nhưng Đen sẽ giành lại thế đối mặt bằng nước đầu tiên.' },
+      1: { move: '1... Kg8 !',
+           text: 'Vua đen sang g8 — tạo thế đối mặt cùng cột g với Vua trắng g6 (ô g7 trống ở giữa). Bây giờ Trắng phải đi, Trắng MẤT thế đối mặt.' },
+      2: { move: '2. f7+',
+           text: 'Trắng cố đẩy tốt — tốt f7 chiếu Vua đen ở g8. Đen phải xử lý nước chiếu.' },
+      3: { move: '2... Kf8 !',
+           text: 'Vua đen sang f8 — nước an toàn duy nhất. Đứng ngay trước con tốt, ngăn nó phong cấp tự do.' },
+      4: { move: '3. Kf6  ½-½',
+           text: 'Vua trắng vào f6 cố tạo thế đối mặt đè ép. Nhưng đây là thế hết nước (pat)! Vua đen f8 không có ô nào hợp lệ để đi: e7 và g7 bị Kf6 khống chế, e8 và g8 bị tốt f7 khống chế, ô f7 có tốt Trắng được bảo vệ. Đen không bị chiếu → HẾT NƯỚC (PAT) → HÒA.' }
+    }
+  }
+};
+
+let currentScenario = 'A';
+let board, game, currentMove = 0;
+let showOpposition = true;
+let stagesCompleted = new Set();
+
+// ──────────────────────────────────────────────────────────────────
+// BOARD INIT
+// ──────────────────────────────────────────────────────────────────
+function initBoard() {
+  game = new Chess(SCENARIOS[currentScenario].fen);
+  board = Chessboard('board', {
+    position: SCENARIOS[currentScenario].fen,
+    draggable: true,
+    pieceTheme: 'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png',
+    onDrop: handleDrop,
+    onSnapEnd: () => { board.position(game.fen()); updateOverlays(); }
+  });
+  updateDisplay();
+}
+
+function handleDrop(source, target) {
+  const move = game.move({ from: source, to: target, promotion: 'q' });
+  if (move === null) return 'snapback';
+  setTimeout(updateOverlays, 100);
+}
+
+function nextMove() {
+  const sc = SCENARIOS[currentScenario];
+  if (currentMove >= sc.moves.length) return;
+  const result = game.move(sc.moves[currentMove]);
+  if (result === null) {
+    console.error('Invalid move:', sc.moves[currentMove]);
+    return;
+  }
+  board.position(game.fen());
+  currentMove++;
+  setTimeout(() => { updateDisplay(); updateOverlays(); }, 50);
+  if (currentMove >= sc.moves.length) markStage(3);
+}
+
+function prevMove() {
+  if (currentMove <= 0) return;
+  game.undo();
+  currentMove--;
+  board.position(game.fen());
+  setTimeout(() => { updateDisplay(); updateOverlays(); }, 50);
+}
+
+function resetBoard() {
+  const sc = SCENARIOS[currentScenario];
+  game = new Chess(sc.fen);
+  board.position(sc.fen);
+  currentMove = 0;
+  setTimeout(() => { updateDisplay(); updateOverlays(); }, 50);
+}
+
+function goToEnd() {
+  const sc = SCENARIOS[currentScenario];
+  while (currentMove < sc.moves.length) {
+    game.move(sc.moves[currentMove]);
+    currentMove++;
+  }
+  board.position(game.fen());
+  setTimeout(() => { updateDisplay(); updateOverlays(); }, 50);
+}
+
+function flipBoard() { board.flip(); setTimeout(updateOverlays, 100); }
+
+// ──────────────────────────────────────────────────────────────────
+// SCENARIO SWITCHING
+// ──────────────────────────────────────────────────────────────────
+function switchScenario(s) {
+  currentScenario = s;
+  document.getElementById('btnScenarioA').classList.toggle('active', s === 'A');
+  document.getElementById('btnScenarioB').classList.toggle('active', s === 'B');
+  const banner = document.getElementById('scenarioBanner');
+  banner.textContent = 'Tình huống ' + s + ': ' + SCENARIOS[s].name;
+  banner.className = 'scenario-banner ' + SCENARIOS[s].bannerClass;
+  resetBoard();
+}
+
+// ──────────────────────────────────────────────────────────────────
+// COMMENTARY + OPPOSITION DETECTOR
+// ──────────────────────────────────────────────────────────────────
+function updateDisplay() {
+  const sc = SCENARIOS[currentScenario];
+  const cm = sc.commentary[currentMove] || sc.commentary[0];
+  document.getElementById('moveDisplay').textContent = cm.move;
+  document.getElementById('commentary').innerHTML = cm.text;
+  updateOppositionStatus();
+  updateProgress();
+}
+
+function findPiece(piece) {
+  const fen = game.fen().split(' ')[0];
+  const ranks = fen.split('/');
+  for (let r = 0; r < 8; r++) {
+    let file = 0;
+    for (const ch of ranks[r]) {
+      if (/\d/.test(ch)) file += parseInt(ch);
+      else {
+        const isWhite = ch === ch.toUpperCase();
+        const type = ch.toUpperCase();
+        if ((piece[0] === 'w' && isWhite && piece[1] === type) ||
+            (piece[0] === 'b' && !isWhite && piece[1] === type)) {
+          return String.fromCharCode(97 + file) + (8 - r);
+        }
+        file++;
+      }
+    }
+  }
+  return null;
+}
+
+function isOpposition(sq1, sq2) {
+  if (!sq1 || !sq2) return null;
+  const f1 = sq1.charCodeAt(0) - 97, r1 = parseInt(sq1[1]);
+  const f2 = sq2.charCodeAt(0) - 97, r2 = parseInt(sq2[1]);
+  // Same file, 2 squares apart (1 between)
+  if (f1 === f2 && Math.abs(r1 - r2) === 2) return { type: 'vertical', between: f1 + ',' + (r1 + r2) / 2 };
+  // Same rank, 2 squares apart
+  if (r1 === r2 && Math.abs(f1 - f2) === 2) return { type: 'horizontal', between: (f1 + f2) / 2 + ',' + r1 };
+  // Same diagonal, 2 squares apart
+  if (Math.abs(f1 - f2) === 2 && Math.abs(r1 - r2) === 2)
+    return { type: 'diagonal', between: (f1 + f2) / 2 + ',' + (r1 + r2) / 2 };
+  return null;
+}
+
+function updateOppositionStatus() {
+  const wK = findPiece('wK');
+  const bK = findPiece('bK');
+  const opp = isOpposition(wK, bK);
+  const status = document.getElementById('oppStatus');
+
+  if (opp) {
+    const turn = game.turn();
+    const holder = turn === 'w' ? 'Đen' : 'Trắng';
+    const typeVi = opp.type === 'vertical' ? 'DỌC' : (opp.type === 'horizontal' ? 'NGANG' : 'CHÉO');
+    status.className = 'opposition-status has-opposition';
+    status.innerHTML =
+      '👑 <strong>ĐỐI MẶT THEO CHIỀU ' + typeVi + '</strong><br>' +
+      'Vua Trắng ở <code>' + wK + '</code>, Vua Đen ở <code>' + bK + '</code>. ' +
+      'Bên đi: ' + (turn === 'w' ? 'Trắng' : 'Đen') + ' → ' +
+      '<strong>' + holder + ' giữ thế đối mặt</strong>';
+  } else if (wK && bK) {
+    const turn = game.turn();
+    status.className = 'opposition-status no-opposition';
+    status.innerHTML =
+      '— Không có thế đối mặt —<br>' +
+      '<small>Vua Trắng <code>' + wK + '</code>, Vua Đen <code>' + bK + '</code>. ' +
+      'Bên đi: ' + (turn === 'w' ? 'Trắng' : 'Đen') + '</small>';
+  } else {
+    status.className = 'opposition-status no-opposition';
+    status.innerHTML = '— Thế cờ kết thúc —';
+  }
+}
+
+function updateOverlays() {
+  $('#board .square-55d63').removeClass('highlight-square highlight-king-blue highlight-key');
+
+  if (showOpposition) {
+    const wK = findPiece('wK');
+    const bK = findPiece('bK');
+    const opp = isOpposition(wK, bK);
+    if (opp) {
+      $('#board .square-' + wK).addClass('highlight-king-blue');
+      $('#board .square-' + bK).addClass('highlight-king-blue');
+      // Highlight the square between the kings
+      const [f, r] = opp.between.split(',').map(Number);
+      const sq = String.fromCharCode(97 + f) + r;
+      $('#board .square-' + sq).addClass('highlight-key');
+    }
+  }
+}
+
+function toggleOpposition() {
+  showOpposition = !showOpposition;
+  const btn = document.getElementById('toggleOppBtn');
+  btn.textContent = '👑 Hiện thế đối mặt: ' + (showOpposition ? 'BẬT' : 'TẮT');
+  btn.className = showOpposition ? 'toggle-on' : '';
+  updateOverlays();
+}
+
+// ──────────────────────────────────────────────────────────────────
+// SELF-TEST + QUIZ
+// ──────────────────────────────────────────────────────────────────
+function checkSelfTest(btn, isCorrect, explanation) {
+  document.querySelectorAll('#selfTestOptions .quiz-option').forEach(el => el.disabled = true);
+  btn.classList.add(isCorrect ? 'correct' : 'wrong');
+  const fb = document.getElementById('selfTestFeedback');
+  fb.classList.remove('hidden');
+  fb.className = 'feedback ' + (isCorrect ? 'correct' : 'wrong');
+  fb.textContent = (isCorrect ? '✓ Đúng. ' : '✗ Sai. ') + explanation;
+  markStage(4);
+}
+
+function quizCheck(btn, isCorrect) {
+  const quiz = btn.closest('.quiz');
+  quiz.querySelectorAll('.quiz-option').forEach(el => el.disabled = true);
+  btn.classList.add(isCorrect ? 'correct' : 'wrong');
+  if (!isCorrect) {
+    quiz.querySelectorAll('.quiz-option').forEach(el => {
+      if (el.getAttribute('onclick').includes('true')) el.classList.add('correct');
+    });
+  }
+  quiz.querySelector('.quiz-explain').classList.remove('hidden');
+  markStage(5);
+}
+
+// ──────────────────────────────────────────────────────────────────
+// PROGRESS + MINI BOARDS
+// ──────────────────────────────────────────────────────────────────
+function markStage(n) { stagesCompleted.add(n); updateProgress(); }
+function updateProgress() {
+  const total = 5;
+  document.getElementById('progressFill').style.width =
+    (stagesCompleted.size / total * 100) + '%';
+}
+
+function initMiniBoards() {
+  const startFEN = '5k2/8/5PK1/8/8/8/8/8 w - - 0 1';
+  Chessboard('hookBoard', {
+    position: startFEN, draggable: false,
+    pieceTheme: 'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png'
+  });
+
+  // Stage 2: opposit

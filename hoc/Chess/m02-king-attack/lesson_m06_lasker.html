@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bài 3 (Ch2-Mid) — Lasker–Thomas (Săn vua)</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/chessboard-js/1.0.0/chessboard-1.0.0.min.css">
+<style>
+* { box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; max-width: 980px; margin: 0 auto; padding: 24px; color: #1a1a1a; line-height: 1.6; background: #fafafa; }
+h1 { color: #1a3a52; font-size: 28px; margin: 0 0 8px; }
+h2 { color: #2c5282; font-size: 20px; margin: 32px 0 12px; padding-bottom: 6px; border-bottom: 2px solid #e1e8ed; }
+.source { color: #888; font-size: 13px; margin-bottom: 24px; }
+.nav-link { font-size: 13px; color: #2c5282; text-decoration: none; }
+.stage { background: white; border-radius: 8px; padding: 20px 24px; margin: 16px 0; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
+.stage-label { display: inline-block; background: #2c5282; color: white; font-size: 12px; font-weight: 600; padding: 3px 10px; border-radius: 12px; margin-bottom: 8px; }
+.hook-question { font-size: 17px; color: #1a3a52; background: #fff8e1; border-left: 4px solid #faad14; padding: 14px 18px; border-radius: 0 6px 6px 0; margin: 12px 0; }
+.reveal-btn { background: #faad14; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-size: 14px; }
+.hidden { display: none; }
+.board-layout { display: grid; grid-template-columns: 440px 1fr; gap: 24px; align-items: start; margin-top: 16px; }
+@media (max-width: 820px) { .board-layout { grid-template-columns: 1fr; } }
+#board { width: 420px; max-width: 100%; }
+.mini-board { width: 300px; max-width: 100%; margin: 14px auto; }
+.controls { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; justify-content: center; }
+.controls button { padding: 7px 12px; background: #2c5282; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 13px; }
+.info-panel { background: #f8f9fb; padding: 16px; border-radius: 6px; border: 1px solid #e1e8ed; min-height: 380px; }
+.move-display { font-family: monospace; font-size: 16px; color: #2c5282; font-weight: 600; margin-bottom: 8px; }
+.commentary { font-size: 14px; color: #444; margin-bottom: 12px; }
+.info-box { background: white; padding: 10px; border-radius: 4px; border: 1px solid #e1e8ed; margin: 12px 0; font-size: 13px; text-align: center; }
+.info-box.win { background: #f6ffed; border-color: #b7eb8f; color: #389e0d; font-weight: 600; }
+.hl { background: rgba(255, 215, 0, 0.45) !important; box-shadow: inset 0 0 0 2px #faad14 !important; }
+.self-test { background: #fff8e1; border: 2px dashed #faad14; border-radius: 6px; padding: 16px; margin-top: 16px; }
+.feedback { margin-top: 10px; padding: 10px 14px; border-radius: 4px; font-size: 14px; }
+.feedback.correct { background: #f6ffed; color: #389e0d; border-left: 4px solid #52c41a; }
+.feedback.wrong { background: #fff1f0; color: #cf1322; border-left: 4px solid #ff4d4f; }
+.quiz { background: #f0f7ff; border-left: 4px solid #2c5282; border-radius: 0 6px 6px 0; padding: 14px 18px; margin: 12px 0; }
+.quiz-q { font-weight: 600; margin-bottom: 10px; color: #1a3a52; }
+.quiz-options { display: flex; flex-direction: column; gap: 6px; }
+.quiz-option { padding: 8px 12px; background: white; border: 1px solid #c9d6e2; border-radius: 4px; cursor: pointer; text-align: left; font-size: 14px; }
+.quiz-option.correct { background: #f6ffed; border-color: #52c41a; color: #389e0d; }
+.quiz-option.wrong { background: #fff1f0; border-color: #ff4d4f; color: #cf1322; }
+.quiz-explain { margin-top: 8px; font-size: 13px; color: #555; font-style: italic; }
+.summary-card { background: linear-gradient(135deg, #1a3a52, #2c5282); color: white; padding: 20px 24px; border-radius: 8px; margin-top: 24px; }
+.summary-card h2 { color: white; border: none; margin-top: 0; }
+.summary-card ul { padding-left: 20px; }
+code { background: #f1f3f5; padding: 1px 6px; border-radius: 3px; font-family: monospace; font-size: 0.9em; }
+.summary-card code { background: rgba(255,255,255,0.2); color: white; }
+.progress-bar { height: 4px; background: #e1e8ed; border-radius: 2px; overflow: hidden; margin: 8px 0 16px; }
+.progress-fill { height: 100%; background: #52c41a; transition: width 0.3s; width: 0%; }
+.tag { display:inline-block; background:#fde9c8; color:#874d00; font-size:11px; font-weight:600; padding:2px 8px; border-radius:10px; margin-left:6px; }
+.kmarch { font-size:13px; color:#874d00; background:#fff8e1; border-radius:6px; padding:8px 12px; margin-top:10px; font-family:monospace; }
+</style>
+</head>
+<body>
+
+<h1>Bài 3 — Lasker–Thomas 1912 <span class="tag">Săn vua h7 → g1</span></h1>
+<div class="source">
+  Chương 2 (Trung cuộc) — Tấn công Vua · Nâng cao · London 1912<br>
+  <a class="nav-link" href="../index-middle.html">← Trang chủ Trung cuộc</a> ·
+  <a class="nav-link" href="chapter_m02_king_attack.html">← Chương 2</a>
+</div>
+
+<div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+
+<div class="stage">
+  <span class="stage-label">STAGE 1 · HOOK</span>
+  <h2 style="margin-top:8px">Thí Hậu, rồi dắt bộ vua đi khắp bàn cờ</h2>
+  <p>Vua đen vừa nhập thành (g8), tưởng an toàn. Nhưng Trắng có Hậu h5 + hai mã e4/e5 + tượng d3 — cả một dàn nhạc nhắm cánh vua.</p>
+  <div id="hookBoard" class="mini-board"></div>
+  <div class="hook-question">
+    🤔 <strong>Làm sao moi vua ra khỏi pháo đài g8?</strong> Và nếu lôi được ra, có thật sự chiếu hết được một vua chạy giữa bàn cờ?
+  </div>
+  <button class="reveal-btn" onclick="document.getElementById('hookAnswer').classList.remove('hidden'); markStage(1);">Hiển thị đáp án</button>
+  <div id="hookAnswer" class="hidden" style="margin-top:14px">
+    <p><strong>1.Qxh7+!! Kxh7 2.Nxf6+</strong> (chiếu đôi) và một <em>chuỗi chiếu liên tục</em> lùa vua từ h7 xuống tận g1, kết thúc <strong>8.O-O-O#</strong>. Ván thật Ed. Lasker–Thomas, London 1912 — Stockfish xác nhận chiếu hết ép buộc.</p>
+    <div class="kmarch">Hành trình vua: h7 → h6 → g5 → f4 → f3 → g2 → g1 ✦ mỗi nước đều bị chiếu</div>
+  </div>
+</div>
+
+<div class="stage">
+  <span class="stage-label">STAGE 2 · CONCEPT</span>
+  <h2 style="margin-top:8px">"Săn vua" — chuỗi chiếu cưỡng bức</h2>
+  <ul>
+    <li><strong>Mở pháo đài</strong>: hy sinh Hậu trên h7 + <strong>chiếu đôi</strong> <code>Nxf6+</code> (mã f6 + tượng d3 lộ chiếu) đẩy vua ra ngoài.</li>
+    <li><strong>Mỗi nước là một chiếu</strong>: vì luôn bị chiếu, vua KHÔNG có một nhịp nào để chạy về an toàn hay phản công. Nó bị "dắt" theo lộ trình ta chọn.</li>
+    <li><strong>Phối hợp toàn quân</strong>: mã, tượng, tốt (h4, g3) và cuối cùng xe (nhập thành!) thay nhau chiếu → vua bị dồn vào ô chiếu hết.</li>
+  </ul>
+</div>
+
+<div class="stage">
+  <span class="stage-label">STAGE 3 · WALKTHROUGH</span>
+  <div class="board-layout">
+    <div>
+      <div id="board"></div>
+      <div class="controls">
+        <button onclick="resetBoard()">⟨⟨ Đầu</button>
+        <button onclick="prevMove()">⟨ Lùi</button>
+        <button onclick="nextMove()">Tiến ⟩</button>
+      </div>
+    </div>
+    <div class="info-panel">
+      <div class="move-display" id="moveDisplay">Thế cờ khởi đầu</div>
+      <div class="commentary" id="commentary">Vua đen g8. Hậu h5, mã e4 & e5, tượng d3 đồng loạt nhắm cánh vua. Đến lượt Trắng khai hỏa.</div>
+      <div class="info-box" id="infoBox">Đến lượt: <strong>Trắng</strong></div>
+    </div>
+  </div>
+</div>
+
+<div class="stage">
+  <span class="stage-label">STAGE 4 · SELF-TEST</span>
+  <h2 style="margin-top:8px">Vì sao chuỗi "săn vua" này ép buộc, vua không thoát giữa chừng?</h2>
+  <div class="self-test">
+    <div class="quiz-options" id="selfTestOptions">
+      <button class="quiz-option" onclick="checkSelfTest(this, true, 'Đúng! Mỗi nước của Trắng đều là CHIẾU. Đen phải xử lý chiếu ngay từng nước, không có một nhịp nào để chạy về an toàn hay phản công → bị dắt tới ô chiếu hết.')">Mỗi nước Trắng đều là chiếu — Đen không có nhịp nào để thoát</button>
+      <button class="quiz-option" onclick="checkSelfTest(this, false, 'Sai. Trắng không hề hơn quân — vừa thí cả Hậu. Sức mạnh nằm ở chuỗi chiếu liên tục.')">Vì Trắng hơn quân nên cứ thế thắng</button>
+      <button class="quiz-option" onclick="checkSelfTest(this, false, 'Sai. Vua bị lùa ra giữa bàn chính là điểm yếu, không phải an toàn.')">Vì vua ra giữa bàn thì an toàn hơn</button>
+    </div>
+    <div class="feedback hidden" id="selfTestFeedback"></div>
+  </div>
+</div>
+
+<div class="stage">
+  <span class="stage-label">STAGE 5 · MINI-QUIZ</span>
+  <div class="quiz">
+    <div class="quiz-q">Q1. 2.Nxf6+ mạnh vì điều gì?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" onclick="quizCheck(this, true)">Chiếu đôi (mã f6 + tượng d3 lộ chiếu qua e4 vừa trống) — vua buộc đi, không ăn/chặn được</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Vì nó ăn được tượng f6</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Vì mã mạnh hơn tượng</button>
+    </div>
+    <div class="quiz-explain hidden">Khi mã rời e4, tượng d3 lộ chiếu lên vua h7. Cộng với mã f6 → chiếu đôi, vua bắt buộc phải chạy.</div>
+  </div>
+  <div class="quiz">
+    <div class="quiz-q">Q2. Yếu tố nào khiến "săn vua" thành công?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" onclick="quizCheck(this, false)">Chỉ cần có Hậu</button>
+      <button class="quiz-option" onclick="quizCheck(this, true)">Chuỗi chiếu liên tục + nhiều quân phối hợp (mã, tượng, tốt, xe) dồn vua</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Đối thủ phải hết giờ</button>
+    </div>
+    <div class="quiz-explain hidden">Không một quân đơn lẻ nào săn được vua; cần cả đội hình thay nhau chiếu để vua không có nhịp thở.</div>
+  </div>
+  <div class="quiz">
+    <div class="quiz-q">Q3. Nước kết thúc 8.O-O-O# đặc biệt ở chỗ?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" onclick="quizCheck(this, true)">Trắng NHẬP THÀNH để đưa xe d1 vào chiếu hết — nước chiếu hết bằng nhập thành rất hiếm</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Vì nhập thành luôn là nước mạnh nhất</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Vì nó cứu vua Trắng</button>
+    </div>
+    <div class="quiz-explain hidden">O-O-O đồng thời đưa xe a1 ra d1 chiếu Vua g1 dọc hàng 1. Chiếu hết bằng nhập thành là một trong những nét duyên hiếm thấy của ván cờ này.</div>
+  </div>
+</div>
+
+<div class="summary-card">
+  <h2>📌 Tóm tắt</h2>
+  <ul>
+    <li><strong>Mở pháo đài</strong>: <code>Qxh7+!! Kxh7</code> rồi <code>Nxf6+</code> (chiếu đôi) lôi vua ra.</li>
+    <li><strong>Săn vua</strong>: chuỗi chiếu liên tục dắt vua h7→h6→g5→f4→f3→g2→g1; mỗi nước là một chiếu nên vua không có nhịp để thoát.</li>
+    <li><strong>Kết liễu</strong>: <code>8.O-O-O#</code> — nhập thành đưa xe vào chiếu hết.</li>
+    <li>Ván thật <strong>Ed. Lasker–Thomas, London 1912</strong> — một trong những cuộc săn vua đẹp nhất mọi thời.</li>
+  </ul>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chessboard-js/1.0.0/chessboard-1.0.0.min.js"></script>
+<script>
+const START_FEN = 'rn3rk1/pbppq1pp/1p2pb2/4N2Q/3PN3/3B4/PPP2PPP/R3K2R w KQ - 0 11';
+const MOVES = ['Qxh7+','Kxh7','Nxf6+','Kh6','Neg4+','Kg5','h4+','Kf4','g3+','Kf3','Be2+','Kg2','Rh2+','Kg1','O-O-O#'];
+const COMMENTARY = {
+  0:  { move: 'Thế cờ khởi đầu', text: 'Vua đen g8. Hậu h5 + mã e4 & e5 + tượng d3 nhắm cánh vua. Trắng khai hỏa.' },
+  1:  { move: '1. Qxh7+ !!', text: 'HY SINH HẬU! Đập vào h7, lôi vua ra khỏi pháo đài.' },
+  2:  { move: '1... Kxh7', text: 'Vua buộc ăn — không còn cách nào khác.' },
+  3:  { move: '2. Nxf6+ !', text: 'CHIẾU ĐÔI! Mã e4–f6 chiếu, đồng thời mở chiếu tượng d3 (qua e4 vừa trống) lên h7. Vua buộc đi tiếp.' },
+  4:  { move: '2... Kh6', text: 'Vua tiến lên h6 (g8 bị mã f6, g6 bị tượng d3 khống chế).' },
+  5:  { move: '3. Neg4+', text: 'Mã e5–g4 chiếu, hợp cùng mã f6 dựng lưới quanh vua.' },
+  6:  { move: '3... Kg5', text: 'Vua liều ra g5 — đã đi quá xa để quay đầu.' },
+  7:  { move: '4. h4+ !', text: 'Tốt h chiếu, tiếp tục đẩy vua tiến.' },
+  8:  { move: '4... Kf4', text: 'Vua lao vào giữa bàn cờ — ngay trong lãnh thổ Trắng.' },
+  9:  { move: '5. g3+', text: 'Tốt g chiếu, dồn vua xuống.' },
+  10: { move: '5... Kf3', text: 'Vua tới f3, đứng ngay trước mặt quân Trắng.' },
+  11: { move: '6. Be2+ !', text: 'Tượng chiếu, ép vua sát về phía góc Trắng.' },
+  12: { move: '6... Kg2', text: 'Vua tới g2 — cạnh chính vua Trắng.' },
+  13: { move: '7. Rh2+', text: 'Xe h1–h2 chiếu, cắt nốt đường.' },
+  14: { move: '7... Kg1', text: 'Vua bị dồn vào g1, hết chỗ chạy.' },
+  15: { move: '8. O-O-O#', text: 'NHẬP THÀNH — CHIẾU HẾT! Xe a1 ra d1 chiếu Vua g1 dọc hàng 1; f1 (xe d1), g2/h1 (xe h2), f2 (tốt) bịt hết. Cuộc săn vua hoàn tất. Lasker–Thomas 1912.' }
+};
+let board, game, currentMove = 0, stagesCompleted = new Set();
+function initBoard() {
+  game = new Chess(START_FEN);
+  board = Chessboard('board', { position: START_FEN, draggable: true,
+    pieceTheme: 'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png',
+    onDrop: (s,t) => { const m = game.move({from:s,to:t,promotion:'q'}); if(!m) return 'snapback'; setTimeout(updateOverlays,100); },
+    onSnapEnd: () => { board.position(game.fen()); updateOverlays(); }});
+  updateDisplay();
+}
+function nextMove() { if(currentMove>=MOVES.length) return; game.move(MOVES[currentMove]); board.position(game.fen()); currentMove++; setTimeout(()=>{updateDisplay();updateOverlays();},50); if(currentMove>=MOVES.length) markStage(3); }
+function prevMove() { if(currentMove<=0) return; game.undo(); currentMove--; board.position(game.fen()); setTimeout(()=>{updateDisplay();updateOverlays();},50); }
+function resetBoard() { game = new Chess(START_FEN); board.position(START_FEN); currentMove = 0; setTimeout(()=>{updateDisplay();updateOverlays();},50); }
+function updateDisplay() {
+  const cm = COMMENTARY[currentMove] || COMMENTARY[0];
+  document.getElementById('moveDisplay').textContent = cm.move;
+  document.getElementById('commentary').innerHTML = cm.text;
+  const box = document.getElementById('infoBox');
+  if (currentMove >= MOVES.length) { box.className = 'info-box win'; box.innerHTML = '♚ O-O-O# — săn vua h7→g1 hoàn tất!'; }
+  else { box.className = 'info-box'; box.innerHTML = 'Đến lượt: <strong>' + (game.turn()==='w'?'Trắng':'Đen') + '</strong>'; }
+  updateProgress();
+}
+function updateOverlays() { $('#board .square-55d63').removeClass('hl'); ['h7','f6'].forEach(sq => $('#board .square-' + sq).addClass('hl')); }
+function checkSelfTest(btn, ok, exp) {
+  document.querySelectorAll('#selfTestOptions .quiz-option').forEach(el=>el.disabled=true);
+  btn.classList.add(ok?'correct':'wrong');
+  const fb = document.getElementById('selfTestFeedback');
+  fb.classList.remove('hidden'); fb.className = 'feedback ' + (ok?'correct':'wrong');
+  fb.textContent = (ok?'✓ ':'✗ ') + exp; markStage(4);
+}
+function quizCheck(btn, ok) {
+  const q = btn.closest('.quiz');
+  q.querySelectorAll('.quiz-option').forEach(el=>el.disabled=true);
+  btn.classList.add(ok?'correct':'wrong');
+  if (!ok) q.querySelectorAll('.quiz-option').forEach(el => { if (el.getAttribute('onclick').includes('true')) el.classList.add('correct'); });
+  q.querySelector('.quiz-explain').classList.remove('hidden'); markStage(5);
+}
+function markStage(n) { stagesCompleted.add(n); updateProgress(); }
+function updateProgress() { document.getElementById('progressFill').style.width = (stagesCompleted.size/5*100) + '%'; }
+function initMiniBoards() { Chessboard('hookBoard', { position: START_FEN, draggable: false, pieceTheme: 'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png' }); }
+$(document).ready(() => { initBoard(); initMiniBoards(); setTimeout(()=>markStage(2),500); });
+</script>
+
+</body>
+<

@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bài 4 (Ch9-Open) — Catalan</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/chessboard-js/1.0.0/chessboard-1.0.0.min.css">
+<style>
+* { box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; max-width: 980px; margin: 0 auto; padding: 24px; color: #1a1a1a; line-height: 1.6; background: #fafafa; }
+h1 { color: #1a3a52; font-size: 26px; margin: 0 0 8px; }
+h2 { color: #2c5282; font-size: 20px; margin: 32px 0 12px; padding-bottom: 6px; border-bottom: 2px solid #e1e8ed; }
+.source { color: #888; font-size: 13px; margin-bottom: 24px; }
+.nav-link { font-size: 13px; color: #2c5282; text-decoration: none; }
+.stage { background: white; border-radius: 8px; padding: 20px 24px; margin: 16px 0; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
+.stage-label { display: inline-block; background: #2c5282; color: white; font-size: 12px; font-weight: 600; padding: 3px 10px; border-radius: 12px; margin-bottom: 8px; }
+.hook-question { font-size: 17px; color: #1a3a52; background: #fff8e1; border-left: 4px solid #faad14; padding: 14px 18px; border-radius: 0 6px 6px 0; margin: 12px 0; }
+.reveal-btn { background: #faad14; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-size: 14px; }
+.hidden { display: none; }
+.board-layout { display: grid; grid-template-columns: 440px 1fr; gap: 24px; align-items: start; margin-top: 16px; }
+@media (max-width: 820px) { .board-layout { grid-template-columns: 1fr; } }
+#board { width: 420px; max-width: 100%; }
+.mini-board { width: 300px; max-width: 100%; margin: 14px auto; }
+.controls { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; justify-content: center; }
+.controls button { padding: 7px 12px; background: #2c5282; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 13px; }
+.info-panel { background: #f8f9fb; padding: 16px; border-radius: 6px; border: 1px solid #e1e8ed; min-height: 380px; }
+.move-display { font-family: monospace; font-size: 16px; color: #2c5282; font-weight: 600; margin-bottom: 8px; }
+.commentary { font-size: 14px; color: #444; margin-bottom: 12px; }
+.info-box { background: white; padding: 10px; border-radius: 4px; border: 1px solid #e1e8ed; margin: 12px 0; font-size: 13px; text-align: center; }
+.info-box.win { background: #f6ffed; border-color: #b7eb8f; color: #389e0d; font-weight: 600; }
+.hl { background: rgba(255, 215, 0, 0.45) !important; box-shadow: inset 0 0 0 2px #faad14 !important; }
+.self-test { background: #fff8e1; border: 2px dashed #faad14; border-radius: 6px; padding: 16px; margin-top: 16px; }
+.feedback { margin-top: 10px; padding: 10px 14px; border-radius: 4px; font-size: 14px; }
+.feedback.correct { background: #f6ffed; color: #389e0d; border-left: 4px solid #52c41a; }
+.feedback.wrong { background: #fff1f0; color: #cf1322; border-left: 4px solid #ff4d4f; }
+.quiz { background: #f0f7ff; border-left: 4px solid #2c5282; border-radius: 0 6px 6px 0; padding: 14px 18px; margin: 12px 0; }
+.quiz-q { font-weight: 600; margin-bottom: 10px; color: #1a3a52; }
+.quiz-options { display: flex; flex-direction: column; gap: 6px; }
+.quiz-option { padding: 8px 12px; background: white; border: 1px solid #c9d6e2; border-radius: 4px; cursor: pointer; text-align: left; font-size: 14px; }
+.quiz-option.correct { background: #f6ffed; border-color: #52c41a; color: #389e0d; }
+.quiz-option.wrong { background: #fff1f0; border-color: #ff4d4f; color: #cf1322; }
+.quiz-explain { margin-top: 8px; font-size: 13px; color: #555; font-style: italic; }
+.summary-card { background: linear-gradient(135deg, #1a3a52, #2c5282); color: white; padding: 20px 24px; border-radius: 8px; margin-top: 24px; }
+.summary-card h2 { color: white; border: none; margin-top: 0; }
+.summary-card ul { padding-left: 20px; }
+code { background: #f1f3f5; padding: 1px 6px; border-radius: 3px; font-family: monospace; font-size: 0.9em; }
+.summary-card code { background: rgba(255,255,255,0.2); color: white; }
+.progress-bar { height: 4px; background: #e1e8ed; border-radius: 2px; overflow: hidden; margin: 8px 0 16px; }
+.progress-fill { height: 100%; background: #52c41a; transition: width 0.3s; width: 0%; }
+.tag { display:inline-block; background:#fde9c8; color:#874d00; font-size:11px; font-weight:600; padding:2px 8px; border-radius:10px; margin-left:6px; }
+.movelist { font-family: monospace; font-size: 13px; background:#fff8e1; border-radius:6px; padding:8px 12px; margin-top:10px; color:#874d00; line-height:1.7; }
+</style>
+</head>
+<body>
+
+<h1>Catalan <span class="tag">1.d4 · bóp nghẹt</span></h1>
+<div class="source">
+  Chương 9 (Khai cuộc) — Khai cuộc 1.d4 — lý thuyết kinh điển · Nâng cao<br>
+  <a class="nav-link" href="../index-opening.html">← Trang chủ Khai cuộc</a> ·
+  <a class="nav-link" href="chapter_o9_closed.html">← Chương 9</a>
+</div>
+
+<div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+
+<div class="stage">
+  <span class="stage-label">CHẶNG 1 · DẪN NHẬP</span>
+  <h2 style="margin-top:8px">Tượng g2 — con quái vật trên đường chéo dài</h2>
+  <p><strong>Catalan</strong> kết hợp Gambit Hậu với fianchetto g3/Bg2. Tượng g2 ghì đường chéo dài h1-a8 (nhắm b7, c6, d5) suốt ván — Trắng thường thí tốt c4 tạm thời để đổi lấy sức ép vị trí lâu dài bóp nghẹt Đen.</p>
+  <div id="hookBoard" class="mini-board"></div>
+  <div class="movelist">1.d4 Nf6 2.c4 e6 3.g3 d5 4.Bg2 — tượng Catalan</div>
+  <div class="hook-question">
+    🤔 <strong>Tượng g2 và việc thí tốt c4</strong> đem lại đền bù gì cho Trắng?
+  </div>
+  <button class="reveal-btn" onclick="document.getElementById('hookAnswer').classList.remove('hidden'); markStage(1);">Hiển thị đáp án</button>
+  <div id="hookAnswer" class="hidden" style="margin-top:14px">
+    <p>Sau <code>4…Be7 5.Nf3 O-O 6.O-O dxc4</code>, Đen lấy tốt c4 — nhưng Trắng KHÔNG vội đòi lại: <strong>7.Qc2</strong> (hoặc a4/Ne5) gây sức ép qua tượng g2 trên đường chéo dài. Đền bù: <strong>sức ép vị trí lâu dài</strong> lên b7/c6/d5, thường đòi lại tốt với thế bóp nghẹt thoải mái. Lối chơi vắt kiệt, ít rủi ro.</p>
+  </div>
+</div>
+
+<div class="stage">
+  <span class="stage-label">CHẶNG 2 · KHÁI NIỆM</span>
+  <h2 style="margin-top:8px">Ý tưởng của Catalan</h2>
+  <ul>
+    <li><strong>Tượng g2</strong>: quân chủ lực — ghì đường chéo dài h1-a8 suốt ván, nhắm b7/c6/d5; tạo sức ép âm ỉ.</li>
+    <li><strong>Thí tốt tạm thời</strong>: sau …dxc4, Trắng chơi Qc2/a4/Ne5 đòi lại tốt với ưu thế vị trí thay vì vội vàng.</li>
+    <li><strong>Bóp nghẹt</strong>: lối chơi vắt kiệt ưu thế nhỏ, ít rủi ro — Đen khó giải phóng tượng c8 và đòn …c5.</li>
+  </ul>
+</div>
+
+<div class="stage">
+  <span class="stage-label">CHẶNG 3 · TƯƠNG TÁC TỪNG BƯỚC</span>
+  <div class="board-layout">
+    <div>
+      <div id="board"></div>
+      <div class="controls">
+        <button onclick="resetBoard()">⟨⟨ Đầu</button>
+        <button onclick="prevMove()">⟨ Lùi</button>
+        <button onclick="nextMove()">Tiến ⟩</button>
+      </div>
+    </div>
+    <div class="info-panel">
+      <div class="move-display" id="moveDisplay">Vị trí xuất phát</div>
+      <div class="commentary" id="commentary">Bấm Tiến ⟩ đi qua biến chính Catalan mở và đọc sức ép của tượng g2.</div>
+      <div class="info-box" id="infoBox">Đến lượt: <strong>Trắng</strong></div>
+    </div>
+  </div>
+</div>
+
+<div class="stage">
+  <span class="stage-label">CHẶNG 4 · TỰ KIỂM TRA</span>
+  <h2 style="margin-top:8px">Sau 6…dxc4, vì sao Trắng KHÔNG vội chơi để đòi lại tốt ngay?</h2>
+  <div class="self-test">
+    <div class="quiz-options" id="selfTestOptions">
+      <button class="quiz-option" onclick="checkSelfTest(this, true, 'Đúng. Catalan không vội: 7.Qc2 (hoặc a4, Ne5) duy trì áp lực qua tượng g2 trên đường chéo dài; Đen khó giữ tốt c4 lâu, nên Trắng thường đòi lại nó với thế bóp nghẹt thoải mái.')">Vì tượng g2 cho sức ép lâu dài lên b7/c6 — Trắng đòi lại tốt sau với ưu thế vị trí</button>
+      <button class="quiz-option" onclick="checkSelfTest(this, false, 'Sai — Trắng có nhiều cách (Qc2/a4/Ne5); chỉ là không vội.')">Vì không có cách nào đòi lại tốt</button>
+      <button class="quiz-option" onclick="checkSelfTest(this, false, 'Sai — không có chiếu; Trắng chủ động chọn chơi vị trí.')">Vì Trắng đang bị chiếu</button>
+    </div>
+    <div class="feedback hidden" id="selfTestFeedback"></div>
+  </div>
+</div>
+
+<div class="stage">
+  <span class="stage-label">CHẶNG 5 · TRẮC NGHIỆM NHANH</span>
+  <div class="quiz">
+    <div class="quiz-q">Q1. Quân chủ lực của Catalan?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" onclick="quizCheck(this, true)">Tượng g2 trên đường chéo dài h1-a8</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Mã f3</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Hậu d1</button>
+    </div>
+    <div class="quiz-explain hidden">Tượng Catalan (g2) là linh hồn thế cờ — ghì b7/c6/d5 suốt ván.</div>
+  </div>
+  <div class="quiz">
+    <div class="quiz-q">Q2. Sau …dxc4, cách chơi đặc trưng của Trắng?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" onclick="quizCheck(this, true)">Thí tốt tạm thời (Qc2/a4/Ne5) để có sức ép vị trí, đòi lại tốt sau</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Đòi lại tốt ngay bằng mọi giá</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Bỏ luôn tốt</button>
+    </div>
+    <div class="quiz-explain hidden">Trắng ưu tiên áp lực qua tượng g2; tốt c4 thường đòi lại được với ưu thế.</div>
+  </div>
+  <div class="quiz">
+    <div class="quiz-q">Q3. Phong cách Catalan?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" onclick="quizCheck(this, true)">Bóp nghẹt, vắt kiệt ưu thế nhỏ, ít rủi ro</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Tấn công vua liều lĩnh</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Đổi hết để hòa</button>
+    </div>
+    <div class="quiz-explain hidden">Catalan là vũ khí vị trí: sức ép âm ỉ lâu dài, rủi ro thấp — vua cờ Carlsen, Kramnik ưa dùng.</div>
+  </div>
+</div>
+
+<div class="summary-card">
+  <h2>📌 Tóm tắt</h2>
+  <ul>
+    <li><strong>Biến</strong>: <code>1.d4 Nf6 2.c4 e6 3.g3 d5 4.Bg2 Be7 5.Nf3 O-O 6.O-O dxc4 7.Qc2</code>.</li>
+    <li><strong>Ý tưởng</strong>: tượng g2 ghì đường chéo dài; thí tốt c4 tạm thời đổi lấy sức ép vị trí.</li>
+    <li><strong>Phong cách</strong>: bóp nghẹt, vắt kiệt ưu thế nhỏ — ít rủi ro.</li>
+    <li><strong>Đánh giá</strong>: vũ khí vị trí được giới đỉnh cao ưa dùng (Kramnik, Carlsen).</li>
+  </ul>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chessboard-js/1.0.0/chessboard-1.0.0.min.js"></script>
+<script>
+const START_FEN = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
+const MOVES = ['d4','Nf6','c4','e6','g3','d5','Bg2','Be7','Nf3','O-O','O-O','dxc4','Qc2'];
+const COMMENTARY = {
+  0: { move: 'Vị trí xuất phát', text: 'Catalan — Gambit Hậu cộng fianchetto g3/Bg2; tượng g2 bóp nghẹt qua đường chéo dài.' },
+  1: { move: '1. d4', text: 'Chiếm trung tâm.' },
+  2: { move: '1… Nf6', text: '…Nf6 kiểm soát e4, linh hoạt.' },
+  3: { move: '2. c4', text: 'c4 giành không gian trung tâm.' },
+  4: { move: '2… e6', text: '…e6 chuẩn bị …d5, mở đường tượng f8.' },
+  5: { move: '3. g3', text: 'g3! CATALAN — chuẩn bị fianchetto tượng g2 lên đường chéo dài.' },
+  6: { move: '3… d5', text: '…d5 tranh trung tâm (vào cấu trúc kiểu QGD).' },
+  7: { move: '4. Bg2', text: 'Bg2 — tượng Catalan: ghì h1-a8, nhắm b7/c6/d5; linh hồn thế cờ.' },
+  8: { move: '4… Be7', text: '…Be7 phát triển, chuẩn bị nhập thành.' },
+  9: { move: '5. Nf3', text: 'Nf3 phát triển, đỡ d4.' },
+  10: { move: '5… O-O', text: '…O-O nhập thành an toàn.' },
+  11: { move: '6. O-O', text: 'O-O — Trắng nhập thành, hoàn tất bố trí Catalan mở.' },
+  12: { move: '6… dxc4', text: '…dxc4 — Đen lấy tốt c4; nhưng giữ nó lâu dài rất khó dưới sức ép tượng g2.' },
+  13: { move: '7. Qc2', text: 'Qc2! Không vội đòi lại tốt — duy trì áp lực qua tượng g2 (cũng có a4/Ne5). Trắng đòi lại tốt sau với thế bóp nghẹt. Vắt kiệt ưu thế nhỏ. TABIYA.' }
+};
+let board, game, currentMove = 0, stagesCompleted = new Set();
+function initBoard() {
+  game = new Chess(START_FEN);
+  board = Chessboard('board', { position: 'start', draggable: true,
+    pieceTheme: 'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png',
+    onDrop: (s,t) => { const m = game.move({from:s,to:t,promotion:'q'}); if(!m) return 'snapback'; setTimeout(updateOverlays,100); },
+    onSnapEnd: () => { board.position(game.fen()); updateOverlays(); }});
+  updateDisplay();
+}
+function nextMove() { if(currentMove>=MOVES.length) return; game.move(MOVES[currentMove]); board.position(game.fen()); currentMove++; setTimeout(()=>{updateDisplay();updateOverlays();},50); if(currentMove>=MOVES.length) markStage(3); }
+function prevMove() { if(currentMove<=0) return; game.undo(); currentMove--; board.position(game.fen()); setTimeout(()=>{updateDisplay();updateOverlays();},50); }
+function resetBoard() { game = new Chess(START_FEN); board.position('start'); currentMove = 0; setTimeout(()=>{updateDisplay();updateOverlays();},50); }
+function updateDisplay() {
+  const cm = COMMENTARY[currentMove] || COMMENTARY[0];
+  document.getElementById('moveDisplay').textContent = cm.move;
+  document.getElementById('commentary').innerHTML = cm.text;
+  const box = document.getElementById('infoBox');
+  if (currentMove >= MOVES.length) { box.className = 'info-box win'; box.innerHTML = '★ Tabiya Catalan — sức ép tượng g2, bóp nghẹt'; }
+  else { box.className = 'info-box'; box.innerHTML = 'Đến lượt: <strong>' + (game.turn()==='w'?'Trắng':'Đen') + '</strong>'; }
+  updateProgress();
+}
+function updateOverlays() { $('#board .square-55d63').removeClass('hl'); ['g2','c4','d5'].forEach(sq => $('#board .square-' + sq).addClass('hl')); }
+function checkSelfTest(btn, ok, exp) {
+  document.querySelectorAll('#selfTestOptions .quiz-option').forEach(el=>el.disabled=true);
+  btn.classList.add(ok?'correct':'wrong');
+  const fb = document.getElementById('selfTestFeedback');
+  fb.classList.remove('hidden'); fb.className = 'feedback ' + (ok?'correct':'wrong');
+  fb.textContent = (ok?'✓ ':'✗ ') + exp; markStage(4);
+}
+function quizCheck(btn, ok) {
+  const q = btn.closest('.quiz');
+  q.querySelectorAll('.quiz-option').forEach(el=>el.disabled=true);
+  btn.classList.add(ok?'correct':'wrong');
+  if (!ok) q.querySelectorAll('.quiz-option').forEach(el => { if (el.getAttribute('onclick').includes('true')) el.classList.add('correct'); });
+  q.querySelector('.quiz-explain').classList.remove('hidden'); markStage(5);
+}
+function markStage(n) { stagesCompleted.add(n); updateProgress(); }
+function updateProgress() { document.getElementById('progressFill').style.width = (stagesCompleted.size/5*100) + '%'; }
+function initMiniBoards() { Chessboard('hookBoard', { position: 'rnbqkb1r/pppp1ppp/4pn2/8/2PP4/6P1/PP2PP1P/RNBQKBNR', draggable: false, pieceTheme: 'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png' }); }
+$(document).ready(() => { initBoard(); initMiniBoards(); setTimeout(()=>markStage(2),500); });
+</script>
+
+</body>
+</html>

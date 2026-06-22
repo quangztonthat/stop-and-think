@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Bài 3 (Ch13) — Vua chủ động phòng thủ</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/chessboard-js/1.0.0/chessboard-1.0.0.min.css">
+<style>
+* { box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; max-width: 980px; margin: 0 auto; padding: 24px; color: #1a1a1a; line-height: 1.6; background: #fafafa; }
+h1 { color: #1a3a52; font-size: 28px; margin: 0 0 8px; }
+h2 { color: #2c5282; font-size: 20px; margin: 32px 0 12px; padding-bottom: 6px; border-bottom: 2px solid #e1e8ed; }
+.source { color: #888; font-size: 13px; margin-bottom: 24px; }
+.nav-link { font-size: 13px; color: #2c5282; text-decoration: none; }
+.stage { background: white; border-radius: 8px; padding: 20px 24px; margin: 16px 0; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
+.stage-label { display: inline-block; background: #2c5282; color: white; font-size: 12px; font-weight: 600; padding: 3px 10px; border-radius: 12px; margin-bottom: 8px; }
+.hook-question { font-size: 17px; color: #1a3a52; background: #fff8e1; border-left: 4px solid #faad14; padding: 14px 18px; border-radius: 0 6px 6px 0; margin: 12px 0; }
+.reveal-btn { background: #faad14; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-size: 14px; }
+.hidden { display: none; }
+.board-layout { display: grid; grid-template-columns: 440px 1fr; gap: 24px; align-items: start; margin-top: 16px; }
+@media (max-width: 820px) { .board-layout { grid-template-columns: 1fr; } }
+#board { width: 420px; max-width: 100%; }
+.mini-board { width: 300px; max-width: 100%; margin: 14px auto; }
+.controls { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; justify-content: center; }
+.controls button { padding: 7px 12px; background: #2c5282; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 13px; }
+.info-panel { background: #f8f9fb; padding: 16px; border-radius: 6px; border: 1px solid #e1e8ed; min-height: 380px; }
+.move-display { font-family: monospace; font-size: 16px; color: #2c5282; font-weight: 600; margin-bottom: 8px; }
+.commentary { font-size: 14px; color: #444; margin-bottom: 12px; }
+.info-box { background: white; padding: 10px; border-radius: 4px; border: 1px solid #e1e8ed; margin: 12px 0; font-size: 13px; text-align: center; }
+.info-box.win { background: #fffbe6; border-color: #ffe58f; color: #d48806; font-weight: 600; }
+.self-test { background: #fff8e1; border: 2px dashed #faad14; border-radius: 6px; padding: 16px; margin-top: 16px; }
+.feedback { margin-top: 10px; padding: 10px 14px; border-radius: 4px; font-size: 14px; }
+.feedback.correct { background: #f6ffed; color: #389e0d; border-left: 4px solid #52c41a; }
+.feedback.wrong { background: #fff1f0; color: #cf1322; border-left: 4px solid #ff4d4f; }
+.quiz { background: #f0f7ff; border-left: 4px solid #2c5282; border-radius: 0 6px 6px 0; padding: 14px 18px; margin: 12px 0; }
+.quiz-q { font-weight: 600; margin-bottom: 10px; color: #1a3a52; }
+.quiz-options { display: flex; flex-direction: column; gap: 6px; }
+.quiz-option { padding: 8px 12px; background: white; border: 1px solid #c9d6e2; border-radius: 4px; cursor: pointer; text-align: left; font-size: 14px; }
+.quiz-option.correct { background: #f6ffed; border-color: #52c41a; color: #389e0d; }
+.quiz-option.wrong { background: #fff1f0; border-color: #ff4d4f; color: #cf1322; }
+.quiz-explain { margin-top: 8px; font-size: 13px; color: #555; font-style: italic; }
+.summary-card { background: linear-gradient(135deg, #1a3a52, #2c5282); color: white; padding: 20px 24px; border-radius: 8px; margin-top: 24px; }
+.summary-card h2 { color: white; border: none; margin-top: 0; }
+.summary-card ul { padding-left: 20px; }
+code { background: #f1f3f5; padding: 1px 6px; border-radius: 3px; font-family: monospace; font-size: 0.9em; }
+.summary-card code { background: rgba(255,255,255,0.2); color: white; }
+.progress-bar { height: 4px; background: #e1e8ed; border-radius: 2px; overflow: hidden; margin: 8px 0 16px; }
+.progress-fill { height: 100%; background: #52c41a; transition: width 0.3s; width: 0%; }
+</style>
+</head>
+<body>
+
+<h1>Bài 3 — Vua chủ động phòng thủ (Active King Defense)</h1>
+<div class="source">
+  Chương 13 — Phòng thủ<br>
+  <a class="nav-link" href="../index.html">← Trang chủ</a> ·
+  <a class="nav-link" href="chapter_13_defensive.html">← Chương 13</a>
+</div>
+
+<div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+
+<div class="stage">
+  <span class="stage-label">STAGE 1 · HOOK</span>
+  <h2 style="margin-top:8px">Vua trong tàn cuộc là quân TẤN CÔNG, không phải nạn nhân</h2>
+  <p>Thế cờ: Tàn cuộc Vua + tốt đấu Vua + tốt (mỗi bên 1 tốt). Vua phải lên TRƯỚC tốt để hỗ trợ phong cấp!</p>
+  <div id="hookBoard" class="mini-board"></div>
+  <div class="hook-question">
+    🤔 <strong>Tàn cuộc ≠ trung cuộc!</strong> Trong trung cuộc vua phải ẩn nấp (hàng cuối). Trong tàn cuộc vua phải LÊN GIỮA — quân mạnh!
+    "Vua là một quân chiến đấu" — Wilhelm Steinitz (nhà vô địch thế giới đầu tiên).
+  </div>
+  <button class="reveal-btn" onclick="document.getElementById('hookAnswer').classList.remove('hidden'); markStage(1);">Hiển thị đáp án</button>
+  <div id="hookAnswer" class="hidden" style="margin-top:14px">
+    <p><strong>Vua đứng cạnh tốt của mình → bảo vệ tốt + đẩy lùi vua đối thủ.</strong> Vua chiếm các ô then chốt (giành thế đối mặt) → quyết định thắng/hòa.</p>
+  </div>
+</div>
+
+<div class="stage">
+  <span class="stage-label">STAGE 2 · CONCEPT</span>
+  <h2 style="margin-top:8px">Sự năng động của vua trong tàn cuộc</h2>
+  <ul>
+    <li><strong>Vua mạnh ngang Mã</strong>: trong tàn cuộc vua kiểm soát 8 ô quanh nó.</li>
+    <li><strong>Đưa vua ra trung tâm</strong>: lên d4/e4/d5/e5 (trung tâm) → kiểm soát nhiều ô nhất.</li>
+    <li><strong>Thế đối mặt</strong>: hai vua đối diện trên cùng một cột, cách nhau 1 ô trống — bên KHÔNG phải đi có ưu thế.</li>
+    <li><strong>Vai trò phòng thủ</strong>: vua khống chế tốt đối thủ + bảo vệ tốt của mình cùng lúc.</li>
+  </ul>
+  <p>Steinitz: <strong>"Trong tàn cuộc, vua phải năng nổ — nó là một quân chiến đấu"</strong>.</p>
+</div>
+
+<div class="stage">
+  <span class="stage-label">STAGE 3 · WALKTHROUGH</span>
+  <div class="board-layout">
+    <div>
+      <div id="board"></div>
+      <div class="controls">
+        <button onclick="resetBoard()">⟨⟨ Đầu</button>
+        <button onclick="prevMove()">⟨ Lùi</button>
+        <button onclick="nextMove()">Tiến ⟩</button>
+      </div>
+    </div>
+    <div class="info-panel">
+      <div class="move-display" id="moveDisplay">Thế cờ khởi đầu</div>
+      <div class="commentary" id="commentary">Vua + tốt đấu Vua + tốt. Cả 2 bên đều có tốt d3/d4. Vua phải năng động → giành thế đối mặt.</div>
+      <div class="info-box" id="infoBox">Đến lượt: <strong>Trắng</strong></div>
+    </div>
+  </div>
+</div>
+
+<div class="stage">
+  <span class="stage-label">STAGE 4 · SELF-TEST</span>
+  <h2 style="margin-top:8px">Tại sao vua nên LÊN trong tàn cuộc, không phải ẩn nấp?</h2>
+  <div class="self-test">
+    <div class="quiz-options" id="selfTestOptions">
+      <button class="quiz-option" onclick="checkSelfTest(this, true, 'Đúng. Tàn cuộc ít quân → ít nguy cơ bị chiếu hết. Vua lên trung tâm = quân tấn công mạnh: kiểm soát 8 ô, hỗ trợ tốt, đấu với vua đối thủ. Ẩn nấp = lãng phí.')">Tàn cuộc ít nguy cơ → vua năng động = quân tấn công mạnh, hỗ trợ các tốt</button>
+      <button class="quiz-option" onclick="checkSelfTest(this, false, 'Sai. Logic tàn cuộc khác trung cuộc.')">Vua phải luôn ẩn nấp</button>
+    </div>
+    <div class="feedback hidden" id="selfTestFeedback"></div>
+  </div>
+</div>
+
+<div class="stage">
+  <span class="stage-label">STAGE 5 · MINI-QUIZ</span>
+  <div class="quiz">
+    <div class="quiz-q">Q1. Câu nói của Steinitz về vua trong tàn cuộc?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" onclick="quizCheck(this, true)">"Vua là một quân chiến đấu" — vua phải năng động, không ẩn nấp</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">"Vua phải luôn ẩn nấp"</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">"Tốt mới là vua"</button>
+    </div>
+    <div class="quiz-explain hidden">
+      Wilhelm Steinitz (nhà vô địch thế giới đầu tiên 1886-1894) nhấn mạnh nguyên tắc này. Trong tàn cuộc, vua năng động = cực kỳ quan trọng.
+    </div>
+  </div>
+  <div class="quiz">
+    <div class="quiz-q">Q2. Khi nào vua nên lên trung tâm?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" onclick="quizCheck(this, true)">Khi đã đổi hết Hậu và các quân nặng (= tàn cuộc)</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Trong khai cuộc</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Khi đối thủ còn Hậu</button>
+    </div>
+    <div class="quiz-explain hidden">
+      Vua chỉ năng động khi GIẢM nguy cơ bị chiếu hết. Đổi Hậu trước → an toàn để đưa ra trung tâm. Khi đối thủ còn Hậu, vua ở trung tâm = chết.
+    </div>
+  </div>
+  <div class="quiz">
+    <div class="quiz-q">Q3. "Thế đối mặt" trong tàn cuộc là gì?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" onclick="quizCheck(this, true)">2 vua đối diện cùng cột/hàng, cách 1 ô — bên KHÔNG phải đi có ưu thế</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">2 vua xa nhau</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Vua trong góc</button>
+    </div>
+    <div class="quiz-explain hidden">
+      Thế đối mặt: Vua đấu Vua cách 1 ô trên cùng một cột. Bên đến lượt phải đi vua → mất quyền kiểm soát ô. Bên KHÔNG phải đi "giành thế đối mặt" = ưu thế. Quy tắc cốt lõi của tàn cuộc Vua + tốt.
+    </div>
+  </div>
+</div>
+
+<div class="summary-card">
+  <h2>📌 Tóm tắt</h2>
+  <ul>
+    <li><strong>Vua là một quân chiến đấu</strong> trong tàn cuộc (Steinitz).</li>
+    <li><strong>Đưa ra trung tâm</strong>: vua lên d4/e4/d5/e5 → kiểm soát nhiều ô.</li>
+    <li><strong>Thế đối mặt</strong>: Vua đấu Vua cách 1 ô cùng cột → bên KHÔNG phải đi có ưu thế.</li>
+    <li><strong>Vai trò phòng thủ</strong>: vua khống chế tốt đối thủ + bảo vệ tốt của mình.</li>
+    <li><strong>Thực chiến</strong>: sau khi đổi Hậu, lập tức Kf2-e3-d4 (ra trung tâm) → ưu thế trong tàn cuộc.</li>
+  </ul>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chessboard-js/1.0.0/chessboard-1.0.0.min.js"></script>
+<script>
+const START_FEN = '8/3k4/8/8/3p4/3P4/3K4/8 w - - 0 1';
+const MOVES = ['Kc2','Kc6','Kd2','Kd6'];
+const COMMENTARY = {
+  0: { move: 'Thế cờ khởi đầu', text: 'Tàn cuộc Vua + tốt đấu Vua + tốt. Trắng Kd2 + Pd3. Đen Kd7 + Pd4. Cả 2 vua phải năng động.' },
+  1: { move: '1. Kc2', text: 'Vua Trắng đi sang ngang (Kc2). Tại sao? Để giành thế đối mặt. Đẩy thẳng lên d3 sẽ cản tốt của mình.' },
+  2: { move: '1...Kc6', text: 'Đen đi đối xứng: Kc6. Cả 2 vua ra trung tâm. Cuộc chiến giành thế đối mặt bắt đầu.' },
+  3: { move: '2. Kd2', text: 'Vua Trắng Kd2 quay lại. Tạo nhịp đi. Mục đích: giành thế đối mặt khi Đen buộc phải đi trước.' },
+  4: { move: '2...Kd6 ½-½ (tàn cuộc điển hình)', text: '⚖️ Thế cờ đối xứng. Cả 2 vua năng động. Trong nhiều tàn cuộc Vua + tốt, thế cờ như thế này dẫn đến hòa nếu chơi chính xác. ĐIỂM MẤU CHỐT là VUA PHẢI LÊN — không ẩn nấp. Nguyên tắc của Steinitz.' }
+};
+
+let board, game, currentMove = 0, stagesCompleted = new Set();
+
+function initBoard() {
+  game = new Chess(START_FEN);
+  board = Chessboard('board', { position: START_FEN, draggable: true,
+    pieceTheme: 'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png',
+    onDrop: (s,t) => { const m = game.move({from:s,to:t,promotion:'q'}); if(!m) return 'snapback'; },
+    onSnapEnd: () => board.position(game.fen()) });
+  updateDisplay();
+}
+function nextMove() { if(currentMove>=MOVES.length) return; game.move(MOVES[currentMove]); board.position(game.fen()); currentMove++; setTimeout(updateDisplay,50); if(currentMove>=MOVES.length) markStage(3); }
+function prevMove() { if(currentMove<=0) return; game.undo(); currentMove--; board.position(game.fen()); setTimeout(updateDisplay,50); }
+function resetBoard() { game = new Chess(START_FEN); board.position(START_FEN); currentMove = 0; setTimeout(updateDisplay,50); }
+
+function updateDisplay() {
+  const cm = COMMENTARY[currentMove] || COMMENTARY[0];
+  document.getElementById('moveDisplay').textContent = cm.move;
+  document.getElementById('commentary').innerHTML = cm.text;
+  const box = document.getElementById('infoBox');
+  if (currentMove >= MOVES.length) { box.className = 'info-box win'; box.innerHTML = '½ — ½ DRAW (typical)'; }
+  else { box.className = 'info-box'; box.innerHTML = 'Đến lượt: <strong>' + (game.turn()==='w'?'Trắng':'Đen') + '</strong>'; }
+  updateProgress();
+}
+function checkSelfTest(btn, ok, exp) {
+  document.querySelectorAll('#selfTestOptions .quiz-option').forEach(el=>el.disabled=true);
+  btn.classList.add(ok?'correct':'wrong');
+  const fb = document.getElementById('selfTestFeedback');
+  fb.classList.remove('hidden'); fb.className = 'feedback ' + (ok?'cor

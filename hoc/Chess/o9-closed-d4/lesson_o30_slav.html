@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bài 3 (Ch9-Open) — Phòng thủ Slav</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/chessboard-js/1.0.0/chessboard-1.0.0.min.css">
+<style>
+* { box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; max-width: 980px; margin: 0 auto; padding: 24px; color: #1a1a1a; line-height: 1.6; background: #fafafa; }
+h1 { color: #1a3a52; font-size: 26px; margin: 0 0 8px; }
+h2 { color: #2c5282; font-size: 20px; margin: 32px 0 12px; padding-bottom: 6px; border-bottom: 2px solid #e1e8ed; }
+.source { color: #888; font-size: 13px; margin-bottom: 24px; }
+.nav-link { font-size: 13px; color: #2c5282; text-decoration: none; }
+.stage { background: white; border-radius: 8px; padding: 20px 24px; margin: 16px 0; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
+.stage-label { display: inline-block; background: #2c5282; color: white; font-size: 12px; font-weight: 600; padding: 3px 10px; border-radius: 12px; margin-bottom: 8px; }
+.hook-question { font-size: 17px; color: #1a3a52; background: #fff8e1; border-left: 4px solid #faad14; padding: 14px 18px; border-radius: 0 6px 6px 0; margin: 12px 0; }
+.reveal-btn { background: #faad14; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-size: 14px; }
+.hidden { display: none; }
+.board-layout { display: grid; grid-template-columns: 440px 1fr; gap: 24px; align-items: start; margin-top: 16px; }
+@media (max-width: 820px) { .board-layout { grid-template-columns: 1fr; } }
+#board { width: 420px; max-width: 100%; }
+.mini-board { width: 300px; max-width: 100%; margin: 14px auto; }
+.controls { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; justify-content: center; }
+.controls button { padding: 7px 12px; background: #2c5282; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 13px; }
+.info-panel { background: #f8f9fb; padding: 16px; border-radius: 6px; border: 1px solid #e1e8ed; min-height: 380px; }
+.move-display { font-family: monospace; font-size: 16px; color: #2c5282; font-weight: 600; margin-bottom: 8px; }
+.commentary { font-size: 14px; color: #444; margin-bottom: 12px; }
+.info-box { background: white; padding: 10px; border-radius: 4px; border: 1px solid #e1e8ed; margin: 12px 0; font-size: 13px; text-align: center; }
+.info-box.win { background: #f6ffed; border-color: #b7eb8f; color: #389e0d; font-weight: 600; }
+.hl { background: rgba(255, 215, 0, 0.45) !important; box-shadow: inset 0 0 0 2px #faad14 !important; }
+.self-test { background: #fff8e1; border: 2px dashed #faad14; border-radius: 6px; padding: 16px; margin-top: 16px; }
+.feedback { margin-top: 10px; padding: 10px 14px; border-radius: 4px; font-size: 14px; }
+.feedback.correct { background: #f6ffed; color: #389e0d; border-left: 4px solid #52c41a; }
+.feedback.wrong { background: #fff1f0; color: #cf1322; border-left: 4px solid #ff4d4f; }
+.quiz { background: #f0f7ff; border-left: 4px solid #2c5282; border-radius: 0 6px 6px 0; padding: 14px 18px; margin: 12px 0; }
+.quiz-q { font-weight: 600; margin-bottom: 10px; color: #1a3a52; }
+.quiz-options { display: flex; flex-direction: column; gap: 6px; }
+.quiz-option { padding: 8px 12px; background: white; border: 1px solid #c9d6e2; border-radius: 4px; cursor: pointer; text-align: left; font-size: 14px; }
+.quiz-option.correct { background: #f6ffed; border-color: #52c41a; color: #389e0d; }
+.quiz-option.wrong { background: #fff1f0; border-color: #ff4d4f; color: #cf1322; }
+.quiz-explain { margin-top: 8px; font-size: 13px; color: #555; font-style: italic; }
+.summary-card { background: linear-gradient(135deg, #1a3a52, #2c5282); color: white; padding: 20px 24px; border-radius: 8px; margin-top: 24px; }
+.summary-card h2 { color: white; border: none; margin-top: 0; }
+.summary-card ul { padding-left: 20px; }
+code { background: #f1f3f5; padding: 1px 6px; border-radius: 3px; font-family: monospace; font-size: 0.9em; }
+.summary-card code { background: rgba(255,255,255,0.2); color: white; }
+.progress-bar { height: 4px; background: #e1e8ed; border-radius: 2px; overflow: hidden; margin: 8px 0 16px; }
+.progress-fill { height: 100%; background: #52c41a; transition: width 0.3s; width: 0%; }
+.tag { display:inline-block; background:#fde9c8; color:#874d00; font-size:11px; font-weight:600; padding:2px 8px; border-radius:10px; margin-left:6px; }
+.movelist { font-family: monospace; font-size: 13px; background:#fff8e1; border-radius:6px; padding:8px 12px; margin-top:10px; color:#874d00; line-height:1.7; }
+</style>
+</head>
+<body>
+
+<h1>Phòng thủ Slav <span class="tag">1.d4 d5 · vững & linh hoạt</span></h1>
+<div class="source">
+  Chương 9 (Khai cuộc) — Khai cuộc 1.d4 — lý thuyết kinh điển · Trung cấp → Nâng cao<br>
+  <a class="nav-link" href="../index-opening.html">← Trang chủ Khai cuộc</a> ·
+  <a class="nav-link" href="chapter_o9_closed.html">← Chương 9</a>
+</div>
+
+<div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+
+<div class="stage">
+  <span class="stage-label">CHẶNG 1 · DẪN NHẬP</span>
+  <h2 style="margin-top:8px">Giữ d5 bằng …c6 — mà KHÔNG nhốt tượng c8</h2>
+  <p><strong>Slav</strong>: Đen đỡ 2.c4 bằng <strong>2…c6</strong> thay vì …e6. Điểm hơn QGD: vẫn giữ chắc d5 nhưng KHÔNG nhốt tượng c8 — Đen có thể đưa tượng ra ngoài (…Bf5) trước khi …e6.</p>
+  <div id="hookBoard" class="mini-board"></div>
+  <div class="movelist">1.d4 d5 2.c4 c6 — Slav, giữ lối ra cho tượng</div>
+  <div class="hook-question">
+    🤔 <strong>Slav khác QGD ở điểm cốt lõi nào</strong> về tượng c8?
+  </div>
+  <button class="reveal-btn" onclick="document.getElementById('hookAnswer').classList.remove('hidden'); markStage(1);">Hiển thị đáp án</button>
+  <div id="hookAnswer" class="hidden" style="margin-top:14px">
+    <p>QGD chơi …e6 (nhốt tượng c8); Slav chơi <strong>…c6</strong> — cũng giữ d5 nhưng để ngỏ đường cho tượng. Sau <code>3.Nf3 Nf6 4.Nc3 dxc4 5.a4 Bf5</code> Đen đưa <strong>tượng ra ngoài</strong> rồi mới …e6. a4 ngăn …b5 giữ tốt. Đây là phòng thủ vừa vững vừa linh hoạt, rất được tin dùng ở đỉnh cao.</p>
+  </div>
+</div>
+
+<div class="stage">
+  <span class="stage-label">CHẶNG 2 · KHÁI NIỆM</span>
+  <h2 style="margin-top:8px">Ý tưởng của Slav</h2>
+  <ul>
+    <li><strong>…c6 thay …e6</strong>: giữ d5 chắc nhưng không chặn tượng c8 — khắc phục nhược điểm chính của QGD.</li>
+    <li><strong>…dxc4 rồi …Bf5</strong>: lấy tốt c4 tạm thời để có nhịp đưa tượng ra ngoài; a4 (Trắng) ngăn …b5 giữ tốt.</li>
+    <li><strong>Vững và linh hoạt</strong>: cấu trúc lành, tượng hoạt động — cân bằng giữa chắc chắn và năng động.</li>
+  </ul>
+</div>
+
+<div class="stage">
+  <span class="stage-label">CHẶNG 3 · TƯƠNG TÁC TỪNG BƯỚC</span>
+  <div class="board-layout">
+    <div>
+      <div id="board"></div>
+      <div class="controls">
+        <button onclick="resetBoard()">⟨⟨ Đầu</button>
+        <button onclick="prevMove()">⟨ Lùi</button>
+        <button onclick="nextMove()">Tiến ⟩</button>
+      </div>
+    </div>
+    <div class="info-panel">
+      <div class="move-display" id="moveDisplay">Vị trí xuất phát</div>
+      <div class="commentary" id="commentary">Bấm Tiến ⟩ đi qua biến chính Slav và đọc vì sao tượng c8 được tự do.</div>
+      <div class="info-box" id="infoBox">Đến lượt: <strong>Trắng</strong></div>
+    </div>
+  </div>
+</div>
+
+<div class="stage">
+  <span class="stage-label">CHẶNG 4 · TỰ KIỂM TRA</span>
+  <h2 style="margin-top:8px">Ưu điểm cốt lõi của Slav so với QGD là gì?</h2>
+  <div class="self-test">
+    <div class="quiz-options" id="selfTestOptions">
+      <button class="quiz-option" onclick="checkSelfTest(this, true, 'Đúng. Cả QGD và Slav đều củng cố d5, nhưng Slav dùng …c6 (không phải …e6) nên tượng c8 vẫn có lối ra; …Bf5 phát triển nó tích cực trước khi …e6 — giải quyết đúng căn bệnh tượng xấu.')">Giữ d5 bằng …c6 mà không nhốt tượng c8 — tượng ra được …Bf5</button>
+      <button class="quiz-option" onclick="checkSelfTest(this, false, 'Sai — …dxc4 chỉ tạm thời, Trắng sẽ đòi lại; không thắng tốt.')">Slav thắng một tốt</button>
+      <button class="quiz-option" onclick="checkSelfTest(this, false, 'Sai — Slav là phòng thủ vị trí vững chắc, không nhắm tấn công sớm.')">Slav tấn công vua ngay</button>
+    </div>
+    <div class="feedback hidden" id="selfTestFeedback"></div>
+  </div>
+</div>
+
+<div class="stage">
+  <span class="stage-label">CHẶNG 5 · TRẮC NGHIỆM NHANH</span>
+  <div class="quiz">
+    <div class="quiz-q">Q1. Vì sao Đen chơi 2…c6 thay vì 2…e6?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" onclick="quizCheck(this, true)">Giữ d5 mà vẫn chừa lối ra cho tượng c8 (…Bf5)</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Để thí tốt c6</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Chuẩn bị …c5 ngay</button>
+    </div>
+    <div class="quiz-explain hidden">…c6 là điểm phân biệt Slav với QGD: tượng c8 không bị nhốt.</div>
+  </div>
+  <div class="quiz">
+    <div class="quiz-q">Q2. Sau 4…dxc4, vì sao Trắng chơi 5.a4?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" onclick="quizCheck(this, true)">Ngăn …b5 giữ tốt c4</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Tấn công vua</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Mở đường cho xe a1 ngay</button>
+    </div>
+    <div class="quiz-explain hidden">a4 chặn …b5; nếu không Đen có thể …b5 bám tốt c4. Đổi lại a4 làm yếu ô b4.</div>
+  </div>
+  <div class="quiz">
+    <div class="quiz-q">Q3. Đặc tính của Slav?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" onclick="quizCheck(this, true)">Vừa vững vừa linh hoạt — cấu trúc lành, tượng hoạt động</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Sắc bén, liều lĩnh</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Luôn dẫn tới hòa nhanh</button>
+    </div>
+    <div class="quiz-explain hidden">Slav cân bằng giữa chắc chắn (như QGD) và năng động (tượng ra ngoài).</div>
+  </div>
+</div>
+
+<div class="summary-card">
+  <h2>📌 Tóm tắt</h2>
+  <ul>
+    <li><strong>Biến</strong>: <code>1.d4 d5 2.c4 c6 3.Nf3 Nf6 4.Nc3 dxc4 5.a4 Bf5 6.e3 e6 7.Bxc4 Bb4</code>.</li>
+    <li><strong>Ý tưởng</strong>: …c6 giữ d5 mà không nhốt tượng; …dxc4 + …Bf5 đưa tượng ra ngoài; a4 ngăn …b5.</li>
+    <li><strong>Hơn QGD</strong>: tượng c8 được tự do — khắc phục bệnh tượng xấu.</li>
+    <li><strong>Đánh giá</strong>: vững và linh hoạt, rất được tin dùng ở đỉnh cao.</li>
+  </ul>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chessboard-js/1.0.0/chessboard-1.0.0.min.js"></script>
+<script>
+const START_FEN = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
+const MOVES = ['d4','d5','c4','c6','Nf3','Nf6','Nc3','dxc4','a4','Bf5','e3','e6','Bxc4','Bb4'];
+const COMMENTARY = {
+  0: { move: 'Vị trí xuất phát', text: 'Phòng thủ Slav — giữ d5 bằng …c6 mà không nhốt tượng c8; vừa vững vừa linh hoạt.' },
+  1: { move: '1. d4', text: 'Chiếm trung tâm.' },
+  2: { move: '1… d5', text: '…d5 tranh trung tâm.' },
+  3: { move: '2. c4', text: 'Gambit Hậu.' },
+  4: { move: '2… c6', text: '…c6! SLAV — giữ d5 chắc nhưng KHÔNG chặn tượng c8 (khác …e6 của QGD).' },
+  5: { move: '3. Nf3', text: 'Nf3 phát triển, ngăn …e5.' },
+  6: { move: '3… Nf6', text: '…Nf6 bảo vệ d5, phát triển.' },
+  7: { move: '4. Nc3', text: 'Nc3 thêm lực ép d5.' },
+  8: { move: '4… dxc4', text: '…dxc4 — lấy tốt c4 TẠM THỜI để có nhịp đưa tượng ra ngoài (sẽ trả lại).' },
+  9: { move: '5. a4', text: 'a4! Ngăn …b5 giữ tốt c4 — nhưng làm yếu ô b4 (Đen sẽ dùng …Bb4).' },
+  10: { move: '5… Bf5', text: '…Bf5! Điểm cốt lõi — đưa tượng trắng ra NGOÀI chuỗi tốt trước khi …e6.' },
+  11: { move: '6. e3', text: 'e3 mở tượng f1, chuẩn bị Bxc4 đòi lại tốt.' },
+  12: { move: '6… e6', text: '…e6 — giờ mới đóng (tượng c8 đã ra ngoài an toàn), củng cố d5.' },
+  13: { move: '7. Bxc4', text: 'Bxc4 đòi lại tốt, tượng ra ô tích cực.' },
+  14: { move: '7… Bb4', text: '…Bb4 — dùng ô b4 yếu (do a4), ghim/áp lực Nc3. Cờ vững, linh hoạt, tượng hoạt động. TABIYA.' }
+};
+let board, game, currentMove = 0, stagesCompleted = new Set();
+function initBoard() {
+  game = new Chess(START_FEN);
+  board = Chessboard('board', { position: 'start', draggable: true,
+    pieceTheme: 'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png',
+    onDrop: (s,t) => { const m = game.move({from:s,to:t,promotion:'q'}); if(!m) return 'snapback'; setTimeout(updateOverlays,100); },
+    onSnapEnd: () => { board.position(game.fen()); updateOverlays(); }});
+  updateDisplay();
+}
+function nextMove() { if(currentMove>=MOVES.length) return; game.move(MOVES[currentMove]); board.position(game.fen()); currentMove++; setTimeout(()=>{updateDisplay();updateOverlays();},50); if(currentMove>=MOVES.length) markStage(3); }
+function prevMove() { if(currentMove<=0) return; game.undo(); currentMove--; board.position(game.fen()); setTimeout(()=>{updateDisplay();updateOverlays();},50); }
+function resetBoard() { game = new Chess(START_FEN); board.position('start'); currentMove = 0; setTimeout(()=>{updateDisplay();updateOverlays();},50); }
+function updateDisplay() {
+  const cm = COMMENTARY[currentMove] || COMMENTARY[0];
+  document.getElementById('moveDisplay').textContent = cm.move;
+  document.getElementById('commentary').innerHTML = cm.text;
+  const box = document.getElementById('infoBox');
+  if (currentMove >= MOVES.length) { box.className = 'info-box win'; box.innerHTML = '★ Tabiya Slav — vững, tượng c8 tự do'; }
+  else { box.className = 'info-box'; box.innerHTML = 'Đến lượt: <strong>' + (game.turn()==='w'?'Trắng':'Đen') + '</strong>'; }
+  updateProgress();
+}
+function updateOverlays() { $('#board .square-55d63').removeClass('hl'); ['d5','c6','f5'].forEach(sq => $('#board .square-' + sq).addClass('hl')); }
+function checkSelfTest(btn, ok, exp) {
+  document.querySelectorAll('#selfTestOptions .quiz-option').forEach(el=>el.disabled=true);
+  btn.classList.add(ok?'correct':'wrong');
+  const fb = document.getElementById('selfTestFeedback');
+  fb.classList.remove('hidden'); fb.className = 'feedback ' + (ok?'correct':'wrong');
+  fb.textContent = (ok?'✓ ':'✗ ') + exp; markStage(4);
+}
+function quizCheck(btn, ok) {
+  const q = btn.closest('.quiz');
+  q.querySelectorAll('.quiz-option').forEach(el=>el.disabled=true);
+  btn.classList.add(ok?'correct':'wrong');
+  if (!ok) q.querySelectorAll('.quiz-option').forEach(el => { if (el.getAttribute('onclick').includes('true')) el.classList.add('correct'); });
+  q.querySelector('.quiz-explain').classList.remove('hidden'); markStage(5);
+}
+function markStage(n) { stagesCompleted.add(n); updateProgress(); }
+function updateProgress() { document.getElementById('progressFill').style.width = (stagesCompleted.size/5*100) + '%'; }
+function initMiniBoards() { Chessboard('hookBoard', { position: 'rnbqkbnr/pp2pppp/2p5/3p4/2PP4/8/PP2PPPP/RNBQKBNR', draggable: false, pieceTheme: 'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png' }); }
+$(document).ready(() => { initBoard(); initMiniBoards(); setTimeout(()=>markStage(2),500); });
+</script>
+
+</body>
+</html>

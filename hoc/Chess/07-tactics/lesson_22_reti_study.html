@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Bài 2 (Ch7) — Thế cờ Réti</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/chessboard-js/1.0.0/chessboard-1.0.0.min.css">
+<style>
+* { box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; max-width: 980px; margin: 0 auto; padding: 24px; color: #1a1a1a; line-height: 1.6; background: #fafafa; }
+h1 { color: #1a3a52; font-size: 28px; margin: 0 0 8px; }
+h2 { color: #2c5282; font-size: 20px; margin: 32px 0 12px; padding-bottom: 6px; border-bottom: 2px solid #e1e8ed; }
+.source { color: #888; font-size: 13px; margin-bottom: 24px; }
+.nav-link { font-size: 13px; color: #2c5282; text-decoration: none; }
+.stage { background: white; border-radius: 8px; padding: 20px 24px; margin: 16px 0; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
+.stage-label { display: inline-block; background: #2c5282; color: white; font-size: 12px; font-weight: 600; padding: 3px 10px; border-radius: 12px; margin-bottom: 8px; }
+.hook-question { font-size: 17px; color: #1a3a52; background: #fff8e1; border-left: 4px solid #faad14; padding: 14px 18px; border-radius: 0 6px 6px 0; margin: 12px 0; }
+.reveal-btn { background: #faad14; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-size: 14px; }
+.hidden { display: none; }
+.board-layout { display: grid; grid-template-columns: 440px 1fr; gap: 24px; align-items: start; margin-top: 16px; }
+@media (max-width: 820px) { .board-layout { grid-template-columns: 1fr; } }
+#board { width: 420px; max-width: 100%; }
+.mini-board { width: 300px; max-width: 100%; margin: 14px auto; }
+.controls { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; justify-content: center; }
+.controls button { padding: 7px 12px; background: #2c5282; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 13px; }
+.info-panel { background: #f8f9fb; padding: 16px; border-radius: 6px; border: 1px solid #e1e8ed; min-height: 380px; }
+.move-display { font-family: monospace; font-size: 16px; color: #2c5282; font-weight: 600; margin-bottom: 8px; }
+.commentary { font-size: 14px; color: #444; margin-bottom: 12px; }
+.info-box { background: white; padding: 10px; border-radius: 4px; border: 1px solid #e1e8ed; margin: 12px 0; font-size: 13px; text-align: center; }
+.info-box.draw { background: #fff7e6; border-color: #ffd591; color: #ad4e00; font-weight: 600; }
+.highlight-diag { background: rgba(108, 63, 191, 0.3) !important; box-shadow: inset 0 0 0 2px #6c3fbf !important; }
+.highlight-king-blue { box-shadow: inset 0 0 0 4px #1d39c4 !important; }
+.self-test { background: #fff8e1; border: 2px dashed #faad14; border-radius: 6px; padding: 16px; margin-top: 16px; }
+.self-test-question { font-weight: 600; color: #874d00; margin-bottom: 8px; }
+.feedback { margin-top: 10px; padding: 10px 14px; border-radius: 4px; font-size: 14px; }
+.feedback.correct { background: #f6ffed; color: #389e0d; border-left: 4px solid #52c41a; }
+.feedback.wrong { background: #fff1f0; color: #cf1322; border-left: 4px solid #ff4d4f; }
+.quiz { background: #f0f7ff; border-left: 4px solid #2c5282; border-radius: 0 6px 6px 0; padding: 14px 18px; margin: 12px 0; }
+.quiz-q { font-weight: 600; margin-bottom: 10px; color: #1a3a52; }
+.quiz-options { display: flex; flex-direction: column; gap: 6px; }
+.quiz-option { padding: 8px 12px; background: white; border: 1px solid #c9d6e2; border-radius: 4px; cursor: pointer; text-align: left; font-size: 14px; }
+.quiz-option.correct { background: #f6ffed; border-color: #52c41a; color: #389e0d; }
+.quiz-option.wrong { background: #fff1f0; border-color: #ff4d4f; color: #cf1322; }
+.quiz-explain { margin-top: 8px; font-size: 13px; color: #555; font-style: italic; }
+.summary-card { background: linear-gradient(135deg, #1a3a52, #2c5282); color: white; padding: 20px 24px; border-radius: 8px; margin-top: 24px; }
+.summary-card h2 { color: white; border: none; margin-top: 0; }
+.summary-card ul { padding-left: 20px; }
+code { background: #f1f3f5; padding: 1px 6px; border-radius: 3px; font-family: monospace; font-size: 0.9em; }
+.summary-card code { background: rgba(255,255,255,0.2); color: white; }
+.progress-bar { height: 4px; background: #e1e8ed; border-radius: 2px; overflow: hidden; margin: 8px 0 16px; }
+.progress-fill { height: 100%; background: #52c41a; transition: width 0.3s; width: 0%; }
+</style>
+</head>
+<body>
+
+<h1>Bài 2 — Thế cờ tàn cuộc của Réti (1921)</h1>
+<div class="source">
+  Chương 7 — Các thế đòn chiến thuật tàn cuộc · Thế cờ sáng tác nổi tiếng<br>
+  <a class="nav-link" href="../index.html">← Trang chủ</a> ·
+  <a class="nav-link" href="chapter_07_tactics.html">← Chương 7</a>
+</div>
+
+<div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+
+<div class="stage">
+  <span class="stage-label">STAGE 1 · MỞ ĐẦU</span>
+  <h2 style="margin-top:8px">Vua trắng "đuổi 2 con thỏ cùng lúc"</h2>
+  <p>Thế cờ: Trắng Vua h8 + tốt c6. Đen Vua a6 + tốt h5.</p>
+  <div id="hookBoard" class="mini-board"></div>
+  <div class="hook-question">
+    🤔 <strong>Trông thua chắc cho Trắng!</strong> Tốt h5 chạy 4 nước là về tới h1.
+    Vua trắng ở h8 cách tốt h 7 ô, cách tốt c 5 ô — không thể cứu cả hai.
+    Vậy mà Réti tìm ra cách HÒA bằng nước thiên tài.
+  </div>
+  <button class="reveal-btn" onclick="document.getElementById('hookAnswer').classList.remove('hidden'); markStage(1);">Hiển thị đáp án</button>
+  <div id="hookAnswer" class="hidden" style="margin-top:14px">
+    <p><strong>1.Kg7!</strong> Nước thần kỳ — vua trắng đi theo đường chéo "đuổi 2 con thỏ":
+       vừa hướng về tốt h (chặn phong cấp) VỪA hướng về tốt c (bảo vệ từ xa).
+       Bất kể Đen chọn gì, Trắng đều đạt được tàn cuộc hòa.</p>
+  </div>
+</div>
+
+<div class="stage">
+  <span class="stage-label">STAGE 2 · KHÁI NIỆM</span>
+  <h2 style="margin-up:8px">Hình học của nước đi vua</h2>
+  <p>Trên bàn cờ vua, theo khoảng cách Chebyshev: vua đi theo đường chéo chỉ tốn 1 nước cho 1 cột + 1 hàng.
+     <strong>Vua đi chéo → tiến cả 2 chiều cùng lúc</strong>.</p>
+  <p>Réti tận dụng điều này:</p>
+  <ul>
+    <li><strong>Kh8 → Kg7</strong>: 1 nước, đi cả cột (h→g) lẫn hàng (8→7). Vừa lại gần tốt h VỪA lại gần tốt c.</li>
+    <li><strong>Kg7 → Kf6 → Ke5 → Kd6</strong>: tiếp tục đi chéo, lọt vào "vùng ảnh hưởng" của cả 2 tốt.</li>
+  </ul>
+  <p>Đen thấy "Trắng đang đuổi kịp" → buộc phải chọn: đua với tốt h (mất cơ hội chặn tốt c) hoặc ăn tốt c (mất nhịp cho tốt h).</p>
+</div>
+
+<div class="stage">
+  <span class="stage-label">STAGE 3 · DIỄN GIẢI TỪNG NƯỚC</span>
+  <div class="board-layout">
+    <div>
+      <div id="board"></div>
+      <div class="controls">
+        <button onclick="resetBoard()">⟨⟨ Đầu</button>
+        <button onclick="prevMove()">⟨ Lùi</button>
+        <button onclick="nextMove()">Tiến ⟩</button>
+        <button onclick="goToEnd()">Cuối ⟩⟩</button>
+      </div>
+    </div>
+    <div class="info-panel">
+      <div class="move-display" id="moveDisplay">Thế cờ ban đầu</div>
+      <div class="commentary" id="commentary">Trắng Kh8 + Pc6 đấu Đen Ka6 + Ph5. Trông thua chắc — lời giải của Réti!</div>
+      <div class="info-box" id="infoBox">Đến lượt: <strong>Trắng</strong></div>
+    </div>
+  </div>
+</div>
+
+<div class="stage">
+  <span class="stage-label">STAGE 4 · TỰ KIỂM TRA</span>
+  <h2 style="margin-top:8px">Tại sao 1.Kg7 (đi chéo) tốt hơn 1.Kh7 (đi thẳng)?</h2>
+  <div class="self-test">
+    <div class="quiz-options" id="selfTestOptions">
+      <button class="quiz-option" onclick="checkSelfTest(this, false, 'Sai. Cả 2 nước đều hợp lệ. Vấn đề nằm ở hình học.')">Vì Kh7 phạm luật</button>
+      <button class="quiz-option" onclick="checkSelfTest(this, true, 'Đúng! Kg7 đi cả cột lẫn hàng — lại gần tốt c thêm 1 ô. Kh7 chỉ đi theo hàng — không lại gần tốt c. Đi chéo tận dụng khoảng cách Chebyshev.')">Vì Kg7 đi chéo — lại gần CẢ HAI tốt cùng lúc</button>
+      <button class="quiz-option" onclick="checkSelfTest(this, false, 'Sai. Vua không khống chế tốt từ xa được.')">Vì Kg7 khống chế tốt h5</button>
+    </div>
+    <div class="feedback hidden" id="selfTestFeedback"></div>
+  </div>
+</div>
+
+<div class="stage">
+  <span class="stage-label">STAGE 5 · TRẮC NGHIỆM NHANH</span>
+  <div class="quiz">
+    <div class="quiz-q">Q1. Thế cờ Réti nổi tiếng vì điều gì?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" onclick="quizCheck(this, true)">Vua đi chéo tận dụng khoảng cách Chebyshev — đuổi 2 mục tiêu cùng lúc</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Tốt phong cấp nhanh nhất</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Chiếu hết trong 1 nước</button>
+    </div>
+    <div class="quiz-explain hidden">
+      Réti (1921) chứng minh "hình học thắng phép đếm" — vua đi chéo có sức mạnh chiến thuật gấp đôi vì tiến cả 2 chiều cùng lúc.
+    </div>
+  </div>
+  <div class="quiz">
+    <div class="quiz-q">Q2. Khoảng cách Chebyshev là gì?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" onclick="quizCheck(this, true)">max(|Δfile|, |Δrank|) — số nước tối thiểu để vua đi từ A đến B</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">|Δfile| + |Δrank| — khoảng cách Manhattan</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">sqrt(Δfile² + Δrank²) — khoảng cách Euclid</button>
+    </div>
+    <div class="quiz-explain hidden">
+      Vua di chuyển 1 ô bất kỳ → Chebyshev = hiệu lớn hơn giữa (cột, hàng). Đi chéo tận dụng điều này: 1 nước tiến 1 cột + 1 hàng cùng lúc.
+    </div>
+  </div>
+  <div class="quiz">
+    <div class="quiz-q">Q3. Bài học thực hành rút ra từ Réti?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" onclick="quizCheck(this, true)">Vua là quân mạnh trong tàn cuộc — đừng để vua thụ động ở góc.</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Luôn phong cấp tốt nhanh nhất</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Thí tốt để giành nhịp</button>
+    </div>
+    <div class="quiz-explain hidden">
+      Bài học của Réti: vua chủ động, đặc biệt là các nước đi chéo, có thể tạo nên kỳ tích trong tàn cuộc. Đừng đánh giá thấp khả năng cơ động của vua.
+    </div>
+  </div>
+</div>
+
+<div class="summary-card">
+  <h2>📌 Tóm tắt</h2>
+  <ul>
+    <li><strong>Thế cờ Réti (1921)</strong>: Thế cờ sáng tác tàn cuộc nổi tiếng minh họa lối đi chéo của vua.</li>
+    <li><strong>Ý chính</strong>: Vua di chuyển theo đường chéo tận dụng khoảng cách Chebyshev — lại gần 2 mục tiêu cùng lúc.</li>
+    <li><strong>Kết cục</strong>: Trắng hòa được thế cờ trông như thua chắc.</li>
+    <li><strong>Nguyên lý chung</strong>: Vua chủ động + lối đi chéo = kỳ tích tàn cuộc.</li>
+  </ul>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chessboard-js/1.0.0/chessboard-1.0.0.min.js"></script>
+<script>
+const START_FEN = '7K/8/k1P5/7p/8/8/8/8 w - - 0 1';
+const MOVES = ['Kg7', 'Kb6', 'Kf6', 'Kxc6', 'Ke5', 'h4', 'Kf4', 'h3', 'Kg3', 'h2', 'Kxh2'];
+const COMMENTARY = {
+  0: { move: 'Thế cờ ban đầu', text: 'Trắng Kh8 + Pc6 đấu Đen Ka6 + Ph5. Trông thua chắc.' },
+  1: { move: '1. Kg7 !', text: '🪄 Nước thần kỳ! Vua đi chéo — tiến cả cột (h→g) lẫn hàng (8→7). Lại gần CẢ HAI tốt.' },
+  2: { move: '1... Kb6', text: 'Vua đen tiến đến tốt c (chuẩn bị ăn).' },
+  3: { move: '2. Kf6', text: 'Vua trắng tiếp tục đi chéo. Vẫn "đuổi 2 con thỏ".' },
+  4: { move: '2... Kxc6', text: 'Đen ăn tốt c. Vua trắng đã tới f6.' },
+  5: { move: '3. Ke5', text: 'Vua trắng quay sang hướng tốt h — vẫn đi chéo. Ke5 khống chế hàng 5 (gần h5).' },
+  6: { move: '3... h4', text: 'Đen đẩy tốt h — đua nhau phong cấp.' },
+  7: { move: '4. Kf4', text: 'Trắng tiếp tục đi chéo. Tiến lại gần tốt h.' },
+  8: { move: '4... h3', text: 'Đen đẩy tiếp.' },
+  9: { move: '5. Kg3', text: 'Trắng đã ngay sát tốt h!' },
+  10: { move: '5... h2', text: 'Đen đẩy h2 — chuẩn bị phong cấp h1=Q.' },
+  11: { move: '6. Kxh2  ½-½', text: '🎉 Trắng ăn tốt h ngay trước khi phong cấp! Vua đấu Vua = HÒA. Réti đã đúng!' }
+};
+
+let board, game, currentMove = 0, stagesCompleted = new Set();
+
+function initBoard() {
+  game = new Chess(START_FEN);
+  board = Chessboard('board', { position: START_FEN, draggable: true,
+    pieceTheme: 'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png',
+    onDrop: (s,t) => { const m = game.move({from:s,to:t,promotion:'q'}); if(!m) return 'snapback'; setTimeout(updateOverlays,100); },
+    onSnapEnd: () => { board.position(game.fen()); updateOverlays(); }});
+  updateDisplay();
+}
+function nextMove() { if(currentMove>=MOVES.length) return; game.move(MOVES[currentMove]); board.position(game.fen()); currentMove++; setTimeout(()=>{updateDisplay();updateOverlays();},50); if(currentMove>=MOVES.length) markStage(3); }
+function prevMove() { if(currentMove<=0) return; game.undo(); currentMove--; board.position(game.fen()); setTimeout(()=>{updateDisplay();updateOverlays();},50); }
+function resetBoard() { game = new Chess(START_FEN); board.position(START_FEN); currentMove = 0; setTimeout(()=>{updateDisplay();updateOverlays();},50); }
+function goToEnd() { while(currentMove<MOVES.length){game.move(MOVES[currentMove]);currentMove++;} board.position(game.fen()); setTimeout(()=>{updateDisplay();updateOverlays();},50); }
+
+function findPiece(p) {
+  const fen = game.fen().split(' ')[0]; const ranks = fen.split('/');
+  for (let r=0;r<8;r++) { let f=0; for (const ch of ranks[r]) {
+    if (/\d/.test(ch)) f+=parseInt(ch);
+    else { const w = ch===ch.toUpperCase(), t = ch.toUpperCase();
+      if ((p[0]==='w'&&w&&p[1]===t) || (p[0]==='b'&&!w&&p[1]===t)) return String.fromCharCode(97+f) + (8-r);
+      f++; } } }
+  return null;
+}
+
+function updateDisplay() {
+  const cm = COMMENTARY[currentMove] || COMMENTARY[0];
+  document.getElementById('moveDisplay').textContent = cm.move;
+  document.getElementById('commentary').innerHTML = cm.text;
+  const box = document.getElementById('infoBox');
+  if (currentMove >= MOVES.length) { box.className = 'info-box draw'; box.innerHTML = '½ — ½ HÒA (kỳ tích Réti)'; }
+  else { box.className = 'info-box'; box.innerHTML = 'Đến lượt: <strong>' + (game.turn()==='w'?'Trắng':'Đen') + '</strong>'; }
+  updateProgress();
+}
+function updateOverlays() {
+  $('#board .square-55d63').removeClass('highlight-diag highlight-king-blue');
+  ['h8','g7','f6','e5','d4','c3','b2','a1'].forEach(sq => $('#board .square-' + sq).addClass('highlight-diag'));
+  const wK = findPiece('wK'); if (wK) $('#board .square-' + wK).addClass('highlight-king-blue');
+}
+function checkSelfTest(btn, ok, exp) {
+  document.querySelectorAll('#selfTestOptions .quiz-option').forEach(el=>el.disabled=true);
+  btn.classList.add(ok?'correct':'wrong');
+  const fb = document.getElementById('selfTestFeedback');
+  fb.classList.remove('hidden'); fb.className = 'feedback ' + (ok?'correct':'wrong');
+  fb.textContent = (ok?'✓ ':'✗ ') + exp; markStage(4);
+}
+function quizCheck(btn, ok) {
+  const q = btn.closest('.quiz');
+  q.querySelectorAll('.quiz-option').forEach(el

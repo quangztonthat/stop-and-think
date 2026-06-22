@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="vi"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IFRS 13 Fair Value Measurement — Nền tảng, hiểu từ gốc</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,500&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  /* Design tokens shared with ebook-to-study-html + feynman-from-study (styles_v2.css) */
+  :root{
+    --bg:#fafaf7; --bg-elevated:#ffffff; --bg-soft:#f3f3ee;
+    --border:#e0e0d8; --border-soft:#ececea; --border-strong:#d2c8b6;
+    --ink:#1a1a1f; --ink-soft:#3f3f4a; --muted:#7a7a85;
+    --accent:#b8860b; --accent-2:#8b6508; --gold:#a07c1f; --bridge:#5a6b4f;
+    --serif:"Fraunces",Georgia,"Iowan Old Style",serif;
+    --sans:"Geist",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    --mono:"Geist Mono","JetBrains Mono",Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:var(--sans);
+    font-size:19px;line-height:1.72;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}
+  .progress{position:fixed;top:0;left:0;height:3px;width:0;z-index:50;
+    background:linear-gradient(90deg,var(--gold),var(--accent));transition:width .08s linear}
+  .wrap{max-width:920px;margin:0 auto;padding:0 36px}
+  .rise{opacity:0;transform:translateY(14px);animation:rise .7s cubic-bezier(.2,.7,.3,1) forwards}
+  @keyframes rise{to{opacity:1;transform:none}}
+
+  header{padding:104px 0 60px;border-bottom:1px solid var(--border)}
+  .kicker{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.18em;
+    text-transform:uppercase;color:var(--accent);margin-bottom:26px}
+  h1{font-family:var(--serif);font-weight:600;font-size:clamp(42px,7.6vw,72px);
+    line-height:1.0;letter-spacing:-.022em;margin-bottom:28px;font-optical-sizing:auto;color:var(--ink)}
+  h1 em{font-style:italic;color:var(--accent)}
+  .core{font-family:var(--serif);font-style:italic;font-weight:400;
+    font-size:clamp(21px,3.6vw,27px);line-height:1.44;color:var(--ink-soft)}
+  .core span{font-style:normal;font-weight:600;color:var(--accent-2);
+    box-shadow:inset 0 -.5em 0 rgba(184,134,11,.16)}
+
+  /* ---- BƯỚC 0: ĐỊNH VỊ (what it is + why it's the foundation) ---- */
+  .anchor .rule{font-family:var(--serif);font-size:19px;line-height:1.5;color:var(--ink);
+    background:var(--bg-soft);border-left:3px solid var(--accent);
+    padding:18px 24px;border-radius:0 4px 4px 0;margin:0}
+  .anchor .rule em{font-style:italic;color:var(--accent-2)}
+  .anchor .rule strong{color:var(--ink);font-weight:600}
+  .anchor .why{color:var(--ink-soft)}
+
+  section{padding:72px 0;border-bottom:1px solid var(--border);position:relative}
+  .step-head{display:flex;align-items:flex-start;gap:22px;margin-bottom:34px}
+  .big-num{font-family:var(--serif);font-weight:700;font-size:62px;line-height:.8;
+    color:var(--border-strong);flex:none;font-optical-sizing:auto;letter-spacing:-.03em}
+  .step-meta{padding-top:4px}
+  .lbl{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--accent);display:block;margin-bottom:10px}
+  h2{font-family:var(--serif);font-weight:600;font-size:clamp(27px,4.4vw,37px);
+    line-height:1.12;letter-spacing:-.012em;color:var(--ink)}
+  h2 em{font-style:italic;color:var(--accent)}
+  p{margin-bottom:21px}
+  p:last-child{margin-bottom:0}
+  strong{font-weight:600;color:var(--ink)}
+  em{font-style:italic;color:var(--accent-2)}
+  .gloss{color:var(--muted);font-style:italic}
+
+  .lead::first-letter{font-family:var(--serif);font-weight:700;float:left;
+    font-size:74px;line-height:.74;padding:8px 12px 0 0;color:var(--accent)}
+
+  .sub{font-family:var(--serif);font-weight:600;font-size:17px;letter-spacing:.01em;
+    color:var(--ink);margin:34px 0 14px;display:flex;align-items:center;gap:11px}
+  .sub::before{content:"";width:18px;height:2px;background:var(--accent);flex:none;border-radius:2px}
+
+  /* ---- BƯỚC 1: VẤN ĐỀ (why it exists) ---- */
+  .problem{background:var(--bg-soft)}
+  .problem .big-num{color:#e2d6b4}
+
+  /* ---- BƯỚC 3: VÍ DỤ (concrete worked example) ---- */
+  .example-card{border:1px solid #e8c876;border-radius:4px;padding:30px 32px;margin:8px 0 28px;
+    background:linear-gradient(135deg,#fef9ed 0%,#fdf3e0 100%)}
+  .example-card .tag{font-family:var(--mono);font-weight:600;font-size:11px;
+    letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin-bottom:16px;display:block}
+  .example-card p{color:#5a4810}
+  .example-card strong{color:var(--accent-2)}
+  .example-card p:last-child{margin-bottom:0}
+
+  /* ---- DỄ NHẦM (optional clarify / boundaries) ---- */
+  .clarify{background:var(--bg-soft)}
+  .clarify .big-num{color:#d8cdb2}
+  .mix-q{margin:0 0 30px;padding-left:24px;border-left:2px solid var(--border-strong)}
+  .mix-q:last-child{margin-bottom:0}
+  .mix-q .q{font-family:var(--serif);font-style:italic;font-weight:500;
+    font-size:22px;line-height:1.35;color:var(--accent-2);margin-bottom:12px;display:block}
+  .mix-q p:last-child{margin-bottom:0}
+
+  /* ---- NỐI TIẾP (bridge to the harder concepts) ---- */
+  .bridge .big-num{color:#bcc7b2}
+  .bridge .lbl{color:var(--bridge)}
+  .bridge-card{border-left:3px solid var(--bridge);background:#f4f6f1;
+    padding:22px 26px;border-radius:0 4px 4px 0;margin-top:6px}
+  .bridge-card p:last-child{margin-bottom:0}
+  .bridge-card strong{color:#42513a}
+
+  /* ---- KỂ LẠI GỌN (refined retell) ---- */
+  .retell{background:linear-gradient(180deg,var(--bg-soft) 0%,var(--bg) 100%);border-bottom:none}
+  .retell h2{color:var(--ink)}
+  .retell strong{color:var(--accent-2)}
+  .retell .core{margin-top:6px}
+  .testbox{border:1px solid var(--border);background:var(--bg-elevated);
+    border-radius:4px;padding:28px 32px;margin-top:40px;box-shadow:0 1px 2px rgba(0,0,0,.03)}
+  .testbox h3{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--accent);margin-bottom:20px}
+  .testbox ol{margin:0;padding-left:22px;counter-reset:t}
+  .testbox li{margin-bottom:16px;color:var(--ink-soft);padding-left:6px}
+  .testbox li:last-child{margin-bottom:0}
+
+  footer{text-align:center;padding:60px 0 88px}
+  footer .mark{font-family:var(--serif);font-weight:700;color:var(--accent);
+    font-size:26px;display:block;margin-bottom:14px}
+  footer p{font-family:var(--serif);font-style:italic;color:var(--muted);font-size:17px;max-width:400px;margin:0 auto}
+
+  @media(max-width:560px){
+    body{font-size:18px}
+    header{padding:70px 0 44px}
+    section{padding:52px 0}
+    .step-head{gap:16px}
+    .big-num{font-size:46px}
+    .lead::first-letter{font-size:60px}
+  }
+</style>
+<style>
+ .tabbar{position:fixed;top:0;left:0;right:0;width:100%;box-sizing:border-box;z-index:40;background:rgba(250,250,247,.93);
+   backdrop-filter:saturate(1.1) blur(8px);-webkit-backdrop-filter:saturate(1.1) blur(8px);
+   border-bottom:1px solid var(--border);display:flex;gap:6px;overflow-x:auto;
+   padding:10px max(36px,calc((100% - 992px)/2));scrollbar-width:thin}
+ .tabbar .tab{flex:0 0 auto;display:flex;align-items:baseline;gap:9px;cursor:pointer;
+   background:transparent;border:1px solid transparent;border-radius:999px;
+   padding:8px 17px;transition:.15s;white-space:nowrap;color:var(--muted)}
+ .tabbar .tab:hover{color:var(--ink);background:var(--bg-soft)}
+ .tabbar .tab.active{color:var(--accent-2);background:var(--bg-soft);border-color:var(--border-strong)}
+ .tabbar .tn{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.1em;color:var(--accent)}
+ .tabbar .tl{font-family:var(--serif);font-weight:500;font-size:16px}
+ body{padding-top:56px} .concept-panel{display:none}
+ .concept-panel.active{display:block}
+ .concept-panel header{padding-top:50px}
+ @media(max-width:560px){.tabbar .tl{max-width:48vw;overflow:hidden;text-overflow:ellipsis}}
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+<nav class="tabbar" role="tablist" aria-label="Các khái niệm nền"><button class="tab" data-i="0" role="tab" id="tab-0" aria-controls="c-gia-thi-truong" aria-selected="true" tabindex="0"><span class="tn">01</span><span class="tl">Đo theo thị trường</span></button><button class="tab" data-i="1" role="tab" id="tab-1" aria-controls="c-nguoi-tham-gia" aria-selected="false" tabindex="-1"><span class="tn">02</span><span class="tl">Người mua giả định</span></button><button class="tab" data-i="2" role="tab" id="tab-2" aria-controls="c-doi-tuong-do" aria-selected="false" tabindex="-1"><span class="tn">03</span><span class="tl">Đo cái gì</span></button><button class="tab" data-i="3" role="tab" id="tab-3" aria-controls="c-ky-thuat-dinh-gia" aria-selected="false" tabindex="-1"><span class="tn">04</span><span class="tl">Ước lượng giá</span></button><button class="tab" data-i="4" role="tab" id="tab-4" aria-controls="c-dau-vao-quan-sat" aria-selected="false" tabindex="-1"><span class="tn">05</span><span class="tl">Đầu vào</span></button><button class="tab" data-i="5" role="tab" id="tab-5" aria-controls="c-do-khoan-no" aria-selected="false" tabindex="-1"><span class="tn">06</span><span class="tl">Đo khoản nợ</span></button></nav>
+<div class="concept-panel" id="c-gia-thi-truong" role="tabpanel" aria-labelledby="tab-0" tabindex="0"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Nền tảng · hiểu từ gốc</div>
+    <h1 class="rise" style="animation-delay:.08s">Giá trị hợp lý: con số của THỊ TRƯỜNG, không phải của sổ sách hay ý bạn</h1>
+    <p class="core rise" style="animation-delay:.16s">Đo một món đồ, <span>hỏi thị trường trả bao nhiêu — đừng hỏi sổ, đừng hỏi ý mình.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Định vị · nó là gì &amp; vì sao học trước</span><h2>Nền dưới cùng: đo dựa trên thị trường</h2></div>
+    </div>
+    <div class="rule">Cả IFRS 13 xoay quanh một con số: <em>fair value</em> (giá trị hợp lý). Đoạn 9 định nghĩa nó là giá sẽ <strong>nhận được khi bán</strong> một tài sản, hoặc <strong>trả khi chuyển giao</strong> một khoản nợ, trong một <em>orderly transaction</em> (giao dịch trật tự) giữa các <em>market participants</em> (người tham gia thị trường) tại ngày đo lường. Đoạn 2 nói rõ bản chất: đây là phép đo <strong>dựa trên thị trường</strong> (market-based), <strong>không</strong> phải phép đo <strong>đặc thù doanh nghiệp</strong> (entity-specific). Đoạn 3 chốt một hệ quả: ý định nắm giữ tài sản hay thanh toán nợ của doanh nghiệp <strong>không liên quan</strong> khi đo.</div>
+    <div class="sub">Vì sao đây là nền</div>
+    <div class="why"><p>Đây là viên gạch dưới cùng của cả cuốn. Mọi quy tắc sau đều dựng trên một câu: con số này thuộc về thị trường, không thuộc về bạn. Người mua giả định là ai, đo ở chợ nào, cách dùng nào là tốt nhất — tất cả những câu đó đến sau. Chúng chỉ có nghĩa khi bạn đã chấp nhận một điều: thị trường mới là người ra giá. Chưa nắm điều đó, bạn sẽ cứ lấy giá gốc trên sổ hoặc con số mình mong, và sai từ bước đầu.</p></div>
+  </section>
+
+  <section class="problem">
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Vấn đề nó sinh ra để giải quyết</span><h2>Một tòa nhà, ba con số — con số nào lên báo cáo?</h2></div>
+    </div>
+    <p class="lead">Bạn có một tòa nhà, mua từ lâu với giá mười tỷ. Trên sổ nó vẫn nằm nguyên ở mười tỷ. Bạn tin giờ nó đáng hai mươi tỷ. Một người mua ngoài kia sẵn lòng trả mười lăm tỷ. Khi một chuẩn mực yêu cầu ghi theo giá trị hợp lý, con số nào được chọn?</p>
+
+<p>Ba con số, ba nguồn khác hẳn nhau. Giá gốc đến từ quá khứ. Con số hai mươi tỷ đến từ kỳ vọng của riêng bạn. Mười lăm tỷ đến từ người ngoài thị trường. Không có một quy tắc rõ ràng, mỗi người sẽ chọn một kiểu, và báo cáo của hai công ty hết so sánh được với nhau.</p>
+
+<div class="sub">Vì sao không thể để mỗi người tự chọn</div>
+<p>Giá trị hợp lý sinh ra để mọi người đo cùng một thước. Muốn vậy, con số phải đến từ một nguồn ai cũng kiểm được, chứ không phải từ trong đầu chủ tài sản. Nguồn đó là thị trường. Câu hỏi còn lại — chọn nguồn nào và vì sao — để Bước 2 trả lời.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Mô hình đơn giản · cách nó chạy</span><h2>Quy tắc: lấy con số mà thị trường sẽ ra giá</h2></div>
+    </div>
+    <p>Giá trị hợp lý luôn chọn con số thứ ba: giá thị trường. Nói gọn, đó là mức giá mà một người mua và một người bán bên ngoài sẽ thuận nhau hôm nay. Không phải giá bạn từng trả, cũng không phải giá bạn mong.</p>
+
+<div class="sub">Vì sao bỏ giá gốc trên sổ</div>
+<p>Giá gốc là câu chuyện của ngày mua. Sau đó vật giá đổi, khu phố đổi, nhu cầu đổi. Con số cũ không còn nói đúng món đồ đáng bao nhiêu lúc này, nên nó không được chọn.</p>
+
+<div class="sub">Vì sao bỏ ý định riêng</div>
+<p>Bạn có thể định giữ tòa nhà mãi mãi, hay định bán gấp tháng sau. Dù tính thế nào, điều đó không đổi được số tiền người ngoài chịu trả hôm nay. Bởi vậy ý riêng của doanh nghiệp bị gạt ra khi đo.</p>
+
+<div class="sub">Và là giá bán ra, không phải giá mua vào</div>
+<p>Một điểm cần nói thẳng ngay: con số thị trường đó là giá lúc <strong>bán ra</strong>, không phải giá lúc mua vào. Định nghĩa đoạn 9 ghi rõ là giá "nhận được khi bán". Nhiều người mặc định lấy giá vừa mua, và đó là hiểu nhầm phổ biến nhất về giá trị hợp lý.</p>
+
+<div class="sub">Có giá sẵn hay không, đích vẫn thế</div>
+<p>Đôi khi thị trường có giá sẵn để nhìn. Đôi khi không, và bạn phải ước lượng. Nhưng cả hai trường hợp đều nhắm tới cùng một đích: con số mà thị trường sẽ thuận, chứ không phải con số của riêng bạn.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví dụ cụ thể</span><h2>Soi ba con số của tòa nhà</h2></div>
+    </div>
+    <div class="example-card"><span class="tag">Bài toán</span>
+<p>Quay lại tòa nhà. Giá gốc mười tỷ là quá khứ, gạt sang bên. Con số hai mươi tỷ là kỳ vọng của bạn, cũng gạt. Người mua ngoài thị trường trả mười lăm tỷ, nên giá trị hợp lý là <strong>mười lăm tỷ</strong>.</p>
+<p>Giờ thử động vào thị trường. Kinh tế chậm lại, người mua chỉ còn chịu trả mười hai tỷ. Giá trị hợp lý tụt theo, xuống mười hai tỷ — dù sổ vẫn mười tỷ và bạn vẫn tin nó đáng hai mươi. Chỉ con số của thị trường mới kéo nó đi.</p>
+</div>
+<p>Đời thường hơn: chiếc điện thoại trong túi bạn. Bạn mua tám triệu và rất quý nó. Nhưng chợ đồ cũ chỉ trả ba triệu. Giá trị hợp lý của nó là ba triệu, không phải tám triệu bạn đã trả, cũng không phải mức bạn thấy nó đáng.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. "Dựa trên thị trường" (market-based) đối lập với "đặc thù doanh nghiệp" (entity-specific). Một ví dụ của phép đo đặc thù doanh nghiệp là <em>value in use</em> (giá trị sử dụng) trong IAS 36: nó dựa trên dòng tiền riêng mà chính doanh nghiệp kỳ vọng, nên <strong>không</strong> phải fair value. IFRS 13 còn phân biệt giá vào (entry price) lúc mua và giá ra (exit price) lúc bán — định nghĩa đoạn 9 chọn giá ra. Hai điểm tinh tế này có trang riêng phía sau.</p>
+  </section>
+
+  <section class="clarify">
+    <div class="step-head">
+      <div class="big-num">≠</div>
+      <div class="step-meta"><span class="lbl">Dễ nhầm · ranh giới</span><h2>Đừng nhầm giá trị hợp lý với hai con số quen thuộc</h2></div>
+    </div>
+    <div class="mix-q"><span class="q">“Giá trị hợp lý chính là giá gốc còn lại trên sổ chứ gì?”</span><p>Không. Giá gốc kể chuyện ngày mua và được rải dần theo thời gian. Giá trị hợp lý hỏi một câu khác: <strong>hôm nay</strong> bán đi nhận được bao nhiêu. Hai con số có thể trùng lúc mới mua, nhưng càng về sau càng tách xa.</p></div>
+<div class="mix-q"><span class="q">“Vậy là mức tôi thấy tài sản đáng giá?”</span><p>Cũng không. Mức bạn thấy nó đáng là cảm nhận của riêng bạn, có thể cao hơn hoặc thấp hơn thị trường nhiều. Giá trị hợp lý chỉ nghe người mua và người bán bên ngoài, không nghe chủ tài sản.</p></div>
+  </section>
+
+  <section class="bridge">
+    <div class="step-head">
+      <div class="big-num">→</div>
+      <div class="step-meta"><span class="lbl">Nối tiếp · nó dẫn tới đâu</span><h2>Có nền này rồi, hai trang khó mới mở ra</h2></div>
+    </div>
+    <div class="bridge-card"><p>Giữ chắc viên gạch: con số thuộc về thị trường, không thuộc về bạn. Có nó, hai trang khó kế tiếp mới sáng.</p>
+<p>Trang <strong>“Giá trị hợp lý là giá BÁN RA, không phải giá bạn vừa trả”</strong> siết con số thị trường thành một loại giá cụ thể. Đó là giá lúc thoát ra, chứ không phải giá lúc mua vào. Trang <strong>“nhìn bằng mắt một người mua giả định”</strong> hỏi tiếp: thị trường nào, người mua nào ra cái giá đó. Cả hai đều bắt đầu từ câu bạn vừa nắm — người ra giá là thị trường.</p></div>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">✦</div>
+      <div class="step-meta"><span class="lbl">Kể lại trong một hơi</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Một món đồ thường đi kèm ba con số: giá đã mua, mức bạn nghĩ nó đáng, và giá thị trường trả. Giá trị hợp lý luôn chọn con số thứ ba. Giá gốc là quá khứ, ý bạn là cảm nhận riêng, chỉ thị trường mới đáng tin để mọi người đo chung một thước. Thị trường đổi giá thì con số đổi theo, kể cả khi sổ và lòng bạn đứng yên.</p>
+<p class="core">Đo một món đồ, <span>giá trị hợp lý nghe thị trường, không nghe sổ hay ý mình.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã nắm nền chưa?</h3>
+      <ol>
+        <li>Tòa nhà mua mười tỷ, bạn nghĩ đáng hai mươi, người mua trả mười lăm — con số nào là giá trị hợp lý và vì sao?</li>
+        <li>Vì sao ý định giữ tài sản mãi mãi của doanh nghiệp lại không làm thay đổi giá trị hợp lý?</li>
+        <li>Khi thị trường không có giá sẵn để nhìn, đích của phép đo có đổi không?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nền vững thì cái khó tự nhẹ đi. Hiểu từ gốc, không học vẹt.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-nguoi-tham-gia" role="tabpanel" aria-labelledby="tab-1" tabindex="0"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Nền tảng · hiểu từ gốc</div>
+    <h1 class="rise" style="animation-delay:.08s">Đo bằng con mắt người mua–bán giả định, trong một vụ bán đàng hoàng</h1>
+    <p class="core rise" style="animation-delay:.16s">Giá thị trường, <span>là giá của người mua tỉnh táo trong một vụ bán bình thường.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Định vị · nó là gì &amp; vì sao học trước</span><h2>Nền: ai ra giá, và trong vụ bán kiểu nào</h2></div>
+    </div>
+    <div class="rule">Phụ lục A định nghĩa <em>market participants</em> (người tham gia thị trường) là bên mua và bên bán <strong>độc lập</strong> với nhau, <strong>am hiểu</strong>, có <strong>khả năng</strong> và <strong>sẵn lòng</strong> giao dịch. Đoạn 22 yêu cầu đo bằng các giả định mà những người này sẽ dùng, với giả định họ hành động vì lợi ích kinh tế tốt nhất của mình. Đoạn 23 thêm: không cần chỉ ra cá nhân cụ thể, chỉ cần nét chung. Đoạn 15 đặt giả định một <em>orderly transaction</em> (giao dịch trật tự); bản thân định nghĩa nằm ở Phụ lục A: một vụ bán có thời gian rao bán bình thường, <strong>không</strong> phải bán tháo hay ép buộc.</div>
+    <div class="sub">Vì sao đây là nền</div>
+    <div class="why"><p>Nền trước nói con số thuộc về thị trường. Nhưng "thị trường" không tự ra giá — người ta mới ra giá. Nền này chốt hai chỗ trống còn lại: <strong>ai</strong> là người ra giá, và <strong>vụ bán kiểu gì</strong>. Thiếu nó, một vụ bán tháo lúc vỡ nợ hay một giá ưu ái cho người nhà cũng bị nhầm là giá trị hợp lý. Các quy tắc sau — chợ chính, cách dùng tốt nhất, đo nợ — đều đọc đi đọc lại cụm "từ góc nhìn người tham gia thị trường". Nắm nó ở đây thì những trang đó mới trôi.</p></div>
+  </section>
+
+  <section class="problem">
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Vấn đề nó sinh ra để giải quyết</span><h2>Cùng một căn hộ, nhiều người bán cho ra giá rất khác</h2></div>
+    </div>
+    <p class="lead">Bạn muốn biết giá trị hợp lý của một căn hộ. Bạn hỏi quanh và nhận về vài con số. Một người đang vỡ nợ bán gấp trong một ngày, được hai tỷ. Một người không rành giá, bán hớ, cũng hai tỷ. Một người bán cho chính em họ mình, hai tỷ rưỡi. Một người rao bán bình thường suốt một tháng, được ba tỷ. Lấy con số nào?</p>
+
+<p>Nếu vơ đại một trong các con số rẻ kia, giá trị hợp lý thành sai bét. Vấn đề không nằm ở căn hộ, mà ở chỗ người bán là ai và họ bán trong tình huống nào. Phải chốt được hai điều đó trước thì con số mới đáng tin.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Mô hình đơn giản · cách nó chạy</span><h2>Quy tắc: người tỉnh táo, vụ bán bình thường</h2></div>
+    </div>
+    <p>Giá trị hợp lý chỉ nghe một loại người, trong một loại vụ bán. Hai mảnh ghép lại thành một bộ lọc.</p>
+
+<div class="sub">Mảnh một: người tham gia thị trường</div>
+<p>Họ có bốn nét. Độc lập, tức không phải người nhà hay bên liên kết. Am hiểu, tức biết rõ món đồ và thị trường. Có khả năng mua bán thật. Và sẵn lòng, tức không bị ép. Bạn không cần chỉ tên ai cụ thể, chỉ cần hình dung kiểu người điển hình như vậy.</p>
+
+<div class="sub">Mảnh hai: giao dịch trật tự</div>
+<p>Đây là một vụ bán đàng hoàng. Món đồ được rao bán trong khoảng thời gian bình thường, đủ để người mua biết tới và cân nhắc. Nó không phải vụ bán tháo trong cơn vỡ nợ, cũng không phải bị ai dí dao bắt bán.</p>
+
+<div class="sub">Vì sao phải có cả hai</div>
+<p>Người tỉnh táo mà bán trong cơn hoảng vẫn ra giá rẻ. Vụ bán thong thả mà người bán ngờ nghệch cũng ra giá lệch. Phải đủ cả hai thì con số mới là giá thị trường thật.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví dụ cụ thể</span><h2>Lọc lại mớ giá của căn hộ</h2></div>
+    </div>
+    <div class="example-card"><span class="tag">Bài toán</span>
+<p>Đem bộ lọc soi bốn con số lúc nãy. Vụ bán gấp trong một ngày bị loại, vì đó là bán tháo, không trật tự. Vụ bán hớ bị loại, vì người bán không am hiểu. Vụ bán cho em họ bị loại, vì hai bên không độc lập.</p>
+<p>Chỉ còn vụ rao bán bình thường suốt một tháng, được ba tỷ. Nó qua đủ cả hai cửa: người tỉnh táo và độc lập, vụ bán đàng hoàng. Vậy giá trị hợp lý là <strong>ba tỷ</strong>, không phải hai tỷ.</p>
+</div>
+<p>Đời thường hơn: bạn bán chiếc xe máy. Một tiệm ép giá lúc bạn cần tiền gấp trả ba triệu. Rao bình thường một tuần thì được bảy triệu. Giá trị hợp lý theo con số bảy triệu của vụ bán thong thả, không theo ba triệu lúc bị ép.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. <em>Orderly transaction</em> giả định món đồ đã phơi ra thị trường một khoảng thời gian trước ngày đo, đủ cho các hoạt động chào bán thông thường; nó loại trừ vụ bán ép buộc, chẳng hạn thanh lý khi phá sản. Một điểm tinh tế ở đoạn 21: ngay cả khi <strong>không</strong> có thị trường quan sát được, phép đo vẫn giả định một giao dịch xảy ra tại ngày đo, nhìn từ góc một <em>market participant</em> đang nắm tài sản hoặc gánh khoản nợ.</p>
+  </section>
+
+  <section class="clarify">
+    <div class="step-head">
+      <div class="big-num">≠</div>
+      <div class="step-meta"><span class="lbl">Dễ nhầm · ranh giới</span><h2>Đừng nhầm người tham gia thị trường với chính bạn</h2></div>
+    </div>
+    <div class="mix-q"><span class="q">“Người tham gia thị trường có phải là chính doanh nghiệp đang nắm tài sản không?”</span><p>Không. Họ là người mua và người bán <strong>giả định</strong> ngoài kia, độc lập với bạn. Bạn đo bằng giả định của họ, chứ không bằng ý riêng của mình. Đây chính là lý do ý định của doanh nghiệp bị gạt ra ở nền trước.</p></div>
+<div class="mix-q"><span class="q">“Bán nhanh được giá rẻ, vậy đó là giá thị trường thấp?”</span><p>Không. Một vụ bán tháo trong cơn ép buộc <strong>không</strong> phải giao dịch trật tự, nên giá của nó không được dùng. Giá trị hợp lý luôn giả định một vụ bán có đủ thời gian rao bán bình thường.</p></div>
+  </section>
+
+  <section class="bridge">
+    <div class="step-head">
+      <div class="big-num">→</div>
+      <div class="step-meta"><span class="lbl">Nối tiếp · nó dẫn tới đâu</span><h2>Biết ai ra giá rồi — hỏi tiếp họ đứng ở chợ nào</h2></div>
+    </div>
+    <div class="bridge-card"><p>Giữ chắc: con số đến từ người tỉnh táo, độc lập, trong một vụ bán đàng hoàng. Đã có "ai" và "vụ bán kiểu gì", còn thiếu "ở đâu".</p>
+<p>Trang <strong>“nhìn bằng mắt một người mua giả định”</strong> đào sâu chính chỗ này — vì sao là người tưởng tượng chứ không phải bạn. Và trang <strong>“Phải bán ở CHỢ CHÍNH, kể cả khi chợ khác trả cao hơn”</strong> chỉ ra những người mua đó đứng ở thị trường nào. Cả hai đều cần bạn đã nắm: người ra giá là người tham gia thị trường, trong giao dịch trật tự.</p></div>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">✦</div>
+      <div class="step-meta"><span class="lbl">Kể lại trong một hơi</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Thị trường không tự ra giá — người ta ra giá. Giá trị hợp lý chỉ nghe một loại người: độc lập, am hiểu, có khả năng và sẵn lòng. Và chỉ trong một loại vụ bán: rao bán bình thường, không bán tháo, không ép buộc. Bán gấp, bán hớ, bán cho người nhà đều bị loại. Còn lại con số của vụ bán đàng hoàng mới là giá trị hợp lý.</p>
+<p class="core">Giá thị trường, <span>người tỉnh táo, độc lập, trong vụ bán bình thường — mới ra giá đáng tin.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã nắm nền chưa?</h3>
+      <ol>
+        <li>Trong bốn vụ bán căn hộ, ba vụ bị loại vì lý do gì khác nhau?</li>
+        <li>Vì sao một vụ bán tháo lúc vỡ nợ lại không cho ra giá trị hợp lý, dù vẫn là một giao dịch thật?</li>
+        <li>Doanh nghiệp có cần chỉ đích danh người mua cụ thể mới đo được giá trị hợp lý không?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nền vững thì cái khó tự nhẹ đi. Hiểu từ gốc, không học vẹt.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-doi-tuong-do" role="tabpanel" aria-labelledby="tab-2" tabindex="0"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Nền tảng · hiểu từ gốc</div>
+    <h1 class="rise" style="animation-delay:.08s">Trước khi định giá, chốt rõ ĐO CÁI GÌ: một món lẻ hay cả cụm?</h1>
+    <p class="core rise" style="animation-delay:.16s">Định giá một thứ, <span>phải vạch rõ ranh giới của nó trước: món lẻ hay cả cụm.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Định vị · nó là gì &amp; vì sao học trước</span><h2>Nền: đối tượng đo và đơn vị tính</h2></div>
+    </div>
+    <div class="rule">Đoạn 11: mỗi phép đo <em>fair value</em> luôn dành cho <strong>một tài sản hoặc một khoản nợ cụ thể</strong>. Doanh nghiệp phải xét các <strong>đặc tính</strong> của nó nếu người tham gia thị trường sẽ xét — ví dụ tình trạng (condition), vị trí (location), và các hạn chế đối với việc bán hoặc sử dụng. Đoạn 13: đối tượng đó có thể là một món <strong>độc lập</strong>, hoặc một <strong>nhóm</strong> tài sản, nhóm nợ, hay cả hai — ví dụ một <em>cash-generating unit</em> (đơn vị tạo tiền) hoặc một doanh nghiệp. Đoạn 14: món lẻ hay nhóm là do <em>unit of account</em> (đơn vị tính) quyết định, và đơn vị tính do chuẩn mực yêu cầu fair value đặt ra, trừ khi IFRS 13 nói khác.</div>
+    <div class="sub">Vì sao đây là nền</div>
+    <div class="why"><p>Bạn không thể ra giá một thứ khi chưa biết "thứ" đó gồm những gì. Đây là viên gạch dễ bị bỏ qua nhất, vì nghe hiển nhiên — nhưng nó đổi hẳn con số. Cùng một cái máy, bán lẻ một giá, bán trong cả dây chuyền đang chạy một giá khác. Hai chỗ sau đều bắt đầu bằng câu hỏi này. Quy tắc "cách dùng tốt nhất" cho tài sản phi tài chính cần nó. Ngoại lệ đo nợ theo vị thế bù trừ cũng cần nó: đang đo một món, hay cả cụm? Chốt được ranh giới rồi mới định giá được.</p></div>
+  </section>
+
+  <section class="problem">
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Vấn đề nó sinh ra để giải quyết</span><h2>Hai cái máy: bán lẻ một giá, bán theo cụm một giá khác</h2></div>
+    </div>
+    <p class="lead">Một xưởng có hai cái máy, vốn được lắp để chạy nối tiếp nhau thành một dây chuyền. Tháo rời bán lẻ, mỗi cái chỉ được vài chục triệu, vì kén người mua. Để nguyên cả dây chuyền đang chạy mà bán, cả cụm được vài tỷ. Hỏi: giá trị hợp lý của "cái máy A" là bao nhiêu?</p>
+
+<p>Câu hỏi đó chưa trả lời được, vì còn thiếu một mẩu. Đo cái máy A đứng một mình, hay đo nó như một phần của cụm? Hai cách cho hai con số khác xa nhau. Ranh giới của thứ bạn đang đo phải được vạch ra trước, nếu không thì hỏi giá là vô nghĩa.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Mô hình đơn giản · cách nó chạy</span><h2>Quy tắc: chốt ranh giới, rồi mới hỏi giá</h2></div>
+    </div>
+    <p>Trước khi định giá, phải trả lời ba câu về đối tượng đo. Chúng vạch rõ bạn đang cầm thứ gì trên tay.</p>
+
+<div class="sub">Câu một: đo một thứ cụ thể nào</div>
+<p>Phép đo luôn gắn với một tài sản hoặc một khoản nợ rõ ràng, không lửng lơ. Trước hết phải gọi tên đúng cái mình đang đo.</p>
+
+<div class="sub">Câu hai: nó mang theo những đặc tính gì</div>
+<p>Một món đồ đi kèm tình trạng, vị trí, và các ràng buộc của nó. Nếu người mua ngoài kia bận tâm tới chúng, bạn cũng phải tính vào. Một mảnh đất bị cấm bán trong hai năm thì kém giá hơn mảnh tự do.</p>
+
+<div class="sub">Câu ba: một món lẻ hay cả nhóm</div>
+<p>Đối tượng đo có thể là một món đứng riêng, hoặc một nhóm đi liền nhau như một dây chuyền hay cả doanh nghiệp. Bạn không tự chọn kiểu nào. Chuẩn mực gửi bạn tới đây đã định sẵn, gọi là đơn vị tính.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví dụ cụ thể</span><h2>Vạch ranh giới cho hai cái máy</h2></div>
+    </div>
+    <div class="example-card"><span class="tag">Bài toán</span>
+<p>Quay lại hai cái máy. Nếu đơn vị tính là <strong>từng máy lẻ</strong>, bạn đo cái máy A đứng riêng, và con số là giá bán lẻ vài chục triệu. Nếu đơn vị tính là <strong>cả dây chuyền</strong>, bạn đo cụm hai máy đang chạy, và con số là vài tỷ.</p>
+<p>Cùng một đống sắt, hai ranh giới, hai con số. Điểm mấu chốt: bạn không bốc kiểu nào tùy thích — chuẩn mực yêu cầu đo đã chọn sẵn đơn vị tính. Thử động một đặc tính: nếu cái máy A đã hỏng một nửa, tình trạng đó kéo giá của nó xuống.</p>
+</div>
+<p>Đời thường hơn: một chiếc giày trái và một chiếc giày phải. Bán riêng từng chiếc gần như chẳng ai mua. Bán cả đôi thì có giá ngay. "Đo cái gì" — một chiếc hay cả đôi — quyết định luôn món đồ đáng bao nhiêu.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. <em>Unit of account</em> (đơn vị tính) thường do IFRS khác đặt ra, không phải IFRS 13, trừ vài ngoại lệ. Một nhóm có thể là một <em>cash-generating unit</em> theo IAS 36, hoặc cả một doanh nghiệp. Lưu ý phân biệt: đặc tính <strong>của tài sản</strong> (tình trạng, vị trí, hạn chế gắn với tài sản) thì tính vào giá; còn đặc điểm <strong>của doanh nghiệp</strong> đang nắm giữ thì không, vì giá trị hợp lý là phép đo thị trường, không đặc thù doanh nghiệp.</p>
+  </section>
+
+  <section class="clarify">
+    <div class="step-head">
+      <div class="big-num">≠</div>
+      <div class="step-meta"><span class="lbl">Dễ nhầm · ranh giới</span><h2>Đừng nhầm đặc tính của tài sản với hoàn cảnh của bạn</h2></div>
+    </div>
+    <div class="mix-q"><span class="q">“Tôi thấy cụm máy đáng hơn, vậy tôi cứ đo theo cụm cho được giá?”</span><p>Không tự chọn được. Món lẻ hay cả nhóm là do <strong>đơn vị tính</strong> quyết định, và đơn vị tính do chuẩn mực yêu cầu đo đặt ra. Bạn theo ranh giới đó, chứ không chọn kiểu nào ra giá đẹp hơn.</p></div>
+<div class="mix-q"><span class="q">“Công ty tôi mua sỉ rẻ, vậy giá đó hạ thấp giá trị hợp lý chứ?”</span><p>Không. Việc bạn mua được giá hời là hoàn cảnh riêng của doanh nghiệp, không phải đặc tính của tài sản. Chỉ những thứ gắn với chính món đồ — tình trạng, vị trí, ràng buộc — mới được tính vào giá.</p></div>
+<div class="mix-q"><span class="q">“Giá trị hợp lý có trừ chi phí giao dịch và chi phí vận chuyển không?”</span><p>Phải tách hai loại. Chi phí giao dịch (phí môi giới, thuế chuyển nhượng) <strong>không</strong> bị trừ. Chúng là đặc điểm của vụ giao dịch, không phải của tài sản (đoạn 25). Nhưng chi phí vận chuyển tới chợ thì <strong>được</strong> trừ, nếu vị trí là một đặc tính của tài sản (đoạn 26).</p></div>
+  </section>
+
+  <section class="bridge">
+    <div class="step-head">
+      <div class="big-num">→</div>
+      <div class="step-meta"><span class="lbl">Nối tiếp · nó dẫn tới đâu</span><h2>Có ranh giới rồi — trang khó dùng nó để chọn cách định giá</h2></div>
+    </div>
+    <div class="bridge-card"><p>Giữ chắc: đo cái gì là câu hỏi phải trả lời trước khi hỏi giá. Món lẻ hay cả cụm, và mang theo đặc tính nào.</p>
+<p>Trang <strong>“Đo theo cách dùng TỐT NHẤT thị trường nghĩ ra”</strong> dựng thẳng trên đây. Nó hỏi nên đo cụm tài sản khi dùng chung hay khi tách lẻ. Đó chính là chọn ranh giới bạn vừa vạch, rồi tìm cách dùng cho ra giá cao nhất. Không nắm "đo một món hay cả cụm", trang đó sẽ rối ngay từ đầu.</p></div>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">✦</div>
+      <div class="step-meta"><span class="lbl">Kể lại trong một hơi</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Chưa biết ranh giới thì chưa hỏi được giá. Phép đo luôn gắn với một tài sản hoặc khoản nợ cụ thể, kèm tình trạng, vị trí và ràng buộc của nó. Nó có thể là một món lẻ, hoặc cả một nhóm đi liền nhau. Món lẻ hay cả nhóm là do đơn vị tính quyết định, không phải bạn chọn. Vạch ranh giới xong, con số mới có nghĩa.</p>
+<p class="core">Định giá một thứ, <span>chốt ranh giới của thứ đang đo trước, rồi mới hỏi giá.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã nắm nền chưa?</h3>
+      <ol>
+        <li>Vì sao "giá trị hợp lý của cái máy A" chưa trả lời được nếu chưa biết đo lẻ hay đo theo cụm?</li>
+        <li>Một mảnh đất bị cấm bán hai năm: đó là đặc tính của tài sản hay hoàn cảnh của doanh nghiệp, và nó có tính vào giá không?</li>
+        <li>Doanh nghiệp có được tự chọn đo theo nhóm để ra giá cao hơn không? Ai quyết định điều đó?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nền vững thì cái khó tự nhẹ đi. Hiểu từ gốc, không học vẹt.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-ky-thuat-dinh-gia" role="tabpanel" aria-labelledby="tab-3" tabindex="0"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Nền tảng · hiểu từ gốc</div>
+    <h1 class="rise" style="animation-delay:.08s">Phần lớn món đồ không có bảng giá — nên bạn phải ƯỚC LƯỢNG</h1>
+    <p class="core rise" style="animation-delay:.16s">Không có giá sẵn, <span>bạn dựng con số bằng một phương pháp, không phải bốc đại.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Định vị · nó là gì &amp; vì sao học trước</span><h2>Nền: định giá bằng kỹ thuật, không đọc giá sẵn</h2></div>
+    </div>
+    <div class="rule">Đoạn 61: để đo <em>fair value</em>, doanh nghiệp dùng các <em>valuation technique</em> (kỹ thuật định giá) phù hợp với hoàn cảnh và có đủ dữ liệu, sao cho <strong>tối đa hóa</strong> đầu vào quan sát được và <strong>tối thiểu hóa</strong> đầu vào không quan sát được. Đoạn 62: mục tiêu là ước tính giá mà một <em>orderly transaction</em> để bán tài sản hoặc chuyển giao nợ sẽ diễn ra giữa các người tham gia thị trường tại ngày đo. Đoạn 62 nêu <strong>ba</strong> kỹ thuật dùng rộng rãi: <em>market approach</em> (cách tiếp cận thị trường), <em>cost approach</em> (cách tiếp cận chi phí), và <em>income approach</em> (cách tiếp cận thu nhập).</div>
+    <div class="sub">Vì sao đây là nền</div>
+    <div class="why"><p>Người mới thường tưởng giá trị hợp lý là một con số đọc được trên màn hình. Phần lớn thời gian, điều đó sai. Cổ phiếu niêm yết thì có giá sẵn, nhưng một cổ phần công ty tư nhân, một cái máy đóng riêng, một thương hiệu thì không ai niêm yết. Bạn vẫn phải ra một con số, và con số đó được <strong>dựng lên bằng một phương pháp</strong>. Chưa nắm điều này thì trang về ba cách định giá và cả phần đầu vào Cấp 3 sẽ như tiếng nước ngoài. Nó là cây cầu từ "giá trị hợp lý là gì" sang "làm sao ra được con số".</p></div>
+  </section>
+
+  <section class="problem">
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Vấn đề nó sinh ra để giải quyết</span><h2>Cổ phiếu có giá trên màn hình — còn tiệm bánh thì hỏi ai?</h2></div>
+    </div>
+    <p class="lead">Một cổ phiếu niêm yết có giá nhảy ngay trên màn hình, nhìn là biết. Nhưng giờ bạn phải ghi giá trị hợp lý cho một tiệm bánh nhỏ của gia đình. Không sàn nào niêm yết nó, không ai dán bảng giá. Con số ở đâu ra?</p>
+
+<p>Đây là tình cảnh của hầu hết tài sản trên đời. Chúng không có giá sẵn để đọc. Nhưng chuẩn mực vẫn đòi một con số giá trị hợp lý. Nếu cứ bốc đại theo cảm tính, mỗi người ra một kiểu, và con số mất hết độ tin. Phải có một lối làm bài bản. Bước 2 chỉ ra lối đó.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Mô hình đơn giản · cách nó chạy</span><h2>Quy tắc: dựng con số bằng một phương pháp, nhắm đúng giá bán</h2></div>
+    </div>
+    <p>Khi không có giá sẵn, bạn dùng một kỹ thuật định giá. Đó là một lối làm có quy trình, lặp lại được, chứ không phải đoán mò.</p>
+
+<div class="sub">Đích không đổi</div>
+<p>Dù dựng bằng cách nào, con số vẫn nhắm tới đúng một thứ: giá mà một vụ bán bình thường sẽ đạt được hôm nay. Kỹ thuật chỉ là đường đi, còn đích vẫn là giá thị trường.</p>
+
+<div class="sub">Ba lối đi quen thuộc</div>
+<p>Lối thứ nhất là soi chợ: nhìn món tương tự vừa bán bao nhiêu rồi suy ra. Lối thứ hai là tính làm lại: cần bao nhiêu tiền để dựng lại một thứ chạy được như vậy. Lối thứ ba là chiết khấu dòng tiền: cộng số tiền món đồ sẽ đẻ ra trong tương lai, rồi kéo về giá trị hôm nay.</p>
+
+<div class="sub">Quy tắc bám đường</div>
+<p>Dựa nhiều nhất vào thứ thị trường cho thấy, và tự đoán ít nhất có thể. Con số tựa càng nhiều vào dữ liệu thật thì càng đáng tin.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví dụ cụ thể</span><h2>Định giá tiệm bánh không có bảng giá</h2></div>
+    </div>
+    <div class="example-card"><span class="tag">Bài toán</span>
+<p>Định giá tiệm bánh bằng ba lối, xem mỗi lối nói gì. Soi chợ: một tiệm bánh tương tự ở phố bên vừa sang lại hai tỷ, đó là một mốc. Chiết khấu dòng tiền: số tiền tiệm sẽ kiếm các năm tới, kéo về hôm nay, chừng một tỷ tám. Tính làm lại: sắm lại lò, tủ, bàn ghế mất chừng một tỷ rưỡi.</p>
+<p>Ba lối cho ba con số gần nhau quanh vùng một tỷ rưỡi tới hai tỷ. Bạn chọn lối hợp nhất với hoàn cảnh, hoặc cân nhắc cả ba. Thử động một chỗ: nếu vừa có một tiệm gần giống hệt sang tay, lối soi chợ đáng tin nhất, nên nghiêng về nó.</p>
+</div>
+<p>Đời thường hơn: định giá một căn nhà cũ. Bạn nhìn vài căn cùng khu vừa bán, đó là soi chợ. Bạn nhẩm tiền xây lại trừ hao mòn, đó là tính làm lại. Hoặc tính tiền cho thuê thu về nhiều năm, đó là dòng tiền. Cùng một căn nhà, ba lối ước lượng, xúm lại quanh một con số.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Đoạn 61 buộc <strong>tối đa hóa</strong> <em>observable inputs</em> và tối thiểu hóa <em>unobservable inputs</em>. Khi dùng nhiều kỹ thuật cho cùng một món, kết quả ra một khoảng giá trị; fair value là điểm trong khoảng đó đại diện nhất cho giá trị hợp lý. Kỹ thuật phải áp dụng nhất quán qua các kỳ; chỉ đổi khi cách mới cho phép đo <strong>tốt bằng hoặc tốt hơn</strong> — ví dụ thị trường mới xuất hiện, có thêm dữ liệu, hoặc kỹ thuật được cải tiến.</p>
+  </section>
+
+  <section class="clarify">
+    <div class="step-head">
+      <div class="big-num">≠</div>
+      <div class="step-meta"><span class="lbl">Dễ nhầm · ranh giới</span><h2>Đừng nhầm ước lượng có phương pháp với đoán mò</h2></div>
+    </div>
+    <div class="mix-q"><span class="q">“Không có giá niêm yết thì coi như không đo được, phải không?”</span><p>Không. Thiếu giá niêm yết là chuyện bình thường của hầu hết tài sản. Bạn vẫn đo được, bằng một kỹ thuật định giá có quy trình. Có giá sẵn thì đọc; không có thì dựng lên bằng phương pháp.</p></div>
+<div class="mix-q"><span class="q">“Vậy ước lượng nghĩa là cứ phỏng theo cảm tính?”</span><p>Không. Một kỹ thuật định giá có lối làm rõ ràng và tựa vào dữ liệu thị trường nhiều nhất có thể. Nó nhắm đúng một đích là giá bán bình thường hôm nay, chứ không phải con số bốc theo cảm hứng.</p></div>
+  </section>
+
+  <section class="bridge">
+    <div class="step-head">
+      <div class="big-num">→</div>
+      <div class="step-meta"><span class="lbl">Nối tiếp · nó dẫn tới đâu</span><h2>Biết phải ước lượng rồi — trang khó so ba lối với nhau</h2></div>
+    </div>
+    <div class="bridge-card"><p>Giữ chắc: phần lớn món đồ không có giá sẵn, nên con số được dựng bằng một phương pháp, nhắm đúng giá bán hôm nay.</p>
+<p>Trang <strong>“Ba cách đo cùng một exit price: so sánh, xây lại, hay dòng tiền”</strong> mổ xẻ đúng ba lối bạn vừa gặp. Nó cho thấy chúng chỉ là ba con đường tới cùng một con số. Và vì mỗi lối đều phải "đút" số liệu vào, nó dẫn thẳng sang nền kế tiếp: những số liệu đó là gì, và tin được tới đâu.</p></div>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">✦</div>
+      <div class="step-meta"><span class="lbl">Kể lại trong một hơi</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Hầu hết tài sản không có giá niêm yết để đọc. Khi đó bạn dựng con số bằng một kỹ thuật định giá, một lối làm có quy trình chứ không bốc đại. Có ba lối quen: soi món tương tự vừa bán, tính tiền dựng lại, hoặc chiết khấu dòng tiền tương lai. Dù đi lối nào, đích vẫn là giá bán bình thường hôm nay. Và luôn tựa nhiều nhất vào thứ thị trường cho thấy.</p>
+<p class="core">Không có giá sẵn, <span>ta dựng con số bằng một phương pháp, nhắm đúng giá bán hôm nay.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã nắm nền chưa?</h3>
+      <ol>
+        <li>Vì sao nói "giá trị hợp lý là con số đọc trên màn hình" chỉ đúng với số ít tài sản?</li>
+        <li>Ba lối định giá tiệm bánh khác nhau ở chỗ nào, và vì sao vẫn cùng nhắm một đích?</li>
+        <li>Khi nào lối "soi chợ" đáng tin hơn hẳn hai lối còn lại?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nền vững thì cái khó tự nhẹ đi. Hiểu từ gốc, không học vẹt.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-dau-vao-quan-sat" role="tabpanel" aria-labelledby="tab-4" tabindex="0"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Nền tảng · hiểu từ gốc</div>
+    <h1 class="rise" style="animation-delay:.08s">Đầu vào: nguyên liệu nấu ra con số — thứ thấy được, thứ phải tự đoán</h1>
+    <p class="core rise" style="animation-delay:.16s">Một con số định giá, <span>đáng tin tới đâu là do nguyên liệu bỏ vào, không do tên phương pháp.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Định vị · nó là gì &amp; vì sao học trước</span><h2>Nền: đầu vào và tính quan sát được</h2></div>
+    </div>
+    <div class="rule">Đoạn 67: <em>inputs</em> (đầu vào) là các <strong>giả định</strong> mà người tham gia thị trường sẽ dùng khi định giá — và kỹ thuật phải tối đa hóa đầu vào quan sát được, tối thiểu hóa đầu vào không quan sát được. Đoạn 68: <em>observable inputs</em> (đầu vào quan sát được) được phát triển từ <strong>dữ liệu thị trường</strong>, ví dụ thông tin từ các thị trường giao dịch công khai. <em>Unobservable inputs</em> (đầu vào không quan sát được) được phát triển từ thông tin tốt nhất sẵn có về giả định của người tham gia thị trường (đoạn 86–89), có thể bắt đầu từ dữ liệu riêng của doanh nghiệp nhưng phải điều chỉnh nếu thị trường sẽ dùng khác.</div>
+    <div class="sub">Vì sao đây là nền</div>
+    <div class="why"><p>Một kỹ thuật định giá là cái máy; đầu vào là thứ bạn đút vào máy. Cùng một máy, đút nguyên liệu khác nhau thì ra con số khác nhau, và đáng tin khác nhau. Đây là viên gạch cuối của bộ nền, vì nó đỡ thẳng cho phần khó nhất của cả cuốn: hệ thống phân cấp ba bậc. Phân cấp đó, rốt cuộc, chỉ là một bảng xếp hạng các đầu vào theo mức quan sát được. Chưa có hai chữ "đầu vào" và "quan sát được", trang phân cấp sẽ vô nghĩa.</p></div>
+  </section>
+
+  <section class="problem">
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Vấn đề nó sinh ra để giải quyết</span><h2>Cùng một phương pháp, hai người ra hai con số — vì sao?</h2></div>
+    </div>
+    <p class="lead">Hai người cùng định giá một cái máy, cùng dùng lối chiết khấu dòng tiền. Vậy mà một người ra một tỷ, người kia ra một tỷ tư. Cùng một phương pháp, sao lệch nhau xa thế? Khác biệt không nằm ở cách nấu, mà ở nguyên liệu họ bỏ vào nồi.</p>
+
+<p>Người thứ nhất dùng một mức lãi suất ai cũng tra được trên thị trường. Người thứ hai tự nghĩ ra một mức tăng trưởng trong đầu mình. Hai loại nguyên liệu rất khác nhau về độ chắc. Muốn biết con số tin được tới đâu, phải nhìn vào thứ đã bỏ vào, chứ không nhìn tên phương pháp. Bước 2 gọi tên hai loại nguyên liệu đó.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Mô hình đơn giản · cách nó chạy</span><h2>Quy tắc: phân nguyên liệu theo thị trường có thấy được không</h2></div>
+    </div>
+    <p>Mỗi con số bạn đút vào phương pháp là một đầu vào. Một mức lãi suất, giá một món tương tự, một tỷ lệ tăng trưởng — đều là đầu vào. Chúng chia làm hai loại theo một câu hỏi: thị trường có thấy được không.</p>
+
+<div class="sub">Loại một: thấy được trên thị trường</div>
+<p>Đầu vào quan sát được là thứ thị trường bày ra cho ai cũng nhìn thấy. Một lãi suất niêm yết, giá một căn hộ tương tự vừa bán, mức chênh tín dụng công khai. Vì nhiều người cùng thấy, nó khó cãi.</p>
+
+<div class="sub">Loại hai: phải tự đoán</div>
+<p>Đầu vào không quan sát được là thứ không ai bày sẵn, bạn phải tự ước từ thông tin tốt nhất mình có. Ví dụ khả năng vỡ nợ của một người vay nhỏ chẳng ai công bố. Nó cần thiết, nhưng do bạn dựng nên, nên dễ lệch hơn.</p>
+
+<div class="sub">Quy tắc chọn nguyên liệu</div>
+<p>Dùng nhiều nhất loại thấy được, và chỉ với tay sang loại tự đoán khi không còn thứ quan sát được nào hợp. Càng nhiều nguyên liệu thị trường thấy được, con số càng vững.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví dụ cụ thể</span><h2>Mổ nguyên liệu của một phép định giá trái phiếu</h2></div>
+    </div>
+    <div class="example-card"><span class="tag">Bài toán</span>
+<p>Định giá một trái phiếu, mổ xem bỏ vào những nguyên liệu nào. Loại thấy được: lãi suất thị trường và mức chênh tín nhiệm của bên phát hành, đều tra được công khai. Loại tự đoán: phỏng đoán của bạn về khả năng vỡ nợ của một bên vay nhỏ, chẳng nơi nào niêm yết.</p>
+<p>Con số cuối tin được tới đâu là do tỷ lệ hai loại nguyên liệu này. Thử thay một chỗ. Nếu tìm được một tỷ lệ vỡ nợ đã công bố để thay cho phỏng đoán, phép đo bỗng tựa nhiều hơn vào thứ thấy được. Khi đó con số vững hơn hẳn.</p>
+</div>
+<p>Đời thường hơn: đoán giá một căn nhà. Diện tích và giá vài căn hàng xóm vừa bán là thứ thấy được, ai cũng tra ra. Còn "khu này vài năm nữa sẽ lên" là phỏng đoán riêng của bạn. Hai loại trộn vào nhau, và phần phỏng đoán càng lớn thì con số càng chông chênh.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. <em>Observable inputs</em> đến từ dữ liệu thị trường công khai — ví dụ <em>exchange markets</em>, <em>dealer markets</em>, <em>brokered markets</em>. <em>Unobservable inputs</em> dùng thông tin tốt nhất sẵn có; doanh nghiệp được phép bắt đầu từ dữ liệu riêng, nhưng phải điều chỉnh nếu có dấu hiệu hợp lý rằng người tham gia thị trường sẽ dùng số khác (đoạn 89). Chính cái thang "thấy được tới đâu" này là bộ khung của hệ thống phân cấp Cấp 1, Cấp 2, Cấp 3 ở trang sau.</p>
+  </section>
+
+  <section class="clarify">
+    <div class="step-head">
+      <div class="big-num">≠</div>
+      <div class="step-meta"><span class="lbl">Dễ nhầm · ranh giới</span><h2>Đừng nhầm nguyên liệu với cách nấu, hay với độ đúng</h2></div>
+    </div>
+    <div class="mix-q"><span class="q">“Đầu vào với kỹ thuật định giá là một thứ chứ gì?”</span><p>Không. Kỹ thuật là <strong>cách nấu</strong>, ví dụ lối chiết khấu dòng tiền. Đầu vào là <strong>nguyên liệu</strong> bỏ vào lối đó, ví dụ mức lãi suất. Cùng kiểu nấu đó, đổi nguyên liệu thì ra món khác. Đây là lý do người ta xếp hạng đầu vào, không xếp hạng kỹ thuật.</p></div>
+<div class="mix-q"><span class="q">“Quan sát được thì chắc là con số đúng tuyệt đối?”</span><p>Không hẳn. "Quan sát được" chỉ có nghĩa thị trường thấy được, nhiều người cùng tra ra. Nó đáng tin hơn vì khó cãi, nhưng không có nghĩa là chân lý. Trọng tâm là nguồn của con số, chứ không phải nó đúng tuyệt đối.</p></div>
+  </section>
+
+  <section class="bridge">
+    <div class="step-head">
+      <div class="big-num">→</div>
+      <div class="step-meta"><span class="lbl">Nối tiếp · nó dẫn tới đâu</span><h2>Có hai loại nguyên liệu rồi — trang khó đem xếp hạng cả phép đo</h2></div>
+    </div>
+    <div class="bridge-card"><p>Giữ chắc viên gạch cuối: đầu vào là nguyên liệu, chia làm thứ thị trường thấy được và thứ bạn tự đoán. Độ tin của con số là do tỷ lệ hai loại này.</p>
+<p>Trang <strong>“Xếp hạng theo ĐẦU VÀO, không theo kỹ thuật — một đầu vào yếu kéo tụt cả phép đo”</strong> đứng thẳng trên đây. Hệ thống phân cấp ba bậc chính là bảng xếp hạng đầu vào: thấy được nhiều thì bậc cao, tự đoán nhiều thì bậc thấp. Nắm "đầu vào" và "quan sát được" ở đây rồi, trang phân cấp đó đọc một mạch là thông.</p></div>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">✦</div>
+      <div class="step-meta"><span class="lbl">Kể lại trong một hơi</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Phương pháp là cái máy, đầu vào là nguyên liệu đút vào máy. Đầu vào chia hai loại: thứ thị trường bày ra cho ai cũng thấy, và thứ không ai công bố nên bạn phải tự đoán. Quy tắc là dùng nhiều nhất loại thấy được, đụng tới loại tự đoán càng ít càng tốt. Con số tin được tới đâu là do nguyên liệu, không do tên phương pháp.</p>
+<p class="core">Một con số định giá, <span>đầu vào là nguyên liệu, và thị trường càng thấy được thì con số càng vững.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã nắm nền chưa?</h3>
+      <ol>
+        <li>Hai người cùng dùng chiết khấu dòng tiền mà ra hai con số — khác biệt nằm ở đâu?</li>
+        <li>Lãi suất niêm yết và phỏng đoán khả năng vỡ nợ: đâu là đầu vào quan sát được, đâu là không, và vì sao điều đó quan trọng?</li>
+        <li>Vì sao "quan sát được" không có nghĩa là con số đúng tuyệt đối?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nền vững thì cái khó tự nhẹ đi. Hiểu từ gốc, không học vẹt.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-do-khoan-no" role="tabpanel" aria-labelledby="tab-5" tabindex="0"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Nền tảng · hiểu từ gốc</div>
+    <h1 class="rise" style="animation-delay:.08s">Đo khoản nợ theo giá CHUYỂN nó đi, không phải giá trả dứt</h1>
+    <p class="core rise" style="animation-delay:.16s">Định giá một khoản nợ, <span>hỏi đẩy nó sang người khác hết bao nhiêu, không phải trả dứt bao nhiêu.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Định vị · nó là gì &amp; vì sao học trước</span><h2>Nền: nợ đo theo giá chuyển giao</h2></div>
+    </div>
+    <div class="rule">Đoạn 34: đo <em>fair value</em> của một khoản nợ (hay công cụ vốn của chính doanh nghiệp) giả định nó được <strong>chuyển giao</strong> (transfer) cho một <em>market participant</em> tại ngày đo. Khoản nợ vẫn còn, bên nhận tiếp tục gánh nghĩa vụ; nó <strong>không</strong> được dàn xếp (settle) hay chấm dứt. Đoạn 42: phép đo phản ánh <em>non-performance risk</em> (rủi ro không thực hiện nghĩa vụ), gồm cả <em>own credit risk</em> (rủi ro tín dụng của chính doanh nghiệp, theo IFRS 7), và giả định rủi ro đó <strong>không đổi</strong> trước và sau khi chuyển giao.</div>
+    <div class="sub">Vì sao đây là nền</div>
+    <div class="why"><p>Cả năm nền trước gần như chỉ nói về tài sản. Nhưng giá trị hợp lý còn đo cả khoản nợ, và phía nợ có một viên gạch riêng dễ hiểu sai. Đây là nền cho nhiều việc thật. Định giá một khoản phải trả, hay khoản thanh toán tiềm tàng trong một thương vụ mua bán, đều dựa vào nó. Chưa nắm 'nợ đo theo giá chuyển đi', bạn sẽ lấy nhầm con số trả dứt, và sai cả mảng định giá nợ.</p></div>
+  </section>
+
+  <section class="problem">
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Vấn đề nó sinh ra để giải quyết</span><h2>Bạn nợ một tỷ — giá trị hợp lý của khoản nợ là bao nhiêu?</h2></div>
+    </div>
+    <p class="lead">Công ty bạn đang nợ một tỷ. Hỏi: giá trị hợp lý của khoản nợ đó là bao nhiêu? Bản năng mách ngay là một tỷ — số tiền cần trả dứt cho chủ nợ. Nhưng IFRS 13 không hỏi câu đó.</p>
+
+<p>Nó hỏi một câu khác hẳn: nếu đẩy nghĩa vụ này sang cho một người khác gánh thay, bạn phải trả họ bao nhiêu để họ chịu nhận? Hai câu hỏi cho hai con số. Trả dứt là chấm dứt khoản nợ với chủ nợ. Chuyển giao là khoản nợ vẫn sống, chỉ đổi người gánh. Bước 2 chỉ rõ vì sao chuẩn chọn câu thứ hai.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Mô hình đơn giản · cách nó chạy</span><h2>Quy tắc: tưởng tượng đẩy nợ sang người khác, rồi hỏi giá</h2></div>
+    </div>
+    <p>Đo một khoản nợ là tưởng tượng đẩy nó sang người khác, rồi hỏi giá. Người nhận tiếp tục gánh nghĩa vụ, chứ khoản nợ không biến mất.</p>
+
+<div class="sub">Chuyển giao, không tất toán</div>
+<p>Tất toán là trả dứt cho chủ nợ, khoản nợ chấm dứt. Chuyển giao là khoản nợ vẫn còn nguyên, chỉ là người khác đứng ra gánh. Chuẩn mực cố định một cảnh duy nhất để đo: cảnh chuyển giao.</p>
+
+<div class="sub">Giá người nhận đòi phụ thuộc khả năng trả được</div>
+<p>Người nhận nhìn vào một thứ: khoản nợ này có khả năng được trả đầy đủ không. Khả năng đó càng thấp thì họ càng chịu nhận với giá rẻ. Đây gọi là rủi ro không thực hiện nghĩa vụ.</p>
+
+<div class="sub">Gồm cả tín nhiệm của chính bạn</div>
+<p>Một phần của rủi ro đó là tín nhiệm của chính người đang nợ. Tín nhiệm bạn xấu đi, người ta tin bạn khó trả hơn, nên giá trị hợp lý của khoản nợ lại nhẹ bớt. Nghe ngược đời, nhưng đó là hệ quả thẳng của cách đo.</p>
+
+<div class="sub">Giả định không đổi khi chuyển</div>
+<p>Phép đo giả định mức rủi ro không thực hiện là như nhau ngay trước và ngay sau khi chuyển giao. Người nhận được coi như có cùng mức tín nhiệm trong giả định đó.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví dụ cụ thể</span><h2>Một trái phiếu khi tín nhiệm xấu đi</h2></div>
+    </div>
+    <div class="example-card"><span class="tag">Bài toán</span>
+<p>Bạn từng phát hành một trái phiếu mệnh giá một tỷ. Lúc tín nhiệm công ty còn tốt, đẩy nó sang người khác gánh tốn gần một tỷ, nên giá trị hợp lý quanh một tỷ.</p>
+<p>Giờ công ty làm ăn sa sút, ai cũng e bạn khó trả. Để đẩy nghĩa vụ này đi, bạn chỉ phải trả người gánh thay chừng chín trăm triệu, ít hơn trước. Vậy giá trị hợp lý của khoản nợ tụt còn chín trăm triệu. Thử chiều ngược: nếu tín nhiệm hồi phục, con số bò lại gần một tỷ.</p>
+</div>
+<p>Đời thường hơn: bạn viết một tờ giấy nợ năm triệu. "Giá trị" của nó nhìn từ góc khác — trả ai đó bao nhiêu để họ đứng ra gánh khoản nợ thay bạn. Nếu ai cũng tin bạn sẽ trả, họ nhận gần năm triệu. Nếu ngờ bạn quỵt, họ chỉ nhận khi được bớt nhiều.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Khi không có thị trường quan sát được cho việc chuyển giao, mà chính khoản mục đó được một bên khác nắm <strong>như một tài sản</strong> (ví dụ trái phiếu doanh nghiệp), đo từ góc của bên nắm tài sản đó (đoạn 35). Nếu không, dùng <em>valuation technique</em> từ góc của bên đang gánh nợ (đoạn 37). <em>Non-performance risk</em> gồm <em>own credit risk</em> theo IFRS 7, nhưng rộng hơn own credit. Một hạn chế ngăn việc chuyển giao <strong>không</strong> tạo thêm một đầu vào riêng (đoạn 45-46).</p>
+  </section>
+
+  <section class="clarify">
+    <div class="step-head">
+      <div class="big-num">≠</div>
+      <div class="step-meta"><span class="lbl">Dễ nhầm · ranh giới</span><h2>Đừng nhầm chuyển giao với tất toán</h2></div>
+    </div>
+    <div class="mix-q"><span class="q">“Giá trị hợp lý của khoản nợ là số tiền tôi trả dứt cho chủ nợ?”</span><p>Không. Đó là giá <strong>tất toán</strong>, một cảnh khác. Giá trị hợp lý giả định bạn <strong>chuyển giao</strong> nghĩa vụ cho người khác gánh, khoản nợ vẫn sống. Hai cảnh cho hai con số.</p></div>
+<div class="mix-q"><span class="q">“Rủi ro không thực hiện chỉ là rủi ro tín nhiệm của tôi thôi à?”</span><p>Không hẳn. Tín nhiệm của chính bạn là một phần, nhưng rủi ro không thực hiện rộng hơn thế. Nó gồm mọi yếu tố ảnh hưởng tới việc nghĩa vụ có được làm tròn hay không.</p></div>
+  </section>
+
+  <section class="bridge">
+    <div class="step-head">
+      <div class="big-num">→</div>
+      <div class="step-meta"><span class="lbl">Nối tiếp · nó dẫn tới đâu</span><h2>Có nền nợ rồi — một trang khó và một cầu nối sang IFRS 9</h2></div>
+    </div>
+    <div class="bridge-card"><p>Giữ chắc: nợ đo theo giá chuyển nó đi, không phải giá trả dứt; và giá đó ngấm cả tín nhiệm của chính bạn.</p>
+<p>Trang <strong>“Nợ đo theo giá CHUYỂN nó đi — tín nhiệm bạn xấu đi thì nợ lại nhẹ hơn”</strong> dừng lại ở đúng chỗ ngược đời này. Nó mổ cho thấy vì sao điều đó vẫn đúng. Và nó nối thẳng sang bộ nền IFRS 9. Ở đó, khi một khoản nợ đo theo giá thị trường, phần đổi giá do chính tín nhiệm của bạn được tách riêng để ghi vào OCI. Đúng là mảnh tín nhiệm bạn vừa gặp ở đây.</p></div>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">✦</div>
+      <div class="step-meta"><span class="lbl">Kể lại trong một hơi</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Đo một khoản nợ không phải hỏi trả dứt cho chủ nợ hết bao nhiêu. Mà hỏi: đẩy nghĩa vụ sang người khác gánh thì tốn bao nhiêu. Khoản nợ vẫn sống, chỉ đổi người gánh. Giá người nhận đòi ngấm cả khả năng trả được, trong đó có tín nhiệm của chính bạn. Tín nhiệm xấu đi thì giá trị hợp lý của nợ lại nhẹ bớt.</p>
+<p class="core">Định giá một khoản nợ, <span>chuyển nó đi hết bao nhiêu, chứ không phải trả dứt.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã nắm nền chưa?</h3>
+      <ol>
+        <li>Vì sao giá trị hợp lý của một khoản nợ không phải là số tiền trả dứt cho chủ nợ?</li>
+        <li>Tín nhiệm của công ty xấu đi thì giá trị hợp lý của khoản nợ tăng hay giảm, và vì sao?</li>
+        <li>Rủi ro không thực hiện nghĩa vụ gồm những gì ngoài tín nhiệm của chính doanh nghiệp?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nền vững thì cái khó tự nhẹ đi. Hiểu từ gốc, không học vẹt.</p>
+  </footer>
+
+</div></div>
+<script>
+  var bar=document.getElementById('progress');
+  function upd(){var h=document.documentElement;var s=h.scrollTop||document.body.scrollTop;
+    var max=(h.scrollHeight-h.clientHeight)||1;bar.style.width=(s/max*100)+'%';}
+  window.addEventListener('scroll',upd,{passive:true});upd();
+  var io=new IntersectionObserver(function(es){es.forEach(function(e){
+    if(e.isIntersecting){e.target.style.animation='rise .7s cubic-bezier(.2,.7,.3,1) forwards';io.unobserve(e.target);}});},{threshold:.12});
+  document.querySelectorAll('section').forEach(function(s){s.style.opacity='0';io.observe(s);});
+</script>
+
+<script>
+(function(){
+  var tabs=[].slice.call(document.querySelectorAll('.tabbar .tab'));
+  var panels=[].slice.call(document.querySelectorAll('.concept-panel'));
+  function show(i){
+    tabs.forEach(function(t,j){t.classList.toggle('active',j===i);});
+    panels.forEach(function(p,j){
+      var on=(j===i); p.classList.toggle('active',on);
+      if(on){p.querySelectorAll('section').forEach(function(s){s.style.opacity='';s.style.animation='';});}
+    });
+    try{history.replaceState(null,'','#'+panels[i].id);}catch(e){}
+    window.scrollTo(0,0); window.dispatchEvent(new Event('scroll'));
+  }
+  tabs.forEach(function(t){t.addEventListener('click',function(){show(+t.getAttribute('data-i'));});});
+  var start=0; panels.forEach(function(p,j){if('#'+p.id===location.hash)start=j;});
+  show(start);
+})();
+</script>
+
+<script>
+(function(){var t=[].slice.call(document.querySelectorAll('.tabbar .tab'));
+function sync(a){t.forEach(function(x){var on=x===a;x.setAttribute('aria-selected',on?'true':'false');x.tabIndex=on?0:-1;});}
+t.forEach(function(x){x.addEventListener('click',function(){sync(x);});
+x.addEventListener('keydown',function(e){var i=t.indexOf(x),n=t.length,j=null;
+if(e.key==='ArrowRight'||e.key==='ArrowDown')j=(i+1)%n;else if(e.key==='ArrowLeft'||e.key==='ArrowUp')j=(i-1+n)%n;
+else if(e.key==='Home')j=0;else if(e.key==='End')j=n-1;
+if(j!==null){e.preventDefault();t[j].click();t[j].focus();}});});})();
+</script>
+</body></html>

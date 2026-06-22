@@ -1,0 +1,913 @@
+<!DOCTYPE html>
+<html lang="vi"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IAS 36 Impairment of Assets — Nền tảng, hiểu từ gốc</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,500&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  /* Design tokens shared with ebook-to-study-html + feynman-from-study (styles_v2.css) */
+  :root{
+    --bg:#fafaf7; --bg-elevated:#ffffff; --bg-soft:#f3f3ee;
+    --border:#e0e0d8; --border-soft:#ececea; --border-strong:#d2c8b6;
+    --ink:#1a1a1f; --ink-soft:#3f3f4a; --muted:#7a7a85;
+    --accent:#b8860b; --accent-2:#8b6508; --gold:#a07c1f; --bridge:#5a6b4f;
+    --serif:"Fraunces",Georgia,"Iowan Old Style",serif;
+    --sans:"Geist",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    --mono:"Geist Mono","JetBrains Mono",Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:var(--sans);
+    font-size:19px;line-height:1.72;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}
+  .progress{position:fixed;top:0;left:0;height:3px;width:0;z-index:50;
+    background:linear-gradient(90deg,var(--gold),var(--accent));transition:width .08s linear}
+  .wrap{max-width:920px;margin:0 auto;padding:0 36px}
+  .rise{opacity:0;transform:translateY(14px);animation:rise .7s cubic-bezier(.2,.7,.3,1) forwards}
+  @keyframes rise{to{opacity:1;transform:none}}
+
+  header{padding:104px 0 60px;border-bottom:1px solid var(--border)}
+  .kicker{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.18em;
+    text-transform:uppercase;color:var(--accent);margin-bottom:26px}
+  h1{font-family:var(--serif);font-weight:600;font-size:clamp(42px,7.6vw,72px);
+    line-height:1.0;letter-spacing:-.022em;margin-bottom:28px;font-optical-sizing:auto;color:var(--ink)}
+  h1 em{font-style:italic;color:var(--accent)}
+  .core{font-family:var(--serif);font-style:italic;font-weight:400;
+    font-size:clamp(21px,3.6vw,27px);line-height:1.44;color:var(--ink-soft)}
+  .core span{font-style:normal;font-weight:600;color:var(--accent-2);
+    box-shadow:inset 0 -.5em 0 rgba(184,134,11,.16)}
+
+  /* ---- BƯỚC 0: ĐỊNH VỊ (what it is + why it's the foundation) ---- */
+  .anchor .rule{font-family:var(--serif);font-size:19px;line-height:1.5;color:var(--ink);
+    background:var(--bg-soft);border-left:3px solid var(--accent);
+    padding:18px 24px;border-radius:0 4px 4px 0;margin:0}
+  .anchor .rule em{font-style:italic;color:var(--accent-2)}
+  .anchor .rule strong{color:var(--ink);font-weight:600}
+  .anchor .why{color:var(--ink-soft)}
+
+  section{padding:72px 0;border-bottom:1px solid var(--border);position:relative}
+  .step-head{display:flex;align-items:flex-start;gap:22px;margin-bottom:34px}
+  .big-num{font-family:var(--serif);font-weight:700;font-size:62px;line-height:.8;
+    color:var(--border-strong);flex:none;font-optical-sizing:auto;letter-spacing:-.03em}
+  .step-meta{padding-top:4px}
+  .lbl{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--accent);display:block;margin-bottom:10px}
+  h2{font-family:var(--serif);font-weight:600;font-size:clamp(27px,4.4vw,37px);
+    line-height:1.12;letter-spacing:-.012em;color:var(--ink)}
+  h2 em{font-style:italic;color:var(--accent)}
+  p{margin-bottom:21px}
+  p:last-child{margin-bottom:0}
+  strong{font-weight:600;color:var(--ink)}
+  em{font-style:italic;color:var(--accent-2)}
+  .gloss{color:var(--muted);font-style:italic}
+
+  .lead::first-letter{font-family:var(--serif);font-weight:700;float:left;
+    font-size:74px;line-height:.74;padding:8px 12px 0 0;color:var(--accent)}
+
+  .sub{font-family:var(--serif);font-weight:600;font-size:17px;letter-spacing:.01em;
+    color:var(--ink);margin:34px 0 14px;display:flex;align-items:center;gap:11px}
+  .sub::before{content:"";width:18px;height:2px;background:var(--accent);flex:none;border-radius:2px}
+
+  /* ---- BƯỚC 1: VẤN ĐỀ (why it exists) ---- */
+  .problem{background:var(--bg-soft)}
+  .problem .big-num{color:#e2d6b4}
+
+  /* ---- BƯỚC 3: VÍ DỤ (concrete worked example) ---- */
+  .example-card{border:1px solid #e8c876;border-radius:4px;padding:30px 32px;margin:8px 0 28px;
+    background:linear-gradient(135deg,#fef9ed 0%,#fdf3e0 100%)}
+  .example-card .tag{font-family:var(--mono);font-weight:600;font-size:11px;
+    letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin-bottom:16px;display:block}
+  .example-card p{color:#5a4810}
+  .example-card strong{color:var(--accent-2)}
+  .example-card p:last-child{margin-bottom:0}
+
+  /* ---- DỄ NHẦM (optional clarify / boundaries) ---- */
+  .clarify{background:var(--bg-soft)}
+  .clarify .big-num{color:#d8cdb2}
+  .mix-q{margin:0 0 30px;padding-left:24px;border-left:2px solid var(--border-strong)}
+  .mix-q:last-child{margin-bottom:0}
+  .mix-q .q{font-family:var(--serif);font-style:italic;font-weight:500;
+    font-size:22px;line-height:1.35;color:var(--accent-2);margin-bottom:12px;display:block}
+  .mix-q p:last-child{margin-bottom:0}
+
+  /* ---- NỐI TIẾP (bridge to the harder concepts) ---- */
+  .bridge .big-num{color:#bcc7b2}
+  .bridge .lbl{color:var(--bridge)}
+  .bridge-card{border-left:3px solid var(--bridge);background:#f4f6f1;
+    padding:22px 26px;border-radius:0 4px 4px 0;margin-top:6px}
+  .bridge-card p:last-child{margin-bottom:0}
+  .bridge-card strong{color:#42513a}
+
+  /* ---- KỂ LẠI GỌN (refined retell) ---- */
+  .retell{background:linear-gradient(180deg,var(--bg-soft) 0%,var(--bg) 100%);border-bottom:none}
+  .retell h2{color:var(--ink)}
+  .retell strong{color:var(--accent-2)}
+  .retell .core{margin-top:6px}
+  .testbox{border:1px solid var(--border);background:var(--bg-elevated);
+    border-radius:4px;padding:28px 32px;margin-top:40px;box-shadow:0 1px 2px rgba(0,0,0,.03)}
+  .testbox h3{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--accent);margin-bottom:20px}
+  .testbox ol{margin:0;padding-left:22px;counter-reset:t}
+  .testbox li{margin-bottom:16px;color:var(--ink-soft);padding-left:6px}
+  .testbox li:last-child{margin-bottom:0}
+
+  footer{text-align:center;padding:60px 0 88px}
+  footer .mark{font-family:var(--serif);font-weight:700;color:var(--accent);
+    font-size:26px;display:block;margin-bottom:14px}
+  footer p{font-family:var(--serif);font-style:italic;color:var(--muted);font-size:17px;max-width:400px;margin:0 auto}
+
+  @media(max-width:560px){
+    body{font-size:18px}
+    header{padding:70px 0 44px}
+    section{padding:52px 0}
+    .step-head{gap:16px}
+    .big-num{font-size:46px}
+    .lead::first-letter{font-size:60px}
+  }
+</style>
+<style>
+ .tabbar{position:fixed;top:0;left:0;right:0;width:100%;box-sizing:border-box;z-index:40;background:rgba(250,250,247,.93);
+   backdrop-filter:saturate(1.1) blur(8px);-webkit-backdrop-filter:saturate(1.1) blur(8px);
+   border-bottom:1px solid var(--border);display:flex;gap:6px;overflow-x:auto;
+   padding:10px max(36px,calc((100% - 992px)/2));scrollbar-width:thin}
+ .tabbar .tab{flex:0 0 auto;display:flex;align-items:baseline;gap:9px;cursor:pointer;
+   background:transparent;border:1px solid transparent;border-radius:999px;
+   padding:8px 17px;transition:.15s;white-space:nowrap;color:var(--muted)}
+ .tabbar .tab:hover{color:var(--ink);background:var(--bg-soft)}
+ .tabbar .tab.active{color:var(--accent-2);background:var(--bg-soft);border-color:var(--border-strong)}
+ .tabbar .tn{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.1em;color:var(--accent)}
+ .tabbar .tl{font-family:var(--serif);font-weight:500;font-size:16px}
+ body{padding-top:56px} .concept-panel{display:none}
+ .concept-panel.active{display:block}
+ .concept-panel header{padding-top:50px}
+ @media(max-width:560px){.tabbar .tl{max-width:48vw;overflow:hidden;text-overflow:ellipsis}}
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+<nav class="tabbar" role="tablist" aria-label="Các khái niệm nền"><button class="tab" data-i="0" role="tab" id="tab-0" aria-controls="c-impairment-la-gi" aria-selected="true" tabindex="0"><span class="tn">01</span><span class="tl">Suy giảm là gì</span></button><button class="tab" data-i="1" role="tab" id="tab-1" aria-controls="c-khi-nao-test" aria-selected="false" tabindex="-1"><span class="tn">02</span><span class="tl">Khi nào mới test</span></button><button class="tab" data-i="2" role="tab" id="tab-2" aria-controls="c-carrying-amount" aria-selected="false" tabindex="-1"><span class="tn">03</span><span class="tl">Giá trị ghi sổ</span></button><button class="tab" data-i="3" role="tab" id="tab-3" aria-controls="c-hai-con-duong-thu-hoi" aria-selected="false" tabindex="-1"><span class="tn">04</span><span class="tl">Hai con đường thu hồi</span></button><button class="tab" data-i="4" role="tab" id="tab-4" aria-controls="c-time-value-of-money" aria-selected="false" tabindex="-1"><span class="tn">05</span><span class="tl">Tiền theo thời gian</span></button><button class="tab" data-i="5" role="tab" id="tab-5" aria-controls="c-cash-flow-cgu" aria-selected="false" tabindex="-1"><span class="tn">06</span><span class="tl">Dòng tiền &amp; cụm</span></button><button class="tab" data-i="6" role="tab" id="tab-6" aria-controls="c-goodwill" aria-selected="false" tabindex="-1"><span class="tn">07</span><span class="tl">Lợi thế thương mại</span></button></nav>
+<div class="concept-panel" id="c-impairment-la-gi" role="tabpanel" aria-labelledby="tab-0" tabindex="0"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Nền tảng · hiểu từ gốc</div>
+    <h1 class="rise" style="animation-delay:.08s">Suy giảm giá trị: khi sổ ghi cao hơn cái còn moi được</h1>
+    <p class="core rise" style="animation-delay:.16s">Suy giảm là một lần <span>hạ sổ cho khớp thực tế — không phải hao mòn đều mỗi năm.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Định vị · nó là gì &amp; vì sao học trước</span><h2>Suy giảm giá trị là gì</h2></div>
+    </div>
+    <div class="rule">Theo IAS 36 (đoạn 8 &amp; 59), một tài sản bị <strong>suy giảm giá trị</strong> (impaired) khi <em>giá trị ghi sổ</em> của nó cao hơn <em>giá trị có thể thu hồi</em> — tức số tiền còn moi được từ nó qua việc bán hoặc dùng tiếp. Khi đó, chuẩn mực buộc kéo giá trị ghi sổ xuống bằng giá trị thu hồi; phần chênh chính là <strong>lỗ suy giảm</strong> (impairment loss).</div>
+    <div class="sub">Vì sao đây là nền</div>
+    <div class="why"><p>Đây là trục của cả cuốn. Mọi chương khác chỉ phục vụ một phép so duy nhất: số trên sổ với số còn moi được. Cây thước, hai con đường thu hồi, cách kéo tiền về — tất cả đổ vào đây. Nắm ý này, các phần sau có chỗ để bám.</p></div>
+  </section>
+
+  <section class="problem">
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Vấn đề nó sinh ra để giải quyết</span><h2>Khấu hao đều tay không bắt kịp một cú rớt giá</h2></div>
+    </div>
+    <p class="lead">Bạn mua cái máy 100 triệu, mỗi năm trừ hao đều 10 triệu. Năm nay thị trường đổi, hàng làm ra ế, cái máy bỗng gần như vô dụng. Hỏi: sổ vẫn ghi 70 triệu có còn đúng không?</p>
+
+<p>Khấu hao chỉ biết một nhịp: rải đều theo tuổi thọ dự tính. Nó không nhìn ra một cú rớt giá đột ngột. Nên sổ cứ ghi một con số mà tài sản không còn đỡ nổi.</p>
+
+<div class="sub">Cần một cơ chế bắt kịp thực tế</div>
+<p>Vậy phải có một phép kiểm riêng. Khi thực tế tụt dưới con số trên sổ, phép kiểm đó kéo sổ xuống cho khớp. Đó là suy giảm giá trị — nội dung Bước 2.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Mô hình đơn giản · cách nó chạy</span><h2>Đặt hai con số cạnh nhau, thấp hơn thì hạ sổ</h2></div>
+    </div>
+    <p>Phép thử chỉ là một câu so sánh, làm khi có nghi ngờ tài sản mất giá.</p>
+
+<div class="sub">Hai con số đem ra so</div>
+<p>Một bên là số trên sổ. Bên kia là số còn moi được từ tài sản — bán đi, hoặc giữ mà dùng. Đặt hai con số cạnh nhau.</p>
+
+<div class="sub">Chỉ hạ khi thực thu thấp hơn</div>
+<p>Nếu số moi được vẫn cao hơn sổ, tài sản còn khỏe, không làm gì cả. Chỉ khi số moi được tụt xuống dưới sổ, ta mới kéo sổ xuống bằng đúng nó. Phần hụt đó gọi là lỗ suy giảm.</p>
+
+<div class="sub">Hạ một phát, ghi ngay</div>
+<p>Lỗ này ghi thẳng vào lãi lỗ trong kỳ, không rải ra. Suy giảm là một cú chỉnh lại, không phải nhịp hao mòn đều.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví dụ cụ thể</span><h2>Cái máy mất giá vì có đời mới</h2></div>
+    </div>
+    <div class="example-card"><span class="tag">Bài toán</span>
+<p>Máy đang ghi sổ <strong>70 triệu</strong>. Bỗng có đời máy mới rẻ và nhanh hơn. Tính lại: bán đi chỉ được 40, mà giữ dùng tiếp cũng chỉ còn moi được 50.</p>
+<p>Số còn moi được là <strong>50</strong> (cái cao hơn trong hai). Nó thấp hơn sổ 70. Vậy lỗ suy giảm là <strong>20</strong>; kéo sổ từ 70 xuống 50.</p>
+<p>Khác hẳn khấu hao. Khấu hao năm nay chỉ trừ đều 10. Suy giảm cắt thẳng 20 trong một phát, vì thực tế đã rớt.</p>
+</div>
+<p>Quen thuộc hơn: chiếc xe của bạn vừa dính một đợt triệu hồi lỗi. Sáng ra nó rớt giá mạnh. "Giá trên giấy" của bạn phải hạ ngay cho khớp, chứ không đợi mòn dần từng năm.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Sau khi hạ sổ, khấu hao các kỳ sau tính lại trên con số mới, thấp hơn (đoạn 63). Một ngoại lệ: tài sản đang ghi theo <em>giá đánh giá lại</em> thì lỗ trừ vào thặng dư đánh giá lại trước, cạn mới sang lãi lỗ (đoạn 60-61).</p>
+  </section>
+
+  <section class="clarify">
+    <div class="step-head">
+      <div class="big-num">≠</div>
+      <div class="step-meta"><span class="lbl">Dễ nhầm · ranh giới</span><h2>Đừng nhầm suy giảm với khấu hao</h2></div>
+    </div>
+    <div class="mix-q"><span class="q">"Năm nào cũng trừ bớt giá trị — suy giảm với khấu hao khác gì nhau?"</span><p>Khác ở nhịp và lý do. Khấu hao là kế hoạch: rải đều giá mua theo tuổi thọ, biết trước từ đầu. Suy giảm là bất ngờ: chỉ xuất hiện khi thực tế rớt dưới sổ, và cắt một phát cho khớp.</p></div>
+<div class="mix-q"><span class="q">"Hạ sổ vì suy giảm thì có phải đã bán lỗ tài sản không?"</span><p>Không. Bạn vẫn đang giữ tài sản. Hạ sổ chỉ là sửa con số trên giấy cho đúng thực tế. Chưa có đồng tiền thật nào ra khỏi túi vì việc hạ này.</p></div>
+  </section>
+
+  <section class="bridge">
+    <div class="step-head">
+      <div class="big-num">→</div>
+      <div class="step-meta"><span class="lbl">Nối tiếp · nó dẫn tới đâu</span><h2>Phép so này cần hai con số — và phải biết khi nào mới so</h2></div>
+    </div>
+    <div class="bridge-card"><p>Cả phép thử chỉ là một câu so. Nhưng muốn so, cần hai con số. Tab <strong>'Giá trị ghi sổ'</strong> cho bên trái: số trên sổ. Tab <strong>'Hai con đường thu hồi'</strong> cho bên phải: số còn moi được.</p>
+<p>Nhưng trước hết: khi nào mới phải so? Đó là tab kế, <strong>'Khi nào mới test'</strong>. Còn chỗ nghe ngược đời — số moi được lấy <em>cái cao hơn</em> mà vẫn bảo mất giá — là trang khó <strong>'Sao lại lấy cái cao hơn?'</strong>.</p></div>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">✦</div>
+      <div class="step-meta"><span class="lbl">Kể lại trong một hơi</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Khấu hao trừ đều mỗi năm theo kế hoạch. Suy giảm thì khác: nó là một lần soi lại khi thực tế rớt. Đặt số trên sổ cạnh số còn moi được; nếu sổ cao hơn, kéo sổ xuống cho khớp. Phần hụt ghi thẳng vào lãi lỗ.</p>
+<p class="core">Một câu nhớ: <span>sổ cao hơn cái còn moi được thì hạ sổ, ghi ngay phần hụt.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã nắm nền chưa?</h3>
+      <ol>
+        <li>Vì sao khấu hao đều tay không thay được phép thử suy giảm khi tài sản rớt giá đột ngột?</li>
+        <li>Máy ghi sổ 70, bán được 40, giữ dùng còn moi được 50 — lỗ suy giảm là bao nhiêu, và sổ còn lại mấy?</li>
+        <li>Hạ sổ vì suy giảm khác gì với việc bán lỗ tài sản?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nền vững thì cái khó tự nhẹ đi. Hiểu từ gốc, không học vẹt.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-khi-nao-test" role="tabpanel" aria-labelledby="tab-1" tabindex="0"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Nền tảng · hiểu từ gốc</div>
+    <h1 class="rise" style="animation-delay:.08s">Khi nào mới phải đem tài sản đi 'khám'?</h1>
+    <p class="core rise" style="animation-delay:.16s">Không khám tràn lan: <span>có dấu hiệu mới soi — riêng vài loại thì soi hằng năm.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Định vị · nó là gì &amp; vì sao học trước</span><h2>Dấu hiệu suy giảm và test bắt buộc hằng năm</h2></div>
+    </div>
+    <div class="rule">Theo IAS 36 (đoạn 9), cuối mỗi kỳ doanh nghiệp soi xem có <strong>dấu hiệu suy giảm</strong> nào không; có dấu hiệu mới phải ước tính giá trị thu hồi. Đoạn 12 liệt kê dấu hiệu từ <em>bên ngoài</em> (giá rớt, môi trường xấu đi, lãi suất tăng) và <em>bên trong</em> (hư hỏng, lỗi thời, hiệu suất kém hơn dự kiến). Đoạn 10: ba loại đặc biệt — goodwill, tài sản vô hình vô thời hạn, và tài sản vô hình chưa đưa vào dùng — phải test <strong>hằng năm</strong>, bất kể có dấu hiệu hay không.</div>
+    <div class="sub">Vì sao đây là nền</div>
+    <div class="why"><p>Bốn nền kia dạy <em>cách</em> đo suy giảm. Nền này trả lời câu trước đó: <em>khi nào</em> mới phải đo. Không ai đem mọi tài sản đi định giá lại mỗi năm — quá tốn. Biết đúng lúc nào phải khám là nửa phần việc, và đề thi rất hay hỏi.</p></div>
+  </section>
+
+  <section class="problem">
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Vấn đề nó sinh ra để giải quyết</span><h2>Khám hết mọi tài sản mỗi năm thì kiệt sức</h2></div>
+    </div>
+    <p class="lead">Một công ty có hàng nghìn tài sản: máy móc, nhà xưởng, xe cộ, phần mềm. Định giá lại từng cái mỗi năm để xem có mất giá không? Vừa tốn tiền, vừa tốn người, gần như bất khả thi.</p>
+
+<p>Nhưng bỏ mặc cũng sai. Một cái máy hỏng nặng mà sổ vẫn ghi giá cao thì báo cáo nói dối. Cần một quy tắc: khám có chọn lọc, đúng lúc.</p>
+
+<div class="sub">Vậy lấy gì làm cái cớ để khám?</div>
+<p>Câu trả lời: chỉ khám khi có <em>dấu hiệu</em> tài sản có thể đã mất giá. Như người chỉ đi bác sĩ khi thấy triệu chứng. Bước 2 nói rõ dấu hiệu gồm những gì.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Mô hình đơn giản · cách nó chạy</span><h2>Có dấu hiệu mới soi — trừ vài loại soi hằng năm</h2></div>
+    </div>
+    <p>Quy tắc gồm hai tầng: một tầng chung cho mọi tài sản, một tầng riêng cho vài loại đặc biệt.</p>
+
+<div class="sub">Tầng chung: soi khi có dấu hiệu</div>
+<p>Cuối mỗi kỳ, dừng lại nhìn quanh. Thấy dấu hiệu tài sản có thể mất giá thì mới đem đi định giá lại. Không có dấu hiệu thì thôi.</p>
+
+<div class="sub">Dấu hiệu đến từ hai phía</div>
+<p>Bên ngoài: giá thị trường rớt mạnh, môi trường kinh doanh xấu đi, hay lãi suất tăng. Bên trong: tài sản hư hỏng, lỗi thời, hoặc chạy kém hơn hẳn dự kiến.</p>
+
+<div class="sub">Tầng riêng: ba loại khám hằng năm</div>
+<p>Ba loại phải khám tổng quát mỗi năm, kể cả khi không có triệu chứng nào. Đó là goodwill, tài sản vô hình vô thời hạn, và tài sản vô hình chưa đưa vào dùng. Vì sức khỏe của chúng khó nhìn ra từ bên ngoài.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví dụ cụ thể</span><h2>Ba tình huống: khi nào phải khám?</h2></div>
+    </div>
+    <div class="example-card"><span class="tag">Bài toán</span>
+<p>Tình huống một: một dây chuyền bỗng có đối thủ tung công nghệ mới, hàng làm ra khó bán. Đó là dấu hiệu bên ngoài. Phải đem dây chuyền đi định giá lại ngay.</p>
+<p>Tình huống hai: một cái máy chạy êm, thị trường ổn, không có gì bất thường. Không dấu hiệu thì không cần khám — dù chỉ là máy thường.</p>
+<p>Tình huống ba: công ty có goodwill từ một thương vụ mua lại. Dù năm nay mọi thứ êm đẹp, vẫn phải test goodwill — vì nó nằm trong nhóm khám hằng năm.</p>
+</div>
+<p>Như sức khỏe người ta. Đau bụng (có triệu chứng) thì đi khám ngay. Còn ba 'ông VIP' thì năm nào cũng khám tổng quát, dù đang khỏe — vì bệnh của họ hay giấu mặt.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Danh sách dấu hiệu ở đoạn 12 chỉ là tối thiểu, không vét hết (đoạn 13). Một dấu hiệu bên ngoài đáng chú ý: giá trị tài sản thuần trên sổ vượt cả vốn hóa thị trường của công ty (đoạn 12d). Tài sản vô hình mới ghi nhận trong kỳ phải test trước khi hết năm đó (đoạn 10a).</p>
+  </section>
+
+  <section class="clarify">
+    <div class="step-head">
+      <div class="big-num">≠</div>
+      <div class="step-meta"><span class="lbl">Dễ nhầm · ranh giới</span><h2>Đừng nhầm 'có dấu hiệu' với 'đã mất giá'</h2></div>
+    </div>
+    <div class="mix-q"><span class="q">"Có dấu hiệu suy giảm tức là tài sản chắc chắn mất giá rồi?"</span><p>Chưa chắc. Dấu hiệu chỉ là cái cớ buộc bạn đi đo. Đo xong, giá trị thu hồi có thể vẫn cao hơn sổ — khi đó tài sản không hề mất giá. Dấu hiệu mở cuộc kiểm, không phải kết luận.</p></div>
+<div class="mix-q"><span class="q">"Tài sản nào cũng phải test hằng năm cho chắc?"</span><p>Không. Chỉ ba loại đặc biệt mới bắt buộc hằng năm: goodwill, vô hình vô thời hạn, vô hình chưa dùng. Tài sản thường chỉ khám khi có dấu hiệu — bắt khám hết mỗi năm là tốn vô ích.</p></div>
+  </section>
+
+  <section class="bridge">
+    <div class="step-head">
+      <div class="big-num">→</div>
+      <div class="step-meta"><span class="lbl">Nối tiếp · nó dẫn tới đâu</span><h2>Có cớ khám rồi — đo thế nào là bốn tab tiếp</h2></div>
+    </div>
+    <div class="bridge-card"><p>Nền này cho bạn cái <em>khi nào</em>. Một khi có dấu hiệu, hoặc tới hạn khám hằng năm, bạn mới chạy phép đo. Phép đo đó dùng cây thước, hai con đường, máy kéo tiền và nguồn dòng tiền ở các tab sau.</p>
+<p>Riêng chuyện vì sao goodwill và vài loại phải khám hằng năm, dù trông vẫn khỏe, để dành trang khó về 'ba ông VIP khám hằng năm'. Tab cuối, <strong>'Lợi thế thương mại'</strong>, sẽ nối tiếp.</p></div>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">✦</div>
+      <div class="step-meta"><span class="lbl">Kể lại trong một hơi</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Đừng khám tràn lan. Cuối kỳ, nhìn xem có dấu hiệu mất giá không — bên ngoài (giá rớt, môi trường xấu, lãi tăng) hay bên trong (hỏng, lỗi thời, chạy kém). Có dấu hiệu mới đem đi đo. Riêng goodwill và hai loại vô hình đặc biệt thì khám hằng năm, dù không triệu chứng.</p>
+<p class="core">Một câu nhớ: <span>có dấu hiệu mới soi; riêng ba loại đặc biệt soi hằng năm.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã nắm nền chưa?</h3>
+      <ol>
+        <li>Vì sao không bắt mọi tài sản test suy giảm mỗi năm, mà chỉ test khi có dấu hiệu?</li>
+        <li>Kể hai dấu hiệu từ bên ngoài và hai dấu hiệu từ bên trong cho thấy tài sản có thể mất giá.</li>
+        <li>Ba loại tài sản nào phải test hằng năm dù không có dấu hiệu, và vì sao?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nền vững thì cái khó tự nhẹ đi. Hiểu từ gốc, không học vẹt.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-carrying-amount" role="tabpanel" aria-labelledby="tab-2" tabindex="0"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Nền tảng · hiểu từ gốc</div>
+    <h1 class="rise" style="animation-delay:.08s">Giá trị ghi sổ: con số trong sổ, không phải giá ngoài chợ</h1>
+    <p class="core rise" style="animation-delay:.16s">Số trên sổ <span>là giá mua cũ trừ dần hao mòn — không phải giá bán hôm nay.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Định vị · nó là gì &amp; vì sao học trước</span><h2>Giá trị ghi sổ là gì</h2></div>
+    </div>
+    <div class="rule">Theo IAS 36 (đoạn 6), <strong>giá trị ghi sổ</strong> (carrying amount) là số tiền một tài sản đang được ghi trên sổ: <em>nguyên giá</em> trừ <em>khấu hao lũy kế</em> và trừ lỗ suy giảm đã ghi. Đoạn 59: tài sản bị coi là suy giảm khi <em>giá trị thu hồi</em> tụt <strong>xuống dưới</strong> giá trị ghi sổ này.</div>
+    <div class="sub">Vì sao đây là nền</div>
+    <div class="why"><p>Đây là cây thước. Cả phép thử suy giảm chỉ là một phép so: giá trị thu hồi với <strong>giá trị ghi sổ</strong>. Chưa biết con số trên sổ là gì và từ đâu ra, bạn không biết đang so với cái gì, cũng không hiểu "mất giá" nghĩa là gì.</p></div>
+  </section>
+
+  <section class="problem">
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Vấn đề nó sinh ra để giải quyết</span><h2>Trên sổ, một cái máy cũ đáng bao nhiêu?</h2></div>
+    </div>
+    <p class="lead">Bạn mua một cái máy 100 triệu. Ba năm trôi qua, máy vẫn chạy nhưng đã cũ. Hỏi: trên sổ sách công ty, máy đó giờ đáng bao nhiêu? Không ai chạy ra chợ hỏi giá. Sổ có cách tính riêng của nó.</p>
+
+<p>Vấn đề là phải có MỘT con số nhất quán. Nếu để mỗi kế toán đoán giá chợ, mỗi người ghi một kiểu, sổ sách loạn ngay.</p>
+
+<div class="sub">Nên sổ chọn một quy tắc cứng</div>
+<p>Thay vì đoán giá thị trường mỗi năm, sổ ghi theo một công thức cố định: lấy giá đã mua, rồi trừ bớt phần đã hao mòn. Khách quan, ai tính cũng ra một số.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Mô hình đơn giản · cách nó chạy</span><h2>Nguyên giá, trừ dần phần đã mòn</h2></div>
+    </div>
+    <p>Giá trị ghi sổ chạy theo đúng ba bước, lặp mỗi năm.</p>
+
+<div class="sub">Bước một: nguyên giá</div>
+<p>Số tiền bỏ ra để có tài sản và đưa nó vào dùng được. Mua máy hết 100 triệu thì nguyên giá là 100 triệu. Con số này đứng yên, không đổi theo năm.</p>
+
+<div class="sub">Bước hai: khấu hao — rải tiền theo tuổi thọ</div>
+<p>Máy dùng được chừng 10 năm rồi bỏ. Thay vì tính hết 100 triệu vào năm mua, ta rải đều: mỗi năm "mòn" 10 triệu. Phần mòn cộng dồn qua các năm gọi là khấu hao lũy kế.</p>
+
+<div class="sub">Bước ba: lấy hiệu</div>
+<p>Giá trị ghi sổ là nguyên giá trừ phần đã mòn. Năm nào cũng vậy: số trên sổ tụt dần đều, một bậc mỗi năm, cho tới khi gần bằng 0.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví dụ cụ thể</span><h2>Cái máy sau ba năm</h2></div>
+    </div>
+    <div class="example-card"><span class="tag">Bài toán</span>
+<p>Máy mua <strong>100 triệu</strong>, dự tính dùng <strong>10 năm</strong>. Mỗi năm mòn 10 triệu.</p>
+<p>Sau 3 năm: đã mòn 30 triệu. Giá trị ghi sổ còn <strong>70 triệu</strong>. Đó là con số trên sổ — dù ngoài chợ máy cũ đó có thể bán được 50, hay 90 triệu, sổ vẫn ghi 70.</p>
+</div>
+<p>Cũng vậy với điện thoại bạn mua. Sổ của bạn (nếu có) ghi giá mua trừ hao mòn. Còn rao bán trên mạng lại ra một giá khác hẳn. Hai con số, hai mục đích khác nhau.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Có hai tinh chỉnh nhỏ. Một là <em>giá trị thanh lý</em>: cuối đời máy vẫn bán sắt vụn được ít tiền, nên không mòn hết về 0. Hai là cách rải khác ngoài rải đều. Cốt lõi không đổi: nguyên giá trừ phần đã phân bổ.</p>
+  </section>
+
+  <section class="clarify">
+    <div class="step-head">
+      <div class="big-num">≠</div>
+      <div class="step-meta"><span class="lbl">Dễ nhầm · ranh giới</span><h2>Đừng nhầm giá ghi sổ với giá bán</h2></div>
+    </div>
+    <div class="mix-q"><span class="q">"Sổ ghi 70 triệu thì bán được 70 triệu chứ gì?"</span><p>Không nhất thiết. Giá ghi sổ là con số kế toán, tính theo quy tắc rải đều. Giá bán là thứ thị trường trả, lên xuống theo cung cầu. Một máy mòn nhanh ngoài đời có thể chỉ bán được 40 triệu, dù sổ vẫn ghi 70.</p></div>
+<div class="mix-q"><span class="q">"Vậy giá ghi sổ có ích gì nếu không phải giá thật?"</span><p>Nó cho một mốc khách quan, nhất quán, ai cũng tính ra giống nhau. Phép thử suy giảm mới chính là lúc kế toán dừng lại hỏi: con số trên sổ này có còn đòi được không? Nếu không, mới kéo nó xuống.</p></div>
+  </section>
+
+  <section class="bridge">
+    <div class="step-head">
+      <div class="big-num">→</div>
+      <div class="step-meta"><span class="lbl">Nối tiếp · nó dẫn tới đâu</span><h2>Con số này là cây thước trong phép thử suy giảm</h2></div>
+    </div>
+    <div class="bridge-card"><p>Giữ chắc: giá trị ghi sổ là <strong>cây thước</strong>, không phải kết luận. Nó là bên trái của phép so. Bên phải — số còn moi được — bạn tính ở tab <strong>'Hai con đường thu hồi'</strong>.</p>
+<p>Đặt hai con số cạnh nhau. Số moi được mà tụt dưới giá ghi sổ này, phần hụt mới là "mất giá". Vì sao bên phải lại lấy ngả cao hơn mà vẫn kêu mất giá, xem trang khó <strong>'Sao lại lấy cái cao hơn?'</strong>.</p></div>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">✦</div>
+      <div class="step-meta"><span class="lbl">Kể lại trong một hơi</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Giá trị ghi sổ không phải giá chợ. Nó là giá mua cũ, trừ dần phần đã hao mòn mỗi năm. Một con số khách quan, tụt đều theo tuổi tài sản. Công dụng của nó: làm cây thước để phép thử suy giảm đem giá trị thu hồi ra so.</p>
+<p class="core">Nhớ một câu: <span>giá mua cũ trừ dần hao mòn — một cây thước, không phải giá chợ.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã nắm nền chưa?</h3>
+      <ol>
+        <li>Cùng một cái máy, vì sao "giá trị ghi sổ" và "giá bán ngoài chợ" lại là hai con số khác nhau?</li>
+        <li>Máy 100 triệu, dùng 10 năm, rải đều. Sau 4 năm giá trị ghi sổ còn bao nhiêu?</li>
+        <li>Trong phép thử suy giảm, giá trị ghi sổ đóng vai trò gì?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nền vững thì cái khó tự nhẹ đi. Hiểu từ gốc, không học vẹt.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-hai-con-duong-thu-hoi" role="tabpanel" aria-labelledby="tab-3" tabindex="0"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Nền tảng · hiểu từ gốc</div>
+    <h1 class="rise" style="animation-delay:.08s">Hai con đường moi tiền ra: bán đi hay giữ mà dùng</h1>
+    <p class="core rise" style="animation-delay:.16s">Một tài sản, <span>hai cách lấy lại tiền — bán nó, hoặc giữ mà dùng tiếp.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Định vị · nó là gì &amp; vì sao học trước</span><h2>Giá trị có thể thu hồi và hai con đường</h2></div>
+    </div>
+    <div class="rule">Theo IAS 36 (đoạn 6 &amp; 18), <strong>giá trị có thể thu hồi</strong> (recoverable amount) của một tài sản là <em>số cao hơn</em> trong hai con đường: <strong>giá bán ròng</strong> (fair value less costs of disposal — bán đi, trừ chi phí bán) và <strong>giá trị sử dụng</strong> (value in use — giữ mà dùng tiếp). Đoạn 19: chỉ cần một con đường vượt giá trị ghi sổ là đủ kết luận tài sản chưa suy giảm.</div>
+    <div class="sub">Vì sao đây là nền</div>
+    <div class="why"><p>Đây là bên phải của phép so suy giảm. Tab trước cho "số trên sổ"; tab này cho "số còn moi được". Mà số moi được không có một mặt: tài sản cho bạn hai lựa chọn lấy tiền. Chưa thấy đủ hai con đường, bạn sẽ định giá hụt một nửa.</p></div>
+  </section>
+
+  <section class="problem">
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Vấn đề nó sinh ra để giải quyết</span><h2>"Còn moi được bao nhiêu" — tùy bạn làm gì với nó</h2></div>
+    </div>
+    <p class="lead">Bạn có một cái máy cũ. Hỏi: giờ còn lấy lại được bao nhiêu tiền từ nó? Câu này không có một đáp án. Tiền lấy được tùy vào việc bạn định làm gì với cái máy.</p>
+
+<p>Bán quách nó đi lấy tiền mặt? Hay giữ lại chạy tiếp, ăn dòng tiền nó đẻ ra? Hai ngả cho hai con số khác nhau.</p>
+
+<div class="sub">Bỏ sót một ngả là định giá sai</div>
+<p>Nếu chỉ nhìn giá bán, bạn quên mất tài sản đang dùng vẫn sinh tiền. Nếu chỉ nhìn tiền nó đẻ, bạn quên mất có thể bán ngay được giá. Phải đặt cả hai lên bàn.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Mô hình đơn giản · cách nó chạy</span><h2>Hai con đường, và chỉ cần một cái thắng</h2></div>
+    </div>
+    <p>Có đúng hai con đường lấy tiền ra khỏi một tài sản.</p>
+
+<div class="sub">Đường một: bán đi</div>
+<p>Lấy giá bán được trên thị trường, trừ chi phí để bán (môi giới, tháo dỡ, phí giấy tờ). Còn lại là giá bán ròng. Đây là tiền cầm về nếu buông tài sản ngay hôm nay.</p>
+
+<div class="sub">Đường hai: giữ mà dùng</div>
+<p>Cứ giữ tài sản chạy tiếp. Gom số tiền nó còn đẻ ra trong tương lai, kéo về hôm nay. Đó là giá trị sử dụng.</p>
+
+<div class="sub">Lấy con đường tốt hơn</div>
+<p>Một người tỉnh táo sẽ chọn ngả cho nhiều tiền hơn. Nên giá trị thu hồi là <em>số cao hơn</em> trong hai. Và nếu một ngả đã vượt số trên sổ, khỏi tính ngả kia — tài sản chưa mất giá.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví dụ cụ thể</span><h2>Cái máy: bán được 45, giữ dùng được 60</h2></div>
+    </div>
+    <div class="example-card"><span class="tag">Bài toán</span>
+<p>Một cái máy cũ. Bán ngay, trừ phí, cầm về <strong>45 triệu</strong>. Giữ lại chạy tiếp, số tiền nó còn đẻ kéo về hôm nay được <strong>60 triệu</strong>.</p>
+<p>Bạn chọn ngả nào? Tất nhiên là giữ dùng, vì 60 hơn 45. Vậy giá trị thu hồi của máy là <strong>60</strong> — con đường tốt hơn.</p>
+<p>Đổi tình huống một chút. Nếu giữ dùng chỉ còn moi được 40, bạn sẽ bán. Khi đó giá trị thu hồi là 45. Con số nhảy theo ngả nào lợi hơn.</p>
+</div>
+<p>Như chiếc điện thoại cũ trong ngăn kéo. Bán lại được một giá. Hoặc giữ làm máy phụ, đỡ phải mua cái mới — cũng là một kiểu "giá trị sử dụng". Bạn cân xem ngả nào đáng hơn.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Đôi khi không đo nổi giá bán ròng (không có thị trường) thì lấy luôn giá trị sử dụng làm giá trị thu hồi (đoạn 20). Ngược lại, tài sản sắp bán thì giá trị sử dụng gần như chỉ còn là giá bán (đoạn 21). Chi phí bán không gồm lãi vay và thuế thu nhập (đoạn 6).</p>
+  </section>
+
+  <section class="clarify">
+    <div class="step-head">
+      <div class="big-num">≠</div>
+      <div class="step-meta"><span class="lbl">Dễ nhầm · ranh giới</span><h2>Đừng nhầm giá trị thu hồi với giá bán</h2></div>
+    </div>
+    <div class="mix-q"><span class="q">"Giá trị thu hồi với giá bán là một, đúng không?"</span><p>Không. Giá bán chỉ là một trong hai con đường. Giá trị thu hồi là cái <em>cao hơn</em> giữa bán đi và giữ mà dùng. Nhiều khi giữ mà dùng lại đáng tiền hơn bán.</p></div>
+<div class="mix-q"><span class="q">"Có hai con đường thì cộng cả hai lại à?"</span><p>Không cộng. Bạn chỉ đi được một ngả: hoặc bán, hoặc giữ. Nên ta lấy ngả tốt hơn, chứ không gộp hai số. Cộng lại là tính trùng số tiền chỉ moi được một lần.</p></div>
+  </section>
+
+  <section class="bridge">
+    <div class="step-head">
+      <div class="big-num">→</div>
+      <div class="step-meta"><span class="lbl">Nối tiếp · nó dẫn tới đâu</span><h2>Con đường 'giữ mà dùng' chạy bằng hai tab sau</h2></div>
+    </div>
+    <div class="bridge-card"><p>Đường bán đi thì gọn: tra giá, trừ phí. Đường giữ mà dùng mới cần máy móc. Bạn phải gom tiền tài sản còn đẻ ra rồi kéo về hôm nay.</p>
+<p>Đúng việc của hai tab sau. Tab <strong>'Dòng tiền &amp; cụm'</strong> cho biết tiền ở đâu mà gom. Tab <strong>'Tiền theo thời gian'</strong> lo phần kéo về. Còn vì sao lấy ngả cao hơn mà vẫn kêu mất giá, để dành cho trang khó <strong>'Sao lại lấy cái cao hơn?'</strong>.</p></div>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">✦</div>
+      <div class="step-meta"><span class="lbl">Kể lại trong một hơi</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Một tài sản cho bạn hai ngả lấy tiền: bán đi (trừ phí), hoặc giữ mà dùng tiếp. Mỗi ngả ra một con số. Giá trị thu hồi là ngả cao hơn. Và chỉ cần một ngả đã vượt số trên sổ là đủ biết tài sản chưa mất giá.</p>
+<p class="core">Một câu nhớ: <span>hai ngả — bán hay giữ — lấy ngả cho nhiều tiền hơn.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã nắm nền chưa?</h3>
+      <ol>
+        <li>Một tài sản có hai con đường thu hồi tiền — đó là hai con đường nào?</li>
+        <li>Bán được 45, giữ dùng được 60 thì giá trị thu hồi là bao nhiêu, và vì sao không phải 105?</li>
+        <li>Vì sao đôi khi chỉ cần tính một con đường là đủ kết luận tài sản chưa suy giảm?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nền vững thì cái khó tự nhẹ đi. Hiểu từ gốc, không học vẹt.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-time-value-of-money" role="tabpanel" aria-labelledby="tab-4" tabindex="0"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Nền tảng · hiểu từ gốc</div>
+    <h1 class="rise" style="animation-delay:.08s">Vì sao một đồng hôm nay đáng hơn một đồng năm sau</h1>
+    <p class="core rise" style="animation-delay:.16s">Tiền có 'tuổi': <span>cùng một con số, nhận càng muộn càng nhẹ giá.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Định vị · nó là gì &amp; vì sao học trước</span><h2>Nguyên tắc nền: tiền hôm nay nặng hơn tiền mai sau</h2></div>
+    </div>
+    <div class="rule">Nguyên tắc gốc của tài chính — <strong>giá trị tiền theo thời gian</strong> (time value of money): một khoản tiền nhận <em>hôm nay</em> đáng hơn đúng khoản đó nhận <em>trong tương lai</em>, vì tiền hôm nay sinh lời được ngay. Trong IAS 36 (đoạn 6 &amp; 30-31), đây chính là lý do <em>value in use</em> phải <strong>chiết khấu</strong> dòng tiền tương lai về hôm nay trước khi cộng.</div>
+    <div class="sub">Vì sao đây là nền</div>
+    <div class="why"><p>Đây là viên gạch dưới cùng. Mọi con số "giá trị" trong cuốn này đều đứng trên nó: value in use, NPV, hay vì sao 100 đồng năm sau không cộng thẳng. Chưa nắm ý này, các chương sau chỉ là công thức học vẹt. Nắm rồi, chúng tự sáng ra.</p></div>
+  </section>
+
+  <section class="problem">
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Vấn đề nó sinh ra để giải quyết</span><h2>Không thể cộng thẳng tiền của hai thời điểm</h2></div>
+    </div>
+    <p class="lead">Bạn được cho chọn: cầm 100 nghìn ngay bây giờ, hay cầm đúng 100 nghìn vào năm sau. Bạn chọn cái nào? Ai cũng chọn cầm ngay. Vậy là trong đầu bạn, hai tờ 100 nghìn đó <em>không</em> bằng nhau — dù in cùng con số.</p>
+
+<p>Vấn đề sinh ra từ đây. Tiền ở các thời điểm khác nhau là các "loại" khác nhau. Cộng thẳng chúng lại là sai, như cộng mét với ký.</p>
+
+<div class="sub">Vì sao tiền ngay lại hơn</div>
+<p>Có tiền ngay, bạn làm được ba việc mà người đợi năm sau không làm được. Đem gửi cho sinh lời. Mua thứ cần trước khi nó lên giá. Hoặc chỉ đơn giản là chắc ăn — tiền hứa năm sau biết đâu mất.</p>
+
+<p>Nên muốn so tiền tương lai với tiền hôm nay, ta cần một lối "quy về cùng tuổi" rồi mới so. Lối đó là nội dung Bước 2.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Mô hình đơn giản · cách nó chạy</span><h2>Kéo tiền tương lai về hôm nay rồi mới cộng</h2></div>
+    </div>
+    <p>Mô hình chỉ có một động tác: <strong>kéo</strong> mọi khoản tiền về cùng một mốc — thường là hôm nay. Tiền càng xa trong tương lai, kéo về càng co lại nhiều.</p>
+
+<div class="sub">Lãi đi tới, chiết khấu đi lui</div>
+<p>Gửi 100 đồng, lãi 10% một năm, sang năm thành 110. Đó là đi <em>tới</em>. Giờ làm ngược: 110 đồng năm sau đáng bao nhiêu hôm nay? Đúng 100. Phép đi lui đó gọi là <em>chiết khấu</em>.</p>
+
+<div class="sub">Càng xa càng nhẹ</div>
+<p>110 đồng nhận sau một năm đáng 100 hôm nay. Cũng 110 đồng nhưng nhận sau mười năm thì đáng ít hơn nhiều. Mỗi năm trôi qua, ta lại chia cho một lần "1 cộng lãi". Thời gian càng dài, chia càng nhiều lần, con số càng teo.</p>
+
+<div class="sub">Một con số, hai mảnh ghép</div>
+<p>Vậy giá của tiền tương lai phụ thuộc hai thứ. Một: nhận <strong>bao xa</strong> trong tương lai. Hai: <strong>lãi</strong> dùng để kéo về là bao nhiêu. Đổi một trong hai, con số đổi theo.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví dụ cụ thể</span><h2>Thử với một lời hứa trả tiền</h2></div>
+    </div>
+    <div class="example-card"><span class="tag">Bài toán</span>
+<p>Một người hứa trả bạn <strong>121 nghìn sau hai năm</strong>. Lãi quanh đó là 10% một năm. Lời hứa ấy đáng bao nhiêu <em>hôm nay</em>?</p>
+<p>Kéo về từng năm. Lùi một năm: chia cho 1,1, còn 110. Lùi năm nữa: chia cho 1,1 lần nữa, còn <strong>100</strong>. Vậy 121 nghìn sau hai năm chỉ đáng 100 nghìn hôm nay.</p>
+<p>Đổi giả định thử xem. Nếu lãi là 20%, cùng lời hứa đó chỉ còn đáng khoảng 84 nghìn. Lãi cao hơn kéo mạnh tay hơn, nên co nhiều hơn.</p>
+</div>
+<p>Đời thường hơn: vé số trúng "1 tỷ" thường trả góp 50 triệu mỗi năm trong 20 năm. Khoản đó <em>không</em> đáng 1 tỷ hôm nay. Mười chín lần trả sau đều phải kéo về, nên teo lại. Đây đúng là cách người ta định giá một lời hứa trả dần.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Công thức gọn: giá hôm nay = khoản tiền chia cho <em>(1 + r)</em> mũ số năm. <em>r</em> là tỷ lệ chiết khấu. Cộng giá-hôm-nay của mọi khoản tiền tương lai lại, ta được <em>present value</em>; trừ đi vốn bỏ ra ban đầu thì thành <em>NPV</em>.</p>
+<p>Trong IAS 36, <em>r</em> phải là tỷ lệ <strong>trước thuế</strong>, phản ánh đánh giá thị trường hiện tại về giá trị thời gian của tiền và rủi ro riêng của tài sản (đoạn 55-56) — và đừng tính rủi ro hai lần.</p>
+  </section>
+
+  <section class="clarify">
+    <div class="step-head">
+      <div class="big-num">≠</div>
+      <div class="step-meta"><span class="lbl">Dễ nhầm · ranh giới</span><h2>Đừng nhầm nó với lạm phát</h2></div>
+    </div>
+    <div class="mix-q"><span class="q">"Tiền mất giá theo thời gian — đó chẳng phải là lạm phát sao?"</span><p>Hai chuyện khác nhau. Lạm phát là giá hàng hóa <em>tăng lên</em>. Giá trị tiền theo thời gian vẫn đúng <strong>kể cả khi không có lạm phát</strong>. Lý do: tiền hôm nay đem sinh lời được ngay. Còn tiền hứa năm sau thì chưa. Lạm phát chỉ là một lý do khiến lãi cao lên, không phải bản thân nguyên tắc.</p></div>
+<div class="mix-q"><span class="q">"Vậy chiết khấu là phạt người trả chậm à?"</span><p>Không phải phạt, chỉ là quy về cùng mốc cho công bằng khi so. Ta không nói tiền tương lai "tệ". Ta chỉ nói: muốn đặt nó cạnh tiền hôm nay mà cân, phải kéo về cùng tuổi trước.</p></div>
+  </section>
+
+  <section class="bridge">
+    <div class="step-head">
+      <div class="big-num">→</div>
+      <div class="step-meta"><span class="lbl">Nối tiếp · nó dẫn tới đâu</span><h2>Máy kéo tiền này nằm trong con đường 'giữ mà dùng'</h2></div>
+    </div>
+    <div class="bridge-card"><p>Viên gạch này là cái máy kéo tiền tương lai về hôm nay. Nó nằm bên trong con đường <strong>giữ mà dùng</strong> ở tab <strong>'Hai con đường thu hồi'</strong>.</p>
+<p>Nguyên liệu cho máy đến từ tab <strong>'Dòng tiền &amp; cụm'</strong>: tiền ở đâu mà kéo. Gom tiền tương lai, kéo từng năm về hôm nay — ra <em>giá trị sử dụng</em>. Còn vì sao chọn ngả cao hơn mà vẫn bảo mất giá, là trang khó <strong>'Sao lại lấy cái cao hơn?'</strong>.</p></div>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">✦</div>
+      <div class="step-meta"><span class="lbl">Kể lại trong một hơi</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Tiền có "tuổi". Một đồng hôm nay hơn một đồng năm sau, vì hôm nay nó sinh lời được ngay. Nên không cộng thẳng tiền của hai thời điểm. Phải kéo tiền tương lai về hôm nay — chia cho "1 cộng lãi" mỗi năm — rồi mới cộng. Càng xa, càng teo.</p>
+<p class="core">Tiền có 'tuổi': <span>cùng một con số, nhận càng muộn càng nhẹ giá.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã nắm nền chưa?</h3>
+      <ol>
+        <li>Vì sao 100 nghìn nhận hôm nay <em>không</em> bằng 100 nghìn nhận năm sau, dù in cùng con số?</li>
+        <li>Cùng một lời hứa trả tiền, vì sao lãi chiết khấu cao hơn lại làm giá hôm nay <em>nhỏ</em> đi?</li>
+        <li>Giá trị tiền theo thời gian khác lạm phát ở chỗ nào?</li>
+        <li>Trong IAS 36, nguyên tắc này hiện ra ở bước nào khi tính 'value in use'?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nền vững thì cái khó tự nhẹ đi. Hiểu từ gốc, không học vẹt.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-cash-flow-cgu" role="tabpanel" aria-labelledby="tab-5" tabindex="0"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Nền tảng · hiểu từ gốc</div>
+    <h1 class="rise" style="animation-delay:.08s">Tài sản kiếm tiền một mình, hay kiếm theo cụm?</h1>
+    <p class="core rise" style="animation-delay:.16s">Có thứ tự ra tiền, <span>có thứ chỉ ra tiền khi cả cụm chạy chung.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Định vị · nó là gì &amp; vì sao học trước</span><h2>Dòng tiền tương lai và cụm tạo tiền</h2></div>
+    </div>
+    <div class="rule">Đường <em>giữ mà dùng</em> (value in use) đo bằng <strong>dòng tiền tương lai</strong> tài sản tạo ra, kéo về hôm nay. Nhưng nhiều tài sản không tự sinh tiền một mình. IAS 36 (đoạn 66-68) gom chúng thành <strong>cụm tạo tiền</strong> (cash-generating unit, CGU): nhóm nhỏ nhất tự kiếm được dòng tiền độc lập.</div>
+    <div class="sub">Vì sao đây là nền</div>
+    <div class="why"><p>Hai tab nền kia lo phần "kéo tiền về" và "cây thước". Tab này lo <strong>nguồn</strong>: tiền ở đâu mà kéo. Nếu không biết tài sản nào tự kiếm tiền, tài sản nào phải đi chung cụm, bạn không biết đặt phép thử suy giảm lên cái gì. Đây là nền hay bị bỏ qua nhất.</p></div>
+  </section>
+
+  <section class="problem">
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Vấn đề nó sinh ra để giải quyết</span><h2>Cái máy pha cà phê kiếm bao nhiêu một mình?</h2></div>
+    </div>
+    <p class="lead">Cái máy pha cà phê trong quán kiếm cho bạn bao nhiêu một tháng? Câu hỏi nghe dễ mà bí. Một mình cái máy không bán nổi một ly. Phải có quán, có người pha, có hạt, có khách. Tiền nó "kiếm" dính chặt với mọi thứ quanh nó.</p>
+
+<p>Đó là vấn đề. Value in use cần biết một tài sản đem về bao nhiêu tiền. Nhưng có những tài sản, tách riêng ra thì con số đó vô nghĩa.</p>
+
+<div class="sub">Hai loại tài sản</div>
+<p>Vài tài sản tự kiếm tiền rõ ràng: một căn nhà cho thuê, một chiếc xe tải chở hàng tính cước. Đo riêng được. Nhiều tài sản khác thì không: một cái máy giữa dây chuyền, một thương hiệu, một phần mềm nội bộ.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Mô hình đơn giản · cách nó chạy</span><h2>Đo riêng được thì đo riêng; không thì gom cụm</h2></div>
+    </div>
+    <p>Quy tắc gọn: <strong>đo riêng được thì đo riêng; không thì gom thành cụm</strong>.</p>
+
+<div class="sub">Dòng tiền là gì</div>
+<p>Là tiền thật chảy vào trừ tiền thật chảy ra mỗi năm, nhờ có tài sản. Không phải lợi nhuận kế toán. Tiền vào tay là tính, tiền chưa về thì chưa.</p>
+
+<div class="sub">Khi nào phải gom cụm</div>
+<p>Khi một tài sản không tự đẻ ra dòng tiền tách bạch. Lúc đó ta tìm <strong>nhóm nhỏ nhất</strong> các tài sản cùng nhau tạo ra một dòng tiền độc lập. Nhóm đó là một cụm tạo tiền.</p>
+
+<div class="sub">Vì sao phải "nhỏ nhất"</div>
+<p>Gom càng to càng dễ giấu một tài sản đang hỏng giữa đám đang khỏe. Lấy cụm nhỏ nhất để phép thử suy giảm còn nhìn thấy chỗ thật sự mất giá.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví dụ cụ thể</span><h2>Cả quán cà phê là một cụm</h2></div>
+    </div>
+    <div class="example-card"><span class="tag">Bài toán</span>
+<p>Quán cà phê của bạn có: máy pha, bàn ghế, biển hiệu, công thức pha. Hỏi riêng cái máy pha "kiếm" bao nhiêu? Không trả lời được — nó chỉ ra tiền khi cả quán chạy.</p>
+<p>Nên ta không thử suy giảm riêng cái máy. Ta lấy <strong>cả quán</strong> làm một cụm: cộng tiền khách trả, trừ tiền hạt, điện, lương. Dòng tiền đó là của cụm, không của riêng máy nào.</p>
+</div>
+<p>Ngược lại, một căn hộ cho thuê thì tự nó là một cụm: tiền thuê vào, phí quản lý ra, đo riêng gọn gàng. Không phải gộp với gì cả.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Dòng tiền cho 'giữ mà dùng' (value in use) đo tài sản <em>đang là</em>, nên loại ra vài thứ. Không tính dòng tiền từ tài trợ (vay, trả nợ) và thuế thu nhập (đoạn 50). Không tính tái cơ cấu chưa cam kết và capex nâng cấp/mở rộng làm tài sản tốt hơn hiện trạng (đoạn 44). Đây đúng là những khoản hay bị nhét nhầm khi review một model VIU.</p>
+  </section>
+
+  <section class="clarify">
+    <div class="step-head">
+      <div class="big-num">≠</div>
+      <div class="step-meta"><span class="lbl">Dễ nhầm · ranh giới</span><h2>Đừng nhầm cụm với cả công ty</h2></div>
+    </div>
+    <div class="mix-q"><span class="q">"Gom thành cụm — vậy cứ lấy cả công ty làm một cụm cho gọn?"</span><p>Không. Cụm phải là nhóm <strong>nhỏ nhất</strong> còn tự kiếm được dòng tiền riêng. Lấy cả công ty thì một chi nhánh đang lỗ nặng sẽ bị các chi nhánh lãi che mất. Phép thử mù luôn chỗ hỏng.</p></div>
+<div class="mix-q"><span class="q">"Dòng tiền với lợi nhuận khác gì nhau?"</span><p>Lợi nhuận là con số kế toán, có cả những khoản chưa thành tiền. Dòng tiền chỉ đếm tiền thật ra vào. Value in use chạy trên dòng tiền, vì cuối cùng cái cứu được vốn là tiền thật, không phải con số trên giấy.</p></div>
+  </section>
+
+  <section class="bridge">
+    <div class="step-head">
+      <div class="big-num">→</div>
+      <div class="step-meta"><span class="lbl">Nối tiếp · nó dẫn tới đâu</span><h2>Có nguồn tiền rồi, kéo về bằng tab 'Tiền theo thời gian'</h2></div>
+    </div>
+    <div class="bridge-card"><p>Giờ bạn biết tiền ở đâu ra: từ một tài sản, hoặc từ cả cụm. Bước tiếp là kéo dòng tiền tương lai đó về hôm nay — chính là việc của tab <strong>'Tiền theo thời gian'</strong>. Hai mảnh ghép lại thành <em>giá trị sử dụng</em>.</p>
+<p>Và cụm tạo tiền chính là chỗ trang khó <strong>'Sao lại lấy cái cao hơn?'</strong> dẫn tới. Ở đó, khi một tài sản "kiếm tiền một mình" không còn đúng, nó phải đi chung cụm.</p>
+<p>Cụm này cũng là chỗ tab cuối — <strong>'Lợi thế thương mại'</strong> — gắn goodwill vào để đem đi soi.</p></div>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">✦</div>
+      <div class="step-meta"><span class="lbl">Kể lại trong một hơi</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Có tài sản tự kiếm tiền: đo riêng được. Có tài sản chỉ ra tiền khi cả cụm chạy chung: phải gom thành cụm tạo tiền — nhóm nhỏ nhất còn tự sinh dòng tiền. Đặt phép thử suy giảm lên đúng cấp đó: cái nào đo riêng được thì đo riêng, cái nào không thì theo cụm.</p>
+<p class="core">Một câu nhớ: <span>đo riêng được thì đo riêng, không thì gom cụm nhỏ nhất.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã nắm nền chưa?</h3>
+      <ol>
+        <li>Vì sao không thể hỏi riêng "cái máy pha kiếm bao nhiêu" trong một quán cà phê?</li>
+        <li>Cụm tạo tiền phải là nhóm nhỏ nhất — vì sao không gom cả công ty cho gọn?</li>
+        <li>Dòng tiền khác lợi nhuận kế toán ở điểm nào, và vì sao value in use dùng dòng tiền?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nền vững thì cái khó tự nhẹ đi. Hiểu từ gốc, không học vẹt.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-goodwill" role="tabpanel" aria-labelledby="tab-6" tabindex="0"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Nền tảng · hiểu từ gốc</div>
+    <h1 class="rise" style="animation-delay:.08s">Lợi thế thương mại: phần dư không tự sinh tiền, chỉ đem đi soi</h1>
+    <p class="core rise" style="animation-delay:.16s">Goodwill không hao mòn, <span>không tự kiếm tiền — chỉ được test, cưỡi cụm, và không bao giờ hồi lại.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Định vị · nó là gì &amp; vì sao học trước</span><h2>Lợi thế thương mại là gì, và vì sao nó khác</h2></div>
+    </div>
+    <div class="rule"><strong>Lợi thế thương mại</strong> (goodwill) là phần bạn trả thêm khi mua một doanh nghiệp, vượt trên giá trị hợp lý của tài sản thuần mua được — phần dư phản ánh kỳ vọng synergy. Goodwill không được khấu hao; IAS 36 (đoạn 10b, 90) buộc <strong>test suy giảm hằng năm</strong>. Vì goodwill không tự sinh dòng tiền riêng, đoạn 80 yêu cầu gán nó vào <em>cụm tạo tiền</em> (CGU) hưởng lợi từ thương vụ rồi test ở cấp cụm. Đoạn 124: lỗ suy giảm của goodwill <strong>không bao giờ được hoàn nhập</strong>.</div>
+    <div class="sub">Vì sao đây là nền</div>
+    <div class="why"><p>Với người làm PPA, goodwill chính là phần dư bạn tạo ra khi phân bổ giá mua. Và IAS 36 là cơ chế duy nhất để theo dõi nó sau đó. Không nắm ba nét riêng của goodwill, bạn không hiểu vì sao báo cáo hợp nhất xử lý nó khác hẳn tài sản thường.</p></div>
+  </section>
+
+  <section class="problem">
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Vấn đề nó sinh ra để giải quyết</span><h2>Một thứ trên sổ mà không cầm, không bán, không tự đẻ tiền</h2></div>
+    </div>
+    <p class="lead">Bạn mua một công ty giá 100 tỷ, nhưng tài sản thuần của nó chỉ đáng 70 tỷ. 30 tỷ chênh đó là gì? Bạn không sờ được, không bán riêng được, mà vẫn phải ghi lên sổ. Đó là goodwill.</p>
+
+<p>Vấn đề: goodwill không giống cái máy hay căn nhà. Nó không hao mòn theo tuổi rõ ràng. Nó cũng không tự kiếm ra một đồng nào tách bạch.</p>
+
+<div class="sub">Vậy theo dõi nó kiểu gì?</div>
+<p>Không khấu hao đều được, vì chẳng biết nó 'mòn' bao lâu. Không đo riêng được, vì nó chẳng tạo dòng tiền một mình. Cần một lối khác hẳn — đó là nội dung Bước 2.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Mô hình đơn giản · cách nó chạy</span><h2>Ba nét riêng: chỉ test, cưỡi cụm, không hồi</h2></div>
+    </div>
+    <p>Goodwill được xử lý theo ba nguyên tắc, khác hẳn tài sản thường.</p>
+
+<div class="sub">Một: chỉ test, không khấu hao</div>
+<p>Tài sản thường mòn đều mỗi năm. Goodwill thì không. Thay vào đó, mỗi năm nó bị đem đi test suy giảm — bắt buộc, kể cả khi không có dấu hiệu.</p>
+
+<div class="sub">Hai: cưỡi lên một cụm để được soi</div>
+<p>Goodwill không tự kiếm tiền nên không thể test một mình. Ta gán nó vào cụm tạo tiền hưởng lợi từ thương vụ. Rồi test cả cụm: so giá trị thu hồi của cụm với giá ghi sổ của cụm, đã gồm goodwill.</p>
+
+<div class="sub">Ba: lãnh đòn trước, và không hồi lại</div>
+<p>Khi cả cụm mất giá, goodwill bị gạch xuống đầu tiên. Phần còn lại mới chia cho các tài sản khác. Và một khi goodwill đã ghi lỗ, nó không bao giờ được hoàn nhập — dù sau này công ty khởi sắc.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví dụ cụ thể</span><h2>Một thương vụ và cái cụm mang goodwill</h2></div>
+    </div>
+    <div class="example-card"><span class="tag">Bài toán</span>
+<p>Mua một chuỗi cửa hàng, trả dư 30 tỷ goodwill. Gán goodwill vào cụm 'chuỗi cửa hàng' — nơi hưởng lợi từ thương vụ.</p>
+<p>Cuối năm test cụm. Giá ghi sổ của cụm (đã gồm 30 goodwill) là 130. Giá trị thu hồi của cụm chỉ còn 110. Cụm mất giá 20.</p>
+<p>20 đó gạch vào goodwill trước: goodwill từ 30 xuống 10. Các tài sản khác chưa phải đụng tới. Năm sau cụm hồi lên 130 — goodwill <em>vẫn nằm ở 10</em>, không được kéo lại.</p>
+</div>
+<p>Hình dung goodwill như 'danh tiếng' bạn trả tiền để mua lại một quán đông khách. Không tháo ra bán riêng được. Nếu khách bỏ đi, danh tiếng đó mất là mất luôn — khó mà 'phục hồi trên sổ'.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Cụm mang goodwill phải là cấp <em>thấp nhất ban lãnh đạo theo dõi</em> goodwill, và không lớn hơn một bộ phận kinh doanh theo IFRS 8 (đoạn 80). Khi phân bổ lỗ cụm, không tài sản nào bị dìm dưới mức cao nhất của giá bán ròng, giá trị sử dụng, hay 0 (đoạn 105). Tài sản <em>khác</em> goodwill thì được hoàn nhập, trần là mức carrying lẽ ra có nếu chưa từng ghi lỗ (đoạn 117) — riêng goodwill thì không (đoạn 124).</p>
+  </section>
+
+  <section class="clarify">
+    <div class="step-head">
+      <div class="big-num">≠</div>
+      <div class="step-meta"><span class="lbl">Dễ nhầm · ranh giới</span><h2>Đừng nhầm goodwill với tài sản thường</h2></div>
+    </div>
+    <div class="mix-q"><span class="q">"Tài sản khác hoàn nhập được khi hồi giá — goodwill cũng vậy chứ?"</span><p>Không. Đây là điểm thi kinh điển. Hầu hết tài sản: nếu giá trị thu hồi tăng trở lại, được hoàn nhập lỗ — nhưng chỉ tới mức lẽ ra có nếu chưa từng ghi lỗ. Goodwill thì tuyệt đối không, dù có khởi sắc tới đâu.</p></div>
+<div class="mix-q"><span class="q">"Sao không khấu hao goodwill cho đỡ rắc rối?"</span><p>Vì không ai biết goodwill 'sống' bao lâu. Khấu hao đều cần một tuổi thọ; goodwill không có. Nên chuẩn mực chọn cách khác: mỗi năm đem đi test, thấy hụt thì gạch. Đổi lại, việc test phức tạp hơn nhiều.</p></div>
+  </section>
+
+  <section class="bridge">
+    <div class="step-head">
+      <div class="big-num">→</div>
+      <div class="step-meta"><span class="lbl">Nối tiếp · nó dẫn tới đâu</span><h2>Goodwill cưỡi lên cụm — nối thẳng ba trang khó</h2></div>
+    </div>
+    <div class="bridge-card"><p>Ba nét ở đây mới là phần dễ. Cơ học đằng sau nằm ở ba trang khó. Vì sao goodwill phải gửi vào một 'tổ' để khám: trang <strong>'Goodwill không tự đứng một mình'</strong>. Thứ tự gạch lỗ trong cụm: trang <strong>'Goodwill lãnh đòn đầu tiên'</strong>.</p>
+<p>Còn vì sao riêng goodwill không bao giờ hồi lại, trong khi tài sản khác thì có: trang <strong>'Tài sản nào cũng hồi phục được — trừ goodwill'</strong>. Cả ba đều mọc lên từ nền 'Dòng tiền &amp; cụm' bạn vừa học.</p></div>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">✦</div>
+      <div class="step-meta"><span class="lbl">Kể lại trong một hơi</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Goodwill là phần trả dư khi mua doanh nghiệp. Nó không hao mòn, không tự sinh tiền. Nên không khấu hao, mà đem test hằng năm; và vì không kiếm tiền một mình, phải gán vào một cụm rồi test cả cụm. Khi cụm mất giá, goodwill bị gạch trước — và một khi đã gạch, không bao giờ kéo lại.</p>
+<p class="core">Một câu nhớ: <span>goodwill chỉ test chứ không khấu hao, cưỡi cụm để soi, và không bao giờ hồi.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã nắm nền chưa?</h3>
+      <ol>
+        <li>Vì sao goodwill không được khấu hao mà phải đem test suy giảm hằng năm?</li>
+        <li>Goodwill không tự sinh dòng tiền — vậy người ta test nó bằng cách nào?</li>
+        <li>Khi một cụm mang goodwill mất giá, tài sản nào bị ghi giảm trước, và goodwill có được hoàn nhập sau này không?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nền vững thì cái khó tự nhẹ đi. Hiểu từ gốc, không học vẹt.</p>
+  </footer>
+
+</div></div>
+<script>
+  var bar=document.getElementById('progress');
+  function upd(){var h=document.documentElement;var s=h.scrollTop||document.body.scrollTop;
+    var max=(h.scrollHeight-h.clientHeight)||1;bar.style.width=(s/max*100)+'%';}
+  window.addEventListener('scroll',upd,{passive:true});upd();
+  var io=new IntersectionObserver(function(es){es.forEach(function(e){
+    if(e.isIntersecting){e.target.style.animation='rise .7s cubic-bezier(.2,.7,.3,1) forwards';io.unobserve(e.target);}});},{threshold:.12});
+  document.querySelectorAll('section').forEach(function(s){s.style.opacity='0';io.observe(s);});
+</script>
+
+<script>
+(function(){
+  var tabs=[].slice.call(document.querySelectorAll('.tabbar .tab'));
+  var panels=[].slice.call(document.querySelectorAll('.concept-panel'));
+  function show(i){
+    tabs.forEach(function(t,j){t.classList.toggle('active',j===i);});
+    panels.forEach(function(p,j){
+      var on=(j===i); p.classList.toggle('active',on);
+      if(on){p.querySelectorAll('section').forEach(function(s){s.style.opacity='';s.style.animation='';});}
+    });
+    try{history.replaceState(null,'','#'+panels[i].id);}catch(e){}
+    window.scrollTo(0,0); window.dispatchEvent(new Event('scroll'));
+  }
+  tabs.forEach(function(t){t.addEventListener('click',function(){show(+t.getAttribute('data-i'));});});
+  var start=0; panels.forEach(function(p,j){if('#'+p.id===location.hash)start=j;});
+  show(start);
+})();
+</script>
+
+
+<script>
+(function(){var t=[].slice.call(document.querySelectorAll('.tabbar .tab'));
+function sync(a){t.forEach(function(x){var on=x===a;x.setAttribute('aria-selected',on?'true':'false');x.tabIndex=on?0:-1;});}
+t.forEach(function(x){x.addEventListener('click',function(){sync(x);});
+x.addEventListener('keydown',function(e){var i=t.indexOf(x),n=t.length,j=null;
+if(e.key==='ArrowRight'||e.key==='ArrowDown')j=(i+1)%n;else if(e.key==='ArrowLeft'||e.key==='ArrowUp')j=(i-1+n)%n;
+else if(e.key==='Home')j=0;else if(e.key==='End')j=n-1;
+if(j!==null){e.preventDefault();t[j].click();t[j].focus();}});});})();
+</script>
+</body></html>

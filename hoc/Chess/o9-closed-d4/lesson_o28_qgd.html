@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bài 1 (Ch9-Open) — Gambit Hậu từ chối (QGD)</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/chessboard-js/1.0.0/chessboard-1.0.0.min.css">
+<style>
+* { box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; max-width: 980px; margin: 0 auto; padding: 24px; color: #1a1a1a; line-height: 1.6; background: #fafafa; }
+h1 { color: #1a3a52; font-size: 26px; margin: 0 0 8px; }
+h2 { color: #2c5282; font-size: 20px; margin: 32px 0 12px; padding-bottom: 6px; border-bottom: 2px solid #e1e8ed; }
+.source { color: #888; font-size: 13px; margin-bottom: 24px; }
+.nav-link { font-size: 13px; color: #2c5282; text-decoration: none; }
+.stage { background: white; border-radius: 8px; padding: 20px 24px; margin: 16px 0; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
+.stage-label { display: inline-block; background: #2c5282; color: white; font-size: 12px; font-weight: 600; padding: 3px 10px; border-radius: 12px; margin-bottom: 8px; }
+.hook-question { font-size: 17px; color: #1a3a52; background: #fff8e1; border-left: 4px solid #faad14; padding: 14px 18px; border-radius: 0 6px 6px 0; margin: 12px 0; }
+.reveal-btn { background: #faad14; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-size: 14px; }
+.hidden { display: none; }
+.board-layout { display: grid; grid-template-columns: 440px 1fr; gap: 24px; align-items: start; margin-top: 16px; }
+@media (max-width: 820px) { .board-layout { grid-template-columns: 1fr; } }
+#board { width: 420px; max-width: 100%; }
+.mini-board { width: 300px; max-width: 100%; margin: 14px auto; }
+.controls { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; justify-content: center; }
+.controls button { padding: 7px 12px; background: #2c5282; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 13px; }
+.info-panel { background: #f8f9fb; padding: 16px; border-radius: 6px; border: 1px solid #e1e8ed; min-height: 380px; }
+.move-display { font-family: monospace; font-size: 16px; color: #2c5282; font-weight: 600; margin-bottom: 8px; }
+.commentary { font-size: 14px; color: #444; margin-bottom: 12px; }
+.info-box { background: white; padding: 10px; border-radius: 4px; border: 1px solid #e1e8ed; margin: 12px 0; font-size: 13px; text-align: center; }
+.info-box.win { background: #f6ffed; border-color: #b7eb8f; color: #389e0d; font-weight: 600; }
+.hl { background: rgba(255, 215, 0, 0.45) !important; box-shadow: inset 0 0 0 2px #faad14 !important; }
+.self-test { background: #fff8e1; border: 2px dashed #faad14; border-radius: 6px; padding: 16px; margin-top: 16px; }
+.feedback { margin-top: 10px; padding: 10px 14px; border-radius: 4px; font-size: 14px; }
+.feedback.correct { background: #f6ffed; color: #389e0d; border-left: 4px solid #52c41a; }
+.feedback.wrong { background: #fff1f0; color: #cf1322; border-left: 4px solid #ff4d4f; }
+.quiz { background: #f0f7ff; border-left: 4px solid #2c5282; border-radius: 0 6px 6px 0; padding: 14px 18px; margin: 12px 0; }
+.quiz-q { font-weight: 600; margin-bottom: 10px; color: #1a3a52; }
+.quiz-options { display: flex; flex-direction: column; gap: 6px; }
+.quiz-option { padding: 8px 12px; background: white; border: 1px solid #c9d6e2; border-radius: 4px; cursor: pointer; text-align: left; font-size: 14px; }
+.quiz-option.correct { background: #f6ffed; border-color: #52c41a; color: #389e0d; }
+.quiz-option.wrong { background: #fff1f0; border-color: #ff4d4f; color: #cf1322; }
+.quiz-explain { margin-top: 8px; font-size: 13px; color: #555; font-style: italic; }
+.summary-card { background: linear-gradient(135deg, #1a3a52, #2c5282); color: white; padding: 20px 24px; border-radius: 8px; margin-top: 24px; }
+.summary-card h2 { color: white; border: none; margin-top: 0; }
+.summary-card ul { padding-left: 20px; }
+code { background: #f1f3f5; padding: 1px 6px; border-radius: 3px; font-family: monospace; font-size: 0.9em; }
+.summary-card code { background: rgba(255,255,255,0.2); color: white; }
+.progress-bar { height: 4px; background: #e1e8ed; border-radius: 2px; overflow: hidden; margin: 8px 0 16px; }
+.progress-fill { height: 100%; background: #52c41a; transition: width 0.3s; width: 0%; }
+.tag { display:inline-block; background:#fde9c8; color:#874d00; font-size:11px; font-weight:600; padding:2px 8px; border-radius:10px; margin-left:6px; }
+.movelist { font-family: monospace; font-size: 13px; background:#fff8e1; border-radius:6px; padding:8px 12px; margin-top:10px; color:#874d00; line-height:1.7; }
+</style>
+</head>
+<body>
+
+<h1>Gambit Hậu từ chối (QGD) <span class="tag">1.d4 d5 · vững chắc</span></h1>
+<div class="source">
+  Chương 9 (Khai cuộc) — Khai cuộc 1.d4 — lý thuyết kinh điển · Trung cấp → Nâng cao<br>
+  <a class="nav-link" href="../index-opening.html">← Trang chủ Khai cuộc</a> ·
+  <a class="nav-link" href="chapter_o9_closed.html">← Chương 9</a>
+</div>
+
+<div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+
+<div class="stage">
+  <span class="stage-label">CHẶNG 1 · DẪN NHẬP</span>
+  <h2 style="margin-top:8px">Giữ chắc d5 bằng …e6 — vững nhưng nhốt tượng c8</h2>
+  <p><strong>Gambit Hậu từ chối</strong> (QGD): Đen đỡ 2.c4 bằng <strong>2…e6</strong>, giữ chắc tốt trung tâm d5. Một trong những phòng thủ vững và đáng tin nhất chống 1.d4 — đổi lại tượng c8 bị nhốt sau tốt e6.</p>
+  <div id="hookBoard" class="mini-board"></div>
+  <div class="movelist">1.d4 d5 2.c4 e6 3.Nc3 Nf6 4.Bg5 — ghim mã, ép d5/e6</div>
+  <div class="hook-question">
+    🤔 <strong>QGD vững chắc, nhưng kế hoạch chính của Trắng để khai thác là gì?</strong>
+  </div>
+  <button class="reveal-btn" onclick="document.getElementById('hookAnswer').classList.remove('hidden'); markStage(1);">Hiển thị đáp án</button>
+  <div id="hookAnswer" class="hidden" style="margin-top:14px">
+    <p>Hai kế hoạch lớn: (1) <strong>Tấn công thiểu số</strong> (minority attack) — đẩy b4-b5 trên cánh hậu để tạo tốt yếu cho Đen trên cột c; (2) phá trung tâm bằng <strong>e4</strong>. Biến chính Orthodox: <code>4.Bg5 Be7 5.e3 O-O 6.Nf3 Nbd7 7.Rc1 c6</code>. Đen vững nhưng phải giải phóng tượng c8 (qua …dxc4 + …c5 hoặc …Ne4 đổi quân).</p>
+  </div>
+</div>
+
+<div class="stage">
+  <span class="stage-label">CHẶNG 2 · KHÁI NIỆM</span>
+  <h2 style="margin-top:8px">Ý tưởng của QGD</h2>
+  <ul>
+    <li><strong>…e6 giữ d5</strong>: cực vững, ít yếu điểm — nhưng nhốt tượng c8 (vấn đề tượng xấu, giống French).</li>
+    <li><strong>Tấn công thiểu số</strong>: Trắng đẩy b4-b5 (ít tốt đánh nhiều) để tạo tốt yếu cho Đen trên cột c bán mở.</li>
+    <li><strong>Giải phóng của Đen</strong>: …dxc4 rồi …c5, hoặc đòn …Ne4 đổi quân — gỡ thế chật và kích hoạt tượng c8.</li>
+  </ul>
+</div>
+
+<div class="stage">
+  <span class="stage-label">CHẶNG 3 · TƯƠNG TÁC TỪNG BƯỚC</span>
+  <div class="board-layout">
+    <div>
+      <div id="board"></div>
+      <div class="controls">
+        <button onclick="resetBoard()">⟨⟨ Đầu</button>
+        <button onclick="prevMove()">⟨ Lùi</button>
+        <button onclick="nextMove()">Tiến ⟩</button>
+      </div>
+    </div>
+    <div class="info-panel">
+      <div class="move-display" id="moveDisplay">Vị trí xuất phát</div>
+      <div class="commentary" id="commentary">Bấm Tiến ⟩ đi qua biến Orthodox QGD và đọc ý đồ hai bên từng nước.</div>
+      <div class="info-box" id="infoBox">Đến lượt: <strong>Trắng</strong></div>
+    </div>
+  </div>
+</div>
+
+<div class="stage">
+  <span class="stage-label">CHẶNG 4 · TỰ KIỂM TRA</span>
+  <h2 style="margin-top:8px">Vì sao QGD vững chắc nhưng Đen vẫn phải chủ động giải phóng quân?</h2>
+  <div class="self-test">
+    <div class="quiz-options" id="selfTestOptions">
+      <button class="quiz-option" onclick="checkSelfTest(this, true, 'Đúng. Cấu trúc QGD rất chắc nhưng tượng c8 bị tốt e6 chặn (như French). Đen phải tìm đúng thời điểm …dxc4 rồi …c5, hoặc …Ne4 đổi quân, nếu không sẽ bị bóp nghẹt và chịu tấn công thiểu số.')">Vì tốt e6 nhốt tượng c8 — Đen cần …dxc4+…c5 hoặc …Ne4 để gỡ chật</button>
+      <button class="quiz-option" onclick="checkSelfTest(this, false, 'Sai — QGD không mất tốt; …e6 giữ nguyên d5.')">Vì Đen đang thiếu một tốt</button>
+      <button class="quiz-option" onclick="checkSelfTest(this, false, 'Sai — Đen nhập thành bình thường (5…O-O).')">Vì vua đen chưa nhập thành được</button>
+    </div>
+    <div class="feedback hidden" id="selfTestFeedback"></div>
+  </div>
+</div>
+
+<div class="stage">
+  <span class="stage-label">CHẶNG 5 · TRẮC NGHIỆM NHANH</span>
+  <div class="quiz">
+    <div class="quiz-q">Q1. 2…e6 trong QGD đánh đổi điều gì?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" onclick="quizCheck(this, true)">Vững chắc giữ d5, đổi lại nhốt tượng c8</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Thắng một tốt</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Mở đường cho tượng c8 ra ngoài</button>
+    </div>
+    <div class="quiz-explain hidden">…e6 củng cố d5 nhưng chặn lối ra tự nhiên của tượng c8 — vấn đề tượng xấu kinh điển.</div>
+  </div>
+  <div class="quiz">
+    <div class="quiz-q">Q2. Tấn công thiểu số (minority attack) là gì?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" onclick="quizCheck(this, true)">Trắng đẩy b4-b5 (ít tốt) để tạo tốt yếu cho Đen trên cột c</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Đổi hết quân nhẹ</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Bão tốt cánh vua</button>
+    </div>
+    <div class="quiz-explain hidden">Ít tốt cánh hậu tấn công nhiều tốt để sau b5xc6 để lại Đen một tốt c yếu, cố định.</div>
+  </div>
+  <div class="quiz">
+    <div class="quiz-q">Q3. Đòn giải phóng điển hình của Đen trong QGD?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" onclick="quizCheck(this, true)">…dxc4 rồi …c5 (hoặc …Ne4) để gỡ chật và kích hoạt tượng c8</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">…f5 ngay</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">…g5 đuổi tượng</button>
+    </div>
+    <div class="quiz-explain hidden">…dxc4 + …c5 mở cờ cho tượng c8 và giải tỏa thế chật — kế hoạch chuẩn.</div>
+  </div>
+</div>
+
+<div class="summary-card">
+  <h2>📌 Tóm tắt</h2>
+  <ul>
+    <li><strong>Biến</strong>: <code>1.d4 d5 2.c4 e6 3.Nc3 Nf6 4.Bg5 Be7 5.e3 O-O 6.Nf3 Nbd7 7.Rc1 c6</code> (Orthodox).</li>
+    <li><strong>Ý tưởng</strong>: …e6 giữ d5 cực vững nhưng nhốt tượng c8; Trắng nhắm tấn công thiểu số b4-b5 hoặc e4.</li>
+    <li><strong>Giải phóng</strong>: Đen …dxc4 + …c5 hoặc …Ne4 để gỡ chật.</li>
+    <li><strong>Đánh giá</strong>: một trong những phòng thủ đáng tin nhất chống 1.d4.</li>
+  </ul>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chessboard-js/1.0.0/chessboard-1.0.0.min.js"></script>
+<script>
+const START_FEN = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
+const MOVES = ['d4','d5','c4','e6','Nc3','Nf6','Bg5','Be7','e3','O-O','Nf3','Nbd7','Rc1','c6'];
+const COMMENTARY = {
+  0: { move: 'Vị trí xuất phát', text: 'Gambit Hậu từ chối (QGD) — phòng thủ vững chắc bậc nhất chống 1.d4; …e6 giữ d5.' },
+  1: { move: '1. d4', text: 'Chiếm trung tâm, mở đường tượng c1 và Hậu.' },
+  2: { move: '1… d5', text: '…d5 đáp đối xứng, tranh trung tâm.' },
+  3: { move: '2. c4', text: 'Gambit Hậu — mời đổi tốt c lấy tốt d để giành ưu thế trung tâm.' },
+  4: { move: '2… e6', text: '…e6! TỪ CHỐI gambit — giữ chắc d5; vững nhưng nhốt tượng c8 sau tốt e6.' },
+  5: { move: '3. Nc3', text: 'Nc3 — thêm lực ép d5, phát triển.' },
+  6: { move: '3… Nf6', text: '…Nf6 bảo vệ d5, phát triển.' },
+  7: { move: '4. Bg5', text: 'Bg5 — ghim mã f6 (quân giữ d5), tăng sức ép lên trung tâm.' },
+  8: { move: '4… Be7', text: '…Be7 gỡ ghim gián tiếp, chuẩn bị nhập thành.' },
+  9: { move: '5. e3', text: 'e3 — mở tượng f1, củng cố d4 (vững, đặc trưng Orthodox).' },
+  10: { move: '5… O-O', text: '…O-O nhập thành an toàn.' },
+  11: { move: '6. Nf3', text: 'Nf3 phát triển, chuẩn bị Bd3 và nhập thành.' },
+  12: { move: '6… Nbd7', text: '…Nbd7 phát triển mã (không cản tốt c), chuẩn bị …c6 và …dxc4/…c5.' },
+  13: { move: '7. Rc1', text: 'Rc1 — xe lên cột c bán mở (sẽ mở sau b4-b5), chuẩn bị tấn công thiểu số.' },
+  14: { move: '7… c6', text: '…c6 — củng cố d5 chắc thêm; Đen chực giải phóng bằng …dxc4 + …c5 hoặc …Ne4. Cờ vững, đôi bên kế hoạch rõ. TABIYA.' }
+};
+let board, game, currentMove = 0, stagesCompleted = new Set();
+function initBoard() {
+  game = new Chess(START_FEN);
+  board = Chessboard('board', { position: 'start', draggable: true,
+    pieceTheme: 'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png',
+    onDrop: (s,t) => { const m = game.move({from:s,to:t,promotion:'q'}); if(!m) return 'snapback'; setTimeout(updateOverlays,100); },
+    onSnapEnd: () => { board.position(game.fen()); updateOverlays(); }});
+  updateDisplay();
+}
+function nextMove() { if(currentMove>=MOVES.length) return; game.move(MOVES[currentMove]); board.position(game.fen()); currentMove++; setTimeout(()=>{updateDisplay();updateOverlays();},50); if(currentMove>=MOVES.length) markStage(3); }
+function prevMove() { if(currentMove<=0) return; game.undo(); currentMove--; board.position(game.fen()); setTimeout(()=>{updateDisplay();updateOverlays();},50); }
+function resetBoard() { game = new Chess(START_FEN); board.position('start'); currentMove = 0; setTimeout(()=>{updateDisplay();updateOverlays();},50); }
+function updateDisplay() {
+  const cm = COMMENTARY[currentMove] || COMMENTARY[0];
+  document.getElementById('moveDisplay').textContent = cm.move;
+  document.getElementById('commentary').innerHTML = cm.text;
+  const box = document.getElementById('infoBox');
+  if (currentMove >= MOVES.length) { box.className = 'info-box win'; box.innerHTML = '★ Tabiya Orthodox QGD — vững; Trắng nhắm tấn công thiểu số'; }
+  else { box.className = 'info-box'; box.innerHTML = 'Đến lượt: <strong>' + (game.turn()==='w'?'Trắng':'Đen') + '</strong>'; }
+  updateProgress();
+}
+function updateOverlays() { $('#board .square-55d63').removeClass('hl'); ['d5','c4','e6'].forEach(sq => $('#board .square-' + sq).addClass('hl')); }
+function checkSelfTest(btn, ok, exp) {
+  document.querySelectorAll('#selfTestOptions .quiz-option').forEach(el=>el.disabled=true);
+  btn.classList.add(ok?'correct':'wrong');
+  const fb = document.getElementById('selfTestFeedback');
+  fb.classList.remove('hidden'); fb.className = 'feedback ' + (ok?'correct':'wrong');
+  fb.textContent = (ok?'✓ ':'✗ ') + exp; markStage(4);
+}
+function quizCheck(btn, ok) {
+  const q = btn.closest('.quiz');
+  q.querySelectorAll('.quiz-option').forEach(el=>el.disabled=true);
+  btn.classList.add(ok?'correct':'wrong');
+  if (!ok) q.querySelectorAll('.quiz-option').forEach(el => { if (el.getAttribute('onclick').includes('true')) el.classList.add('correct'); });
+  q.querySelector('.quiz-explain').classList.remove('hidden'); markStage(5);
+}
+function markStage(n) { stagesCompleted.add(n); updateProgress(); }
+function updateProgress() { document.getElementById('progressFill').style.width = (stagesCompleted.size/5*100) + '%'; }
+function initMiniBoards() { Chessboard('hookBoard', { position: 'rnbqkb1r/ppp2ppp/4pn2/3p2B1/2PP4/2N5/PP2PPPP/R2QKBNR', draggable: false, pieceTheme: 'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png' }); }
+$(document).ready(() => { initBoard(); initMiniBoards(); setTimeout(()=>markStage(2),500); });
+</script>
+
+</body>
+</html>

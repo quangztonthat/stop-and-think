@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Bài 1 (Ch3) — Đối mặt xa</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/chessboard-js/1.0.0/chessboard-1.0.0.min.css">
+<style>
+* { box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; max-width: 980px; margin: 0 auto; padding: 24px; color: #1a1a1a; line-height: 1.6; background: #fafafa; }
+h1 { color: #1a3a52; font-size: 28px; margin: 0 0 8px; }
+h2 { color: #2c5282; font-size: 20px; margin: 32px 0 12px; padding-bottom: 6px; border-bottom: 2px solid #e1e8ed; }
+.source { color: #888; font-size: 13px; margin-bottom: 24px; }
+.nav-link { font-size: 13px; color: #2c5282; text-decoration: none; }
+.stage { background: white; border-radius: 8px; padding: 20px 24px; margin: 16px 0; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
+.stage-label { display: inline-block; background: #2c5282; color: white; font-size: 12px; font-weight: 600; padding: 3px 10px; border-radius: 12px; margin-bottom: 8px; }
+.hook-question { font-size: 17px; color: #1a3a52; background: #fff8e1; border-left: 4px solid #faad14; padding: 14px 18px; border-radius: 0 6px 6px 0; margin: 12px 0; }
+.reveal-btn { background: #faad14; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-size: 14px; }
+.hidden { display: none; }
+.board-layout { display: grid; grid-template-columns: 440px 1fr; gap: 24px; align-items: start; margin-top: 16px; }
+@media (max-width: 820px) { .board-layout { grid-template-columns: 1fr; } }
+#board { width: 420px; max-width: 100%; }
+.mini-board { width: 300px; max-width: 100%; margin: 14px auto; }
+.controls { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; justify-content: center; }
+.controls button { padding: 7px 12px; background: #2c5282; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 13px; }
+.info-panel { background: #f8f9fb; padding: 16px; border-radius: 6px; border: 1px solid #e1e8ed; min-height: 380px; }
+.move-display { font-family: monospace; font-size: 16px; color: #2c5282; font-weight: 600; margin-bottom: 8px; }
+.commentary { font-size: 14px; color: #444; margin-bottom: 12px; }
+.opp-status { background: white; padding: 10px; border-radius: 4px; border: 1px solid #e1e8ed; margin: 12px 0; font-size: 13px; text-align: center; }
+.opp-status.has-opposition { background: #f6ffed; border-color: #b7eb8f; color: #389e0d; font-weight: 600; }
+.highlight-king-blue { box-shadow: inset 0 0 0 4px #1d39c4 !important; }
+.highlight-key { background: rgba(82, 196, 26, 0.4) !important; box-shadow: inset 0 0 0 2px #52c41a !important; }
+.self-test { background: #fff8e1; border: 2px dashed #faad14; border-radius: 6px; padding: 16px; margin-top: 16px; }
+.self-test-question { font-weight: 600; color: #874d00; margin-bottom: 8px; }
+.feedback { margin-top: 10px; padding: 10px 14px; border-radius: 4px; font-size: 14px; }
+.feedback.correct { background: #f6ffed; color: #389e0d; border-left: 4px solid #52c41a; }
+.feedback.wrong { background: #fff1f0; color: #cf1322; border-left: 4px solid #ff4d4f; }
+.quiz { background: #f0f7ff; border-left: 4px solid #2c5282; border-radius: 0 6px 6px 0; padding: 14px 18px; margin: 12px 0; }
+.quiz-q { font-weight: 600; margin-bottom: 10px; color: #1a3a52; }
+.quiz-options { display: flex; flex-direction: column; gap: 6px; }
+.quiz-option { padding: 8px 12px; background: white; border: 1px solid #c9d6e2; border-radius: 4px; cursor: pointer; text-align: left; font-size: 14px; }
+.quiz-option.correct { background: #f6ffed; border-color: #52c41a; color: #389e0d; }
+.quiz-option.wrong { background: #fff1f0; border-color: #ff4d4f; color: #cf1322; }
+.quiz-explain { margin-top: 8px; font-size: 13px; color: #555; font-style: italic; }
+.summary-card { background: linear-gradient(135deg, #1a3a52, #2c5282); color: white; padding: 20px 24px; border-radius: 8px; margin-top: 24px; }
+.summary-card h2 { color: white; border: none; margin-top: 0; }
+.summary-card ul { padding-left: 20px; }
+code { background: #f1f3f5; padding: 1px 6px; border-radius: 3px; font-family: monospace; font-size: 0.9em; }
+.summary-card code { background: rgba(255,255,255,0.2); color: white; }
+.progress-bar { height: 4px; background: #e1e8ed; border-radius: 2px; overflow: hidden; margin: 8px 0 16px; }
+.progress-fill { height: 100%; background: #52c41a; transition: width 0.3s; width: 0%; }
+</style>
+</head>
+<body>
+
+<h1>Bài 1 — Đối mặt xa (Đối Vua từ xa)</h1>
+<div class="source">
+  Chương 3 — Các mô thức tàn cuộc tốt<br>
+  <a class="nav-link" href="../index.html">← Trang chủ</a> ·
+  <a class="nav-link" href="chapter_03_pawn_patterns.html">← Chương 3</a>
+</div>
+
+<div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+
+<div class="stage">
+  <span class="stage-label">GIAI ĐOẠN 1 · DẪN NHẬP</span>
+  <h2 style="margin-top:8px">Thế đối mặt không chỉ là 1 ô giữa</h2>
+  <p>Thế cờ: Vua Trắng c1, Vua Đen c7. Hai Vua ở cùng cột c, cách nhau 5 ô (c2-c6).</p>
+  <div id="hookBoard" class="mini-board"></div>
+  <div class="hook-question">
+    🤔 <strong>Đây có phải thế đối mặt không?</strong> Trong Bài 2 Chương 1, thế đối mặt = 1 ô trống giữa.
+    Nhưng có khái niệm rộng hơn: <em>đối mặt xa</em> với 3, 5, 7 ô giữa.
+  </div>
+  <button class="reveal-btn" onclick="document.getElementById('hookAnswer').classList.remove('hidden'); markStage(1);">Hiển thị đáp án</button>
+  <div id="hookAnswer" class="hidden" style="margin-top:14px">
+    <p><strong>CÓ — đây là thế đối mặt xa</strong>. 5 ô giữa = số LẺ. Bên KHÔNG đi giữ
+       thế đối mặt (giống thế đối mặt thường).</p>
+    <p>Khi 2 Vua tiến gần nhau qua các nước, đối mặt xa (5 ô) → đối mặt trung (3 ô) →
+       đối mặt gần (1 ô). Bên giữ thế đối mặt từ đầu sẽ giữ đến cuối nếu chơi đúng.</p>
+  </div>
+</div>
+
+<div class="stage">
+  <span class="stage-label">GIAI ĐOẠN 2 · KHÁI NIỆM</span>
+  <h2 style="margin-top:8px">Quy tắc số ô giữa</h2>
+  <p>Hai Vua cùng cột/hàng/đường chéo, đếm số ô TRỐNG giữa:</p>
+  <ul>
+    <li><strong>1 ô</strong>: Đối mặt gần (thường)</li>
+    <li><strong>3 ô</strong>: Đối mặt trung</li>
+    <li><strong>5 ô</strong>: Đối mặt xa</li>
+    <li><strong>7 ô</strong>: Đối mặt xa (tối đa trên bàn cờ 8x8)</li>
+  </ul>
+  <p>Số LẺ → có thế đối mặt. Số CHẴN → không có thế đối mặt (phản đối mặt).</p>
+  <div id="conceptBoard" class="mini-board"></div>
+  <div class="hook-question" style="background:#f0f7ff; border-left-color:#2c5282; color:#1a3a52">
+    🔑 <strong>Quy luật giữ thế đối mặt</strong>: Khi đối thủ đi 1 ô, bạn cũng đi 1 ô theo cùng
+    phương để giữ số ô lẻ giữa. Đến khi gần (1 ô giữa), bạn giữ thế đối mặt gần.
+  </div>
+</div>
+
+<div class="stage">
+  <span class="stage-label">GIAI ĐOẠN 3 · TƯƠNG TÁC TỪNG BƯỚC</span>
+  <p>Xem 2 Vua tiến gần nhau, thế đối mặt giữ qua các bước.</p>
+  <div class="board-layout">
+    <div>
+      <div id="board"></div>
+      <div class="controls">
+        <button onclick="resetBoard()">⟨⟨ Đầu</button>
+        <button onclick="prevMove()">⟨ Lùi</button>
+        <button onclick="nextMove()">Tiến ⟩</button>
+        <button onclick="goToEnd()">Cuối ⟩⟩</button>
+      </div>
+    </div>
+    <div class="info-panel">
+      <div class="move-display" id="moveDisplay">Thế cờ khởi đầu</div>
+      <div class="commentary" id="commentary">Trắng Kc1 + Đen Kc7. Khoảng cách 6 ô (5 ô giữa). Trắng đến lượt — Đen giữ thế đối mặt xa.</div>
+      <div class="opp-status" id="oppStatus">Đang kiểm tra...</div>
+    </div>
+  </div>
+</div>
+
+<div class="stage">
+  <span class="stage-label">GIAI ĐOẠN 4 · TỰ KIỂM TRA</span>
+  <h2 style="margin-top:8px">Thế cờ: Trắng Kf1, Đen Ke7. Lượt Trắng.</h2>
+  <p>Trắng muốn giành thế đối mặt. Nước nào đúng?</p>
+  <div id="selfTestBoard" class="mini-board"></div>
+  <div class="self-test">
+    <div class="self-test-question">Chọn nước Trắng:</div>
+    <div class="quiz-options" id="selfTestOptions">
+      <button class="quiz-option" onclick="checkSelfTest(this, false, 'Kf2 lên cùng cột f, nhưng Đen ở cột e — không cùng cột. Không có thế đối mặt.')">1.Kf2</button>
+      <button class="quiz-option" onclick="checkSelfTest(this, true, 'Đúng! Ke2 lên cột e (cùng cột với Đen Ke7). 4 ô giữa (e3,e4,e5,e6) → CHẴN → không bên nào có thế đối mặt (phản đối mặt). Trắng đã đi → Đen phải đi tiếp, Đen mất thế đối mặt ở nước sau.')">1.Ke2</button>
+      <button class="quiz-option" onclick="checkSelfTest(this, false, 'Kg2 lệch sang g — không đối diện Đen. Không có thế đối mặt.')">1.Kg2</button>
+    </div>
+    <div class="feedback hidden" id="selfTestFeedback"></div>
+  </div>
+</div>
+
+<div class="stage">
+  <span class="stage-label">GIAI ĐOẠN 5 · TRẮC NGHIỆM NHANH</span>
+  <h2 style="margin-top:8px">3 câu hỏi củng cố</h2>
+  <div class="quiz">
+    <div class="quiz-q">Câu 1. Vua Trắng e1, Vua Đen e8. Có thế đối mặt không? (Đen đến lượt)</div>
+    <div class="quiz-options">
+      <button class="quiz-option" onclick="quizCheck(this, false)">Có — Trắng giữ</button>
+      <button class="quiz-option" onclick="quizCheck(this, true)">Có — Đen đi nên Đen mất, Trắng giữ thế đối mặt xa</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Không có thế đối mặt</button>
+    </div>
+    <div class="quiz-explain hidden">
+      Cùng cột e, ô giữa = e2-e7 = 6 ô. CHẴN → ban đầu không có thế đối mặt. Nhưng khi 1 bên đi (giảm 1 ô → 5 ô lẻ), thế đối mặt xuất hiện và bên KHÔNG đi giữ. Vì Đen đến lượt, sau khi Đen đi → 5 ô giữa, Trắng giữ.
+    </div>
+  </div>
+  <div class="quiz">
+    <div class="quiz-q">Câu 2. Đối mặt xa khác đối mặt gần như thế nào (về mặt chiến thuật)?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" onclick="quizCheck(this, false)">Đối mặt xa mạnh hơn</button>
+      <button class="quiz-option" onclick="quizCheck(this, true)">Đối mặt xa chỉ là tiền đề — quan trọng nhất là khi gần (1 ô) trong tàn cuộc tốt</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Đối mặt xa không có ý nghĩa</button>
+    </div>
+    <div class="quiz-explain hidden">
+      Đối mặt xa báo hiệu sẽ giành đối mặt gần khi hai Vua gặp nhau. Trong tàn cuộc tốt, thế đối mặt ở hàng 6 (Bài 2 Ch1) là quyết định. Đối mặt xa giúp dự đoán ai giành thế đối mặt ở hàng 6.
+    </div>
+  </div>
+  <div class="quiz">
+    <div class="quiz-q">Câu 3. Khi giữ thế đối mặt, bạn nên đi nước thế nào?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" onclick="quizCheck(this, false)">Đi nước bất kỳ</button>
+      <button class="quiz-option" onclick="quizCheck(this, true)">Khớp di chuyển đối thủ — họ +1 ô bên này, bạn +1 ô cùng phía cùng phương</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Lùi 1 ô để tránh xung đột</button>
+    </div>
+    <div class="quiz-explain hidden">
+      Để giữ thế đối mặt, hãy khớp với đối thủ: nếu họ đi sang phải, bạn cũng đi sang phải. Khoảng cách số ô giữa giữ nguyên (lẻ).
+    </div>
+  </div>
+</div>
+
+<div class="summary-card">
+  <h2>📌 Tóm tắt</h2>
+  <ul>
+    <li><strong>Đối mặt xa</strong>: thế đối mặt với 3, 5, 7 ô giữa (số lẻ).</li>
+    <li><strong>Quy tắc</strong>: Bên KHÔNG đi giữ thế đối mặt. Số ô giữa LẺ = có thế đối mặt.</li>
+    <li><strong>Ứng dụng chiến thuật</strong>: Đối mặt xa giúp dự đoán ai sẽ thắng cuộc đua khi hai Vua gặp nhau ở tàn cuộc tốt.</li>
+    <li><strong>Cách giữ thế đối mặt</strong>: Khớp di chuyển đối thủ — họ tiến 1 ô, bạn cũng tiến 1 ô cùng phương.</li>
+  </ul>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chessboard-js/1.0.0/chessboard-1.0.0.min.js"></script>
+<script>
+const START_FEN = '8/2k5/8/8/8/8/8/2K5 w - - 0 1';
+const MOVES = ['Kc2', 'Kc6', 'Kc3', 'Kc5'];
+const COMMENTARY = {
+  0: { move: 'Thế cờ khởi đầu', text: 'Trắng Kc1 + Đen Kc7. 5 ô giữa (c2-c6). Trắng đến lượt → Đen giữ thế đối mặt xa.' },
+  1: { move: '1. Kc2', text: 'Trắng tiến lên c2. Bây giờ 4 ô giữa (c3-c6) — CHẴN, tạm thời không có thế đối mặt. Đen sẽ giành lại bằng cách khớp.' },
+  2: { move: '1... Kc6', text: 'Đen khớp — tiến xuống c6. Số ô giữa lại là 3 (c3,c4,c5) — LẺ → đối mặt trung. Trắng đến lượt → Đen giữ.' },
+  3: { move: '2. Kc3', text: 'Trắng tiến lên c3. 2 ô giữa (c4,c5) — chẵn, không có thế đối mặt.' },
+  4: { move: '2... Kc5', text: 'Đen khớp xuống c5. 1 ô giữa (c4) → ĐỐI MẶT GẦN. Trắng đến lượt → Đen giữ. Về thực chất đã rõ thế cờ.' }
+};
+
+let board, game, currentMove = 0, stagesCompleted = new Set();
+
+function initBoard() {
+  game = new Chess(START_FEN);
+  board = Chessboard('board', { position: START_FEN, draggable: true,
+    pieceTheme: 'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png',
+    onDrop: (s,t) => { const m = game.move({from:s,to:t,promotion:'q'}); if(!m) return 'snapback'; setTimeout(updateOverlays,100); },
+    onSnapEnd: () => { board.position(game.fen()); updateOverlays(); }});
+  updateDisplay();
+}
+function nextMove() { if(currentMove>=MOVES.length) return; game.move(MOVES[currentMove]); board.position(game.fen()); currentMove++; setTimeout(()=>{updateDisplay();updateOverlays();},50); if(currentMove>=MOVES.length) markStage(3); }
+function prevMove() { if(currentMove<=0) return; game.undo(); currentMove--; board.position(game.fen()); setTimeout(()=>{updateDisplay();updateOverlays();},50); }
+function resetBoard() { game = new Chess(START_FEN); board.position(START_FEN); currentMove = 0; setTimeout(()=>{updateDisplay();updateOverlays();},50); }
+function goToEnd() { while(currentMove<MOVES.length){game.move(MOVES[currentMove]);currentMove++;} board.position(game.fen()); setTimeout(()=>{updateDisplay();updateOverlays();},50); }
+
+function findPiece(p) {
+  const fen = game.fen().split(' ')[0]; const ranks = fen.split('/');
+  for (let r=0;r<8;r++) { let f=0; for (const ch of ranks[r]) {
+    if (/\d/.test(ch)) f+=parseInt(ch);
+    else { const w = ch===ch.toUpperCase(), t = ch.toUpperCase();
+      if ((p[0]==='w'&&w&&p[1]===t) || (p[0]==='b'&&!w&&p[1]===t)) return String.fromCharCode(97+f) + (8-r);
+      f++; } } }
+  return null;
+}
+
+function updateDisplay() {
+  const cm = COMMENTARY[currentMove] || COMMENTARY[0];
+  document.getElementById('moveDisplay').textContent = cm.move;
+  document.getElementById('commentary').innerHTML = cm.text;
+  updateOppStatus();
+  updateProgress();
+}
+
+function updateOppStatus() {
+  const wK = findPiece('wK'), bK = findPiece('bK');
+  const status = document.getElementById('oppStatus');
+  if (!wK || !bK) { status.innerHTML = ''; return; }
+  const f1 = wK.charCodeAt(0)-97, r1 = parseInt(wK[1]);
+  const f2 = bK.charCodeAt(0)-97, r2 = parseInt(bK[1]);
+  let between = -1, type = '';
+  if (f1 === f2) { between = Math.abs(r1-r2) - 1; type = 'cùng cột'; }
+  else if (r1 === r2) { between = Math.abs(f1-f2) - 1; type = 'cùng hàng'; }
+  else if (Math.abs(f1-f2) === Math.abs(r1-r2)) { between = Math.abs(f1-f2) - 1; type = 'cùng chéo'; }
+
+  if (between >= 0 && between % 2 === 1) {
+    const turn = game.turn();
+    const holder = turn === 'w' ? 'Đen' : 'Trắng';
+    let label = between === 1 ? 'GẦN' : (between === 3 ? 'TRUNG' : 'XA');
+    status.className = 'opp-status has-opposition';
+    status.innerHTML = '👑 ĐỐI MẶT ' + label + ' (' + type + ', ' + between + ' ô giữa) — <strong>' + holder + ' giữ thế đối mặt</strong>';
+  } else if (between >= 0) {
+    status.className = 'opp-status';
+    status.innerHTML = '— Phản đối mặt (' + between + ' ô giữa, chẵn) —';
+  } else {
+    status.className = 'opp-status';
+    status.innerHTML = '— Vua không cùng cột/hàng/chéo —';
+  }
+}
+
+function updateOverlays() {
+  $('#board .square-55d63').removeClass('highlight-king-blue highlight-key');
+  const wK = findPiece('wK'), bK = findPiece('bK');
+  if (wK) $('#board .square-' + wK).addClass('highlight-king-blue');
+  if (bK) $('#board .square-' + bK).addClass('highlight-king-blue');
+  // Mark squares between if same file
+  if (wK && bK && wK[0] === bK[0]) {
+    const f = wK[0];
+    const r1 = Math.min(parseInt(wK[1]), parseInt(bK[1]));
+    const r2 = Math.max(parseInt(wK[1]), parseInt(bK[1]));
+    for (let r = r1+1; r < r2; r++) $('#board .square-' + f + r).addClass('highlight-key');
+  }
+}
+
+function checkSelfTest(btn, ok, exp) {
+  document.querySelectorAll('#selfTestOptions .quiz-option').forEach(el=>el.disabled=true);
+  btn.classList.add(ok?'correct':'wrong');
+  const fb = document.getElementById('selfTestFeedback');
+  fb.classList.remove('hidden'); fb.className = 'feedback ' + (ok?'correct':'wrong');
+  fb.textContent = (ok?'✓ ':'✗ ') + exp; markStage(4);
+}
+function quizCheck(btn, ok) {
+  const q = btn.closest('.quiz');
+  q.querySelectorAll('.quiz-option').forEach(el=>el.disabled=true);
+  btn.classList.add(ok?'correct':'wrong');
+  if (!ok) q.querySelectorAll('.quiz-option').forEach(el => { if (el.getAttribute('onclick').includes('true')) el.classList.add('correct'); });
+  q.querySelector('.quiz-explain').classList.remove('hidden'); markStage(5);
+}
+function markStage(n) { stagesCompleted.add(n); updateProgress(); }
+function updateProgress() { document.getElementById('progressFill').style.width = (stagesCompleted.size/5*100) + '%'; }
+
+function initMiniBoards() {
+  Chessboard('hookBoard', { position: START_FEN, draggable: false, pieceTheme: 'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png' });
+  Chessboard('conceptBoard', { position: '4k3/8/8/8/8/8/8/4K3 w -

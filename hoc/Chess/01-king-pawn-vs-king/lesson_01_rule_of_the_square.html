@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bài 1 — Quy tắc Hình vuông</title>
+<link rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/chessboard-js/1.0.0/chessboard-1.0.0.min.css">
+<style>
+  * { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    max-width: 980px;
+    margin: 0 auto;
+    padding: 24px;
+    color: #1a1a1a;
+    line-height: 1.6;
+    background: #fafafa;
+  }
+  h1 {
+    color: #1a3a52;
+    font-size: 28px;
+    margin: 0 0 8px;
+  }
+  h2 {
+    color: #2c5282;
+    font-size: 20px;
+    margin: 32px 0 12px;
+    padding-bottom: 6px;
+    border-bottom: 2px solid #e1e8ed;
+  }
+  h3 { color: #2c5282; font-size: 16px; margin: 20px 0 8px; }
+  .source { color: #888; font-size: 13px; margin-bottom: 24px; }
+  .stage {
+    background: white;
+    border-radius: 8px;
+    padding: 20px 24px;
+    margin: 16px 0;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  }
+  .stage-label {
+    display: inline-block;
+    background: #2c5282;
+    color: white;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 12px;
+    margin-bottom: 8px;
+    letter-spacing: 0.5px;
+  }
+  .hook-question {
+    font-size: 17px;
+    color: #1a3a52;
+    background: #fff8e1;
+    border-left: 4px solid #faad14;
+    padding: 14px 18px;
+    border-radius: 0 6px 6px 0;
+    margin: 12px 0;
+  }
+  .reveal-btn {
+    background: #faad14; color: white; border: none;
+    padding: 8px 16px; border-radius: 4px; cursor: pointer;
+    font-size: 14px; font-weight: 500;
+  }
+  .reveal-btn:hover { background: #d48806; }
+  .hidden { display: none; }
+
+  .board-layout {
+    display: grid;
+    grid-template-columns: 440px 1fr;
+    gap: 24px;
+    align-items: start;
+    margin-top: 16px;
+  }
+  @media (max-width: 820px) {
+    .board-layout { grid-template-columns: 1fr; }
+  }
+  .board-col { width: 100%; }
+  #board { width: 420px; max-width: 100%; }
+  .mini-board {
+    width: 300px;
+    max-width: 100%;
+    margin: 14px auto;
+  }
+  .controls {
+    display: flex; flex-wrap: wrap; gap: 6px;
+    margin-top: 12px; justify-content: center;
+  }
+  .controls button {
+    padding: 7px 12px;
+    background: #2c5282;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 13px;
+  }
+  .controls button:hover { background: #1a3a52; }
+  .controls button:disabled { background: #ccc; cursor: not-allowed; }
+  .controls button.toggle-on { background: #52c41a; }
+  .controls button.toggle-on:hover { background: #389e0d; }
+
+  .info-panel {
+    background: #f8f9fb;
+    padding: 16px;
+    border-radius: 6px;
+    border: 1px solid #e1e8ed;
+    min-height: 380px;
+  }
+  .move-display {
+    font-family: "SF Mono", Consolas, monospace;
+    font-size: 16px;
+    color: #2c5282;
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+  .commentary {
+    font-size: 14px;
+    color: #444;
+    margin-bottom: 12px;
+    line-height: 1.55;
+  }
+  .race-counter {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    background: white;
+    padding: 10px;
+    border-radius: 4px;
+    border: 1px solid #e1e8ed;
+    margin: 12px 0;
+    font-size: 13px;
+  }
+  .race-item { text-align: center; }
+  .race-item .label { color: #888; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .race-item .value { font-size: 22px; font-weight: 700; color: #2c5282; }
+  .verdict {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 8px;
+    border-radius: 4px;
+    font-weight: 600;
+    font-size: 13px;
+  }
+  .verdict.white-wins { background: #f6ffed; color: #389e0d; border: 1px solid #b7eb8f; }
+  .verdict.black-draws { background: #fff1f0; color: #cf1322; border: 1px solid #ffa39e; }
+  .verdict.in-square { background: #fff1f0; color: #cf1322; border: 1px solid #ffa39e; }
+
+  /* Square overlay highlights */
+  .highlight-square {
+    background: rgba(255, 215, 0, 0.45) !important;
+    box-shadow: inset 0 0 0 1px rgba(255, 165, 0, 0.6) !important;
+  }
+  .highlight-king-out {
+    box-shadow: inset 0 0 0 4px #cf1322 !important;
+  }
+  .highlight-king-in {
+    box-shadow: inset 0 0 0 4px #389e0d !important;
+  }
+
+  .self-test {
+    background: #fff8e1;
+    border: 2px dashed #faad14;
+    border-radius: 6px;
+    padding: 16px;
+    margin-top: 16px;
+  }
+  .self-test-question {
+    font-weight: 600;
+    color: #874d00;
+    margin-bottom: 8px;
+  }
+  .feedback {
+    margin-top: 10px;
+    padding: 10px 14px;
+    border-radius: 4px;
+    font-size: 14px;
+  }
+  .feedback.correct {
+    background: #f6ffed; color: #389e0d; border-left: 4px solid #52c41a;
+  }
+  .feedback.wrong {
+    background: #fff1f0; color: #cf1322; border-left: 4px solid #ff4d4f;
+  }
+
+  .quiz {
+    background: #f0f7ff;
+    border-left: 4px solid #2c5282;
+    border-radius: 0 6px 6px 0;
+    padding: 14px 18px;
+    margin: 12px 0;
+  }
+  .quiz-q { font-weight: 600; margin-bottom: 10px; color: #1a3a52; }
+  .quiz-options { display: flex; flex-direction: column; gap: 6px; }
+  .quiz-option {
+    padding: 8px 12px;
+    background: white;
+    border: 1px solid #c9d6e2;
+    border-radius: 4px;
+    cursor: pointer;
+    text-align: left;
+    font-size: 14px;
+    transition: all 0.15s;
+  }
+  .quiz-option:hover { background: #f0f7ff; border-color: #2c5282; }
+  .quiz-option.correct { background: #f6ffed; border-color: #52c41a; color: #389e0d; }
+  .quiz-option.wrong { background: #fff1f0; border-color: #ff4d4f; color: #cf1322; }
+  .quiz-explain {
+    margin-top: 8px;
+    font-size: 13px;
+    color: #555;
+    font-style: italic;
+  }
+
+  .summary-card {
+    background: linear-gradient(135deg, #1a3a52, #2c5282);
+    color: white;
+    padding: 20px 24px;
+    border-radius: 8px;
+    margin-top: 24px;
+  }
+  .summary-card h2 {
+    color: white; border: none; margin-top: 0;
+  }
+  .summary-card ul { padding-left: 20px; }
+  .summary-card li { margin: 6px 0; }
+  code {
+    background: #f1f3f5;
+    padding: 1px 6px;
+    border-radius: 3px;
+    font-family: "SF Mono", Consolas, monospace;
+    font-size: 0.9em;
+  }
+  .progress-bar {
+    height: 4px;
+    background: #e1e8ed;
+    border-radius: 2px;
+    overflow: hidden;
+    margin: 8px 0 16px;
+  }
+  .progress-fill {
+    height: 100%;
+    background: #52c41a;
+    transition: width 0.3s;
+    width: 0%;
+  }
+</style>
+</head>
+<body>
+
+<h1>Bài 1 — Quy tắc Hình vuông</h1>
+<div class="source">
+  Nguồn: <em>100 Endgames You Must Know</em> — Chương 1, Thế cờ 1.1<br>
+  Giai đoạn: Tàn cuộc · Chủ đề: Vua + tốt đấu Vua · Trình độ: Nền tảng
+</div>
+
+<div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+
+<!-- ────────── STAGE 1: HOOK ────────── -->
+<div class="stage">
+  <span class="stage-label">GIAI ĐOẠN 1 · DẪN NHẬP</span>
+  <h2 style="margin-top:8px">Câu hỏi mở</h2>
+  <p>Thế cờ dưới đây: Trắng chỉ có tốt ở <code>a2</code> + Vua ở <code>h1</code> (góc xa).
+     Đen chỉ có Vua ở <code>f8</code>. Đến lượt Trắng đi.</p>
+
+  <div id="hookBoard" class="mini-board"></div>
+
+  <div class="hook-question">
+    🤔 <strong>Bạn nghĩ thế nào?</strong> Con tốt này có phong cấp (lên Hậu) thành công không,
+    hay Vua đen sẽ kịp bắt nó? Đếm thử trong đầu cần bao nhiêu nước để tốt đến a8 so với Vua đen đến a8.
+  </div>
+  <button class="reveal-btn" onclick="document.getElementById('hookAnswer').classList.remove('hidden'); markStage(1);">
+    Hiển thị câu trả lời
+  </button>
+  <div id="hookAnswer" class="hidden" style="margin-top:14px">
+    <p><strong>Đáp án:</strong> Tốt cần 5 nước Trắng để phong cấp (a2→a4→a5→a6→a7→a8, vì 1.a4 đẩy 2 ô).
+       Vua đen từ f8 đến a8 cần ít nhất 5 nước (f8→e7→d7→c7→b7→a8).
+       Cuộc đua sát nút — nhưng <strong>Trắng thắng</strong> vì Trắng đi trước (lợi nửa nhịp).
+       Có cách nào trả lời câu này <em>mà không cần đếm</em> không? Có — đó là Quy tắc Hình vuông.</p>
+  </div>
+</div>
+
+<!-- ────────── STAGE 2: CONCEPT REVEAL ────────── -->
+<div class="stage">
+  <span class="stage-label">GIAI ĐOẠN 2 · KHÁI NIỆM</span>
+  <h2 style="margin-top:8px">Quy tắc Hình vuông là gì?</h2>
+  <p>Vẽ một <strong>hình vuông tưởng tượng</strong> trên bàn cờ:</p>
+  <ul>
+    <li>Một góc là <strong>vị trí hiện tại của tốt</strong></li>
+    <li>Cạnh hình vuông trải dài đến <strong>hàng phong cấp</strong> (hàng 8 với tốt Trắng)</li>
+    <li>Hai cạnh còn lại trải về phía Vua đối thủ</li>
+  </ul>
+
+  <p style="margin-top:18px"><strong>Ví dụ:</strong> Tốt ở <code>a4</code>. Hình vuông cạnh 5
+     (hàng 4 đến hàng 8 = 5 hàng). Trải về cột e — vậy hình vuông là
+     <code>a4-e4-e8-a8</code>. Bên dưới là minh họa:</p>
+
+  <div id="conceptBoard" class="mini-board"></div>
+  <p style="text-align:center;font-size:13px;color:#666;margin-top:6px">
+     Ô vàng = hình vuông. Vua đen ở <code>f8</code> viền đỏ vì NẰM NGOÀI hình vuông (cột f &gt; cột e).
+  </p>
+
+  <div class="hook-question" style="background:#f0f7ff; border-left-color:#2c5282; color:#1a3a52">
+    📐 <strong>Quy tắc:</strong> Nếu Vua đối thủ <em>có thể bước vào trong hình vuông</em> bằng nước đi của nó,
+    tốt sẽ bị bắt. Nếu <em>không vào kịp</em>, tốt phong cấp.
+  </div>
+  <p>Ở giai đoạn tiếp theo, bạn sẽ thấy hình vuông được vẽ động — <strong>thu nhỏ lại sau mỗi nước
+     đẩy tốt</strong> — và bạn có thể tự kéo quân để thử nghiệm.</p>
+</div>
+
+<!-- ────────── STAGE 3: INTERACTIVE WALKTHROUGH ────────── -->
+<div class="stage">
+  <span class="stage-label">GIAI ĐOẠN 3 · TƯƠNG TÁC TỪNG BƯỚC</span>
+  <h2 style="margin-top:8px">Đi từng nước, có bình luận</h2>
+  <p>Bấm <strong>Tiến</strong> để xem từng nước. Mỗi nước có bình luận tự động.
+     Bật <strong>📐 Hình vuông</strong> để thấy hình vuông được vẽ trên bàn cờ.</p>
+
+  <div class="board-layout">
+    <div class="board-col">
+      <div id="board"></div>
+      <div class="controls">
+        <button onclick="resetBoard()">⟨⟨ Đầu</button>
+        <button onclick="prevMove()">⟨ Lùi</button>
+        <button onclick="nextMove()">Tiến ⟩</button>
+        <button onclick="goToEnd()">Cuối ⟩⟩</button>
+        <button onclick="flipBoard()">↕ Lật</button>
+      </div>
+      <div class="controls">
+        <button id="toggleSquareBtn" onclick="toggleSquareOverlay()">📐 Hình vuông: TẮT</button>
+        <button id="toggleRaceBtn" onclick="toggleRaceCounter()" class="toggle-on">⏱ Bộ đếm đua: BẬT</button>
+      </div>
+    </div>
+
+    <div class="info-panel">
+      <div class="move-display" id="moveDisplay">Thế cờ khởi đầu</div>
+      <div class="commentary" id="commentary">
+        Trắng có tốt a2 + Vua h1. Đen có Vua f8. Trắng đi trước.
+        <br><br>
+        Bấm <strong>Tiến ⟩</strong> để bắt đầu.
+      </div>
+      <div class="race-counter" id="raceCounter">
+        <div class="race-item">
+          <div class="label">Tốt còn</div>
+          <div class="value" id="pawnDist">6</div>
+          <div style="font-size:11px;color:#888">nước để phong cấp</div>
+        </div>
+        <div class="race-item">
+          <div class="label">Vua đen còn</div>
+          <div class="value" id="kingDist">5</div>
+          <div style="font-size:11px;color:#888">nước để chặn</div>
+        </div>
+        <div class="verdict" id="verdict">Trắng đi trước → có lợi thế về nhịp</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ────────── STAGE 4: SELF-TEST ────────── -->
+<div class="stage">
+  <span class="stage-label">GIAI ĐOẠN 4 · TỰ KIỂM TRA</span>
+  <h2 style="margin-top:8px">Bạn dự đoán nước tiếp theo</h2>
+  <p>Sau 1.a4 Kf7 2.a5 Ke6 3.a6 — đến lượt Đen. Đen phải đi nước nào để
+     <strong>cố gắng tốt nhất</strong> chặn con tốt?</p>
+  <div class="self-test">
+    <div class="self-test-question">Chọn nước Đen tốt nhất:</div>
+    <div class="quiz-options" id="selfTestOptions">
+      <button class="quiz-option" onclick="checkSelfTest(this, false, 'Vua đi xa con tốt hơn — sai hướng. Tốt ở a6, Vua phải tiến về cột a.')">3...Kf6 (lùi ra xa)</button>
+      <button class="quiz-option" onclick="checkSelfTest(this, true, 'Đúng! Đen phải đưa Vua tới gần con tốt càng nhiều càng tốt. Kd6 là nước rút ngắn khoảng cách tối ưu — vẫn chưa đủ vì hình vuông a6-c6-c8-a8 rất nhỏ và Vua ở d6 nằm ngoài.')">3...Kd6 (tiến gần con tốt)</button>
+      <button class="quiz-option" onclick="checkSelfTest(this, false, 'Kc7 đẹp về vị trí cuối nhưng để vào được c7 cần nhiều nước — Đen không có thời gian. Tốt nhất là tiến từng bước.')">3...Kc7 (vào ô lý tưởng)</button>
+      <button class="quiz-option" onclick="checkSelfTest(this, false, 'Đen không có cách nào hòa — đáp án này sai về dữ kiện.')">Đen thực ra có thể hòa nếu chơi đúng</button>
+    </div>
+    <div class="feedback hidden" id="selfTestFeedback"></div>
+  </div>
+</div>
+
+<!-- ────────── STAGE 5: MINI-QUIZ ────────── -->
+<div class="stage">
+  <span class="stage-label">GIAI ĐOẠN 5 · TRẮC NGHIỆM NHANH</span>
+  <h2 style="margin-top:8px">3 câu hỏi củng cố</h2>
+
+  <div class="quiz">
+    <div class="quiz-q">Câu 1. Tốt Trắng ở <code>c5</code>, Vua đen ở <code>g6</code>. Đến lượt Đen. Hình vuông là gì?</div>
+    <div id="q1Board" class="mini-board" style="width:240px"></div>
+    <div class="quiz-options">
+      <button class="quiz-option" onclick="quizCheck(this, true)">c5-c8-f8-f5 (cạnh 4 ô)</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">c5-c8-g8-g5 (cạnh 5 ô)</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">c5-c8-h8-h5 (cạnh 6 ô)</button>
+    </div>
+    <div class="quiz-explain hidden">
+      Tốt ở c5 cần 3 nước để đến c8. Cạnh hình vuông = 3+1 = <strong>4 ô</strong>
+      (gồm cả ô của tốt và ô phong cấp). Từ c, mở rộng 3 cột về phía Vua đen → c,d,e,f.
+      Vậy hình vuông là <code>c5-c8-f8-f5</code>. Vua đen ở g6 ban đầu nằm ngoài hình vuông
+      (cột g &gt; cột f), nhưng <strong>đang đến lượt Đen</strong> — Đen đi Kf6 vào hình vuông
+      → bắt được con tốt. Hòa.
+    </div>
+  </div>
+
+  <div class="quiz">
+    <div class="quiz-q">Câu 2. Khi nào Quy tắc Hình vuông <strong>KHÔNG</strong> áp dụng được?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" onclick="quizCheck(this, false)">Khi là tốt biên (cột a hoặc h)</button>
+      <button class="quiz-option" onclick="quizCheck(this, true)">Khi Vua phe mạnh chặn ngay con tốt của chính mình hoặc khi có quân khác cản đường Vua đen</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Khi tốt còn ở hàng 2</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Khi đến lượt phe yếu</button>
+    </div>
+    <div class="quiz-explain hidden">
+      Quy tắc chỉ tính cuộc đua thuần túy. Nếu có quân cản đường Vua, hoặc Vua phe mạnh đứng cản
+      ngay con tốt của chính mình, quy tắc cho kết quả sai. Ngoài ra quy tắc vẫn áp dụng đúng cho mọi
+      con tốt kể cả tốt biên — chỉ là tốt biên có thêm khả năng hòa do hết nước (pat) trong
+      vài thế khác.
+    </div>
+  </div>
+
+  <div class="quiz">
+    <div class="quiz-q">Câu 3. Mẹo nhanh: cách dễ nhất để biết kích thước hình vuông là gì?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" onclick="quizCheck(this, false)">Đếm số ô từ con tốt đến góc bàn cờ</button>
+      <button class="quiz-option" onclick="quizCheck(this, true)">Đếm số hàng từ con tốt đến hàng phong cấp (gồm cả 2 hàng) — đó là cạnh hình vuông</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Cạnh luôn bằng 5 ô</button>
+    </div>
+    <div class="quiz-explain hidden">
+      Tốt Trắng ở hàng R, phong cấp ở hàng 8. Cạnh = 8 - R + 1 = 9 - R.
+      Ví dụ hàng 4 → cạnh 5, hàng 5 → cạnh 4, hàng 6 → cạnh 3, hàng 7 → cạnh 2.
+    </div>
+  </div>
+</div>
+
+<!-- ────────── SUMMARY CARD ────────── -->
+<div class="summary-card">
+  <h2>📌 Tóm tắt</h2>
+  <ul>
+    <li><strong>Quy tắc Hình vuông</strong>: Vẽ hình vuông từ con tốt đến hàng phong cấp.
+        Vua trong hình vuông → bắt được tốt. Vua ngoài → tốt phong cấp.</li>
+    <li><strong>Cạnh hình vuông</strong> = số hàng từ con tốt đến hàng 8 (tính cả 2 đầu).</li>
+    <li><strong>Nhịp rất quan trọng</strong>: bên đi trước có lợi thế nửa nước trong cuộc đua.</li>
+    <li><strong>Lưu ý</strong>: quy tắc chỉ tính cuộc đua; nếu có quân cản hoặc Vua mình
+        chặn đường, phải tính tay từng nước.</li>
+  </ul>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chessboard-js/1.0.0/chessboard-1.0.0.min.js"></script>
+
+<script>
+// ──────────────────────────────────────────────────────────────────
+// LESSON DATA — Position 1.1, "Rule of the Square"
+// ──────────────────────────────────────────────────────────────────
+const START_FEN = '5k2/8/8/8/8/8/P7/7K w - - 0 1';
+const MOVES = ['a4', 'Kf7', 'a5', 'Ke6', 'a6', 'Kd6', 'a7', 'Kc7', 'a8=Q'];
+
+const COMMENTARY = {
+  0: {
+    move: 'Thế cờ khởi đầu',
+    text: 'Trắng có tốt a2 + Vua h1 (xa, không hỗ trợ). Đen có Vua f8. ' +
+          'Con tốt phải tự đến a8 một mình. Đến lượt Trắng đi.'
+  },
+  1: {
+    move: '1. a4 !',
+    text: 'Trắng đẩy tốt 2 ô. Đây là nước nhanh nhất — và quan trọng hơn, ' +
+          'tạo ra hình vuông a4-e4-e8-a8. Vua đen ở f8 nằm NGOÀI cột e ' +
+          '→ ngoài hình vuông. Bật "📐 Hình vuông" để xem trực quan.'
+  },
+  2: {
+    move: '1... Kf7',
+    text: 'Vua đen tiến gần. Nhưng đã muộn 1 nhịp: Trắng đẩy tốt xong, ' +
+          'mới đến lượt Đen đi. Khi Vua đến f7, hình vuông sắp thu lại.'
+  },
+  3: {
+    move: '2. a5',
+    text: 'Hình vuông thu thành a5-d5-d8-a8 (4×4). Vua đen ở f7 — ' +
+          'cột f vẫn ngoài cột d. Cuộc đua vẫn nghiêng về Trắng.'
+  },
+  4: {
+    move: '2... Ke6',
+    text: 'Vua đen lùi về cột e. Vẫn ngoài hình vuông a5-d5-d8-a8.'
+  },
+  5: {
+    move: '3. a6',
+    text: 'Hình vuông a6-c6-c8-a8 (3×3). Vua đen ở e6 — ngoài cột c, vẫn ở ngoài.'
+  },
+  6: {
+    move: '3... Kd6',
+    text: 'Vua đen lùi sang cột d. SẮP vào hình vuông. Nhưng đang đến lượt Trắng.'
+  },
+  7: {
+    move: '4. a7',
+    text: 'Hình vuông a7-b7-b8-a8 (2×2). Vua đen ở d6 — cột d > cột b. ' +
+          'Cuộc đua kết thúc: con tốt chỉ còn 1 nước.'
+  },
+  8: {
+    move: '4... Kc7',
+    text: 'Nước cuối tuyệt vọng. Vua đen sát con tốt, nhưng không kịp.'
+  },
+  9: {
+    move: '5. a8=Q  1-0',
+    text: 'Tốt phong cấp thành Hậu! Vua đen ở c7 không thể ngăn. ' +
+          'Trắng có Hậu + Vua đấu Vua → tàn cuộc thắng cơ bản. Ván cờ kết thúc.'
+  }
+};
+
+// ──────────────────────────────────────────────────────────────────
+// STATE
+// ──────────────────────────────────────────────────────────────────
+let board, game, currentMove = 0;
+let showSquareOverlay = false;
+let showRaceCounter = true;
+let stagesCompleted = new Set();
+
+// ──────────────────────────────────────────────────────────────────
+// BOARD INIT
+// ──────────────────────────────────────────────────────────────────
+function initBoard() {
+  game = new Chess(START_FEN);
+  board = Chessboard('board', {
+    position: START_FEN,
+    draggable: true,
+    pieceTheme: 'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png',
+    onDrop: handleDrop,
+    onSnapEnd: () => {
+      board.position(game.fen());
+      updateOverlays();
+    }
+  });
+  updateDisplay();
+}
+
+function handleDrop(source, target) {
+  const move = game.move({ from: source, to: target, promotion: 'q' });
+  if (move === null) return 'snapback';
+  // free-play mode — không advance currentMove vì user khám phá tự do
+  setTimeout(updateOverlays, 100);
+}
+
+function nextMove() {
+  if (currentMove >= MOVES.length) return;
+  const result = game.move(MOVES[currentMove]);
+  if (result === null) {
+    console.error('Invalid move:', MOVES[currentMove]);
+    return;
+  }
+  board.position(game.fen());
+  currentMove++;
+  setTimeout(() => { updateDisplay(); updateOverlays(); }, 50);
+}
+
+function prevMove() {
+  if (currentMove <= 0) return;
+  game.undo();
+  currentMove--;
+  board.position(game.fen());
+  setTimeout(() => { updateDisplay(); updateOverlays(); }, 50);
+}
+
+function resetBoard() {
+  game = new Chess(START_FEN);
+  board.position(START_FEN);
+  currentMove = 0;
+  setTimeout(() => { updateDisplay(); updateOverlays(); }, 50);
+}
+
+function goToEnd() {
+  while (currentMove < MOVES.length) {
+    game.move(MOVES[currentMove]);
+    currentMove++;
+  }
+  board.position(game.fen());
+  setTimeout(() => { updateDisplay(); updateOverlays(); }, 50);
+}
+
+function flipBoard() { board.flip(); setTimeout(updateOverlays, 100); }
+
+// ──────────────────────────────────────────────────────────────────
+// COMMENTARY + RACE COUNTER
+// ──────────────────────────────────────────────────────────────────
+function updateDisplay() {
+  const cm = COMMENTARY[currentMove] || COMMENTARY[0];
+  document.getElementById('moveDisplay').textContent = cm.move;
+  document.getElementById('commentary').innerHTML = cm.text;
+  updateRaceCounter();
+  updateProgress();
+  if (currentMove >= 5) markStage(3);
+  if (currentMove === MOVES.length) markStage(3);
+}
+
+function findPiece(piece) {
+  // piece: 'wP', 'bK', etc.
+  const fen = game.fen().split(' ')[0];
+  const ranks = fen.split('/');
+  for (let r = 0; r < 8; r++) {
+    let file = 0;
+    for (const ch of ranks[r]) {
+      if (/\d/.test(ch)) file += parseInt(ch);
+      else {
+        const isWhite = ch === ch.toUpperCase();
+        const type = ch.toUpperCase();
+        if ((piece[0] === 'w' && isWhite && piece[1] === type) ||
+            (piece[0] === 'b' && !isWhite && piece[1] === type)) {
+          return String.fromCharCode(97 + file) + (8 - r);
+        }
+        file++;
+      }
+    }
+  }
+  return null;
+}
+
+function updateRaceCounter() {
+  const pawnSq = findPiece('wP');
+  const kingSq = findPiece('bK');
+
+  if (!pawnSq) {
+    // Pawn promoted
+    document.getElementById('pawnDist').textContent = '✓';
+    document.getElementById('kingDist').textContent = '—';
+    const v = document.getElementById('verdict');
+    v.className = 'verdict white-wins';
+    v.textContent = 'Tốt đã phong cấp → Trắng thắng';
+    return;
+  }
+
+  const pawnRank = parseInt(pawnSq[1]);
+  const pawnDist = 8 - pawnRank;
+
+  // Black king Chebyshev distance to a8
+  const kingFile = kingSq.charCodeAt(0) - 97;
+  const kingRank = parseInt(kingSq[1]);
+  const kingDistA8 = Math.max(Math.abs(kingFile - 0), Math.abs(kingRank - 8));
+
+  // Check if king is in the square
+  const sqSize = pawnDist + 1;
+  const inSquare = (kingFile >= 0 && kingFile <= 0 + sqSize - 1) &&
+                   (kingRank >= pawnRank && kingRank <= 8);
+
+  document.getElementById('pawnDist').textContent = pawnDist;
+  document.getElementById('kingDist').textContent = kingDistA8;
+
+  const v = document.getElementById('verdict');
+  if (inSquare) {
+    v.className = 'verdict in-square';
+    v.textContent = 'Vua đen TRONG hình vuông → có thể bắt tốt';
+  } else {
+    v.className = 'verdict white-wins';
+    v.textContent = 'Vua đen NGOÀI hình vuông → tốt sẽ phong cấp';
+  }
+}
+
+// ──────────────────────────────────────────────────────────────────
+// SQUARE OVERLAY
+// ──────────────────────────────────────────────────────────────────
+function getSquareCoords() {
+  const pawnSq = findPiece('wP');
+  if (!pawnSq) return [];
+  const file = pawnSq.charCodeAt(0) - 97;
+  const rank = parseInt(pawnSq[1]);
+  const distance = 8 - rank;
+  const size = distance + 1;
+  const squares = [];
+  for (let r = rank; r <= 8; r++) {
+    for (let f = file; f < file + size && f <= 7; f++) {
+      squares.push(String.fromCharCode(97 + f) + r);
+    }
+  }
+  return squares;
+}
+
+function updateOverlays() {
+  // Clear all highlights
+  $('#board .square-55d63').removeClass('highlight-square highlight-king-out highlight-king-in');
+
+  if (showSquareOverlay) {
+    const squares = getSquareCoords();
+    squares.forEach(sq => {
+      $('#board .square-' + sq).addClass('highlight-square');
+    });
+
+    // Highlight black king with its status
+    const kingSq = findPiece('bK');
+    if (kingSq) {
+      const inSquare = squares.includes(kingSq);
+      $('#board .square-' + kingSq).addClass(inSquare ? 'highlight-king-in' : 'highlight-king-out');
+    }
+  }
+}
+
+function toggleSquareOverlay() {
+  showSquareOverlay = !showSquareOverlay;
+  const btn = document.getElementById('toggleSquareBtn');
+  btn.textContent = '📐 Hình vuông: ' + (showSquareOverlay ? 'BẬT' : 'TẮT');
+  btn.className = showSquareOverlay ? 'toggle-on' : '';
+  updateOverlays();
+}
+
+function toggleRaceCounter() {
+  showRaceCounter = !showRaceCounter;
+  const btn = document.getElementById('toggleRaceBtn');
+  btn.textContent = '⏱ Bộ đếm đua: ' + (showRaceCounter ? 'BẬT' : 'TẮT');
+  btn.className = showRaceCounter ? 'toggle-on' : '';
+  document.getElementById('raceCounter').style.display = showRaceCounter ? 'grid' : 'none';
+}
+
+// ──────────────────────────────────────────────────────────────────
+// SELF-TEST
+// ──────────────────────────────────────────────────────────────────
+function checkSelfTest(btn, isCorrect, explanation) {
+  // Disable all options
+  document.querySelectorAll('#selfTestOptions .quiz-option').forEach(el => el.disabled = true);
+  btn.classList.add(isCorrect ? 'correct' : 'wrong');
+
+  const fb = document.getElementById('selfTestFeedback');
+  fb.classList.remove('hidden');
+  fb.className = 'feedback ' + (isCorrect ? 'correct' : 'wrong');
+  fb.textContent = (isCorrect ? '✓ Đúng. ' : '✗ Sai. ') + explanation;
+  markStage(4);
+}
+
+// ──────────────────────────────────────────────────────────────────
+// MINI-QUIZ
+// ──────────────────────────────────────────────────────────────────
+function quizCheck(btn, isCorrect) {
+  const quiz = btn.closest('.quiz');
+  quiz.querySelectorAll('.quiz-option').forEach(el => el.disabled = true);
+  btn.classList.add(isCorrect ? 'correct' : 'wrong');
+  if (!isCorrect) {
+    quiz.querySelectorAll('.quiz-option').forEach(el => {
+      if (el.getAttribute('onclick').includes('true')) el.classList.add('correct');
+    });
+  }
+  quiz.querySelector('.quiz-explain').classList.remove('hidden');
+  markStage(5);
+}
+
+// ──────────────────────────────────────────────────────────────────
+// PROGRESS TRACKING
+// ──────────────────────────────────────────────────────────────────
+function markStage(n) {
+  stagesCompleted.add(n);
+  updateProgress();
+}
+
+function updateProgress() {
+  const total = 5;
+  const done = stagesCompleted.size;
+  document.getElementById('progressFill').style.width = (done / total * 100) + '%';
+}
+
+// ──────────────────────────────────────────────────────────────────
+// GO
+// ──────────────────────────────────────────────────────────────────
+// ──────────────────────────────────────────────────────────────────
+// MINI BOARDS (Stage 1 hook + Stage 2 concept example)
+// ──────────────────────────────────────────────────────────────────
+function initMiniBoards() {
+  // Stage 1: starting position, no controls, no drag
+  Chessboard('hookBoard', {
+    position: START_FEN,
+    draggable: false,
+    pieceTheme: 'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png'
+  });
+
+  // Stage 2: pawn at a4 to demo "the square"
+  const conceptFEN = '5k2/8/8/8/P7/8/8/7K w - - 0 1';
+  Chessboard('conceptBoard', {
+    position: conceptFEN,
+    draggable: false,
+    pieceTheme: 'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png'
+  });
+
+  // Q1 quiz: pawn c5 + black king g6, white king h1
+  const q1FEN = '8/8/6k1/2P5/8/8/8/7K b - - 0 1';
+  Chessboard('q1Board', {
+    position: q1FEN,
+    draggable: false,
+    pieceTheme: 'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png'
+  });
+
+  // Highlight square a4-e4-e8-a8 + king f8 with red border
+  setTimeout(() => {
+    const squares = [];
+    for (

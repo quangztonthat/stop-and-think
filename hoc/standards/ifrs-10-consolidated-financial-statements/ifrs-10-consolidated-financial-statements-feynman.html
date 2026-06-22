@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="vi"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IFRS 10 Consolidated Financial Statements — Hiểu sâu theo Feynman</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,500&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  /* Design tokens shared with ebook-to-study-html (styles_v2.css) */
+  :root{
+    --bg:#fafaf7; --bg-elevated:#ffffff; --bg-soft:#f3f3ee;
+    --border:#e0e0d8; --border-soft:#ececea; --border-strong:#d2c8b6;
+    --ink:#1a1a1f; --ink-soft:#3f3f4a; --muted:#7a7a85;
+    --accent:#b8860b; --accent-2:#8b6508; --gold:#a07c1f; --gap:#8b6508;
+    --serif:"Fraunces",Georgia,"Iowan Old Style",serif;
+    --sans:"Geist",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    --mono:"Geist Mono","JetBrains Mono",Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:var(--sans);
+    font-size:19px;line-height:1.72;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}
+  .progress{position:fixed;top:0;left:0;height:3px;width:0;z-index:50;
+    background:linear-gradient(90deg,var(--gold),var(--accent));transition:width .08s linear}
+  .wrap{max-width:920px;margin:0 auto;padding:0 36px}
+  .rise{opacity:0;transform:translateY(14px);animation:rise .7s cubic-bezier(.2,.7,.3,1) forwards}
+  @keyframes rise{to{opacity:1;transform:none}}
+
+  header{padding:104px 0 60px;border-bottom:1px solid var(--border)}
+  .kicker{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.18em;
+    text-transform:uppercase;color:var(--accent);margin-bottom:26px}
+  h1{font-family:var(--serif);font-weight:600;font-size:clamp(42px,7.6vw,72px);
+    line-height:1.0;letter-spacing:-.022em;margin-bottom:28px;font-optical-sizing:auto;color:var(--ink)}
+  h1 em{font-style:italic;color:var(--accent)}
+  .core{font-family:var(--serif);font-style:italic;font-weight:400;
+    font-size:clamp(21px,3.6vw,27px);line-height:1.44;color:var(--ink-soft)}
+  .core span{font-style:normal;font-weight:600;color:var(--accent-2);
+    box-shadow:inset 0 -.5em 0 rgba(184,134,11,.16)}
+
+  /* ---- BƯỚC 0: ANCHOR (state the rule + plan before explaining) ---- */
+  .anchor .rule{font-family:var(--serif);font-size:19px;line-height:1.5;color:var(--ink);
+    background:var(--bg-soft);border-left:3px solid var(--accent);
+    padding:18px 24px;border-radius:0 4px 4px 0;margin:0}
+  .anchor .rule em{font-style:italic;color:var(--accent-2)}
+  .anchor .rule strong{color:var(--ink);font-weight:600}
+  .anchor .approach{color:var(--ink-soft)}
+
+  section{padding:72px 0;border-bottom:1px solid var(--border);position:relative}
+  .step-head{display:flex;align-items:flex-start;gap:22px;margin-bottom:34px}
+  .big-num{font-family:var(--serif);font-weight:700;font-size:62px;line-height:.8;
+    color:var(--border-strong);flex:none;font-optical-sizing:auto;letter-spacing:-.03em}
+  .step-meta{padding-top:4px}
+  .lbl{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--accent);display:block;margin-bottom:10px}
+  h2{font-family:var(--serif);font-weight:600;font-size:clamp(27px,4.4vw,37px);
+    line-height:1.12;letter-spacing:-.012em;color:var(--ink)}
+  h2 em{font-style:italic;color:var(--accent)}
+  p{margin-bottom:21px}
+  p:last-child{margin-bottom:0}
+  strong{font-weight:600;color:var(--ink)}
+  em{font-style:italic;color:var(--accent-2)}
+  .gloss{color:var(--muted);font-style:italic}
+
+  .lead::first-letter{font-family:var(--serif);font-weight:700;float:left;
+    font-size:74px;line-height:.74;padding:8px 12px 0 0;color:var(--accent)}
+
+  .sub{font-family:var(--serif);font-weight:600;font-size:17px;letter-spacing:.01em;
+    color:var(--ink);margin:34px 0 14px;display:flex;align-items:center;gap:11px}
+  .sub::before{content:"";width:18px;height:2px;background:var(--accent);flex:none;border-radius:2px}
+
+  .gaps{background:var(--bg-soft)}
+  .gaps .big-num{color:#e2d6b4}
+  .gaps .lbl{color:var(--gap)}
+  .gap-q{margin:0 0 30px;padding-left:24px;border-left:2px solid var(--border-strong)}
+  .gap-q:last-child{margin-bottom:0}
+  .gap-q .q{font-family:var(--serif);font-style:italic;font-weight:500;
+    font-size:22px;line-height:1.35;color:var(--gap);margin-bottom:12px;display:block}
+  .gap-q p:last-child{margin-bottom:0}
+
+  .analogy-card{border:1px solid #e8c876;border-radius:4px;padding:30px 32px;margin:8px 0 28px;
+    background:linear-gradient(135deg,#fef9ed 0%,#fdf3e0 100%)}
+  .analogy-card .tag{font-family:var(--mono);font-weight:600;font-size:11px;
+    letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin-bottom:16px;display:block}
+  .analogy-card p{color:#5a4810}
+  .analogy-card strong{color:var(--accent-2)}
+  .limit{font-size:17px;line-height:1.6;color:#5a4810;
+    border-top:1px solid #e8c876;padding-top:20px;margin-top:22px}
+  .limit b{color:var(--accent-2);font-weight:600;font-family:var(--serif)}
+
+  .retell{background:linear-gradient(180deg,var(--bg-soft) 0%,var(--bg) 100%);border-bottom:none}
+  .retell h2{color:var(--ink)}
+  .retell strong{color:var(--accent-2)}
+  .retell .core{margin-top:6px}
+  .testbox{border:1px solid var(--border);background:var(--bg-elevated);
+    border-radius:4px;padding:28px 32px;margin-top:40px;box-shadow:0 1px 2px rgba(0,0,0,.03)}
+  .testbox h3{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--accent);margin-bottom:20px}
+  .testbox ol{margin:0;padding-left:22px;counter-reset:t}
+  .testbox li{margin-bottom:16px;color:var(--ink-soft);padding-left:6px}
+  .testbox li:last-child{margin-bottom:0}
+
+  footer{text-align:center;padding:60px 0 88px}
+  footer .mark{font-family:var(--serif);font-weight:700;color:var(--accent);
+    font-size:26px;display:block;margin-bottom:14px}
+  footer p{font-family:var(--serif);font-style:italic;color:var(--muted);font-size:17px;max-width:380px;margin:0 auto}
+
+  @media(max-width:560px){
+    body{font-size:18px}
+    header{padding:70px 0 44px}
+    section{padding:52px 0}
+    .step-head{gap:16px}
+    .big-num{font-size:46px}
+    .lead::first-letter{font-size:60px}
+  }
+</style>
+<style>
+ .tabbar{position:fixed;top:0;left:0;right:0;width:100%;box-sizing:border-box;z-index:40;background:rgba(250,250,247,.93);
+   backdrop-filter:saturate(1.1) blur(8px);-webkit-backdrop-filter:saturate(1.1) blur(8px);
+   border-bottom:1px solid var(--border);display:flex;gap:6px;overflow-x:auto;
+   padding:10px max(36px,calc((100% - 992px)/2));scrollbar-width:thin}
+ .tabbar .tab{flex:0 0 auto;display:flex;align-items:baseline;gap:9px;cursor:pointer;
+   background:transparent;border:1px solid transparent;border-radius:999px;
+   padding:8px 17px;transition:.15s;white-space:nowrap;color:var(--muted)}
+ .tabbar .tab:hover{color:var(--ink);background:var(--bg-soft)}
+ .tabbar .tab.active{color:var(--accent-2);background:var(--bg-soft);border-color:var(--border-strong)}
+ .tabbar .tn{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.1em;color:var(--accent)}
+ .tabbar .tl{font-family:var(--serif);font-weight:500;font-size:16px}
+ body{padding-top:56px} .concept-panel{display:none}
+ .concept-panel.active{display:block}
+ .concept-panel header{padding-top:50px}
+ @media(max-width:560px){.tabbar .tl{max-width:48vw;overflow:hidden;text-overflow:ellipsis}}
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+<nav class="tabbar" aria-label="Các khái niệm"><button class="tab" data-i="0"><span class="tn">01</span><span class="tl">Quyền + lợi ≠ kiểm soát</span></button><button class="tab" data-i="1"><span class="tn">02</span><span class="tl">Dưới 50% vẫn nắm quyền</span></button><button class="tab" data-i="2"><span class="tn">03</span><span class="tl">Quyền chọn = phiếu (nếu thực chất)</span></button><button class="tab" data-i="3"><span class="tn">04</span><span class="tl">Quyền thực chất vs bảo vệ</span></button><button class="tab" data-i="4"><span class="tn">05</span><span class="tl">Silo — hợp nhất nửa công ty</span></button><button class="tab" data-i="5"><span class="tn">06</span><span class="tl">Kiểm soát mà không hợp nhất</span></button><button class="tab" data-i="6"><span class="tn">07</span><span class="tl">Lãi trên phần không bán</span></button><button class="tab" data-i="7"><span class="tn">08</span><span class="tl">Bán mà không ghi lãi</span></button></nav>
+<div class="concept-panel" id="c-quyen-loi-van-khong-kiem-soat"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Giải thích theo phương pháp Feynman</div>
+    <h1 class="rise" style="animation-delay:.08s">Cầm vô-lăng mà xe không phải của mình</h1>
+    <p class="core rise" style="animation-delay:.16s">Có quyền chỉ đạo, lại có ăn chia — <span>bạn vẫn không kiểm soát nếu đang lái giùm người khác.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Điều cần hiểu &amp; cách tiếp cận</span><h2>Quy tắc: phải dùng được quyền vì lợi của chính mình</h2></div>
+    </div>
+    <div class="rule">IFRS 10 đoạn 7: kiểm soát cần đủ <strong>ba</strong> thứ — <em>power</em> (quyền lực), chịu <em>variable returns</em> (lợi nhuận biến đổi), và khả năng <strong>dùng quyền lực để tác động tới lợi nhuận của chính mình</strong> (đoạn 17 — mối liên kết). Đoạn 18 &amp; B58: một bên ra quyết định chỉ là <em>agent</em> (đại diện) thì không kiểm soát. B65: nếu <strong>một</strong> bên có thể bãi nhiệm bạn bất cứ lúc nào mà không cần lý do, bạn là đại diện.</div>
+    <div class="sub">Cách giải thích</div>
+    <div class="approach"><p>Chỗ vấp: có quyền chỉ đạo, lại có tiền thay đổi theo kết quả — nghe như kiểm soát rồi. Nhưng vẫn thiếu một mắt xích. Cách làm: hình dung một tài xế lái thuê. Anh ta cầm vô-lăng, được tip theo cuốc, nhưng lái xe của khách, tới nơi khách bảo.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Giải thích đơn giản</span><h2>Cầm vô-lăng chưa chắc là chủ xe</h2></div>
+    </div>
+    <p class='lead'>Một tài xế lái thuê cầm vô-lăng cả ngày. Anh ta chọn rẽ trái hay phải, đi nhanh hay chậm. Anh ta còn được tip nhiều ít tùy cuốc. Vậy chiếc xe là của anh ta? Không. Anh ta lái giùm người ngồi sau, tới chỗ người đó muốn. Và người đó đuổi anh ta lúc nào cũng được.</p>
+<div class='sub'>Ba thứ phải có cùng lúc</div>
+<p>Kiểm soát cần ba mảnh ghép. Một: có quyền chỉ đạo. Hai: chịu lời lỗ thay đổi theo kết quả. Ba: dùng được quyền đó <strong>vì lợi của chính mình</strong>. Tài xế có hai mảnh đầu. Anh ta thiếu mảnh thứ ba.</p>
+<div class='sub'>Vì sao tài xế thiếu mảnh thứ ba</div>
+<p>Anh ta lái vì khách, không vì mình. Khách bảo đi đâu thì đi đó. Khách thấy không ưng là đổi tài xế khác ngay. Quyền trong tay anh ta là quyền <strong>mượn</strong> — dùng cho người khác, trả lại bất cứ lúc nào.</p>
+<div class='sub'>Ai mới là chủ</div>
+<p>Người ngồi sau. Họ hưởng chuyến đi, chịu tiền xăng, và đuổi được tài xế. Trong một quỹ đầu tư, người ngồi sau là nhà đầu tư có thể sa thải người quản lý. Người quản lý dù toàn quyền mua bán vẫn chỉ là tài xế.</p>
+  </section>
+
+  <section class="gaps">
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Chỗ vấp · Lỗ hổng</span><h2>Nghe xuôi mà nghĩ kỹ chưa thông</h2></div>
+    </div>
+    <div class="gap-q"><span class="q">Tài xế tự quyết đường đi mà — sao quyền không phải của anh ta?</span><p>Vì anh ta quyết vì lợi của khách, không vì mình. Quyền lực ở đây phải dùng được cho chính người nắm. Lái giùm người khác thì quyền đó là của người thuê, dù tay ai cầm vô-lăng.</p></div>
+<div class="gap-q"><span class="q">Tip của tài xế cũng đổi theo cuốc — thế là lợi nhuận biến đổi rồi, sao chưa đủ?</span><p>Đúng, đó là mảnh thứ hai. Nhưng ba mảnh phải có <strong>cùng lúc</strong>. Thiếu mắt xích dùng quyền vì mình là rớt. Có lương biến đổi mà vẫn lái giùm người khác thì vẫn là người làm thuê.</p></div>
+<div class="gap-q"><span class="q">Làm sao biết ai lái giùm, ai lái cho mình?</span><p>Dấu hiệu mạnh nhất: ai đuổi được ai. Nếu một bên duy nhất sa thải bạn lúc nào cũng được, không cần lý do, thì bạn đang lái giùm họ (B65). Bị đuổi dễ dàng nghĩa là quyền đó không phải của bạn.</p></div>
+<div class="gap-q"><span class="q">Lằn ranh vì mình và vì người khác nhiều khi mờ — chuẩn mực làm sao?</span><p>Chuẩn mực thừa nhận điều này. Nó không cho một lằn ranh cứng. Thay vào đó, nó bắt cân bốn thứ: phạm vi quyền, ai đuổi được mình, thù lao lớn hay nhỏ, và mình bỏ vốn vào bao nhiêu. Càng nhiều vốn riêng và càng khó bị đuổi, càng giống chủ thật.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví von &amp; ví dụ đời thường</span><h2>Neo vào người tài xế</h2></div>
+    </div>
+    <div class="analogy-card"><span class="tag">Ví dụ trung tâm</span>
+<p>Quay lại người tài xế lái thuê. Cầm vô-lăng là quyền, được tip theo cuốc là lợi biến đổi. Nhưng anh ta lái xe của khách, tới nơi khách muốn, và bị đuổi lúc nào cũng được. Anh ta là <strong>đại diện</strong>. Chủ thật là người ngồi sau: hưởng chuyến đi và sa thải được tài xế.</p>
+<p class="limit"><b>Chỗ ví von này hỏng:</b> tài xế taxi rõ ràng là người làm thuê. Đời thật mờ hơn: nhiều người quản lý quỹ <strong>tự bỏ vốn lớn</strong> vào quỹ và gần như không ai đuổi nổi. Lúc đó họ vừa lái vừa là chủ, và có thể thành bên chính (<em>principal</em>) — tức người kiểm soát. Vì vậy phải cân bốn yếu tố, không chỉ nhìn cái ghế lái.</p>
+</div>
+<p>Gần đời hơn: bạn nhờ một người bạn giữ giùm tủ bếp, cho họ tự quyết mua gì nấu gì, trả công theo bữa. Họ vẫn nấu theo ý bạn và bị bạn thôi nhờ bất cứ lúc nào. Tủ bếp là của bạn. Nhưng nếu họ góp nửa tiền chợ và bạn không đuổi được, ranh giới bắt đầu nhòa.</p>
+<div class="sub">Nâng một bậc — bốn yếu tố cân principal/agent</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. B60 cân bốn yếu tố để tách <em>principal</em> (bên chính) khỏi <em>agent</em> (đại diện): (1) phạm vi quyền ra quyết định; (2) quyền của bên khác, nhất là <em>removal rights</em> (quyền bãi nhiệm); (3) thù lao; (4) rủi ro từ lợi ích vốn khác. B65 cho một lối tắt: một bên duy nhất bãi nhiệm vô điều kiện thì chắc chắn là agent.</p>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">4</div>
+      <div class="step-meta"><span class="lbl">Kể lại gọn gàng</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Kiểm soát cần ba thứ cùng lúc: có quyền chỉ đạo, chịu lời lỗ thay đổi, và dùng được quyền đó <strong>vì chính mình</strong>. Người lái thuê có hai thứ đầu nhưng thiếu thứ ba — anh ta lái giùm khách và bị đuổi được, nên không kiểm soát. Muốn biết ai là chủ thật, hỏi: ai đuổi được ai, và ai bỏ vốn lớn vào.</p>
+<p class="core">Có quyền chỉ đạo, lại có ăn chia — <span>bạn vẫn không kiểm soát nếu đang lái giùm người khác.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã hiểu chưa?</h3>
+      <ol>
+        <li>Một người quản lý quỹ toàn quyền mua bán nhưng bị một nhà đầu tư sa thải bất cứ lúc nào. Anh ta có kiểm soát quỹ không, vì sao?</li>
+        <li>Ba mảnh ghép của kiểm soát là gì, và mảnh nào người lái thuê còn thiếu?</li>
+        <li>Khi nào một tài xế bắt đầu trở thành chủ xe trong mắt IFRS 10?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nếu giải thích được cho bà ngoại hiểu, bạn mới thật sự hiểu.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-de-facto-control"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Giải thích theo phương pháp Feynman</div>
+    <h1 class="rise" style="animation-delay:.08s">45% mà thắng, 49% lại có thể thua</h1>
+    <p class="core rise" style="animation-delay:.16s">Số phiếu không quyết định một mình — <span>điều quan trọng là phần của bạn có lớn hơn hẳn đám còn lại hay không.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Điều cần hiểu &amp; cách tiếp cận</span><h2>Quy tắc: dưới đa số vẫn có quyền nếu chỉ đạo được đơn phương</h2></div>
+    </div>
+    <div class="rule">IFRS 10 B41–B45: một nhà đầu tư nắm <strong>dưới một nửa</strong> quyền biểu quyết vẫn có <em>power</em> nếu có <strong>khả năng thực tế chỉ đạo đơn phương</strong> các hoạt động quan trọng (gọi là <em>de facto control</em>). B42: cân quy mô phần của mình so với mức phân tán của các cổ đông khác, quyền biểu quyết tiềm năng, và các sự kiện khác. B46: cân hết mà vẫn không rõ thì kết luận KHÔNG kiểm soát.</div>
+    <div class="sub">Cách giải thích</div>
+    <div class="approach"><p>Chỗ vấp: 45% nhỏ hơn 50% mà vẫn kiểm soát, nghe vô lý. Cách làm: hình dung một lớp học bỏ phiếu. Một bạn nắm 13 phiếu, đám còn lại mỗi người một phiếu rời rạc. Điều quyết định không phải con số 45, mà là phía bên kia có gom thành khối hay không.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Giải thích đơn giản</span><h2>Một người lớn giữa một đám đông tản mác</h2></div>
+    </div>
+    <p class='lead'>Một lớp 30 bạn bầu đi đâu chơi. Bạn nắm 13 phiếu (45%). 17 phiếu còn lại chia cho 17 bạn, mỗi người một phiếu, chẳng ai rủ nhau bỏ chung. Mỗi lần bầu, 17 bạn kia tản ra mỗi người một ý. Khối 13 phiếu của bạn gần như luôn thắng. Bạn nắm quyền, dù chưa tới một nửa.</p>
+<div class='sub'>Vì sao 45% lại đủ</div>
+<p>Vì con số một nửa chỉ quan trọng khi phía bên kia <strong>gom được</strong> thành một khối. Ở đây họ không gom. 17 người mỗi người một phiếu, rời rạc, nên khối 13 của bạn là tảng đá lớn nhất. Không ai một mình cản nổi.</p>
+<div class='sub'>Khi nào 45% lại thua</div>
+<p>Đổi tình huống. Bạn vẫn 45%, nhưng một bạn khác nắm 40% gọn trong tay, 15% còn lại lác đác. Giờ có một khối lớn đối diện. Hai khối phải đấu nhau. Bạn không còn chỉ đạo một mình được. 45% lúc này có thể thua.</p>
+<div class='sub'>Nguyên tắc thật sự</div>
+<p>Đếm phiếu của bạn là chưa đủ. Phải nhìn phiếu của bạn <strong>so với</strong> mức tản mác của người khác. Lớn hơn hẳn một đám rời rạc thì bạn nắm quyền. Đối mặt một khối lớn thì chưa chắc.</p>
+  </section>
+
+  <section class="gaps">
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Chỗ vấp · Lỗ hổng</span><h2>Nghe xuôi mà nghĩ kỹ chưa thông</h2></div>
+    </div>
+    <div class="gap-q"><span class="q">Cũng là 45% — sao khi thì thắng, khi thì thua?</span><p>Điều quyết định không phải con số 45. Mà là phần còn lại có gom thành khối hay không. Đối thủ tản mác thì 45% là tảng lớn nhất. Đối thủ là một khối 40% thì bạn phải đấu, và có thể thua.</p></div>
+<div class="gap-q"><span class="q">Đám đông kia cứ tản mác mãi sao? Lỡ họ rủ nhau bỏ chung thì sao?</span><p>Đúng, đó là rủi ro thật. Nếu họ có thỏa thuận gom phiếu, khối của bạn hết là lớn nhất. IFRS 10 bắt xét cả khả năng đó, và cả mô thức bỏ phiếu của các kỳ trước (B42).</p></div>
+<div class="gap-q"><span class="q">Nếu cân hết mà vẫn không rõ thì kết luận sao?</span><p>B46 trả lời dứt khoát: KHÔNG kiểm soát. De facto đòi bằng chứng tích cực rằng bạn chỉ đạo được đơn phương. Chỉ nghi ngờ thôi là chưa đủ.</p></div>
+<div class="gap-q"><span class="q">Vậy có con số ranh giới nào không — 40%, hay 45%?</span><p>Không có ngưỡng cứng. Cùng một mức 45% có thể là kiểm soát, cũng có thể không, tùy phía bên kia tản hay gom. Đây là chỗ phải xét đoán, không tra bảng số.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví von &amp; ví dụ đời thường</span><h2>Neo vào lớp học bỏ phiếu</h2></div>
+    </div>
+    <div class="analogy-card"><span class="tag">Ví dụ trung tâm</span>
+<p>Khối 13 phiếu của bạn giữa 17 bạn rời rạc. Bạn là tảng đá lớn nhất, gần như luôn thắng. Đó là kiểm soát thực tế, dù chưa tới một nửa. Nhưng đặt một khối 40% gọn ghẽ đối diện, thế trận đổi ngay. Cùng 45%, hai cảnh hai số phận.</p>
+<p class="limit"><b>Chỗ ví von này hỏng:</b> lớp học giả định mỗi bạn bỏ phiếu độc lập, lần nào cũng vậy. Cổ đông thật có thể <strong>ký thỏa thuận bỏ phiếu chung</strong>, hoặc một khối lớn bất ngờ hình thành. Lúc đó tảng đá 45% hết là lớn nhất. Ngoài ra còn quyền mua thêm phiếu (<em>potential voting rights</em>) có thể đổi cả cuộc đếm.</p>
+</div>
+<p>Gần đời hơn: cuộc họp chung cư 100 căn. Bạn sở hữu 30 căn, 70 căn còn lại của 70 chủ khác nhau, ít ai đi họp đều. Thực tế bạn quyết phần lớn việc chung. Nhưng nếu 40 căn cùng một tập đoàn mua gom, bạn không còn một mình quyết được.</p>
+<div class="sub">Nâng một bậc — bốn yếu tố B42</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. B42 cân bốn thứ khi phần phiếu dưới đa số: (a) quy mô phần của mình so với quy mô và độ phân tán của bên khác; (b) <em>potential voting rights</em> của mình và của bên khác; (c) quyền từ các thỏa thuận hợp đồng khác; (d) các sự kiện và hoàn cảnh khác, như mô thức bỏ phiếu kỳ trước. Ví dụ kinh điển B44: 48% giữa hàng nghìn cổ đông dưới 1% là kiểm soát thực tế.</p>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">4</div>
+      <div class="step-meta"><span class="lbl">Kể lại gọn gàng</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Quyền không nằm ở con số phiếu, mà ở việc phần của bạn có lớn hơn hẳn đám còn lại hay không. 45% giữa một biển cổ đông tí hon là tảng đá lớn nhất, nên bạn nắm quyền. Cũng 45% nhưng đối diện một khối 40% gọn ghẽ thì phải đấu, và có thể thua. Cân không rõ thì coi như không kiểm soát.</p>
+<p class="core">Số phiếu không quyết định một mình — <span>phần của bạn có lớn hơn hẳn đám còn lại hay không mới là điều quyết định.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã hiểu chưa?</h3>
+      <ol>
+        <li>Bạn nắm 45%. Trường hợp nào bạn kiểm soát, trường hợp nào không? Khác nhau ở đâu?</li>
+        <li>Vì sao một biển cổ đông tí hon lại làm cho 45% trở nên đủ để nắm quyền?</li>
+        <li>Cân hết bốn yếu tố mà vẫn không rõ ai chỉ đạo được — IFRS 10 bảo kết luận thế nào?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nếu giải thích được cho bà ngoại hiểu, bạn mới thật sự hiểu.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-quyen-bieu-quyet-tiem-nang"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Giải thích theo phương pháp Feynman</div>
+    <h1 class="rise" style="animation-delay:.08s">Chưa mua cổ phần đã có quyền</h1>
+    <p class="core rise" style="animation-delay:.16s">Một quyền chọn chưa thực hiện có thể cho bạn quyền lực ngay, <span>còn một quyền chọn hợp pháp nhưng vô lý thì bị bỏ qua như không có.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Điều cần hiểu &amp; cách tiếp cận</span><h2>Quy tắc: quyền tiềm năng tính nếu THỰC CHẤT, không tính nếu chỉ trên giấy</h2></div>
+    </div>
+    <div class="rule">IFRS 10 B47: khi đánh giá kiểm soát, nhà đầu tư xét cả <em>potential voting rights</em> (quyền biểu quyết tiềm năng) như quyền chọn hay công cụ chuyển đổi — <strong>nhưng chỉ khi chúng thực chất</strong>. B22–B23: một quyền là <em>substantive</em> (thực chất) nếu người nắm có khả năng thực tế thực hiện đúng lúc cần ra quyết định. B50: quyền tiềm năng thực chất, riêng hay kết hợp, có thể đem lại quyền lực ngay, trước cả khi thực hiện.</div>
+    <div class="sub">Cách giải thích</div>
+    <div class="approach"><p>Chỗ vấp kép: chưa mua sao đã có quyền? mà sao quyền hợp pháp lại bị bỏ qua? Cách làm: hình dung một tấm vé được mua nhà hàng xóm trước theo giá chốt sẵn. Giá chốt hợp lý thì coi như bạn đã nắm nhà. Giá chốt trên trời thì coi như tấm vé không tồn tại.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Giải thích đơn giản</span><h2>Tấm vé mua trước — có khi quý, có khi rác</h2></div>
+    </div>
+    <p class='lead'>Bạn cầm một tấm vé: được quyền mua căn nhà hàng xóm bất cứ lúc nào, với giá đã chốt sẵn. Bạn chưa mua, chưa trả đồng nào. Tấm vé này có cho bạn tiếng nói với căn nhà đó không? Còn tùy. Nếu giá chốt là giá hợp lý và bạn mua được ngay khi cần, hàng xóm phải nể bạn. Vì bạn có thể thành chủ bất cứ lúc nào.</p>
+<div class='sub'>Khi tấm vé thành rác</div>
+<p>Đổi điều kiện. Giá chốt trên vé cao gấp ba giá thị trường. Bạn sẽ không bao giờ thực hiện, vì mua theo giá đó là lỗ nặng. Tấm vé tuy hợp pháp nhưng <strong>chẳng ai dùng</strong>. Nó như không tồn tại. Hàng xóm chẳng cần nể.</p>
+<div class='sub'>Vì sao quyền chưa dùng đã có sức nặng</div>
+<p>Vì sức nặng nằm ở <strong>khả năng thực hiện</strong>, không ở việc đã thực hiện. Một quyền chọn thực chất là con dao luôn kề bên. Người kia biết bạn rút ra lúc nào cũng được, nên hành xử như thể bạn đã là chủ. Quyền lực đến từ cái có thể, không cần cái đã làm.</p>
+<div class='sub'>Thước đo: người tỉnh táo có làm không</div>
+<p>Cách thử: một người tỉnh táo có thực hiện quyền này đúng lúc cần ra quyết định không? Giá hợp lý, rào cản thấp, đúng thời điểm thì có, nên tính như phiếu thật. Giá vô lý, rào cản cao, sai thời điểm thì không, nên bỏ qua. Đây là xét đoán, không phải lằn ranh cứng.</p>
+  </section>
+
+  <section class="gaps">
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Chỗ vấp · Lỗ hổng</span><h2>Nghe xuôi mà nghĩ kỹ chưa thông</h2></div>
+    </div>
+    <div class="gap-q"><span class="q">Chưa mua cổ phần sao đã có quyền lực?</span><p>Vì quyền lực dựa trên khả năng hiện tại, không phải hành động đã làm. Một quyền chọn thực chất cho bạn khả năng giành đa số bất cứ lúc nào. Người khác phải tính tới điều đó, nên bạn chi phối ngay cả khi chưa bấm nút.</p></div>
+<div class="gap-q"><span class="q">Sao một quyền chọn hợp pháp lại bị bỏ qua?</span><p>Vì hợp pháp không bằng thực chất. Giá thực hiện quá cao khiến không ai sáng suốt thực hiện. Quyền chỉ tồn tại trên giấy thì không cho sức nặng thật. IFRS 10 chỉ tính quyền dùng được, không tính quyền hình thức (B22–B23).</p></div>
+<div class="gap-q"><span class="q">Quyền chỉ thực hiện được sau 5 năm — có tính bây giờ không?</span><p>Thường không. Quyền phải thực hiện được <strong>đúng lúc</strong> các quyết định quan trọng cần đưa ra (B24). Một quyền chỉ mở khóa nhiều năm sau không giúp bạn chỉ đạo hôm nay, nên không cho quyền lực hôm nay.</p></div>
+<div class="gap-q"><span class="q">Vậy đâu là điểm giá đủ thấp để tính?</span><p>Không có con số cố định. Đủ hấp dẫn để một người lý trí thực hiện là xét đoán theo hoàn cảnh: giá, rào cản, thời điểm, lợi ích. Cùng một quyền chọn, hai thẩm định viên có thể cân khác nhau. Đây là vùng xám có chủ ý của chuẩn mực.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví von &amp; ví dụ đời thường</span><h2>Neo vào tấm vé mua nhà hàng xóm</h2></div>
+    </div>
+    <div class="analogy-card"><span class="tag">Ví dụ trung tâm</span>
+<p>Tấm vé cho bạn mua nhà hàng xóm theo giá chốt sẵn. Giá chốt hợp lý, mua được ngay: hàng xóm nể bạn như thể bạn đã là chủ, dù bạn chưa trả đồng nào. Giá chốt cao gấp ba thị trường: tấm vé thành rác, chẳng ai dùng, coi như không có. Cùng một tấm vé, hai số phận, chỉ khác cái giá.</p>
+<p class="limit"><b>Chỗ ví von này hỏng:</b> tấm vé mua nhà là chuyện một-đối-một, chỉ so giá chốt với giá thị trường. Quyền tiềm năng thật phức tạp hơn: phải xét chung với <strong>phiếu bạn đang có</strong>, và cả quyền tiềm năng của <em>người khác</em> nữa (B47–B49). Thực chất không chỉ là giá rẻ, còn là rào cản, thời điểm, ai được lợi. Tấm vé chỉ kể một nửa câu chuyện.</p>
+</div>
+<p>Gần đời hơn bằng số: nhà đầu tư nắm 40% phiếu, cộng một quyền chọn mua thêm 20% phiếu, thực hiện được ngay với giá hợp lý. Quyền chọn đó là thực chất, nên xét chung với 40% hiện có. Tổng lại có thể đủ cho quyền lực, dù 20% kia chưa hề được mua.</p>
+<div class="sub">Nâng một bậc — xét chung, không xét rời</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. B22–B23 đặt phép thử <em>substantive</em>: có rào cản (giá, phạt, pháp lý) không, và quyền có thực hiện được đúng lúc các quyết định liên quan cần đưa ra không. B47–B49: xét quyền tiềm năng <strong>cùng với</strong> quyền biểu quyết hiện có và quyền của bên khác, không xét rời từng cái. B48: cân nhắc cả mục đích và thiết kế của công cụ, cùng kỳ vọng khi nhà đầu tư đồng ý điều khoản.</p>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">4</div>
+      <div class="step-meta"><span class="lbl">Kể lại gọn gàng</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Một quyền chọn chưa thực hiện vẫn cho sức nặng, nếu nó thực chất: giá hợp lý, dùng được ngay khi cần. Người kia biết bạn rút ra lúc nào cũng được, nên nể bạn như chủ. Nhưng một quyền chọn giá trên trời thì hợp pháp mà vô dụng, bị bỏ qua như không có. Thước đo là khả năng thực hiện, không phải tờ giấy.</p>
+<p class="core">Một quyền chọn chưa thực hiện có thể cho bạn quyền lực ngay, <span>sức nặng nằm ở khả năng thực hiện đúng lúc, không ở việc đã thực hiện hay ở tờ giấy.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã hiểu chưa?</h3>
+      <ol>
+        <li>Vì sao một quyền chọn chưa thực hiện đã có thể cho nhà đầu tư quyền lực ngay bây giờ?</li>
+        <li>Hai quyền chọn cùng hợp pháp: một giá hợp lý dùng được ngay, một giá cao gấp ba thị trường. Cái nào tính khi đánh giá quyền lực, vì sao?</li>
+        <li>Vì sao một quyền chỉ mở khóa sau 5 năm thường không cho quyền lực hôm nay?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nếu giải thích được cho bà ngoại hiểu, bạn mới thật sự hiểu.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-thuc-chat-vs-bao-ve"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Giải thích theo phương pháp Feynman</div>
+    <h1 class="rise" style="animation-delay:.08s">Cùng là quyền phủ quyết, hai số phận</h1>
+    <p class="core rise" style="animation-delay:.16s">Một quyền phủ quyết có thể là tất cả, hoặc chẳng là gì — <span>tùy nó chặn việc kiếm tiền hằng ngày hay chỉ chặn chuyện hệ trọng hiếm hoi.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Điều cần hiểu &amp; cách tiếp cận</span><h2>Quy tắc: chỉ quyền THỰC CHẤT mới tạo quyền lực</h2></div>
+    </div>
+    <div class="rule">IFRS 10 B22: khi đánh giá <em>power</em>, chỉ xét các <strong>quyền thực chất</strong> (<em>substantive rights</em>) — quyền mà người nắm có khả năng thực tế thực hiện đúng lúc cần. B26–B28: <strong>quyền bảo vệ</strong> (<em>protective rights</em>) chỉ bảo vệ lợi ích người nắm, chỉ liên quan thay đổi căn bản hoặc tình huống ngoại lệ, và KHÔNG tạo quyền lực. Đoạn 14: ai chỉ nắm quyền bảo vệ thì không có quyền lực.</div>
+    <div class="sub">Cách giải thích</div>
+    <div class="approach"><p>Chỗ vấp: cùng gọi là quyền phủ quyết, mà cái thì là kiểm soát, cái thì không. Cách làm: hình dung một chủ nhà cho thuê. Ông có quyền nói không với người thuê. Nhưng có hai kiểu nói không rất khác nhau — một để giữ căn nhà, một để cầm lái cái quán.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Giải thích đơn giản</span><h2>Hai loại được phép nói không</h2></div>
+    </div>
+    <p class='lead'>Bạn thuê một căn nhà mở quán. Chủ nhà có quyền nói không với vài việc của bạn. Nhưng có hai kiểu không rất khác nhau. Kiểu một: không được đập tường, không được biến nhà thành xưởng. Kiểu hai: mỗi sáng phải hỏi tôi nhập bao nhiêu hàng, bán giá nào. Cùng là quyền nói không, nhưng một cái để giữ nhà, một cái để cầm lái cái quán.</p>
+<div class='sub'>Quyền bảo vệ — chỉ chặn chuyện lớn hiếm hoi</div>
+<p>Kiểu một là quyền bảo vệ. Nó chỉ bật lên khi bạn định làm chuyện <strong>căn bản</strong>: phá nhà, đổi công năng. Ngày thường nó nằm im. Nó giữ tài sản cho chủ nhà, chứ không cho ông điều hành quán của bạn. Quán vẫn là của bạn.</p>
+<div class='sub'>Quyền thực chất — chạm vào việc hằng ngày</div>
+<p>Kiểu hai khác hẳn. Nó chạm vào <strong>việc lái lợi nhuận hằng ngày</strong>: nhập hàng, đặt giá. Ai nắm cái đó thì cầm lái cái quán. Đó là quyền thực chất — quyền tạo ra kiểm soát.</p>
+<div class='sub'>Phép thử một câu</div>
+<p>Hỏi: quyền này chặn <strong>việc kiếm tiền hằng ngày</strong>, hay chỉ chặn <strong>chuyện hệ trọng hiếm khi xảy ra</strong>? Chặn việc hằng ngày là thực chất. Chỉ chặn chuyện lớn hiếm hoi là bảo vệ.</p>
+  </section>
+
+  <section class="gaps">
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Chỗ vấp · Lỗ hổng</span><h2>Nghe xuôi mà nghĩ kỹ chưa thông</h2></div>
+    </div>
+    <div class="gap-q"><span class="q">Phủ quyết là phủ quyết — sao cái này tính, cái kia không?</span><p>Vì hai cái chặn hai loại việc khác nhau. Chặn việc lái lợi nhuận hằng ngày là cầm lái. Chặn việc phá nhà chỉ là giữ tài sản. Quyền lực nghĩa là chỉ đạo hoạt động quan trọng, không phải chỉ ngăn người khác làm bậy.</p></div>
+<div class="gap-q"><span class="q">Quyền bảo vệ nghe cũng mạnh mà — sao bảo nó không cho quyền lực?</span><p>Mạnh, nhưng theo chiều phòng thủ. Nó chỉ nói không với chuyện lớn, không nói làm thế này với việc thường ngày. Ví dụ B28: chủ nợ được thu giữ tài sản khi vỡ nợ — quyền đó chỉ bật khi vỡ nợ, một tình huống ngoại lệ.</p></div>
+<div class="gap-q"><span class="q">Một quyền chọn mua thêm cổ phần — thực chất hay không?</span><p>Tùy có thực hiện được không. Nếu giá mua quá cao, gần như không ai mua, thì quyền đó chỉ nằm trên giấy — không thực chất (B22–B23). Quyền thực chất phải dùng được đúng lúc cần ra quyết định.</p></div>
+<div class="gap-q"><span class="q">Ranh giới việc hằng ngày và chuyện căn bản có luôn rõ không?</span><p>Không phải lúc nào cũng rõ. Có quyền nằm giữa, phải xét đoán. Nhưng câu hỏi neo luôn là: nó có cho khả năng chỉ đạo hoạt động lái lợi nhuận không. Nếu chỉ bật trong tình huống ngoại lệ, nó nghiêng về bảo vệ.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví von &amp; ví dụ đời thường</span><h2>Neo vào chủ nhà và người thuê</h2></div>
+    </div>
+    <div class="analogy-card"><span class="tag">Ví dụ trung tâm</span>
+<p>Chủ nhà cấm bạn đập tường, đổi nhà thành xưởng: quyền bảo vệ, chỉ giữ căn nhà. Quán vẫn của bạn. Nhưng nếu mỗi sáng ông quyết bạn nhập gì, bán giá nào, thì ông cầm lái cái quán: quyền thực chất. Cùng là nói không, một cái giữ nhà, một cái nắm quán.</p>
+<p class="limit"><b>Chỗ ví von này hỏng:</b> chủ nhà với người thuê tách bạch rõ. Đời thật có quyền nằm <strong>giữa hai vùng</strong> — ví dụ quyền duyệt ngân sách năm. Duyệt ngân sách vận hành thì chạm việc hằng ngày (nghiêng thực chất); duyệt phát hành thêm cổ phần thì chỉ là chống pha loãng (bảo vệ). Lúc đó phải xét từng quyền, không gắn nhãn theo tên gọi phủ quyết.</p>
+</div>
+<p>Gần đời hơn: hợp đồng nhượng quyền (franchise). Bên nhượng quyền cấm bạn đổi logo, đổi công thức — đó là giữ thương hiệu, quyền bảo vệ. Nhưng họ không quyết bạn thuê ai, bán giá nào, mở mấy giờ. Việc lái lợi nhuận hằng ngày nằm ở bạn, nên bên nhượng quyền không kiểm soát quán của bạn.</p>
+<div class="sub">Nâng một bậc — khi nào quyền là thực chất</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. B22–B24 đặt hai phép thử cho <em>substantive rights</em>: (1) có rào cản nào ngăn thực hiện không (phạt, giá thực hiện quá cao, thiếu cơ chế, rào pháp lý)? (2) quyền có thực hiện được <strong>đúng lúc</strong> các quyết định cần đưa ra không? B28 liệt kê ví dụ <em>protective rights</em>: chủ nợ hạn chế hoạt động làm tăng rủi ro tín dụng, hay thu giữ tài sản khi vỡ nợ.</p>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">4</div>
+      <div class="step-meta"><span class="lbl">Kể lại gọn gàng</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Không phải quyền phủ quyết nào cũng là quyền lực. Hỏi nó chặn cái gì. Chặn việc kiếm tiền hằng ngày — nhập hàng, đặt giá — thì người nắm đang cầm lái: quyền thực chất. Chỉ chặn chuyện căn bản hiếm hoi như phá nhà, đổi công năng thì chỉ là giữ tài sản: quyền bảo vệ, không cho quyền lực.</p>
+<p class="core">Một quyền phủ quyết có thể là tất cả, hoặc chẳng là gì — <span>chặn việc kiếm tiền hằng ngày là thực chất; chỉ chặn chuyện lớn hiếm hoi là bảo vệ.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã hiểu chưa?</h3>
+      <ol>
+        <li>Một cổ đông được phủ quyết việc công ty đổi loại hình pháp lý. Quyền đó cho anh ta kiểm soát không, vì sao?</li>
+        <li>Phép thử một câu để tách quyền thực chất khỏi quyền bảo vệ là gì?</li>
+        <li>Vì sao một quyền chọn mua cổ phần với giá quá cao lại không được tính khi đánh giá quyền lực?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nếu giải thích được cho bà ngoại hiểu, bạn mới thật sự hiểu.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-silo-don-vi-rieng-biet-gia-dinh"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Giải thích theo phương pháp Feynman</div>
+    <h1 class="rise" style="animation-delay:.08s">Hợp nhất nửa công ty kiểu gì?</h1>
+    <p class="core rise" style="animation-delay:.16s">Đôi khi bạn không hợp nhất cả công ty, <span>mà chỉ hợp nhất đúng một mảng được khoanh vùng kín bên trong nó.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Điều cần hiểu &amp; cách tiếp cận</span><h2>Quy tắc: coi một phần khoanh vùng như một đơn vị riêng (silo)</h2></div>
+    </div>
+    <div class="rule">IFRS 10 B76–B77: nhà đầu tư coi <strong>một phần</strong> của đơn vị nhận đầu tư như một <em>deemed separate entity</em> (đơn vị riêng biệt giả định, hay silo) <strong>khi và chỉ khi</strong> một nhóm tài sản xác định là <strong>nguồn duy nhất</strong> trả cho một nhóm nợ xác định, và phần còn lại của đơn vị không có quyền hay nghĩa vụ gì với nhóm tài sản và dòng tiền đó. B79: nếu nhà đầu tư kiểm soát silo thì hợp nhất <strong>riêng silo đó</strong>, không phải cả đơn vị.</div>
+    <div class="sub">Cách giải thích</div>
+    <div class="approach"><p>Chỗ vấp: hợp nhất một phần của công ty, không phải cả công ty, nghe vô lý. Cách làm: hình dung một tòa nhà cho thuê, trong đó tầng 3 bị khoanh riêng. Tiền thuê tầng 3 chỉ để trả khoản vay của riêng tầng 3, khóa kín khỏi phần còn lại. Tầng 3 như một cái hộp khóa bên trong tòa nhà.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Giải thích đơn giản</span><h2>Một tòa nhà có ngăn khóa kín</h2></div>
+    </div>
+    <p class='lead'>Hình dung một tòa nhà cho thuê. Bình thường tiền thuê cả tòa gom chung, trả nợ chung. Nhưng tòa này khác. Tầng 3 được <strong>khoanh riêng</strong>: tiền thuê tầng 3 chỉ dùng trả đúng khoản vay mua tầng 3, không đụng phần còn lại. Và phần còn lại của tòa cũng không được với tay vào tiền tầng 3. Tầng 3 như một cái hộp khóa kín bên trong tòa nhà.</p>
+<div class='sub'>Cái hộp khóa kín là gì</div>
+<p>Đó là silo. Một nhóm tài sản, tức tầng 3 và tiền thuê của nó, là <strong>nguồn duy nhất</strong> trả cho một nhóm nợ, tức khoản vay tầng 3. Hai chiều đều khóa. Tài sản tầng 3 không gánh nợ phần khác; tài sản phần khác không gánh nợ tầng 3. Khoanh vùng thật, không phải khoanh trên giấy.</p>
+<div class='sub'>Vì sao hợp nhất riêng cái hộp</div>
+<p>Giả sử bạn nắm quyền với riêng cái hộp tầng 3: quyết cho ai thuê, chịu lời lỗ của nó. Khi đó bạn kiểm soát <strong>cái hộp đó</strong>, không phải cả tòa. Nên bạn đưa <strong>riêng tầng 3</strong> vào báo cáo của mình. Phần còn lại của tòa không liên quan, để ngoài.</p>
+<div class='sub'>Khác gì một mảng kinh doanh có lãi</div>
+<p>Khác hẳn. Một mảng làm ra nhiều tiền không tự thành silo. Silo cần <strong>khóa kín hai chiều thật</strong>: tài sản riêng, nợ riêng, không ai với tay qua lại. Mảng kinh doanh dùng chung tiền với cả công ty thì không phải silo.</p>
+  </section>
+
+  <section class="gaps">
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Chỗ vấp · Lỗ hổng</span><h2>Nghe xuôi mà nghĩ kỹ chưa thông</h2></div>
+    </div>
+    <div class="gap-q"><span class="q">Hợp nhất nửa công ty — kế toán cho phép thật à?</span><p>Có, nhưng chỉ khi nửa đó khóa kín thật (B77). Nếu một nhóm tài sản chỉ trả cho một nhóm nợ và không dính phần còn lại, IFRS 10 coi nó là một đơn vị riêng. Bạn kiểm soát phần đó thì hợp nhất phần đó.</p></div>
+<div class="gap-q"><span class="q">Sao không hợp nhất cả tòa cho gọn?</span><p>Vì phần còn lại của tòa có thể do người khác kiểm soát, và bạn không chịu lời lỗ của nó. Gộp cả tòa sẽ kéo vào báo cáo của bạn những thứ bạn không kiểm soát và không hưởng. Khoanh đúng cái hộp mới trung thực.</p></div>
+<div class="gap-q"><span class="q">Một mảng kinh doanh sinh lời riêng có phải silo không?</span><p>Không, trừ khi nó khóa kín hai chiều thật về tài sản và dòng tiền. Sinh lời riêng chưa đủ. Phải là nguồn duy nhất trả cho một nhóm nợ xác định, và phần còn lại không có quyền hay nghĩa vụ gì với nó.</p></div>
+<div class="gap-q"><span class="q">Ranh giới khóa kín có luôn rõ không?</span><p>Không phải lúc nào cũng rõ. Hợp đồng thật có thể cho phần này mượn tạm dòng tiền phần kia trong vài tình huống. Chỉ một lỗ rò là hết khóa kín, hết silo. Phải đọc kỹ điều khoản, không suy đoán từ cái tên tầng riêng.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví von &amp; ví dụ đời thường</span><h2>Neo vào tòa nhà có tầng khóa riêng</h2></div>
+    </div>
+    <div class="analogy-card"><span class="tag">Ví dụ trung tâm</span>
+<p>Tầng 3 của tòa nhà bị khóa kín: tiền thuê của nó chỉ trả khoản vay của nó, và phần còn lại không với tay vào được. Nếu bạn nắm quyền với riêng tầng 3 và chịu lời lỗ của nó, bạn kiểm soát cái hộp đó, không phải cả tòa. Nên bạn hợp nhất riêng tầng 3, để phần còn lại ra ngoài.</p>
+<p class="limit"><b>Chỗ ví von này hỏng:</b> tầng nhà có tường thật, nhìn là thấy ranh giới. Silo đời thật <strong>khoanh vùng bằng hợp đồng</strong>, không có tường. Một tranche trong chứng khoán hóa chẳng có tầng nào cả. Và cái khóa có thể rò: nếu tiền tầng 3 đôi khi dùng được cho phần khác thì hết khóa kín, hết silo. Ranh giới nằm trong điều khoản, không nằm ở viên gạch.</p>
+</div>
+<p>Gần đời hơn: một đơn vị chứng khoán hóa phát hành nhiều lô. Lô A được bảo đảm bằng một nhóm tài sản riêng, là nguồn duy nhất trả cho nhà đầu tư lô A; phần còn lại không đụng tới nhóm đó. Ai kiểm soát các quyết định về nhóm tài sản này thì hợp nhất riêng lô A, không phải cả đơn vị.</p>
+<div class="sub">Nâng một bậc — điều kiện B77 và bước B78–B79</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. B77 cho coi một phần là <em>deemed separate entity</em> chỉ khi tài sản xác định (và bảo đảm tín dụng kèm theo nếu có) là nguồn duy nhất trả cho nợ/lợi ích xác định, và không bên nào khác có quyền hay nghĩa vụ với tài sản hoặc dòng tiền dư của silo. B78: xác định ai có <em>power</em> và chịu lợi nhuận biến đổi cho silo. B79: nếu kiểm soát silo thì hợp nhất riêng phần đó.</p>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">4</div>
+      <div class="step-meta"><span class="lbl">Kể lại gọn gàng</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Đôi khi một mảng của công ty bị khóa kín hai chiều. Tài sản riêng của nó là nguồn duy nhất trả nợ riêng của nó, và phần còn lại không đụng tới. IFRS 10 coi cái mảng khóa kín đó như một đơn vị riêng, một silo. Bạn kiểm soát riêng silo thì hợp nhất riêng nó, để phần còn lại ngoài báo cáo. Khóa phải thật, không phải chỉ là một mảng có lãi.</p>
+<p class="core">Đôi khi bạn không hợp nhất cả công ty, <span>một mảng khóa kín hai chiều thì được hợp nhất riêng như một đơn vị độc lập.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã hiểu chưa?</h3>
+      <ol>
+        <li>Điều kiện nào khiến một phần của công ty được coi là một silo, khác với một mảng kinh doanh chỉ sinh lời riêng?</li>
+        <li>Nếu bạn kiểm soát silo nhưng không kiểm soát phần còn lại, bạn hợp nhất cái gì?</li>
+        <li>Một tranche chứng khoán hóa có tài sản riêng trả riêng cho nhà đầu tư của nó. Vì sao đây là ví dụ điển hình của silo?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nếu giải thích được cho bà ngoại hiểu, bạn mới thật sự hiểu.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-don-vi-dau-tu-khong-hop-nhat"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Giải thích theo phương pháp Feynman</div>
+    <h1 class="rise" style="animation-delay:.08s">Nắm 100% mà chỉ ghi một dòng</h1>
+    <p class="core rise" style="animation-delay:.16s">Một quỹ đầu tư kiểm soát trọn công ty con, <span>nhưng không gộp nó vào — chỉ ghi một con số: giá bán lại hôm nay.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Điều cần hiểu &amp; cách tiếp cận</span><h2>Quy tắc: đơn vị đầu tư đo công ty con theo giá trị hợp lý, không hợp nhất</h2></div>
+    </div>
+    <div class="rule">IFRS 10 đoạn 31: một <em>investment entity</em> (đơn vị đầu tư) <strong>không hợp nhất</strong> công ty con. Thay vào đó nó đo khoản đầu tư vào con theo <em>fair value through profit or loss</em> (giá trị hợp lý qua lãi/lỗ) theo IFRS 9 — dù nắm 100% và kiểm soát hoàn toàn. Đoạn 27 định nghĩa đơn vị đầu tư bằng ba điều kiện: huy động vốn để cung cấp dịch vụ quản lý đầu tư; cam kết đầu tư chỉ để hưởng tăng giá vốn / thu nhập; và đo, đánh giá <strong>về cơ bản tất cả</strong> các khoản đầu tư trên cơ sở giá trị hợp lý.</div>
+    <div class="sub">Cách giải thích</div>
+    <div class="approach"><p>Chỗ vấp: kiểm soát thì phải hợp nhất chứ, sao quỹ lại không? Cách làm: hình dung một người buôn sỉ trông kho hàng để bán lại. Anh ta chỉ quan tâm giá bán lại từng thùng, không quan tâm bên trong thùng có gì. Quỹ nhìn công ty con đúng như vậy.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Giải thích đơn giản</span><h2>Người bán sỉ chỉ nhìn giá bán lại</h2></div>
+    </div>
+    <p class='lead'>Hình dung một người buôn sỉ. Anh ta mua cả thùng hàng, chất đầy kho, chờ giá lên rồi bán lại. Anh ta có mở từng thùng, đếm từng món bên trong, ghi vào sổ không? Không. Với anh ta, mỗi thùng chỉ là <strong>một con số: giá bán lại hôm nay</strong>. Bên trong thùng có gì không quan trọng, vì anh ta sắp bán cả thùng.</p>
+<div class='sub'>Vì sao gộp chi tiết lại vô ích</div>
+<p>Một công ty mẹ thường nắm con để vận hành lâu dài. Gộp từng dòng tài sản, nợ, doanh thu của con là hữu ích, vì hai bên cùng chạy một guồng máy. Quỹ đầu tư thì khác. Nó nắm con để <strong>bán lại kiếm lời</strong>, không để vận hành. Gộp chi tiết chỉ làm rối thứ duy nhất nó quan tâm: giá bán lại.</p>
+<div class='sub'>Một dòng thay cho cả trang</div>
+<p>Nên IFRS 10 cho quỹ một ngoại lệ. Thay vì gộp toàn bộ con, quỹ ghi <strong>một dòng</strong>: khoản đầu tư bằng giá trị hợp lý. Giá lên thì ghi lời, giá xuống thì ghi lỗ. Đúng như người bán sỉ nhìn từng thùng theo giá hôm nay.</p>
+<div class='sub'>Ai được hưởng ngoại lệ này</div>
+<p>Không phải ai cũng được. Phải là <strong>đơn vị đầu tư thật</strong>. Nó gom vốn để quản lý đầu tư cho người khác. Nó cam kết chỉ đầu tư để hưởng tăng giá. Và nó đo <strong>về cơ bản tất cả</strong> các khoản theo giá trị hợp lý. Một tập đoàn công nghiệp nắm con để vận hành thì không được, phải hợp nhất bình thường.</p>
+  </section>
+
+  <section class="gaps">
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Chỗ vấp · Lỗ hổng</span><h2>Nghe xuôi mà nghĩ kỹ chưa thông</h2></div>
+    </div>
+    <div class="gap-q"><span class="q">Kiểm soát thì phải hợp nhất chứ — sao quỹ lại được miễn?</span><p>Vì với quỹ, hợp nhất che mất thông tin quan trọng nhất. Người đọc báo cáo quỹ muốn biết danh mục đáng bao nhiêu hôm nay. Họ không muốn thấy từng dòng máy móc của một công ty con sắp bán. Giá trị hợp lý mới là điểm số của quỹ.</p></div>
+<div class="gap-q"><span class="q">Vậy quỹ nắm 100% mà báo cáo chỉ có một dòng cho công ty đó?</span><p>Đúng. Tài sản và nợ của con không hiện trên báo cáo quỹ. Chỉ một dòng khoản đầu tư theo giá trị hợp lý, và biến động giá chạy thẳng vào lãi/lỗ từng kỳ.</p></div>
+<div class="gap-q"><span class="q">Có công ty con nào của quỹ vẫn phải hợp nhất không?</span><p>Có một ngoại lệ của ngoại lệ. Nếu con là công ty <strong>dịch vụ</strong> phục vụ chính hoạt động đầu tư của quỹ thì phải hợp nhất con đó (đoạn 32). Ví dụ: một công ty quản lý tài sản của quỹ. Con là khoản đầu tư thì đo giá trị hợp lý; con là người phục vụ thì hợp nhất.</p></div>
+<div class="gap-q"><span class="q">Nếu một tập đoàn thường sở hữu quỹ này thì sao — ngoại lệ có leo lên không?</span><p>Không. Mẹ không-phải-đơn-vị-đầu-tư phải hợp nhất xuyên qua quỹ con, gộp lại các khoản đầu tư mà quỹ kiểm soát (đoạn 33). Ngoại lệ chỉ áp khi <strong>chính đơn vị lập báo cáo</strong> là quỹ đầu tư.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví von &amp; ví dụ đời thường</span><h2>Neo vào người buôn sỉ</h2></div>
+    </div>
+    <div class="analogy-card"><span class="tag">Ví dụ trung tâm</span>
+<p>Người buôn sỉ ôm cả kho thùng hàng chờ bán lại. Mỗi thùng với anh chỉ là một con số: giá bán lại hôm nay. Anh không mở thùng, không đếm từng món. Quỹ nhìn công ty con y vậy: một dòng giá trị hợp lý, không gộp từng tài sản. Vì nó sắp bán cả công ty đi kiếm lời.</p>
+<p class="limit"><b>Chỗ ví von này hỏng:</b> người bán sỉ chỉ ôm hàng chờ bán, không can thiệp vào thùng. Quỹ thì <strong>thật sự kiểm soát</strong> công ty con — thuê, đuổi giám đốc, chỉ đạo được. Ngoại lệ FVTPL là cách <em>trình bày</em>, không phải phủ nhận quyền kiểm soát. Và nó nứt ở chỗ: con là công ty dịch vụ cho quỹ thì vẫn phải mở thùng ra mà gộp.</p>
+</div>
+<p>Gần đời hơn: một quỹ đầu tư mạo hiểm rót vốn nắm 70% một startup, định bán sau 5–7 năm. Trên báo cáo quỹ, startup đó không hiện thành từng dòng doanh thu, chi phí. Nó hiện đúng một dòng: giá trị hợp lý của khoản đầu tư, lên xuống theo định giá mỗi vòng.</p>
+<div class="sub">Nâng một bậc — ba điều kiện và hai ngoại lệ của ngoại lệ</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Đoạn 27 cần đủ ba điều kiện: (a) huy động vốn để cung cấp <em>investment management services</em>; (b) cam kết mục đích đầu tư chỉ để hưởng <em>capital appreciation</em> / <em>investment income</em>; (c) đo và đánh giá <em>substantially all</em> (về cơ bản tất cả) các khoản đầu tư theo <em>fair value</em>. Đoạn 32: công ty con dịch vụ thì vẫn hợp nhất. Đoạn 33: mẹ không-phải-đơn-vị-đầu-tư phải hợp nhất xuyên qua. Đoạn 4B chặn luôn việc quỹ trình bày báo cáo hợp nhất.</p>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">4</div>
+      <div class="step-meta"><span class="lbl">Kể lại gọn gàng</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Công ty mẹ thường gộp con vào vì cùng vận hành một guồng máy. Quỹ đầu tư thì nắm con để bán lại kiếm lời, nên gộp chi tiết là vô ích. IFRS 10 cho quỹ ghi một dòng: giá trị hợp lý, lên thì lời, xuống thì lỗ — dù nắm 100%. Ngoại lệ chỉ dành cho đơn vị đầu tư thật, và con dịch vụ thì vẫn phải hợp nhất.</p>
+<p class="core">Một quỹ đầu tư kiểm soát trọn công ty con, <span>quỹ ghi công ty con bằng một con số — giá bán lại hôm nay — thay vì gộp từng dòng.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã hiểu chưa?</h3>
+      <ol>
+        <li>Vì sao với một quỹ đầu tư, hợp nhất công ty con lại làm mất thông tin thay vì thêm thông tin?</li>
+        <li>Quỹ nắm hai con: một startup để bán lại, một công ty quản lý tài sản phục vụ quỹ. Mỗi con hạch toán thế nào?</li>
+        <li>Một tập đoàn công nghiệp sở hữu một quỹ con. Ở cấp tập đoàn, ngoại lệ giá trị hợp lý còn áp dụng không, vì sao?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nếu giải thích được cho bà ngoại hiểu, bạn mới thật sự hiểu.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-mat-kiem-soat-do-lai-fv"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Giải thích theo phương pháp Feynman</div>
+    <h1 class="rise" style="animation-delay:.08s">Bán nhà rồi mua lại một phòng</h1>
+    <p class="core rise" style="animation-delay:.16s">Bán 80%, giữ 20% — <span>bạn vẫn ghi lãi trên cả 20% mình chưa hề bán.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Điều cần hiểu &amp; cách tiếp cận</span><h2>Quy tắc: mất kiểm soát thì đo lại phần giữ lại theo giá trị hợp lý</h2></div>
+    </div>
+    <div class="rule">IFRS 10 đoạn 25: khi mẹ mất quyền kiểm soát một con, mẹ (a) dừng ghi nhận tài sản và nợ của con; (b) ghi nhận phần đầu tư <strong>còn giữ lại theo giá trị hợp lý</strong> tại ngày mất kiểm soát; (c) ghi nhận lãi/lỗ. B99A: giá trị hợp lý đó trở thành giá gốc ban đầu cho hạch toán sau. Nghĩa là phần giữ lại được <strong>đo lại</strong>, dù không hề bán.</div>
+    <div class="sub">Cách giải thích</div>
+    <div class="approach"><p>Chỗ vấp: tôi đâu có bán 20% đó, sao lại ghi lãi trên nó? Cách làm: hình dung bạn bán một căn nhà nhưng giữ lại một phòng. IFRS 10 coi như bạn bán sạch cả căn theo giá hôm nay, rồi mua lại đúng cái phòng đó, cũng theo giá hôm nay. Cái lời chui vào ở bước mua lại.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Giải thích đơn giản</span><h2>Coi như bán sạch rồi mua lại</h2></div>
+    </div>
+    <p class='lead'>Bạn có một căn nhà, sổ ghi giá mua cũ. Giờ bạn bán 80% căn nhà cho người khác, giữ lại một phòng là 20%. Bạn nghĩ: mình chỉ bán 80%, vậy chỉ tính lời lỗ trên 80% thôi. IFRS 10 nói khác. Nó bảo coi như bạn <strong>bán sạch cả căn</strong> theo giá hôm nay, rồi <strong>mua lại</strong> đúng cái phòng đó, cũng theo giá hôm nay.</p>
+<div class='sub'>Vì sao coi như bán sạch</div>
+<p>Vì lúc mất kiểm soát, quan hệ đổi hẳn bản chất. Trước đó căn nhà là <strong>của bạn</strong> — bạn ở, bạn quản. Sau đó nó thành một <strong>khoản đầu tư nhỏ</strong> bạn chỉ góp phần. Hai thứ khác nhau. Nên kế toán cắt đứt cái cũ, dựng lại cái mới theo giá thị trường hôm nay.</p>
+<div class='sub'>Lời trên cái phòng chưa bán từ đâu ra</div>
+<p>Cái phòng bạn giữ, sổ vẫn ghi giá mua cũ. Nhưng giá thị trường hôm nay đã khác. Khi mua lại nó theo giá hôm nay, chênh lệch giữa giá cũ trong sổ và giá hôm nay <strong>hiện ra</strong> thành lời. Cái lời đó có thật, chỉ là trước giờ nó nấp trong sổ, nay mới lộ.</p>
+<div class='sub'>Công thức một dòng</div>
+<p>Lãi bằng: tiền bán 80% cộng giá hôm nay của 20% giữ lại, trừ giá trị ghi sổ cả căn. Để ý phần 20% giữ lại tính theo <strong>giá hôm nay</strong>, không phải giá sổ cũ. Đó là chỗ cái lời trên phần không bán chui vào.</p>
+  </section>
+
+  <section class="gaps">
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Chỗ vấp · Lỗ hổng</span><h2>Nghe xuôi mà nghĩ kỹ chưa thông</h2></div>
+    </div>
+    <div class="gap-q"><span class="q">Tôi đâu có bán 20% đó — sao lại có lời trên nó?</span><p>Vì kế toán coi quan hệ cũ chấm dứt hoàn toàn. Như thể bạn bán hết rồi mua lại phòng theo giá mới. Cái lời là chênh giữa giá sổ cũ và giá thị trường hôm nay của phòng đó. Nó có thật, chỉ là tới giờ mới được ghi ra.</p></div>
+<div class="gap-q"><span class="q">Sao không cứ giữ phòng theo giá sổ cũ cho gọn?</span><p>Vì sau khi mất kiểm soát, phòng đó là một khoản đầu tư mới, theo IFRS khác. Khoản mới phải khởi đầu bằng giá trị hợp lý hôm nay (B99A), không phải giá lịch sử của một quan hệ đã chấm dứt.</p></div>
+<div class="gap-q"><span class="q">Khi tính lời, dễ quên mất điều gì?</span><p>Dễ quên các khoản OCI lũy kế liên quan tới con, như chênh lệch tỷ giá hay đánh giá lại. Khi mất kiểm soát, xử lý chúng như thể bán trực tiếp tài sản đó — thường phân loại lại sang lãi/lỗ (B99). Bỏ sót OCI là tính sai lời.</p></div>
+<div class="gap-q"><span class="q">Ghi lời trên cái mình chưa bán — có thổi phồng lợi nhuận không?</span><p>Đây là điểm gây tranh cãi thật. Cái lời đó chưa thành tiền mặt; nó chỉ là giá thị trường ước tính của phòng giữ lại. Định giá sai thì lời sai. Nhưng logic là: quan hệ cũ đã chấm dứt, nên đo lại theo giá hôm nay vẫn trung thực hơn giữ giá lịch sử.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví von &amp; ví dụ đời thường</span><h2>Neo vào việc bán nhà giữ phòng</h2></div>
+    </div>
+    <div class="analogy-card"><span class="tag">Ví dụ trung tâm</span>
+<p>Bán 80% căn nhà, giữ một phòng 20%. IFRS 10 không cho bạn tính lời chỉ trên 80%. Nó coi như bạn bán sạch cả căn theo giá hôm nay, rồi mua lại cái phòng cũng theo giá hôm nay. Phòng đó trong sổ còn ghi giá cũ, nên bước mua lại làm lộ ra phần lời đã nằm im bấy lâu.</p>
+<p class="limit"><b>Chỗ ví von này hỏng:</b> bán nhà thì có người trả tiền thật. Phần 20% giữ lại thì <strong>không ai trả tiền</strong> cho bạn — bạn vẫn đang giữ nó. Cái lời trên phần đó chỉ là <em>giá thị trường ước tính</em>, chưa thành tiền mặt. Nên nó nhạy với định giá: định cao thì lời cao. Đó cũng là lý do quy tắc này hay bị bàn cãi.</p>
+</div>
+<p>Gần đời hơn bằng số: mẹ nắm 100% một con, sổ ghi tài sản thuần 800 (gồm goodwill 100). Mẹ bán 80% thu 900, giữ 20% nay đáng 220. Lời không phải 900 trừ 800. Mà là (900 cộng 220) trừ 800, bằng <strong>320</strong>. Phần 220 của miếng giữ lại kéo cái lời lên.</p>
+<div class="sub">Nâng một bậc — công thức đầy đủ B98</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. B98: lãi/lỗ = (giá trị hợp lý khoản nhận được + giá trị hợp lý phần giữ lại + NCI dừng ghi nhận + OCI phân loại lại) − giá trị ghi sổ tài sản thuần gồm goodwill. Với ví dụ trên, NCI = 0 và OCI = 0: (900 + 220 + 0 + 0) − 800 = 320. Phần giữ lại đo theo <em>fair value</em> ngay tại ngày mất kiểm soát, và giá đó thành giá gốc cho IFRS 9 hoặc IAS 28.</p>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">4</div>
+      <div class="step-meta"><span class="lbl">Kể lại gọn gàng</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Khi mất kiểm soát, quan hệ đổi bản chất: con từ chỗ là của bạn thành một khoản đầu tư nhỏ. Nên kế toán coi như bạn bán sạch cả căn nhà theo giá hôm nay, rồi mua lại cái phòng giữ lại cũng theo giá hôm nay. Cái phòng đó trong sổ còn giá cũ, nên bước mua lại làm lộ phần lời nằm im. Vì thế bạn ghi lãi cả trên phần mình chưa bán.</p>
+<p class="core">Bán 80%, giữ 20% — <span>phần giữ lại được đo lại theo giá hôm nay, nên cái lời nằm im trong sổ mới lộ ra.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã hiểu chưa?</h3>
+      <ol>
+        <li>Vì sao mất kiểm soát lại đo lại phần giữ lại theo giá trị hợp lý, thay vì giữ giá sổ cũ?</li>
+        <li>Mẹ bán 80% thu 900, giữ 20% nay đáng 220, tài sản thuần ghi sổ 800. Lời là bao nhiêu, và vì sao không phải 100?</li>
+        <li>Cái lời ghi trên phần giữ lại có phải tiền mặt không? Điều đó khiến nó nhạy với cái gì?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nếu giải thích được cho bà ngoại hiểu, bạn mới thật sự hiểu.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-giao-dich-von-khong-ghi-lai"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Giải thích theo phương pháp Feynman</div>
+    <h1 class="rise" style="animation-delay:.08s">Chuyển tiền từ túi trái sang túi phải</h1>
+    <p class="core rise" style="animation-delay:.16s">Bán bớt cổ phần, thu tiền về — <span>mà không ghi một đồng lãi nào, nếu bạn vẫn còn nắm quyền.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Điều cần hiểu &amp; cách tiếp cận</span><h2>Quy tắc: đổi tỷ lệ mà vẫn giữ kiểm soát là giao dịch vốn</h2></div>
+    </div>
+    <div class="rule">IFRS 10 đoạn 23: thay đổi tỷ lệ sở hữu của mẹ trong con <strong>mà không mất kiểm soát</strong> là một <em>equity transaction</em> (giao dịch vốn) — giao dịch với chủ sở hữu trong tư cách chủ sở hữu. B96: điều chỉnh giá trị ghi sổ phần kiểm soát và NCI cho khớp tỷ lệ mới; chênh lệch giữa số điều chỉnh NCI và tiền nhận/trả ghi <strong>thẳng vào vốn chủ sở hữu</strong>, không vào lãi/lỗ, không đụng goodwill.</div>
+    <div class="sub">Cách giải thích</div>
+    <div class="approach"><p>Chỗ vấp: bán cổ phần thu tiền mà sao không ghi lãi? Cách làm: hình dung chuyển tiền từ túi trái sang túi phải của chính mình. Tiền có di chuyển, nhưng tổng tài sản của bạn không đổi, nên chẳng có lời lỗ gì. Bán bớt phần con mà vẫn giữ con thì giống vậy.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Giải thích đơn giản</span><h2>Vẫn là tiền trong một nhà</h2></div>
+    </div>
+    <p class='lead'>Bạn nắm 90% một công ty con. Bạn bán bớt 10%, thu về một khoản tiền. Bình thường bán có lời thì ghi lãi, đúng không? Ở đây thì không. Vì sau khi bán, bạn vẫn nắm 80% — vẫn là chủ, vẫn kiểm soát. Công ty con vẫn nằm trọn trong báo cáo của bạn. Bạn chỉ <strong>đổi chỗ một ít quyền sở hữu trong cùng một nhà</strong>.</p>
+<div class='sub'>Vì sao không sinh ra lãi</div>
+<p>Khoản lãi chỉ đến khi bạn bán cho <strong>người ngoài</strong> và buông tài sản. Ở đây bạn không buông. Con vẫn của bạn, vẫn hợp nhất từng dòng. Bạn chỉ bán một lát mỏng quyền sở hữu cho cổ đông thiểu số. Đó là giao dịch <strong>giữa các chủ sở hữu với nhau</strong>, không phải bán tài sản ra ngoài.</p>
+<div class='sub'>Vậy khoản tiền chênh đi đâu</div>
+<p>Bạn nhận tiền nhiều hơn, hoặc ít hơn, giá trị sổ của lát quyền đã bán. Khoản chênh đó không thành lãi. Nó ghi <strong>thẳng vào vốn chủ sở hữu</strong> — như chuyển từ ngăn này sang ngăn khác trong cùng cái két của bạn.</p>
+<div class='sub'>Ranh giới một câu</div>
+<p>Còn kiểm soát thì là giao dịch vốn: không lãi, không lỗ, chênh vào vốn. <strong>Mất</strong> kiểm soát thì khác hẳn — lúc đó mới ghi lãi/lỗ và đo lại phần giữ lại. Bản lề là: sau giao dịch còn cầm lái hay không.</p>
+  </section>
+
+  <section class="gaps">
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Chỗ vấp · Lỗ hổng</span><h2>Nghe xuôi mà nghĩ kỹ chưa thông</h2></div>
+    </div>
+    <div class="gap-q"><span class="q">Bán có thu tiền mà — sao lại không có lãi?</span><p>Vì lãi cần bạn buông tài sản cho người ngoài. Ở đây bạn vẫn giữ con, vẫn hợp nhất nó từng dòng. Bạn chỉ bán một phần quyền sở hữu cho cổ đông khác trong nhà. Giao dịch giữa các chủ với nhau không tạo lãi.</p></div>
+<div class="gap-q"><span class="q">Khoản chênh ghi vào vốn — nghe lạ, sao không vào lãi/lỗ?</span><p>Vì đây là giao dịch với chủ sở hữu trong tư cách chủ sở hữu (đoạn 23). Tiền vào ra giữa các chủ thì điều chỉnh vốn, không chạy qua kết quả kinh doanh. Goodwill cũng giữ nguyên, không đổi.</p></div>
+<div class="gap-q"><span class="q">Sao cũng là bán cổ phần mà cái này không lãi, mất kiểm soát lại có?</span><p>Bản lề duy nhất là kiểm soát còn hay mất. Bán 10% còn 80% thì vẫn cầm lái, nên là giao dịch vốn, không lãi. Bán 60% còn 35% thì buông lái, thành mất kiểm soát, nên ghi lãi và đo lại phần giữ lại.</p></div>
+<div class="gap-q"><span class="q">Mẹ mua thêm từ NCI, trả nhiều hơn giá sổ — phần đó cũng vào vốn, không tính chi phí à?</span><p>Đúng, mua thêm cũng vậy. Trả 150 cho phần NCI ghi sổ 120 thì chênh 30 ghi giảm vốn của mẹ, không thành chi phí. Vì vẫn là giao dịch giữa các chủ. Có người thấy lạ vì tiền thật ra đi mà không có chi phí, nhưng logic cùng một nhà là nhất quán.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví von &amp; ví dụ đời thường</span><h2>Neo vào hai cái túi</h2></div>
+    </div>
+    <div class="analogy-card"><span class="tag">Ví dụ trung tâm</span>
+<p>Chuyển tiền từ túi trái sang túi phải: tiền có đi, nhưng tổng của bạn không đổi, nên không lời không lỗ. Bán bớt cổ phần con mà vẫn giữ con thì giống vậy. Con vẫn trong nhà bạn, hợp nhất từng dòng. Bạn chỉ dịch một ít quyền sở hữu qua lại, nên khoản chênh chỉ ghi vào vốn, không thành lãi.</p>
+<p class="limit"><b>Chỗ ví von này hỏng:</b> hai túi là cùng một người. Ở đây <strong>có hai bên thật</strong> — mẹ và cổ đông thiểu số — và tiền thật chạy qua lại. Cái cùng một nhà không phải vì cùng một người, mà vì cả phần kiểm soát lẫn NCI đều nằm trong <strong>cùng khối vốn của tập đoàn</strong>. Đúng khoảnh khắc mất kiểm soát, ranh giới đó vỡ, và lúc ấy lãi thật mới hiện ra.</p>
+</div>
+<p>Gần đời hơn bằng số: mẹ nắm 90%, bán 10% (xuống 80%, vẫn kiểm soát), thu 200. Giá trị sổ của 10% chuyển sang NCI là 160. Chênh 200 trừ 160 bằng 40. Khoản 40 đó <strong>không</strong> vào lãi/lỗ. Nó ghi tăng vốn của mẹ. Goodwill không đổi.</p>
+<div class="sub">Nâng một bậc — cơ học B96</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. B96: khi tỷ lệ NCI đổi, điều chỉnh giá trị ghi sổ của phần kiểm soát và phần không kiểm soát cho khớp tỷ lệ mới. Chênh lệch giữa số điều chỉnh <em>non-controlling interest</em> và giá trị hợp lý của khoản nhận/trả ghi thẳng vào <em>equity</em>, quy cho chủ sở hữu mẹ. Không qua lãi/lỗ, không tạo hay giảm goodwill.</p>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">4</div>
+      <div class="step-meta"><span class="lbl">Kể lại gọn gàng</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Bán bớt cổ phần con mà vẫn giữ con thì như chuyển tiền giữa hai túi của mình. Tiền có đi, nhưng tài sản tổng không đổi, nên không có lãi. Con vẫn trong nhà, vẫn hợp nhất; bạn chỉ dịch một ít quyền sở hữu giữa mẹ và cổ đông thiểu số. Khoản chênh ghi thẳng vào vốn. Chỉ khi buông lái, mất kiểm soát, lãi thật mới xuất hiện.</p>
+<p class="core">Bán bớt cổ phần, thu tiền về — <span>còn cầm lái thì chênh lệch chỉ vào vốn; buông lái rồi mới có lãi thật.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã hiểu chưa?</h3>
+      <ol>
+        <li>Mẹ bán 10% (90% xuống 80%) thu 200, giá sổ phần chuyển cho NCI là 160. Ghi nhận thế nào, và vì sao không có lãi?</li>
+        <li>Vì sao khoản chênh lại ghi vào vốn chủ sở hữu chứ không vào lãi/lỗ?</li>
+        <li>Điều gì là bản lề khiến một lần bán cổ phần thì không có lãi, lần khác lại có?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nếu giải thích được cho bà ngoại hiểu, bạn mới thật sự hiểu.</p>
+  </footer>
+
+</div></div>
+<script>
+  var bar=document.getElementById('progress');
+  function upd(){var h=document.documentElement;var s=h.scrollTop||document.body.scrollTop;
+    var max=(h.scrollHeight-h.clientHeight)||1;bar.style.width=(s/max*100)+'%';}
+  window.addEventListener('scroll',upd,{passive:true});upd();
+  var io=new IntersectionObserver(function(es){es.forEach(function(e){
+    if(e.isIntersecting){e.target.style.animation='rise .7s cubic-bezier(.2,.7,.3,1) forwards';io.unobserve(e.target);}});},{threshold:.12});
+  document.querySelectorAll('section').forEach(function(s){s.style.opacity='0';io.observe(s);});
+</script>
+
+<script>
+(function(){
+  var tabs=[].slice.call(document.querySelectorAll('.tabbar .tab'));
+  var panels=[].slice.call(document.querySelectorAll('.concept-panel'));
+  function show(i){
+    tabs.forEach(function(t,j){t.classList.toggle('active',j===i);});
+    panels.forEach(function(p,j){
+      var on=(j===i); p.classList.toggle('active',on);
+      if(on){p.querySelectorAll('section').forEach(function(s){s.style.opacity='';s.style.animation='';});}
+    });
+    try{history.replaceState(null,'','#'+panels[i].id);}catch(e){}
+    window.scrollTo(0,0); window.dispatchEvent(new Event('scroll'));
+  }
+  tabs.forEach(function(t){t.addEventListener('click',function(){show(+t.getAttribute('data-i'));});});
+  var start=0; panels.forEach(function(p,j){if('#'+p.id===location.hash)start=j;});
+  show(start);
+})();
+</script>
+
+</body></html>

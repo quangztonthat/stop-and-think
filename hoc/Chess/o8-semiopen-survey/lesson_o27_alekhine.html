@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bài 4 (Ch8-Open) — Alekhine Defence</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/chessboard-js/1.0.0/chessboard-1.0.0.min.css">
+<style>
+* { box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; max-width: 980px; margin: 0 auto; padding: 24px; color: #1a1a1a; line-height: 1.6; background: #fafafa; }
+h1 { color: #1a3a52; font-size: 26px; margin: 0 0 8px; }
+h2 { color: #2c5282; font-size: 20px; margin: 32px 0 12px; padding-bottom: 6px; border-bottom: 2px solid #e1e8ed; }
+.source { color: #888; font-size: 13px; margin-bottom: 24px; }
+.nav-link { font-size: 13px; color: #2c5282; text-decoration: none; }
+.stage { background: white; border-radius: 8px; padding: 20px 24px; margin: 16px 0; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
+.stage-label { display: inline-block; background: #2c5282; color: white; font-size: 12px; font-weight: 600; padding: 3px 10px; border-radius: 12px; margin-bottom: 8px; }
+.hook-question { font-size: 17px; color: #1a3a52; background: #fff8e1; border-left: 4px solid #faad14; padding: 14px 18px; border-radius: 0 6px 6px 0; margin: 12px 0; }
+.reveal-btn { background: #faad14; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-size: 14px; }
+.hidden { display: none; }
+.board-layout { display: grid; grid-template-columns: 440px 1fr; gap: 24px; align-items: start; margin-top: 16px; }
+@media (max-width: 820px) { .board-layout { grid-template-columns: 1fr; } }
+#board { width: 420px; max-width: 100%; }
+.mini-board { width: 300px; max-width: 100%; margin: 14px auto; }
+.controls { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; justify-content: center; }
+.controls button { padding: 7px 12px; background: #2c5282; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 13px; }
+.info-panel { background: #f8f9fb; padding: 16px; border-radius: 6px; border: 1px solid #e1e8ed; min-height: 380px; }
+.move-display { font-family: monospace; font-size: 16px; color: #2c5282; font-weight: 600; margin-bottom: 8px; }
+.commentary { font-size: 14px; color: #444; margin-bottom: 12px; }
+.info-box { background: white; padding: 10px; border-radius: 4px; border: 1px solid #e1e8ed; margin: 12px 0; font-size: 13px; text-align: center; }
+.info-box.win { background: #f6ffed; border-color: #b7eb8f; color: #389e0d; font-weight: 600; }
+.hl { background: rgba(255, 215, 0, 0.45) !important; box-shadow: inset 0 0 0 2px #faad14 !important; }
+.self-test { background: #fff8e1; border: 2px dashed #faad14; border-radius: 6px; padding: 16px; margin-top: 16px; }
+.feedback { margin-top: 10px; padding: 10px 14px; border-radius: 4px; font-size: 14px; }
+.feedback.correct { background: #f6ffed; color: #389e0d; border-left: 4px solid #52c41a; }
+.feedback.wrong { background: #fff1f0; color: #cf1322; border-left: 4px solid #ff4d4f; }
+.quiz { background: #f0f7ff; border-left: 4px solid #2c5282; border-radius: 0 6px 6px 0; padding: 14px 18px; margin: 12px 0; }
+.quiz-q { font-weight: 600; margin-bottom: 10px; color: #1a3a52; }
+.quiz-options { display: flex; flex-direction: column; gap: 6px; }
+.quiz-option { padding: 8px 12px; background: white; border: 1px solid #c9d6e2; border-radius: 4px; cursor: pointer; text-align: left; font-size: 14px; }
+.quiz-option.correct { background: #f6ffed; border-color: #52c41a; color: #389e0d; }
+.quiz-option.wrong { background: #fff1f0; border-color: #ff4d4f; color: #cf1322; }
+.quiz-explain { margin-top: 8px; font-size: 13px; color: #555; font-style: italic; }
+.summary-card { background: linear-gradient(135deg, #1a3a52, #2c5282); color: white; padding: 20px 24px; border-radius: 8px; margin-top: 24px; }
+.summary-card h2 { color: white; border: none; margin-top: 0; }
+.summary-card ul { padding-left: 20px; }
+code { background: #f1f3f5; padding: 1px 6px; border-radius: 3px; font-family: monospace; font-size: 0.9em; }
+.summary-card code { background: rgba(255,255,255,0.2); color: white; }
+.progress-bar { height: 4px; background: #e1e8ed; border-radius: 2px; overflow: hidden; margin: 8px 0 16px; }
+.progress-fill { height: 100%; background: #52c41a; transition: width 0.3s; width: 0%; }
+.tag { display:inline-block; background:#fde9c8; color:#874d00; font-size:11px; font-weight:600; padding:2px 8px; border-radius:10px; margin-left:6px; }
+.movelist { font-family: monospace; font-size: 13px; background:#fff8e1; border-radius:6px; padding:8px 12px; margin-top:10px; color:#874d00; line-height:1.7; }
+</style>
+</head>
+<body>
+
+<h1>Phòng thủ Alekhine <span class="tag">1.e4 Nf6 · khiêu khích</span></h1>
+<div class="source">
+  Chương 8 (Khai cuộc) — The complete 1.e4 (Djurić–Komarov–Pantaleoni) · Nâng cao<br>
+  <a class="nav-link" href="../index-opening.html">← Trang chủ Khai cuộc</a> ·
+  <a class="nav-link" href="chapter_o8_survey.html">← Chương 8</a>
+</div>
+
+<div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+
+<div class="stage">
+  <span class="stage-label">CHẶNG 1 · DẪN NHẬP</span>
+  <h2 style="margin-top:8px">Khiêu khích Trắng dựng trung tâm khổng lồ — rồi vây hãm</h2>
+  <p><strong>Alekhine</strong> (1…Nf6) khiêu khích: mã tấn công e4 ngay, dụ Trắng đẩy tốt đuổi mã và dựng trung tâm tốt khổng lồ — đánh cược rằng trung tâm đó sẽ <em>dàn trải quá mức</em> và thành mục tiêu.</p>
+  <div id="hookBoard" class="mini-board"></div>
+  <div class="movelist">1.e4 Nf6 2.e5 Nd5 — khiêu khích đẩy tốt</div>
+  <div class="hook-question">
+    🤔 <strong>Đen dụ Trắng dựng Bốn Tốt (Four Pawns)</strong> — đây là liều lĩnh hay tính toán?
+  </div>
+  <button class="reveal-btn" onclick="document.getElementById('hookAnswer').classList.remove('hidden'); markStage(1);">Hiển thị đáp án</button>
+  <div id="hookAnswer" class="hidden" style="margin-top:14px">
+    <p>Tính toán theo kiểu siêu hiện đại: <code>3.d4 d6 4.c4 Nb6 5.f4</code> cho Trắng bộ bốn tốt c4-d4-e5-f4 đồ sộ. Nhưng trung tâm càng to càng <em>khó giữ</em>: Đen phản đòn <strong>…dxe5</strong> và …c5 / áp lực quân để nó sụp. Mạo hiểm hai chiều: nếu Trắng giữ được trung tâm thì Đen ngạt; nếu không, trung tâm thành bia.</p>
+  </div>
+</div>
+
+<div class="stage">
+  <span class="stage-label">CHẶNG 2 · KHÁI NIỆM</span>
+  <h2 style="margin-top:8px">Ý tưởng của Alekhine</h2>
+  <ul>
+    <li><strong>Khiêu khích</strong>: 1…Nf6 dụ 2.e5 đuổi mã — Đen tự nguyện mất nhịp để kéo tốt Trắng tiến quá đà.</li>
+    <li><strong>Trung tâm to = mục tiêu</strong>: Bốn Tốt (Four Pawns) trông đáng sợ nhưng cồng kềnh; Đen phá bằng …dxe5, …c5 và áp lực quân.</li>
+    <li><strong>Mạo hiểm hai chiều</strong>: giữ được trung tâm thì Trắng bóp nghẹt; không giữ được thì Đen lật ngược.</li>
+  </ul>
+</div>
+
+<div class="stage">
+  <span class="stage-label">CHẶNG 3 · TƯƠNG TÁC TỪNG BƯỚC</span>
+  <div class="board-layout">
+    <div>
+      <div id="board"></div>
+      <div class="controls">
+        <button onclick="resetBoard()">⟨⟨ Đầu</button>
+        <button onclick="prevMove()">⟨ Lùi</button>
+        <button onclick="nextMove()">Tiến ⟩</button>
+      </div>
+    </div>
+    <div class="info-panel">
+      <div class="move-display" id="moveDisplay">Vị trí xuất phát</div>
+      <div class="commentary" id="commentary">Bấm Tiến ⟩ đi qua biến Bốn Tốt và đọc ván cờ khiêu khích trung tâm.</div>
+      <div class="info-box" id="infoBox">Đến lượt: <strong>Trắng</strong></div>
+    </div>
+  </div>
+</div>
+
+<div class="stage">
+  <span class="stage-label">CHẶNG 4 · TỰ KIỂM TRA</span>
+  <h2 style="margin-top:8px">Ý đồ siêu hiện đại đằng sau 1…Nf6 (Alekhine) là gì?</h2>
+  <div class="self-test">
+    <div class="quiz-options" id="selfTestOptions">
+      <button class="quiz-option" onclick="checkSelfTest(this, true, 'Đúng. Alekhine là khiêu khích kiểu mẫu: Đen chấp nhận bị đuổi mã (mất nhịp) để kéo tốt Trắng tiến xa, biến trung tâm đồ sộ thành mục tiêu tấn công bằng …dxe5/…c5 và quân.')">Dụ Trắng đẩy tốt dựng trung tâm quá đà để rồi vây hãm và phá nó</button>
+      <button class="quiz-option" onclick="checkSelfTest(this, false, 'Sai — mã sẽ bị đuổi (2.e5); cả ý đồ là chấp nhận điều đó để khiêu khích.')">Phát triển mã ra ô tốt nhất và giữ nó ở đó</button>
+      <button class="quiz-option" onclick="checkSelfTest(this, false, 'Sai — 1…Nf6 nhắm e4 và khiêu khích, không nhắm Hậu.')">Tấn công trực tiếp Hậu trắng</button>
+    </div>
+    <div class="feedback hidden" id="selfTestFeedback"></div>
+  </div>
+</div>
+
+<div class="stage">
+  <span class="stage-label">CHẶNG 5 · TRẮC NGHIỆM NHANH</span>
+  <div class="quiz">
+    <div class="quiz-q">Q1. 1…Nf6 (Alekhine) nhằm khiêu khích điều gì?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" onclick="quizCheck(this, true)">Dụ Trắng đẩy e5/d4/c4/f4 dựng trung tâm quá đà</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Buộc Trắng đổi Hậu</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Thắng tốt e4 ngay</button>
+    </div>
+    <div class="quiz-explain hidden">Mã tấn công e4 dụ 2.e5; Đen muốn kéo tốt Trắng tiến xa để thành mục tiêu.</div>
+  </div>
+  <div class="quiz">
+    <div class="quiz-q">Q2. Bộ Bốn Tốt (Four Pawns) c4-d4-e5-f4 có điểm yếu gì?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" onclick="quizCheck(this, true)">Cồng kềnh, khó giữ — dễ bị …dxe5/…c5 và áp lực quân làm sụp</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Không có điểm yếu, luôn thắng</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Chặn hết quân Trắng</button>
+    </div>
+    <div class="quiz-explain hidden">Trung tâm càng to càng khó bảo vệ; Đen nhắm phá nó từ hai cánh.</div>
+  </div>
+  <div class="quiz">
+    <div class="quiz-q">Q3. Bản chất rủi ro của Alekhine?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" onclick="quizCheck(this, true)">Hai chiều: Trắng giữ được trung tâm thì Đen ngạt, không thì Đen lật ngược</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">An toàn tuyệt đối cho Đen</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Luôn dẫn tới hòa</button>
+    </div>
+    <div class="quiz-explain hidden">Khiêu khích = đánh cược: phần thưởng (trung tâm sụp) đi kèm rủi ro (bị bóp nghẹt).</div>
+  </div>
+</div>
+
+<div class="summary-card">
+  <h2>📌 Tóm tắt</h2>
+  <ul>
+    <li><strong>Biến</strong>: <code>1.e4 Nf6 2.e5 Nd5 3.d4 d6 4.c4 Nb6 5.f4 dxe5 6.fxe5</code> (Bốn Tốt).</li>
+    <li><strong>Ý tưởng</strong>: khiêu khích Trắng dựng trung tâm to rồi vây hãm bằng …dxe5/…c5 và quân.</li>
+    <li><strong>Bản chất</strong>: siêu hiện đại, mạo hiểm hai chiều — trung tâm to vừa mạnh vừa là bia.</li>
+    <li><strong>Tên gọi</strong>: theo nhà vô địch Alexander Alekhine, người tiên phong ý tưởng này.</li>
+  </ul>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chessboard-js/1.0.0/chessboard-1.0.0.min.js"></script>
+<script>
+const START_FEN = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
+const MOVES = ['e4','Nf6','e5','Nd5','d4','d6','c4','Nb6','f4','dxe5','fxe5'];
+const COMMENTARY = {
+  0: { move: 'Vị trí xuất phát', text: 'Phòng thủ Alekhine — 1…Nf6 khiêu khích Trắng dựng trung tâm to rồi vây hãm.' },
+  1: { move: '1. e4', text: 'Chiếm trung tâm.' },
+  2: { move: '1… Nf6', text: '…Nf6! ALEKHINE — tấn công e4 ngay, khiêu khích Trắng đẩy tốt đuổi mã.' },
+  3: { move: '2. e5', text: 'e5 đuổi mã — Trắng nhận lời khiêu khích, giành không gian.' },
+  4: { move: '2… Nd5', text: '…Nd5 — mã lùi về ô trung tâm, vẫn linh hoạt.' },
+  5: { move: '3. d4', text: 'd4 — dựng thêm trung tâm to.' },
+  6: { move: '3… d6', text: '…d6! Bắt đầu phản đòn vào chuỗi tốt e5 (đe …dxe5).' },
+  7: { move: '4. c4', text: 'c4 đuổi mã Nd5 lần nữa — Trắng tham lam dựng Bốn Tốt.' },
+  8: { move: '4… Nb6', text: '…Nb6 — mã lùi tiếp; Trắng đã tốn nhiều nhịp đẩy tốt (đúng ý Đen).' },
+  9: { move: '5. f4', text: 'f4! BỐN TỐT (Four Pawns) — bộ tốt c4-d4-e5-f4 đồ sộ, đáng sợ nhưng cồng kềnh.' },
+  10: { move: '5… dxe5', text: '…dxe5! Bắt đầu phá trung tâm — mở cờ, biến tốt Trắng thành mục tiêu.' },
+  11: { move: '6. fxe5', text: 'fxe5 — Trắng giữ tốt e5 nhưng trung tâm giờ căng và dễ bị …c5/quân Đen công phá. Mạo hiểm hai chiều. TABIYA.' }
+};
+let board, game, currentMove = 0, stagesCompleted = new Set();
+function initBoard() {
+  game = new Chess(START_FEN);
+  board = Chessboard('board', { position: 'start', draggable: true,
+    pieceTheme: 'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png',
+    onDrop: (s,t) => { const m = game.move({from:s,to:t,promotion:'q'}); if(!m) return 'snapback'; setTimeout(updateOverlays,100); },
+    onSnapEnd: () => { board.position(game.fen()); updateOverlays(); }});
+  updateDisplay();
+}
+function nextMove() { if(currentMove>=MOVES.length) return; game.move(MOVES[currentMove]); board.position(game.fen()); currentMove++; setTimeout(()=>{updateDisplay();updateOverlays();},50); if(currentMove>=MOVES.length) markStage(3); }
+function prevMove() { if(currentMove<=0) return; game.undo(); currentMove--; board.position(game.fen()); setTimeout(()=>{updateDisplay();updateOverlays();},50); }
+function resetBoard() { game = new Chess(START_FEN); board.position('start'); currentMove = 0; setTimeout(()=>{updateDisplay();updateOverlays();},50); }
+function updateDisplay() {
+  const cm = COMMENTARY[currentMove] || COMMENTARY[0];
+  document.getElementById('moveDisplay').textContent = cm.move;
+  document.getElementById('commentary').innerHTML = cm.text;
+  const box = document.getElementById('infoBox');
+  if (currentMove >= MOVES.length) { box.className = 'info-box win'; box.innerHTML = '★ Tabiya Bốn Tốt — trung tâm khổng lồ vs vây hãm'; }
+  else { box.className = 'info-box'; box.innerHTML = 'Đến lượt: <strong>' + (game.turn()==='w'?'Trắng':'Đen') + '</strong>'; }
+  updateProgress();
+}
+function updateOverlays() { $('#board .square-55d63').removeClass('hl'); ['e5','d4','c4'].forEach(sq => $('#board .square-' + sq).addClass('hl')); }
+function checkSelfTest(btn, ok, exp) {
+  document.querySelectorAll('#selfTestOptions .quiz-option').forEach(el=>el.disabled=true);
+  btn.classList.add(ok?'correct':'wrong');
+  const fb = document.getElementById('selfTestFeedback');
+  fb.classList.remove('hidden'); fb.className = 'feedback ' + (ok?'correct':'wrong');
+  fb.textContent = (ok?'✓ ':'✗ ') + exp; markStage(4);
+}
+function quizCheck(btn, ok) {
+  const q = btn.closest('.quiz');
+  q.querySelectorAll('.quiz-option').forEach(el=>el.disabled=true);
+  btn.classList.add(ok?'correct':'wrong');
+  if (!ok) q.querySelectorAll('.quiz-option').forEach(el => { if (el.getAttribute('onclick').includes('true')) el.classList.add('correct'); });
+  q.querySelector('.quiz-explain').classList.remove('hidden'); markStage(5);
+}
+function markStage(n) { stagesCompleted.add(n); updateProgress(); }
+function updateProgress() { document.getElementById('progressFill').style.width = (stagesCompleted.size/5*100) + '%'; }
+function initMiniBoards() { Chessboard('hookBoard', { position: 'rnbqkb1r/pppppppp/8/3nP3/8/8/PPPP1PPP/RNBQKBNR', draggable: false, pieceTheme: 'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png' }); }
+$(document).ready(() => { initBoard(); initMiniBoards(); setTimeout(()=>markStage(2),500); });
+</script>
+
+</body>
+</html>

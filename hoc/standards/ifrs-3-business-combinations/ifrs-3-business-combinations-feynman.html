@@ -1,0 +1,1332 @@
+<!DOCTYPE html>
+<html lang="vi"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IFRS 3 Business Combinations — Hiểu sâu theo Feynman</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,500&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  /* Design tokens shared with ebook-to-study-html (styles_v2.css) */
+  :root{
+    --bg:#fafaf7; --bg-elevated:#ffffff; --bg-soft:#f3f3ee;
+    --border:#e0e0d8; --border-soft:#ececea; --border-strong:#d2c8b6;
+    --ink:#1a1a1f; --ink-soft:#3f3f4a; --muted:#7a7a85;
+    --accent:#b8860b; --accent-2:#8b6508; --gold:#a07c1f; --gap:#8b6508;
+    --serif:"Fraunces",Georgia,"Iowan Old Style",serif;
+    --sans:"Geist",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    --mono:"Geist Mono","JetBrains Mono",Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:var(--sans);
+    font-size:19px;line-height:1.72;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}
+  .progress{position:fixed;top:0;left:0;height:3px;width:0;z-index:50;
+    background:linear-gradient(90deg,var(--gold),var(--accent));transition:width .08s linear}
+  .wrap{max-width:920px;margin:0 auto;padding:0 36px}
+  .rise{opacity:0;transform:translateY(14px);animation:rise .7s cubic-bezier(.2,.7,.3,1) forwards}
+  @keyframes rise{to{opacity:1;transform:none}}
+
+  header{padding:104px 0 60px;border-bottom:1px solid var(--border)}
+  .kicker{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.18em;
+    text-transform:uppercase;color:var(--accent);margin-bottom:26px}
+  h1{font-family:var(--serif);font-weight:600;font-size:clamp(42px,7.6vw,72px);
+    line-height:1.0;letter-spacing:-.022em;margin-bottom:28px;font-optical-sizing:auto;color:var(--ink)}
+  h1 em{font-style:italic;color:var(--accent)}
+  .core{font-family:var(--serif);font-style:italic;font-weight:400;
+    font-size:clamp(21px,3.6vw,27px);line-height:1.44;color:var(--ink-soft)}
+  .core span{font-style:normal;font-weight:600;color:var(--accent-2);
+    box-shadow:inset 0 -.5em 0 rgba(184,134,11,.16)}
+
+  /* ---- BƯỚC 0: ANCHOR (state the rule + plan before explaining) ---- */
+  .anchor .rule{font-family:var(--serif);font-size:19px;line-height:1.5;color:var(--ink);
+    background:var(--bg-soft);border-left:3px solid var(--accent);
+    padding:18px 24px;border-radius:0 4px 4px 0;margin:0}
+  .anchor .rule em{font-style:italic;color:var(--accent-2)}
+  .anchor .rule strong{color:var(--ink);font-weight:600}
+  .anchor .approach{color:var(--ink-soft)}
+
+  section{padding:72px 0;border-bottom:1px solid var(--border);position:relative}
+  .step-head{display:flex;align-items:flex-start;gap:22px;margin-bottom:34px}
+  .big-num{font-family:var(--serif);font-weight:700;font-size:62px;line-height:.8;
+    color:var(--border-strong);flex:none;font-optical-sizing:auto;letter-spacing:-.03em}
+  .step-meta{padding-top:4px}
+  .lbl{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--accent);display:block;margin-bottom:10px}
+  h2{font-family:var(--serif);font-weight:600;font-size:clamp(27px,4.4vw,37px);
+    line-height:1.12;letter-spacing:-.012em;color:var(--ink)}
+  h2 em{font-style:italic;color:var(--accent)}
+  p{margin-bottom:21px}
+  p:last-child{margin-bottom:0}
+  strong{font-weight:600;color:var(--ink)}
+  em{font-style:italic;color:var(--accent-2)}
+  .gloss{color:var(--muted);font-style:italic}
+
+  .lead::first-letter{font-family:var(--serif);font-weight:700;float:left;
+    font-size:74px;line-height:.74;padding:8px 12px 0 0;color:var(--accent)}
+
+  .sub{font-family:var(--serif);font-weight:600;font-size:17px;letter-spacing:.01em;
+    color:var(--ink);margin:34px 0 14px;display:flex;align-items:center;gap:11px}
+  .sub::before{content:"";width:18px;height:2px;background:var(--accent);flex:none;border-radius:2px}
+
+  .gaps{background:var(--bg-soft)}
+  .gaps .big-num{color:#e2d6b4}
+  .gaps .lbl{color:var(--gap)}
+  .gap-q{margin:0 0 30px;padding-left:24px;border-left:2px solid var(--border-strong)}
+  .gap-q:last-child{margin-bottom:0}
+  .gap-q .q{font-family:var(--serif);font-style:italic;font-weight:500;
+    font-size:22px;line-height:1.35;color:var(--gap);margin-bottom:12px;display:block}
+  .gap-q p:last-child{margin-bottom:0}
+
+  .analogy-card{border:1px solid #e8c876;border-radius:4px;padding:30px 32px;margin:8px 0 28px;
+    background:linear-gradient(135deg,#fef9ed 0%,#fdf3e0 100%)}
+  .analogy-card .tag{font-family:var(--mono);font-weight:600;font-size:11px;
+    letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin-bottom:16px;display:block}
+  .analogy-card p{color:#5a4810}
+  .analogy-card strong{color:var(--accent-2)}
+  .limit{font-size:17px;line-height:1.6;color:#5a4810;
+    border-top:1px solid #e8c876;padding-top:20px;margin-top:22px}
+  .limit b{color:var(--accent-2);font-weight:600;font-family:var(--serif)}
+
+  .retell{background:linear-gradient(180deg,var(--bg-soft) 0%,var(--bg) 100%);border-bottom:none}
+  .retell h2{color:var(--ink)}
+  .retell strong{color:var(--accent-2)}
+  .retell .core{margin-top:6px}
+  .testbox{border:1px solid var(--border);background:var(--bg-elevated);
+    border-radius:4px;padding:28px 32px;margin-top:40px;box-shadow:0 1px 2px rgba(0,0,0,.03)}
+  .testbox h3{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--accent);margin-bottom:20px}
+  .testbox ol{margin:0;padding-left:22px;counter-reset:t}
+  .testbox li{margin-bottom:16px;color:var(--ink-soft);padding-left:6px}
+  .testbox li:last-child{margin-bottom:0}
+
+  footer{text-align:center;padding:60px 0 88px}
+  footer .mark{font-family:var(--serif);font-weight:700;color:var(--accent);
+    font-size:26px;display:block;margin-bottom:14px}
+  footer p{font-family:var(--serif);font-style:italic;color:var(--muted);font-size:17px;max-width:380px;margin:0 auto}
+
+  @media(max-width:560px){
+    body{font-size:18px}
+    header{padding:70px 0 44px}
+    section{padding:52px 0}
+    .step-head{gap:16px}
+    .big-num{font-size:46px}
+    .lead::first-letter{font-size:60px}
+  }
+</style>
+<style>
+ .tabbar{position:fixed;top:0;left:0;right:0;width:100%;box-sizing:border-box;z-index:40;background:rgba(250,250,247,.93);
+   backdrop-filter:saturate(1.1) blur(8px);-webkit-backdrop-filter:saturate(1.1) blur(8px);
+   border-bottom:1px solid var(--border);display:flex;gap:6px;overflow-x:auto;
+   padding:10px max(36px,calc((100% - 992px)/2));scrollbar-width:thin}
+ .tabbar .tab{flex:0 0 auto;display:flex;align-items:baseline;gap:9px;cursor:pointer;
+   background:transparent;border:1px solid transparent;border-radius:999px;
+   padding:8px 17px;transition:.15s;white-space:nowrap;color:var(--muted)}
+ .tabbar .tab:hover{color:var(--ink);background:var(--bg-soft)}
+ .tabbar .tab.active{color:var(--accent-2);background:var(--bg-soft);border-color:var(--border-strong)}
+ .tabbar .tn{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.1em;color:var(--accent)}
+ .tabbar .tl{font-family:var(--serif);font-weight:500;font-size:16px}
+ body{padding-top:56px} .concept-panel{display:none}
+ .concept-panel.active{display:block}
+ .concept-panel header{padding-top:50px}
+ @media(max-width:560px){.tabbar .tl{max-width:48vw;overflow:hidden;text-overflow:ellipsis}}
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+<nav class="tabbar" aria-label="Các khái niệm"><button class="tab" data-i="0"><span class="tn">01</span><span class="tl">Business hay đống đồ?</span></button><button class="tab" data-i="1"><span class="tn">02</span><span class="tl">Ai là bên mua?</span></button><button class="tab" data-i="2"><span class="tn">03</span><span class="tl">Ngày mua</span></button><button class="tab" data-i="3"><span class="tn">04</span><span class="tl">Nợ tiềm tàng</span></button><button class="tab" data-i="4"><span class="tn">05</span><span class="tl">Bóc tài sản vô hình</span></button><button class="tab" data-i="5"><span class="tn">06</span><span class="tl">Goodwill là số dư</span></button><button class="tab" data-i="6"><span class="tn">07</span><span class="tl">Mua rẻ</span></button><button class="tab" data-i="7"><span class="tn">08</span><span class="tl">Mua theo giai đoạn</span></button><button class="tab" data-i="8"><span class="tn">09</span><span class="tl">Phí tư vấn ≠ goodwill</span></button><button class="tab" data-i="9"><span class="tn">10</span><span class="tl">Kỳ đo lường</span></button><button class="tab" data-i="10"><span class="tn">11</span><span class="tl">Trả thêm nếu...: vốn vs nợ</span></button><button class="tab" data-i="11"><span class="tn">12</span><span class="tl">Quyền mua lại</span></button><button class="tab" data-i="12"><span class="tn">13</span><span class="tl">Tài sản bồi hoàn</span></button><button class="tab" data-i="13"><span class="tn">14</span><span class="tl">Ngoại lệ đo lường</span></button></nav>
+<div class="concept-panel" id="c-la-business"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Giải thích theo phương pháp Feynman</div>
+    <h1 class="rise" style="animation-delay:.08s">Mua một công ty, hay chỉ mua đống đồ đạc?</h1>
+    <p class="core rise" style="animation-delay:.16s">Cùng một mớ tài sản — <span>chỉ khi nó “chạy được như một doanh nghiệp” mới đẻ ra goodwill.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Điều cần hiểu &amp; cách tiếp cận</span><h2>Quy tắc: phải là một “business” thì mới là hợp nhất</h2></div>
+    </div>
+    <div class="rule">IFRS 3 <strong>Phụ lục A (Appendix A)</strong> định nghĩa: một <em>business combination</em> (hợp nhất kinh doanh) là giao dịch hoặc sự kiện trong đó bên mua <strong>giành quyền kiểm soát một hoặc nhiều <em>business</em></strong> (hoạt động kinh doanh). <strong>Đoạn 3</strong> chính là chỗ dẫn chiếu định nghĩa này khi xét một giao dịch có phải hợp nhất kinh doanh không. <strong>Đoạn 2(b)</strong>: nếu thứ mua được <strong>không cấu thành một business</strong>, đây là <em>asset acquisition</em> (mua tài sản) — ghi nhận từng tài sản và nợ riêng lẻ, phân bổ giá phí theo giá trị, và <strong>không phát sinh goodwill</strong>.</div>
+    <div class="sub">Cách giải thích</div>
+    <div class="approach"><p>Chỗ vấp là chữ <strong>“business”</strong>. Trực giác bảo: mua gì mà chẳng giống nhau, đều bỏ tiền cả. Cách làm: đặt cạnh nhau hai vụ mua khác hẳn — mua một cái máy, và mua cả một cái tiệm đang mở cửa. Chỉ cái thứ hai mới “tự chạy ra tiền”, nên chỉ nó đẻ goodwill.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Giải thích đơn giản</span><h2>Hai thứ rất khác nhau bạn có thể mua</h2></div>
+    </div>
+    <p class="lead">Tưởng tượng bạn bỏ tiền ra mua. Có hai thứ rất khác nhau bạn có thể mua. Một: mua cái máy pha cà phê. Hai: mua cả quán cà phê đang mở cửa, có thợ, có khách quen. Kế toán nhìn hai vụ này khác hẳn nhau.</p>
+
+<div class="sub">Mua một món đồ</div>
+<p>Cái máy pha chỉ là một món đồ. Bạn trả tiền, nhận máy, hết chuyện. Giá trị của nó nằm gọn trong chính nó. Mua xong, bạn ghi sổ đúng số tiền đã trả cho cái máy.</p>
+
+<div class="sub">Mua cả cái tiệm đang chạy</div>
+<p>Quán cà phê thì khác. Nó có máy, có bàn ghế — nhưng còn hơn thế. Nó có cách pha quen tay, có nhân viên biết việc, có khách quay lại. Cả bộ máy đó tự chạy ra tiền. Đó mới là một “business”.</p>
+
+<div class="sub">Vì sao ranh giới này đáng tiền</div>
+<p>Chỉ khi mua cả “cái tiệm đang chạy” mới có thể đẻ ra goodwill. Vì sao? Bạn thường trả nhiều hơn tổng giá từng món đồ. Phần trả thêm đó là tiền mua cái “chạy được” — tiếng tăm, khách quen, đội ngũ. Mua mỗi cái máy thì không có phần thừa đó.</p>
+
+<div class="sub">Nếu chỉ là đống đồ thì sao</div>
+<p>Nếu thứ mua được không phải business, kế toán chia số tiền đã trả cho từng tài sản theo giá trị của chúng. Không có khoản dư nào treo lại. Không có goodwill. Đây gọi là “mua tài sản”, và IFRS 3 đứng ngoài.</p>
+  </section>
+
+  <section class="gaps">
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Chỗ vấp · Lỗ hổng</span><h2>Mấy chỗ nghe xuôi mà nghĩ kỹ chưa thông</h2></div>
+    </div>
+    <div class="gap-q"><span class="q">“Cả hai đều bỏ tiền mua — bắt phân biệt làm gì cho mệt?”</span><p>Vì cách ghi sổ khác hẳn nhau. Mua business thì đẻ goodwill, rồi về sau phải canh xem goodwill có mất giá không. Mua đống tài sản thì không có goodwill, không phải canh gì. Gọi tên sai ngay từ đầu là sai cả chuỗi việc về sau.</p></div>
+<div class="gap-q"><span class="q">“Làm sao biết cái mua được có ‘tự chạy’ hay không?”</span><p>Hỏi: nó có đủ thứ để làm ra sản phẩm hay dịch vụ chưa — con người, cách làm, đầu vào? Một tòa nhà trống chỉ là tài sản. Cũng tòa nhà đó nhưng kèm hợp đồng thuê và đội vận hành thì đã ngả sang business. Càng nhiều “bộ phận biết phối hợp”, càng giống một doanh nghiệp.</p></div>
+<div class="gap-q"><span class="q">“Phải mua đứt 100% mới gọi là hợp nhất chứ?”</span><p>Không. Điểm mấu chốt không phải mua bao nhiêu phần trăm, mà là có <strong>giành được quyền kiểm soát</strong> một business hay không. Nắm quyền điều khiển là đủ, dù chỉ mua 60%. Phần còn lại của người khác thành NCI (lợi ích cổ đông không kiểm soát).</p></div>
+<div class="gap-q"><span class="q">“Ranh giới ‘có phải business không’ nhiều khi mờ — ai quyết?”</span><p>Đây là chỗ chuẩn tự nhận là khó. IFRS 3 phải dành hẳn một mục hướng dẫn riêng (đoạn B7–B12D) vì biên giới này hay bị tranh cãi. Nhiều vụ nằm lưng chừng, phải xét đoán. Và chọn sai bên nào của ranh giới sẽ quyết định có goodwill hay không — hệ quả không nhỏ.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví von &amp; ví dụ đời thường</span><h2>Neo vào thứ bạn đã biết</h2></div>
+    </div>
+    <div class="analogy-card"><span class="tag">Ví dụ trung tâm</span>
+<p>Quay lại quán cà phê. Mua <strong>cái máy pha</strong> là mua một món đồ: trả bao nhiêu, ghi sổ bấy nhiêu. Mua <strong>cả quán đang mở</strong> là mua một cỗ máy kiếm tiền — máy, người, khách quen, tiếng tăm. Bạn trả hơn tổng giá đống đồ đạc, vì cái “đang chạy” đáng tiền. Phần trả thừa đó treo lại thành goodwill.</p>
+<p class="limit"><b>Chỗ ví von này hỏng:</b> một quán cà phê đang đông khách thì dễ thấy là “đang chạy”. Ngoài đời nhiều vụ ở lưng chừng — một xấp bằng sáng chế, vài hợp đồng thuê, một dự án dở dang. Nó là business hay chỉ là tài sản? Lúc đó phải mở đoạn B7–B12D ra soi từng bộ phận, và đó chính là phần khó kế tiếp.</p>
+</div>
+<p>Gần đời hơn: mua một <strong>mảnh đất trống</strong> chỉ là mua tài sản. Mua một <strong>khu trọ đang cho thuê</strong>, có người quản lý, có khách thuê sẵn, có dòng tiền hằng tháng — gần với mua một business. Cùng là “bất động sản”, nhưng một bên chỉ là đồ, một bên là cỗ máy đang chạy.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. IFRS 3 mô tả một business gồm <em>đầu vào</em> (inputs) và <em>quy trình</em> (processes) tác động lên đầu vào để <strong>có khả năng</strong> tạo ra <em>đầu ra</em> (outputs). Chú ý chữ “có khả năng”: chưa cần đã có doanh thu — chỉ cần đủ bộ phận để chạy được. Vì thế một nhà máy mới, chưa bán hàng, vẫn có thể là một business.</p>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">4</div>
+      <div class="step-meta"><span class="lbl">Kể lại gọn gàng</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Bỏ tiền mua một món đồ thì ghi đúng số đã trả, hết chuyện. Bỏ tiền mua cả một cỗ máy đang kiếm tiền — có người, có khách, có tiếng — thì khác. Bạn trả hơn giá đống đồ đạc, và phần thừa đó treo lại thành goodwill.</p>
+<p>Chỉ một “business” mới đẻ ra goodwill. Mua một nhóm tài sản rời thì không, dù bạn trả giá cao.</p>
+<p class="core">Cùng một mớ tài sản — <span>chỉ khi nó “chạy được như một doanh nghiệp” mới đẻ ra goodwill.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã hiểu chưa?</h3>
+      <ol>
+        <li>Mua một tòa nhà trống, và mua cùng tòa nhà đó kèm hợp đồng thuê và đội vận hành: vụ nào có thể đẻ goodwill? Vì sao?</li>
+        <li>Vì sao “mua tài sản” không bao giờ tạo ra goodwill, dù bạn trả giá rất cao?</li>
+        <li>Mua 60% và giành quyền kiểm soát một quán ăn đang hoạt động — có phải hợp nhất kinh doanh không?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nếu giải thích được cho bà ngoại hiểu, bạn mới thật sự hiểu.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-ai-la-ben-mua"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Giải thích theo phương pháp Feynman</div>
+    <h1 class="rise" style="animation-delay:.08s">Ai là bên mua? Không phải bên to hơn</h1>
+    <p class="core rise" style="animation-delay:.16s">Bên mua là bên <span>giành được quyền kiểm soát — không phải bên to hơn hay bên bỏ tiền ra.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Điều cần hiểu &amp; cách tiếp cận</span><h2>Quy tắc: bên mua là bên giành quyền kiểm soát</h2></div>
+    </div>
+    <div class="rule">IFRS 3 <strong>đoạn 6–7</strong>: mỗi hợp nhất phải xác định <strong>một</strong> bên là <em>acquirer</em> (bên mua) — đơn vị <strong>giành được <em>control</em></strong> (quyền kiểm soát) bên kia, dùng hướng dẫn của IFRS 10. Nếu áp dụng IFRS 10 mà vẫn <strong>chưa rõ</strong> ai là bên mua, xét tiếp các yếu tố ở <strong>đoạn B14–B18</strong>.</div>
+    <div class="sub">Cách giải thích</div>
+    <div class="approach"><p>Chỗ vấp là trực giác “<strong>bên to hơn</strong>, hoặc <strong>bên trả tiền</strong>, là bên mua”. Cách làm: hỏi đúng một câu — sau khi nhập làm một, <strong>ai cầm vô-lăng</strong>? Đôi khi bên nhỏ, thậm chí bên phát hành cổ phần ra, lại là người nắm quyền. Tiền và quy mô chỉ là manh mối khi nhìn chưa rõ.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Giải thích đơn giản</span><h2>Ai cầm được vô-lăng sau cùng?</h2></div>
+    </div>
+    <p class="lead">Tưởng tượng hai công ty nhập làm một. Câu hỏi đầu tiên: ai là “bên mua”? Trực giác mách ngay: bên nào to hơn, hoặc bên nào bỏ tiền ra. Nhưng IFRS 3 không hỏi vậy. Nó hỏi một câu khác hẳn: ai cầm được vô-lăng sau cùng?</p>
+
+<div class="sub">“Cầm vô-lăng” nghĩa là gì</div>
+<p>Cầm vô-lăng là quyết được những việc lớn của bên kia: chọn người điều hành, định hướng làm ăn, và hưởng phần lời lỗ thay đổi theo. Ai giành được quyền đó thì là bên mua. Đây chính là khái niệm “kiểm soát” mà IFRS 10 dùng.</p>
+
+<div class="sub">Vì sao không phải bên to hơn</div>
+<p>Một bên nhỏ vẫn có thể giành quyền điều khiển một bên to. Bên trả cổ phần ra cũng chưa chắc là bên mua. Nếu sau vụ này, chủ cũ của bên “bị mua” lại là người nắm nhiều phiếu bầu nhất và nhiều ghế nhất, thì chính họ mới cầm vô-lăng. Kế toán đi theo người cầm quyền thật, không theo cái mác trên giấy.</p>
+
+<div class="sub">Khi nhìn chưa rõ ai cầm lái</div>
+<p>Có lúc quyền kiểm soát không lộ ra ngay. Khi đó mới xét tới các manh mối phụ. Ai bỏ tiền mặt ra, ai phát hành cổ phần để mua? Bên nào lớn hơn nhiều, ban lãnh đạo mới phần lớn là người bên nào? Và ai là bên khởi xướng vụ này? Đây là phương án dự phòng, không phải câu trả lời chính.</p>
+  </section>
+
+  <section class="gaps">
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Chỗ vấp · Lỗ hổng</span><h2>Mấy chỗ nghe xuôi mà nghĩ kỹ chưa thông</h2></div>
+    </div>
+    <div class="gap-q"><span class="q">“Bên bỏ tiền ra mua thì đương nhiên là bên mua chứ?”</span><p>Thường thì đúng — nên “ai trả tiền” nằm trong danh sách manh mối B14–B18. Nhưng “thường” không phải “luôn”. Câu hỏi gốc vẫn là ai giành được quyền kiểm soát. Tiền chỉ là một dấu hiệu, không phải bằng chứng cuối cùng.</p></div>
+<div class="gap-q"><span class="q">“Mua ngược nghe vô lý — sao bên phát hành cổ phần lại là bên bị mua?”</span><p>Vì số cổ phần phát hành ra nhiều tới mức chủ cũ của bên kia trở thành nhóm cổ đông lớn nhất. Trên giấy tờ pháp lý, bên to là “công ty mẹ”. Nhưng xét quyền điều khiển thật, bên kia mới nắm. Kế toán bám theo quyền kiểm soát thật, nên gọi đây là “mua ngược”.</p></div>
+<div class="gap-q"><span class="q">“Nhập ngang hàng thì sao — có thể hòa, không ai là bên mua không?”</span><p>IFRS 3 không cho “hòa”. Mỗi vụ buộc phải chỉ ra đúng một bên mua. Kể cả khi quảng cáo là “sáp nhập của những người ngang nhau”, vẫn phải tìm cho ra ai thực sự cầm quyền sau khi nhập. Luôn có một bên kiểm soát.</p></div>
+<div class="gap-q"><span class="q">“Nếu các manh mối chỉ về hai bên khác nhau thì sao?”</span><p>Đây là chỗ thật sự khó. B14–B18 là một danh sách yếu tố, không phải công thức cộng điểm. Chúng có thể mâu thuẫn — bên này trả tiền, bên kia lại nắm hội đồng. Lúc đó phải cân nhắc tổng thể xem ai thực sự cầm quyền, và đó là phần dễ tranh cãi nhất của cả bước này.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví von &amp; ví dụ đời thường</span><h2>Neo vào thứ bạn đã biết</h2></div>
+    </div>
+    <div class="analogy-card"><span class="tag">Ví dụ trung tâm</span>
+<p>Hai câu lạc bộ bóng đá nhập làm một. Đội nào đông cổ động viên hơn không quan trọng. Câu hỏi là: sau khi nhập, <strong>ai chọn huấn luyện viên, ai xếp đội hình, ai quyết mua bán cầu thủ</strong>? Người cầm quyền đó là bên mua. Một câu lạc bộ nhỏ nhưng giành được ghế chủ tịch vẫn là bên mua.</p>
+<p class="limit"><b>Chỗ ví von này hỏng:</b> trong bóng đá thường nhìn ra ngay ai làm chủ tịch. Trong vụ hợp nhất thật, quyền kiểm soát rải ra nhiều dấu hiệu — phiếu bầu, hợp đồng, quyền phủ quyết — và đôi khi chúng mâu thuẫn nhau. Khi đó phải lần theo IFRS 10 và các yếu tố B14–B18, chứ không có một “ông chủ tịch” để chỉ tay vào.</p>
+</div>
+<p>Gần đời hơn: một công ty khởi nghiệp nhỏ muốn lên sàn nhanh, nên “nhập” vào một công ty vỏ đã niêm yết. Công ty vỏ phát hành cổ phần để thâu tóm startup. Nhưng sau đó chủ startup nắm phần lớn cổ phần và hội đồng. Người cầm vô-lăng là startup — dù trên giấy nó là bên “bị mua”.</p>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">4</div>
+      <div class="step-meta"><span class="lbl">Kể lại gọn gàng</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Đừng hỏi ai to hơn hay ai bỏ tiền. Hỏi: sau khi nhập, ai cầm vô-lăng — ai quyết người, quyết hướng, hưởng phần lời lỗ đổi thay? Đó là bên mua.</p>
+<p>Đôi khi bên nhỏ, thậm chí bên phát hành cổ phần ra, lại là người nắm quyền — gọi là “mua ngược”. Chỉ khi nhìn chưa rõ ai cầm lái, mới lần tới các manh mối phụ: ai trả tiền, ai phát hành vốn, ai lớn hơn.</p>
+<p class="core">Bên mua là bên <span>giành được quyền kiểm soát — không phải bên to hơn hay bên bỏ tiền ra.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã hiểu chưa?</h3>
+      <ol>
+        <li>Công ty A to gấp mười lần, phát hành cổ phần để mua công ty B. Sau vụ này chủ B nắm 60% phiếu bầu. Ai là bên mua?</li>
+        <li>Vì sao “ai bỏ tiền ra” chỉ là manh mối, không phải câu trả lời?</li>
+        <li>Khi các yếu tố B14–B18 chỉ về hai bên khác nhau, bạn dựa vào đâu để quyết?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nếu giải thích được cho bà ngoại hiểu, bạn mới thật sự hiểu.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-ngay-mua"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Giải thích theo phương pháp Feynman</div>
+    <h1 class="rise" style="animation-delay:.08s">Ngày mua: ngày cầm vô-lăng, không phải ngày ký</h1>
+    <p class="core rise" style="animation-delay:.16s">Ngày mua là ngày <span>bạn thật sự cầm được quyền điều khiển — không phải ngày ký, không phải ngày trả tiền.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Điều cần hiểu &amp; cách tiếp cận</span><h2>Quy tắc: ngày mua là ngày giành quyền kiểm soát</h2></div>
+    </div>
+    <div class="rule">IFRS 3 <strong>đoạn 8</strong>: <em>acquisition date</em> (ngày mua) là ngày bên mua <strong>giành được quyền kiểm soát</strong> bên bị mua. <strong>Đoạn 9</strong>: ngày này <strong>thường</strong> trùng <em>closing date</em> (ngày hoàn tất) — ngày chuyển giao giá phí hợp pháp — nhưng có thể <strong>sớm hơn hoặc muộn hơn</strong> nếu một thỏa thuận bằng văn bản quy định.</div>
+    <div class="sub">Cách giải thích</div>
+    <div class="approach"><p>Chỗ vấp là có tới <strong>ba ngày</strong> rất dễ lẫn: ngày ký hợp đồng, ngày trả tiền và hoàn tất, và ngày thật sự nắm quyền. Cách làm: neo vào chuyện mua nhà — ngày đặt bút ký, ngày ra công chứng trả tiền, và ngày cầm chìa khóa dọn vào. Chỉ ngày cầm chìa mới là ngày bạn làm chủ.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Giải thích đơn giản</span><h2>Ba cái mốc, chỉ một là “ngày của bạn”</h2></div>
+    </div>
+    <p class="lead">Tưởng tượng bạn mua một căn nhà. Có ngày bạn ký hợp đồng đặt cọc. Có ngày bạn ra công chứng, trả nốt tiền, xong thủ tục. Và có ngày bạn cầm chìa khóa, dọn vào ở. Ngày nào mới thật là “nhà của bạn”? Ngày cầm chìa — ngày bạn thật sự làm chủ.</p>
+
+<div class="sub">Ba cái mốc dễ lẫn</div>
+<p>Một vụ mua công ty cũng có ba mốc như vậy. Ngày ký hợp đồng: mới là lời hứa sẽ làm. Ngày trả tiền và hoàn tất thủ tục: kế toán gọi là ngày hoàn tất. Và ngày giành được quyền điều khiển. IFRS 3 chỉ chọn cái cuối cùng.</p>
+
+<div class="sub">Thường trùng, nhưng không phải lúc nào</div>
+<p>Thường thì ngày cầm quyền trùng ngày trả tiền. Nhưng không phải luôn luôn. Nếu hợp đồng viết rõ “bên mua được quyền điều hành từ ngày 1/3”, dù mãi 15/3 mới chuyển tiền, thì ngày mua là 1/3. Giấy tờ đã trao vô-lăng sớm hơn.</p>
+
+<div class="sub">Vì sao phải chọn kỹ đến thế</div>
+<p>Vì mọi phép đo của IFRS 3 đều neo vào ngày này. Giá trị hợp lý của tài sản, của nợ, và cả goodwill đều được “chụp ảnh” tại ngày mua. Chụp sai ngày là cả tấm ảnh lệch theo.</p>
+  </section>
+
+  <section class="gaps">
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Chỗ vấp · Lỗ hổng</span><h2>Mấy chỗ nghe xuôi mà nghĩ kỹ chưa thông</h2></div>
+    </div>
+    <div class="gap-q"><span class="q">“Ký hợp đồng xong là mua rồi còn gì?”</span><p>Ký mới là hứa sẽ làm. Lúc đó bạn chưa điều khiển được công ty kia. Chừng nào chưa cầm được quyền quyết những việc lớn, thì chưa phải ngày mua. Một lời hứa trên giấy không bằng việc thật sự nắm tay lái.</p></div>
+<div class="gap-q"><span class="q">“Sao ngày mua lại có thể đến TRƯỚC ngày trả tiền?”</span><p>Vì quyền kiểm soát có thể trao bằng giấy tờ trước khi tiền chạy. Nếu hợp đồng cho bạn quyền điều hành ngay từ hôm nay, bạn đã cầm vô-lăng — dù tuần sau mới thanh toán. Kế toán bám theo lúc quyền chuyển tay, không theo lúc tiền chuyển tay.</p></div>
+<div class="gap-q"><span class="q">“Lệch vài ngày thì ảnh hưởng gì mà ghê?”</span><p>Lệch ngày là lệch điểm chụp ảnh. Giá cổ phiếu, tỷ giá, giá trị tài sản đổi từng ngày. Chụp sai ngày thì mọi con số đo theo giá trị hợp lý — và do đó cả goodwill — đều sai theo. Một mốc nhỏ kéo lệch cả bài toán.</p></div>
+<div class="gap-q"><span class="q">“Quyền kiểm soát ‘trao’ chính xác lúc nào — nhiều khi đâu rõ?”</span><p>Đúng, và chuẩn thừa nhận điều đó: phải xét “tất cả sự kiện và hoàn cảnh liên quan”. Không phải lúc nào cũng có một dòng hợp đồng chỉ thẳng ra ngày. Khi quyền chuyển dần — qua nhiều điều kiện, nhiều bước — việc chốt đúng một ngày là chỗ cần xét đoán và dễ tranh cãi.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví von &amp; ví dụ đời thường</span><h2>Neo vào thứ bạn đã biết</h2></div>
+    </div>
+    <div class="analogy-card"><span class="tag">Ví dụ trung tâm</span>
+<p>Lại là chuyện mua nhà. Bạn không “sở hữu” căn nhà vào ngày ký đặt cọc — lúc đó mới là hứa. Bạn làm chủ vào ngày <strong>cầm chìa khóa</strong>, bước vào, đổi được ổ khóa nếu muốn. Với một công ty, “cầm chìa khóa” là cái ngày bạn được quyền điều khiển nó. Đó là ngày mua.</p>
+<p class="limit"><b>Chỗ ví von này hỏng:</b> chìa khóa nhà thì cầm vào tay là xong, một khoảnh khắc rõ ràng. Quyền kiểm soát một công ty lại được trao qua phiếu bầu, hợp đồng, quyền phủ quyết — và có thể chuyển dần chứ không “tách” một cái. Không phải lúc nào cũng có đúng một “cái chìa khóa” để chỉ vào.</p>
+</div>
+<p>Gần đời hơn: bạn thuê một căn hộ, chủ nhà đưa chìa cho dọn vào từ mùng 1, nhưng hẹn mùng 5 mới đóng đủ tiền cọc. Bạn “làm chủ” chỗ ở từ mùng 1 — ngày cầm chìa — chứ không phải mùng 5. Quyền sử dụng đến trước khi tiền xong.</p>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">4</div>
+      <div class="step-meta"><span class="lbl">Kể lại gọn gàng</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Có ba ngày dễ lẫn: ngày ký (mới hứa), ngày trả tiền (hoàn tất), và ngày bạn thật sự cầm quyền điều khiển. IFRS 3 chỉ lấy ngày cuối.</p>
+<p>Thường nó trùng ngày trả tiền, nhưng nếu giấy tờ trao quyền sớm hơn thì lấy ngày sớm hơn. Vì mọi con số được chụp ảnh tại ngày này, chọn sai ngày là lệch cả bài.</p>
+<p class="core">Ngày mua là ngày <span>bạn thật sự cầm được quyền điều khiển — không phải ngày ký, không phải ngày trả tiền.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã hiểu chưa?</h3>
+      <ol>
+        <li>Ký 1/3, trả tiền 15/3, nhưng hợp đồng cho quyền điều hành từ 1/3. Ngày mua là ngày nào?</li>
+        <li>Vì sao lệch ngày mua lại kéo cả goodwill lệch theo?</li>
+        <li>Vì sao ngày ký hợp đồng thường KHÔNG phải là ngày mua?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nếu giải thích được cho bà ngoại hiểu, bạn mới thật sự hiểu.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-no-tiem-tang"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Giải thích theo phương pháp Feynman</div>
+    <h1 class="rise" style="animation-delay:.08s">Nợ tiềm tàng: lên sổ dù chưa chắc xảy ra</h1>
+    <p class="core rise" style="animation-delay:.16s">Trong một vụ mua công ty, <span>một khoản nợ chưa chắc xảy ra vẫn phải lên sổ — chỉ cần đo được giá trị hợp lý.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Điều cần hiểu &amp; cách tiếp cận</span><h2>Quy tắc: bỏ phép thử “probable” của IAS 37</h2></div>
+    </div>
+    <div class="rule">IFRS 3 <strong>đoạn 23</strong>: tại ngày mua, bên mua ghi nhận một <em>contingent liability</em> (nợ tiềm tàng) gánh trong hợp nhất NẾU đó là <strong>nghĩa vụ hiện tại</strong> từ sự kiện quá khứ VÀ <strong>giá trị hợp lý đo được tin cậy</strong> — <strong>kể cả khi chưa “probable”</strong> (chưa khả năng cao) có dòng tiền ra. Phép thử “probable” của IAS 37 không áp dụng ở đây. <strong>Đoạn 23A</strong>: ngược lại, <strong>không</strong> ghi nhận tài sản tiềm tàng.</div>
+    <div class="sub">Cách giải thích</div>
+    <div class="approach"><p>Chỗ vấp: ở mọi nơi khác (IAS 37), một khoản nợ mơ hồ chỉ lên sổ khi <strong>nhiều khả năng</strong> phải trả. Ở đây phép thử đó bị bỏ. Cách làm: neo vào chuyện mua lại một căn nhà <strong>đang vướng tranh chấp</strong>. Bạn đã trả giá có trừ hao cho rủi ro đó, nên phải ghi nó ra cho khớp.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Giải thích đơn giản</span><h2>Khi nào một khoản nợ “chưa chắc” vẫn phải ghi</h2></div>
+    </div>
+    <p class="lead">Tưởng tượng bạn mua lại một công ty, và nó đang bị kiện. Vụ kiện chưa ngã ngũ — có thể thua, có thể không. Bình thường kế toán bảo: chưa chắc thua thì khoan ghi nợ. Nhưng khi khoản này đi kèm một vụ mua cả công ty, luật chơi đổi.</p>
+
+<div class="sub">Bình thường thì xử thế nào</div>
+<p>Theo IAS 37, một khoản nợ mơ hồ chỉ lên sổ khi “nhiều khả năng” phải trả. Chưa tới mức đó thì chỉ ghi chú một dòng, không ghi thành số. Đây là phản xạ thận trọng quen thuộc.</p>
+
+<div class="sub">Trong vụ hợp nhất thì khác</div>
+<p>Tại ngày mua, chỉ cần hai điều: một, đúng là nghĩa vụ có thật từ chuyện đã xảy ra; hai, đo được giá trị hợp lý đáng tin. Đủ hai cái đó là phải lên sổ — dù khả năng phải trả chưa cao. Phép thử “nhiều khả năng” được gỡ bỏ.</p>
+
+<div class="sub">Vì sao nới tay ở đây</div>
+<p>Vì bạn vừa trả tiền mua cả công ty, gồm luôn mấy cục nợ lùng nhùng của nó. Giá mua đã ngầm tính tới rủi ro vụ kiện rồi. Giấu khoản nợ đó đi thì bức tranh “mình mua được cái gì” sẽ sai. Ghi nó ra cho khớp với giá đã trả.</p>
+
+<div class="sub">Nhưng tài sản tiềm tàng thì không</div>
+<p>Chỉ nới một chiều. Công ty mua về có thể đang đi kiện người khác, biết đâu thắng được tiền. Khoản “biết đâu thắng” đó — tài sản tiềm tàng — thì KHÔNG được ghi. Nợ thì nới, tài sản thì chặt.</p>
+  </section>
+
+  <section class="gaps">
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Chỗ vấp · Lỗ hổng</span><h2>Mấy chỗ nghe xuôi mà nghĩ kỹ chưa thông</h2></div>
+    </div>
+    <div class="gap-q"><span class="q">“Cùng một loại nợ, sao IAS 37 chặt mà IFRS 3 lại nới?”</span><p>Vì bối cảnh khác. IAS 37 nói về nợ tự công ty gánh trong đời thường. IFRS 3 nói về lúc bạn vừa định giá cả một công ty để mua. Ở thời điểm đó, bạn đã cân rủi ro và trả tiền theo nó, nên phải phản ánh khoản nợ ra cho khớp với giá.</p></div>
+<div class="gap-q"><span class="q">“‘Chưa probable’ mà vẫn ghi — chẳng phải đoán mò sao?”</span><p>Không hẳn. Vẫn cần hai điều kiện cứng: nghĩa vụ có thật, và đo được giá trị hợp lý tin cậy. Nếu không đo nổi giá trị hợp lý thì cũng không ghi. Cái được bỏ chỉ là phép thử “khả năng cao”, chứ không phải bỏ hết kỷ luật.</p></div>
+<div class="gap-q"><span class="q">“Sao nợ thì nới mà tài sản tiềm tàng lại cấm ghi?”</span><p>Đây là sự thận trọng cố ý, không cân xứng. Ghi tài sản “biết đâu thắng kiện” dễ vẽ ra công ty giàu hơn thực. Còn ghi rõ nợ thì kéo bức tranh về phía cẩn thận. Chuẩn chấp nhận lệch về phía an toàn — thà ghi nợ sớm còn hơn khoe tài sản chưa chắc có.</p></div>
+<div class="gap-q"><span class="q">“Đo ‘giá trị hợp lý’ của một vụ kiện chưa xử — tin được không?”</span><p>Đây là chỗ mong manh. Phải ước lượng khả năng và số tiền của một thứ chưa ngã ngũ, nên con số có khoảng sai. Vì thế chuẩn buộc kể rõ giả định, và về sau còn bắt đo lại theo cách riêng — chứ không bỏ mặc con số ban đầu.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví von &amp; ví dụ đời thường</span><h2>Neo vào thứ bạn đã biết</h2></div>
+    </div>
+    <div class="analogy-card"><span class="tag">Ví dụ trung tâm</span>
+<p>Bạn mua lại một căn nhà đang <strong>tranh chấp ranh đất</strong> với hàng xóm. Vụ việc chưa xử xong, chưa biết thắng thua. Nhưng bạn vẫn trả giá có trừ hao cho rủi ro đó. Khi ghi sổ “mình mua được gì”, bạn phải ghi cả cục rủi ro tranh chấp ra — dù chưa chắc thua — cho khớp với cái giá đã trả.</p>
+<p class="limit"><b>Chỗ ví von này hỏng:</b> tranh chấp ranh đất gắn cứng vào căn nhà, dễ thấy. Một số nợ tiềm tàng lại mờ hơn nhiều — một lời bảo lãnh, một cam kết dọn dẹp môi trường xa xôi. Càng mờ thì khâu “đo được giá trị hợp lý tin cậy” càng khó, và chính cửa ải đó mới quyết định có ghi hay không.</p>
+</div>
+<p>Gần đời hơn: mua lại một tiệm ăn có thể bị truy thu thuế. Cơ quan thuế chưa ra kết luận, chưa chắc phải nộp. Nhưng nếu định được giá trị hợp lý của khoản truy thu đó, bạn vẫn phải ghi nó vào lúc mua. Vì bạn đã ôm rủi ro ấy khi nhận cả tiệm.</p>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">4</div>
+      <div class="step-meta"><span class="lbl">Kể lại gọn gàng</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Bình thường, một khoản nợ mơ hồ chỉ lên sổ khi nhiều khả năng phải trả. Nhưng trong một vụ mua công ty, luật nới tay. Chỉ cần nó là nghĩa vụ có thật và đo được giá trị hợp lý, là phải ghi — dù chưa chắc xảy ra. Vì bạn đã trả tiền có tính tới nó.</p>
+<p>Một chiều thôi: nợ thì nới tay, còn tài sản “biết đâu thắng” thì cấm ghi.</p>
+<p class="core">Trong một vụ mua công ty, <span>một khoản nợ chưa chắc xảy ra vẫn phải lên sổ — chỉ cần đo được giá trị hợp lý.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã hiểu chưa?</h3>
+      <ol>
+        <li>Công ty mua về đang bị kiện, khả năng thua chỉ 30%, nhưng luật sư định được giá trị hợp lý. Có ghi nợ không? Vì sao?</li>
+        <li>Vì sao nợ tiềm tàng được nới tay, còn tài sản tiềm tàng thì không?</li>
+        <li>Hai điều kiện nào vẫn phải thỏa thì mới ghi nợ tiềm tàng tại ngày mua?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nếu giải thích được cho bà ngoại hiểu, bạn mới thật sự hiểu.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-nhan-dien-vo-hinh"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Giải thích theo phương pháp Feynman</div>
+    <h1 class="rise" style="animation-delay:.08s">Bóc tách tài sản vô hình: gọi tên trước khi còn lại là goodwill</h1>
+    <p class="core rise" style="animation-delay:.16s">Trước khi phần dôi ra thành goodwill, <span>bạn phải gọi tên hết những thứ vô hình có thể gọi tên được.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Điều cần hiểu &amp; cách tiếp cận</span><h2>Quy tắc: gọi tên riêng mọi tài sản nhận diện được, kể cả vô hình</h2></div>
+    </div>
+    <div class="rule">IFRS 3 <strong>đoạn 10</strong>: tại ngày mua, bên mua phải ghi nhận <strong>RIÊNG</strong> (tách khỏi goodwill) các tài sản nhận diện được (<em>identifiable</em>) đã mua và nợ phải gánh. <strong>Đoạn 18</strong>: đo chúng theo <em>fair value</em> ngày mua. Riêng tài sản vô hình, <strong>đoạn 13 &amp; B31</strong>: một tài sản vô hình là “nhận diện được” nếu thỏa <strong>MỘT</strong> trong hai — <strong>(B32) tiêu chí hợp đồng-pháp lý</strong> (sinh ra từ quyền hợp đồng hoặc pháp lý, dù không tách bán được), <strong>HOẶC (B33) tiêu chí tách rời</strong> (<em>separability</em> — có thể tách ra bán, chuyển, cấp phép, cho thuê).</div>
+    <div class="sub">Cách giải thích</div>
+    <div class="approach"><p>Chỗ vấp: nhiều người nhảy thẳng tới goodwill mà quên bóc lớp vô hình ở giữa. Cách làm: hình dung dọn một căn nhà thừa kế. Trước khi gộp mọi thứ vào thùng “đồ linh tinh”, bạn phải lôi ra từng món có tên gọi và giá riêng. Phần thật sự không gọi tên được mới là goodwill.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Giải thích đơn giản</span><h2>Gọi tên từng món trước khi gộp phần còn lại</h2></div>
+    </div>
+    <p class="lead">Tưởng tượng bạn thừa kế cả một căn nhà đầy đồ. Trước khi bán xong, bạn dọn: cái đồng hồ cổ để riêng, bộ tem để riêng, mỗi món có tên và giá. Mua một công ty cũng vậy. Trước khi phần dôi ra thành goodwill, bạn phải lôi ra từng tài sản gọi tên được — kể cả thứ vô hình.</p>
+
+<div class="sub">Vô hình vẫn là tài sản có tên</div>
+<p>Một thương hiệu, một danh sách khách quen, một bằng sáng chế, một hợp đồng thuê lợi. Không sờ được, nhưng có tên và đáng tiền. IFRS 3 bắt bóc chúng ra, đo riêng theo giá hợp lý, đặt cạnh máy móc nhà xưởng.</p>
+
+<div class="sub">Hai cửa để một thứ vô hình được gọi tên</div>
+<p><strong>Cửa 1 — có giấy tờ:</strong> nó sinh ra từ một hợp đồng hay quyền pháp lý. Ví dụ giấy phép, bằng sáng chế, hợp đồng đã ký. Cửa này tính, dù bạn không tách nó ra bán lẻ được.</p>
+<p><strong>Cửa 2 — tách ra bán được:</strong> không cần giấy tờ, miễn có thể tách khỏi công ty mà bán, chuyển, cấp phép hay cho thuê. Danh sách khách hàng là ví dụ kinh điển: người ta có mua bán nó.</p>
+
+<div class="sub">Chỉ một cửa là đủ</div>
+<p>Không cần thỏa cả hai. Thỏa một cửa là tách riêng khỏi goodwill. Càng bóc được nhiều thứ có tên, phần goodwill còn lại càng nhỏ — và càng rõ bạn đã mua đúng cái gì.</p>
+  </section>
+
+  <section class="gaps">
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Chỗ vấp · Lỗ hổng</span><h2>Mấy chỗ nghe xuôi mà nghĩ kỹ chưa thông</h2></div>
+    </div>
+    <div class="gap-q"><span class="q">“Sao phải nhọc công bóc vô hình ra? Gộp hết vào goodwill cho nhanh?”</span><p>Vì gộp hết vào goodwill là giấu thông tin. Goodwill không được khấu hao, chỉ kiểm tra suy giảm. Còn phần lớn vô hình có tên thì được khấu hao dần vào chi phí. Bóc đúng hay gộp ẩu cho ra hai bức tranh lợi nhuận khác hẳn nhau những năm sau.</p></div>
+<div class="gap-q"><span class="q">“Thứ mà chính công ty bị mua chưa từng ghi sổ — vẫn phải lôi ra à?”</span><p>Đúng, và đây là chỗ ngược đời nhất. Một thương hiệu công ty tự gây dựng thường không nằm trên sổ của họ, vì IAS 38 cấm ghi nhận thương hiệu tự tạo. Nhưng khi bạn MUA cả công ty, thương hiệu đó được nhìn nhận và đo riêng. Mua thì bóc ra, tự làm thì không — nghe lạ nhưng đúng chuẩn.</p></div>
+<div class="gap-q"><span class="q">“Tách rời nghĩa là phải định bán thật mới tính?”</span><p>Không. Chỉ cần nó CÓ THỂ tách ra bán, dù bạn chẳng định bán. Bằng chứng là ngoài thị trường người ta có mua bán loại đó — dù thưa thớt, dù bạn không tham gia. Khả năng tách bán là đủ, không cần ý định bán.</p></div>
+<div class="gap-q"><span class="q">“Bóc ra rồi đo giá hợp lý — vô hình thì lấy giá ở đâu?”</span><p>Đây là chỗ mong manh nhất, và là chỗ ăn tiền của định giá. Vô hình hiếm có “giá chợ”. Phải dựng mô hình: tách dòng tiền do thương hiệu mang lại, hay tính chi phí làm lại danh sách khách. Đổi giả định một chút là giá nhảy — nên phần này hay bị soi kỹ.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví von &amp; ví dụ đời thường</span><h2>Neo vào thứ bạn đã biết</h2></div>
+    </div>
+    <div class="analogy-card"><span class="tag">Ví dụ trung tâm</span>
+<p>Quay lại căn nhà thừa kế. Bạn không quẳng cả nhà đồ vào một thùng rồi ghi “đồ linh tinh: 100 triệu”. Bạn lôi ra cái đồng hồ cổ, bộ tem, cây đàn — mỗi món định giá riêng. Cái thật sự không gọi tên nổi mới dồn vào thùng cuối. Mua công ty cũng thế: bóc hết vô hình có tên, phần mơ hồ còn lại là goodwill.</p>
+<p class="limit"><b>Chỗ ví von này hỏng:</b> món đồ trong nhà thì sờ được, ai cũng đồng ý nó là một món. Vô hình thì ranh giới mờ hơn nhiều. “Quan hệ khách hàng”, “thương hiệu”, “hợp đồng” nhiều khi chồng lấn nhau. Bóc tới đâu, gộp tới đâu là chỗ phải xét đoán. Hai người định giá khác nhau dễ ra hai kết quả khác nhau.</p>
+</div>
+<p>Gần đời hơn: mua một chuỗi trà sữa. Bạn bóc riêng <strong>thương hiệu</strong> (logo ai cũng nhận ra) và <strong>công thức pha</strong> (bí quyết, có thể bảo hộ). Rồi <strong>hợp đồng thuê mặt bằng đẹp</strong> và <strong>danh sách khách thành viên</strong>. Mỗi thứ một giá. Cộng lại, so với giá mua — phần dôi mới là goodwill.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. IFRS 3 đoạn 10 nêu nguyên tắc ghi nhận, đoạn 18 nêu nguyên tắc đo lường (<em>fair value</em> ngày mua). Hướng dẫn B31–B34 mới là chỗ định nghĩa hai tiêu chí: <em>contractual-legal</em> (B32) và <em>separability</em> (B33). Một nhánh hay gặp khi định giá: phần mềm, công nghệ dở dang (<em>in-process R&amp;D</em>), quan hệ khách hàng theo hợp đồng — đều thường thỏa tiêu chí và phải bóc riêng. Đây chính là phần “ăn tiền” của một <em>purchase price allocation</em> (PPA), và là việc làm hằng ngày của người làm định giá.</p>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">4</div>
+      <div class="step-meta"><span class="lbl">Kể lại gọn gàng</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Mua một công ty không phải gộp tất cả thành một cục goodwill. Trước hết, bạn lôi ra từng tài sản gọi tên được — kể cả vô hình như thương hiệu, bằng sáng chế, danh sách khách. Một thứ vô hình được gọi tên nếu nó sinh ra từ hợp đồng/quyền pháp lý, HOẶC có thể tách ra bán. Chỉ một cửa là đủ.</p>
+<p>Bóc hết phần có tên, đo theo giá hợp lý. Phần thật sự không gọi tên nổi mới là goodwill.</p>
+<p class="core">Trước khi phần dôi ra thành goodwill, <span>bạn phải gọi tên hết những thứ vô hình có thể gọi tên được.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã hiểu chưa?</h3>
+      <ol>
+        <li>Một thương hiệu mà công ty bị mua tự gây dựng, chưa từng ghi sổ — khi bị mua lại, có phải bóc ra đo riêng không? Vì sao?</li>
+        <li>Một tài sản vô hình chỉ thỏa tiêu chí “tách rời” mà không dựa trên hợp đồng pháp lý nào — có được ghi nhận riêng khỏi goodwill không?</li>
+        <li>Bóc được càng nhiều vô hình có tên thì goodwill to lên hay nhỏ đi? Vì sao điều đó quan trọng cho lợi nhuận các năm sau?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nếu giải thích được cho bà ngoại hiểu, bạn mới thật sự hiểu.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-goodwill-so-du"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Giải thích theo phương pháp Feynman</div>
+    <h1 class="rise" style="animation-delay:.08s">Goodwill: phần dôi ra, không ai đo trực tiếp</h1>
+    <p class="core rise" style="animation-delay:.16s">Goodwill không được đo — <span>nó là phần còn lại sau khi lấy cái bạn bỏ ra trừ đi cái “gọi tên được”.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Điều cần hiểu &amp; cách tiếp cận</span><h2>Quy tắc: goodwill là một số dư (residual)</h2></div>
+    </div>
+    <div class="rule">IFRS 3 <strong>đoạn 32</strong>: <em>goodwill</em> = phần vượt của (a) so với (b). <strong>(a)</strong> = giá phí chuyển giao + giá trị <em>NCI</em> + (nếu mua theo giai đoạn) giá trị hợp lý ngày mua của lợi ích vốn đã nắm trước. <strong>(b)</strong> = giá trị thuần ngày mua của tài sản có thể xác định trừ nợ phải trả. Goodwill <strong>không đo trực tiếp</strong> — nó được tính ngược ra từ hai vế.</div>
+    <div class="sub">Cách giải thích</div>
+    <div class="approach"><p>Hai chỗ vấp. Một: tưởng goodwill là “phần trả thừa” và đo thẳng được. Hai: vế (a) lại cộng cả phần mình <strong>không</strong> mua (NCI và lợi ích cũ). Cách làm: neo vào chuyện mua một giỏ đồ cũ. Gỡ từng món ra định giá, phần trả dôi ra chính là goodwill. Rồi mới giải thích vì sao phải cộng cả phần của người khác.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Giải thích đơn giản</span><h2>Phần trả thêm cho cái không cầm nắm được</h2></div>
+    </div>
+    <p class="lead">Tưởng tượng bạn mua một giỏ đồ ở chợ đồ cũ. Người bán hét giá cả giỏ. Bạn về nhà, lấy từng món ra định giá riêng: cái này 50, cái kia 30. Cộng hết các món “gọi tên được” lại. Nếu bạn trả nhiều hơn tổng đó, phần dôi ra là tiền mua cái gì? Cái không cầm nắm được — gọi là goodwill.</p>
+
+<div class="sub">Goodwill không có thước đo riêng</div>
+<p>Không ai dán giá “goodwill: 140” lên một công ty. Nó luôn được tính ngược: lấy cái bạn bỏ ra, trừ đi giá trị từng món gọi tên được. Còn lại bao nhiêu thì goodwill bấy nhiêu. Nó là phần dư, không phải phần đo.</p>
+
+<div class="sub">Vế (b): những món gọi tên được</div>
+<p>Là tài sản có thể xác định trừ nợ phải trả, tính theo giá trị hợp lý ngày mua. Đây là phần “bóc tách ra, định giá riêng được”: nhà xưởng, hàng tồn, cả thương hiệu — trừ đi các khoản nợ.</p>
+
+<div class="sub">Vế (a): nhưng sao cộng cả phần mình KHÔNG mua?</div>
+<p>Đây là chỗ lạ. Vế (a) không chỉ là tiền bạn trả. Nó còn cộng giá trị phần của cổ đông khác (NCI) và phần bạn đã sở hữu từ trước. Vì sao? Vì goodwill được tính cho TOÀN BỘ công ty, không riêng phần bạn vừa mua.</p>
+
+<div class="sub">Nói cách khác</div>
+<p>Vế (b) là giá trị thuần của cả công ty, tính đủ 100%. Muốn so cho cân, vế (a) cũng phải đại diện cả công ty. Nên cộng thêm phần của người khác (NCI) và phần bạn đã có, để hai vế “cùng cỡ” rồi mới lấy hiệu.</p>
+  </section>
+
+  <section class="gaps">
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Chỗ vấp · Lỗ hổng</span><h2>Mấy chỗ nghe xuôi mà nghĩ kỹ chưa thông</h2></div>
+    </div>
+    <div class="gap-q"><span class="q">“Sao không đo goodwill thẳng — định giá thương hiệu, khách quen luôn cho rồi?”</span><p>Vì những thứ tách-tên-được như thương hiệu hay quan hệ khách hàng đã nằm ở vế (b) rồi. Goodwill là phần CÒN LẠI sau khi đã bóc hết cái gọi tên được. Nó đúng nghĩa là “cái không gọi tên nổi” — nên chỉ có thể tính ngược, không đo thẳng.</p></div>
+<div class="gap-q"><span class="q">“Sao phải cộng phần NCI — mình đâu có bỏ tiền mua phần đó?”</span><p>Vì vế (b) là giá trị thuần của CẢ công ty: 100% tài sản trừ nợ. Muốn lấy hiệu cho cân, vế (a) cũng phải phủ cả công ty. Cộng NCI vào để (a) gồm luôn phần của cổ đông khác — khi đó hai vế mới cùng đo trên một “cả công ty”.</p></div>
+<div class="gap-q"><span class="q">“Lợi ích cũ mình đã có thì liên quan gì tới giá mua bây giờ?”</span><p>Vì giờ bạn nắm cả công ty, kể cả phần ví dụ 35% từng có. Phần cũ đó được tính theo giá trị hợp lý ngày mua rồi cộng vào (a). Có vậy (a) mới là “tổng giá trị bạn đang nắm trên toàn công ty”, đủ cỡ để so với (b).</p></div>
+<div class="gap-q"><span class="q">“Goodwill là số dư — vậy nó hứng hết mọi sai số đo lường à?”</span><p>Đúng, và đó là điểm yếu. Đo sai một tài sản ở (b), goodwill lệch ngược lại đúng bằng đó. Vì là phần dư, goodwill gánh mọi nhầm lẫn của các con số khác. Nên đo (b) cho chuẩn chính là cách giữ goodwill khỏi phình hay hụt oan.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví von &amp; ví dụ đời thường</span><h2>Neo vào thứ bạn đã biết</h2></div>
+    </div>
+    <div class="analogy-card"><span class="tag">Ví dụ trung tâm</span>
+<p>Bạn mua một bộ ghép hình đã ghép sẵn trong khung. Bạn gỡ từng mảnh ra định giá: mảnh này nhựa tốt, mảnh kia thường. Cộng giá các mảnh “sờ được”. Nhưng bạn trả hơn thế, vì bức tranh khi ghép lại đẹp và nguyên vẹn. Phần trả thêm cho “cái đẹp khi ghép chung” là goodwill — không nằm ở mảnh nào, chỉ hiện ra khi lấy giá-trả trừ tổng-từng-mảnh.</p>
+<p class="limit"><b>Chỗ ví von này hỏng:</b> bộ ghép hình chỉ có một người mua, một người sở hữu. Còn một công ty có thể do nhiều cổ đông nắm — bạn mua 80%, người khác giữ 20%. Lúc đó “giá trả” và “tổng từng mảnh” phải gồm cả phần của người khác mới so được, và đó chính là lý do công thức cộng thêm NCI.</p>
+</div>
+<p>Gần đời hơn: mua một câu lạc bộ bóng đá. Cầu thủ, sân bãi, cúp — định giá riêng từng thứ được, đó là vế (b). Còn “sức hút thương hiệu, lượng fan trung thành” không tách thành món nào. Phần đó hiện ra như khoản dư khi lấy giá mua trừ tổng các thứ định giá được.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Vế (a) cộng NCI, mà NCI lại có hai cách đo (đoạn 19). Nếu đo NCI theo <em>giá trị hợp lý</em>, goodwill gồm cả phần của NCI — gọi là <em>full goodwill</em>. Nếu đo NCI theo phần tỷ lệ tài sản thuần, goodwill chỉ gồm phần của bên mua. Cùng một vụ, hai lựa chọn cho ra hai con số goodwill khác nhau.</p>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">4</div>
+      <div class="step-meta"><span class="lbl">Kể lại gọn gàng</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Goodwill không có thước đo riêng. Nó luôn tính ngược: lấy cái bạn bỏ ra, trừ đi giá trị từng món “gọi tên được” (tài sản trừ nợ). Còn lại là goodwill — phần trả cho cái không cầm nắm nổi.</p>
+<p>Một điểm lạ: vế “bỏ ra” cộng cả phần của cổ đông khác (NCI) và phần bạn đã có từ trước, để so cho cân với cả công ty.</p>
+<p class="core">Goodwill không được đo — <span>nó là phần còn lại sau khi lấy cái bạn bỏ ra trừ đi cái “gọi tên được”.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã hiểu chưa?</h3>
+      <ol>
+        <li>Trả 1.000 mua 80%, NCI đo được 240, tài sản thuần 1.100. Goodwill bằng bao nhiêu? (gợi ý: 1.000 cộng 240 trừ 1.100)</li>
+        <li>Vì sao goodwill không thể đo trực tiếp mà luôn phải tính ngược?</li>
+        <li>Vì sao công thức lại cộng phần NCI — phần bạn không bỏ tiền mua?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nếu giải thích được cho bà ngoại hiểu, bạn mới thật sự hiểu.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-mua-re"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Giải thích theo phương pháp Feynman</div>
+    <h1 class="rise" style="animation-delay:.08s">Mua rẻ: lãi trời cho, nhưng đáng nghi</h1>
+    <p class="core rise" style="animation-delay:.16s">Khi cái bạn nhận đáng hơn cái bạn bỏ ra, <span>đó là lãi mua rẻ — ghi thẳng vào lãi lỗ, nhưng phải soát lại trước đã.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Điều cần hiểu &amp; cách tiếp cận</span><h2>Quy tắc: rà lại đã, rồi mới ghi lãi</h2></div>
+    </div>
+    <div class="rule">IFRS 3 <strong>đoạn 34</strong>: đôi khi vế (b) — giá trị thuần tài sản nhận được — <strong>vượt</strong> vế (a) — cái bỏ ra. Đó là <em>bargain purchase</em> (mua rẻ). <strong>Đoạn 36</strong>: trước khi kết luận, bên mua phải rà lại đã xác định đủ tài sản/nợ chưa và soát lại các thủ tục đo lường. Nếu phần vượt vẫn còn, ghi nhận <strong>khoản lãi vào lãi lỗ</strong> tại ngày mua. (Không có “goodwill âm”.)</div>
+    <div class="sub">Cách giải thích</div>
+    <div class="approach"><p>Chỗ vấp: mua mà có lãi ghi ngay thì nghe đã thấy lạ — kế toán hiếm khi cho ghi lãi lúc vừa mua. Cách làm: neo vào chuyện vớ được lô đồ hời ở buổi thanh lý gấp. Lời thật đấy, nhưng người khôn kiểm trước xem có hàng nứt giấu bên dưới không, rồi mới dám mừng.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Giải thích đơn giản</span><h2>Lời ngay khi mua — mừng hay nghi?</h2></div>
+    </div>
+    <p class="lead">Tưởng tượng bạn mua cả một công ty với giá 8 tỷ. Nhưng đếm lại tài sản trừ nợ của nó, thấy đáng tới 10 tỷ. Bạn vừa lời 2 tỷ ngay lúc mua. Nghe như trúng số. Nhưng phản ứng đầu tiên của kế toán không phải ăn mừng — mà là nghi ngờ.</p>
+
+<div class="sub">Mua rẻ là gì</div>
+<p>Là khi cái bạn nhận (tài sản trừ nợ, theo giá trị hợp lý) đáng hơn cái bạn bỏ ra. Phần chênh đó là một khoản lãi. Nó ngược với goodwill: goodwill là trả thừa, còn mua rẻ là trả hụt.</p>
+
+<div class="sub">Vì sao phải nghi trước đã</div>
+<p>Một con số “lời ngay khi mua” thường là dấu hiệu đo sai, chứ chưa chắc là món hời thật. Có thể bạn bỏ sót một khoản nợ. Có thể bạn thổi giá một tài sản lên quá tay. Chuẩn bắt rà lại tất cả trước khi dám gọi đó là lãi.</p>
+
+<div class="sub">Rà xong vẫn còn lời thì sao</div>
+<p>Thì đó là lãi thật, ghi thẳng vào báo cáo lãi lỗ ngay tại ngày mua, và thuộc về bên mua. Lưu ý: không có chuyện ghi “goodwill âm”. Chênh lệch ngược dấu trở thành một khoản lãi, chứ không phải một loại goodwill.</p>
+
+<div class="sub">Khi nào mua rẻ thật xảy ra</div>
+<p>Hiếm, nhưng có. Ví dụ người bán bị ép bán gấp — kẹt tiền, buộc thanh lý. Lúc đó họ chịu bán dưới giá trị thật. Đó là một trong số ít tình huống mà “lời ngay khi mua” là thật.</p>
+  </section>
+
+  <section class="gaps">
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Chỗ vấp · Lỗ hổng</span><h2>Mấy chỗ nghe xuôi mà nghĩ kỹ chưa thông</h2></div>
+    </div>
+    <div class="gap-q"><span class="q">“Mua được giá hời thì mừng chứ, sao lại nghi?”</span><p>Vì trong kế toán, “tự nhiên có lãi” gần như luôn đáng ngờ. Người bán hiếm khi cho không. Khả năng cao hơn là bạn đếm sót nợ hoặc thổi giá tài sản. Nghi trước, kiểm tra, rồi mới tin — đó là kỷ luật, không phải bi quan.</p></div>
+<div class="gap-q"><span class="q">“Sao không gọi luôn là ‘goodwill âm’ cho gọn?”</span><p>Vì goodwill là một tài sản — phần trả thừa cho cái vô hình. Một số âm nằm ở chỗ tài sản thì vô nghĩa. Thay vào đó, chuẩn coi phần chênh ngược là một khoản lãi thực, ghi vào lãi lỗ. Khác bản chất, nên phải khác tên.</p></div>
+<div class="gap-q"><span class="q">“Rà lại nghĩa là rà cái gì?”</span><p>Hai việc. Một: kiểm xem đã nhận diện ĐỦ tài sản và nợ chưa — có bỏ sót khoản nào không. Hai: soát lại cách đo từng khoản, kể cả giá phí, NCI và lợi ích cũ. Mục tiêu là chắc rằng con số chênh không phải do nhầm lẫn nào đó.</p></div>
+<div class="gap-q"><span class="q">“Rà kỹ rồi mà vẫn lời — ghi lãi ngay có lạc quan quá không?”</span><p>Đây là chỗ gây tranh luận. Ghi một khoản lãi tại đúng ngày mua, trước khi làm ăn ngày nào, nghe mạnh tay. Nhưng logic là: tại ngày mua bạn đã giàu lên thật, vì nhận tài sản đáng hơn tiền bỏ ra. Chuẩn chấp nhận, miễn đã rà kỹ để loại sai số.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví von &amp; ví dụ đời thường</span><h2>Neo vào thứ bạn đã biết</h2></div>
+    </div>
+    <div class="analogy-card"><span class="tag">Ví dụ trung tâm</span>
+<p>Bạn vào một buổi thanh lý đồ vì chủ nhà phải dọn gấp. Bạn trả 8 triệu cho cả lô, về soi kỹ thấy đáng 10 triệu. Lời 2 triệu. Nhưng người khôn sẽ kiểm trước: có món nào nứt vỡ giấu bên dưới không, có cái nào mình định giá lố không? Kiểm xong vẫn lời thì mới yên tâm là vớ được hời thật.</p>
+<p class="limit"><b>Chỗ ví von này hỏng:</b> lô đồ cũ thì bạn soi tận tay, lật được từng món. Một công ty thì “món nứt giấu bên dưới” có thể là một khoản nợ tiềm tàng, một vụ kiện chưa lộ, một cam kết ngoài sổ. Khó soi hơn nhiều — nên bước “rà lại” ở đây nặng và quan trọng hơn hẳn việc lật một cái ghế cũ.</p>
+</div>
+<p>Gần đời hơn: mua lại một công ty sắp phá sản, chủ nợ đang ép bán nhanh để thu hồi tiền. Người bán không còn thế mặc cả, chịu bán dưới giá trị thật. Đây là kiểu tình huống mà phần “lời ngay khi mua” có thể là thật — nhưng vẫn phải rà cho chắc.</p>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">4</div>
+      <div class="step-meta"><span class="lbl">Kể lại gọn gàng</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Mua rẻ là khi tài sản bạn nhận (trừ nợ) đáng hơn cái bạn bỏ ra — ngược với goodwill. Phản xạ đúng không phải ăn mừng mà là nghi ngờ: “lời ngay khi mua” thường là dấu hiệu đếm sót nợ hay thổi giá tài sản.</p>
+<p>Rà lại cho kỹ. Nếu vẫn còn lời, ghi thẳng vào lãi lỗ tại ngày mua — và nhớ là không có “goodwill âm”.</p>
+<p class="core">Khi cái bạn nhận đáng hơn cái bạn bỏ ra, <span>đó là lãi mua rẻ — ghi thẳng vào lãi lỗ, nhưng phải soát lại trước đã.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã hiểu chưa?</h3>
+      <ol>
+        <li>Trả 8 tỷ, tài sản thuần nhận về đáng 10 tỷ. Việc đầu tiên nên làm là gì — ghi lãi 2 tỷ, hay rà lại?</li>
+        <li>Vì sao chuẩn không cho gọi phần chênh ngược là “goodwill âm”?</li>
+        <li>Tình huống thực tế nào khiến mua rẻ là thật, chứ không phải do đo sai?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nếu giải thích được cho bà ngoại hiểu, bạn mới thật sự hiểu.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-mua-theo-giai-doan"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Giải thích theo phương pháp Feynman</div>
+    <h1 class="rise" style="animation-delay:.08s">Mua thêm để nắm quyền: phần cũ phải định giá lại</h1>
+    <p class="core rise" style="animation-delay:.16s">Khi bạn mua thêm để giành quyền kiểm soát, <span>phần vốn cũ bị định giá lại theo giá hôm nay — ghi lãi/lỗ dù bạn chưa bán gì.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Điều cần hiểu &amp; cách tiếp cận</span><h2>Quy tắc: đo lại phần cũ theo giá trị hợp lý ngày mua</h2></div>
+    </div>
+    <div class="rule">IFRS 3 <strong>đoạn 41–42</strong>: khi bên mua đã nắm sẵn một phần lợi ích vốn rồi mua thêm để giành quyền kiểm soát (<em>business combination achieved in stages</em>, hay <em>step acquisition</em>), bên mua phải <strong>đo lại phần lợi ích đã nắm trước đó</strong> theo giá trị hợp lý ngày mua, và ghi lãi/lỗ vào <em>profit or loss</em> (hoặc <em>OCI</em> tùy trường hợp). Không cộng giá gốc phần cũ vào <em>consideration transferred</em>.</div>
+    <div class="sub">Cách giải thích</div>
+    <div class="approach"><p>Chỗ vấp: ghi lãi/lỗ trên phần cổ phần bạn vẫn đang giữ, chưa bán cho ai. Trực giác bảo: chưa bán thì lấy đâu ra lãi? Cách làm: neo vào chuyện ba người chung một xe bánh mì. Bạn mua lại phần của hai người kia để làm chủ trọn. Đúng lúc nắm trọn, phần cũ của bạn được tính lại theo giá hôm nay.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Giải thích đơn giản</span><h2>Đổi vai từ cổ đông nhỏ thành chủ</h2></div>
+    </div>
+    <p class="lead">Tưởng tượng ba năm trước bạn mua 35% một cửa hàng, lúc đó còn rẻ. Nay bạn mua thêm 40% nữa, đủ để nắm quyền điều hành cả cửa hàng. Câu hỏi lạ: phần 35% cũ — bạn vẫn đang giữ, chưa bán cho ai — giờ ghi sổ thế nào? IFRS 3 bảo: định giá lại nó theo giá hôm nay.</p>
+
+<div class="sub">Bình thường, chưa bán thì chưa ghi lãi</div>
+<p>Một thứ mua rẻ rồi lên giá, bạn thường không ghi lãi cho tới khi bán. Còn giữ trong tay thì lãi mới chỉ trên giấy. Đây là quy tắc quen thuộc và an toàn.</p>
+
+<div class="sub">Nhưng giành quyền kiểm soát là một bước ngoặt</div>
+<p>IFRS 3 coi thời điểm bạn nắm trọn quyền là một cột mốc lớn. Bạn không còn là cổ đông nhỏ đứng ngoài, mà thành người làm chủ cả cửa hàng. Về kế toán, giống như “chốt lại” vị thế cũ rồi mở một chương mới. Nên phần 35% cũ được định giá lại theo giá hôm nay.</p>
+
+<div class="sub">Lãi/lỗ ghi ra dù chưa bán</div>
+<p>Nếu 35% cũ nay đáng hơn lúc mua, phần chênh là một khoản lãi, ghi vào lãi lỗ. Nghe lạ vì bạn chưa bán gì cả. Nhưng đó là cái giá khi “đổi vai” từ cổ đông nhỏ thành chủ — một sự thay đổi có thật, nên được ghi nhận.</p>
+
+<div class="sub">Đừng cộng giá gốc cũ vào tiền mua</div>
+<p>Một lỗi hay gặp: cộng số tiền bỏ ra mua 35% ngày xưa vào giá phí. Sai. Phần cũ được tính theo giá trị hợp lý HÔM NAY, không theo giá ngày xưa.</p>
+  </section>
+
+  <section class="gaps">
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Chỗ vấp · Lỗ hổng</span><h2>Mấy chỗ nghe xuôi mà nghĩ kỹ chưa thông</h2></div>
+    </div>
+    <div class="gap-q"><span class="q">“Chưa bán mà ghi lãi — vô lý quá, lấy tiền đâu ra?”</span><p>Lãi này không phải tiền vào túi. Nó là cách kế toán nói: vị thế của bạn vừa đổi bản chất. Từ “cổ đông nhỏ” thành “chủ” là hai vai khác nhau, nên định giá lại tại điểm chuyển. Lãi trên giấy, nhưng được ghi vì cái cột mốc là thật.</p></div>
+<div class="gap-q"><span class="q">“Sao phải định giá lại phần cũ — cứ giữ giá gốc cho yên?”</span><p>Vì nếu giữ giá gốc, công thức goodwill sẽ trộn hai mốc thời gian: phần cũ theo giá xưa, phần mới theo giá nay. Lệch nhau. Định giá lại phần cũ về cùng ngày mua để cả công ty được đo trên một mốc duy nhất.</p></div>
+<div class="gap-q"><span class="q">“Lãi/lỗ đó vào lãi lỗ hay vào OCI?”</span><p>Tùy phần cũ trước đây được theo dõi thế nào. Giả sử các kỳ trước, phần thay đổi giá trị của nó từng ghi vào OCI. Khi đó, đoạn 42 bảo xử lý khoản OCI lũy kế đúng như khi bán thẳng ra ngoài. Nhưng “đúng như khi bán” lại tùy phân loại theo IFRS 9. Nếu phần cũ là công cụ vốn chọn đo theo <em>FVOCI</em>, lãi/lỗ lũy kế trong OCI không được tái phân loại sang lãi lỗ. Nó chỉ chuyển trong vốn chủ. Nếu là công cụ nợ FVOCI thì mới được đẩy sang lãi lỗ. Vậy câu “bán rồi mua lại” đúng về tinh thần, nhưng đích đến của khoản OCI thì tùy loại.</p></div>
+<div class="gap-q"><span class="q">“Định giá lại ‘giá hôm nay’ của một phần chưa giao dịch — số ở đâu ra?”</span><p>Đây là chỗ mong manh. Phần 35% cũ không có một giao dịch bán thật để lấy giá. Phải ước lượng giá trị hợp lý của nó tại ngày mua. Con số đó là ước tính, có khoảng sai — và nó ảnh hưởng thẳng tới cả lãi/lỗ ghi nhận lẫn goodwill.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví von &amp; ví dụ đời thường</span><h2>Neo vào thứ bạn đã biết</h2></div>
+    </div>
+    <div class="analogy-card"><span class="tag">Ví dụ trung tâm</span>
+<p>Bạn và hai người bạn cùng góp mở một xe bánh mì, mỗi người một phần ba. Vài năm sau bạn mua lại phần của cả hai người kia để làm chủ trọn. Đúng lúc nắm trọn, phần một-phần-ba cũ của bạn — góp hồi xe còn ế — được tính lại theo giá xe bây giờ, lúc đang đắt khách. Chênh lệch hiện ra như một khoản lãi, dù bạn chỉ đưa tiền cho hai người bạn, không đưa cho chính mình.</p>
+<p class="limit"><b>Chỗ ví von này hỏng:</b> xe bánh mì thì ước được giá “bây giờ” khá dễ, vì có thể nhìn các xe tương tự ngoài chợ. Một phần vốn trong công ty chưa niêm yết thì khó hơn nhiều — không có “giá chợ” để soi. Phải dựng mô hình định giá, và đó là chỗ con số dễ lệch nhất.</p>
+</div>
+<p>Gần đời hơn: một quỹ đầu tư nắm 30% một startup từ vòng gọi vốn đầu. Vài năm sau quỹ mua thêm để vượt ngưỡng kiểm soát. Ngay lúc đó, phần 30% mua giá rẻ ngày xưa được định giá lại theo định giá startup hiện tại, thường cao hơn nhiều. Phần tăng đó ghi thành lãi.</p>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">4</div>
+      <div class="step-meta"><span class="lbl">Kể lại gọn gàng</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Bạn đã nắm một phần (ví dụ 35%) từ trước, nay mua thêm để giành quyền kiểm soát. IFRS 3 coi đó là cột mốc: phần cũ bị định giá lại theo giá ngày mua, và chênh lệch ghi thành lãi/lỗ — dù bạn chưa bán gì. Vì bạn vừa đổi vai từ cổ đông nhỏ thành chủ.</p>
+<p>Và đừng cộng giá gốc cũ vào tiền mua: phần cũ tính theo giá hôm nay, không phải giá ngày xưa.</p>
+<p class="core">Khi bạn mua thêm để giành quyền kiểm soát, <span>phần vốn cũ bị định giá lại theo giá hôm nay — ghi lãi/lỗ dù bạn chưa bán gì.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã hiểu chưa?</h3>
+      <ol>
+        <li>Bạn giữ 35% từ ba năm trước (giá gốc 100), nay mua thêm 40% để nắm quyền. Phần 35% cũ ghi theo giá gốc 100 hay giá hợp lý hôm nay?</li>
+        <li>Vì sao ghi được lãi trên phần vốn cũ dù bạn chưa bán nó?</li>
+        <li>Lỗi gì xảy ra nếu bạn cộng giá gốc của phần cũ vào consideration transferred?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nếu giải thích được cho bà ngoại hiểu, bạn mới thật sự hiểu.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-phi-tu-van"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Giải thích theo phương pháp Feynman</div>
+    <h1 class="rise" style="animation-delay:.08s">Phí luật sư không làm goodwill phình ra</h1>
+    <p class="core rise" style="animation-delay:.16s">Tiền thuê tư vấn, luật sư để làm thương vụ <span>là chi phí của kỳ — không vốn hóa vào goodwill, không cộng vào giá mua.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Điều cần hiểu &amp; cách tiếp cận</span><h2>Quy tắc: chi phí làm thương vụ ghi thẳng là chi phí</h2></div>
+    </div>
+    <div class="rule">IFRS 3 <strong>đoạn 53</strong>: <em>acquisition-related costs</em> (chi phí liên quan đến việc mua) — phí môi giới, tư vấn, pháp lý, kế toán, thẩm định giá, chi phí quản lý chung — được hạch toán là <strong>CHI PHÍ trong kỳ</strong> phát sinh, <strong>không</strong> vốn hóa vào goodwill và không gộp vào <em>consideration transferred</em>. Ngoại lệ duy nhất: chi phí phát hành chứng khoán nợ/vốn xử lý theo IAS 32 và IFRS 9.</div>
+    <div class="sub">Cách giải thích</div>
+    <div class="approach"><p>Chỗ vấp: ngược với cost model quen thuộc. Khi mua một cái máy (IAS 16), phí vận chuyển và lắp đặt được <strong>cộng vào giá máy</strong>. Ở đây phí tư vấn lại <strong>không</strong> cộng vào “giá” thương vụ. Cách làm: đặt cạnh nhau “mua máy” và “mua công ty” để thấy vì sao hai loại phí phụ lại đi hai đường.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Giải thích đơn giản</span><h2>Phí phụ: khi nào dính vào giá, khi nào không</h2></div>
+    </div>
+    <p class="lead">Khi bạn mua một cái máy, phí vận chuyển và lắp đặt được cộng thẳng vào giá cái máy. Đó là quy tắc quen: chi phí để có được tài sản thì nằm trong giá tài sản. Vậy nên khi mua cả một công ty, bạn dễ nghĩ phí luật sư, phí tư vấn cũng cộng vào “giá” thương vụ. IFRS 3 nói: không.</p>
+
+<div class="sub">Quy tắc quen thuộc, với tài sản</div>
+<p>Mua máy 100, trả thêm 5 tiền chở và lắp. Giá ghi sổ của máy là 105. Phí phụ “dính” vào tài sản, vì chúng cần thiết để máy chạy được. Đây gọi là vốn hóa.</p>
+
+<div class="sub">Nhưng mua công ty thì khác</div>
+<p>Phí môi giới, luật sư, tư vấn, thẩm định giá để làm thương vụ — tất cả ghi thẳng là chi phí của kỳ. Chúng KHÔNG cộng vào giá phí mua, và KHÔNG làm goodwill to thêm.</p>
+
+<div class="sub">Vì sao tách ra như vậy</div>
+<p>Vì những khoản phí đó không phải là cái bạn mua được. Bạn trả luật sư để được tư vấn, không phải để có thêm tài sản trong công ty kia. Cái bạn thật sự mua là công ty; tiền thuê người giúp mua là chuyện riêng của bạn. Trộn nó vào goodwill sẽ thổi phồng một con số vốn đã khó kiểm.</p>
+
+<div class="sub">Một ngoại lệ</div>
+<p>Chi phí để phát hành cổ phiếu hay trái phiếu — dùng huy động vốn cho thương vụ — không theo quy tắc trên. Chúng được xử lý riêng theo chuẩn về công cụ tài chính, đi một đường khác.</p>
+  </section>
+
+  <section class="gaps">
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Chỗ vấp · Lỗ hổng</span><h2>Mấy chỗ nghe xuôi mà nghĩ kỹ chưa thông</h2></div>
+    </div>
+    <div class="gap-q"><span class="q">“Mua máy thì phí lắp cộng vào, sao mua công ty lại không?”</span><p>Vì khác bản chất. Phí lắp máy làm tăng giá trị chính cái máy. Phí luật sư không làm công ty bạn mua đáng thêm một xu — nó chỉ là cái giá để bạn thực hiện được vụ mua. Không thuộc về tài sản, nên là chi phí.</p></div>
+<div class="gap-q"><span class="q">“Cộng vào goodwill thì hại gì, vẫn nằm trên bảng cân đối mà?”</span><p>Có hại. Goodwill là một số dư khó kiểm, lại không khấu hao đều mà chỉ canh suy giảm. Nhồi phí tư vấn vào đó là giấu một khoản chi thật, làm tài sản trông to hơn và lợi nhuận kỳ này đẹp hơn thực. Ghi thẳng là chi phí mới phản ánh đúng.</p></div>
+<div class="gap-q"><span class="q">“Vậy ranh giới ‘phí làm thương vụ’ với ‘giá mua’ nằm ở đâu?”</span><p>Giá mua là cái trả cho người bán để đổi lấy công ty. Phí làm thương vụ là cái trả cho bên thứ ba — luật sư, tư vấn — để giúp bạn. Trả cho người bán thì vào giá phí; trả cho người ngoài giúp mình thì là chi phí của kỳ.</p></div>
+<div class="gap-q"><span class="q">“Sao riêng chi phí phát hành cổ phiếu lại xử lý khác?”</span><p>Vì khoản đó gắn với việc huy động vốn, không phải việc mua. Phát hành cổ phiếu là một giao dịch vốn riêng, nên chi phí của nó theo luật về công cụ tài chính, không theo quy tắc chi phí trong kỳ. Đây là ngoại lệ có chủ đích, và dễ quên.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví von &amp; ví dụ đời thường</span><h2>Neo vào thứ bạn đã biết</h2></div>
+    </div>
+    <div class="analogy-card"><span class="tag">Ví dụ trung tâm</span>
+<p>Bạn mua một căn nhà. Giá nhà là tiền trả cho chủ cũ. Nhưng bạn còn tốn phí môi giới, phí luật sư xem giấy tờ, phí thẩm định. Những khoản đó không làm căn nhà đáng thêm một đồng — chúng là cái giá để bạn mua được nhà. IFRS 3 ghi chúng là chi phí của kỳ, không nhập vào “giá trị căn nhà”.</p>
+<p class="limit"><b>Chỗ ví von này hỏng:</b> mua nhà thì chỉ có một loại “phí làm thủ tục”. Mua công ty lại có một khoản phí đặc biệt: phí phát hành cổ phiếu để gom vốn. Khoản này không theo quy tắc chi phí của kỳ, mà trừ thẳng vào vốn. Cùng mang tiếng “phí”, nhưng nó đi một đường riêng.</p>
+</div>
+<p>Gần đời hơn: một vụ thâu tóm lớn thuê ngân hàng đầu tư để tư vấn. Còn thuê hãng luật rà soát, thuê công ty kiểm toán làm thẩm định (due diligence). Cộng lại có thể vài chục tỷ. Toàn bộ ghi thẳng vào chi phí của kỳ — dù vụ mua thành hay không — chứ không nhập vào goodwill.</p>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">4</div>
+      <div class="step-meta"><span class="lbl">Kể lại gọn gàng</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Mua một cái máy, phí chở và lắp được cộng vào giá máy. Nhưng mua cả công ty, phí luật sư và tư vấn lại KHÔNG cộng vào giá thương vụ — chúng là chi phí của kỳ, ghi ngay. Vì những khoản đó không làm công ty bạn mua đáng thêm đồng nào; chúng chỉ là cái giá để bạn thực hiện vụ mua.</p>
+<p>Nhồi vào goodwill là giấu một khoản chi thật. Riêng phí phát hành cổ phiếu thì đi đường khác.</p>
+<p class="core">Tiền thuê tư vấn, luật sư để làm thương vụ <span>là chi phí của kỳ — không vốn hóa vào goodwill, không cộng vào giá mua.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã hiểu chưa?</h3>
+      <ol>
+        <li>Trả 1.000 mua công ty, thêm 30 phí luật sư và 20 phí tư vấn. Giá phí mua ghi là 1.000 hay 1.050?</li>
+        <li>Vì sao phí lắp một cái máy thì vốn hóa, còn phí luật sư mua công ty thì không?</li>
+        <li>Vì sao nhồi phí tư vấn vào goodwill lại làm méo bức tranh tài chính?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nếu giải thích được cho bà ngoại hiểu, bạn mới thật sự hiểu.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-ky-do-luong"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Giải thích theo phương pháp Feynman</div>
+    <h1 class="rise" style="animation-delay:.08s">Kỳ đo lường: được tua lại quá khứ, nhưng chỉ một loại</h1>
+    <p class="core rise" style="animation-delay:.16s">Sau khi mua, bạn được tới một năm để chốt sổ — <span>tua lại quá khứ cho cái đã có sẵn ở ngày mua, nhưng không cho chuyện mới xảy ra.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Điều cần hiểu &amp; cách tiếp cận</span><h2>Quy tắc: hồi tố một năm, chỉ cho hoàn cảnh đã tồn tại</h2></div>
+    </div>
+    <div class="rule">IFRS 3 <strong>đoạn 45–49</strong>: nếu hạch toán hợp nhất chưa xong cuối kỳ, bên mua ghi <em>provisional amounts</em> (số tạm thời) rồi điều chỉnh trong <em>measurement period</em> (kỳ đo lường) — tối đa <strong>MỘT NĂM</strong> kể từ ngày mua. Điều chỉnh là <strong>hồi tố</strong>, chỉ cho thông tin về hoàn cảnh <strong>đã tồn tại tại ngày mua</strong>, và <strong>bù qua goodwill</strong>. Sự kiện mới sau ngày mua thì không. Hết kỳ, chỉ sửa sai sót theo IAS 8.</div>
+    <div class="sub">Cách giải thích</div>
+    <div class="approach"><p>Chỗ vấp: kế toán hiếm khi cho “sửa quá khứ”, ở đây lại cho tua lại tới một năm — nhưng chỉ một loại thông tin. Cách làm: neo vào chuyện chấm lại bài thi. Phát hiện mình chấm sót một câu — lỗi đã có sẵn lúc chấm — thì sửa được. Còn học sinh đi học thêm sau khi thi là chuyện mới, không cộng điểm.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Giải thích đơn giản</span><h2>Một năm ân hạn — nhưng tua được cái gì?</h2></div>
+    </div>
+    <p class="lead">Tưởng tượng bạn vừa mua một công ty, nhưng chưa kịp định giá xong hết tài sản trước khi phải nộp báo cáo. IFRS 3 cho bạn một khoảng ân hạn: ghi tạm con số ước, rồi trong vòng một năm được sửa lại cho đúng. Nghe như được “tua lại quá khứ”. Nhưng chỉ tua được một loại thông tin.</p>
+
+<div class="sub">Số tạm thời</div>
+<p>Khi chưa đủ thông tin để chốt, bạn ghi số tạm cho những khoản còn dở. Không phải đoán bừa — là con số tốt nhất lúc đó, có đánh dấu “sẽ chỉnh”.</p>
+
+<div class="sub">Được tua lại trong vòng một năm</div>
+<p>Trong kỳ đo lường, bạn có thể sửa các số tạm đó. Điều quan trọng: sửa theo kiểu hồi tố — làm như thể bạn đã ghi đúng ngay từ ngày mua. Và mỗi lần chỉnh một tài sản, goodwill được bù lại tương ứng.</p>
+
+<div class="sub">Nhưng chỉ một loại thông tin được tua</div>
+<p>Đây là lằn ranh cốt lõi. Bạn chỉ được sửa cho những hoàn cảnh ĐÃ TỒN TẠI ở ngày mua mà lúc đó chưa biết. Còn chuyện MỚI xảy ra sau ngày mua thì không được tua — chúng là sự kiện của hiện tại, ghi vào hiện tại.</p>
+
+<div class="sub">Hết một năm là khóa</div>
+<p>Quá một năm, hoặc khi đã đủ thông tin, kỳ đo lường đóng lại. Sau đó nếu phát hiện gì, bạn chỉ được sửa nếu đó là một sai sót, theo quy tắc sửa sai (IAS 8) — không còn được “tua” nữa.</p>
+  </section>
+
+  <section class="gaps">
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Chỗ vấp · Lỗ hổng</span><h2>Mấy chỗ nghe xuôi mà nghĩ kỹ chưa thông</h2></div>
+    </div>
+    <div class="gap-q"><span class="q">“Kế toán cấm sửa quá khứ cơ mà — sao đây lại cho?”</span><p>Vì ở ngày mua có những sự thật đã tồn tại nhưng cần thời gian mới biết — ví dụ giá trị thật của một bằng sáng chế. Cho một năm để tìm ra sự thật đó rồi ghi cho đúng, công bằng hơn là bắt chốt vội. Nhưng chỉ cho sự thật “đã có sẵn”, không cho chuyện mới.</p></div>
+<div class="gap-q"><span class="q">“Làm sao phân biệt ‘đã tồn tại’ với ‘mới xảy ra’?”</span><p>Hỏi: nguyên nhân có ở đó vào ngày mua không? Một vụ kiện đã âm ỉ từ trước ngày mua, nay mới rõ số tiền — là “đã tồn tại”, được tua. Một khách hàng lớn bỏ đi vì lý do phát sinh sau ngày mua — là “mới xảy ra”, không tua.</p></div>
+<div class="gap-q"><span class="q">“Sao điều chỉnh lại bù qua goodwill chứ không vào lãi lỗ?”</span><p>Vì bạn đang sửa lại bức ảnh chụp tại ngày mua, không phải ghi nhận một biến cố của kỳ này. Tăng giá một tài sản thì goodwill giảm đúng bằng đó, và ngược lại. Tổng cái bạn “trả cho cả công ty” không đổi, chỉ phân bổ lại bên trong.</p></div>
+<div class="gap-q"><span class="q">“‘Đã tồn tại tại ngày mua’ nghe rõ, nhưng đời thực có dễ tách bạch?”</span><p>Không. Nhiều tình huống ở lưng chừng: một khoản nợ vừa rõ ra — nó đã âm ỉ từ trước, hay mới phát sinh? Ranh giới này là chỗ dễ bị lạm dụng để đẩy chi phí vòng qua goodwill thay vì vào lãi lỗ. Vì thế chuẩn chặn bằng giới hạn một năm và đòi bằng chứng.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví von &amp; ví dụ đời thường</span><h2>Neo vào thứ bạn đã biết</h2></div>
+    </div>
+    <div class="analogy-card"><span class="tag">Ví dụ trung tâm</span>
+<p>Cô giáo vừa chấm xong một xấp bài thi và công bố điểm tạm. Trong một tuần rà soát, cô được sửa điểm — nhưng chỉ khi phát hiện mình CHẤM SÓT một câu đúng, tức một lỗi đã có sẵn lúc chấm. Còn nếu sau buổi thi học sinh về học thêm rồi giỏi lên, điều đó KHÔNG cho cộng điểm. Vì nó xảy ra sau, không phải thứ vốn đã đúng lúc thi.</p>
+<p class="limit"><b>Chỗ ví von này hỏng:</b> chấm bài thì “lúc thi” là một khoảnh khắc rõ ràng, và bài làm nằm yên đó để rà. Còn một công ty thì “hoàn cảnh tại ngày mua” lan qua hàng trăm hợp đồng, vụ kiện, ước tính — và nhiều thứ chỉ lộ dần. Tách “đã có sẵn” khỏi “mới xảy ra” khó hơn nhiều so với soi lại một tờ giấy thi.</p>
+</div>
+<p>Gần đời hơn: bạn mua công ty kèm một lô đất, ghi tạm theo giá ước. Tám tháng sau, kết quả thẩm định độc lập cho thấy giá trị lô đất TẠI NGÀY MUA khác con số tạm. Vì sự thật này đã tồn tại ở ngày mua, bạn được tua lại số tạm và bù qua goodwill — miễn còn trong vòng một năm.</p>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">4</div>
+      <div class="step-meta"><span class="lbl">Kể lại gọn gàng</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Mua xong chưa kịp định giá hết? IFRS 3 cho ghi số tạm, rồi tua lại trong vòng một năm. Nhưng chỉ tua được một loại: những hoàn cảnh ĐÃ tồn tại ở ngày mua mà lúc đó bạn chưa biết. Chuyện MỚI xảy ra sau ngày mua thì không — nó là sự kiện của hiện tại.</p>
+<p>Mỗi lần chỉnh, goodwill bù lại tương ứng. Hết một năm là khóa, sau đó chỉ sửa được sai sót.</p>
+<p class="core">Sau khi mua, bạn được tới một năm để chốt sổ — <span>tua lại quá khứ cho cái đã có sẵn ở ngày mua, nhưng không cho chuyện mới xảy ra.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã hiểu chưa?</h3>
+      <ol>
+        <li>Sau ngày mua 8 tháng, một vụ kiện âm ỉ từ trước mới rõ số tiền. Được tua lại số tạm không? Vì sao?</li>
+        <li>Một khách hàng lớn bỏ đi vì lý do phát sinh SAU ngày mua. Đây có phải điều chỉnh kỳ đo lường không?</li>
+        <li>Vì sao điều chỉnh kỳ đo lường bù qua goodwill, chứ không ghi vào lãi lỗ?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nếu giải thích được cho bà ngoại hiểu, bạn mới thật sự hiểu.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-consideration-dieu-kien"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Giải thích theo phương pháp Feynman</div>
+    <h1 class="rise" style="animation-delay:.08s">Cùng lời hứa “trả thêm nếu...”, hai số phận</h1>
+    <p class="core rise" style="animation-delay:.16s">Cùng một lời hứa trả thêm, <span>phân loại là vốn thì đóng băng, là nợ thì nhảy theo lãi lỗ mỗi kỳ.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Điều cần hiểu &amp; cách tiếp cận</span><h2>Quy tắc: cái nhãn ở ngày mua định đoạt số phận</h2></div>
+    </div>
+    <div class="rule">IFRS 3 <strong>đoạn 40 + 58</strong>: một khoản <em>contingent consideration</em> (thanh toán điều kiện — “trả thêm nếu đạt mục tiêu”) được phân loại tại ngày mua là <strong>vốn chủ sở hữu</strong> hay <strong>nợ phải trả</strong> (theo IAS 32). Về sau, nếu thay đổi giá trị <strong>không</strong> phải điều chỉnh kỳ đo lường: phân loại <em>vốn</em> thì <strong>không đo lại</strong>; phân loại <em>nợ/tài sản</em> thì đo theo giá trị hợp lý <strong>mỗi ngày báo cáo</strong>, thay đổi ghi vào <strong>lãi lỗ</strong>.</div>
+    <div class="sub">Cách giải thích</div>
+    <div class="approach"><p>Chỗ vấp: cùng một lời hứa “trả thêm nếu...”, nhưng số phận kế toán khác hẳn chỉ vì một cái nhãn đặt ở ngày mua. Cách làm: neo vào hình ảnh hai phong bì giống hệt nhau. Một dán nhãn “VỐN”, một dán nhãn “NỢ”. Rồi xem mỗi cái bị đối xử ra sao về sau.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Giải thích đơn giản</span><h2>Một cái nhãn, định đoạt nhiều năm</h2></div>
+    </div>
+    <p class="lead">Tưởng tượng bạn mua một công ty và hứa: “nếu năm sau công ty đạt doanh thu mục tiêu, tôi trả thêm 2 tỷ”. Lời hứa “trả thêm nếu...” đó gọi là khoản thanh toán điều kiện. Nó được tính vào giá mua ngay từ ngày mua, theo giá trị hợp lý. Nhưng số phận về sau của nó tùy vào một cái nhãn.</p>
+
+<div class="sub">Cái nhãn đặt ở ngày mua</div>
+<p>Ngay tại ngày mua, lời hứa đó được dán một trong hai nhãn: “vốn chủ sở hữu”, hoặc “nợ phải trả”. Nhãn này dựa trên bản chất lời hứa — ví dụ sẽ trả bằng tiền hay bằng một số cổ phần cố định. Một cái nhãn, nhưng nó định đoạt mọi thứ về sau.</p>
+
+<div class="sub">Nhãn “vốn”: đóng băng</div>
+<p>Nếu là vốn, bạn KHÔNG đo lại nó nữa. Dù sau này khả năng phải trả tăng hay giảm, con số đứng yên. Khi tới lúc thanh toán, mọi việc xử lý trong phạm vi vốn. Lời hứa “đông cứng” ở giá trị ngày mua.</p>
+
+<div class="sub">Nhãn “nợ”: nhảy theo lãi lỗ</div>
+<p>Nếu là nợ, bạn phải định giá lại nó vào mỗi kỳ báo cáo. Khả năng đạt mục tiêu tăng thì khoản nợ phình lên, phần phình đó ghi vào lãi lỗ. Giảm thì ngược lại. Lời hứa “sống động”, đập theo nhịp kết quả kinh doanh.</p>
+
+<div class="sub">Cùng lời hứa, hai số phận</div>
+<p>Điểm gây sốc: hai thương vụ có lời hứa “trả thêm nếu...” y hệt nhau. Nhưng nếu một bên dán nhãn vốn, bên kia dán nhãn nợ, báo cáo lãi lỗ của chúng sẽ khác hẳn theo thời gian. Cái nhãn đặt một lần ở ngày mua, hệ quả kéo dài nhiều năm.</p>
+  </section>
+
+  <section class="gaps">
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Chỗ vấp · Lỗ hổng</span><h2>Mấy chỗ nghe xuôi mà nghĩ kỹ chưa thông</h2></div>
+    </div>
+    <div class="gap-q"><span class="q">“Cùng một lời hứa sao số phận lại khác — chỉ vì một cái nhãn?”</span><p>Vì hai nhãn phản ánh hai bản chất khác nhau. “Vốn” nghĩa là sẽ trả bằng một số cổ phần cố định — giống như đã phát hành cổ phần, nên không đo lại. “Nợ” nghĩa là một nghĩa vụ trả tiền — một khoản phải trả thật, nên phải cập nhật giá liên tục.</p></div>
+<div class="gap-q"><span class="q">“Tăng giảm giá khoản nợ ghi vào lãi lỗ — nghe thất thường quá?”</span><p>Đúng là nó làm lãi lỗ dao động. Nhưng đó là sự thật kinh tế: nghĩa vụ của bạn thật sự đang to lên hay nhỏ đi theo khả năng đạt mục tiêu. Kế toán phản ánh đúng cái nghĩa vụ đang thay đổi, thay vì giả vờ nó đứng yên.</p></div>
+<div class="gap-q"><span class="q">“Sao không đợi tới khi biết kết quả rồi mới ghi cho chắc?”</span><p>Vì giá phí mua phải chốt ngay tại ngày mua để tính goodwill cho đủ. Nếu đợi, goodwill sẽ thiếu phần “trả thêm”. Nên lời hứa được định giá ngay theo giá trị hợp lý, rồi cập nhật (nếu là nợ) khi thông tin rõ dần.</p></div>
+<div class="gap-q"><span class="q">“Phân biệt ‘thay đổi do điều kiện cũ’ với ‘sự kiện mới’ — có dễ không?”</span><p>Không, và đây là bẫy. Nếu thay đổi giá trị là do thông tin về hoàn cảnh đã có ở ngày mua, đó là điều chỉnh kỳ đo lường (bù qua goodwill). Nếu là do sự kiện mới — như đạt mục tiêu lợi nhuận sau đó — thì không, phải vào lãi lỗ. Lẫn hai loại này là một lỗi hay gặp.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví von &amp; ví dụ đời thường</span><h2>Neo vào thứ bạn đã biết</h2></div>
+    </div>
+    <div class="analogy-card"><span class="tag">Ví dụ trung tâm</span>
+<p>Hình dung hai phong bì giống hệt, mỗi cái đựng một lời hứa “trả thêm nếu đạt mục tiêu”. Người ta dán lên một phong bì nhãn “VỐN”, phong bì kia nhãn “NỢ”. Phong bì “vốn” cất vào tủ, không ai mở ra cân lại nữa. Phong bì “nợ” thì mỗi kỳ lấy ra cân lại, nặng nhẹ thế nào ghi ngay vào sổ lãi lỗ. Cùng một tờ giấy bên trong, nhưng cái nhãn quyết định nó được để yên hay bị cân hoài.</p>
+<p class="limit"><b>Chỗ ví von này hỏng:</b> dán nhãn lên phong bì là việc tùy ý, đổi lúc nào cũng được. Nhãn “vốn” hay “nợ” ở đây thì không. Nó bị quy định chặt bởi bản chất lời hứa — trả bằng số cổ phần cố định, hay trả tiền — theo định nghĩa của IAS 32. Bạn không tự chọn nhãn cho tiện; bản chất giao dịch chọn hộ bạn.</p>
+</div>
+<p>Gần đời hơn: một vụ M&A có điều khoản <em>earn-out</em> — trả thêm nếu công ty đạt cột mốc. Nếu trả thêm bằng một số cổ phần cố định, đó là vốn, đóng băng. Nếu trả thêm bằng tiền mặt tính theo doanh thu đạt được, đó là nợ, phải đo lại mỗi kỳ và đập vào lãi lỗ.</p>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">4</div>
+      <div class="step-meta"><span class="lbl">Kể lại gọn gàng</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Một lời hứa “trả thêm nếu đạt mục tiêu” được tính vào giá mua ngay tại ngày mua. Số phận về sau tùy một cái nhãn đặt lúc đó. “Vốn” thì đóng băng, không đo lại. “Nợ” thì định giá lại mỗi kỳ, thay đổi đập thẳng vào lãi lỗ.</p>
+<p>Hai thương vụ có lời hứa y hệt nhưng khác nhãn sẽ có báo cáo khác hẳn theo thời gian. Và nhãn không do bạn tùy chọn — bản chất lời hứa quyết định.</p>
+<p class="core">Cùng một lời hứa trả thêm, <span>phân loại là vốn thì đóng băng, là nợ thì nhảy theo lãi lỗ mỗi kỳ.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã hiểu chưa?</h3>
+      <ol>
+        <li>Hai vụ mua có earn-out y hệt: một trả bằng số cổ phần cố định, một trả bằng tiền theo doanh thu. Khoản nào phải đo lại mỗi kỳ?</li>
+        <li>Vì sao khoản phân loại là “vốn” lại không được đo lại sau ngày mua?</li>
+        <li>Công ty đạt mục tiêu lợi nhuận sau ngày mua làm khoản phải trả tăng — ghi vào goodwill hay lãi lỗ?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nếu giải thích được cho bà ngoại hiểu, bạn mới thật sự hiểu.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-quyen-mua-lai"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Giải thích theo phương pháp Feynman</div>
+    <h1 class="rise" style="animation-delay:.08s">Quyền mua lại: bạn từng cấp quyền, giờ mua đứt người được cấp</h1>
+    <p class="core rise" style="animation-delay:.16s">Khi bạn mua lại chính quyền mình từng cấp cho bên kia, <span>nó được đo theo thời hạn hợp đồng CÒN LẠI, bỏ qua mọi lần gia hạn.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Điều cần hiểu &amp; cách tiếp cận</span><h2>Quy tắc: đo theo thời hạn còn lại, kệ chuyện gia hạn</h2></div>
+    </div>
+    <div class="rule">IFRS 3 <strong>đoạn 29</strong>: nếu trong vụ mua, bên mua “mua lại” (<em>reacquired right</em>) một quyền trước đó chính mình đã cấp cho bên bị mua — ví dụ quyền dùng thương hiệu, quyền nhượng quyền — thì ghi nhận nó là một tài sản vô hình. Nhưng đo nó theo <strong>thời hạn hợp đồng CÒN LẠI</strong>, bất kể thị trường có tính tới khả năng gia hạn hay không. Phần giá trị của các lần gia hạn kỳ vọng <strong>không tách riêng</strong> — nó nằm trong goodwill. Tài sản này về sau khấu hao theo đúng thời hạn hợp đồng còn lại.</div>
+    <div class="sub">Cách giải thích</div>
+    <div class="approach"><p>Chỗ vấp: bình thường giá hợp lý của một quyền sẽ tính cả khả năng gia hạn — vì người mua ngoài chợ kỳ vọng được gia hạn. Nhưng riêng quyền mua lại thì cố tình lờ phần gia hạn đi. Cách làm: hình dung bạn cho thuê nhà, rồi mua đứt luôn người thuê. Bạn đang lấy lại quyền dùng nhà — nhưng chỉ tính phần thời hạn thuê còn ghi trên giấy.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Giải thích đơn giản</span><h2>Cấp quyền cho người ta, rồi mua đứt cả người ta</h2></div>
+    </div>
+    <p class="lead">Tưởng tượng bạn có thương hiệu trà sữa nổi tiếng. Mấy năm trước bạn cho một người ở tỉnh thuê tên đó mở quán, hợp đồng nhượng quyền 10 năm. Nay bạn mua đứt luôn cái quán đó. Tự nhiên cái quyền dùng thương hiệu bạn từng cấp đi — giờ quay về tay bạn. Quyền “chạy ngược” này được ghi riêng, gọi là quyền mua lại.</p>
+
+<div class="sub">Bình thường, giá quyền tính cả gia hạn</div>
+<p>Nếu một người lạ định giá quyền nhượng quyền này, họ tính cả khả năng gia hạn sau 10 năm. Vì hợp đồng kiểu này hay được gia hạn, nên giá thị trường gồm cả phần đó.</p>
+
+<div class="sub">Nhưng quyền mua lại thì cắt phần gia hạn</div>
+<p>IFRS 3 bảo: đo quyền mua lại CHỈ theo thời hạn còn ghi trên hợp đồng. Hợp đồng 10 năm, đã chạy 6 năm, thì chỉ tính 4 năm còn lại. Kệ chuyện đời thực hai bên gần như chắc chắn sẽ gia hạn.</p>
+
+<div class="sub">Phần gia hạn đi đâu?</div>
+<p>Không biến mất. Giá trị của các lần gia hạn kỳ vọng dồn vào goodwill, không đứng riêng. Và về sau, tài sản “quyền mua lại” khấu hao theo đúng thời hạn còn lại — 4 năm, không phải 4 năm cộng gia hạn.</p>
+  </section>
+
+  <section class="gaps">
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Chỗ vấp · Lỗ hổng</span><h2>Mấy chỗ nghe xuôi mà nghĩ kỹ chưa thông</h2></div>
+    </div>
+    <div class="gap-q"><span class="q">“Sao lại bỏ qua gia hạn? Đời thực rõ ràng sẽ gia hạn mà.”</span><p>Vì cái bạn mua lại theo luật chỉ là quyền trong thời hạn ĐÃ KÝ. Lần gia hạn tương lai chưa chắc xảy ra, và là một thỏa thuận mới. Trộn nó vào sẽ thổi phồng tài sản bằng một thứ chưa có. Nên chuẩn cắt nó ra, đẩy vào goodwill.</p></div>
+<div class="gap-q"><span class="q">“Quyền mua lại khác gì một quyền vô hình mua từ người ngoài?”</span><p>Khác ở chỗ “mua lại”. Quyền này vốn là của bạn, bạn từng cấp cho bên kia. Nay nó quay về. Vì là quyền cũ chạy ngược, chuẩn đặt luật đo riêng để chặn việc dùng kỳ vọng gia hạn thổi giá. Một quyền hoàn toàn mới mua từ người lạ thì không bị cắt như vậy.</p></div>
+<div class="gap-q"><span class="q">“Nếu hợp đồng cũ có giá hời hoặc thiệt so với thị trường thì sao?”</span><p>Đó là một bẫy phụ. Giả sử điều khoản hợp đồng cũ tốt hơn (hoặc xấu hơn) giá thị trường hiện tại. Khi đó bên mua phải ghi một khoản lãi/lỗ “tất toán” (<em>settlement</em>) tách khỏi vụ hợp nhất. Tức là phần được/mất do hợp đồng lệch giá thị trường không trộn vào goodwill.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví von &amp; ví dụ đời thường</span><h2>Neo vào thứ bạn đã biết</h2></div>
+    </div>
+    <div class="analogy-card"><span class="tag">Ví dụ trung tâm</span>
+<p>Hình dung bạn cho người ta thuê căn nhà, hợp đồng 10 năm, đã ở 6 năm. Nay bạn mua đứt luôn gia đình thuê đó (cả công việc làm ăn của họ). Quyền cho ở căn nhà — bạn từng trao đi — nay về lại tay bạn. Bạn định giá nó theo 4 năm còn lại trên giấy, dù ai cũng đoán họ sẽ ở tiếp. Phần “chắc sẽ ở tiếp” đó không tính riêng — nó hòa vào cục goodwill chung.</p>
+<p class="limit"><b>Chỗ ví von này hỏng:</b> cho thuê nhà thì “quyền” khá đơn giản — quyền ở trong nhà. Quyền mua lại thật thường là quyền dùng thương hiệu hay nhượng quyền, giá trị nằm ở chỗ vô hình, khó đo hơn nhiều. Và đời thực còn phải tách khoản lãi/lỗ tất toán nếu hợp đồng cũ lệch giá thị trường — chuyện căn nhà cho thuê hiếm khi vướng.</p>
+</div>
+<p>Kinh điển nhất: chuỗi nhượng quyền. Một hãng cà phê từng bán quyền nhượng quyền vùng cho một đối tác. Sau đó hãng mua lại chính đối tác đó. Quyền vùng — vốn hãng đã trao đi — nay được ghi là quyền mua lại. Nó đo theo số năm còn lại trên hợp đồng, không cộng các kỳ gia hạn về sau.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Quy tắc “thời hạn còn lại” (đoạn 29) là một ngoại lệ có chủ đích so với nguyên tắc đo theo <em>fair value</em> ở đoạn 18 — vì fair value của <em>market participant</em> thường gồm cả renewal. Ngoài ra hướng dẫn B35–B36 xử lý khoản lãi/lỗ <em>settlement</em> khi hợp đồng cũ lệch giá thị trường: nó tách khỏi giá phí hợp nhất, không trộn vào <em>consideration</em>. Khi soát một PPA, đây là một trong các mục dễ bị soát xét nhất.</p>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">4</div>
+      <div class="step-meta"><span class="lbl">Kể lại gọn gàng</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Bạn từng cấp một quyền cho bên kia — quyền dùng thương hiệu, quyền nhượng quyền. Nay mua đứt họ, cái quyền đó chạy ngược về tay bạn. IFRS 3 ghi nó là tài sản vô hình, nhưng đo theo thời hạn hợp đồng CÒN LẠI, bỏ qua mọi lần gia hạn kỳ vọng. Phần gia hạn dồn vào goodwill, và tài sản này khấu hao theo đúng thời hạn còn lại.</p>
+<p class="core">Khi bạn mua lại chính quyền mình từng cấp cho bên kia, <span>nó được đo theo thời hạn hợp đồng CÒN LẠI, bỏ qua mọi lần gia hạn.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã hiểu chưa?</h3>
+      <ol>
+        <li>Hợp đồng nhượng quyền 10 năm, đã chạy 7 năm, hai bên gần như chắc sẽ gia hạn. Quyền mua lại đo theo mấy năm?</li>
+        <li>Vì sao giá trị của các lần gia hạn kỳ vọng lại không tách riêng mà dồn vào goodwill?</li>
+        <li>Quyền mua lại khác gì với một quyền vô hình mua hẳn từ một bên thứ ba?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nếu giải thích được cho bà ngoại hiểu, bạn mới thật sự hiểu.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-tai-san-boi-hoan"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Giải thích theo phương pháp Feynman</div>
+    <h1 class="rise" style="animation-delay:.08s">Lời hứa “có gì tôi đền”: đo y hệt cái nó che</h1>
+    <p class="core rise" style="animation-delay:.16s">Khi người bán hứa sẽ đền nếu một rủi ro cũ bùng ra, <span>lời hứa đó lên sổ thành tài sản, đo y theo cái khoản nó che — không định giá riêng.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Điều cần hiểu &amp; cách tiếp cận</span><h2>Quy tắc: tài sản bồi hoàn soi gương khoản được bồi hoàn</h2></div>
+    </div>
+    <div class="rule">IFRS 3 <strong>đoạn 27–28</strong>: nếu người bán cam kết bồi hoàn (<em>indemnify</em>) cho bên mua về một khoản bất định — ví dụ một vụ kiện thuế chưa ngã ngũ — thì bên mua ghi nhận một <em>indemnification asset</em> (tài sản bồi hoàn). Ghi nó <strong>CÙNG LÚC</strong> và đo trên <strong>CÙNG MỘT CƠ SỞ</strong> với khoản được bồi hoàn (<em>the indemnified item</em>). Nếu khoản nợ kia đo theo cách A, thì tài sản bồi hoàn cũng đo theo cách A — không định giá hợp lý riêng. Có trừ hao theo giới hạn hợp đồng và khả năng đòi được (<em>collectibility</em>).</div>
+    <div class="sub">Cách giải thích</div>
+    <div class="approach"><p>Chỗ vấp: bình thường mọi tài sản nhận trong vụ mua đều đo theo giá trị hợp lý. Nhưng tài sản bồi hoàn thì cố tình KHÔNG. Nó phải soi gương cái khoản nó che. Cách làm: hình dung bạn mua một căn nhà, người bán hứa “nếu mái dột trong một năm, tôi trả tiền sửa”. Lời hứa đó đáng đúng bằng chi phí sửa mái bạn ước — không hơn, không kém.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Giải thích đơn giản</span><h2>Người bán hứa đền, bạn ghi đúng bằng cái được đền</h2></div>
+    </div>
+    <p class="lead">Tưởng tượng bạn mua một công ty đang vướng một vụ kiện thuế cũ. Lỡ thua, công ty phải nộp một khoản. Người bán biết rủi ro này, nên hứa: “nếu vụ kiện thua, tôi đền”. Câu hỏi: lời hứa đền đó — một thứ bạn nhận được khi mua — lên sổ thế nào và đáng bao nhiêu?</p>
+
+<div class="sub">Hai mảnh luôn đi cùng nhau</div>
+<p>Có hai thứ: khoản nợ rủi ro (vụ kiện thuế), và lời hứa đền của người bán. Chúng là một cặp. Bạn ghi khoản nợ là một khoản phải trả, ghi lời hứa đền là một tài sản. Hai mảnh sinh đôi.</p>
+
+<div class="sub">Tài sản đền soi gương khoản nợ</div>
+<p>Mấu chốt: đừng định giá lời hứa đền tách rời. Nó được đo y theo cách bạn đo khoản nợ kia. Khoản nợ ước 10 tỷ thì tài sản đền cũng quanh 10 tỷ. Khoản nợ đo lại tăng thì tài sản đền tăng theo. Chúng cử động cùng nhịp.</p>
+
+<div class="sub">Trừ hao nếu khó đòi</div>
+<p>Một điều chỉnh: nếu nghi người bán không trả nổi, hoặc hợp đồng giới hạn mức đền, thì hạ tài sản đền xuống. Bạn chỉ ghi phần thật sự đòi được. Lời hứa hay tới đâu cũng vô nghĩa nếu người hứa biến mất.</p>
+  </section>
+
+  <section class="gaps">
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Chỗ vấp · Lỗ hổng</span><h2>Mấy chỗ nghe xuôi mà nghĩ kỹ chưa thông</h2></div>
+    </div>
+    <div class="gap-q"><span class="q">“Sao không định giá hợp lý lời hứa đền cho đúng nguyên tắc chung?”</span><p>Vì làm vậy dễ tạo lệch giả tạo. Nếu khoản nợ đo một kiểu, mà tài sản đền đo kiểu khác, hai con số đáng lẽ triệt tiêu nhau lại không khớp. Lãi/lỗ ảo hiện ra từ chỗ chênh đó. Bắt chúng soi gương nhau để cặp này luôn khớp.</p></div>
+<div class="gap-q"><span class="q">“Nếu khoản nợ kia chính nó là một ngoại lệ thì sao?”</span><p>Thì tài sản đền đi theo luôn. Ví dụ một nợ tiềm tàng không ghi nhận được vì không đo nổi giá trị hợp lý — thì lời hứa đền cho nó cũng không ghi. Tài sản đền không “tự do” hơn cái nó che; nó dính chặt vào số phận của khoản kia.</p></div>
+<div class="gap-q"><span class="q">“Về sau khoản nợ đổi giá, tài sản đền có phải đổi theo không?”</span><p>Có. Các kỳ sau, tài sản đền vẫn đo trên cùng cơ sở với khoản được đền, trong giới hạn hợp đồng. Có thêm một bước: xét xem còn đòi được không. Nếu người bán mất khả năng trả, dù khoản nợ vẫn đó, tài sản đền phải hạ xuống.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví von &amp; ví dụ đời thường</span><h2>Neo vào thứ bạn đã biết</h2></div>
+    </div>
+    <div class="analogy-card"><span class="tag">Ví dụ trung tâm</span>
+<p>Hình dung bạn mua lại một căn nhà cũ. Người bán biết cái mái có thể dột, nên viết vào hợp đồng: “mái dột trong một năm, tôi trả tiền sửa”. Bạn ước sửa mái hết 50 triệu, nên ghi một khoản “có thể phải sửa: 50 triệu”. Lời hứa của người bán đáng đúng 50 triệu đó — không phải một con số tự nghĩ ra. Hai số đi đôi: ước sửa đổi thì lời hứa đổi theo.</p>
+<p class="limit"><b>Chỗ ví von này hỏng:</b> mái nhà thì rủi ro gọn — sửa hay không, hết bao nhiêu. Khoản được bồi hoàn thật thường là một vụ kiện thuế hay tranh chấp pháp lý, ước lượng khó hơn nhiều. Và ví dụ mái nhà bỏ qua chuyện “người bán có còn tiền mà trả không” — đời thực phải trừ hao đúng cái rủi ro đó.</p>
+</div>
+<p>Gần thương vụ thật: mua một công ty đang bị truy thu thuế. Hợp đồng mua bán ghi người bán chịu mọi khoản thuế phát sinh từ giai đoạn trước ngày mua. Bên mua ghi khoản nợ thuế ước tính, đồng thời ghi một tài sản bồi hoàn cùng số, miễn tin người bán còn đủ sức trả.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Tài sản bồi hoàn là một ngoại lệ “ăn theo”: nó không có nguyên tắc đo riêng, mà bám theo khoản được bồi hoàn (đoạn 27). Vì thế nếu khoản kia là ngoại lệ — nợ tiềm tàng theo đoạn 23, hay thuế hoãn lại theo IAS 12 — thì tài sản đền cũng đo theo cùng chuẩn đó. Đoạn 28 thêm hai cái van cho đo lường về sau: giới hạn hợp đồng, và đánh giá khả năng thu hồi (<em>collectibility</em>).</p>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">4</div>
+      <div class="step-meta"><span class="lbl">Kể lại gọn gàng</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Người bán hứa đền nếu một rủi ro cũ bùng ra — một vụ kiện, một khoản thuế. Bên mua ghi lời hứa đó thành một tài sản. Nhưng không định giá nó riêng: nó được đo y theo cách đo chính khoản nợ nó che, cùng lúc, cùng cơ sở. Khoản nợ động thì nó động theo. Chỉ trừ hao nếu khó đòi hoặc hợp đồng giới hạn.</p>
+<p class="core">Khi người bán hứa sẽ đền nếu một rủi ro cũ bùng ra, <span>lời hứa đó đo y theo cái khoản nó che — không định giá riêng.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã hiểu chưa?</h3>
+      <ol>
+        <li>Vì sao tài sản bồi hoàn không được định giá hợp lý riêng, mà phải đo y theo khoản nó che?</li>
+        <li>Khoản được bồi hoàn là một nợ tiềm tàng không ghi nhận được vì không đo nổi giá trị hợp lý. Vậy tài sản bồi hoàn xử lý sao?</li>
+        <li>Sang năm sau, ngoài việc bám theo khoản nợ, còn yếu tố nào khiến tài sản bồi hoàn phải hạ xuống?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nếu giải thích được cho bà ngoại hiểu, bạn mới thật sự hiểu.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-ngoai-le-do-luong"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Giải thích theo phương pháp Feynman</div>
+    <h1 class="rise" style="animation-delay:.08s">Hai món không đo theo giá hợp lý: thuế hoãn lại và cổ phiếu thưởng</h1>
+    <p class="core rise" style="animation-delay:.16s">Luật chung bảo đo mọi thứ theo giá hợp lý, <span>nhưng thuế hoãn lại và cổ phiếu thưởng cố tình nằm ngoài — đo theo chuẩn riêng của chúng.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Điều cần hiểu &amp; cách tiếp cận</span><h2>Quy tắc: vài món được miễn khỏi “đo theo giá hợp lý”</h2></div>
+    </div>
+    <div class="rule">IFRS 3 <strong>đoạn 18</strong> đặt nguyên tắc chung: đo tài sản và nợ nhận diện được theo <em>fair value</em> ngày mua. Nhưng <strong>đoạn 24–31A</strong> liệt kê các ngoại lệ. Hai cái hay gặp: <strong>(1) Thuế hoãn lại</strong> (đoạn 24–25) — ghi nhận và đo theo <em>IAS 12</em>, không chiết khấu, không đưa về giá hợp lý. <strong>(2) Giao dịch cổ phiếu thưởng</strong> (đoạn 30) — đo theo phương pháp của <em>IFRS 2</em> (a <em>market-based measure</em>), không phải fair value. Ngoài ra còn nợ tiềm tàng, tài sản bồi hoàn, quyền mua lại, hợp đồng thuê, IAS 19, IFRS 5… mỗi cái một lý do.</div>
+    <div class="sub">Cách giải thích</div>
+    <div class="approach"><p>Chỗ vấp: học xong nguyên tắc “đo tất cả theo giá hợp lý”, dễ tưởng nó áp cho mọi món. Không. Có một danh sách ngoại lệ, và bỏ sót chúng là lỗi kinh điển. Cách làm: hình dung một sân bay. Hành khách đi cửa kiểm tra chung, nhưng vài nhóm — phi hành đoàn, nhân viên — đi cửa riêng theo luật riêng. Thuế hoãn lại và cổ phiếu thưởng là hai “nhóm đi cửa riêng” hay gặp nhất.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Giải thích đơn giản</span><h2>Luật chung có, nhưng vài món đi cửa riêng</h2></div>
+    </div>
+    <p class="lead">Khi mua một công ty, luật chung bảo: đo mọi tài sản và khoản nợ theo giá hợp lý hôm nay. Nghe gọn. Nhưng có vài món được miễn — chúng đo theo chuẩn riêng, không theo giá hợp lý. Hai món hay gặp nhất là thuế hoãn lại và cổ phiếu thưởng.</p>
+
+<div class="sub">Thuế hoãn lại: theo IAS 12, không nắn về giá hợp lý</div>
+<p>Mua công ty xong, các tài sản được đo lại, làm chênh lệch giữa sổ kế toán và sổ thuế. Chênh đó đẻ ra thuế hoãn lại. IFRS 3 bảo: cái này theo IAS 12. Không chiết khấu về hiện tại, không ép thành giá hợp lý — cứ tính như IAS 12 vẫn tính.</p>
+
+<div class="sub">Cổ phiếu thưởng: theo IFRS 2, không phải giá hợp lý</div>
+<p>Công ty bị mua có thể đang nợ nhân viên các khoản thưởng bằng cổ phiếu. Nếu bên mua phải gánh, khoản này đo theo phương pháp của IFRS 2 — một thước đo dựa trên thị trường riêng của nó. Lại một lần nữa: không phải fair value chung.</p>
+
+<div class="sub">Vì sao phải có ngoại lệ</div>
+<p>Vì hai món này đã có chuẩn riêng lo rất kỹ. Ép chúng thành giá hợp lý sẽ phá vỡ cách IAS 12 và IFRS 2 vận hành, gây lệch khi đo lại các kỳ sau. Để chúng ở chuẩn gốc thì cả hệ thống mới ăn khớp.</p>
+  </section>
+
+  <section class="gaps">
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Chỗ vấp · Lỗ hổng</span><h2>Mấy chỗ nghe xuôi mà nghĩ kỹ chưa thông</h2></div>
+    </div>
+    <div class="gap-q"><span class="q">“Đã có nguyên tắc giá hợp lý cho gọn, sao còn vẽ ra ngoại lệ?”</span><p>Vì vài món đã có chuẩn riêng quá kỹ. Thuế hoãn lại sống theo logic của IAS 12; cổ phiếu thưởng theo logic IFRS 2. Nhét chúng vào khuôn “giá hợp lý” sẽ đá nhau với chính chuẩn gốc lúc đo lại sau này. Ngoại lệ giữ cho mỗi món ở đúng sân của nó.</p></div>
+<div class="gap-q"><span class="q">“Thuế hoãn lại không chiết khấu — chẳng phải tiền tương lai thì phải kéo về sao?”</span><p>Đúng là tiền tương lai, nhưng IAS 12 cố tình cấm chiết khấu thuế hoãn lại. Lý do: lịch hoàn nhập thuế quá khó đoán, chiết khấu sẽ thêm một tầng giả định mong manh. IFRS 3 tôn trọng lựa chọn đó, không tự ý kéo về hiện tại.</p></div>
+<div class="gap-q"><span class="q">“Vậy còn những ngoại lệ khác — có nhiều không?”</span><p>Có cả một danh sách. Nợ tiềm tàng, tài sản bồi hoàn, quyền mua lại — đều là ngoại lệ và có tab riêng ở đây. Thêm hợp đồng thuê (IFRS 16), phúc lợi nhân viên (IAS 19), tài sản giữ để bán (IFRS 5). Mỗi cái lệch khỏi giá hợp lý vì một lý do riêng.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví von &amp; ví dụ đời thường</span><h2>Neo vào thứ bạn đã biết</h2></div>
+    </div>
+    <div class="analogy-card"><span class="tag">Ví dụ trung tâm</span>
+<p>Nghĩ tới cửa kiểm tra an ninh sân bay. Hành khách thường đi một cửa chung, soi chiếu như nhau — đó là “đo theo giá hợp lý”. Nhưng phi hành đoàn và nhân viên kỹ thuật đi cửa riêng, theo quy trình riêng của họ. Không phải vì họ đặc quyền, mà vì việc của họ có luật riêng đã quy định kỹ. Thuế hoãn lại và cổ phiếu thưởng chính là “nhân viên đi cửa riêng” của IFRS 3.</p>
+<p class="limit"><b>Chỗ ví von này hỏng:</b> ở sân bay, “cửa riêng” chỉ là lối đi khác, đích đến vẫn là lên máy bay. Còn ngoại lệ trong IFRS 3 thay đổi cả CON SỐ ghi sổ — đo theo IAS 12 ra số khác hẳn so với giá hợp lý. Và mỗi ngoại lệ lệch vì một lý do riêng, không phải cùng một “luật nhân viên” gọn gàng như ví von gợi ý.</p>
+</div>
+<p>Gần đời hơn: mua một công ty công nghệ. Bạn đo lại bằng sáng chế lên cao, tạo chênh với sổ thuế — khoản thuế hoãn lại sinh ra ở đây tính theo IAS 12, không chiết khấu. Cùng lúc, đội kỹ sư đang có gói cổ phiếu thưởng dở dang — phần bên mua gánh đo theo IFRS 2, không theo giá hợp lý.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. IFRS 3 xếp các ngoại lệ thành ba nhóm. <strong>Một</strong>, ngoại lệ với nguyên tắc <em>ghi nhận</em>: nợ tiềm tàng (đoạn 22–23). <strong>Hai</strong>, ngoại lệ với <em>cả ghi nhận lẫn đo lường</em>: thuế thu nhập theo IAS 12 (đoạn 24–25), phúc lợi nhân viên theo IAS 19 (đoạn 26), và tài sản bồi hoàn (đoạn 27–28). <strong>Ba</strong>, ngoại lệ với nguyên tắc <em>đo lường</em>: quyền mua lại (đoạn 29), cổ phiếu thưởng theo IFRS 2 (đoạn 30), tài sản giữ để bán theo IFRS 5 (đoạn 31). Khi soát một PPA, một thói quen tốt là chạy hết checklist đoạn 21A–31A — đây là chỗ dễ bỏ sót và bị kiểm toán bắt lỗi nhất.</p>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">4</div>
+      <div class="step-meta"><span class="lbl">Kể lại gọn gàng</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Luật chung của IFRS 3 là đo mọi tài sản và nợ theo giá hợp lý ngày mua. Nhưng có một danh sách ngoại lệ. Hay gặp nhất: thuế hoãn lại đo theo IAS 12 (không chiết khấu, không nắn về giá hợp lý), và cổ phiếu thưởng đo theo IFRS 2. Lý do: mỗi món đã có chuẩn riêng lo kỹ, ép vào giá hợp lý sẽ phá nhịp. Bỏ sót danh sách này là lỗi kinh điển.</p>
+<p class="core">Luật chung bảo đo mọi thứ theo giá hợp lý, <span>thuế hoãn lại và cổ phiếu thưởng nằm ngoài, đo theo chuẩn riêng của chúng.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã hiểu chưa?</h3>
+      <ol>
+        <li>Mua một công ty làm tài sản được đo lại, sinh chênh lệch với sổ thuế. Thuế hoãn lại từ chênh đó đo theo giá hợp lý hay theo IAS 12?</li>
+        <li>Vì sao IFRS 3 không tự ý chiết khấu thuế hoãn lại về hiện tại, dù đó là dòng tiền tương lai?</li>
+        <li>Kể hai ví dụ về món được miễn khỏi nguyên tắc “đo theo giá hợp lý”, và lý do chung của các ngoại lệ này.</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nếu giải thích được cho bà ngoại hiểu, bạn mới thật sự hiểu.</p>
+  </footer>
+
+</div></div>
+<script>
+  var bar=document.getElementById('progress');
+  function upd(){var h=document.documentElement;var s=h.scrollTop||document.body.scrollTop;
+    var max=(h.scrollHeight-h.clientHeight)||1;bar.style.width=(s/max*100)+'%';}
+  window.addEventListener('scroll',upd,{passive:true});upd();
+  var io=new IntersectionObserver(function(es){es.forEach(function(e){
+    if(e.isIntersecting){e.target.style.animation='rise .7s cubic-bezier(.2,.7,.3,1) forwards';io.unobserve(e.target);}});},{threshold:.12});
+  document.querySelectorAll('section').forEach(function(s){s.style.opacity='0';io.observe(s);});
+</script>
+
+<script>
+(function(){
+  var tabs=[].slice.call(document.querySelectorAll('.tabbar .tab'));
+  var panels=[].slice.call(document.querySelectorAll('.concept-panel'));
+  function show(i){
+    tabs.forEach(function(t,j){t.classList.toggle('active',j===i);});
+    panels.forEach(function(p,j){
+      var on=(j===i); p.classList.toggle('active',on);
+      if(on){p.querySelectorAll('section').forEach(function(s){s.style.opacity='';s.style.animation='';});}
+    });
+    try{history.replaceState(null,'','#'+panels[i].id);}catch(e){}
+    window.scrollTo(0,0); window.dispatchEvent(new Event('scroll'));
+  }
+  tabs.forEach(function(t){t.addEventListener('click',function(){show(+t.getAttribute('data-i'));});});
+  var start=0; panels.forEach(function(p,j){if('#'+p.id===location.hash)start=j;});
+  show(start);
+})();
+</script>
+
+</body></html>

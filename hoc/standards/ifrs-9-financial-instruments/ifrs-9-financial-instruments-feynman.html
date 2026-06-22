@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html lang="vi"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IFRS 9 Financial Instruments — Hiểu sâu theo Feynman</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,500&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  /* Design tokens shared with ebook-to-study-html (styles_v2.css) */
+  :root{
+    --bg:#fafaf7; --bg-elevated:#ffffff; --bg-soft:#f3f3ee;
+    --border:#e0e0d8; --border-soft:#ececea; --border-strong:#d2c8b6;
+    --ink:#1a1a1f; --ink-soft:#3f3f4a; --muted:#7a7a85;
+    --accent:#b8860b; --accent-2:#8b6508; --gold:#a07c1f; --gap:#8b6508;
+    --serif:"Fraunces",Georgia,"Iowan Old Style",serif;
+    --sans:"Geist",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    --mono:"Geist Mono","JetBrains Mono",Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:var(--sans);
+    font-size:19px;line-height:1.72;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}
+  .progress{position:fixed;top:0;left:0;height:3px;width:0;z-index:50;
+    background:linear-gradient(90deg,var(--gold),var(--accent));transition:width .08s linear}
+  .wrap{max-width:920px;margin:0 auto;padding:0 36px}
+  .rise{opacity:0;transform:translateY(14px);animation:rise .7s cubic-bezier(.2,.7,.3,1) forwards}
+  @keyframes rise{to{opacity:1;transform:none}}
+
+  header{padding:104px 0 60px;border-bottom:1px solid var(--border)}
+  .kicker{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.18em;
+    text-transform:uppercase;color:var(--accent);margin-bottom:26px}
+  h1{font-family:var(--serif);font-weight:600;font-size:clamp(42px,7.6vw,72px);
+    line-height:1.0;letter-spacing:-.022em;margin-bottom:28px;font-optical-sizing:auto;color:var(--ink)}
+  h1 em{font-style:italic;color:var(--accent)}
+  .ttl{font-family:var(--serif);font-weight:600;font-size:clamp(42px,7.6vw,72px);line-height:1.0;letter-spacing:-.022em;margin:0 0 28px;font-optical-sizing:auto;color:var(--ink)}
+  .ttl em{font-style:italic;color:var(--accent)}
+  .core{font-family:var(--serif);font-style:italic;font-weight:400;
+    font-size:clamp(21px,3.6vw,27px);line-height:1.44;color:var(--ink-soft)}
+  .core span{font-style:normal;font-weight:600;color:var(--accent-2);
+    box-shadow:inset 0 -.5em 0 rgba(184,134,11,.16)}
+
+  /* ---- BƯỚC 0: ANCHOR (state the rule + plan before explaining) ---- */
+  .anchor .rule{font-family:var(--serif);font-size:19px;line-height:1.5;color:var(--ink);
+    background:var(--bg-soft);border-left:3px solid var(--accent);
+    padding:18px 24px;border-radius:0 4px 4px 0;margin:0}
+  .anchor .rule em{font-style:italic;color:var(--accent-2)}
+  .anchor .rule strong{color:var(--ink);font-weight:600}
+  .anchor .approach{color:var(--ink-soft)}
+
+  section{padding:72px 0;border-bottom:1px solid var(--border);position:relative}
+  .step-head{display:flex;align-items:flex-start;gap:22px;margin-bottom:34px}
+  .big-num{font-family:var(--serif);font-weight:700;font-size:62px;line-height:.8;
+    color:var(--border-strong);flex:none;font-optical-sizing:auto;letter-spacing:-.03em}
+  .step-meta{padding-top:4px}
+  .lbl{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--accent);display:block;margin-bottom:10px}
+  h2{font-family:var(--serif);font-weight:600;font-size:clamp(27px,4.4vw,37px);
+    line-height:1.12;letter-spacing:-.012em;color:var(--ink)}
+  h2 em{font-style:italic;color:var(--accent)}
+  p{margin-bottom:21px}
+  p:last-child{margin-bottom:0}
+  strong{font-weight:600;color:var(--ink)}
+  em{font-style:italic;color:var(--accent-2)}
+  .gloss{color:var(--muted);font-style:italic}
+
+  .lead::first-letter{font-family:var(--serif);font-weight:700;float:left;
+    font-size:74px;line-height:.74;padding:8px 12px 0 0;color:var(--accent)}
+
+  .sub{font-family:var(--serif);font-weight:600;font-size:17px;letter-spacing:.01em;
+    color:var(--ink);margin:34px 0 14px;display:flex;align-items:center;gap:11px}
+  .sub::before{content:"";width:18px;height:2px;background:var(--accent);flex:none;border-radius:2px}
+
+  .gaps{background:var(--bg-soft)}
+  .gaps .big-num{color:#e2d6b4}
+  .gaps .lbl{color:var(--gap)}
+  .gap-q{margin:0 0 30px;padding-left:24px;border-left:2px solid var(--border-strong)}
+  .gap-q:last-child{margin-bottom:0}
+  .gap-q .q{font-family:var(--serif);font-style:italic;font-weight:500;
+    font-size:22px;line-height:1.35;color:var(--gap);margin-bottom:12px;display:block}
+  .gap-q p:last-child{margin-bottom:0}
+
+  .analogy-card{border:1px solid #e8c876;border-radius:4px;padding:30px 32px;margin:8px 0 28px;
+    background:linear-gradient(135deg,#fef9ed 0%,#fdf3e0 100%)}
+  .analogy-card .tag{font-family:var(--mono);font-weight:600;font-size:11px;
+    letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin-bottom:16px;display:block}
+  .analogy-card p{color:#5a4810}
+  .analogy-card strong{color:var(--accent-2)}
+  .limit{font-size:17px;line-height:1.6;color:#5a4810;
+    border-top:1px solid #e8c876;padding-top:20px;margin-top:22px}
+  .limit b{color:var(--accent-2);font-weight:600;font-family:var(--serif)}
+
+  .retell{background:linear-gradient(180deg,var(--bg-soft) 0%,var(--bg) 100%);border-bottom:none}
+  .retell h2{color:var(--ink)}
+  .retell strong{color:var(--accent-2)}
+  .retell .core{margin-top:6px}
+  .testbox{border:1px solid var(--border);background:var(--bg-elevated);
+    border-radius:4px;padding:28px 32px;margin-top:40px;box-shadow:0 1px 2px rgba(0,0,0,.03)}
+  .testbox h3{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--accent);margin-bottom:20px}
+  .testbox ol{margin:0;padding-left:22px;counter-reset:t}
+  .testbox li{margin-bottom:16px;color:var(--ink-soft);padding-left:6px}
+  .testbox li:last-child{margin-bottom:0}
+
+  footer{text-align:center;padding:60px 0 88px}
+  footer .mark{font-family:var(--serif);font-weight:700;color:var(--accent);
+    font-size:26px;display:block;margin-bottom:14px}
+  footer p{font-family:var(--serif);font-style:italic;color:var(--muted);font-size:17px;max-width:380px;margin:0 auto}
+
+  @media(max-width:560px){
+    body{font-size:18px}
+    header{padding:70px 0 44px}
+    section{padding:52px 0}
+    .step-head{gap:16px}
+    .big-num{font-size:46px}
+    .lead::first-letter{font-size:60px}
+  }
+</style>
+<style>
+ .tabbar{position:fixed;top:0;left:0;right:0;width:100%;box-sizing:border-box;z-index:40;background:rgba(250,250,247,.93);
+   backdrop-filter:saturate(1.1) blur(8px);-webkit-backdrop-filter:saturate(1.1) blur(8px);
+   border-bottom:1px solid var(--border);display:flex;gap:6px;overflow-x:auto;
+   padding:10px max(36px,calc((100% - 992px)/2));scrollbar-width:thin}
+ .tabbar .tab{flex:0 0 auto;display:flex;align-items:baseline;gap:9px;cursor:pointer;
+   background:transparent;border:1px solid transparent;border-radius:999px;
+   padding:8px 17px;transition:.15s;white-space:nowrap;color:var(--muted)}
+ .tabbar .tab:hover{color:var(--ink);background:var(--bg-soft)}
+ .tabbar .tab.active{color:var(--accent-2);background:var(--bg-soft);border-color:var(--border-strong)}
+ .tabbar .tn{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.1em;color:var(--accent)}
+ .tabbar .tl{font-family:var(--serif);font-weight:500;font-size:16px}
+ body{padding-top:56px} .concept-panel{display:none}
+ .concept-panel.active{display:block}
+ .concept-panel header{padding-top:50px}
+ .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+ @media(max-width:560px){.tabbar .tl{max-width:48vw;overflow:hidden;text-overflow:ellipsis}}
+</style>
+</head>
+<body>
+<h1 class="sr-only">IFRS 9 Financial Instruments — Hiểu sâu theo Feynman</h1>
+<div class="progress" id="progress"></div>
+<nav class="tabbar" aria-label="Các khái niệm"><button class="tab" data-i="0"><span class="tn">01</span><span class="tl">SPPI</span></button><button class="tab" data-i="1"><span class="tn">02</span><span class="tl">12-month ECL</span></button><button class="tab" data-i="2"><span class="tn">03</span><span class="tl">Stage 3 lãi</span></button><button class="tab" data-i="3"><span class="tn">04</span><span class="tl">POCI</span></button><button class="tab" data-i="4"><span class="tn">05</span><span class="tl">FVOCI nợ</span></button><button class="tab" data-i="5"><span class="tn">06</span><span class="tl">Own credit risk</span></button><button class="tab" data-i="6"><span class="tn">07</span><span class="tl">Phép thử 10%</span></button><button class="tab" data-i="7"><span class="tn">08</span><span class="tl">Dừng ghi nhận TS</span></button></nav>
+<article class="concept-panel" id="c-sppi-basic-lending" aria-label="SPPI"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Giải thích theo phương pháp Feynman</div>
+    <h2 class="ttl rise" style="animation-delay:.08s">Vì sao một trái phiếu lại có thể thành FVTPL?</h2>
+    <p class="core rise" style="animation-delay:.16s">Cho vay là cho thuê tiền — <span>khi tiền lãi bắt đầu phụ thuộc việc làm ăn của con nợ, bạn không còn là người cho vay.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Điều cần hiểu &amp; cách tiếp cận</span><h2>Quy tắc: dòng tiền phải là gốc và lãi (SPPI)</h2></div>
+    </div>
+    <div class="rule">IFRS 9, đoạn 4.1.2(b) &amp; 4.1.3: để đo tại <em>amortised cost</em> hay <em>FVOCI</em>, dòng tiền hợp đồng phải <strong>chỉ là thanh toán gốc và lãi</strong> trên gốc còn lại (<em>SPPI</em>). "Lãi" gồm bù cho giá trị thời gian của tiền, rủi ro tín dụng, rủi ro và chi phí cho vay cơ bản khác, cùng biên lợi nhuận. Không đạt SPPI thì rơi vào <em>FVTPL</em>.</div>
+    <div class="sub">Cách giải thích</div>
+    <div class="approach"><p>Chỗ vấp: một tờ trái phiếu trông hiền lành vẫn có thể bị đẩy vào FVTPL. Cách làm: phân biệt hai vai — <strong>người cho thuê tiền</strong> ăn tiền thuê, và <strong>người hùn vốn</strong> ăn chia theo làm ăn. SPPI hỏi đúng một câu: tiền lãi của bạn là tiền thuê, hay là phần chia?</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Giải thích đơn giản</span><h2>Cho thuê tiền, hay hùn vốn ăn chia?</h2></div>
+    </div>
+    <p class="lead">Bạn cho hàng xóm vay 100 nghìn. Cuối tháng họ trả thêm vài đồng. Vài đồng đó là gì? Là tiền thuê: thuê tiền của bạn một tháng, cộng chút bù cho rủi ro họ không trả. Đó là cho vay. Giờ đổi luật chơi một chút, bạn sẽ thấy lúc nào mình thôi làm người cho vay.</p>
+<div class="sub">Tiền lãi "cơ bản" gồm những gì</div>
+<p>Tiền thuê tiền có vài phần dễ hiểu. Một: bù cho thời gian, vì tiền hôm nay quý hơn tiền năm sau. Hai: bù cho rủi ro họ quỵt. Ba: chút phí và lời cho bạn. Tất cả xoay quanh chuyện cho mượn rồi đòi lại. Không dính tới chuyện họ làm ăn ra sao.</p>
+<div class="sub">Lúc bạn thôi làm người cho vay</div>
+<p>Giờ đổi: cuối tháng họ trả tuỳ quán phở của họ lời bao nhiêu. Lời nhiều trả nhiều, ế thì trả ít. Bạn không còn cho thuê tiền nữa. Bạn đang hùn vốn, ăn chia theo việc làm ăn. Dòng tiền không còn là "gốc và lãi" đơn thuần.</p>
+<div class="sub">Vì sao điều đó đổi cách ghi sổ</div>
+<p>Khi còn là cho vay, dòng tiền đoán được, hợp với cách ghi giá phân bổ đều đặn. Khi đã thành ăn chia, dòng tiền nhảy theo may rủi kinh doanh. Cách trung thực duy nhất là theo giá thị trường mỗi kỳ, tức FVTPL.</p>
+<div class="sub">Cái bẫy: nhìn hiền mà trượt</div>
+<p>Một trái phiếu lãi suất nhìn cố định vẫn có thể trượt. Ví dụ lãi gắn giá dầu, gắn chỉ số chứng khoán, hay có đòn bẩy khuếch đại. Lúc đó tiền lãi không còn là tiền thuê thuần. Trượt SPPI, và cả tờ trái phiếu rơi vào FVTPL.</p>
+  </section>
+
+  <section class="gaps">
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Chỗ vấp · Lỗ hổng</span><h2>Mấy chỗ nghe xuôi mà nghĩ kỹ chưa thông</h2></div>
+    </div>
+    <div class="gap-q"><span class="q">"Lãi suất thả nổi cũng đổi theo thời gian — sao không trượt?"</span><p>Vì nó vẫn là tiền thuê. Lãi thả nổi chỉ cập nhật "giá thuê tiền" theo lãi suất chung của thị trường. Nó không gắn vào việc làm ăn của con nợ. Vẫn là cho vay, vẫn đạt SPPI.</p></div>
+<div class="gap-q"><span class="q">"Vậy có quyền trả nợ trước hạn thì sao?"</span><p>Thường vẫn đạt, nếu số trả trước về cơ bản là gốc và lãi còn lại, cộng khoản bù hợp lý cho việc kết thúc sớm. Đó vẫn nằm trong khuôn cho vay. Chỉ khi khoản bù vô lý hay gắn yếu tố lạ thì mới thành vấn đề.</p></div>
+<div class="gap-q"><span class="q">"Non-recourse — chỉ đòi được từ một tài sản cụ thể — có trượt không?"</span><p>Không tự động trượt, nhưng phải nhìn xuyên xuống tài sản cơ sở. Nếu dòng tiền tăng giảm theo hiệu quả của tài sản đó, ví dụ lưu lượng xe trên đường thu phí. Lúc đó hết là cho vay cơ bản, trượt SPPI.</p></div>
+<div class="gap-q"><span class="q">"Trượt SPPI rồi thì mô hình kinh doanh còn quan trọng không?"</span><p>Không còn quyết định nữa. Đạt SPPI là tấm vé vào cửa amortised cost hoặc FVOCI; mô hình kinh doanh chọn giữa hai cửa đó. Trượt SPPI thì khỏi xét mô hình, đi thẳng FVTPL.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví von &amp; ví dụ đời thường</span><h2>Neo vào thứ bạn đã biết</h2></div>
+    </div>
+    <div class="analogy-card"><span class="tag">Ví dụ trung tâm</span>
+<p>Hai vai rõ rệt. <strong>Người cho thuê tiền</strong>: đưa tiền, mỗi kỳ thu "tiền thuê" cộng đòi lại vốn. Thu nhập không dính chuyện con nợ làm ăn ra sao. <strong>Người hùn vốn</strong>: bỏ tiền vào quán, ăn chia theo lời lỗ. SPPI hỏi bạn đang ở vai nào. Vai cho thuê thì đạt; vai hùn vốn thì trượt.</p>
+<p class="limit"><b>Chỗ ví von này hỏng:</b> ranh giới "thuê" và "hùn" không phải lúc nào cũng sắc. Có những điều khoản ở vùng xám, như lãi gắn lạm phát hay lãi reset lệch kỳ. Lúc đó chuẩn phải so dòng tiền với một khoản "thuần cho vay" chuẩn để phân định, chứ không nhìn là biết ngay.</p>
+</div>
+<p>Gần hơn: bạn cho người anh họ vay vốn mở tiệm. Kiểu A: mỗi tháng trả bạn 2% trên số đã vay, bất kể tiệm đông hay vắng — bạn là người cho thuê tiền. Kiểu B: trả bạn 10% lợi nhuận tiệm — bạn thành cổ đông tí hon. Cùng số tiền bỏ ra, hai vai khác hẳn.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Khi yếu tố thời gian bị bóp méo (modified time value — ví dụ lãi reset hằng tháng nhưng theo lãi suất kỳ một năm), chuẩn dùng <em>benchmark cash flows test</em>: so dòng tiền thực với dòng tiền của một công cụ "thời gian chuẩn". Lệch đáng kể thì trượt. Với <em>contractually linked instruments</em> (tranche), còn phải xét rủi ro tín dụng của tranche so với nhóm tài sản cơ sở.</p>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">4</div>
+      <div class="step-meta"><span class="lbl">Kể lại gọn gàng</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Cho vay là cho thuê tiền: bạn ăn "tiền thuê" cho thời gian và rủi ro, rồi đòi lại vốn. Một trái phiếu đạt SPPI khi dòng tiền vẫn đúng kiểu đó. Nhưng khi tiền lãi bắt đầu nhảy theo việc làm ăn của con nợ, hay theo giá dầu, chỉ số, đòn bẩy, bạn thôi là người cho vay. Cả công cụ rơi vào FVTPL.</p>
+<p class="core">Cho vay là cho thuê tiền — <span>khi tiền lãi bắt đầu phụ thuộc việc làm ăn của con nợ, bạn không còn là người cho vay.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã hiểu chưa?</h3>
+      <ol>
+        <li>Vì sao lãi suất thả nổi vẫn đạt SPPI, nhưng lãi gắn lợi nhuận con nợ thì không?</li>
+        <li>Một trái phiếu "nhìn hiền" có thể trượt SPPI vì những lý do gì?</li>
+        <li>Vai "người cho thuê tiền" khác vai "người hùn vốn" ở điểm cốt lõi nào?</li>
+        <li>Khi một khoản đã trượt SPPI, mô hình kinh doanh còn vai trò gì trong phân loại?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nếu giải thích được cho bà ngoại hiểu, bạn mới thật sự hiểu.</p>
+  </footer>
+
+</div></article><article class="concept-panel" id="c-ecl-12-month" aria-label="12-month ECL"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Giải thích theo phương pháp Feynman</div>
+    <h2 class="ttl rise" style="animation-delay:.08s">12-month ECL không phải tổn thất của năm tới</h2>
+    <p class="core rise" style="animation-delay:.16s">12-month ECL đo <span>tổn thất nếu cú vỡ nợ rơi vào năm tới — không phải tổn thất của riêng năm tới.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Điều cần hiểu &amp; cách tiếp cận</span><h2>Quy tắc: Giai đoạn 1 dùng 12-month ECL</h2></div>
+    </div>
+    <div class="rule">IFRS 9, Phụ lục A định nghĩa <em>12-month ECL</em>: phần của <em>lifetime ECL</em> sinh ra từ các sự kiện vỡ nợ <strong>có thể xảy ra trong 12 tháng</strong> sau ngày báo cáo. Đoạn 5.5.5: khi rủi ro tín dụng chưa tăng đáng kể (Giai đoạn 1), trích lập bằng 12-month ECL.</div>
+    <div class="sub">Cách giải thích</div>
+    <div class="approach"><p>Chỗ vấp là chữ <strong>"12 tháng"</strong>. Ai cũng nghĩ nó là tiền mất trong năm tới. Cách làm: tách bạch hai thứ khác nhau — cú vỡ nợ nổ ra <strong>khi nào</strong>, và khi nó nổ thì <strong>mất bao nhiêu</strong>. Con số một năm chỉ giới hạn cái thứ nhất.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Giải thích đơn giản</span><h2>Cắt ở 'khi nào vỡ', không cắt ở 'mất bao nhiêu'</h2></div>
+    </div>
+    <p class="lead">Bạn cho một người bạn vay tiền, trả dần trong ba năm. Bạn lo: lỡ bạn ấy vỡ nợ thì sao? Có hai câu hỏi khác nhau. Một: cú vỡ nợ nổ ra lúc nào? Hai: khi nó nổ, bạn mất bao nhiêu? Con số "một năm" của chuẩn chỉ đụng tới câu đầu.</p>
+<div class="sub">Vỡ một lần, mất cả ba năm</div>
+<p>Giả sử bạn ấy vỡ nợ vào tháng thứ tám. Bạn không chỉ mất khoản của năm nay. Bạn mất hết phần còn lại của cả ba năm. Một cú vỡ trong năm tới có thể cuốn theo mọi đồng còn lại.</p>
+<div class="sub">Vậy "12 tháng" giới hạn cái gì</div>
+<p>Nó giới hạn thời điểm cú vỡ được phép nổ: chỉ trong năm tới. Nếu cú vỡ nổ trong năm tới, ta tính trọn khoản mất nó gây ra — kể cả phần của năm hai, năm ba. Cái bị cắt là cửa sổ thời gian, không phải khoản mất.</p>
+<div class="sub">So với khoản trích cả đời</div>
+<p>Khoản trích cả đời (lifetime) mở cửa sổ ra hết ba năm: vỡ lúc nào cũng tính. Con số một năm khép cửa sổ lại còn mười hai tháng. Cùng cách đo khoản mất, chỉ khác ở cửa sổ cho phép cú vỡ.</p>
+<div class="sub">Cân theo khả năng</div>
+<p>Vỡ nợ chỉ là một khả năng, không chắc xảy ra. Nên ta nhân khoản mất với xác suất cú vỡ rơi vào năm tới. Khả năng thấp thì con số nhỏ, nhưng hiếm khi bằng không.</p>
+  </section>
+
+  <section class="gaps">
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Chỗ vấp · Lỗ hổng</span><h2>Mấy chỗ nghe xuôi mà nghĩ kỹ chưa thông</h2></div>
+    </div>
+    <div class="gap-q"><span class="q">"Vậy nó khác gì 'tổn thất dự kiến của năm tới'?"</span><p>Khác hẳn. "Tổn thất của năm tới" chỉ đếm tiền hụt trong mười hai tháng. Con số một năm đếm trọn khoản hụt của cả đời khoản vay, miễn là cú vỡ nổ trong năm tới. Một cú vỡ tháng tám cuốn theo cả tiền các năm sau.</p></div>
+<div class="gap-q"><span class="q">"Vì sao Giai đoạn 1 chỉ tính một năm, không tính cả đời?"</span><p>Vì rủi ro chưa tăng đáng kể so với lúc cho vay. Khoản vay vẫn "khoẻ". Chuẩn cho rằng phần nguy hiểm gần nhất là cú vỡ trong năm tới. Khi rủi ro tăng đáng kể, ta mới mở cửa sổ ra cả đời, tức Giai đoạn 2.</p></div>
+<div class="gap-q"><span class="q">"Nếu khoản vay chỉ còn sáu tháng thì sao?"</span><p>Cửa sổ không vượt quá đời thật của khoản vay. Còn sáu tháng thì cửa sổ là sáu tháng. "Mười hai tháng" là mức trần, không phải con số cứng. Khoản vay ngắn hơn thì cửa sổ ngắn theo.</p></div>
+<div class="gap-q"><span class="q">"Cả khoản mất lẫn xác suất đều là phỏng đoán — tin được không?"</span><p>Đây là chỗ quy tắc tự nhận mong manh. Phải đoán khả năng vỡ, đoán còn moi lại được bao nhiêu, rồi kéo về tiền hôm nay. Đổi giả định một chút là số nhảy. Vì thế chuẩn bắt cập nhật mỗi kỳ và kể rõ giả định.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví von &amp; ví dụ đời thường</span><h2>Neo vào thứ bạn đã biết</h2></div>
+    </div>
+    <div class="analogy-card"><span class="tag">Ví dụ trung tâm</span>
+<p>Hình dung một tấm bảo hiểm cho khoản bạn ấy vay. Câu hỏi không phải "năm nay mất bao nhiêu". Câu hỏi là: <strong>nếu</strong> tai nạn vỡ nợ xảy ra trong năm tới, tổng thiệt hại là bao nhiêu — gồm cả các năm sau. Rồi nhân với khả năng tai nạn rơi đúng vào năm tới.</p>
+<p class="limit"><b>Chỗ ví von này hỏng:</b> bảo hiểm thường bồi một cú trong kỳ rồi thôi. Khoản vay thì "tai nạn" kéo theo mọi dòng tiền còn lại, không chỉ một lần. Và ở Giai đoạn 2, cửa sổ mở ra cả đời — lúc đó phép so không còn gói trong một năm.</p>
+</div>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Thực hành hay tách ECL thành <em>PD × LGD × EAD</em>: xác suất vỡ nợ, tỷ lệ mất khi vỡ, và dư nợ lúc vỡ. 12-month ECL lấy <em>PD</em> của mười hai tháng; lifetime lấy <em>PD</em> cả đời. Rồi chiết khấu về hôm nay theo lãi suất hiệu lực.</p>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">4</div>
+      <div class="step-meta"><span class="lbl">Kể lại gọn gàng</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Con số một năm không hỏi "năm tới mất bao nhiêu". Nó hỏi: nếu cú vỡ nợ rơi vào năm tới, mình mất trọn bao nhiêu của cả đời khoản vay. Rồi nhân với khả năng cú vỡ rơi đúng năm đó. Cắt ở "khi nào vỡ", không cắt ở "mất bao nhiêu".</p>
+<p class="core">12-month ECL đo <span>tổn thất nếu cú vỡ rơi vào năm tới — không phải tổn thất của riêng năm tới.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã hiểu chưa?</h3>
+      <ol>
+        <li>Vì sao một cú vỡ nợ trong năm tới lại có thể làm mất tiền của cả năm hai và năm ba?</li>
+        <li>Phân biệt: "12-month ECL" khác "tổn thất dự kiến trong mười hai tháng tới" ở điểm nào?</li>
+        <li>Khi nào cửa sổ vỡ nợ mở rộng từ một năm ra cả đời khoản vay?</li>
+        <li>Một khoản vay chỉ còn năm tháng đến đáo hạn: cửa sổ khi đó dài bao lâu?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nếu giải thích được cho bà ngoại hiểu, bạn mới thật sự hiểu.</p>
+  </footer>
+
+</div></article><article class="concept-panel" id="c-stage3-gross-net" aria-label="Stage 3 lãi"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Giải thích theo phương pháp Feynman</div>
+    <h2 class="ttl rise" style="animation-delay:.08s">Vì sao lãi đột nhiên tính trên số nhỏ hơn?</h2>
+    <p class="core rise" style="animation-delay:.16s">Khi đã biết khó đòi đủ, <span>tính lãi trên cả khoản gốc là tự lừa mình — nên chỉ tính trên phần còn hy vọng lấy lại.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Điều cần hiểu &amp; cách tiếp cận</span><h2>Quy tắc: Giai đoạn 3 áp lãi trên amortised cost</h2></div>
+    </div>
+    <div class="rule">IFRS 9, đoạn 5.4.1(b): với tài sản đã <em>credit-impaired</em> (Giai đoạn 3), lãi được tính bằng cách áp <em>effective interest rate</em> lên <strong>amortised cost</strong> (số ròng, sau khi trừ loss allowance), thay vì <strong>gross carrying amount</strong>. Giai đoạn 1 và 2 vẫn tính trên gross.</div>
+    <div class="sub">Cách giải thích</div>
+    <div class="approach"><p>Chỗ vấp: tự nhiên thu hẹp số để tính lãi, nghe như tự thiệt. Cách làm: nghĩ như một người cho bạn vay đang dần nhận ra khó đòi đủ. Tính lãi trên toàn bộ số cho vay lúc này là ghi vào sổ một khoản lãi gần như chắc không nhận được. Ta sẽ thấy vì sao chỉ nên tính trên phần còn hy vọng.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Giải thích đơn giản</span><h2>Đừng tính lãi trên khoản bạn biết sẽ mất</h2></div>
+    </div>
+    <p class="lead">Một người bạn nợ bạn 100 nghìn, hẹn trả kèm lãi. Lúc đầu bạn tin lấy đủ, nên tính lãi trên cả 100 nghìn. Rồi bạn ấy gặp khó. Giờ bạn đoán chỉ đòi lại được 70 nghìn. Câu hỏi: bạn còn nên tính lãi trên 100, hay chỉ trên 70?</p>
+<div class="sub">Vì sao tính trên 100 là tự lừa</div>
+<p>Lãi là phần thưởng cho số tiền bạn thật sự còn cho vay được. Nếu 30 nghìn coi như mất, thì tính lãi trên nó là ghi vào sổ một khoản thu nhập tưởng tượng. Cuối cùng bạn lại phải xoá đi. Sổ sách phồng lên rồi xẹp xuống, không thật.</p>
+<div class="sub">Nên chỉ tính trên phần còn hy vọng</div>
+<p>Phần bạn còn thực sự kỳ vọng lấy lại là 70 nghìn. Đó mới là số tiền đang "làm việc" cho bạn. Tính lãi trên 70 nghìn cho ra con số thu nhập thật. Đây chính là chuyển từ tính trên "số gộp" sang tính trên "số ròng".</p>
+<div class="sub">Ba giai đoạn, hai cách tính</div>
+<p>Giai đoạn 1 và 2: khoản vay vẫn "sống", vẫn kỳ vọng đòi đủ, nên tính lãi trên số gộp, tức cả 100. Giai đoạn 3: đã rõ khó đòi đủ, nên tính lãi trên số ròng, tức 70. Cùng một lãi suất, chỉ khác cái nền áp lên.</p>
+<div class="sub">Lưu ý dễ nhầm</div>
+<p>Lằn ranh không nằm giữa Giai đoạn 1 và 2. Cả hai giai đoạn đầu đều tính trên số gộp. Cách tính lãi chỉ đổi khi bước sang Giai đoạn 3. Nhiều người nhầm tưởng nó đổi ngay khi rủi ro mới tăng.</p>
+  </section>
+
+  <section class="gaps">
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Chỗ vấp · Lỗ hổng</span><h2>Mấy chỗ nghe xuôi mà nghĩ kỹ chưa thông</h2></div>
+    </div>
+    <div class="gap-q"><span class="q">"Trừ loss allowance để tính lãi, vậy có tính hai lần không?"</span><p>Không. Loss allowance ghi nhận khoản dự kiến mất ở một chỗ. Tính lãi trên số ròng chỉ đảm bảo thu nhập lãi khớp với phần còn hy vọng. Hai việc khác nhau: một bên đo khoản mất, một bên đo thu nhập trên phần còn lại.</p></div>
+<div class="gap-q"><span class="q">"Nếu sau đó bạn ấy hồi phục thì sao?"</span><p>Nếu tín dụng cải thiện và lý do gắn được với một sự kiện sau đó, khoản vay có thể quay lại tính lãi trên số gộp. Cơ chế không khoá một chiều. Phần đã dự phòng cũng được hoàn nhập tương ứng.</p></div>
+<div class="gap-q"><span class="q">"Tài sản POCI — mua vào đã hỏng sẵn — có giống vậy không?"</span><p>Khác một chút. Tài sản mua vào đã suy giảm (POCI) dùng một lãi suất đã "gài" sẵn tổn thất ngay từ đầu (credit-adjusted EIR), áp lên số ròng từ ngày một. Nó không trải qua chặng "gross rồi mới net" như khoản vay thường.</p></div>
+<div class="gap-q"><span class="q">"Số 70 nghìn cũng là phỏng đoán mà?"</span><p>Đúng, đó là điểm mong manh. Phần còn hy vọng lấy lại là một ước tính, cập nhật mỗi kỳ. Nhưng tính lãi trên một ước tính thận trọng vẫn trung thực hơn tính trên con số 100 mà ai cũng biết không còn đúng.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví von &amp; ví dụ đời thường</span><h2>Neo vào thứ bạn đã biết</h2></div>
+    </div>
+    <div class="analogy-card"><span class="tag">Ví dụ trung tâm</span>
+<p>Hình dung một cái ao bạn thả 100 con cá, mỗi kỳ bắt vài con làm "lãi". Một hôm bạn phát hiện 30 con đã chết, chỉ 70 con còn sống. Bạn còn tính sản lượng dựa trên 100 con nữa không? Không. Bạn tính trên 70 con còn bơi. Lãi chỉ nên dựa trên cái còn sống thật.</p>
+<p class="limit"><b>Chỗ ví von này hỏng:</b> cá chết là mất hẳn, còn "phần khó đòi" chỉ là ước tính có thể đảo chiều. Con nợ hồi phục thì "cá sống lại". Ngoài ra ao cá không có lãi suất hiệu lực; cơ chế thật áp một tỷ lệ cố định lên số ròng, không phải đếm cá đơn thuần.</p>
+</div>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. "Số ròng" chính là <em>amortised cost</em> = gross carrying amount trừ loss allowance. Lãi = <em>EIR</em> nhân số ròng. Khi tín dụng cải thiện một cách khách quan, đoạn 5.4.2 cho phép quay lại tính lãi trên gross.</p>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">4</div>
+      <div class="step-meta"><span class="lbl">Kể lại gọn gàng</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Lãi là phần thưởng cho số tiền bạn còn thực sự cho vay được. Khi đã rõ khó đòi đủ, tính lãi trên cả khoản gốc là ghi vào sổ thu nhập mình gần như chắc không nhận. Nên ở Giai đoạn 3, ta chỉ tính lãi trên phần còn hy vọng lấy lại — số ròng, không phải số gộp.</p>
+<p class="core">Khi đã biết khó đòi đủ, <span>chỉ tính lãi trên phần còn hy vọng lấy lại, không phải trên cả khoản gốc.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã hiểu chưa?</h3>
+      <ol>
+        <li>Vì sao tính lãi trên cả khoản gốc khi đã biết khó đòi đủ lại làm sổ sách sai lệch?</li>
+        <li>Lằn ranh đổi cách tính lãi nằm giữa hai giai đoạn nào, và vì sao không phải giữa 1 và 2?</li>
+        <li>Tài sản POCI khác khoản vay thường ở cách áp lãi như thế nào?</li>
+        <li>Tính lãi trên số ròng và trích lập dự phòng — hai việc đó có trùng nhau không?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nếu giải thích được cho bà ngoại hiểu, bạn mới thật sự hiểu.</p>
+  </footer>
+
+</div></article><article class="concept-panel" id="c-poci-credit-adjusted" aria-label="POCI"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Giải thích theo phương pháp Feynman</div>
+    <h2 class="ttl rise" style="animation-delay:.08s">Mua nợ xấu: gài sẵn tổn thất vào lãi suất</h2>
+    <p class="core rise" style="animation-delay:.16s">Khi mua một khoản nợ đã hỏng sẵn, <span>bạn trả giá đã trừ rủi ro — nên tổn thất gài vào lãi suất, không trích dự phòng lúc đầu.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Điều cần hiểu &amp; cách tiếp cận</span><h2>Quy tắc: POCI dùng credit-adjusted EIR</h2></div>
+    </div>
+    <div class="rule">IFRS 9, đoạn 5.4.1(a) &amp; 5.5.13–14: tài sản <em>mua hoặc phát sinh đã credit-impaired</em> (POCI) dùng một lãi suất đã tính sẵn tổn thất dự kiến — <em>credit-adjusted EIR</em> — áp lên amortised cost ngay từ đầu. <strong>Không</strong> trích loss allowance ban đầu; chỉ ghi nhận <strong>thay đổi lũy kế</strong> của lifetime ECL kể từ ngày mua. Thay đổi thuận lợi cũng thành impairment gain.</div>
+    <div class="sub">Cách giải thích</div>
+    <div class="approach"><p>Chỗ vấp: tài sản đã hỏng mà không trích dự phòng lúc mua? Cách làm: nghĩ tới việc mua lại một sổ nợ xấu với giá đã bèo. Vì bạn trả giá rẻ phản ánh sẵn rủi ro, tổn thất kỳ vọng nằm gọn trong giá mua. Ta sẽ thấy vì sao lãi suất "gánh" luôn phần tổn thất đó.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Giải thích đơn giản</span><h2>Mua sổ nợ xấu với giá đã trừ rủi ro</h2></div>
+    </div>
+    <p class="lead">Một người chuyên đi mua lại các sổ nợ khó đòi. Một sổ ghi 100 nghìn, nhưng ai cũng biết khó đòi đủ. Anh ta trả bao nhiêu để mua? Không phải 100. Có lẽ chỉ 60. Cái giá 60 đã tính sẵn chuyện sẽ mất kha khá. Vậy ghi sổ sao cho khỏi trừ tổn thất hai lần?</p>
+<div class="sub">Vì sao không trích dự phòng lúc mua</div>
+<p>Trích dự phòng là để ghi nhận khoản dự kiến mất. Nhưng ở đây, khoản dự kiến mất đã nằm trong giá mua 60 rồi. Trích thêm một lần nữa là trừ hai lần cùng một tổn thất. Nên lúc mua, không lập dự phòng riêng.</p>
+<div class="sub">Tổn thất đi vào lãi suất</div>
+<p>Thay vào đó, ta dùng một lãi suất "đã gài rủi ro". Lãi suất này tính sao cho 60 đồng bỏ ra lớn dần đúng bằng số tiền thật sự kỳ vọng thu về. Nó thấp hơn lãi suất danh nghĩa, vì đã chấp nhận sẽ mất một phần. Tổn thất nằm trong chính cách tính lãi.</p>
+<div class="sub">Sau đó chỉ ghi phần thay đổi</div>
+<p>Qua thời gian, ước tính thu hồi có thể đổi. Ta không vẽ lại từ đầu. Ta chỉ ghi nhận <strong>phần lệch</strong> so với kỳ vọng ban đầu. Xấu thêm thì ghi lỗ; đỡ hơn dự tính thì ghi lãi.</p>
+<div class="sub">Điểm lạ nhất: đòi được nhiều hơn cũng thành lãi</div>
+<p>Bình thường, một tài sản đã hỏng khó mà "lời". Nhưng POCI thì có. Nếu sau này bạn đòi được nhiều hơn mức bi quan ban đầu, phần vượt đó ghi thành <strong>khoản lãi do suy giảm</strong>. Vì điểm xuất phát đã rất bi quan rồi.</p>
+  </section>
+
+  <section class="gaps">
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Chỗ vấp · Lỗ hổng</span><h2>Mấy chỗ nghe xuôi mà nghĩ kỹ chưa thông</h2></div>
+    </div>
+    <div class="gap-q"><span class="q">"Khác gì khoản vay thường rồi mới hỏng (Giai đoạn 3)?"</span><p>Khoản vay thường khoẻ trước, hỏng sau, nên đi qua chặng tính lãi trên gross rồi mới net. POCI hỏng sẵn từ ngày mua, nên áp lãi trên số ròng ngay từ đầu, bằng lãi suất đã gài rủi ro. Không có chặng "khoẻ" nào.</p></div>
+<div class="gap-q"><span class="q">"Vì sao thu được nhiều hơn dự tính lại được ghi lãi?"</span><p>Vì điểm xuất phát của POCI đã trừ sẵn tổn thất nặng. Nếu thực tế đỡ hơn nỗi sợ ban đầu, ghi nhận phần đỡ đó là trung thực, không phải lạc quan thái quá. Quy tắc cho phép vì cái mốc ban đầu vốn đã bi quan.</p></div>
+<div class="gap-q"><span class="q">"Lãi suất 'đã gài rủi ro' tính kiểu gì?"</span><p>Là lãi suất làm cho số tiền bỏ ra lớn dần đúng bằng dòng tiền <strong>kỳ vọng</strong> thu về, đã trừ phần dự kiến mất. Khác lãi suất hiệu lực thường, vốn dựa trên dòng tiền hợp đồng đầy đủ, chưa trừ tổn thất.</p></div>
+<div class="gap-q"><span class="q">"Nếu ước tính ban đầu sai nhiều thì sao?"</span><p>Đó là điểm mong manh. Cả giá mua lẫn lãi suất gài rủi ro đều dựa trên một ước tính tổn thất ban đầu. Đoán lệch thì các kỳ sau phải ghi nhận phần chênh, dồn vào lãi/lỗ. Vì thế chuẩn bắt cập nhật và minh bạch giả định.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví von &amp; ví dụ đời thường</span><h2>Neo vào thứ bạn đã biết</h2></div>
+    </div>
+    <div class="analogy-card"><span class="tag">Ví dụ trung tâm</span>
+<p>Mua lại một sổ nợ khó đòi. Sổ ghi 100, bạn trả 60 vì biết sẽ mất kha khá. Bạn <strong>không</strong> ghi riêng một khoản "dự phòng mất 40", vì 40 đó đã nằm sẵn trong giá 60 bạn trả. Thay vào đó, mỗi kỳ thu được, bạn tính lãi trên cái mình thật sự kỳ vọng lấy lại.</p>
+<p class="limit"><b>Chỗ ví von này hỏng:</b> người mua sổ nợ ngoài đời chốt lời lỗ khi tất toán. Còn POCI phải ghi nhận <strong>thay đổi kỳ vọng</strong> qua từng kỳ, kể cả khi chưa thu xong. Và ví von giấu chỗ ngược đời nhất: đòi được hơn dự tính lại ghi thành lãi.</p>
+</div>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. <em>Credit-adjusted EIR</em> là lãi suất chiết khấu dòng tiền <strong>kỳ vọng</strong> (đã trừ ECL ban đầu) về đúng giá mua. Lãi mỗi kỳ bằng lãi suất đó nhân amortised cost. Loss allowance cho POCI chỉ bằng <strong>thay đổi lũy kế</strong> của lifetime ECL kể từ ghi nhận ban đầu (đoạn 5.5.13–14), không phải toàn bộ lifetime ECL.</p>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">4</div>
+      <div class="step-meta"><span class="lbl">Kể lại gọn gàng</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Mua một khoản nợ đã hỏng sẵn, bạn trả giá đã trừ rủi ro. Tổn thất kỳ vọng nằm trong giá mua, nên không trích dự phòng riêng lúc đầu. Thay vào đó, lãi suất "gài" sẵn phần mất, và về sau chỉ ghi phần thay đổi so với kỳ vọng ban đầu. Đòi được nhiều hơn nỗi sợ ban đầu thì thành lãi.</p>
+<p class="core">Khi mua một khoản nợ đã hỏng sẵn, <span>tổn thất gài sẵn vào lãi suất, không trích dự phòng lúc đầu.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã hiểu chưa?</h3>
+      <ol>
+        <li>Vì sao một tài sản POCI không trích loss allowance ngay khi mua?</li>
+        <li>POCI khác khoản vay "khoẻ trước hỏng sau" (Giai đoạn 3) ở cách áp lãi suất như thế nào?</li>
+        <li>Vì sao với POCI, đòi được nhiều hơn dự tính lại có thể ghi thành một khoản lãi?</li>
+        <li>Lãi suất "đã gài rủi ro" khác lãi suất hiệu lực thường ở chỗ nào?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nếu giải thích được cho bà ngoại hiểu, bạn mới thật sự hiểu.</p>
+  </footer>
+
+</div></article><article class="concept-panel" id="c-fvoci-debt-parking" aria-label="FVOCI nợ"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Giải thích theo phương pháp Feynman</div>
+    <h2 class="ttl rise" style="animation-delay:.08s">Bảng cân đối theo giá thị trường, lời lãi lại như cũ?</h2>
+    <p class="core rise" style="animation-delay:.16s">Giá trị thị trường nhảy múa, <span>nhưng cho tới khi bạn bán, mấy cú nhảy đó chỉ là giấy — đỗ tạm ở OCI.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Điều cần hiểu &amp; cách tiếp cận</span><h2>Quy tắc: FVOCI nợ — P/L y như amortised cost</h2></div>
+    </div>
+    <div class="rule">IFRS 9, đoạn 5.7.10 &amp; 5.7.11: với công cụ nợ đo tại <em>FVOCI</em>, các khoản vào lãi/lỗ (lãi theo <em>effective interest</em>, ECL, chênh lệch tỷ giá) <strong>giống hệt</strong> như đo tại <em>amortised cost</em>. Chỉ phần chênh lệch giá trị hợp lý nằm ở <em>OCI</em>, và được <strong>tái phân loại</strong> sang lãi/lỗ khi bán.</div>
+    <div class="sub">Cách giải thích</div>
+    <div class="approach"><p>Chỗ vấp: sao bảng cân đối ghi theo giá thị trường, mà báo cáo lời lãi lại làm như chưa hề có thị trường? Cách làm: nghĩ về một căn nhà bạn vừa ở vừa tính có thể bán. Giá nhà lên xuống mỗi ngày, nhưng tiền lãi vay hằng tháng thì đều đặn. Ta sẽ thấy OCI chỉ là chỗ "đỗ tạm".</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Giải thích đơn giản</span><h2>Một căn nhà vừa để ở vừa tính bán</h2></div>
+    </div>
+    <p class="lead">Bạn mua một căn nhà. Bạn chưa quyết: ở lâu dài, hay bán khi được giá. Mỗi ngày giá nhà trên thị trường lên xuống. Nhưng tiền lãi vay bạn trả hằng tháng thì đều đặn, không đổi theo giá đó. Hai con số sống hai đời khác nhau.</p>
+<div class="sub">Con số "đời thật" và con số "giá hôm nay"</div>
+<p>Tiền lãi đều đặn là "đời thật" của khoản vay: nó chảy vào túi bạn mỗi kỳ dù giá nhà ra sao. Còn giá thị trường chỉ quan trọng nếu bạn định bán. Hai con số trả lời hai câu khác nhau: "mỗi kỳ kiếm bao nhiêu" và "bán bây giờ được bao nhiêu".</p>
+<div class="sub">Vì sao cần cả hai</div>
+<p>Vì bạn vừa giữ vừa có thể bán. Người đọc sổ muốn biết giá hôm nay phòng khi bán, nên bảng cân đối ghi theo giá thị trường. Họ cũng muốn biết khoản lãi đều đặn, nên báo cáo lời lãi ghi như khoản vay giữ tới cùng. Cần cả hai mới đủ.</p>
+<div class="sub">OCI là chỗ đỗ tạm</div>
+<p>Vậy mấy cú giá lên xuống để đâu? Đỗ tạm vào một ngăn riêng trong vốn chủ, tên OCI. Chưa bán thì mấy cú đó chỉ là lời lãi trên giấy, chưa thật. Để chúng vào lợi nhuận chính sẽ làm lợi nhuận giật cục theo thị trường, dù bạn chẳng bán gì.</p>
+<div class="sub">Khi bán thì "giấy" thành "thật"</div>
+<p>Lúc bạn bán nhà, khoản đỗ tạm trong OCI mới được chuyển hết sang lợi nhuận. Lời lãi trên giấy giờ thành thật. Cú chuyển này gọi là tái phân loại. Tính cả đời, số vào lợi nhuận đúng bằng như thể bạn ghi theo giá phân bổ.</p>
+  </section>
+
+  <section class="gaps">
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Chỗ vấp · Lỗ hổng</span><h2>Mấy chỗ nghe xuôi mà nghĩ kỹ chưa thông</h2></div>
+    </div>
+    <div class="gap-q"><span class="q">"Nếu vào lợi nhuận cũng bằng đúng amortised cost, sao phải đo giá thị trường?"</span><p>Vì bảng cân đối phục vụ câu hỏi khác: "nếu bán hôm nay thì đáng bao nhiêu". Với mô hình vừa giữ vừa bán, giá hôm nay là thông tin quan trọng. Báo cáo lời lãi kể chuyện giữ; bảng cân đối kể chuyện bán. Mỗi báo cáo một việc.</p></div>
+<div class="gap-q"><span class="q">"Công cụ vốn cũng FVOCI — có 'đỗ tạm rồi chuyển' giống vậy không?"</span><p>Không. Công cụ vốn chọn FVOCI thì phần trong OCI <strong>không bao giờ</strong> chuyển sang lợi nhuận, kể cả khi bán. Nó ở lại vốn chủ. Đây là khác biệt lớn hay bị nhầm: nợ thì chuyển (recycle), vốn thì không.</p></div>
+<div class="gap-q"><span class="q">"Đo theo giá thị trường rồi, sao vẫn còn trích ECL?"</span><p>Vì lãi/lỗ vào lợi nhuận phải giống amortised cost. ECL vẫn được tính như thường, nhưng ghi vào OCI, và không làm giảm số trên bảng cân đối. Nghe lạ, nhưng đó là cách giữ cho lợi nhuận kể đúng câu chuyện "giữ tới cùng".</p></div>
+<div class="gap-q"><span class="q">"Vậy OCI có làm vốn chủ phồng xẹp thất thường không?"</span><p>Có, vốn chủ sẽ nhúc nhích theo giá thị trường. Nhưng đó là chủ ý: cú lên xuống được tách khỏi lợi nhuận, gom vào một ngăn ai cũng thấy. Lợi nhuận giữ được sự ổn định; biến động thị trường vẫn minh bạch ở OCI.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví von &amp; ví dụ đời thường</span><h2>Neo vào thứ bạn đã biết</h2></div>
+    </div>
+    <div class="analogy-card"><span class="tag">Ví dụ trung tâm</span>
+<p>Căn nhà vừa ở vừa tính bán. <strong>Tiền lãi vay hằng tháng</strong> đều đặn — đó là phần vào lợi nhuận, kể chuyện bạn giữ. <strong>Giá nhà hôm nay</strong> lên xuống — ghi ở một ghi chú "đáng bao nhiêu lúc này", tức OCI. Chưa bán thì giá đó chỉ là giấy. Bán rồi, phần đỗ tạm mới thành lời lãi thật.</p>
+<p class="limit"><b>Chỗ ví von này hỏng:</b> căn nhà không tự sinh "lãi" theo lãi suất hiệu lực như một trái phiếu. Nhà ở thì không trích dự phòng tổn thất tín dụng. Ví von cũng giấu một điểm lắt léo: công cụ vốn FVOCI thì khoản "đỗ tạm" không bao giờ chuyển sang lợi nhuận. Khác hẳn công cụ nợ ở đây.</p>
+</div>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Cơ chế: lãi tính bằng <em>EIR</em> trên gross carrying amount vào lợi nhuận, y hệt amortised cost; tài sản trên bảng cân đối kéo về <em>fair value</em>, phần chênh vào OCI. Khi bán, lũy kế OCI được <em>reclassified</em> sang lãi/lỗ. Vì thế đoạn 5.7.11 nói số vào lợi nhuận của FVOCI nợ trùng khớp amortised cost.</p>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">4</div>
+      <div class="step-meta"><span class="lbl">Kể lại gọn gàng</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Một công cụ nợ FVOCI sống hai đời. Bảng cân đối ghi theo giá thị trường, vì bạn có thể bán. Báo cáo lời lãi lại ghi y như giữ tới cùng, vì khoản lãi đều đặn mới là "đời thật". Mấy cú giá lên xuống chỉ đỗ tạm ở OCI, tới khi bán mới thành lời lãi thật.</p>
+<p class="core">Giá trị thị trường nhảy múa, <span>cho tới khi bán, mấy cú giá lên xuống chỉ là giấy, đỗ tạm ở OCI.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã hiểu chưa?</h3>
+      <ol>
+        <li>Vì sao một công cụ nợ FVOCI ghi trên bảng cân đối theo giá thị trường nhưng báo lời lãi lại như amortised cost?</li>
+        <li>OCI đóng vai trò gì trong câu chuyện này, và khi nào khoản trong OCI thành lời lãi thật?</li>
+        <li>Khác biệt cốt lõi giữa công cụ nợ FVOCI và công cụ vốn FVOCI khi bán là gì?</li>
+        <li>Đã đo theo giá thị trường, vì sao vẫn phải trích ECL, và khoản đó nằm ở đâu?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nếu giải thích được cho bà ngoại hiểu, bạn mới thật sự hiểu.</p>
+  </footer>
+
+</div></article><article class="concept-panel" id="c-own-credit-risk" aria-label="Own credit risk"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Giải thích theo phương pháp Feynman</div>
+    <h2 class="ttl rise" style="animation-delay:.08s">Tín dụng mình xấu đi, sao lại ghi 'lãi'?</h2>
+    <p class="core rise" style="animation-delay:.16s">Khi người ta tin bạn trả nợ ít đi, <span>món nợ 'nhẹ' đi trên giấy — nhưng cái 'lãi' đó bị nhốt riêng, khỏi lợi nhuận.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Điều cần hiểu &amp; cách tiếp cận</span><h2>Quy tắc: phần own credit risk vào OCI</h2></div>
+    </div>
+    <div class="rule">IFRS 9, đoạn 5.7.7: với một khoản nợ được <strong>chỉ định</strong> đo tại <em>fair value through profit or loss</em>, phần thay đổi giá trị do <strong>rủi ro tín dụng của chính đơn vị</strong> (own credit risk) trình bày trong <em>OCI</em>; phần còn lại vào lãi/lỗ. Đoạn 5.7.8: trừ khi làm vậy tạo hoặc mở rộng bất nhất kế toán.</div>
+    <div class="sub">Cách giải thích</div>
+    <div class="approach"><p>Chỗ vấp: tín dụng mình xấu đi mà báo cáo lại có "lãi". Nghe ngược đời. Cách làm: hình dung tờ giấy nợ bạn viết cho bạn bè, và giá người ngoài chịu trả để mua lại nó. Khi người ta tin bạn ít hơn, tờ giấy rẻ đi — trên sổ hoá thành "lãi". Ta sẽ thấy vì sao cái lãi đó là giả.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Giải thích đơn giản</span><h2>Món nợ 'nhẹ' đi không có nghĩa bạn giàu lên</h2></div>
+    </div>
+    <p class="lead">Bạn viết giấy nợ 100 nghìn cho một người bạn. Ai cũng tin bạn sẽ trả. Rồi bạn gặp khó, người ta bắt đầu nghi bạn khó trả. Lạ thay, trên sổ sách, món nợ của bạn lại "nhẹ" đi. Vì sao? Và vì sao kế toán không cho gọi đó là lãi thật?</p>
+<div class="sub">Vì sao món nợ "nhẹ" đi</div>
+<p>Tưởng tượng có người chuyên mua lại các tờ giấy nợ. Khi họ tin bạn trả, họ trả gần đủ 100 nghìn để cầm tờ giấy. Khi họ nghi bạn, họ chỉ chịu trả 70 nghìn. Tờ giấy "đáng" ít hơn. Đo theo giá đó, món nợ tụt từ 100 xuống 70.</p>
+<div class="sub">Cái "lãi" 30 nghìn là gì</div>
+<p>Sổ ghi nợ giảm 30 nghìn, nên hiện ra một khoản "lãi" 30 nghìn. Nhưng bạn có giàu thêm đồng nào không? Không. Bạn vẫn nợ đủ 100 nghìn và phải trả đủ. Cái "lãi" đó chỉ xuất hiện vì người ta tin bạn ít đi.</p>
+<div class="sub">Nên nó bị nhốt riêng</div>
+<p>Báo khoản "lãi" này vào lợi nhuận thì hoá ra: càng sắp vỡ nợ, càng báo lời. Quá phi lý. Nên chuẩn nhốt nó vào một ngăn riêng trong vốn chủ, tên là OCI. Lợi nhuận chính không dính tới nó.</p>
+<div class="sub">Khi nào mới thành thật</div>
+<p>Cái "lãi" đó chỉ thật nếu bạn mua lại được tờ giấy nợ với giá 70 nghìn. Lúc đó bạn xoá nợ 100 nghìn chỉ bằng 70 nghìn, lời thật 30. Còn nếu cứ ôm món nợ trả dần đủ 100, khoản "lãi" trên giấy rồi sẽ tan biến.</p>
+  </section>
+
+  <section class="gaps">
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Chỗ vấp · Lỗ hổng</span><h2>Mấy chỗ nghe xuôi mà nghĩ kỹ chưa thông</h2></div>
+    </div>
+    <div class="gap-q"><span class="q">"Vì sao tín dụng mình tốt lên lại thành 'lỗ'?"</span><p>Đối xứng ngược lại. Người ta tin bạn hơn thì tờ giấy nợ "đắt" lên, món nợ trên sổ nặng thêm, hiện ra một khoản "lỗ". Cũng giả như cái "lãi" kia. Nên nó cũng bị nhốt vào OCI, không cho dìm lợi nhuận.</p></div>
+<div class="gap-q"><span class="q">"Sao không bỏ luôn, đo nợ theo giá gốc cho khỏi rối?"</span><p>Vì khoản nợ này được chọn đo theo giá thị trường ngay từ đầu, thường để khớp với một tài sản cũng đo kiểu đó. Bỏ phần own credit thì lệch. Cách của chuẩn: vẫn đo thị trường, nhưng tách phần own credit ra ngăn riêng.</p></div>
+<div class="gap-q"><span class="q">"Khoản này áp cho mọi khoản nợ à?"</span><p>Không. Chỉ cho nợ được <strong>chỉ định</strong> đo theo giá thị trường. Nợ thường đo theo giá phân bổ thì không có chuyện này. Và nếu tách own credit lại gây lệch ở chỗ khác, chuẩn bắt để hết vào lợi nhuận.</p></div>
+<div class="gap-q"><span class="q">"Nhốt vào OCI rồi sau có chuyển sang lợi nhuận không?"</span><p>Với khoản own credit này, phần trong OCI <strong>không</strong> được chuyển ngược sang lợi nhuận về sau. Nó ở lại trong vốn chủ. Đây là điểm hay nhầm với vài khoản OCI khác vốn được chuyển ngược, gọi là recycling.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví von &amp; ví dụ đời thường</span><h2>Neo vào thứ bạn đã biết</h2></div>
+    </div>
+    <div class="analogy-card"><span class="tag">Ví dụ trung tâm</span>
+<p>Tờ giấy nợ bạn viết, và giá người ngoài chịu trả để mua lại nó. Tin bạn nhiều thì giá gần đủ; nghi bạn thì giá rẻ. Giá rẻ đi làm món nợ trên sổ "nhẹ" lại — nhưng bạn chẳng giàu thêm. Nên cái "lãi" đó để riêng một ngăn, không gọi là lời.</p>
+<p class="limit"><b>Chỗ ví von này hỏng:</b> tờ giấy nợ bạn bè thì bạn khó mua lại. Nợ của công ty lớn, như trái phiếu, thì mua lại được trên thị trường — và chỉ lúc mua lại, cái "lãi" kia mới thành thật. Ví von cũng bỏ qua phần lãi/lỗ do lãi suất chung đổi, vốn vẫn vào lợi nhuận.</p>
+</div>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Phần do own credit risk thường đo bằng phần chênh <em>credit spread</em> riêng của đơn vị, tách khỏi phần do lãi suất chuẩn đổi. Phần lãi suất chuẩn vẫn vào lãi/lỗ; chỉ phần spread riêng mới vào OCI. IFRS 9 thêm quy tắc này sau khủng hoảng 2008, khi nhiều ngân hàng báo "lãi" nhờ chính tín dụng của họ xấu đi.</p>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">4</div>
+      <div class="step-meta"><span class="lbl">Kể lại gọn gàng</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Khi người ta tin bạn trả nợ ít đi, món nợ của bạn "nhẹ" đi trên sổ, hiện ra một khoản "lãi". Nhưng bạn không giàu thêm: vẫn nợ đủ, vẫn phải trả đủ. Báo nó vào lợi nhuận thì hoá ra càng sắp vỡ nợ càng báo lời. Nên chuẩn nhốt nó vào OCI, tách khỏi lợi nhuận thật.</p>
+<p class="core">Khi người ta tin bạn trả nợ ít đi, <span>món nợ 'nhẹ' đi trên giấy, nhưng cái 'lãi' đó bị nhốt riêng khỏi lợi nhuận.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã hiểu chưa?</h3>
+      <ol>
+        <li>Vì sao một công ty sắp khó khăn lại có thể báo một khoản "lãi" từ chính món nợ của mình?</li>
+        <li>Vì sao khoản "lãi" đó được nhốt vào OCI thay vì cho vào lợi nhuận?</li>
+        <li>Khi nào cái "lãi" do tín dụng xấu đi mới trở thành lãi thật?</li>
+        <li>Quy tắc own credit risk áp cho mọi khoản nợ, hay chỉ một loại nợ nhất định?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nếu giải thích được cho bà ngoại hiểu, bạn mới thật sự hiểu.</p>
+  </footer>
+
+</div></article><article class="concept-panel" id="c-liability-10-percent" aria-label="Phép thử 10%"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Giải thích theo phương pháp Feynman</div>
+    <h2 class="ttl rise" style="animation-delay:.08s">Sửa nợ thì 'xé giấy viết lại', sửa cho vay thì không?</h2>
+    <p class="core rise" style="animation-delay:.16s">Đổi điều khoản một món nợ đủ nhiều, <span>thì coi như trả hết nợ cũ và vay món mới — một lằn ranh 10% cứng, phía tài sản không có.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Điều cần hiểu &amp; cách tiếp cận</span><h2>Quy tắc: phép thử 10% cho nợ phải trả</h2></div>
+    </div>
+    <div class="rule">IFRS 9, đoạn 3.3.2 &amp; B3.3.6: sửa một khoản nợ là "khác biệt đáng kể" nếu hiện giá dòng tiền theo điều khoản mới (chiết khấu tại <em>EIR gốc</em>) lệch <strong>ít nhất 10%</strong> so với hiện giá dòng tiền còn lại của nợ cũ. Khác biệt đáng kể thì hạch toán như <strong>dừng ghi nhận</strong>: xoá nợ cũ, ghi nợ mới, chênh lệch vào lãi/lỗ. Phía tài sản (đoạn 5.4.3) không có lằn ranh 10% này.</div>
+    <div class="sub">Cách giải thích</div>
+    <div class="approach"><p>Chỗ vấp: cùng là "sửa điều khoản", nhưng món bạn <strong>nợ</strong> có một lằn ranh số cứng, còn món cho vay bạn <strong>nắm</strong> thì không. Cách làm: hình dung bạn ở hai phía một tờ giấy nợ — bên đi vay và bên cho vay. Rồi xem vì sao luật xử hai phía khác nhau khi điều khoản đổi.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Giải thích đơn giản</span><h2>Cùng một tờ giấy nợ, hai phía, hai cách xử</h2></div>
+    </div>
+    <p class="lead">Một tờ giấy nợ luôn có hai phía: người đi vay và người cho vay. Giờ điều khoản được đàm phán lại — trả ít hơn, kéo dài hơn. Kỳ lạ là kế toán xử hai phía khác nhau. Phía người nợ có một con số cứng để quyết; phía người cho vay thì không. Vì sao?</p>
+<div class="sub">Phía bạn đang nợ</div>
+<p>Bạn nợ một món. Bạn đàm phán lại, đổi khá nhiều. Đến mức nào đó, món nợ mới khác hẳn món cũ — như thể bạn đã trả dứt món cũ rồi vay một món hoàn toàn mới. Lúc đó kế toán bảo: xé tờ giấy cũ, viết tờ mới.</p>
+<div class="sub">Lằn ranh 10% là cái thước</div>
+<p>Nhưng "khác hẳn" là khác bao nhiêu? Chuẩn cho một cái thước. Tính lại dòng tiền mới, kéo về hôm nay bằng lãi suất cũ, rồi so với món cũ. Lệch từ 10% trở lên thì coi là "khác hẳn". Dưới 10% thì vẫn là tờ giấy cũ, chỉ chỉnh con số.</p>
+<div class="sub">Phía bạn đang cho vay</div>
+<p>Giờ lật lại: bạn là người cho vay, và bạn để con nợ trả kiểu khác. Phía này không có lằn ranh 10%. Thường bạn vẫn giữ nguyên tờ giấy, vẫn là tài sản đó, chỉ tính lại con số và ghi chênh lệch ngay vào lãi/lỗ.</p>
+<div class="sub">Vì sao lệch nhau</div>
+<p>Phía cho vay đã có sẵn cả bộ máy đo sự xấu đi: trích lập tổn thất, ba giai đoạn. Nên không cần một lằn ranh riêng để "xé giấy". Phía đi nợ thì lằn ranh 10% là cách thực dụng để chốt: đổi nhiều thế này thì coi như vay món mới.</p>
+  </section>
+
+  <section class="gaps">
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Chỗ vấp · Lỗ hổng</span><h2>Mấy chỗ nghe xuôi mà nghĩ kỹ chưa thông</h2></div>
+    </div>
+    <div class="gap-q"><span class="q">"10% nghe rất tuỳ tiện — sao lại là 10% mà không phải 8 hay 15?"</span><p>Đúng, đó là một lằn ranh quy ước, kế thừa từ chuẩn cũ IAS 39. Nó không thiêng liêng. Cái lợi là dứt khoát: khỏi cãi "khác hẳn hay chưa" từng trường hợp. Cái giá là cứng nhắc: lệch 9,9% và 10,1% bị xử khác hẳn nhau.</p></div>
+<div class="gap-q"><span class="q">"Vậy món cho vay thì không bao giờ bị 'xé giấy' à?"</span><p>Có chứ, vẫn có thể. Nếu điều khoản đổi tới mức khác biệt đáng kể, tài sản cũng bị dừng ghi nhận và ghi tài sản mới. Khác biệt là: phía tài sản dùng đánh giá định tính, không có con số 10% cứng như phía nợ.</p></div>
+<div class="gap-q"><span class="q">"Khi 'chưa đủ để xé giấy', hai phía xử có giống nhau không?"</span><p>Giống ở cốt lõi. Cả hai tính lại giá trị ghi sổ bằng cách kéo dòng tiền mới về hôm nay theo <strong>lãi suất gốc</strong>, rồi ghi khoản chênh ngay vào lãi/lỗ. Không trải đều ra tương lai.</p></div>
+<div class="gap-q"><span class="q">"Tính phí vào đâu khi sửa nợ?"</span><p>Tuỳ kết quả. Nếu là "xé giấy", phí tính vào khoản lãi/lỗ khi xoá nợ cũ. Nếu chỉ chỉnh con số (dưới 10%), phí cộng vào giá trị nợ và phân bổ dần theo thời hạn còn lại.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví von &amp; ví dụ đời thường</span><h2>Neo vào thứ bạn đã biết</h2></div>
+    </div>
+    <div class="analogy-card"><span class="tag">Ví dụ trung tâm</span>
+<p>Hình dung một hợp đồng thuê nhà. <strong>Khi bạn là người thuê</strong>, giống đi nợ. Nếu hai bên đổi điều khoản nhiều đến mức nó thành một hợp đồng khác hẳn, hợp lý nhất là xé cũ ký mới. Cần một cái thước để chốt "khác hẳn", đó là lằn ranh 10%. <strong>Khi bạn là chủ nhà</strong>, giống cho vay: bạn đã có sổ theo dõi khách tốt xấu, nên không cần cái thước đó.</p>
+<p class="limit"><b>Chỗ ví von này hỏng:</b> hợp đồng thuê không tính bằng cách chiết khấu dòng tiền tại một lãi suất gốc. Nên con số "10%" không có chỗ tương ứng thật trong đời thuê nhà. Và thực tế phía tài sản vẫn có thể bị "xé giấy" — chỉ là bằng đánh giá định tính, không bằng một ngưỡng số.</p>
+</div>
+<p>Gần hơn: bạn mượn tiền mua xe, rồi xin ngân hàng đổi lịch trả. Đổi nhẹ, như giãn vài tháng, thì vẫn là khoản vay cũ, chỉ chỉnh số. Đổi nặng, đổi cả gốc, kỳ hạn và lãi suất tới mức như một khoản vay mới, thì ngân hàng coi như tất toán khoản cũ và mở khoản mới.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Phép thử "10%" so <em>present value</em> của dòng tiền mới (gồm phí trả ròng phí nhận) chiết khấu tại <em>original EIR</em>, với PV dòng tiền còn lại của nợ cũ. Lệch ≥10% là <em>extinguishment</em> theo đoạn B3.3.6. Phía tài sản, đoạn 5.4.3 bắt tính lại gross carrying amount tại original EIR và ghi <em>modification gain/loss</em>; còn việc có dừng ghi nhận hay không theo nguyên tắc định tính ở Chương 3.</p>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">4</div>
+      <div class="step-meta"><span class="lbl">Kể lại gọn gàng</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Một tờ giấy nợ có hai phía. Khi bạn đi nợ và đổi điều khoản đủ nhiều, kế toán coi như bạn đã trả dứt nợ cũ và vay món mới. Nó dùng một cái thước cứng để chốt "đủ nhiều": lệch từ 10% trở lên. Phía cho vay không có lằn ranh số đó, vì đã có sẵn bộ máy đo sự xấu đi.</p>
+<p class="core">Đổi điều khoản một món nợ đủ nhiều, <span>đổi nợ đủ nhiều thì coi như vay món mới — lằn ranh 10% cứng, phía tài sản không có.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã hiểu chưa?</h3>
+      <ol>
+        <li>Vì sao đổi điều khoản một khoản nợ "đủ nhiều" lại được coi như trả nợ cũ và vay món mới?</li>
+        <li>Lằn ranh 10% có ưu và nhược điểm gì so với một đánh giá định tính?</li>
+        <li>Phía tài sản (cho vay) có bao giờ bị dừng ghi nhận khi sửa điều khoản không?</li>
+        <li>Khi sửa đổi "chưa đủ để xé giấy", hai phía nợ và tài sản xử lý giống nhau ở điểm nào?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nếu giải thích được cho bà ngoại hiểu, bạn mới thật sự hiểu.</p>
+  </footer>
+
+</div></article><article class="concept-panel" id="c-asset-derecognition" aria-label="Dừng ghi nhận TS"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Giải thích theo phương pháp Feynman</div>
+    <h2 class="ttl rise" style="animation-delay:.08s">Bán hợp pháp mà tài sản vẫn nằm trên sổ?</h2>
+    <p class="core rise" style="animation-delay:.16s">Câu hỏi không phải 'đã ký bán chưa', <span>mà 'đã thật sự buông rủi ro và lợi ích chưa' — chưa buông thì tài sản vẫn của bạn.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Điều cần hiểu &amp; cách tiếp cận</span><h2>Quy tắc: bốn cửa của dừng ghi nhận tài sản</h2></div>
+    </div>
+    <div class="rule">IFRS 9, đoạn 3.2.3–3.2.6: dừng ghi nhận tài sản tài chính khi quyền nhận dòng tiền <strong>hết hạn</strong>, hoặc đã <strong>chuyển giao</strong> tài sản và chuyển luôn <strong>về cơ bản toàn bộ rủi ro và lợi ích</strong>. Giữ lại về cơ bản toàn bộ rủi ro/lợi ích thì tiếp tục ghi nhận. Không rõ ràng thì xét quyền <strong>kiểm soát</strong>: còn kiểm soát thì ghi nhận theo mức "tiếp tục tham gia" (continuing involvement).</div>
+    <div class="sub">Cách giải thích</div>
+    <div class="approach"><p>Chỗ vấp: ký giấy bán rồi mà tài sản vẫn nằm trên sổ. Cách làm: bỏ qua cái nhãn "đã bán", hỏi đúng một câu — bạn đã thật sự buông rủi ro và lợi ích chưa? Ta sẽ đi qua bốn cửa theo thứ tự, và thấy vì sao bản chất thắng hình thức.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Giải thích đơn giản</span><h2>Đã ký bán, nhưng buông chưa?</h2></div>
+    </div>
+    <p class="lead">Bạn "bán" chiếc xe cho một người, ký giấy tờ đàng hoàng. Nhưng kèm theo: xe hỏng gì bạn đền hết, và bạn được mua lại bất cứ lúc nào với giá định trước. Vậy bạn đã thật sự bán chưa? Kế toán bảo: chưa. Cái xe vẫn nằm trên sổ của bạn.</p>
+<div class="sub">Hình thức không quyết định</div>
+<p>Tờ giấy ghi "bán" chỉ là cái vỏ. Kế toán nhìn vào ruột: ai còn ăn lời nếu xe lên giá, ai chịu lỗ nếu xe hỏng? Nếu hết thảy vẫn là bạn, thì về bản chất bạn chưa buông. Bán hay chưa được đo bằng rủi ro và lợi ích, không bằng chữ ký.</p>
+<div class="sub">Bốn cửa, đi đúng thứ tự</div>
+<p>Một: quyền nhận dòng tiền đã hết hạn chưa? Hết thì buông. Hai: đã chuyển tài sản đi chưa? Ba: chuyển luôn gần hết rủi ro và lợi ích chưa? Chuyển hết thì buông, giữ hết thì tài sản ở lại. Bốn: lửng lơ ở giữa thì xét ai còn quyền kiểm soát.</p>
+<div class="sub">Cửa thứ tư: tiếp tục tham gia</div>
+<p>Có khi bạn không giữ hết cũng không buông hết. Bạn vẫn dính một phần, như cái quyền mua lại hay phần bảo lãnh. Lúc đó tài sản ở lại trên sổ đúng bằng phần bạn còn dính. Phần đã thật sự rời đi thì cho rời. Gọi là ghi nhận theo mức "tiếp tục tham gia".</p>
+<div class="sub">Bán một phần cũng được</div>
+<p>Không phải lúc nào cũng "bán hết hoặc giữ hết". Bạn có thể bán đúng dòng tiền lãi mà giữ dòng tiền gốc, hoặc bán 90% theo tỷ lệ. Lúc đó chỉ phần bán đi mới rời sổ, phần giữ lại vẫn nằm đó.</p>
+  </section>
+
+  <section class="gaps">
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Chỗ vấp · Lỗ hổng</span><h2>Mấy chỗ nghe xuôi mà nghĩ kỹ chưa thông</h2></div>
+    </div>
+    <div class="gap-q"><span class="q">"Vì sao 'bán có quyền mua lại' lại coi như chưa bán?"</span><p>Vì quyền mua lại nghĩa là bạn còn ăn lời nếu tài sản lên giá. Lợi ích vẫn ở bạn. Người "mua" chỉ giữ hộ một thời gian. Bản chất là một khoản vay có thế chấp, không phải bán đứt. Nên tài sản chưa rời sổ.</p></div>
+<div class="gap-q"><span class="q">"Thứ tự bốn cửa có quan trọng không?"</span><p>Quan trọng. Phải đi đúng thứ tự: hết hạn, chuyển giao, rủi ro lợi ích, rồi mới tới kiểm soát. Nhảy cóc sẽ ra kết luận sai. Cửa kiểm soát chỉ mở khi đã kẹt ở cửa rủi ro lợi ích, tức không chuyển hết cũng không giữ hết.</p></div>
+<div class="gap-q"><span class="q">"'Về cơ bản toàn bộ' rủi ro và lợi ích là bao nhiêu cho đủ?"</span><p>Không có một con số cứng phổ quát. Đây là đánh giá định tính: so mức biến động dòng tiền bạn còn chịu trước và sau khi chuyển. Còn chịu gần hết thì là "giữ về cơ bản toàn bộ". Đây là chỗ phán đoán, dễ tranh cãi.</p></div>
+<div class="gap-q"><span class="q">"Bán 90% danh mục nhưng bảo lãnh khoản lỗ đầu tiên thì sao?"</span><p>Coi chừng. Nếu phần lỗ đầu tiên bạn bảo lãnh nuốt gần hết rủi ro thật, thì dù "bán 90%" bạn vẫn giữ về cơ bản toàn bộ rủi ro. Tài sản chưa rời sổ. Tỷ lệ trên giấy không bằng rủi ro thực bạn ôm.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví von &amp; ví dụ đời thường</span><h2>Neo vào thứ bạn đã biết</h2></div>
+    </div>
+    <div class="analogy-card"><span class="tag">Ví dụ trung tâm</span>
+<p>Bạn "bán" chiếc xe nhưng: hỏng gì bạn đền, và bạn được mua lại bất cứ lúc nào với giá định trước. Người kia chẳng ăn lời nếu xe lên giá, chẳng chịu lỗ nếu xe hỏng. Họ chỉ đang giữ hộ. Bản chất là bạn cầm xe đi vay tiền, nên chiếc xe vẫn của bạn, vẫn trên sổ.</p>
+<p class="limit"><b>Chỗ ví von này hỏng:</b> chiếc xe là một vật nguyên khối, khó "bán một phần". Dòng tiền tài chính thì chia nhỏ được, như bán riêng phần lãi, giữ phần gốc, hay bán 90% theo tỷ lệ. Lúc đó quy tắc xử từng mảnh, chứ không phải "cả chiếc xe ở lại hay rời đi".</p>
+</div>
+<p>Gần đời tài chính hơn: một công ty "bán" các khoản phải thu cho ngân hàng để lấy tiền ngay, nhưng cam kết khách không trả thì công ty bù. Rủi ro mất tiền vẫn ở công ty. Dù tiền đã về tài khoản, các khoản phải thu đó vẫn nằm trên sổ công ty, kèm một khoản nợ với ngân hàng.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Trong báo cáo hợp nhất, hợp nhất hết công ty con trước rồi mới xét dừng ghi nhận ở cấp tập đoàn (đoạn 3.2.1). Khi giữ <em>continuing involvement</em>, tài sản và một khoản nợ liên quan được ghi tới mức rủi ro còn lại. Thỏa thuận <em>pass-through</em> (giữ quyền thu nhưng cam kết chuyển tiếp) chỉ tính là chuyển giao nếu đủ ba điều kiện ở đoạn 3.2.5.</p>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">4</div>
+      <div class="step-meta"><span class="lbl">Kể lại gọn gàng</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Bán hay chưa không nằm ở chữ ký, mà ở chỗ bạn đã buông rủi ro và lợi ích chưa. Đi qua bốn cửa theo thứ tự: hết hạn, chuyển giao, rủi ro lợi ích, rồi kiểm soát. Giữ lại gần hết rủi ro thì dù ký bán, tài sản vẫn của bạn. Lửng lơ ở giữa thì giữ đúng bằng phần mình còn dính.</p>
+<p class="core">Câu hỏi không phải 'đã ký bán chưa', <span>bán hay chưa đo bằng việc đã buông rủi ro và lợi ích, không phải bằng chữ ký.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã hiểu chưa?</h3>
+      <ol>
+        <li>Vì sao một giao dịch "bán" hợp pháp vẫn có thể để tài sản nằm nguyên trên sổ?</li>
+        <li>Bốn cửa của dừng ghi nhận tài sản, theo đúng thứ tự, là gì?</li>
+        <li>Khi nào dùng tới cơ chế "tiếp tục tham gia" (continuing involvement)?</li>
+        <li>"Bán" khoản phải thu nhưng bảo lãnh khoản lỗ đầu tiên — tài sản có rời sổ không? Vì sao?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nếu giải thích được cho bà ngoại hiểu, bạn mới thật sự hiểu.</p>
+  </footer>
+
+</div></article>
+<script>
+  var bar=document.getElementById('progress');
+  function upd(){var h=document.documentElement;var s=h.scrollTop||document.body.scrollTop;
+    var max=(h.scrollHeight-h.clientHeight)||1;bar.style.width=(s/max*100)+'%';}
+  window.addEventListener('scroll',upd,{passive:true});upd();
+  var io=new IntersectionObserver(function(es){es.forEach(function(e){
+    if(e.isIntersecting){e.target.style.animation='rise .7s cubic-bezier(.2,.7,.3,1) forwards';io.unobserve(e.target);}});},{threshold:.12});
+  document.querySelectorAll('section').forEach(function(s){s.style.opacity='0';io.observe(s);});
+</script>
+
+<script>
+(function(){
+  var tabs=[].slice.call(document.querySelectorAll('.tabbar .tab'));
+  var panels=[].slice.call(document.querySelectorAll('.concept-panel'));
+  function show(i){
+    tabs.forEach(function(t,j){t.classList.toggle('active',j===i);});
+    panels.forEach(function(p,j){
+      var on=(j===i); p.classList.toggle('active',on);
+      if(on){p.querySelectorAll('section').forEach(function(s){s.style.opacity='';s.style.animation='';});}
+    });
+    try{history.replaceState(null,'','#'+panels[i].id);}catch(e){}
+    window.scrollTo(0,0); window.dispatchEvent(new Event('scroll'));
+  }
+  tabs.forEach(function(t){t.addEventListener('click',function(){show(+t.getAttribute('data-i'));});});
+  var start=0; panels.forEach(function(p,j){if('#'+p.id===location.hash)start=j;});
+  show(start);
+})();
+</script>
+
+</body></html>

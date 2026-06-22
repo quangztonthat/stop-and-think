@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Bài 3 (Ch6) — Chiếu hết K+Q chống K</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/chessboard-js/1.0.0/chessboard-1.0.0.min.css">
+<style>
+* { box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; max-width: 980px; margin: 0 auto; padding: 24px; color: #1a1a1a; line-height: 1.6; background: #fafafa; }
+h1 { color: #1a3a52; font-size: 28px; margin: 0 0 8px; }
+h2 { color: #2c5282; font-size: 20px; margin: 32px 0 12px; padding-bottom: 6px; border-bottom: 2px solid #e1e8ed; }
+.source { color: #888; font-size: 13px; margin-bottom: 24px; }
+.nav-link { font-size: 13px; color: #2c5282; text-decoration: none; }
+.stage { background: white; border-radius: 8px; padding: 20px 24px; margin: 16px 0; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
+.stage-label { display: inline-block; background: #2c5282; color: white; font-size: 12px; font-weight: 600; padding: 3px 10px; border-radius: 12px; margin-bottom: 8px; }
+.hook-question { font-size: 17px; color: #1a3a52; background: #fff8e1; border-left: 4px solid #faad14; padding: 14px 18px; border-radius: 0 6px 6px 0; margin: 12px 0; }
+.reveal-btn { background: #faad14; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-size: 14px; }
+.hidden { display: none; }
+.board-layout { display: grid; grid-template-columns: 440px 1fr; gap: 24px; align-items: start; margin-top: 16px; }
+@media (max-width: 820px) { .board-layout { grid-template-columns: 1fr; } }
+#board { width: 420px; max-width: 100%; }
+.mini-board { width: 300px; max-width: 100%; margin: 14px auto; }
+.controls { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; justify-content: center; }
+.controls button { padding: 7px 12px; background: #2c5282; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 13px; }
+.info-panel { background: #f8f9fb; padding: 16px; border-radius: 6px; border: 1px solid #e1e8ed; min-height: 380px; }
+.move-display { font-family: monospace; font-size: 16px; color: #2c5282; font-weight: 600; margin-bottom: 8px; }
+.commentary { font-size: 14px; color: #444; margin-bottom: 12px; }
+.info-box { background: white; padding: 10px; border-radius: 4px; border: 1px solid #e1e8ed; margin: 12px 0; font-size: 13px; text-align: center; }
+.info-box.win { background: #f6ffed; border-color: #b7eb8f; color: #389e0d; font-weight: 600; }
+.highlight-mate { background: rgba(207, 19, 34, 0.4) !important; box-shadow: inset 0 0 0 4px #cf1322 !important; }
+.highlight-king-blue { box-shadow: inset 0 0 0 4px #1d39c4 !important; }
+.self-test { background: #fff8e1; border: 2px dashed #faad14; border-radius: 6px; padding: 16px; margin-top: 16px; }
+.self-test-question { font-weight: 600; color: #874d00; margin-bottom: 8px; }
+.feedback { margin-top: 10px; padding: 10px 14px; border-radius: 4px; font-size: 14px; }
+.feedback.correct { background: #f6ffed; color: #389e0d; border-left: 4px solid #52c41a; }
+.feedback.wrong { background: #fff1f0; color: #cf1322; border-left: 4px solid #ff4d4f; }
+.quiz { background: #f0f7ff; border-left: 4px solid #2c5282; border-radius: 0 6px 6px 0; padding: 14px 18px; margin: 12px 0; }
+.quiz-q { font-weight: 600; margin-bottom: 10px; color: #1a3a52; }
+.quiz-options { display: flex; flex-direction: column; gap: 6px; }
+.quiz-option { padding: 8px 12px; background: white; border: 1px solid #c9d6e2; border-radius: 4px; cursor: pointer; text-align: left; font-size: 14px; }
+.quiz-option.correct { background: #f6ffed; border-color: #52c41a; color: #389e0d; }
+.quiz-option.wrong { background: #fff1f0; border-color: #ff4d4f; color: #cf1322; }
+.quiz-explain { margin-top: 8px; font-size: 13px; color: #555; font-style: italic; }
+.summary-card { background: linear-gradient(135deg, #1a3a52, #2c5282); color: white; padding: 20px 24px; border-radius: 8px; margin-top: 24px; }
+.summary-card h2 { color: white; border: none; margin-top: 0; }
+.summary-card ul { padding-left: 20px; }
+code { background: #f1f3f5; padding: 1px 6px; border-radius: 3px; font-family: monospace; font-size: 0.9em; }
+.summary-card code { background: rgba(255,255,255,0.2); color: white; }
+.progress-bar { height: 4px; background: #e1e8ed; border-radius: 2px; overflow: hidden; margin: 8px 0 16px; }
+.progress-fill { height: 100%; background: #52c41a; transition: width 0.3s; width: 0%; }
+</style>
+</head>
+<body>
+
+<h1>Bài 3 — Chiếu hết K + Q chống K</h1>
+<div class="source">
+  Chương 6 — Tàn cuộc Hậu<br>
+  <a class="nav-link" href="../index.html">← Trang chủ</a> ·
+  <a class="nav-link" href="chapter_06_queen_endgames.html">← Chương 6</a>
+</div>
+
+<div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+
+<div class="stage">
+  <span class="stage-label">CHẶNG 1 · DẪN NHẬP</span>
+  <h2 style="margin-top:8px">K + Q chống K — chiếu hết cơ bản</h2>
+  <p>Thế cờ: Trắng Vua f5 + Hậu a7. Đen Vua h8 (góc).</p>
+  <div id="hookBoard" class="mini-board"></div>
+  <div class="hook-question">
+    🤔 <strong>Chiếu hết sau mấy nước?</strong> Vua đen ở góc h8, vua trắng f5, Hậu a7. Chiếu hết sau 2 nước.
+  </div>
+  <button class="reveal-btn" onclick="document.getElementById('hookAnswer').classList.remove('hidden'); markStage(1);">Hiển thị đáp án</button>
+  <div id="hookAnswer" class="hidden" style="margin-top:14px">
+    <p><strong>Chiếu hết sau 2 nước!</strong> 1.Kf6 (tiến lên) Kg8 (bị buộc) 2.Qg7# (Hậu được Vua f6 bảo vệ, khống chế Vua g8 + bao hết các ô chạy thoát).</p>
+  </div>
+</div>
+
+<div class="stage">
+  <span class="stage-label">CHẶNG 2 · KHÁI NIỆM</span>
+  <h2 style="margin-top:8px">Thế chiếu hết: Hậu ở hàng 7 + Vua ở gần</h2>
+  <p>Chiếu hết K+Q chống K cơ bản: Hậu ở hàng 7 của đối phương (hàng 7 với Trắng), Vua bảo vệ Hậu + chặn đường chạy thoát.</p>
+  <ul>
+    <li><strong>Hậu ở hàng 7</strong>: Hậu kiểm soát hàng 7 (chặn đường lui của vua) + khống chế hàng 8 (vùng góc).</li>
+    <li><strong>Vua bảo vệ Hậu</strong>: Kề ô của Hậu — vua đen không thể ăn Hậu.</li>
+    <li><strong>Kết quả</strong>: Vua đen kẹt trong góc, không còn nước đi hợp lệ.</li>
+  </ul>
+</div>
+
+<div class="stage">
+  <span class="stage-label">CHẶNG 3 · DIỄN GIẢI TỪNG NƯỚC</span>
+  <div class="board-layout">
+    <div>
+      <div id="board"></div>
+      <div class="controls">
+        <button onclick="resetBoard()">⟨⟨ Đầu</button>
+        <button onclick="prevMove()">⟨ Lùi</button>
+        <button onclick="nextMove()">Tiến ⟩</button>
+        <button onclick="goToEnd()">Cuối ⟩⟩</button>
+      </div>
+    </div>
+    <div class="info-panel">
+      <div class="move-display" id="moveDisplay">Thế cờ ban đầu</div>
+      <div class="commentary" id="commentary">Trắng Vua f5 + Hậu a7 chống Đen Vua h8. Chiếu hết sau 2 nước.</div>
+      <div class="info-box" id="infoBox">Đến lượt: <strong>Trắng</strong></div>
+    </div>
+  </div>
+</div>
+
+<div class="stage">
+  <span class="stage-label">CHẶNG 4 · TỰ KIỂM TRA</span>
+  <h2 style="margin-top:8px">Tại sao Qg7 là CHIẾU HẾT (không chỉ là chiếu)?</h2>
+  <div class="self-test">
+    <div class="quiz-options" id="selfTestOptions">
+      <button class="quiz-option" onclick="checkSelfTest(this, false, 'Sai. Hậu g7 khống chế Vua g8 — đó là nước chiếu, không phải lý do riêng cho chiếu hết.')">Vì Hậu khống chế Vua g8</button>
+      <button class="quiz-option" onclick="checkSelfTest(this, true, 'Đúng! Hậu ở g7 được Vua f6 bảo vệ (kề theo đường chéo). Ăn g7 phạm luật. Đường chạy khác: g8 ra h8 bị Hậu khống chế theo đường chéo, các ô khác cũng bị khống chế. Không còn nước hợp lệ + đang bị chiếu = CHIẾU HẾT.')">Vì Hậu được Vua f6 bảo vệ + bao hết các ô chạy thoát</button>
+      <button class="quiz-option" onclick="checkSelfTest(this, false, 'Sai. Hậu tự bảo vệ bằng cách đứng trong ô mà vua mình có thể bảo vệ.')">Vì Hậu tự bảo vệ</button>
+    </div>
+    <div class="feedback hidden" id="selfTestFeedback"></div>
+  </div>
+</div>
+
+<div class="stage">
+  <span class="stage-label">CHẶNG 5 · TRẮC NGHIỆM NHANH</span>
+  <div class="quiz">
+    <div class="quiz-q">Q1. K+Q chống K — số nước CHIẾU HẾT tối đa?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" onclick="quizCheck(this, false)">5 nước</button>
+      <button class="quiz-option" onclick="quizCheck(this, true)">10 nước (đôi khi 9 nếu đi tối ưu)</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">50 nước</button>
+    </div>
+    <div class="quiz-explain hidden">
+      Lý thuyết: K+Q chống K chiếu hết tối đa 10 nước nếu đi tối ưu (theo bảng cơ sở dữ liệu tàn cuộc). Trong thực tế, người chơi có thể mất nhiều hơn — nhưng không vượt luật 50 nước (nếu xoay xở hợp lý).
+    </div>
+  </div>
+  <div class="quiz">
+    <div class="quiz-q">Q2. Vua thua chạy ra góc nào?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" onclick="quizCheck(this, true)">Bất kỳ góc nào — kết quả không đổi</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Chỉ a8/h8</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Cố giữ trung tâm</button>
+    </div>
+    <div class="quiz-explain hidden">
+      Vua thua bị dồn về góc bất kỳ. Kỹ thuật dồn ép bằng Vua+Hậu làm thu hẹp không gian dần.
+    </div>
+  </div>
+  <div class="quiz">
+    <div class="quiz-q">Q3. Lỗi phổ biến trong K+Q chống K?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" onclick="quizCheck(this, true)">HẾT NƯỚC (PAT) — Hậu áp sát quá mạnh khiến vua đối phương không còn nước hợp lệ + lại không bị chiếu</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Hậu bị bắt</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Vua bị chiếu hết</button>
+    </div>
+    <div class="quiz-explain hidden">
+      Hết nước (pat) là rủi ro lớn nhất. Khi vua đối phương ở trong góc, Hậu tiến quá gần có thể gây hết nước. Phải để vua đối phương còn ít nhất 1 ô hợp lệ.
+    </div>
+  </div>
+</div>
+
+<div class="summary-card">
+  <h2>📌 Tóm tắt</h2>
+  <ul>
+    <li><strong>K+Q chống K</strong>: chiếu hết cơ bản, tối đa 10 nước nếu đi tối ưu.</li>
+    <li><strong>Thế chiếu hết</strong>: Hậu ở hàng 7 được Vua bảo vệ + bao các ô chạy thoát.</li>
+    <li><strong>Kỹ thuật</strong>: "Dồn ép" — vua bên tấn công dần dần thu hẹp không gian của vua phòng thủ.</li>
+    <li><strong>Tránh hết nước (pat)</strong>: Bảo đảm vua đối phương luôn còn ít nhất 1 nước hợp lệ.</li>
+  </ul>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chessboard-js/1.0.0/chessboard-1.0.0.min.js"></script>
+<script>
+const START_FEN = '7k/Q7/8/5K2/8/8/8/8 w - - 0 1';
+const MOVES = ['Kf6', 'Kg8', 'Qg7#'];
+const COMMENTARY = {
+  0: { move: 'Thế cờ ban đầu', text: 'Trắng Vua f5 + Hậu a7 chống Đen Vua h8. Chiếu hết sau 2 nước.' },
+  1: { move: '1. Kf6', text: 'Vua trắng tiến đến f6 — chuẩn bị bảo vệ Hậu ở g7 (g7 kề f6).' },
+  2: { move: '1... Kg8', text: 'Vua đen bị buộc. Đi Kh7 bị Hậu khống chế (hàng 7). Chỉ còn Kg8.' },
+  3: { move: '2. Qg7#  1-0', text: '⚔️ CHIẾU HẾT! Hậu ở g7 được Vua f6 bảo vệ. Vua g8 bị Hậu khống chế (cột g). Ăn g7 phạm luật (Vua f6 bảo vệ). Đi f8 hay h8 đều bị Hậu khống chế theo đường chéo và hàng ngang. Không còn nước hợp lệ. CHIẾU HẾT.' }
+};
+
+let board, game, currentMove = 0, stagesCompleted = new Set();
+
+function initBoard() {
+  game = new Chess(START_FEN);
+  board = Chessboard('board', { position: START_FEN, draggable: true,
+    pieceTheme: 'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png',
+    onDrop: (s,t) => { const m = game.move({from:s,to:t,promotion:'q'}); if(!m) return 'snapback'; setTimeout(updateOverlays,100); },
+    onSnapEnd: () => { board.position(game.fen()); updateOverlays(); }});
+  updateDisplay();
+}
+function nextMove() { if(currentMove>=MOVES.length) return; game.move(MOVES[currentMove]); board.position(game.fen()); currentMove++; setTimeout(()=>{updateDisplay();updateOverlays();},50); if(currentMove>=MOVES.length) markStage(3); }
+function prevMove() { if(currentMove<=0) return; game.undo(); currentMove--; board.position(game.fen()); setTimeout(()=>{updateDisplay();updateOverlays();},50); }
+function resetBoard() { game = new Chess(START_FEN); board.position(START_FEN); currentMove = 0; setTimeout(()=>{updateDisplay();updateOverlays();},50); }
+function goToEnd() { while(currentMove<MOVES.length){game.move(MOVES[currentMove]);currentMove++;} board.position(game.fen()); setTimeout(()=>{updateDisplay();updateOverlays();},50); }
+
+function findPiece(p) {
+  const fen = game.fen().split(' ')[0]; const ranks = fen.split('/');
+  for (let r=0;r<8;r++) { let f=0; for (const ch of ranks[r]) {
+    if (/\d/.test(ch)) f+=parseInt(ch);
+    else { const w = ch===ch.toUpperCase(), t = ch.toUpperCase();
+      if ((p[0]==='w'&&w&&p[1]===t) || (p[0]==='b'&&!w&&p[1]===t)) return String.fromCharCode(97+f) + (8-r);
+      f++; } } }
+  return null;
+}
+
+function updateDisplay() {
+  const cm = COMMENTARY[currentMove] || COMMENTARY[0];
+  document.getElementById('moveDisplay').textContent = cm.move;
+  document.getElementById('commentary').innerHTML = cm.text;
+  const box = document.getElementById('infoBox');
+  if (currentMove >= MOVES.length) { box.className = 'info-box win'; box.innerHTML = '1 — 0 CHIẾU HẾT'; }
+  else { box.className = 'info-box'; box.innerHTML = 'Đến lượt: <strong>' + (game.turn()==='w'?'Trắng':'Đen') + '</strong>'; }
+  updateProgress();
+}
+function updateOverlays() {
+  $('#board .square-55d63').removeClass('highlight-mate highlight-king-blue');
+  if (currentMove >= MOVES.length) { const bK = findPiece('bK'); if (bK) $('#board .square-' + bK).addClass('highlight-mate'); }
+  const wK = findPiece('wK'); if (wK) $('#board .square-' + wK).addClass('highlight-king-blue');
+}
+function checkSelfTest(btn, ok, exp) {
+  document.querySelectorAll('#selfTestOptions .quiz-option').forEach(el=>el.disabled=true);
+  btn.classList.add(ok?'correct':'wrong');
+  const fb = document.getElementById('selfTestFeedback');

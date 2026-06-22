@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="vi"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mergers and Acquisitions from A to Z — Hiểu sâu theo Feynman</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,500&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  /* Design tokens shared with ebook-to-study-html (styles_v2.css) */
+  :root{
+    --bg:#fafaf7; --bg-elevated:#ffffff; --bg-soft:#f3f3ee;
+    --border:#e0e0d8; --border-soft:#ececea; --border-strong:#d2c8b6;
+    --ink:#1a1a1f; --ink-soft:#3f3f4a; --muted:#7a7a85;
+    --accent:#b8860b; --accent-2:#8b6508; --gold:#a07c1f; --gap:#8b6508;
+    --serif:"Fraunces",Georgia,"Iowan Old Style",serif;
+    --sans:"Geist",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    --mono:"Geist Mono","JetBrains Mono",Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:var(--sans);
+    font-size:19px;line-height:1.72;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}
+  .progress{position:fixed;top:0;left:0;height:3px;width:0;z-index:50;
+    background:linear-gradient(90deg,var(--gold),var(--accent));transition:width .08s linear}
+  .wrap{max-width:920px;margin:0 auto;padding:0 36px}
+  .rise{opacity:0;transform:translateY(14px);animation:rise .7s cubic-bezier(.2,.7,.3,1) forwards}
+  @keyframes rise{to{opacity:1;transform:none}}
+
+  header{padding:104px 0 60px;border-bottom:1px solid var(--border)}
+  .kicker{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.18em;
+    text-transform:uppercase;color:var(--accent);margin-bottom:26px}
+  h1{font-family:var(--serif);font-weight:600;font-size:clamp(42px,7.6vw,72px);
+    line-height:1.0;letter-spacing:-.022em;margin-bottom:28px;font-optical-sizing:auto;color:var(--ink)}
+  h1 em{font-style:italic;color:var(--accent)}
+  .core{font-family:var(--serif);font-style:italic;font-weight:400;
+    font-size:clamp(21px,3.6vw,27px);line-height:1.44;color:var(--ink-soft)}
+  .core span{font-style:normal;font-weight:600;color:var(--accent-2);
+    box-shadow:inset 0 -.5em 0 rgba(184,134,11,.16)}
+
+  /* ---- BƯỚC 0: ANCHOR (state the rule + plan before explaining) ---- */
+  .anchor .rule{font-family:var(--serif);font-size:19px;line-height:1.5;color:var(--ink);
+    background:var(--bg-soft);border-left:3px solid var(--accent);
+    padding:18px 24px;border-radius:0 4px 4px 0;margin:0}
+  .anchor .rule em{font-style:italic;color:var(--accent-2)}
+  .anchor .rule strong{color:var(--ink);font-weight:600}
+  .anchor .approach{color:var(--ink-soft)}
+
+  section{padding:72px 0;border-bottom:1px solid var(--border);position:relative}
+  .step-head{display:flex;align-items:flex-start;gap:22px;margin-bottom:34px}
+  .big-num{font-family:var(--serif);font-weight:700;font-size:62px;line-height:.8;
+    color:var(--border-strong);flex:none;font-optical-sizing:auto;letter-spacing:-.03em}
+  .step-meta{padding-top:4px}
+  .lbl{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--accent);display:block;margin-bottom:10px}
+  h2{font-family:var(--serif);font-weight:600;font-size:clamp(27px,4.4vw,37px);
+    line-height:1.12;letter-spacing:-.012em;color:var(--ink)}
+  h2 em{font-style:italic;color:var(--accent)}
+  p{margin-bottom:21px}
+  p:last-child{margin-bottom:0}
+  strong{font-weight:600;color:var(--ink)}
+  em{font-style:italic;color:var(--accent-2)}
+  .gloss{color:var(--muted);font-style:italic}
+
+  .lead::first-letter{font-family:var(--serif);font-weight:700;float:left;
+    font-size:74px;line-height:.74;padding:8px 12px 0 0;color:var(--accent)}
+
+  .sub{font-family:var(--serif);font-weight:600;font-size:17px;letter-spacing:.01em;
+    color:var(--ink);margin:34px 0 14px;display:flex;align-items:center;gap:11px}
+  .sub::before{content:"";width:18px;height:2px;background:var(--accent);flex:none;border-radius:2px}
+
+  .gaps{background:var(--bg-soft)}
+  .gaps .big-num{color:#e2d6b4}
+  .gaps .lbl{color:var(--gap)}
+  .gap-q{margin:0 0 30px;padding-left:24px;border-left:2px solid var(--border-strong)}
+  .gap-q:last-child{margin-bottom:0}
+  .gap-q .q{font-family:var(--serif);font-style:italic;font-weight:500;
+    font-size:22px;line-height:1.35;color:var(--gap);margin-bottom:12px;display:block}
+  .gap-q p:last-child{margin-bottom:0}
+
+  .analogy-card{border:1px solid #e8c876;border-radius:4px;padding:30px 32px;margin:8px 0 28px;
+    background:linear-gradient(135deg,#fef9ed 0%,#fdf3e0 100%)}
+  .analogy-card .tag{font-family:var(--mono);font-weight:600;font-size:11px;
+    letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin-bottom:16px;display:block}
+  .analogy-card p{color:#5a4810}
+  .analogy-card strong{color:var(--accent-2)}
+  .limit{font-size:17px;line-height:1.6;color:#5a4810;
+    border-top:1px solid #e8c876;padding-top:20px;margin-top:22px}
+  .limit b{color:var(--accent-2);font-weight:600;font-family:var(--serif)}
+
+  .retell{background:linear-gradient(180deg,var(--bg-soft) 0%,var(--bg) 100%);border-bottom:none}
+  .retell h2{color:var(--ink)}
+  .retell strong{color:var(--accent-2)}
+  .retell .core{margin-top:6px}
+  .testbox{border:1px solid var(--border);background:var(--bg-elevated);
+    border-radius:4px;padding:28px 32px;margin-top:40px;box-shadow:0 1px 2px rgba(0,0,0,.03)}
+  .testbox h3{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--accent);margin-bottom:20px}
+  .testbox ol{margin:0;padding-left:22px;counter-reset:t}
+  .testbox li{margin-bottom:16px;color:var(--ink-soft);padding-left:6px}
+  .testbox li:last-child{margin-bottom:0}
+
+  footer{text-align:center;padding:60px 0 88px}
+  footer .mark{font-family:var(--serif);font-weight:700;color:var(--accent);
+    font-size:26px;display:block;margin-bottom:14px}
+  footer p{font-family:var(--serif);font-style:italic;color:var(--muted);font-size:17px;max-width:380px;margin:0 auto}
+
+  @media(max-width:560px){
+    body{font-size:18px}
+    header{padding:70px 0 44px}
+    section{padding:52px 0}
+    .step-head{gap:16px}
+    .big-num{font-size:46px}
+    .lead::first-letter{font-size:60px}
+  }
+</style>
+<style>
+ .tabbar{position:fixed;top:0;left:0;right:0;width:100%;box-sizing:border-box;z-index:40;background:rgba(250,250,247,.93);
+   backdrop-filter:saturate(1.1) blur(8px);-webkit-backdrop-filter:saturate(1.1) blur(8px);
+   border-bottom:1px solid var(--border);display:flex;gap:6px;overflow-x:auto;
+   padding:10px max(36px,calc((100% - 992px)/2));scrollbar-width:thin}
+ .tabbar .tab{flex:0 0 auto;display:flex;align-items:baseline;gap:9px;cursor:pointer;
+   background:transparent;border:1px solid transparent;border-radius:999px;
+   padding:8px 17px;transition:.15s;white-space:nowrap;color:var(--muted)}
+ .tabbar .tab:hover{color:var(--ink);background:var(--bg-soft)}
+ .tabbar .tab.active{color:var(--accent-2);background:var(--bg-soft);border-color:var(--border-strong)}
+ .tabbar .tn{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.1em;color:var(--accent)}
+ .tabbar .tl{font-family:var(--serif);font-weight:500;font-size:16px}
+ body{padding-top:56px} .concept-panel{display:none}
+ .concept-panel.active{display:block}
+ .concept-panel header{padding-top:50px}
+ @media(max-width:560px){.tabbar .tl{max-width:48vw;overflow:hidden;text-overflow:ellipsis}}
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+<nav role="tablist" class="tabbar" aria-label="Các khái niệm"><button class="tab" data-i="0" role="tab" id="tab-0" aria-controls="c-vi-sao-deal-tot-van-do" aria-selected="true" tabindex="0"><span class="tn">01</span><span class="tl">80% deal đổ</span></button><button class="tab" data-i="1" role="tab" id="tab-1" aria-controls="c-synergy-cost-vs-revenue" aria-selected="false" tabindex="-1"><span class="tn">02</span><span class="tl">Synergy cost/revenue</span></button><button class="tab" data-i="2" role="tab" id="tab-2" aria-controls="c-step-up-basis" aria-selected="false" tabindex="-1"><span class="tn">03</span><span class="tl">Step-up basis</span></button><button class="tab" data-i="3" role="tab" id="tab-3" aria-controls="c-gia-khac-dieu-khoan" aria-selected="false" tabindex="-1"><span class="tn">04</span><span class="tl">Giá ≠ Điều khoản</span></button><button class="tab" data-i="4" role="tab" id="tab-4" aria-controls="c-earn-out-chia-rui-ro" aria-selected="false" tabindex="-1"><span class="tn">05</span><span class="tl">Earn-out &amp; rủi ro</span></button><button class="tab" data-i="5" role="tab" id="tab-5" aria-controls="c-reps-warranties" aria-selected="false" tabindex="-1"><span class="tn">06</span><span class="tl">Reps &amp; Warranties</span></button><button class="tab" data-i="6" role="tab" id="tab-6" aria-controls="c-due-diligence-fcpa" aria-selected="false" tabindex="-1"><span class="tn">07</span><span class="tl">DD: đào sâu được thưởng</span></button></nav>
+<div class="concept-panel" id="c-vi-sao-deal-tot-van-do" role="tabpanel" aria-labelledby="tab-0" tabindex="0"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Giải thích theo phương pháp Feynman</div>
+    <h1 class="rise" style="animation-delay:.08s">Vì sao deal tốt vẫn đổ vỡ?</h1>
+    <p class="core rise" style="animation-delay:.16s">Toán cộng thì đẹp, <span>nhưng deal đổ ở phần mềm, không phải phần cứng.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Điều cần hiểu &amp; cách tiếp cận</span><h2>Quy tắc: phần lớn deal không tạo ra giá trị</h2></div>
+    </div>
+    <div class="rule">Sherman (Chương 1 &amp; 13): tỷ lệ thương vụ <strong>không</strong> tạo được giá trị sau sáp nhập được ước tính cao tới <strong>khoảng 80%</strong>; và <em>“as many as three out of every five”</em> deal có kế hoạch tích hợp kém. Bốn lỗi kinh điển: thiếu kế hoạch, lịch ép tới closing quá gấp, không lường trước việc <em>tích hợp</em> hậu sáp nhập, và phóng đại synergy thành ảo.</div>
+    <div class="sub">Cách giải thích</div>
+    <div class="approach"><p>Chỗ vấp: số liệu đẹp, giá hợp lý, vậy mà phần lớn vẫn hỏng. Trực giác bảo deal toán đúng thì phải thắng. Cách làm: tách 'phần cứng' (số, giá, hợp đồng) khỏi 'phần mềm' (người, văn hoá, ghép hệ thống). Deal thường đổ ở phần mềm, đúng chỗ ai cũng xem nhẹ.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Giải thích đơn giản</span><h2>Phép tính đẹp không cứu được cuộc chung sống tồi</h2></div>
+    </div>
+    <p class="lead">Tưởng tượng hai gia đình về chung một nhà sau đám cưới. Trên giấy tờ hợp lý: gộp thu nhập, chung tiền thuê, ai cũng có lợi. Vậy mà nhiều nhà vẫn lục đục rồi tan. Mua bán công ty y hệt: phép tính đẹp không cứu được cuộc chung sống tồi.</p>
+
+<div class="sub">Phần cứng so với phần mềm</div>
+<p>Phần cứng là cái đếm được: doanh thu, giá, điều khoản. Phần mềm là người, thói quen, văn hoá hai bên. Phần cứng làm xong trước khi ký. Phần mềm mới là việc nặng sau khi ký.</p>
+
+<div class="sub">Vì sao ký xong mới là lúc khó</div>
+<p>Ký xong, hai công ty phải thật sự chạy chung. Ghép đội, ghép cách làm, ghép phần mềm kế toán. Khoảng một phần ba nhân sự bị trùng việc. Ai đi, ai ở, ai sợ mất việc — toàn chuyện con người.</p>
+
+<div class="sub">Văn hoá là sát thủ thầm lặng</div>
+<p>Hai nơi có hai nếp làm việc. Bên mua hay nghĩ 'tôi trả tiền nên làm theo ý tôi'. Nếp va nhau, người giỏi bỏ đi, khách quen rời theo. Giá trị tụt, dù sổ sách lúc mua rất đẹp.</p>
+  </section>
+
+  <section class="gaps">
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Chỗ vấp · Lỗ hổng</span><h2>Mấy chỗ nghe xuôi mà nghĩ kỹ chưa thông</h2></div>
+    </div>
+    <div class="gap-q"><span class="q">"Số liệu đã đẹp, giá đã hợp lý — còn thiếu gì mà đổ?"</span><p>Thiếu phần không nằm trong bảng tính. Synergy chỉ thành thật khi người ở lại và chịu làm chung. Nếu người giỏi bỏ đi, con số đẹp trên giấy bốc hơi. Bảng tính không đo được lòng người.</p></div>
+<div class="gap-q"><span class="q">"80% nghe quá cao — sao thất bại nhiều vậy?"</span><p>Vì ai cũng dồn sức cho lúc 'săn và chốt', rồi coi closing là đích. Sherman nói ngược lại: closing chỉ là vạch xuất phát. Phần tích hợp nặng nhất lại bị để cho 'tính sau'. Bỏ phần khó nhất thì hỏng là phải.</p></div>
+<div class="gap-q"><span class="q">"Tích hợp khó vậy, sao không cứ để hai bên chạy riêng?"</span><p>Được, đôi khi người ta giữ riêng thật. Nhưng giữ riêng thì lấy đâu ra synergy — phần giá trị mọc thêm họ đã trả tiền để mua? Trả premium rồi để hai bên rời nhau là vứt tiền. Muốn có synergy thì phải ghép, mà ghép thì khó.</p></div>
+<div class="gap-q"><span class="q">"Biết trước phần mềm khó — sao vẫn không ai làm tốt?"</span><p>Đây là chỗ thành thật. Phần mềm khó đo, khó đưa vào hợp đồng, và lộ ra rất chậm. Lúc ký, hào hứng đang cao, ai cũng tin 'chuyện người để xử sau'. Khi vấn đề hiện ra thì đã trả tiền xong. Biết là một chuyện, làm được lại là chuyện khác.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví von &amp; ví dụ đời thường</span><h2>Neo vào thứ bạn đã biết</h2></div>
+    </div>
+    <div class="analogy-card"><span class="tag">Ví dụ trung tâm</span>
+<p>Quay lại hai gia đình về chung nhà. Phần cứng đã xong: thu nhập cộng lại, tiền thuê chia đôi, toán đẹp. Nhưng sống chung mới lòi ra phần mềm: ai rửa bát, ai dậy sớm, ai chịu ai. Hai công ty sáp nhập vấp đúng chỗ đó — nếp làm việc, cái tôi, nỗi sợ mất việc.</p>
+<p class="limit"><b>Chỗ ví von này hỏng:</b> hai vợ chồng tự nguyện và bình đẳng. Trong thâu tóm thường có kẻ mua, người bị mua — một bên nắm quyền. Quyền lực lệch khiến bên mua dễ áp đặt, và 'seller's remorse' (người bán tiếc, ngầm chống lại) là thứ hôn nhân không có.</p>
+</div>
+<p>Đời thường hơn: hai quán cà phê gộp làm một. Doanh thu cộng lại trông bốc. Nhưng nếu khách quen ghét đổi công thức, và hai đầu bếp cãi nhau, doanh thu gộp đó tan nhanh. Toán cộng dễ; nấu chung mới khó.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Sherman ước tính khoảng ba trên năm deal có kế hoạch tích hợp kém, nên synergy bị phóng đại, nguồn lực lãng phí, có khi kiện tụng. Cách chữa: đưa khác biệt văn hoá vào định giá ngay từ đầu, và lập một nhóm tích hợp (post-merger task force) gồm hai bên ngay sau due diligence.</p>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">4</div>
+      <div class="step-meta"><span class="lbl">Kể lại gọn gàng</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Phép tính đẹp không cứu được cuộc chung sống tồi. Phần cứng — số, giá, hợp đồng — xong trước khi ký. Phần mềm — người, văn hoá, ghép hệ thống — mới là việc nặng sau khi ký, và là chỗ phần lớn deal đổ. Closing không phải đích, mà là vạch xuất phát.</p>
+<p class="core">Toán cộng thì đẹp, <span>deal đổ ở phần mềm, không phải phần cứng.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã hiểu chưa?</h3>
+      <ol>
+        <li>Vì sao một deal có số liệu đẹp và giá hợp lý vẫn có thể thất bại?</li>
+        <li>'Phần cứng' và 'phần mềm' của một thương vụ khác nhau ra sao?</li>
+        <li>Vì sao Sherman nói 'closing là vạch xuất phát, không phải đích'?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nếu giải thích được cho bà ngoại hiểu, bạn mới thật sự hiểu.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-synergy-cost-vs-revenue" role="tabpanel" aria-labelledby="tab-1" tabindex="0"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Giải thích theo phương pháp Feynman</div>
+    <h1 class="rise" style="animation-delay:.08s">Vì sao 'synergy doanh thu' hay bốc hơi nhất?</h1>
+    <p class="core rise" style="animation-delay:.16s">Hai loại synergy, <span>loại doanh thu nghe sướng nhất lại hay bốc hơi nhất.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Điều cần hiểu &amp; cách tiếp cận</span><h2>Quy tắc: hai loại synergy, độ chắc khác nhau</h2></div>
+    </div>
+    <div class="rule">Sherman (Chương 1): nhiều deal theo đuổi <em>economies of scale</em> — tiết kiệm chi phí nhờ gộp quy mô — nhưng synergy rất hay hoá <em>ảo</em> (illusory). Một cách phân loại quen dùng trong nghề (không phải của riêng Sherman): synergy gồm <strong>cắt chi phí</strong> (cost) và <strong>tăng doanh thu</strong> (revenue). Hai loại không chắc như nhau.</div>
+    <div class="sub">Cách giải thích</div>
+    <div class="approach"><p>Chỗ vấp: kế hoạch deal nào cũng hứa cả hai loại, nghe đều ngon. Cách làm: hỏi 'cái này nằm trong tay ai'. Cắt chi phí phần lớn do mình tự quyết. Tăng doanh thu lại phụ thuộc khách — người mình không điều khiển được. Khác nhau ở đó.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Giải thích đơn giản</span><h2>Một khoản gần như chắc, một khoản hay vỡ</h2></div>
+    </div>
+    <p class="lead">Hai công ty sáp nhập, hứa hai khoản lời. Một: bỏ bớt một kế toán làm trùng, đỡ một khoản lương. Hai: bán chéo, khách bên này sẽ mua thêm hàng bên kia. Cả hai đều là synergy. Nhưng một khoản gần như chắc, một khoản hay vỡ. Bạn đoán khoản nào vỡ?</p>
+
+<div class="sub">Cắt chi phí: phần lớn trong tay mình</div>
+<p>Bỏ một văn phòng trùng, gộp một kho, cắt một phần mềm trả phí hai lần. Những thứ này mình tự quyết được. Khó, nhưng tính ra khá sát. Đây là synergy 'chắc tay' hơn.</p>
+
+<div class="sub">Tăng doanh thu: nằm trong tay khách</div>
+<p>Bán chéo, vào thị trường mới, khách mua nhiều hơn. Nghe sướng, nhưng quyết định là ở khách, không ở mình. Khách có thể không thích, đối thủ có thể chen vào. Khoản này dễ hứa, khó thành.</p>
+
+<div class="sub">Vì sao loại sướng nhất lại nguy nhất</div>
+<p>Đúng vì nó hấp dẫn, người ta hay nhét nó vào để biện minh giá cao. Trả premium dựa trên doanh thu chưa tới tay là chỗ deal hay sụp. Synergy bốc hơi thường là loại doanh thu.</p>
+  </section>
+
+  <section class="gaps">
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Chỗ vấp · Lỗ hổng</span><h2>Mấy chỗ nghe xuôi mà nghĩ kỹ chưa thông</h2></div>
+    </div>
+    <div class="gap-q"><span class="q">"Cả hai đều là tiền lời — sao phân biệt làm gì?"</span><p>Vì độ chắc khác hẳn, mà giá mua lại dựa vào đó. Đặt cược giá cao lên khoản chắc thì ổn. Đặt lên khoản bấp bênh thì dễ trả hớ. Phân biệt để biết mình đang trả tiền cho cái chắc hay cái mơ.</p></div>
+<div class="gap-q"><span class="q">"Cắt chi phí 'chắc' vậy sao nhiều deal vẫn trượt cả khoản đó?"</span><p>Vì cắt cũng đụng người. Sa thải, gộp kho, đổi hệ thống — đều gặp kháng cự và xáo trộn. Chắc hơn doanh thu, nhưng không miễn phí. 'Chắc tay' nghĩa là dễ tính, không phải tự động xảy ra.</p></div>
+<div class="gap-q"><span class="q">"Vậy revenue synergy có nên tính vào giá không?"</span><p>Nên tính, nhưng chiết khấu mạnh, hoặc treo theo kết quả. Đừng trả trước toàn bộ cho doanh thu chưa thấy. Đây đúng là lý do người ta dùng earn-out: để phần doanh thu hứa hẹn chỉ trả khi nó thật sự tới.</p></div>
+<div class="gap-q"><span class="q">"Làm sao biết trước khoản doanh thu nào sẽ tới, khoản nào không?"</span><p>Thành thật mà nói: rất khó biết chắc trước. Khách trung thành với người cũ hay với công ty? Bán chéo có thật sự khớp nhu cầu? Toàn câu chỉ ngã ngũ sau khi ghép. Nên khôn nhất là không cược nặng vào nó.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví von &amp; ví dụ đời thường</span><h2>Neo vào thứ bạn đã biết</h2></div>
+    </div>
+    <div class="analogy-card"><span class="tag">Ví dụ trung tâm</span>
+<p>Như hai quán ăn chung chủ. Khoản chắc: dẹp một bếp thuê chung, đỡ tiền mặt bằng — mình tự làm được. Khoản mơ: 'khách quán phở sẽ sang ăn bún luôn'. Cái sau tuỳ khách, không tuỳ chủ. Lời thật đến từ khoản cắt được, không phải khoản mong khách đổi thói quen.</p>
+<p class="limit"><b>Chỗ ví von này hỏng:</b> quán ăn nhỏ, chi phí dễ nhìn. Ở deal lớn, ngay 'cắt chi phí' cũng có thể vướng hợp đồng lao động, công đoàn, hệ thống không ghép được — đôi khi cắt còn khó hơn tưởng. 'Chắc hơn' không có nghĩa là dễ.</p>
+</div>
+<p>Gần hơn: hai người về chung nhà. Khoản chắc: bớt một tiền thuê, một hoá đơn internet. Khoản mơ: 'ở chung rồi chắc cả hai sẽ nấu ăn nhiều hơn, đỡ tiền hàng quán'. Cái chắc thấy ngay; cái mơ tuỳ thói quen có đổi không.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Trong định giá, người cẩn thận tách dòng tiền synergy ra: phần cắt chi phí cho hệ số tin cậy cao, phần doanh thu chiết khấu mạnh hoặc đẩy sang earn-out. Gộp chung 'synergy' một cục rồi nhân bội số là cách nhanh nhất để trả hớ.</p>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">4</div>
+      <div class="step-meta"><span class="lbl">Kể lại gọn gàng</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Synergy có hai loại. Cắt chi phí phần lớn trong tay mình — chắc hơn. Tăng doanh thu nằm trong tay khách — hay bốc hơi. Trớ trêu: loại doanh thu nghe sướng nhất lại là loại deal hay sụp vì nó. Nên đừng trả trước giá cao cho doanh thu chưa tới tay.</p>
+<p class="core">Hai loại synergy, <span>loại synergy nghe sướng nhất lại hay bốc hơi nhất.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã hiểu chưa?</h3>
+      <ol>
+        <li>Vì sao 'cắt chi phí' thường chắc hơn 'tăng doanh thu' khi tính synergy?</li>
+        <li>Vì sao revenue synergy lại là chỗ deal hay trả hớ nhất?</li>
+        <li>Earn-out giúp xử lý phần doanh thu hứa hẹn bằng cách nào?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nếu giải thích được cho bà ngoại hiểu, bạn mới thật sự hiểu.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-step-up-basis" role="tabpanel" aria-labelledby="tab-2" tabindex="0"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Giải thích theo phương pháp Feynman</div>
+    <h1 class="rise" style="animation-delay:.08s">Sao người mua lại chọn đường khó hơn?</h1>
+    <p class="core rise" style="animation-delay:.16s">Đường khó hơn, <span>mà người mua vẫn chọn — vì lá chắn thuế.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Điều cần hiểu &amp; cách tiếp cận</span><h2>Quy tắc: mua tài sản cho 'step-up basis'</h2></div>
+    </div>
+    <div class="rule">Sherman (Chương 8): mua <em>tài sản</em> (asset purchase) cho người mua <strong>step-up in basis</strong> — ghi tài sản theo <em>giá vừa trả</em>, nên khấu hao và phân bổ nhiều hơn, đỡ thuế (đoạn: <em>“a step-up in the basis of the assets acquired equal to the purchase price”</em>). Đổi lại: phức tạp hơn, cần bên thứ ba đồng ý, và người bán (công ty kiểu C-corp ở Mỹ) có thể bị đánh thuế hai lần.</div>
+    <div class="sub">Cách giải thích</div>
+    <div class="approach"><p>Chỗ vấp: mua tài sản rõ ràng cực hơn — nhặt từng món, xin từng chữ ký. Lẽ ra ai cũng chọn mua cổ phần cho gọn. Cách làm: nhìn vào 'lá chắn thuế'. Trả giá cao thì được ghi sổ giá cao, rồi trừ dần khoản đó vào thuế nhiều năm. Cái lợi đó đủ lớn để bõ công.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Giải thích đơn giản</span><h2>Cùng một công ty, hai cách mua khác hẳn</h2></div>
+    </div>
+    <p class="lead">Hình dung bạn mua lại một xưởng bánh. Có hai cách. Một: mua cả công ty, gồm cái tốt lẫn nợ cũ. Hai: chỉ mua lò, máy, công thức — bỏ lại nợ. Cách hai nghe cực hơn, phải bê từng món, xin từng giấy phép. Vậy mà nhiều người mua vẫn chọn nó. Vì sao?</p>
+
+<div class="sub">Sổ sách ghi theo giá nào</div>
+<p>Khi mua tài sản, bạn được ghi sổ chúng theo <strong>đúng giá vừa trả</strong>. Trả cái lò 1 tỷ thì sổ ghi 1 tỷ, dù chủ cũ ghi nó chỉ còn 200 triệu. Con số trên sổ vừa được 'nâng lên'.</p>
+
+<div class="sub">Vì sao ghi cao lại lợi</div>
+<p>Mỗi năm, máy móc được trừ dần một khoản 'hao mòn' vào lợi nhuận trước khi tính thuế. Sổ ghi càng cao, khoản trừ càng lớn, thuế phải nộp càng ít. Ghi 1 tỷ trừ được nhiều hơn hẳn ghi 200 triệu.</p>
+
+<div class="sub">Cái giá của đường này</div>
+<p>Không có gì miễn phí. Mua tài sản phải sang tên từng thứ, đóng thuế chuyển nhượng, xin bên thứ ba đồng ý. Người bán kiểu công ty Mỹ (C-corp) còn dễ bị đánh thuế hai lần, nên hay đòi giá cao hơn. Người mua cân: lá chắn thuế có bõ mớ phiền đó không.</p>
+  </section>
+
+  <section class="gaps">
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Chỗ vấp · Lỗ hổng</span><h2>Mấy chỗ nghe xuôi mà nghĩ kỹ chưa thông</h2></div>
+    </div>
+    <div class="gap-q"><span class="q">"Mua cổ phần gọn hơn nhiều — sao chịu cực mua tài sản?"</span><p>Vì hai thứ. Một: tránh ôm nợ ẩn của chủ cũ. Hai: lá chắn thuế từ việc ghi sổ giá cao. Khi giá mua cao hơn nhiều so với sổ cũ, khoản đỡ thuế nhiều năm cộng lại rất đáng. Gọn không bằng lợi.</p></div>
+<div class="gap-q"><span class="q">"Ghi sổ cao hơn — vậy có phải 'phù phép' cho tài sản đắt lên không?"</span><p>Không phù phép. Bạn trả 1 tỷ thật thì tài sản đáng 1 tỷ với bạn. Chủ cũ ghi 200 triệu vì đã trừ hao nhiều năm. Sổ của bạn bắt đầu lại từ giá bạn trả. Đó là giá thật của giao dịch, không phải thổi lên.</p></div>
+<div class="gap-q"><span class="q">"Người mua lợi thuế — vậy người bán có thiệt không?"</span><p>Thường có. Bán tài sản (theo thuế Mỹ) dễ khiến người bán bị đánh thuế hai lần: một ở công ty, một khi chia tiền về túi. Nên người bán hay đòi giá cao hơn để bù. Lợi thuế của bên mua một phần bị 'trả lại' qua giá.</p></div>
+<div class="gap-q"><span class="q">"Vậy lúc nào mua cổ phần lại hơn?"</span><p>Khi cái quý nằm ở chính công ty: giấy phép, hợp đồng, thương hiệu khó sang tên. Mua tài sản có thể làm mất chúng. Lúc đó người mua chịu thiệt thuế để giữ những thứ không bê đi được. Không có đáp án đúng cho mọi deal.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví von &amp; ví dụ đời thường</span><h2>Neo vào thứ bạn đã biết</h2></div>
+    </div>
+    <div class="analogy-card"><span class="tag">Ví dụ trung tâm</span>
+<p>Như mua xe cũ để chạy dịch vụ. Mua 'cả công ty taxi' của chủ cũ thì ôm luôn vé phạt, nợ xăng còn treo. Mua 'chỉ chiếc xe' thì bỏ lại nợ, và bạn khai giá xe theo đúng số vừa trả. Khai giá cao, mỗi năm trừ hao nhiều hơn, đóng thuế ít đi. Bê xe về thì cực, nhưng đỡ thuế thì thật.</p>
+<p class="limit"><b>Chỗ ví von này hỏng:</b> chiếc xe bê đi đâu cũng chạy. Nhiều tài sản công ty thì không 'bê' được: giấy phép, hợp đồng độc quyền, thương hiệu gắn với pháp nhân cũ. Mua tài sản có thể làm rơi mất chúng — đúng lúc đó người ta quay lại chọn mua cổ phần.</p>
+</div>
+<p>Gần hơn: mua một tiệm net. Mua dàn máy (tài sản) thì khai theo giá vừa trả, khấu hao dần đỡ thuế. Nhưng hợp đồng thuê mặt bằng giá rẻ lại đứng tên công ty cũ — muốn giữ nó, có khi phải mua cả công ty.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Tên kỹ thuật của 'ghi theo giá vừa trả' là <em>step-up in basis</em>: cơ sở tính khấu hao được nâng lên bằng giá mua. Ngược lại, giao dịch miễn thuế (tax-free reorganization) thường bắt người mua giữ <em>carry-over basis</em> — cơ sở cũ của người bán — nên không có lá chắn đó. Chọn đường nào là bài toán cân thuế của cả hai bên. Và có một đường giữa: bầu chọn <em>Section 338(h)(10)</em> — về pháp lý là mua cổ phần, nhưng tính thuế <em>như</em> mua tài sản. Người mua được step-up mà khỏi bê từng món; bù lại cần điều kiện và sự đồng thuận của người bán.</p>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">4</div>
+      <div class="step-meta"><span class="lbl">Kể lại gọn gàng</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Mua tài sản cực hơn mua cổ phần: nhặt từng món, xin từng chữ ký. Nhưng người mua được ghi sổ tài sản theo đúng giá vừa trả. Ghi cao thì mỗi năm trừ hao nhiều hơn, nộp thuế ít đi. Lá chắn thuế đó đủ lớn để bõ công — trừ khi cái quý lại nằm ở giấy phép, hợp đồng không bê đi được.</p>
+<p class="core">Đường khó hơn, <span>chịu cực mua tài sản để ghi sổ giá cao, đỡ thuế nhiều năm.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã hiểu chưa?</h3>
+      <ol>
+        <li>Vì sao người mua chịu cực mua tài sản thay vì mua cổ phần cho gọn?</li>
+        <li>Ghi sổ tài sản theo giá vừa trả giúp đỡ thuế bằng cách nào?</li>
+        <li>Khi nào mua cổ phần lại hơn mua tài sản, dù mất lá chắn thuế?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nếu giải thích được cho bà ngoại hiểu, bạn mới thật sự hiểu.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-gia-khac-dieu-khoan" role="tabpanel" aria-labelledby="tab-3" tabindex="0"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Giải thích theo phương pháp Feynman</div>
+    <h1 class="rise" style="animation-delay:.08s">Giá cao hơn, vụ lại tệ hơn?</h1>
+    <p class="core rise" style="animation-delay:.16s">Con số to đập vào mắt, <span>nhưng điều khoản mới quyết vụ đáng hay tệ.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Điều cần hiểu &amp; cách tiếp cận</span><h2>Quy tắc: tách giá khỏi điều khoản</h2></div>
+    </div>
+    <div class="rule">Sherman (Chương 9): <em>giá</em> là vấn đề số một, nhưng luôn phải tách <strong>giá</strong> (price) khỏi <strong>điều khoản</strong> (terms): <em>“the price could be very favorable to a seller but be crippled by alternative terms.”</em> Hiếm khi có lời chào 'trả hết tiền mặt khi ký' — nhất là trong thị trường nghiêng về người mua (Chương 2).</div>
+    <div class="sub">Cách giải thích</div>
+    <div class="approach"><p>Chỗ vấp: ai cũng nhìn con số to. Lẽ thường, giá cao hơn thì người bán lời hơn. Cách làm: tách con số khỏi cách trả. Con số chỉ là một phần; trả khi nào, kèm điều kiện gì mới quyết deal thật sự đáng bao nhiêu. Một con số to có thể rỗng ruột.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Giải thích đơn giản</span><h2>Con số to và phần chữ nhỏ</h2></div>
+    </div>
+    <p class="lead">Hai người chào mua nhà bạn. Người A trả 3 tỷ, đưa hết khi ký. Người B trả 3,3 tỷ, nhưng góp trong ba năm và chỉ trả nốt nếu nhà không dính tranh chấp. Con số của B to hơn. Bạn chọn ai? Nhiều người giật mình nhận ra A mới là vụ tốt hơn.</p>
+
+<div class="sub">Con số chỉ là một nửa</div>
+<p>Giá là cái ghi to trên lời chào. Điều khoản là phần chữ nhỏ: trả khi nào, trả mấy lần, kèm điều kiện gì. Cùng một con số, đổi chữ nhỏ là đổi hẳn giá trị thật. Tiền cầm chắc hôm nay khác xa tiền hứa trả dần.</p>
+
+<div class="sub">Vì sao 'trả hết khi ký' hiếm gặp</div>
+<p>Người mua muốn giữ tiền lại phòng hờ. Họ thích trả góp, giữ một phần, gắn điều kiện. Nhất là khi thị trường nghiêng về phía họ. Lời chào 'trả hết tiền mặt' gần như không có; phải đọc kỹ chữ nhỏ.</p>
+
+<div class="sub">Còn con số to thì sao ra?</div>
+<p>Có một bất ngờ nữa về chính con số. Trong đấu giá, người thắng thường <strong>không</strong> trả hết mức tối đa của mình. Họ chỉ trả nhỉnh hơn người trả cao thứ nhì một chút. Chính cạnh tranh đẩy giá, chứ không phải lòng hào phóng.</p>
+  </section>
+
+  <section class="gaps">
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Chỗ vấp · Lỗ hổng</span><h2>Mấy chỗ nghe xuôi mà nghĩ kỹ chưa thông</h2></div>
+    </div>
+    <div class="gap-q"><span class="q">"Giá cao hơn mà lại tệ hơn — nghe vô lý, vì sao?"</span><p>Vì 'cao hơn' chỉ nói về con số, không nói về tiền thật về tay. 3,3 tỷ trả góp ba năm, lại còn 'nếu' — có thể không bao giờ về đủ. 3 tỷ cầm ngay là chắc. Tiền chắc trong tay hơn tiền nhiều mà bấp bênh.</p></div>
+<div class="gap-q"><span class="q">"Vậy người bán cứ đòi 'trả hết khi ký' là xong?"</span><p>Đòi thì được, nhưng ít người mua chịu. Bắt trả hết ngay có thể làm họ bỏ đi, hoặc ép bạn hạ giá để bù. Nên thường phải đổi chác: nhận điều khoản mềm hơn một chút để giữ con số, hoặc ngược lại.</p></div>
+<div class="gap-q"><span class="q">"Đấu giá: sao người thắng không phải trả hết mức của mình?"</span><p>Vì họ chỉ cần hơn người thứ hai một chút là thắng. Giống đấu giá trên mạng: bạn sẵn trả 10, người nhì chỉ tới 7, thì bạn thắng ở mức nhỉnh hơn 7. Phần chênh tới 10 bạn được giữ. Cạnh tranh quyết giá, không phải mức tối đa của người thắng. Nhưng để ý: đó là đấu giá <em>trả tăng dần</em> kiểu eBay. Đấu giá M&amp;A thường là bỏ phiếu kín một vòng — người thắng trả đúng giá mình bỏ, nên dễ dính 'winner's curse' (mừng hụt vì lỡ trả cao nhất).</p></div>
+<div class="gap-q"><span class="q">"Vậy đo 'điều khoản tốt hay xấu' kiểu gì cho gọn?"</span><p>Không có thước chung. Nó tuỳ bạn cần tiền gấp đến đâu, chịu rủi ro được bao nhiêu. Cùng một điều khoản, người cần tiền ngay thấy tệ, người thong thả thấy ổn. Phải quy mọi thứ về 'tiền chắc về tay khi nào' rồi mới so.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví von &amp; ví dụ đời thường</span><h2>Neo vào thứ bạn đã biết</h2></div>
+    </div>
+    <div class="analogy-card"><span class="tag">Ví dụ trung tâm</span>
+<p>Như mua xe trả góp. Bảng giá ghi 600 triệu nghe mềm hơn chiếc 620 triệu bên cạnh. Nhưng chiếc 600 bắt trả lãi cao, không kèm bảo hành; chiếc 620 trả thẳng, bảo hành ba năm. Cộng hết chữ nhỏ, chiếc 'rẻ' lại đắt hơn. Con số trên bảng giá chỉ là mồi; cái deal thật nằm ở điều khoản.</p>
+<p class="limit"><b>Chỗ ví von này hỏng:</b> mua xe, điều khoản in sẵn, bạn chỉ chọn. Trong M&amp;A, điều khoản được <em>đàm phán</em> — giá và điều khoản đổi chác qua lại, ai có thế mạnh hơn thì giành phần tốt. Nó là cuộc co kéo, không phải bảng giá cố định.</p>
+</div>
+<p>Gần hơn: nhận lương. 'Lương 30 triệu nhưng thử việc sáu tháng, thưởng tuỳ doanh số' nghe to hơn '25 triệu nhận đủ ngay, ký chính thức luôn'. Tính cả điều kiện, con số nhỏ có khi chắc ăn hơn.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Những 'chữ nhỏ' đó — trả góp, giữ lại trong két, trả thêm theo kết quả — mỗi cái dịch một phần rủi ro về người bán. Vì thế hai lời chào cùng con số vẫn có thể cách nhau rất xa về giá trị thật. Tab 'Earn-out &amp; rủi ro' mổ kỹ từng cái.</p>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">4</div>
+      <div class="step-meta"><span class="lbl">Kể lại gọn gàng</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Giá là con số to; điều khoản là chữ nhỏ về trả khi nào, kèm điều kiện gì. Cùng một con số, chữ nhỏ đổi thì giá trị thật đổi theo. Một giá cao trả góp, kèm 'nếu', có thể tệ hơn một giá thấp trả ngay. Và ngay con số to cũng do cạnh tranh đẩy lên, không phải lòng hào phóng của người thắng.</p>
+<p class="core">Con số to đập vào mắt, <span>giá là con số to, điều khoản mới quyết deal thật.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã hiểu chưa?</h3>
+      <ol>
+        <li>Vì sao một lời chào giá cao hơn vẫn có thể là vụ tệ hơn cho người bán?</li>
+        <li>Trong đấu giá, vì sao người thắng thường không trả hết mức tối đa của mình?</li>
+        <li>Hai lời chào cùng một con số giá, điều gì khiến chúng khác giá trị thật?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nếu giải thích được cho bà ngoại hiểu, bạn mới thật sự hiểu.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-earn-out-chia-rui-ro" role="tabpanel" aria-labelledby="tab-4" tabindex="0"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Giải thích theo phương pháp Feynman</div>
+    <h1 class="rise" style="animation-delay:.08s">Ký xong rồi, sao rủi ro vẫn chạy về người bán?</h1>
+    <p class="core rise" style="animation-delay:.16s">Ký xong, tưởng hết chuyện, <span>nhưng rủi ro vẫn chạy về người bán.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Điều cần hiểu &amp; cách tiếp cận</span><h2>Quy tắc: một phần giá treo theo kết quả</h2></div>
+    </div>
+    <div class="rule">Sherman (Chương 10-11): <em>earn-out</em> là phần đối giá <strong>có điều kiện</strong> — <em>“the seller receives additional payments only if the acquired business performs above a specified level in the future.”</em> Earn-out lo <em>rủi ro hiệu suất</em> (kết quả tương lai, chênh định giá). <strong>Khác họ</strong>: <em>holdback</em>, <em>basket</em>, <em>cap</em> là bộ máy của <em>reps &amp; warranties</em> + bồi thường — lo <em>rủi ro vi phạm cam kết</em> và nợ ẩn. Hai họ khác loại rủi ro, nhưng cùng hướng: <strong>dịch rủi ro về người bán</strong>. Tab <em>'Reps &amp; Warranties'</em> mổ kỹ bộ máy holdback/basket/cap.</div>
+    <div class="sub">Cách giải thích</div>
+    <div class="approach"><p>Chỗ vấp: deal đã 'closing', giá đã chốt — lẽ ra xong. Vậy mà người bán vẫn nơm nớp và có thể không nhận đủ tiền. Cách làm: nhìn 'giá' không phải một cục tiền trao tay, mà nhiều mảnh, vài mảnh chỉ trả 'nếu'. Chính chữ 'nếu' kéo rủi ro về phía người bán.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Giải thích đơn giản</span><h2>Giá 10 tỷ, nhưng một nửa còn treo</h2></div>
+    </div>
+    <p class="lead">Bạn bán công ty giá 10 tỷ, ký xong, ăn mừng. Nhưng hợp đồng ghi: 5 tỷ nhận ngay, 2 tỷ giữ lại hai năm phòng hờ, 3 tỷ chỉ trả 'nếu' năm sau công ty đạt doanh số. Vậy bạn đã thật sự bán xong với giá 10 tỷ chưa? Chưa hẳn — một nửa còn treo.</p>
+
+<div class="sub">Vì sao người mua làm vậy</div>
+<p>Người mua sợ mua nhầm. Lỡ doanh số bạn khoe không thật thì sao? Lỡ có nợ ẩn lòi ra sau khi ký? Họ không trao hết tiền ngay. Họ giữ lại vài mảnh, gắn điều kiện, để tự bảo vệ.</p>
+
+<div class="sub">Ba cái móc quen thuộc</div>
+<p><strong>Trả theo kết quả</strong> (earn-out): phần tiền chỉ về nếu công ty đạt chỉ tiêu sau này. <strong>Giữ lại trong két</strong> (holdback): một khoản đóng băng, để bù nếu lòi ra vấn đề. <strong>Ngưỡng và trần</strong>: dưới ngưỡng thì người bán khỏi đền, trên trần thì khỏi đền thêm.</p>
+
+<div class="sub">Rủi ro chảy về đâu</div>
+<p>Để ý hướng: mỗi cái móc kéo một phần rủi ro từ người mua sang người bán. Trước khi ký, người bán khoe tương lai sáng. Sau khi ký, chính người bán phải gánh nếu tương lai đó không tới. Lời hứa giờ có giá của nó.</p>
+  </section>
+
+  <section class="gaps">
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Chỗ vấp · Lỗ hổng</span><h2>Mấy chỗ nghe xuôi mà nghĩ kỹ chưa thông</h2></div>
+    </div>
+    <div class="gap-q"><span class="q">"Đã ký, đã 'closing' — sao gọi là chưa bán xong?"</span><p>Vì 'closing' chỉ là trao chìa khoá, không phải trao hết tiền. Nhiều mảnh tiền còn treo theo điều kiện. Người bán đã giao công ty, nhưng phần tiền cuối còn phụ thuộc tương lai. Bán xong về giấy tờ, chưa xong về túi tiền.</p></div>
+<div class="gap-q"><span class="q">"Người mua giữ tiền lại — vậy có phải họ ép người bán không?"</span><p>Không hẳn là ép. Đó là cách chia rủi ro cho công bằng. Người bán biết rõ công ty hơn; nếu họ tin lời mình khoe, họ dám để tiền treo theo kết quả. Dám treo tiền là cách chứng minh mình nói thật.</p></div>
+<div class="gap-q"><span class="q">"Earn-out chỉ để bảo vệ người mua thôi à?"</span><p>Không chỉ vậy. Nó còn là 'đường' giữ người bán ở lại xây tiếp. Và khi hai bên cãi nhau về giá, earn-out hoá giải: 'nếu anh đúng về tương lai, anh nhận đủ'. Nó vừa chống trả thừa, vừa gắn lợi ích hai bên.</p></div>
+<div class="gap-q"><span class="q">"Treo tiền theo kết quả — ai canh con số đó, lỡ bị xử ép?"</span><p>Đây là chỗ dễ sinh kiện. Sau khi ký, công ty nằm trong tay người mua. Họ điều hành thế nào thì chỉ tiêu earn-out chạy theo thế đó. Người bán sợ bị 'làm cho trượt' để khỏi trả. Nên phần này phải ghi cực rõ cách đo, và rất hay là nguồn tranh chấp.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví von &amp; ví dụ đời thường</span><h2>Neo vào thứ bạn đã biết</h2></div>
+    </div>
+    <div class="analogy-card"><span class="tag">Ví dụ trung tâm</span>
+<p>Như bán lại chiếc xe và hứa 'máy còn ngon'. Người mua trả bạn 80% ngay, giữ 20% lại một năm. Nếu trong năm đó máy chạy êm, bạn nhận nốt. Nếu máy hỏng vì lỗi bạn giấu, họ trừ vào chỗ giữ. Bạn đã bán, nhưng vẫn 'bảo hành' bằng chính tiền của mình.</p>
+<p class="limit"><b>Chỗ ví von này hỏng:</b> chiếc xe sau khi bán, bạn không đụng vào nữa, máy hỏng hay không là tự nó. Còn công ty thì người mua điều hành sau khi ký — họ tác động trực tiếp lên con số earn-out. Người bán phải gánh rủi ro cho một thứ mình không còn lái nữa.</p>
+</div>
+<p>Gần hơn: nhận việc với 'thưởng theo doanh số'. Sếp hứa thưởng to nếu đạt chỉ tiêu. Nhưng chỉ tiêu do sếp đặt, nguồn lực do sếp cấp. Bạn gánh rủi ro của một cuộc chơi người khác cầm còi — đúng cảm giác của người bán nhận earn-out.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Bộ móc này có cả họ: <em>basket</em> (chỉ đòi khi tổn thất vượt một ngưỡng), <em>cap</em> (trần tổng tiền đòi được), <em>survival period</em> (thời hạn còn được khiếu nại), và <em>reverse earn-out</em> (trả trước đủ, rồi giảm hoặc đòi lại nếu không đạt — ngược chiều earn-out thường). Thị trường nghiêng về ai sẽ quyết các mức này — buyer's market thì holdback to, earn-out nhiều, basket thấp.</p>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">4</div>
+      <div class="step-meta"><span class="lbl">Kể lại gọn gàng</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>'Closing' là trao chìa khoá, không phải trao hết tiền. Người mua giữ lại vài mảnh: trả theo kết quả, giữ trong két, đặt ngưỡng và trần. Mỗi mảnh kéo một phần rủi ro từ người mua về người bán. Khoe tương lai sáng trước khi ký thì dễ; sau khi ký, chính người bán phải gánh nếu nó không tới.</p>
+<p class="core">Ký xong, tưởng hết chuyện, <span>ký xong, rủi ro vẫn chạy ngược về người bán.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã hiểu chưa?</h3>
+      <ol>
+        <li>Vì sao 'ký xong, closing xong' mà người bán vẫn chưa chắc nhận đủ tiền?</li>
+        <li>Earn-out, holdback, ngưỡng và trần — chúng kéo rủi ro về phía nào?</li>
+        <li>Vì sao earn-out lại là nguồn tranh chấp hay gặp sau khi ký?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nếu giải thích được cho bà ngoại hiểu, bạn mới thật sự hiểu.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-reps-warranties" role="tabpanel" aria-labelledby="tab-5" tabindex="0"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Giải thích theo phương pháp Feynman</div>
+    <h1 class="rise" style="animation-delay:.08s">Lời hứa miệng thì rẻ — làm sao bắt nó thành tiền?</h1>
+    <p class="core rise" style="animation-delay:.16s">Người bán hứa gì cũng được, <span>reps & warranties biến lời hứa thành tiền đặt cọc.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Điều cần hiểu &amp; cách tiếp cận</span><h2>Quy tắc: cam kết + bồi thường</h2></div>
+    </div>
+    <div class="rule">Sherman (Chương 11): hợp đồng bắt người bán đưa <em>representations &amp; warranties</em> (cam kết về tình trạng công ty) và <em>indemnification</em> (bồi thường nếu cam kết sai). Hợp đồng <em>“shift risk to the seller… seek monetary damages… should the representations, warranties, and covenants… prove untrue.”</em> Giới hạn lại bằng <em>basket</em> (ngưỡng), <em>cap</em> (trần), <em>holdback</em> (giữ trong escrow), và <em>survival period</em> (thời hạn còn đòi được).</div>
+    <div class="sub">Cách giải thích</div>
+    <div class="approach"><p>Chỗ vấp: due diligence soi xong rồi, sao còn bắt người bán cam kết lại bằng văn bản? Cách làm: nhìn cam kết không phải để 'biết', mà để 'ai trả tiền nếu sai'. Một câu hứa ký tên kèm bồi thường biến lời nói thành tiền — như tờ bảo hiểm người bán viết cho người mua.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Giải thích đơn giản</span><h2>Bắt lời hứa ký tên và chịu trả tiền</h2></div>
+    </div>
+    <p class="lead">Bạn mua lại một quán. Người bán nói: 'Quán không nợ ai đồng nào, bếp chạy tốt hết.' Bạn tin được mấy phần? Nói miệng thì ai nói chẳng được. Nên hợp đồng bắt họ ký tên vào từng lời đó — và chịu trả tiền nếu sai.</p>
+
+<div class="sub">Cam kết là gì</div>
+<p>Là danh sách lời khẳng định của người bán: không nợ ẩn, máy chạy tốt, giấy tờ sạch, đã khai hết. Ký vào nghĩa là đặt uy tín và tiền sau mỗi câu. Sai một câu, người mua có cơ sở đòi.</p>
+
+<div class="sub">Bồi thường: lời sai thì trả tiền</div>
+<p>Sau khi mua mà lòi ra nợ giấu, người bán phải đền đúng khoản đó. Đây là phần biến cam kết thành tiền thật. Không có nó, lời hứa chỉ là lời hứa.</p>
+
+<div class="sub">Nhưng có hàng rào</div>
+<p>Người bán không đền vô hạn. Dưới một <strong>ngưỡng</strong> nhỏ thì khỏi đền (chuyện vặt). Trên một <strong>trần</strong> thì thôi, không đền thêm. Và chỉ đòi được trong một <strong>thời hạn</strong>; quá hạn là hết quyền.</p>
+  </section>
+
+  <section class="gaps">
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Chỗ vấp · Lỗ hổng</span><h2>Mấy chỗ nghe xuôi mà nghĩ kỹ chưa thông</h2></div>
+    </div>
+    <div class="gap-q"><span class="q">"Due diligence soi rồi, sao còn bắt cam kết lại bằng văn bản?"</span><p>Vì soi kỹ mấy vẫn có thể sót. Cam kết không thay việc soi; nó lo phần soi không thấy. Nếu sau này lòi ra cái bị giấu, cam kết quyết định ai gánh. Soi là để biết, cam kết là để chia tiền khi sai.</p></div>
+<div class="gap-q"><span class="q">"Người bán biết rõ công ty mình — cam kết thì khó gì?"</span><p>Khó không nằm ở biết, mà ở chịu trách nhiệm. Ký vào là chấp nhận trả tiền nếu thực tế khác lời. Người bán thật thà thì dám ký rộng. Người giấu chuyện sẽ co từng chữ — chính chỗ co lại là tín hiệu.</p></div>
+<div class="gap-q"><span class="q">"Cam kết sai thì người mua đòi lại được hết à?"</span><p>Không hết. Có ngưỡng: thiệt hại nhỏ dưới mức đó thì tự chịu. Có trần: đòi tối đa tới đó thôi. Có thời hạn: quá hạn là mất quyền. Ba hàng rào này chính là basket, cap và survival period.</p></div>
+<div class="gap-q"><span class="q">"Bán xong, vỏ công ty rỗng — đòi ai trả?"</span><p>Đây là chỗ yếu thật. Nếu người bán đã ôm tiền đi, đòi cũng khó. Nên người mua hay giữ lại một khoản trong két (holdback), và bắt cả cổ đông chính ký tên cùng. Cam kết chỉ chắc khi sau nó có tiền hoặc người chịu trách nhiệm.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví von &amp; ví dụ đời thường</span><h2>Neo vào thứ bạn đã biết</h2></div>
+    </div>
+    <div class="analogy-card"><span class="tag">Ví dụ trung tâm</span>
+<p>Như mua xe cũ kèm tờ cam kết viết tay: 'máy zin, chưa đâm đụng, công-tơ-mét thật'. Nếu sau phát hiện công-tơ-mét bị tua, người bán phải bù tiền. Lời nói suông thì bỏ; chữ ký kèm 'sai thì đền' mới đáng tin. Đó đúng là vai trò của reps &amp; warranties.</p>
+<p class="limit"><b>Chỗ ví von này hỏng:</b> tờ cam kết mua xe thường ngắn và chuẩn. Reps &amp; warranties trong M&amp;A được <em>đàm phán</em> dày đặc: ngưỡng, trần, thời hạn, ai ký, 'biết tới đâu chịu tới đó'. Và có cả deal 'mua như hiện trạng' gần như không cam kết gì — lúc đó người mua tự gánh hết.</p>
+</div>
+<p>Gần hơn: đặt cọc thuê nhà. Bạn hứa giữ nhà nguyên vẹn; cọc là phần 'đền' nếu làm hỏng. Holdback trong M&amp;A y hệt: một khoản tiền treo, để trừ nếu cam kết của người bán hoá ra sai.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Vài biến đàm phán gắt: <em>basket</em> kiểu khấu trừ (chỉ đòi phần vượt ngưỡng) so với <em>dollar-one</em> (vượt ngưỡng thì đòi từ đồng đầu); <em>survival period</em> dài hay ngắn; và <em>reliance disclaimer</em> — câu nói người mua chỉ được dựa vào cam kết trong hợp đồng, nhằm chặn kiện gian lận ngoài 'bốn góc' giấy tờ.</p>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">4</div>
+      <div class="step-meta"><span class="lbl">Kể lại gọn gàng</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Due diligence để biết; cam kết để chia tiền khi điều biết hoá sai. Người bán ký vào từng lời về công ty, và đền nếu lời sai. Nhưng có hàng rào: ngưỡng nhỏ tự chịu, trần chặn trên, hết hạn thì mất quyền. Cam kết chỉ chắc khi sau nó có tiền giữ lại hoặc người chịu trách nhiệm.</p>
+<p class="core">Người bán hứa gì cũng được, <span>cam kết biến lời hứa thành tiền — trong giới hạn ngưỡng, trần, thời hạn.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã hiểu chưa?</h3>
+      <ol>
+        <li>Đã due diligence kỹ, vì sao hợp đồng vẫn bắt người bán cam kết lại bằng văn bản?</li>
+        <li>Basket, cap và survival period giới hạn quyền đòi bồi thường của người mua ra sao?</li>
+        <li>Vì sao người mua hay giữ holdback và bắt cổ đông chính cùng ký cam kết?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nếu giải thích được cho bà ngoại hiểu, bạn mới thật sự hiểu.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-due-diligence-fcpa" role="tabpanel" aria-labelledby="tab-6" tabindex="0"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Giải thích theo phương pháp Feynman</div>
+    <h1 class="rise" style="animation-delay:.08s">Sao đào càng sâu lại càng được tha?</h1>
+    <p class="core rise" style="animation-delay:.16s">Bới ra tật của target, <span>lại là cách được xử nhẹ tay nhất.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Điều cần hiểu &amp; cách tiếp cận</span><h2>Quy tắc: DOJ thưởng cho người soi kỹ</h2></div>
+    </div>
+    <div class="rule">Sherman (Chương 5): DOJ ra hướng dẫn rằng họ <em>“less likely to take harsh enforcement action”</em> với người mua một công ty từng vi phạm <em>FCPA</em> (luật chống hối lộ) — nếu người mua đã (1) làm due diligence sâu về FCPA, (2) lấy reps &amp; warranties từ người bán, (3) tự nguyện khai báo với DOJ, và (4) áp cơ chế tuân thủ. Hướng dẫn này rất tuỳ tình huống.</div>
+    <div class="sub">Cách giải thích</div>
+    <div class="approach"><p>Chỗ vấp: bới ra tội cũ của target, lẽ ra rước hoạ vào thân. Trực giác bảo 'không biết thì không sao'. Cách làm: lật ngược — chính việc đào sâu rồi khai thật mới được nhà chức trách xử nhẹ. Soi kỹ ở đây là tấm khiên, không phải con dao tự đâm mình.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Giải thích đơn giản</span><h2>Đào càng kỹ, khai càng thật, càng được tha</h2></div>
+    </div>
+    <p class="lead">Bạn sắp mua một công ty làm ăn ở nước ngoài. Lỡ trước đây nó từng đút lót quan chức thì sao? Trực giác bảo: đừng đào, không biết thì khỏi dính. Nhưng luật Mỹ làm ngược lại — đào càng kỹ, khai càng thật, bạn càng được tha.</p>
+
+<div class="sub">Vì sao 'không biết' không cứu được bạn</div>
+<p>Mua xong, tội cũ của công ty thành chuyện của bạn. 'Tôi không biết' không phải lá chắn. Nhắm mắt mua là ôm luôn rủi ro bị phạt nặng sau này.</p>
+
+<div class="sub">Đào sâu rồi khai thật được gì</div>
+<p>Nhà chức trách Mỹ hứa xử nhẹ tay hơn nếu bạn đã soi kỹ, bắt người bán cam kết, tự đi khai, và lập cơ chế chặn tái phạm. Làm đủ bốn việc đó, bạn từ 'đồng phạm' thành 'người dọn dẹp'.</p>
+
+<div class="sub">Soi kỹ là khiên, không phải dao</div>
+<p>Nên ở đây, tìm ra vấn đề không làm deal xấu đi. Nó cho bạn cơ hội xử trước, định giá lại, và tự bảo vệ. Sợ đào ra tật mới là cái bẫy thật.</p>
+  </section>
+
+  <section class="gaps">
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Chỗ vấp · Lỗ hổng</span><h2>Mấy chỗ nghe xuôi mà nghĩ kỹ chưa thông</h2></div>
+    </div>
+    <div class="gap-q"><span class="q">"Mua phải công ty từng phạm luật — sao 'không biết' lại không thoát?"</span><p>Vì khi mua, bạn nhận cả quá khứ của nó. Tội cũ đi kèm tài sản. Cố tình nhắm mắt còn bị coi là 'cố ý không biết', nặng hơn. Luật không tha người lười soi.</p></div>
+<div class="gap-q"><span class="q">"Tự đi khai báo — chẳng phải tự nộp mình sao?"</span><p>Nghe ngược, nhưng tự khai đổi lấy khoan hồng. Bị phát hiện ra mới nặng. Giống nhận lỗi trước khi bị bắt quả tang: chủ động thì được giảm, bị lộ thì lãnh đủ.</p></div>
+<div class="gap-q"><span class="q">"Vậy cứ soi thật sâu là chắc chắn được tha?"</span><p>Không chắc chắn. Hướng dẫn của DOJ rất tuỳ tình huống, không áp cho mọi deal. Soi sâu làm tăng khả năng được nhẹ tay, không phải tấm vé miễn tội. Nó là giảm rủi ro, không phải xoá rủi ro.</p></div>
+<div class="gap-q"><span class="q">"Soi sâu thì tốn kém — đào tới đâu là đủ?"</span><p>Đây là chỗ không có vạch rõ. Một vụ soi FCPA từng ngốn hàng chục nghìn giờ luật sư. Đào quá nông thì sót, quá sâu thì phá ngân sách và làm người bán phát cáu. Đủ hay không, cuối cùng vẫn là phán đoán.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví von &amp; ví dụ đời thường</span><h2>Neo vào thứ bạn đã biết</h2></div>
+    </div>
+    <div class="analogy-card"><span class="tag">Ví dụ trung tâm</span>
+<p>Như nộp bài nhóm mà bạn phát hiện một thành viên cũ chép sai số liệu. Giấu đi, lỡ thầy soi ra thì cả nhóm ăn điểm liệt. Chủ động chỉ ra lỗi và sửa, thầy thường nương tay. Tự lôi cái xấu ra ánh sáng lại an toàn hơn giấu nó.</p>
+<p class="limit"><b>Chỗ ví von này hỏng:</b> với thầy, chủ động nhận lỗi gần như luôn được nương. Với DOJ thì 'tuỳ tình huống' — soi sâu và tự khai chỉ <em>tăng</em> khả năng nhẹ tay, không bảo đảm. Và đây là luật Mỹ; nơi khác có thể xử khác.</p>
+</div>
+<p>Gần hơn: mua xe cũ rồi phát hiện nó từng dính phạt nguội chưa đóng. Chủ động báo và xử trước khi sang tên thì gọn. Lờ đi, tới lượt mình đứng tên là mình gánh. Biết trước luôn hơn bị động.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Đây là mặt phản trực giác của due diligence; bản <strong>nền</strong> 'Due diligence — phép thử sự thật' dựng phần gốc: nó là phép thử thật-hay-ảo, không phải cuộc săn cớ. Bốn điều kiện của DOJ (soi sâu, lấy cam kết, tự khai, lập cơ chế tuân thủ) là lý do thực tế khiến 'soi kỹ' được thưởng.</p>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">4</div>
+      <div class="step-meta"><span class="lbl">Kể lại gọn gàng</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Mua công ty là nhận cả quá khứ của nó, nên 'không biết' không cứu được bạn. Luật Mỹ làm ngược trực giác: đào sâu, bắt người bán cam kết, tự khai, lập cơ chế tuân thủ — thì được xử nhẹ tay. Tìm ra vấn đề không làm deal xấu đi; nó cho bạn cơ hội xử trước. Sợ đào ra tật mới là cái bẫy.</p>
+<p class="core">Bới ra tật của target, <span>đào sâu và khai thật lại là cách được tha.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã hiểu chưa?</h3>
+      <ol>
+        <li>Vì sao 'không biết gì về tội cũ của target' lại không bảo vệ được người mua?</li>
+        <li>Bốn việc nào giúp người mua được DOJ xử nhẹ tay hơn theo FCPA?</li>
+        <li>Vì sao việc tìm ra vấn đề trong due diligence không làm một deal xấu đi?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nếu giải thích được cho bà ngoại hiểu, bạn mới thật sự hiểu.</p>
+  </footer>
+
+</div></div>
+<script>
+  var bar=document.getElementById('progress');
+  function upd(){var h=document.documentElement;var s=h.scrollTop||document.body.scrollTop;
+    var max=(h.scrollHeight-h.clientHeight)||1;bar.style.width=(s/max*100)+'%';}
+  window.addEventListener('scroll',upd,{passive:true});upd();
+  var io=new IntersectionObserver(function(es){es.forEach(function(e){
+    if(e.isIntersecting){e.target.style.animation='rise .7s cubic-bezier(.2,.7,.3,1) forwards';io.unobserve(e.target);}});},{threshold:.12});
+  document.querySelectorAll('section').forEach(function(s){s.style.opacity='0';io.observe(s);});
+</script>
+
+<script>
+(function(){
+  var tabs=[].slice.call(document.querySelectorAll('.tabbar .tab'));
+  var panels=[].slice.call(document.querySelectorAll('.concept-panel'));
+  function show(i){
+    tabs.forEach(function(t,j){t.classList.toggle('active',j===i);});
+    panels.forEach(function(p,j){
+      var on=(j===i); p.classList.toggle('active',on);
+      if(on){p.querySelectorAll('section').forEach(function(s){s.style.opacity='';s.style.animation='';});}
+    });
+    try{history.replaceState(null,'','#'+panels[i].id);}catch(e){}
+    window.scrollTo(0,0); window.dispatchEvent(new Event('scroll'));
+  }
+  tabs.forEach(function(t){t.addEventListener('click',function(){show(+t.getAttribute('data-i'));});});
+  var start=0; panels.forEach(function(p,j){if('#'+p.id===location.hash)start=j;});
+  show(start);
+})();
+</script>
+
+<script>(function(){var t=[].slice.call(document.querySelectorAll(".tabbar .tab"));function s(){t.forEach(function(x){var a=x.classList.contains("active");x.setAttribute("aria-selected",a?"true":"false");x.tabIndex=a?0:-1;});}t.forEach(function(x){x.addEventListener("click",s);new MutationObserver(s).observe(x,{attributes:true,attributeFilter:["class"]});});s();})();</script>
+</body></html>

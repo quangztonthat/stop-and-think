@@ -1,0 +1,1016 @@
+<!DOCTYPE html>
+<html lang="vi"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IAS 36 Impairment of Assets — Hiểu sâu theo Feynman</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,500&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  /* Design tokens shared with ebook-to-study-html (styles_v2.css) */
+  :root{
+    --bg:#fafaf7; --bg-elevated:#ffffff; --bg-soft:#f3f3ee;
+    --border:#e0e0d8; --border-soft:#ececea; --border-strong:#d2c8b6;
+    --ink:#1a1a1f; --ink-soft:#3f3f4a; --muted:#7a7a85;
+    --accent:#b8860b; --accent-2:#8b6508; --gold:#a07c1f; --gap:#8b6508;
+    --serif:"Fraunces",Georgia,"Iowan Old Style",serif;
+    --sans:"Geist",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    --mono:"Geist Mono","JetBrains Mono",Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:var(--sans);
+    font-size:19px;line-height:1.72;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}
+  .progress{position:fixed;top:0;left:0;height:3px;width:0;z-index:50;
+    background:linear-gradient(90deg,var(--gold),var(--accent));transition:width .08s linear}
+  .wrap{max-width:920px;margin:0 auto;padding:0 36px}
+  .rise{opacity:0;transform:translateY(14px);animation:rise .7s cubic-bezier(.2,.7,.3,1) forwards}
+  @keyframes rise{to{opacity:1;transform:none}}
+
+  header{padding:104px 0 60px;border-bottom:1px solid var(--border)}
+  .kicker{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.18em;
+    text-transform:uppercase;color:var(--accent);margin-bottom:26px}
+  h1{font-family:var(--serif);font-weight:600;font-size:clamp(42px,7.6vw,72px);
+    line-height:1.0;letter-spacing:-.022em;margin-bottom:28px;font-optical-sizing:auto;color:var(--ink)}
+  h1 em{font-style:italic;color:var(--accent)}
+  .core{font-family:var(--serif);font-style:italic;font-weight:400;
+    font-size:clamp(21px,3.6vw,27px);line-height:1.44;color:var(--ink-soft)}
+  .core span{font-style:normal;font-weight:600;color:var(--accent-2);
+    box-shadow:inset 0 -.5em 0 rgba(184,134,11,.16)}
+
+  /* ---- BƯỚC 0: ANCHOR (state the rule + plan before explaining) ---- */
+  .anchor .rule{font-family:var(--serif);font-size:19px;line-height:1.5;color:var(--ink);
+    background:var(--bg-soft);border-left:3px solid var(--accent);
+    padding:18px 24px;border-radius:0 4px 4px 0;margin:0}
+  .anchor .rule em{font-style:italic;color:var(--accent-2)}
+  .anchor .rule strong{color:var(--ink);font-weight:600}
+  .anchor .approach{color:var(--ink-soft)}
+
+  section{padding:72px 0;border-bottom:1px solid var(--border);position:relative}
+  .step-head{display:flex;align-items:flex-start;gap:22px;margin-bottom:34px}
+  .big-num{font-family:var(--serif);font-weight:700;font-size:62px;line-height:.8;
+    color:var(--border-strong);flex:none;font-optical-sizing:auto;letter-spacing:-.03em}
+  .step-meta{padding-top:4px}
+  .lbl{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--accent);display:block;margin-bottom:10px}
+  h2{font-family:var(--serif);font-weight:600;font-size:clamp(27px,4.4vw,37px);
+    line-height:1.12;letter-spacing:-.012em;color:var(--ink)}
+  h2 em{font-style:italic;color:var(--accent)}
+  p{margin-bottom:21px}
+  p:last-child{margin-bottom:0}
+  strong{font-weight:600;color:var(--ink)}
+  em{font-style:italic;color:var(--accent-2)}
+  .gloss{color:var(--muted);font-style:italic}
+
+  .lead::first-letter{font-family:var(--serif);font-weight:700;float:left;
+    font-size:74px;line-height:.74;padding:8px 12px 0 0;color:var(--accent)}
+
+  .sub{font-family:var(--serif);font-weight:600;font-size:17px;letter-spacing:.01em;
+    color:var(--ink);margin:34px 0 14px;display:flex;align-items:center;gap:11px}
+  .sub::before{content:"";width:18px;height:2px;background:var(--accent);flex:none;border-radius:2px}
+
+  .gaps{background:var(--bg-soft)}
+  .gaps .big-num{color:#e2d6b4}
+  .gaps .lbl{color:var(--gap)}
+  .gap-q{margin:0 0 30px;padding-left:24px;border-left:2px solid var(--border-strong)}
+  .gap-q:last-child{margin-bottom:0}
+  .gap-q .q{font-family:var(--serif);font-style:italic;font-weight:500;
+    font-size:22px;line-height:1.35;color:var(--gap);margin-bottom:12px;display:block}
+  .gap-q p:last-child{margin-bottom:0}
+
+  .analogy-card{border:1px solid #e8c876;border-radius:4px;padding:30px 32px;margin:8px 0 28px;
+    background:linear-gradient(135deg,#fef9ed 0%,#fdf3e0 100%)}
+  .analogy-card .tag{font-family:var(--mono);font-weight:600;font-size:11px;
+    letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin-bottom:16px;display:block}
+  .analogy-card p{color:#5a4810}
+  .analogy-card strong{color:var(--accent-2)}
+  .limit{font-size:17px;line-height:1.6;color:#5a4810;
+    border-top:1px solid #e8c876;padding-top:20px;margin-top:22px}
+  .limit b{color:var(--accent-2);font-weight:600;font-family:var(--serif)}
+
+  .retell{background:linear-gradient(180deg,var(--bg-soft) 0%,var(--bg) 100%);border-bottom:none}
+  .retell h2{color:var(--ink)}
+  .retell strong{color:var(--accent-2)}
+  .retell .core{margin-top:6px}
+  .testbox{border:1px solid var(--border);background:var(--bg-elevated);
+    border-radius:4px;padding:28px 32px;margin-top:40px;box-shadow:0 1px 2px rgba(0,0,0,.03)}
+  .testbox h3{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--accent);margin-bottom:20px}
+  .testbox ol{margin:0;padding-left:22px;counter-reset:t}
+  .testbox li{margin-bottom:16px;color:var(--ink-soft);padding-left:6px}
+  .testbox li:last-child{margin-bottom:0}
+
+  footer{text-align:center;padding:60px 0 88px}
+  footer .mark{font-family:var(--serif);font-weight:700;color:var(--accent);
+    font-size:26px;display:block;margin-bottom:14px}
+  footer p{font-family:var(--serif);font-style:italic;color:var(--muted);font-size:17px;max-width:380px;margin:0 auto}
+
+  @media(max-width:560px){
+    body{font-size:18px}
+    header{padding:70px 0 44px}
+    section{padding:52px 0}
+    .step-head{gap:16px}
+    .big-num{font-size:46px}
+    .lead::first-letter{font-size:60px}
+  }
+</style>
+<style>
+ .tabbar{position:fixed;top:0;left:0;right:0;width:100%;box-sizing:border-box;z-index:40;background:rgba(250,250,247,.93);
+   backdrop-filter:saturate(1.1) blur(8px);-webkit-backdrop-filter:saturate(1.1) blur(8px);
+   border-bottom:1px solid var(--border);display:flex;gap:6px;overflow-x:auto;
+   padding:10px max(36px,calc((100% - 992px)/2));scrollbar-width:thin}
+ .tabbar .tab{flex:0 0 auto;display:flex;align-items:baseline;gap:9px;cursor:pointer;
+   background:transparent;border:1px solid transparent;border-radius:999px;
+   padding:8px 17px;transition:.15s;white-space:nowrap;color:var(--muted)}
+ .tabbar .tab:hover{color:var(--ink);background:var(--bg-soft)}
+ .tabbar .tab.active{color:var(--accent-2);background:var(--bg-soft);border-color:var(--border-strong)}
+ .tabbar .tn{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.1em;color:var(--accent)}
+ .tabbar .tl{font-family:var(--serif);font-weight:500;font-size:16px}
+ body{padding-top:56px} .concept-panel{display:none}
+ .concept-panel.active{display:block}
+ .concept-panel header{padding-top:50px}
+ @media(max-width:560px){.tabbar .tl{max-width:48vw;overflow:hidden;text-overflow:ellipsis}}
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+<nav class="tabbar" aria-label="Các khái niệm"><button class="tab" data-i="0"><span class="tn">01</span><span class="tl">Lấy cái cao hơn</span></button><button class="tab" data-i="1"><span class="tn">02</span><span class="tl">Giá trị sử dụng</span></button><button class="tab" data-i="2"><span class="tn">03</span><span class="tl">Tỷ lệ chiết khấu</span></button><button class="tab" data-i="3"><span class="tn">04</span><span class="tl">Lỗ chỉ về 0</span></button><button class="tab" data-i="4"><span class="tn">05</span><span class="tl">Đơn vị tạo tiền (CGU)</span></button><button class="tab" data-i="5"><span class="tn">06</span><span class="tl">Gán goodwill vào CGU</span></button><button class="tab" data-i="6"><span class="tn">07</span><span class="tl">Phân bổ lỗ CGU</span></button><button class="tab" data-i="7"><span class="tn">08</span><span class="tl">Goodwill không hồi phục</span></button><button class="tab" data-i="8"><span class="tn">09</span><span class="tl">Trần hoàn nhập</span></button><button class="tab" data-i="9"><span class="tn">10</span><span class="tl">Khám hằng năm</span></button></nav>
+<div class="concept-panel" id="c-gia-tri-thu-hoi"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Giải thích theo phương pháp Feynman</div>
+    <h1 class="rise" style="animation-delay:.08s">Sao lại lấy cái CAO hơn — rồi vẫn bảo tài sản “mất giá”?</h1>
+    <p class="core rise" style="animation-delay:.16s">Một tài sản đáng giá đúng bằng <span>cách tốt nhất bạn còn moi được tiền ra từ nó — bán đi, hay giữ mà dùng.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Điều cần hiểu &amp; cách tiếp cận</span><h2>Quy tắc: thu hồi lấy cái cao hơn; mất giá khi sổ cao hơn</h2></div>
+    </div>
+    <div class="rule">IAS 36 <strong>đoạn 6 &amp; 18</strong>: <em>recoverable amount</em> (giá trị có thể thu hồi) = giá trị <strong>CAO HƠN</strong> giữa <em>fair value less costs of disposal</em> (giá bán ròng) và <em>value in use</em> (giá trị sử dụng). <strong>Đoạn 59</strong>: chỉ ghi lỗ suy giảm khi giá trị thu hồi <strong>NHỎ HƠN</strong> <em>carrying amount</em> (giá ghi sổ). <strong>Đoạn 19</strong>: nếu một trong hai đã vượt giá ghi sổ thì khỏi tính cái kia.</div>
+    <div class="sub">Cách giải thích</div>
+    <div class="approach"><p>Chỗ vấp: hai chữ <strong>“cao hơn”</strong> và <strong>“nhỏ hơn”</strong> đi ngược nhau, rất dễ lú. Trực giác kế toán còn bảo: thận trọng thì lấy thấp. Cách làm: neo vào chiếc xe đạp cũ có đúng hai đường ra tiền — bán đi, hay giữ mà đạp đi học. Chủ nó luôn chọn đường nhiều tiền hơn.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Giải thích đơn giản</span><h2>Một món đồ ra tiền theo đúng hai cách</h2></div>
+    </div>
+    <p class="lead">Tưởng tượng bạn có một chiếc xe đạp cũ. Nó thành tiền theo đúng hai cách. Một: bán đi, lấy tiền ngay. Hai: giữ lại mà đạp đi học, đỡ tiền xe ôm. Vậy nó đáng bao nhiêu? Đáng đúng bằng đường nào cho bạn nhiều hơn.</p>
+
+<div class="sub">Hai con đường ra tiền</div>
+<p><strong>Bán</strong>: rao bán, có người trả tiền, trừ vài đồng phí. Còn lại là con số của đường bán. <strong>Giữ mà dùng</strong>: cộng hết số tiền nó còn giúp bạn đỡ chi các năm tới, kéo về hôm nay. Đó là con số của đường giữ.</p>
+
+<div class="sub">Vì sao lấy cái cao hơn</div>
+<p>Người chủ luôn chọn đường nhiều tiền hơn. Bán được 2, giữ dùng chỉ đáng 1 thì bạn bán. Giữ dùng đáng 3, bán chỉ được 2 thì bạn giữ. Nên chiếc xe đáng bằng đường tốt hơn — cái cao hơn. Không phải thấp hơn, không phải trung bình.</p>
+
+<div class="sub">Cái bẫy “cao” rồi lại “thấp”</div>
+<p>Hai chữ dễ lú. “Thu hồi” lấy cái CAO hơn của hai đường. Nhưng tài sản gọi là “mất giá” khi giá GHI SỔ lại cao hơn cái thu hồi đó. Một phép so hai cách kiếm tiền với nhau; phép kia so với con số trong sổ. Đừng trộn.</p>
+
+<div class="sub">Chỉ cần một đường vượt sổ là dừng</div>
+<p>Khôn hơn nữa: nếu chỉ MỘT trong hai đường đã vượt giá ghi sổ, thì khỏi cần tính đường kia. Đã chắc gỡ đủ vốn rồi, chưa mất gì. Đỡ một mớ công đo đạc.</p>
+  </section>
+
+  <section class="gaps">
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Chỗ vấp · Lỗ hổng</span><h2>Mấy chỗ nghe xuôi mà nghĩ kỹ chưa thông</h2></div>
+    </div>
+    <div class="gap-q"><span class="q">“Kế toán vốn thận trọng — sao không lấy cái thấp cho chắc?”</span><p>Ghi tài sản thấp hơn mức bạn thật sự lấy lại được cũng là nói sai — nói cho công ty nghèo đi. Quy tắc chỉ bắt ghi giảm khi không cách nào gỡ đủ vốn. Một đường còn gỡ đủ thì chưa mất gì.</p></div>
+<div class="gap-q"><span class="q">“‘Cao hơn’ với ‘thấp hơn’ cứ lộn — phân biệt kiểu gì?”</span><p>Nhớ hai phép so khác nhau. Bước một: so HAI ĐƯỜNG ra tiền với nhau, lấy đường cao hơn — đó là “thu hồi”. Bước hai: so “thu hồi” với SỔ. Sổ cao hơn thì mới mất giá. Một bên so hai cách kiếm tiền; bên kia so với giá đang ghi.</p></div>
+<div class="gap-q"><span class="q">“Sao chỉ một đường vượt sổ là đủ kết luận?”</span><p>Vì “thu hồi” là cái cao hơn của hai. Nếu đường A đã vượt sổ, thì cái cao hơn chắc chắn cũng vượt sổ. Thu hồi vượt sổ thì không mất giá. Khỏi cần đo đường B cho mệt.</p></div>
+<div class="gap-q"><span class="q">“Con số ‘giữ mà dùng’ toàn tiền tương lai phỏng đoán — tin được không?”</span><p>Đây là chỗ quy tắc tự nhận mong manh. Phải đoán dòng tiền tương lai và tỷ lệ kéo về hôm nay. Chỉnh giả định một chút là số nhảy. Vì thế chuẩn bắt kể rõ giả định, và chỉ cần một đường vượt sổ là dừng — khỏi cãi về đường kia.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví von &amp; ví dụ đời thường</span><h2>Neo vào thứ bạn đã biết</h2></div>
+    </div>
+    <div class="analogy-card"><span class="tag">Ví dụ trung tâm</span>
+<p>Chiếc xe đạp đáng đúng bằng đường tốt hơn: <strong>bán</strong> được bao nhiêu, hay <strong>giữ mà đạp đi học</strong> tiết kiệm bao nhiêu. Không cộng cả hai — vì bạn chỉ làm được một. Lấy cái lớn hơn. Và chỉ ghi “xe mất giá” khi cả bán lẫn giữ đều thua cái giá đang ghi trong sổ.</p>
+<p class="limit"><b>Chỗ ví von này hỏng:</b> chiếc xe tự nó tạo ích lợi — chở được bạn, một mình. Nhiều tài sản thật thì không. Một cái máy giữa dây chuyền, một thương hiệu, chỉ ra tiền khi cả nhà máy chạy chung. Lúc đó quy tắc gộp chúng thành một “cụm cùng kiếm tiền” (CGU) rồi mới so cái cao hơn cho cả cụm.</p>
+</div>
+<p>Gần đời hơn: bạn có quán cà phê sắp đóng, còn cái máy pha. Máy đáng bao nhiêu? <strong>Bán</strong> được 20 triệu sau phí, hay <strong>giữ pha bán nốt mấy tháng cuối</strong> lời thêm 15 triệu. Đáng 20 — bạn sẽ bán. Sổ đang ghi 18; 20 vẫn hơn 18, nên chưa mất giá, dù sắp đóng quán.</p>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">4</div>
+      <div class="step-meta"><span class="lbl">Kể lại gọn gàng</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Một tài sản đáng bao nhiêu? Đáng đúng bằng cách tốt nhất bạn còn moi được tiền ra: bán đi, hay giữ mà dùng. Lấy đường nhiều tiền hơn — nên “thu hồi” là cái CAO hơn.</p>
+<p>Rồi mới so cái đó với sổ: sổ cao hơn thì mới là mất giá. Hai phép so ngược chiều, đừng lú. Và chỉ cần một đường đã vượt sổ là chắc chưa mất gì.</p>
+<p class="core">Một tài sản đáng giá đúng bằng <span>cách tốt nhất bạn còn moi được tiền ra từ nó — bán đi, hay giữ mà dùng.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã hiểu chưa?</h3>
+      <ol>
+        <li>Sổ ghi 100. Bán ròng được 90, giữ dùng đáng 120. Có mất giá không? Vì sao?</li>
+        <li>Vì sao chỉ cần MỘT trong hai đường vượt giá ghi sổ là kết luận được không suy giảm?</li>
+        <li>Phân biệt: “lấy cái cao hơn” áp cho hai con số nào, còn “cao hơn thì mất giá” áp cho hai con số nào?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nếu giải thích được cho bà ngoại hiểu, bạn mới thật sự hiểu.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-value-in-use"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Giải thích theo phương pháp Feynman</div>
+    <h1 class="rise" style="animation-delay:.08s">Giá trị sử dụng: định giá tài sản ĐANG LÀ, không phải sẽ là</h1>
+    <p class="core rise" style="animation-delay:.16s">Giá trị sử dụng là tiền tài sản còn moi được <span>nếu cứ để y nguyên như hiện tại — không tính nâng cấp, không tính kế hoạch còn trên giấy.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Điều cần hiểu &amp; cách tiếp cận</span><h2>Quy tắc: đo tài sản ở trạng thái hiện tại</h2></div>
+    </div>
+    <div class="rule">IAS 36 <strong>đoạn 31</strong>: <em>value in use</em> = giá trị hiện tại của dòng tiền tương lai kỳ vọng từ tài sản (ước tính dòng tiền, rồi chiết khấu). <strong>Đoạn 44–45</strong>: ước tính cho tài sản ở <strong>TRẠNG THÁI HIỆN TẠI</strong> — KHÔNG đưa vào dòng tiền từ nâng cấp/cải thiện hiệu suất, hay tái cấu trúc <strong>CHƯA cam kết</strong>. <strong>Đoạn 50</strong>: loại trừ dòng tiền tài chính và thuế thu nhập.</div>
+    <div class="sub">Cách giải thích</div>
+    <div class="approach"><p>Chỗ vấp: trực giác định giá kiểu “tài sản này sẽ đáng bao nhiêu sau khi tôi nâng cấp / tái cơ cấu”. Quy tắc cấm điều đó. Cách làm: neo vào chuyện định giá một căn nhà cũ — bạn tính nó “y nguyên” hiện tại, không cộng phần bạn dự định đập đi xây lại.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Giải thích đơn giản</span><h2>Được tính những dòng tiền nào?</h2></div>
+    </div>
+    <p class="lead">Giá trị sử dụng trả lời một câu: nếu giữ tài sản mà dùng, nó còn moi ra được bao nhiêu tiền? Cộng hết dòng tiền các năm tới, kéo về hôm nay. Nghe đơn giản. Cái khó nằm ở chỗ: được tính những dòng tiền nào.</p>
+
+<div class="sub">Định giá tài sản ĐANG LÀ</div>
+<p>Phải tính cho tài sản ở đúng trạng thái hiện tại. Cái máy cũ hiện chạy ra sao thì tính theo vậy. Không được mơ tới phiên bản sau khi bạn rót tiền nâng cấp nó.</p>
+
+<div class="sub">Bỏ phần nâng cấp và kế hoạch trên giấy</div>
+<p>Hai thứ phải loại. Một: tiền kiếm thêm nhờ NÂNG CẤP hay cải thiện hiệu suất — vì đó là công của khoản đầu tư tương lai, bạn chưa bỏ ra. Hai: lợi ích từ một cuộc TÁI CẤU TRÚC mà công ty chưa thật sự cam kết — mới chỉ là dự định.</p>
+
+<div class="sub">Bỏ luôn tiền vay và thuế</div>
+<p>Còn hai khoản nữa bị gạt ra. Dòng tiền vay mượn là chuyện tài chính, không phải bản thân tài sản kiếm ra. Và thuế thu nhập cũng bỏ — tính trên cơ sở trước thuế.</p>
+
+<div class="sub">Vì sao khắt khe vậy</div>
+<p>Vì mục tiêu là đo đúng cái tài sản này, hiện trạng này, tự nó còn đáng bao nhiêu. Nhét vào đó tiền của những khoản đầu tư chưa làm và kế hoạch chưa chắc sẽ thổi phồng giá trị, và che mất việc tài sản đang yếu đi.</p>
+  </section>
+
+  <section class="gaps">
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Chỗ vấp · Lỗ hổng</span><h2>Mấy chỗ nghe xuôi mà nghĩ kỹ chưa thông</h2></div>
+    </div>
+    <div class="gap-q"><span class="q">“Người mua thật sẽ tính cả tiềm năng nâng cấp — sao đây lại cấm?”</span><p>Một người mua đúng là tính cả “tôi sẽ cải tạo rồi kiếm hơn”. Nhưng đó là giá trị của tài sản CỘNG khoản đầu tư của họ, không phải của riêng tài sản hiện tại. IAS 36 muốn đo đúng cái đang có, để biết nó còn đáng giá sổ hay không. Đó là phép đo thận trọng.</p></div>
+<div class="gap-q"><span class="q">“‘Tái cấu trúc chưa cam kết’ — cam kết là tới mức nào?”</span><p>Là khi công ty đã ràng buộc tới mức không quay đầu được nữa (theo IAS 37). Một kế hoạch sếp mới vẽ, chưa công bố, chưa làm gì — chưa cam kết, nên lợi ích của nó không được tính. Khi đã cam kết thật thì mới đưa vào.</p></div>
+<div class="gap-q"><span class="q">“Sao lại bỏ thuế? Lời thật là lời sau thuế cơ mà?”</span><p>Vì để khớp với tỷ lệ chiết khấu. Quy tắc dùng tỷ lệ TRƯỚC thuế để kéo tiền về hôm nay, nên dòng tiền cũng phải trước thuế cho cùng một thước. Trộn dòng tiền sau thuế với tỷ lệ trước thuế là so hai thước khác nhau.</p></div>
+<div class="gap-q"><span class="q">“Dòng tiền 5 năm rồi ngoại suy — đoán xa thế tin được không?”</span><p>Đây là chỗ mong manh. Chuẩn chặn bằng hai khóa. Chỉ cho dùng ngân sách đã duyệt, tối đa 5 năm. Sau đó ngoại suy với tỷ lệ tăng không vượt mức tăng trưởng dài hạn của ngành. Càng đoán xa càng dễ sai, nên chuẩn siết phần đuôi lại.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví von &amp; ví dụ đời thường</span><h2>Neo vào thứ bạn đã biết</h2></div>
+    </div>
+    <div class="analogy-card"><span class="tag">Ví dụ trung tâm</span>
+<p>Định giá một căn nhà cũ để xem nó còn “đáng” giá đang ghi không. Bạn tính tiền thuê nó còn đẻ ra mỗi tháng, ở trạng thái HIỆN TẠI — tường cũ, bếp cũ. Bạn KHÔNG được cộng tiền thuê cao hơn mà bạn mơ sẽ thu được “sau khi tôi đập đi xây lại”. Cái bếp mới đó là tiền của khoản bạn chưa bỏ ra, không phải của căn nhà bây giờ.</p>
+<p class="limit"><b>Chỗ ví von này hỏng:</b> căn nhà cho thuê tự nó ra tiền, dễ tách riêng. Nhiều tài sản trong công ty — một dây chuyền, một thương hiệu — không tự ra tiền một mình; phải gộp cả cụm mới đo được dòng tiền. Lúc đó “giá trị sử dụng” tính cho cả cụm (CGU), không cho riêng cái máy.</p>
+</div>
+<p>Gần đời hơn: một máy dệt cũ trong xưởng. Bạn tính giá trị sử dụng theo năng suất nó chạy được BÂY GIỜ. Không được tính theo năng suất sau khi thay động cơ mới. Cái năng suất đó là công của động cơ chưa mua, không phải của cái máy hiện tại.</p>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">4</div>
+      <div class="step-meta"><span class="lbl">Kể lại gọn gàng</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Giá trị sử dụng hỏi: giữ tài sản mà dùng, nó còn moi ra bao nhiêu tiền, kéo về hôm nay? Nhưng phải đo tài sản Y NGUYÊN hiện trạng. Bỏ tiền kiếm thêm nhờ nâng cấp (khoản đầu tư chưa làm), bỏ lợi ích từ tái cấu trúc còn trên giấy, bỏ cả tiền vay và thuế.</p>
+<p>Vì mục tiêu là đo đúng cái đang có còn đáng bao nhiêu — không thổi phồng bằng những thứ chưa xảy ra.</p>
+<p class="core">Giá trị sử dụng là tiền tài sản còn moi được <span>nếu cứ để y nguyên như hiện tại — không tính nâng cấp, không tính kế hoạch còn trên giấy.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã hiểu chưa?</h3>
+      <ol>
+        <li>Bạn định thay động cơ máy để tăng 20% sản lượng. Khi tính giá trị sử dụng, có được cộng phần 20% đó không? Vì sao?</li>
+        <li>Vì sao dòng tiền trong value in use phải tính TRƯỚC thuế?</li>
+        <li>Một kế hoạch tái cơ cấu sếp vừa nghĩ ra, chưa công bố — lợi ích của nó có vào value in use không?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nếu giải thích được cho bà ngoại hiểu, bạn mới thật sự hiểu.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-discount-rate"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Giải thích theo phương pháp Feynman</div>
+    <h1 class="rise" style="animation-delay:.08s">Tỷ lệ chiết khấu: trước thuế, và đừng tính rủi ro hai lần</h1>
+    <p class="core rise" style="animation-delay:.16s">Tỷ lệ kéo tiền tương lai về hôm nay phải <span>tính trước thuế, và chỉ chứa rủi ro mà dòng tiền chưa nhét vào.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Điều cần hiểu &amp; cách tiếp cận</span><h2>Quy tắc: tỷ lệ trước thuế, không tính rủi ro hai lần</h2></div>
+    </div>
+    <div class="rule">IAS 36 <strong>đoạn 55</strong>: <em>discount rate</em> (tỷ lệ chiết khấu) phải là tỷ lệ <strong>TRƯỚC THUẾ</strong>, phản ánh (a) giá trị thời gian của tiền và (b) các rủi ro đặc thù của tài sản mà dòng tiền <strong>CHƯA</strong> được điều chỉnh. <strong>Đoạn 56</strong>: không để tỷ lệ phản ánh lại những rủi ro mà dòng tiền đã tính tới — kẻo tính hai lần.</div>
+    <div class="sub">Cách giải thích</div>
+    <div class="approach"><p>Chỗ vấp: ai cũng quen lãi suất và tỷ suất nói theo kiểu sau thuế. Và dễ nhét cùng một rủi ro vào cả hai chỗ. Cách làm: neo vào hình ảnh một cái cân — hai bên phải cùng đơn vị; còn rủi ro thì như một lần trừ điểm, chỉ trừ một lần.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Giải thích đơn giản</span><h2>Hai luật lạ về cái tỷ lệ</h2></div>
+    </div>
+    <p class="lead">Tiền tương lai không bằng tiền hôm nay. Để kéo 100 đồng năm sau về “đáng bao nhiêu hôm nay”, ta chia cho một tỷ lệ — gọi là tỷ lệ chiết khấu. IAS 36 đặt hai luật lạ về cái tỷ lệ này: phải là tỷ lệ TRƯỚC thuế, và không được tính một rủi ro tới hai lần.</p>
+
+<div class="sub">Vì sao trước thuế</div>
+<p>Quen thuộc là nói lãi suất sau thuế. Nhưng ở đây dòng tiền đã được tính trước thuế. Hai vế của phép chia phải cùng “đơn vị”: dòng tiền trước thuế thì tỷ lệ cũng trước thuế. Trộn dòng tiền trước thuế với tỷ lệ sau thuế là cân hai thứ khác đơn vị.</p>
+
+<div class="sub">Tỷ lệ chứa cái gì</div>
+<p>Tỷ lệ phản ánh hai thứ. Một: giá trị thời gian của tiền — đợi thì phải được bù. Hai: rủi ro riêng của tài sản — tài sản càng bấp bênh, người ta càng đòi tỷ lệ cao để chịu rủi ro.</p>
+
+<div class="sub">Đừng tính rủi ro hai lần</div>
+<p>Đây là cái bẫy. Rủi ro của một tài sản có thể nhét vào MỘT trong hai chỗ: hạ dòng tiền dự kiến xuống cho dè dặt, hoặc nâng tỷ lệ chiết khấu lên. Chọn một chỗ thôi. Vừa hạ dòng tiền vừa nâng tỷ lệ vì cùng một rủi ro là phạt tài sản hai lần cho một tội.</p>
+
+<div class="sub">Lấy tỷ lệ ở đâu</div>
+<p>Thường mượn từ thị trường: lãi suất ngầm của giao dịch tài sản tương tự, hoặc chi phí vốn của công ty cùng ngành. Cốt là tỷ lệ phải hợp với mức rủi ro của chính dòng tiền đang xét.</p>
+  </section>
+
+  <section class="gaps">
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Chỗ vấp · Lỗ hổng</span><h2>Mấy chỗ nghe xuôi mà nghĩ kỹ chưa thông</h2></div>
+    </div>
+    <div class="gap-q"><span class="q">“Mọi nơi dùng tỷ lệ sau thuế — sao IAS 36 lại trước thuế?”</span><p>Không phải vì trước thuế “đúng hơn”. Chỉ vì để KHỚP: dòng tiền ở đây đã trước thuế, nên tỷ lệ cũng phải trước thuế cho cùng một thước. Cái quan trọng là hai vế cùng loại, chứ không phải bản thân con số trước hay sau thuế.</p></div>
+<div class="gap-q"><span class="q">“Hạ dòng tiền hay nâng tỷ lệ — chọn kiểu gì cũng ra một kết quả à?”</span><p>Về lý thuyết, làm chuẩn thì tương đương. Quan trọng là CHỌN MỘT. Cái sai không phải chọn cách nào, mà là vô tình làm cả hai cho cùng một rủi ro. Khi đó giá trị bị dìm quá mức, tài sản trông tệ hơn thực.</p></div>
+<div class="gap-q"><span class="q">“Rủi ro ‘riêng của tài sản’ khác rủi ro chung chỗ nào?”</span><p>Giá trị thời gian của tiền là cái chung ai cũng chịu, gắn với lãi suất phi rủi ro. Rủi ro riêng là phần cộng thêm: tài sản này có dễ hỏng, dễ ế, ngành có dễ biến động không? Tài sản càng bấp bênh, phần cộng thêm vào tỷ lệ càng lớn.</p></div>
+<div class="gap-q"><span class="q">“Không có tỷ lệ ‘đặc thù’ cho đúng tài sản đó thì sao?”</span><p>Đây là chỗ thực tế hay vướng. Hiếm khi có sẵn một tỷ lệ đo riêng cho đúng cái máy của bạn. Phải mượn tỷ lệ thay thế — từ tài sản tương tự, từ công ty cùng ngành — rồi điều chỉnh. Nên con số này luôn có phần ước lượng và xét đoán.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví von &amp; ví dụ đời thường</span><h2>Neo vào thứ bạn đã biết</h2></div>
+    </div>
+    <div class="analogy-card"><span class="tag">Ví dụ trung tâm</span>
+<p>Hình dung một cái cân. Bên này là dòng tiền tương lai, bên kia là tỷ lệ chiết khấu. Hai bên phải cùng đơn vị mới cân đúng: cùng trước thuế, hoặc cùng sau thuế — không một bên gam, một bên lạng. Còn rủi ro thì như một khoản “trừ điểm” cho sự bấp bênh. Bạn được trừ một lần: hoặc trừ ở dòng tiền, hoặc trừ ở tỷ lệ. Trừ cả hai cho cùng một lỗi là oan cho tài sản.</p>
+<p class="limit"><b>Chỗ ví von này hỏng:</b> cái cân gợi ý chỉ có hai đĩa rạch ròi. Thực tế, “rủi ro” của một tài sản gồm nhiều loại đan nhau: rủi ro ngành, rủi ro công nghệ, rủi ro thanh khoản. Tách bạch cái nào đã nhét vào dòng tiền, cái nào để ở tỷ lệ, là việc khó và dễ nhầm. Cái cân chỉ nhắc nguyên tắc, không làm hộ phần khó đó.</p>
+</div>
+<p>Gần đời hơn: hai người định giá cùng một máy. Một người đã hạ dự báo doanh thu cho dè dặt vì sợ máy bấp bênh, rồi vẫn nâng thêm tỷ lệ chiết khấu “cho chắc”. Anh ta vừa trừ điểm ở dòng tiền vừa trừ ở tỷ lệ cho cùng nỗi sợ — giá trị bị dìm hai lần, ra thấp hơn thực.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Đoạn 55 đòi trình bày tỷ lệ TRƯỚC thuế, nhưng thực tế gần như không ai có sẵn một pre-tax rate. Cách làm phổ biến: tính <em>value in use</em> trên cơ sở SAU thuế (dòng tiền sau thuế chiết khấu bằng post-tax WACC), rồi suy ngược (<em>back-solve</em>, dùng goal seek) ra tỷ lệ trước thuế để trình bày cho khớp chuẩn. Basis for Conclusions <em>BCZ85</em> thừa nhận hai cách cho cùng kết quả NẾU pre-tax rate được điều chỉnh đúng theo lượng và thời điểm dòng thuế — không phải cứ lấy post-tax chia cho (1 − thuế). Nói gọn: pre-tax thường là con số TRÌNH BÀY suy ra từ mô hình post-tax, không phải cách tính trực tiếp.</p>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">4</div>
+      <div class="step-meta"><span class="lbl">Kể lại gọn gàng</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Để kéo tiền tương lai về hôm nay, ta chia cho tỷ lệ chiết khấu. IAS 36 đặt hai luật. Một: tỷ lệ phải TRƯỚC thuế, để khớp với dòng tiền vốn đã trước thuế. Hai: một rủi ro chỉ được tính MỘT lần — hoặc hạ dòng tiền, hoặc nâng tỷ lệ, không cả hai.</p>
+<p>Làm cả hai cho cùng một rủi ro là phạt tài sản hai lần.</p>
+<p class="core">Tỷ lệ kéo tiền tương lai về hôm nay phải <span>tính trước thuế, và chỉ chứa rủi ro mà dòng tiền chưa nhét vào.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã hiểu chưa?</h3>
+      <ol>
+        <li>Bạn đã hạ dự báo doanh thu cho dè dặt vì sợ tài sản bấp bênh. Có nên nâng thêm tỷ lệ chiết khấu vì cùng nỗi sợ đó không?</li>
+        <li>Vì sao tỷ lệ chiết khấu trong IAS 36 phải tính trước thuế?</li>
+        <li>Tỷ lệ chiết khấu phản ánh hai thứ gì?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nếu giải thích được cho bà ngoại hiểu, bạn mới thật sự hiểu.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-lo-ve-khong"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Giải thích theo phương pháp Feynman</div>
+    <h1 class="rise" style="animation-delay:.08s">Lỗ lớn hơn cả giá sổ: tài sản về 0, không tự đẻ ra nợ</h1>
+    <p class="core rise" style="animation-delay:.16s">Lỗ suy giảm chỉ kéo giá ghi sổ của tài sản <span>xuống tối đa bằng 0 — phần vượt không tự biến thành một khoản nợ.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Điều cần hiểu &amp; cách tiếp cận</span><h2>Quy tắc: tài sản hạ tối đa về 0; nợ là chuyện chuẩn khác</h2></div>
+    </div>
+    <div class="rule">IAS 36 <strong>đoạn 59</strong>: nếu giá trị thu hồi nhỏ hơn giá ghi sổ, hạ giá ghi sổ xuống bằng giá trị thu hồi; phần hạ là lỗ suy giảm, ghi ngay vào lãi/lỗ (<strong>đoạn 60</strong>). <strong>Đoạn 62</strong>: nếu mức lỗ lớn hơn cả giá ghi sổ của tài sản, chỉ ghi nhận một khoản <em>liability</em> (nợ phải trả) <strong>NẾU và CHỈ NẾU</strong> một chuẩn mực KHÁC yêu cầu.</div>
+    <div class="sub">Cách giải thích</div>
+    <div class="approach"><p>Chỗ vấp: trực giác “tài sản tệ tới mức âm thì phải thành một khoản nợ”. Không. IAS 36 chỉ hạ tài sản, tối đa về 0. Cách làm: neo vào cái áo cũ — tệ tới đâu nó cũng chỉ đáng 0 đồng, chứ không tự nhiên bắt bạn nợ ai.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Giải thích đơn giản</span><h2>Tài sản tệ tới mức “âm” thì sao?</h2></div>
+    </div>
+    <p class="lead">Tài sản ghi sổ 100, nay chỉ còn “cứu” được 60. Bạn hạ sổ xuống 60, ghi lỗ 40 vào lãi/lỗ. Dễ hiểu. Câu hỏi lạ hơn: nếu tài sản tệ tới mức “âm” — gánh nó còn tốn thêm tiền — thì sao? Có phải ghi một khoản nợ không?</p>
+
+<div class="sub">Lỗ đưa tài sản về đâu</div>
+<p>Lỗ suy giảm chỉ làm một việc: hạ giá ghi sổ của tài sản xuống bằng giá trị thu hồi. Thấp nhất là về 0. Một tài sản trên sổ không xuống dưới 0 được — nó là tài sản, không phải khoản nợ.</p>
+
+<div class="sub">Phần vượt đi đâu</div>
+<p>Nếu mức lỗ tính ra lớn hơn cả giá ghi sổ, phần vượt KHÔNG tự động thành nợ phải trả. IAS 36 dừng ở chỗ đưa tài sản về 0. Nó không tự đẻ ra một nghĩa vụ mới.</p>
+
+<div class="sub">Khi nào mới có nợ</div>
+<p>Chỉ khi một chuẩn mực KHÁC độc lập bắt ghi nợ. Ví dụ bạn có một nghĩa vụ thật: phải dọn dẹp, phải bồi thường. Khi đó chuẩn mực về dự phòng (IAS 37) mới tạo khoản nợ, chứ không phải IAS 36.</p>
+
+<div class="sub">Vì sao tách bạch vậy</div>
+<p>Vì suy giảm giá trị và gánh một nghĩa vụ là hai chuyện khác nhau. Tài sản mất giá chỉ nói “cái mình có đáng ít đi”. Một khoản nợ nói “mình phải trả ai đó”. IAS 36 lo chuyện thứ nhất, không tự ý làm chuyện thứ hai.</p>
+  </section>
+
+  <section class="gaps">
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Chỗ vấp · Lỗ hổng</span><h2>Mấy chỗ nghe xuôi mà nghĩ kỹ chưa thông</h2></div>
+    </div>
+    <div class="gap-q"><span class="q">“Tài sản tệ tới mức gánh nó còn tốn tiền — chẳng phải đúng là một khoản nợ sao?”</span><p>Cảm giác thì giống, nhưng kế toán tách hai thứ. “Cái máy đáng 0” là chuyện giá trị tài sản. “Tôi phải tốn tiền tháo dỡ nó” là một nghĩa vụ. Nghĩa vụ đó, nếu có thật, được ghi theo chuẩn mực về nghĩa vụ, không nhét vào lỗ suy giảm.</p></div>
+<div class="gap-q"><span class="q">“Sao IAS 36 không tự ghi luôn khoản nợ cho gọn?”</span><p>Vì mỗi chuẩn mực một việc. IAS 36 chỉ có quyền nói tài sản đáng bao nhiêu. Tạo ra một khoản nợ là việc của chuẩn mực khác, với điều kiện riêng của nó. Để IAS 36 tự đẻ nợ sẽ giẫm chân và dễ ghi nợ tùy tiện.</p></div>
+<div class="gap-q"><span class="q">“Vậy phần lỗ ‘mất’ đi đâu nếu không thành nợ?”</span><p>Không mất. Toàn bộ phần hạ giá tài sản, tối đa tới 0, đã được ghi là lỗ vào lãi/lỗ rồi. Chỉ là giá ghi sổ tài sản không đi xuống quá 0. Phần “vượt 0” không bị ghi thêm, vì không có cơ sở nào để ghi — cho tới khi một nghĩa vụ thật xuất hiện.</p></div>
+<div class="gap-q"><span class="q">“Làm sao biết có ‘nghĩa vụ thật’ hay không?”</span><p>Phải xét theo chuẩn mực khác, như IAS 37: có phải một nghĩa vụ hiện tại từ sự kiện quá khứ, nhiều khả năng phải chi, và đo được không? Ranh giới giữa “tài sản chỉ đáng 0” và “tôi thật sự nợ một nghĩa vụ” đôi khi mờ, và đó là chỗ cần xét đoán.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví von &amp; ví dụ đời thường</span><h2>Neo vào thứ bạn đã biết</h2></div>
+    </div>
+    <div class="analogy-card"><span class="tag">Ví dụ trung tâm</span>
+<p>Bạn có một cái áo cũ. Nó mất giá dần: đáng 200, rồi 50, rồi 0 đồng. Nhưng dù tệ tới đâu, cái áo cũng chỉ đáng 0 — nó không tự nhiên bắt bạn NỢ ai cả. Có một khoản nợ chỉ khi có chuyện riêng — ví dụ bạn đã hứa trả tiền để người ta mang nó đi tiêu hủy. Khi đó bạn nợ là vì lời hứa, không phải vì cái áo.</p>
+<p class="limit"><b>Chỗ ví von này hỏng:</b> cái áo của bạn không gắn nghĩa vụ pháp lý nào. Nhiều tài sản trong doanh nghiệp lại đi kèm nghĩa vụ thật — một giàn khoan phải tháo dỡ, một nhà máy phải hoàn nguyên đất. Lúc đó ranh giới “tài sản về 0” và “khoản nợ phải ghi” nằm sát nhau. Phải mở đúng chuẩn mực nghĩa vụ ra xét; ví von cái áo không chạm tới phần đó.</p>
+</div>
+<p>Gần đời hơn: một dàn máy móc lỗi thời trong xưởng, không ai mua, dùng cũng chẳng ra tiền. Giá ghi sổ của nó hạ về 0. Khoản chi phí bắt buộc để tháo dỡ và chở đi là một khoản dự phòng riêng theo IAS 37. Nó không phải phần “vượt” của lỗ suy giảm.</p>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">4</div>
+      <div class="step-meta"><span class="lbl">Kể lại gọn gàng</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Tài sản ghi 100, chỉ cứu được 60 thì hạ sổ về 60, ghi lỗ 40. Nếu lỗ lớn hơn cả giá sổ, tài sản chỉ hạ tối đa về 0 — phần vượt KHÔNG tự thành nợ.</p>
+<p>IAS 36 chỉ nói “cái mình có đáng ít đi”. Còn “mình phải trả ai đó” là chuyện của chuẩn mực khác, chỉ ghi nợ khi nó yêu cầu.</p>
+<p class="core">Lỗ suy giảm chỉ kéo giá ghi sổ của tài sản <span>xuống tối đa bằng 0 — phần vượt không tự biến thành một khoản nợ.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã hiểu chưa?</h3>
+      <ol>
+        <li>Một máy ghi sổ 30, mức lỗ tính ra là 45. Giá ghi sổ của máy còn lại bao nhiêu, và 15 phần vượt xử lý thế nào?</li>
+        <li>Vì sao IAS 36 tự thân không tạo ra khoản nợ phải trả?</li>
+        <li>Khi nào phần lỗ vượt quá giá ghi sổ mới trở thành một khoản nợ?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nếu giải thích được cho bà ngoại hiểu, bạn mới thật sự hiểu.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-cgu"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Giải thích theo phương pháp Feynman</div>
+    <h1 class="rise" style="animation-delay:.08s">Có tài sản đang lời mà không định giá riêng được</h1>
+    <p class="core rise" style="animation-delay:.16s">Khi một tài sản không tự ra tiền một mình, <span>phải gộp nó vào nhóm nhỏ nhất cùng kiếm tiền rồi mới đo được.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Điều cần hiểu &amp; cách tiếp cận</span><h2>Quy tắc: không đo riêng được thì đo cho cả cụm</h2></div>
+    </div>
+    <div class="rule">IAS 36 <strong>đoạn 66–67</strong>: nếu không ước tính được giá trị thu hồi cho một tài sản riêng lẻ, phải đo cho <em>CGU</em> (cash-generating unit) của nó. Không đo riêng được khi: (a) <em>value in use</em> của tài sản không xấp xỉ được giá bán ròng; VÀ (b) tài sản không tạo dòng tiền vào phần lớn <strong>ĐỘC LẬP</strong> với tài sản khác. <strong>Đoạn 68</strong>: CGU = nhóm tài sản <strong>NHỎ NHẤT</strong> tạo dòng tiền vào phần lớn độc lập.</div>
+    <div class="sub">Cách giải thích</div>
+    <div class="approach"><p>Chỗ vấp: trực giác “tài sản nào cũng định giá riêng được”. Nhưng nhiều tài sản chỉ ra tiền khi chạy chung. Cách làm: neo vào cái bánh răng trong cỗ máy — tháo riêng ra thì gần như vô dụng, nó chỉ đáng tiền khi cả máy cùng chạy.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Giải thích đơn giản</span><h2>Vì sao có tài sản không đo một mình được</h2></div>
+    </div>
+    <p class="lead">Bình thường, muốn biết một tài sản có mất giá không, ta đo giá trị thu hồi của chính nó. Nhưng có những tài sản, dù đang góp phần kiếm ra tiền, lại KHÔNG thể định giá một mình. Vì sao? Vì chúng không tự ra tiền — chỉ ra tiền khi chạy chung với cả nhóm.</p>
+
+<div class="sub">Khi nào không đo riêng được</div>
+<p>Hai dấu hiệu đi cùng nhau. Một: bán riêng nó đi chẳng được mấy, giá bán ròng thấp. Hai: tự nó không tạo ra dòng tiền riêng — tiền chỉ chảy vào khi cả dây chuyền cùng chạy.</p>
+
+<div class="sub">Ví dụ kinh điển</div>
+<p>Tuyến đường sắt riêng của một mỏ. Bán riêng đường ray chỉ được giá sắt vụn. Và đường ray một mình không kiếm ra đồng nào — nó chỉ có ích khi cả mỏ hoạt động. Vậy đo giá trị thu hồi của riêng đường ray là vô nghĩa.</p>
+
+<div class="sub">Giải pháp: gộp thành CGU</div>
+<p>Khi đó ta gộp tài sản vào “đơn vị tạo tiền” (CGU). Đó là nhóm tài sản NHỎ NHẤT mà cùng nhau tạo ra một dòng tiền riêng, tách bạch với phần còn lại. Với đường ray, đó là cả cái mỏ. Ta đo giá trị thu hồi cho cả cụm, không cho từng món.</p>
+
+<div class="sub">Nhỏ nhất, không phải gộp đại</div>
+<p>Chữ “nhỏ nhất” rất quan trọng. Không phải cứ gộp cả công ty cho tiện. Phải tìm nhóm vừa đủ nhỏ để dòng tiền của nó đứng riêng được. Gộp to quá thì một mảng yếu bị một mảng khỏe che lấp, không lộ ra suy giảm.</p>
+  </section>
+
+  <section class="gaps">
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Chỗ vấp · Lỗ hổng</span><h2>Mấy chỗ nghe xuôi mà nghĩ kỹ chưa thông</h2></div>
+    </div>
+    <div class="gap-q"><span class="q">“Tài sản nào mà chẳng bán riêng được — sao bảo không định giá riêng?”</span><p>Bán riêng thì có thể, nhưng thường chỉ được giá phế liệu. Cái thiếu là vế kia: nó có tự kiếm ra dòng tiền riêng không. Một cái máy giữa dây chuyền, một đường ống — tháo ra đứng một mình thì không ra tiền. Giá trị thật của nó chỉ hiện khi chạy chung.</p></div>
+<div class="gap-q"><span class="q">“Sao không gộp luôn cả công ty thành một CGU cho gọn?”</span><p>Vì gộp càng to, suy giảm càng dễ bị che. Một tuyến xe buýt lỗ nặng, nếu trộn chung với bốn tuyến lãi, cả cụm vẫn “khỏe” và lỗ không lộ ra. Quy tắc đòi nhóm NHỎ NHẤT có dòng tiền độc lập, để soi được sát nhất có thể.</p></div>
+<div class="gap-q"><span class="q">“Nhưng có khi gộp cả công ty lại là đúng thật?”</span><p>Có. Như công ty xe buýt phục vụ theo hợp đồng, KHÔNG được phép bỏ tuyến nào. Khi đó năm tuyến dính nhau, không tuyến nào có dòng tiền thật sự độc lập — nhóm nhỏ nhất đành là cả năm tuyến. “Nhỏ nhất” tùy hoàn cảnh, không phải luôn là một món.</p></div>
+<div class="gap-q"><span class="q">“Vạch ranh giới CGU dựa vào đâu — nghe rất chủ quan?”</span><p>Đúng, đây là chỗ phải xét đoán nhiều. Chuẩn gợi ý nhìn cách ban quản lý theo dõi và ra quyết định: theo dòng sản phẩm, theo vùng, theo việc giữ hay bỏ. Nhưng ranh giới vẫn mờ, và vạch CGU khác nhau có thể ra kết luận khác nhau — nên chuẩn bắt làm nhất quán qua các kỳ.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví von &amp; ví dụ đời thường</span><h2>Neo vào thứ bạn đã biết</h2></div>
+    </div>
+    <div class="analogy-card"><span class="tag">Ví dụ trung tâm</span>
+<p>Một cái bánh răng nhỏ trong cỗ máy đồng hồ. Tháo riêng nó ra, bán được bao nhiêu? Vài đồng kim loại. Tự nó “chạy” ra giá trị gì không? Không — nó chỉ có ích khi cả cỗ máy quay. Nên hỏi “cái bánh răng này đáng bao nhiêu một mình” là câu hỏi sai. Phải hỏi “cụm máy nhỏ nhất chứa nó, chạy ra tiền, đáng bao nhiêu”.</p>
+<p class="limit"><b>Chỗ ví von này hỏng:</b> cỗ máy đồng hồ có ranh giới vật lý rõ — nhìn là biết tới đâu là “một cỗ máy”. Còn trong doanh nghiệp, ranh giới một CGU không sờ được: nó tùy cách dòng tiền chảy và cách quản lý theo dõi. Hai người vạch CGU khác nhau cho cùng một nhà máy là chuyện thường — và đó là phần khó nhất, ví von bánh răng không gỡ giúp.</p>
+</div>
+<p>Gần đời hơn: một gian bếp trung tâm nấu cho năm nhà hàng của cùng một chuỗi. Không nhà hàng nào tự nấu. Bán riêng gian bếp chỉ được giá thiết bị cũ, và nó không có “khách” của riêng mình. Vậy CGU không phải gian bếp, mà là cả cụm bếp cộng năm nhà hàng cùng vận hành.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Đoạn 6 định nghĩa CGU là nhóm tài sản nhỏ nhất tạo ra dòng tiền vào <em>độc lập phần lớn</em> với dòng tiền từ tài sản hay nhóm khác. Chữ “độc lập” là chìa khóa: nếu một cái máy chỉ ra tiền khi cả dây chuyền chạy, nó không phải CGU riêng — cả dây chuyền mới là. Đoạn 70: nếu có một <em>active market</em> cho sản phẩm đầu ra của một nhóm tài sản, nhóm đó là CGU dù sản phẩm dùng nội bộ. Đoạn 72: phải xác định CGU nhất quán qua các kỳ, trừ khi có lý do chính đáng để đổi.</p>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">4</div>
+      <div class="step-meta"><span class="lbl">Kể lại gọn gàng</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Bình thường đo giá trị thu hồi cho từng tài sản. Nhưng có tài sản không tự ra tiền một mình. Bán riêng chỉ được giá phế liệu, và dòng tiền chỉ chảy khi cả nhóm cùng chạy — như đường ray của một mỏ.</p>
+<p>Khi đó phải gộp nó vào CGU: nhóm tài sản NHỎ NHẤT cùng tạo một dòng tiền độc lập, rồi đo cho cả cụm. Nhỏ nhất — để một mảng yếu không bị mảng khỏe che lấp.</p>
+<p class="core">Khi một tài sản không tự ra tiền một mình, <span>phải gộp nó vào nhóm nhỏ nhất cùng kiếm tiền rồi mới đo được.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã hiểu chưa?</h3>
+      <ol>
+        <li>Một lò nướng trung tâm chỉ phục vụ ba cửa hàng của cùng chuỗi, bán riêng chỉ được giá sắt vụn. Đo giá trị thu hồi cho riêng lò được không? Nếu không thì đo cho cái gì?</li>
+        <li>Vì sao quy tắc đòi nhóm NHỎ NHẤT, chứ không gộp cả công ty cho tiện?</li>
+        <li>Hai điều kiện nào cùng xảy ra thì mới không định giá riêng được một tài sản?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nếu giải thích được cho bà ngoại hiểu, bạn mới thật sự hiểu.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-gan-goodwill-cgu"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Giải thích theo phương pháp Feynman</div>
+    <h1 class="rise" style="animation-delay:.08s">Goodwill không tự đứng một mình: phải gửi vào một “tổ” để khám</h1>
+    <p class="core rise" style="animation-delay:.16s">Goodwill không tạo tiền riêng, nên muốn khám nó, <span>bạn phải gán nó vào cụm tạo tiền hưởng lợi từ thương vụ, ở cấp thấp nhất ban lãnh đạo theo dõi.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Điều cần hiểu &amp; cách tiếp cận</span><h2>Quy tắc: gán goodwill cho CGU/nhóm CGU hưởng synergy, để test</h2></div>
+    </div>
+    <div class="rule">IAS 36 <strong>đoạn 80</strong>: goodwill từ một <em>business combination</em> phải được gán cho từng CGU (hoặc nhóm CGU) <strong>kỳ vọng hưởng lợi từ synergy</strong> của thương vụ. Mỗi CGU/nhóm nhận goodwill phải (a) là <strong>cấp thấp nhất</strong> mà ban lãnh đạo theo dõi goodwill nội bộ, và (b) <strong>không lớn hơn một operating segment</strong> (theo IFRS 8) trước khi gộp. <strong>Đoạn 90</strong>: CGU có goodwill phải test suy giảm <strong>hằng năm</strong> (và khi có dấu hiệu), so giá trị ghi sổ cả cụm — gồm goodwill — với giá trị thu hồi. <strong>Đoạn 96</strong>: test bất kỳ lúc nào trong năm, miễn cùng thời điểm mỗi năm.</div>
+    <div class="sub">Cách giải thích</div>
+    <div class="approach"><p>Chỗ vấp: goodwill là phần dôi mơ hồ, tự nó không tạo dòng tiền riêng. Vậy làm sao khám xem nó còn đáng giá? Cách làm: tôi neo vào chuyện thuê một nhân vật ngôi sao về công ty. Người đó không tạo doanh thu một mình; giá trị chỉ hiện qua bộ phận họ đầu quân. Goodwill cũng phải gửi vào một bộ phận tạo tiền rồi mới khám được.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Giải thích đơn giản</span><h2>Goodwill phải dựa vào một cụm mới khám được</h2></div>
+    </div>
+    <p class="lead">Goodwill là phần bạn trả dôi ra khi mua cả một công ty. Nó không phải cái máy hay mảnh đất — tự nó không bán hàng, không tạo ra đồng nào riêng. Vậy mỗi năm muốn kiểm tra “goodwill còn đáng giá không”, bạn soi vào đâu? IAS 36 trả lời: gán goodwill vào một cụm tạo tiền, rồi khám cả cụm.</p>
+
+<div class="sub">Gán vào cụm nào: cụm hưởng lợi từ thương vụ</div>
+<p>Goodwill sinh ra từ synergy — kỳ vọng hai bên ghép lại làm ăn tốt hơn. Nên gán nó vào những cụm tạo tiền được hưởng cái synergy đó. Không nhất thiết là cụm chứa tài sản của bên bị mua; cụm nào hái quả từ thương vụ thì nhận goodwill.</p>
+
+<div class="sub">Gán ở cấp nào: thấp nhất mà sếp theo dõi</div>
+<p>Phải gán ở cấp thấp nhất mà ban lãnh đạo thật sự theo dõi goodwill trong quản trị nội bộ. Và không được gộp to hơn một mảng kinh doanh (operating segment). Ý là: đừng giấu goodwill vào một cụm khổng lồ để nó “lẫn” vào tài sản khỏe, né bị lộ khi suy giảm.</p>
+
+<div class="sub">Khám cả cụm, gồm cả goodwill</div>
+<p>Mỗi năm, đem cả cụm ra so: giá trị ghi sổ của cụm (đã cộng goodwill) với giá trị thu hồi của cụm. Cụm thu hồi đủ thì goodwill coi như còn lành. Cụm hụt thì có suy giảm, và goodwill là chỗ bị xóa trước.</p>
+
+<div class="sub">Vì sao hằng năm, không đợi dấu hiệu</div>
+<p>Tài sản thường chỉ test khi có dấu hiệu hỏng. Goodwill thì khác: bắt buộc khám mỗi năm, dù chẳng có dấu hiệu nào. Vì goodwill mơ hồ, dễ “mục ruỗng” âm thầm, nên chuẩn ép soi định kỳ cho chắc.</p>
+  </section>
+
+  <section class="gaps">
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Chỗ vấp · Lỗ hổng</span><h2>Mấy chỗ nghe xuôi mà nghĩ kỹ chưa thông</h2></div>
+    </div>
+    <div class="gap-q"><span class="q">“Sao không khám goodwill một mình cho gọn?”</span><p>Vì goodwill không tạo dòng tiền riêng để đo. Nó chỉ ra tiền khi đi cùng cả cụm tài sản đang vận hành. Không có dòng tiền riêng thì không tính được giá trị thu hồi riêng. Nên buộc phải gửi nó vào một cụm tạo tiền rồi khám cả cụm.</p></div>
+<div class="gap-q"><span class="q">“Gán goodwill vào cụm nào cũng được, miễn có chỗ chứa?”</span><p>Không. Phải là cụm hưởng synergy của thương vụ, và ở cấp thấp nhất sếp theo dõi. Gán bừa vào một cụm khổng lồ khỏe mạnh là cách giấu goodwill yếu — nó núp sau tài sản tốt, mãi không lộ suy giảm. Chuẩn chặn đúng mánh đó bằng trần “không lớn hơn một operating segment”.</p></div>
+<div class="gap-q"><span class="q">“Đây là cây cầu nối sang IFRS 3 chỗ nào?”</span><p>IFRS 3 đẻ ra goodwill khi mua công ty. Nhưng IFRS 3 không nói mỗi năm khám nó kiểu gì — đó là chuyện của IAS 36. Bước gán goodwill vào CGU chính là khớp nối: vừa bóc xong goodwill ở PPA, bạn phải quyết nó nằm ở cụm nào để test hằng năm. Bỏ bước này là không test được.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví von &amp; ví dụ đời thường</span><h2>Neo vào thứ bạn đã biết</h2></div>
+    </div>
+    <div class="analogy-card"><span class="tag">Ví dụ trung tâm</span>
+<p>Hình dung công ty thuê một nhân vật ngôi sao với mức lương trên trời — trả đắt vì kỳ vọng người đó kéo cả một bộ phận đi lên. Người đó không bán hàng một mình; giá trị chỉ hiện qua kết quả của bộ phận họ đầu quân. Muốn biết “thuê có hớ không”, bạn gắn họ vào đúng bộ phận hưởng lợi. Phải là bộ phận nhỏ nhất mà sếp theo dõi được, chứ không nhét vào một khối khổng lồ cho khuất mắt. Rồi mỗi năm xem cả bộ phận đó còn xứng cái lương ấy không. Goodwill được khám y hệt.</p>
+<p class="limit"><b>Chỗ ví von này hỏng:</b> một nhân viên ngôi sao có thể nghỉ việc, chuyển chỗ — đo lại “giá” họ khá rõ qua thị trường lao động. Goodwill thì không tách ra bán riêng được, và bộ phận nào thật sự hưởng synergy nhiều khi mờ. Một thương vụ có thể tưới lợi ích cho nhiều bộ phận cùng lúc. Chia goodwill cho bộ phận nào, bao nhiêu, là phán đoán khó và là chỗ kiểm toán hay soi nhất.</p>
+</div>
+<p>Gần đời hơn: một tập đoàn bán lẻ mua một chuỗi siêu thị, đẻ ra goodwill 500 tỷ. Synergy nằm ở mảng bán lẻ phía Bắc — nơi chuỗi mới giúp tăng sức mua chung. Goodwill được gán vào cụm “bán lẻ phía Bắc”. Mỗi năm, cả cụm đó được khám: doanh thu, dòng tiền còn đỡ nổi giá trị ghi sổ gồm goodwill không?</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Đoạn 80: goodwill gán cho CGU/nhóm CGU hưởng synergy, ở cấp thấp nhất được theo dõi nội bộ, không lớn hơn một <em>operating segment</em> theo IFRS 8. Đoạn 81: nếu không gán được một cách phi võ đoán cho từng CGU, gán cho nhóm CGU. Đoạn 88: vì goodwill không tạo dòng tiền độc lập, không thể có <em>recoverable amount</em> riêng cho nó. Đoạn 90: test cụm-có-goodwill hằng năm và khi có dấu hiệu. Đoạn 96: test bất kỳ lúc nào trong năm nhưng cố định thời điểm; goodwill phát sinh trong năm thì cụm đó phải test trước khi hết năm.</p>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">4</div>
+      <div class="step-meta"><span class="lbl">Kể lại gọn gàng</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Goodwill không tạo dòng tiền riêng, nên không thể khám một mình. IAS 36 bắt gán nó vào một cụm tạo tiền (CGU) hưởng synergy của thương vụ. Cụm đó phải ở cấp thấp nhất ban lãnh đạo theo dõi, và không lớn hơn một mảng kinh doanh. Rồi mỗi năm khám cả cụm — gồm goodwill — xem giá trị thu hồi có đỡ nổi giá ghi sổ không.</p>
+<p>Đây là khớp nối thực hành: bóc goodwill ở PPA (IFRS 3) xong, phải quyết nó nằm cụm nào để test hằng năm (IAS 36).</p>
+<p class="core">Goodwill không tạo tiền riêng, nên muốn khám nó, <span>phải gán nó vào cụm tạo tiền hưởng lợi từ thương vụ, ở cấp thấp nhất ban lãnh đạo theo dõi.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã hiểu chưa?</h3>
+      <ol>
+        <li>Vì sao goodwill không thể được kiểm tra suy giảm một mình, mà phải gán vào một CGU?</li>
+        <li>Goodwill phải gán cho cụm nào, ở cấp nào — và vì sao chuẩn cấm gộp vào một cụm lớn hơn một operating segment?</li>
+        <li>Bước gán goodwill vào CGU nối hai chuẩn IFRS 3 và IAS 36 với nhau như thế nào?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nếu giải thích được cho bà ngoại hiểu, bạn mới thật sự hiểu.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-phan-bo-lo-cgu"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Giải thích theo phương pháp Feynman</div>
+    <h1 class="rise" style="animation-delay:.08s">Khi cả cụm mất giá: goodwill lãnh đòn đầu tiên</h1>
+    <p class="core rise" style="animation-delay:.16s">Lỗ của cả một cụm tài sản <span>ăn vào goodwill trước, rồi mới chia đều phần còn lại — nhưng không món nào bị dìm dưới giá trị riêng của nó.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Điều cần hiểu &amp; cách tiếp cận</span><h2>Quy tắc: goodwill trước, rồi pro-rata, có sàn</h2></div>
+    </div>
+    <div class="rule">IAS 36 <strong>đoạn 104</strong>: lỗ suy giảm của một CGU được phân bổ theo thứ tự — (a) giảm <em>goodwill</em> của cụm <strong>TRƯỚC</strong>; (b) phần còn lại chia cho các tài sản khác theo <strong>TỶ LỆ</strong> giá ghi sổ. <strong>Đoạn 105</strong>: không hạ một tài sản xuống dưới mức cao nhất trong: giá bán ròng của nó, value in use của nó, và 0; phần bị chặn được chia lại cho các tài sản khác.</div>
+    <div class="sub">Cách giải thích</div>
+    <div class="approach"><p>Chỗ vấp: trực giác “lỗ thì chia đều cho mọi tài sản”. Không — goodwill lãnh trước, rồi mới tới phần khác, và có một cái sàn. Cách làm: neo vào hình ảnh một đội bị phạt chung; “quỹ thiện chí” mơ hồ của đội hứng đòn đầu tiên.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Giải thích đơn giản</span><h2>Hạ của ai trước, ai sau?</h2></div>
+    </div>
+    <p class="lead">Một cụm tài sản (CGU) bị xác định là mất giá: cả cụm chỉ còn đáng ít hơn tổng giá đang ghi. Phải hạ sổ xuống cho khớp. Nhưng hạ của ai trước, ai sau? IAS 36 có một thứ tự rất rõ, và nó không phải “chia đều”.</p>
+
+<div class="sub">Goodwill lãnh đòn trước</div>
+<p>Đầu tiên, lỗ ăn vào goodwill của cụm — hạ goodwill xuống, có thể tới 0. Goodwill là phần “mơ hồ” nhất, cái không sờ được, mua kèm khi thâu tóm. Nên nó hứng đòn đầu tiên.</p>
+
+<div class="sub">Rồi mới chia cho phần còn lại</div>
+<p>Nếu hạ hết goodwill mà lỗ vẫn còn, phần dư mới chia cho các tài sản khác trong cụm: nhà xưởng, máy móc. Cách chia là theo TỶ LỆ giá ghi sổ của từng món. Món to gánh nhiều, món nhỏ gánh ít.</p>
+
+<div class="sub">Cái sàn: không dìm món nào quá đáng</div>
+<p>Có một giới hạn. Khi chia lỗ cho một tài sản, không được hạ nó xuống dưới giá trị riêng của chính nó. Giá trị riêng là mức cao nhất trong ba: bán riêng được bao nhiêu, dùng riêng đáng bao nhiêu, và 0. Một cái máy còn bán được 30 thì không bị ép xuống dưới 30.</p>
+
+<div class="sub">Phần bị chặn chảy đi đâu</div>
+<p>Nếu một tài sản chạm sàn, phần lỗ đáng lẽ dồn cho nó không biến mất. Nó được chia lại cho các tài sản khác chưa chạm sàn, vẫn theo tỷ lệ. Lỗ không mất, chỉ đổi chỗ.</p>
+  </section>
+
+  <section class="gaps">
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Chỗ vấp · Lỗ hổng</span><h2>Mấy chỗ nghe xuôi mà nghĩ kỹ chưa thông</h2></div>
+    </div>
+    <div class="gap-q"><span class="q">“Sao goodwill phải chịu trước — nghe bất công với nó?”</span><p>Vì goodwill là tài sản “yếu lý lẽ” nhất. Nó không sờ được, không bán riêng được, chỉ là phần trả thừa khi mua cả doanh nghiệp. Khi cả cụm yếu đi, thứ đáng ngờ đầu tiên chính là cái phần mơ hồ đó. Nên nó hứng đòn trước các tài sản thật.</p></div>
+<div class="gap-q"><span class="q">“Sao không chia đều lỗ cho tất cả ngay từ đầu cho công bằng?”</span><p>Vì “công bằng” ở đây là phản ánh đúng cái gì mất giá thật. Goodwill thường là thứ bốc hơi đầu tiên. Hạ đều cả nhà xưởng lẫn goodwill sẽ làm các tài sản thật trông tệ hơn thực, trong khi cái thật sự rỗng lại chưa bị xóa hết.</p></div>
+<div class="gap-q"><span class="q">“Cái sàn để làm gì — sao không hạ thẳng cho nhanh?”</span><p>Vì hạ một tài sản xuống dưới giá trị riêng của nó là ghi sai. Nếu cái máy còn bán được 30 mà ghi nó 20 là nói dối — nó đáng ít nhất 30. Sàn ngăn việc dồn lỗ của cả cụm lên đầu một món tới mức méo mó giá trị riêng của món đó.</p></div>
+<div class="gap-q"><span class="q">“Chia lỗ cho từng tài sản nghe rất giả định — có chắc đúng không?”</span><p>Đây là chỗ chuẩn tự nhận là gần đúng thôi. Nhiều khi không đo nổi giá trị thu hồi riêng của từng máy. Khi đó lỗ được chia theo tỷ lệ — một kiểu phân bổ cho tiện, chứ không phải đo từng món. Chuẩn chấp nhận vì cả cụm vận hành cùng nhau; con số từng tài sản chỉ là ước.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví von &amp; ví dụ đời thường</span><h2>Neo vào thứ bạn đã biết</h2></div>
+    </div>
+    <div class="analogy-card"><span class="tag">Ví dụ trung tâm</span>
+<p>Một đội phải nộp phạt chung vì cả đội chơi kém. Tiền phạt trừ vào đâu trước? Trừ vào “quỹ thiện chí” mơ hồ của đội — khoản thưởng kỳ vọng chưa chắc có, đó là goodwill. Hết quỹ đó mà còn thiếu, mới trừ vào lương từng người theo tỷ lệ. Nhưng có một mức sàn: không ai bị trừ xuống dưới mức lương tối thiểu thật của họ. Phần lẽ ra trừ thêm của người chạm sàn được san cho người khác.</p>
+<p class="limit"><b>Chỗ ví von này hỏng:</b> “lương tối thiểu” của mỗi người là con số rõ. Còn “giá trị riêng” của từng tài sản — bán riêng được bao nhiêu, dùng riêng đáng bao nhiêu — lại thường không đo nổi. Chính vì không đo nổi mà ta phải gộp CGU ngay từ đầu. Nên cái sàn nghe gọn, nhưng đo cho đúng từng món là phần rất khó.</p>
+</div>
+<p>Gần đời hơn: một khách sạn mua lại kèm goodwill, nay ế khách nên cả cụm mất giá. Trước hết xóa goodwill, rồi mới hạ giá tòa nhà và nội thất theo tỷ lệ. Nhưng nếu tòa nhà còn bán riêng được một mức nhất định, thì không được hạ nó xuống dưới mức đó — phần lỗ ấy dồn sang nội thất.</p>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">4</div>
+      <div class="step-meta"><span class="lbl">Kể lại gọn gàng</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Cả một cụm tài sản (CGU) mất giá thì hạ sổ theo thứ tự, không chia đều. Goodwill — phần mơ hồ nhất — lãnh đòn trước, hạ tới 0 nếu cần. Lỗ còn dư mới chia cho các tài sản thật theo tỷ lệ giá ghi sổ.</p>
+<p>Có một sàn: không dìm món nào xuống dưới giá trị riêng của nó (bán riêng, dùng riêng, hay 0); phần bị chặn được san cho món khác.</p>
+<p class="core">Lỗ của cả một cụm tài sản <span>ăn vào goodwill trước, rồi mới chia đều phần còn lại — nhưng không món nào bị dìm dưới giá trị riêng của nó.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã hiểu chưa?</h3>
+      <ol>
+        <li>Một CGU có goodwill 40, nhà xưởng 100, máy 60. Lỗ cả cụm là 50. Phân bổ thế nào?</li>
+        <li>Vì sao goodwill bị giảm trước các tài sản khác?</li>
+        <li>Cái máy còn bán riêng được 30. Khi chia lỗ, có được hạ nó xuống 20 không? Phần chênh đi đâu?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nếu giải thích được cho bà ngoại hiểu, bạn mới thật sự hiểu.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-goodwill-khong-hoan-nhap"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Giải thích theo phương pháp Feynman</div>
+    <h1 class="rise" style="animation-delay:.08s">Tài sản nào cũng hồi phục được — trừ goodwill</h1>
+    <p class="core rise" style="animation-delay:.16s">Lỗ suy giảm của goodwill, một khi đã ghi, <span>không bao giờ được hoàn nhập — dù sau đó công ty có khởi sắc tới đâu.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Điều cần hiểu &amp; cách tiếp cận</span><h2>Quy tắc: goodwill cấm hoàn nhập, tuyệt đối</h2></div>
+    </div>
+    <div class="rule">IAS 36 <strong>đoạn 124</strong>: lỗ suy giảm đã ghi cho <em>goodwill</em> <strong>KHÔNG</strong> được hoàn nhập ở bất kỳ kỳ sau nào — tuyệt đối, không ngoại lệ. <strong>Đoạn 125</strong>: lý do — IAS 38 cấm ghi nhận goodwill <strong>TẠO RA TỪ NỘI BỘ</strong>; mọi sự tăng lại của giá trị goodwill sau khi đã suy giảm rất có thể là goodwill nội sinh mới, không phải goodwill đã mua hồi phục.</div>
+    <div class="sub">Cách giải thích</div>
+    <div class="approach"><p>Chỗ vấp: tài sản khác hồi phục được khi khá lên; sao riêng goodwill bị cấm tuyệt đối? Cách làm: neo vào chuyện mua một quán cà phê “có tiếng”. Ta phân biệt cái danh tiếng bạn ĐÃ MUA với cái danh tiếng bạn TỰ gây dựng về sau.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Giải thích đơn giản</span><h2>Một ngoại lệ tuyệt đối</h2></div>
+    </div>
+    <p class="lead">Tài sản mất giá rồi sau đó khá lên thì được hoàn nhập — ghi tăng lại một phần. Đó là quy tắc chung của IAS 36. Nhưng có đúng một ngoại lệ tuyệt đối: goodwill. Lỗ của goodwill, một khi đã ghi, vĩnh viễn không được hoàn nhập.</p>
+
+<div class="sub">Goodwill là gì đã</div>
+<p>Goodwill là phần trả thừa khi mua cả một doanh nghiệp — tiền trả cho danh tiếng, khách quen, đội ngũ, những thứ không sờ được. Nó chỉ được ghi sổ khi bạn MUA nó kèm trong một thương vụ.</p>
+
+<div class="sub">Vì sao cấm hồi phục</div>
+<p>Đây là mấu chốt. Có một luật khác (IAS 38) cấm ghi sổ goodwill mà công ty TỰ gây dựng. Giả sử goodwill đã mua bị xóa bớt, rồi sau đó “giá trị goodwill” của công ty tăng lại. Phần tăng đó gần như chắc chắn là danh tiếng công ty tự tạo về sau, không phải cái cũ sống lại.</p>
+
+<div class="sub">Hoàn nhập sẽ là cửa sau</div>
+<p>Nếu cho hoàn nhập goodwill, công ty sẽ lén ghi sổ danh tiếng tự tạo của mình — đúng cái thứ bị cấm. Họ chỉ cần gọi nó là “phục hồi goodwill cũ”. Cấm tuyệt đối là để bịt cái cửa sau đó lại.</p>
+
+<div class="sub">Khác hẳn các tài sản thật</div>
+<p>Một cái máy hồi phục được vì nó là vật cụ thể: nếu trước đây ghi giảm quá tay, nay sửa lại có cơ sở rõ. Goodwill thì không sờ được, không tách bạch được cái cũ với cái mới — nên không có cách nào chắc rằng “cái hồi phục” đúng là cái đã mua.</p>
+  </section>
+
+  <section class="gaps">
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Chỗ vấp · Lỗ hổng</span><h2>Mấy chỗ nghe xuôi mà nghĩ kỹ chưa thông</h2></div>
+    </div>
+    <div class="gap-q"><span class="q">“Công ty rõ ràng khá lên thật — sao không cho ghi lại?”</span><p>Vì không tách được phần “khá lên” đó là goodwill cũ sống lại, hay là danh tiếng mới công ty tự tạo. Mà danh tiếng tự tạo thì bị cấm ghi sổ. Không phân biệt được, nên chuẩn chọn cấm hết cho an toàn — thà bỏ sót còn hơn lén ghi cái bị cấm.</p></div>
+<div class="gap-q"><span class="q">“Vậy có phải kế toán ‘ghét’ goodwill, đối xử bất công với nó?”</span><p>Không hẳn ghét, mà dè chừng. Goodwill là tài sản mơ hồ nhất, dễ bị thổi phồng nhất. Cấm hoàn nhập là một van an toàn: một khi đã thừa nhận nó bốc hơi, thì khóa lại, không cho vẽ nó to lại bằng những lý do mềm.</p></div>
+<div class="gap-q"><span class="q">“Tài sản khác trong cùng cụm thì sao — cũng cấm luôn?”</span><p>Không. Khi hoàn nhập cho cả một cụm (CGU), phần hoàn nhập được chia cho các tài sản thật. Nhưng goodwill bị loại ra, không nhận một đồng hoàn nhập nào. Các tài sản khác vẫn hồi phục bình thường, chỉ riêng goodwill đứng ngoài.</p></div>
+<div class="gap-q"><span class="q">“Cấm cứng vậy có làm báo cáo lệch khỏi giá trị thật không?”</span><p>Có thể, và đây là sự đánh đổi cố ý. Nếu goodwill đã mua thật sự hồi phục, sổ sách sẽ ghi thấp hơn thực — một sự thận trọng quá tay. Chuẩn chấp nhận lệch về phía thấp đó, để đổi lấy việc chặn đứng khả năng ghi khống danh tiếng tự tạo.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví von &amp; ví dụ đời thường</span><h2>Neo vào thứ bạn đã biết</h2></div>
+    </div>
+    <div class="analogy-card"><span class="tag">Ví dụ trung tâm</span>
+<p>Bạn mua một quán cà phê, trả thêm tiền vì nó “có tiếng, đông khách quen” — đó là goodwill đã mua. Vài năm sau quán ế, bạn thừa nhận cái tiếng đó đã phai: xóa bớt goodwill. Rồi bạn cố gắng, quán đông trở lại. Nhưng cái đông lần này là nhờ CÔNG bạn gây dựng — danh tiếng mới. Kế toán không cho bạn ghi “à, tiếng cũ hồi phục rồi” để vẽ lại goodwill. Vì thật ra đó là tiếng mới do bạn tạo, mà tiếng tự tạo thì cấm ghi sổ.</p>
+<p class="limit"><b>Chỗ ví von này hỏng:</b> với quán cà phê, ta còn mường tượng được “tiếng cũ” và “tiếng mới” là hai thứ khác nhau. Trong thực tế kế toán, hai thứ đó hòa làm một, không tài nào tách. Chính vì KHÔNG tách được mà chuẩn phải cấm tuyệt đối — chứ không phải vì tách ra rồi thấy toàn tiếng mới. Ví von làm nó nghe rạch ròi hơn thực tế.</p>
+</div>
+<p>Gần đời hơn: một thương hiệu mua lại bị ghi giảm goodwill khi doanh số tụt. Năm sau, nhờ một chiến dịch marketing rầm rộ, thị phần tăng lại. Phần tăng đó là quả của chiến dịch mới — danh tiếng tự tạo — nên goodwill cũ vẫn không được hoàn nhập một đồng nào.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Đoạn 124: cấm hoàn nhập lỗ suy giảm của goodwill, tuyệt đối. Lý do ở đoạn 125: nếu sau đó “goodwill” có vẻ hồi lại, gần như chắc đó là goodwill NỘI SINH mới do công ty tự tạo — mà IAS 38 cấm ghi nhận goodwill nội sinh. Cho hoàn nhập tức là lén ghi goodwill tự tạo qua cửa sau. Lưu ý goodwill được test ở cấp CGU/nhóm CGU (đoạn 80–81), nên lỗ goodwill cũng phát sinh và bị khóa ở cấp cụm đó, không phải từng tài sản lẻ.</p>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">4</div>
+      <div class="step-meta"><span class="lbl">Kể lại gọn gàng</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Tài sản mất giá rồi khá lên thì được hoàn nhập — trừ đúng một thứ: goodwill, cấm tuyệt đối. Lý do: goodwill tự tạo bị một luật khác cấm ghi sổ. Nếu cho hoàn nhập goodwill đã suy giảm, công ty sẽ lén ghi danh tiếng tự gây dựng dưới cái tên “phục hồi goodwill cũ”.</p>
+<p>Không tách được cái cũ với cái mới, nên chuẩn khóa luôn cánh cửa đó.</p>
+<p class="core">Lỗ suy giảm của goodwill, một khi đã ghi, <span>không bao giờ được hoàn nhập — dù sau đó công ty có khởi sắc tới đâu.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã hiểu chưa?</h3>
+      <ol>
+        <li>Goodwill mua lại đã bị ghi giảm 2 năm trước. Năm nay công ty ăn nên làm ra, “giá trị goodwill” tăng lại. Được hoàn nhập không? Vì sao?</li>
+        <li>Khi hoàn nhập lỗ cho cả một CGU, goodwill có được nhận phần hoàn nhập không?</li>
+        <li>Lý do gốc của lệnh cấm này liên quan tới quy tắc nào của IAS 38?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nếu giải thích được cho bà ngoại hiểu, bạn mới thật sự hiểu.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-hoan-nhap-tran"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Giải thích theo phương pháp Feynman</div>
+    <h1 class="rise" style="animation-delay:.08s">Hồi phục được, nhưng có trần — và không hồi vì thời gian trôi</h1>
+    <p class="core rise" style="animation-delay:.16s">Hoàn nhập một khoản lỗ thì được, <span>nhưng chỉ tới đúng mức tài sản lẽ ra đáng nếu CHƯA TỪNG bị ghi suy giảm.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Điều cần hiểu &amp; cách tiếp cận</span><h2>Quy tắc: trần “như chưa từng suy giảm”; không hồi vì thời gian</h2></div>
+    </div>
+    <div class="rule">IAS 36 <strong>đoạn 117</strong>: khi hoàn nhập (cho tài sản khác goodwill), giá ghi sổ tăng lên <strong>KHÔNG</strong> được vượt mức giá ghi sổ lẽ ra có (sau khấu hao) nếu các kỳ trước <strong>CHƯA TỪNG</strong> ghi lỗ suy giảm. <strong>Đoạn 118</strong>: phần vượt trần đó không phải hoàn nhập mà là đánh giá lại. <strong>Đoạn 116</strong>: KHÔNG hoàn nhập chỉ vì thời gian trôi (hiệu ứng chiết khấu “đến gần”).</div>
+    <div class="sub">Cách giải thích</div>
+    <div class="approach"><p>Chỗ vấp: tưởng “khá lên bao nhiêu thì ghi tăng bấy nhiêu”. Sai — có trần, và có một kiểu “tăng giả” bị loại thẳng. Cách làm: neo vào chuyện tua ngược một cuốn phim — chỉ được tua về đúng chỗ phim lẽ ra đang chiếu nếu không có sự cố.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Giải thích đơn giản</span><h2>Tăng tới đâu thì được?</h2></div>
+    </div>
+    <p class="lead">Tài sản từng bị ghi lỗ suy giảm, nay hoàn cảnh khá lên. Bạn được ghi tăng lại — hoàn nhập. Nhưng tăng tới đâu? Không phải muốn tăng bao nhiêu cũng được. Có một cái trần rất chặt, và có một kiểu “tăng” bị loại thẳng.</p>
+
+<div class="sub">Cái trần: như thể chưa từng vấp</div>
+<p>Hãy tưởng tượng một dòng đời thứ hai của tài sản, trong đó nó CHƯA TỪNG bị ghi suy giảm — chỉ khấu hao đều như thường. Giá ghi sổ trong dòng đời đó là cái trần. Hoàn nhập chỉ được kéo tài sản lên tới đúng mức ấy, không hơn.</p>
+
+<div class="sub">Vì sao có trần</div>
+<p>Vì hoàn nhập là sửa lại một lần ghi giảm trước đó, không phải dịp để thổi tài sản lên cao hơn mức tự nhiên của nó. Cho vượt trần thì hóa ra dùng IAS 36 để “đánh bóng” tài sản lên trên cả giá gốc đã khấu hao — đó là chuyện khác.</p>
+
+<div class="sub">Phần vượt trần là chuyện khác</div>
+<p>Nếu giá trị thật của tài sản nay còn cao hơn cả cái trần, phần vượt KHÔNG được gọi là hoàn nhập. Nó chỉ được ghi nếu công ty áp dụng mô hình đánh giá lại theo một chuẩn mực khác — một con đường riêng, luật riêng.</p>
+
+<div class="sub">Không hồi vì thời gian trôi</div>
+<p>Một cái bẫy tinh vi. Giá trị sử dụng có thể tự tăng chỉ vì dòng tiền tương lai “đến gần hơn” nên hiện giá lớn lên — như cuốn lịch đếm ngược. Nhưng tài sản KHÔNG hề khỏe hơn; nó vẫn vậy. Kiểu tăng do thời gian trôi đó không được tính là hoàn nhập.</p>
+  </section>
+
+  <section class="gaps">
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Chỗ vấp · Lỗ hổng</span><h2>Mấy chỗ nghe xuôi mà nghĩ kỹ chưa thông</h2></div>
+    </div>
+    <div class="gap-q"><span class="q">“Tài sản nay đáng hơn cả trần thật — sao không cho ghi hết?”</span><p>Vì IAS 36 chỉ lo việc “sửa lại khoản ghi giảm trước”, không lo việc nâng tài sản lên trên giá gốc đã khấu hao. Ghi cao hơn trần là một hành động khác: đánh giá lại. Nó chỉ được làm nếu công ty đã chọn mô hình đó, với luật và sự thận trọng riêng của nó.</p></div>
+<div class="gap-q"><span class="q">“‘Như chưa từng suy giảm’ tính sao cho ra?”</span><p>Tua lại: lấy giá gốc ban đầu, trừ khấu hao đều qua các năm như thể không có cú suy giảm nào. Con số đó là mức tài sản “lẽ ra đang ở”. So với giá ghi sổ thật hiện tại — vốn đã thấp hơn vì từng bị giảm — khoảng cách chính là mức hoàn nhập tối đa.</p></div>
+<div class="gap-q"><span class="q">“Giá trị sử dụng tự tăng khi tới gần — nghe hợp lý mà, sao không cho?”</span><p>Vì cái tăng đó là ảo về mặt “sức khỏe” tài sản. Tiền năm sau, khi chỉ còn cách vài tháng, hiện giá tất nhiên lớn hơn hồi còn cách vài năm. Nhưng tài sản chưa kiếm thêm được gì, tiềm năng y nguyên. Hoàn nhập là để phản ánh tài sản KHỎE lên thật, không phải hiệu ứng đếm ngược.</p></div>
+<div class="gap-q"><span class="q">“Ranh giới ‘khỏe lên thật’ với ‘chỉ do thời gian trôi’ — tách nổi không?”</span><p>Khó, và đây là chỗ phải xét kỹ. Chuẩn đòi: chỉ hoàn nhập khi có THAY ĐỔI trong ước tính — dòng tiền khá hơn, tỷ lệ giảm, thị trường tốt lên — kể từ lần ghi lỗ. Nếu mọi giả định y như cũ mà số vẫn nhích lên, thì đó chỉ là thời gian trôi, không được hoàn nhập.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví von &amp; ví dụ đời thường</span><h2>Neo vào thứ bạn đã biết</h2></div>
+    </div>
+    <div class="analogy-card"><span class="tag">Ví dụ trung tâm</span>
+<p>Tài sản như một cuốn phim đang chiếu, mỗi năm khấu hao một đoạn. Cú suy giảm là một lần ai đó tua phim nhảy vọt xuống thấp. Hoàn nhập là được TUA NGƯỢC lên — nhưng chỉ tới đúng chỗ mà cuốn phim lẽ ra đang chiếu nếu không có cú nhảy đó. Không được tua vượt lên trước cảnh hiện tại. Và nếu màn hình tự sáng hơn chỉ vì đèn phòng đổi (thời gian trôi), đó không phải phim hay lên — không tính.</p>
+<p class="limit"><b>Chỗ ví von này hỏng:</b> cuốn phim có một mạch thời gian rõ để biết “lẽ ra đang ở cảnh nào”. Còn “giá trị lẽ ra” của tài sản phải dựng lại bằng giả định khấu hao. Nếu phương pháp hay thời gian sử dụng từng thay đổi, cái trần đó cũng không hiển nhiên. Ví von gợi sự rõ ràng mà thực tế tính toán không phải lúc nào cũng có.</p>
+</div>
+<p>Số cụ thể: thiết bị mua 100, đời sống 10 năm, khấu hao đều. Cuối năm 2 ghi lỗ suy giảm, giá ghi sổ thật còn 37,5 ở cuối năm 4. Nhưng mức trần “chưa từng suy giảm” là 60 (tức 100 trừ 4 năm khấu hao). Dù giá trị thu hồi nay là 60, hoàn nhập tối đa chỉ kéo lên 60 — tức cộng thêm 22,5, không hơn.</p>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">4</div>
+      <div class="step-meta"><span class="lbl">Kể lại gọn gàng</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Tài sản từng bị ghi suy giảm, nay khá lên thì được hoàn nhập. Nhưng chỉ tới đúng mức nó lẽ ra đáng nếu CHƯA TỪNG bị giảm — tức giá gốc trừ khấu hao đều. Vượt mức đó không phải hoàn nhập mà là đánh giá lại, theo luật khác.</p>
+<p>Và đừng nhầm: giá trị sử dụng tự nhích lên chỉ vì thời gian trôi thì không tính. Tài sản phải khỏe lên THẬT, qua một thay đổi trong ước tính.</p>
+<p class="core">Hoàn nhập một khoản lỗ thì được, <span>nhưng chỉ tới đúng mức tài sản lẽ ra đáng nếu CHƯA TỪNG bị ghi suy giảm.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã hiểu chưa?</h3>
+      <ol>
+        <li>Thiết bị giá gốc 100, 10 năm. Cuối năm 4, nếu chưa từng suy giảm thì còn 60. Giá trị thật nay là 75. Hoàn nhập kéo giá ghi sổ lên tối đa bao nhiêu?</li>
+        <li>Vì sao giá trị sử dụng tăng do “thời gian trôi” lại không được hoàn nhập?</li>
+        <li>Phần giá trị vượt quá cái trần “như chưa từng suy giảm” được xử lý theo cơ chế nào?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nếu giải thích được cho bà ngoại hiểu, bạn mới thật sự hiểu.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-kiem-tra-hang-nam"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Giải thích theo phương pháp Feynman</div>
+    <h1 class="rise" style="animation-delay:.08s">Khám khi có triệu chứng — riêng ba “ông VIP” khám hằng năm</h1>
+    <p class="core rise" style="animation-delay:.16s">Tài sản thường chỉ kiểm tra suy giảm khi có dấu hiệu, <span>nhưng ba loại đặc biệt phải khám tổng quát hằng năm — dù không có triệu chứng nào.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Điều cần hiểu &amp; cách tiếp cận</span><h2>Quy tắc: có dấu hiệu mới soi; ba loại soi hằng năm</h2></div>
+    </div>
+    <div class="rule">IAS 36 <strong>đoạn 9</strong>: cuối mỗi kỳ, đơn vị đánh giá có <strong>DẤU HIỆU</strong> nào cho thấy tài sản có thể suy giảm; có dấu hiệu mới ước tính giá trị thu hồi. <strong>Đoạn 10</strong>: BẤT KỂ có dấu hiệu hay không, phải kiểm tra suy giảm <strong>HẰNG NĂM</strong> với: <em>goodwill</em>, tài sản vô hình đời sống <strong>vô thời hạn</strong>, và tài sản vô hình <strong>chưa sẵn sàng sử dụng</strong>.</div>
+    <div class="sub">Cách giải thích</div>
+    <div class="approach"><p>Chỗ vấp: trực giác “có vấn đề mới đi kiểm tra”. Đúng với hầu hết tài sản, nhưng ba loại bị bắt khám định kỳ dù đang khỏe. Cách làm: neo vào chuyện khám sức khỏe — người thường khám khi ốm, còn nhóm nguy cơ cao thì khám định kỳ.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Giải thích đơn giản</span><h2>Ba loại bị soi kỹ hơn cả</h2></div>
+    </div>
+    <p class="lead">Cuối mỗi kỳ, công ty nhìn quanh: có dấu hiệu nào cho thấy tài sản đang mất giá không? Có thì mới đi đo giá trị thu hồi. Hợp lý — đỡ tốn công đo những thứ rõ ràng đang khỏe. Nhưng ba loại tài sản bị đối xử khác: phải khám hằng năm, dù chẳng có triệu chứng gì.</p>
+
+<div class="sub">Quy tắc thường: có dấu hiệu mới soi</div>
+<p>Với đa số tài sản, bạn chỉ phải ước tính giá trị thu hồi khi có dấu hiệu. Dấu hiệu là gì: máy hỏng, thị trường xấu đi, lãi suất tăng, doanh thu kém dự báo. Không dấu hiệu thì khỏi đo, đỡ tốn kém.</p>
+
+<div class="sub">Ba “ông VIP” phải khám định kỳ</div>
+<p>Ba loại này thì khác. Một: goodwill, phần trả thừa khi mua doanh nghiệp. Hai: tài sản vô hình có đời sống VÔ THỜI HẠN, như một thương hiệu không hết hạn. Ba: tài sản vô hình CHƯA sẵn sàng dùng, đang dở dang. Cả ba phải kiểm tra suy giảm ít nhất mỗi năm một lần, kể cả khi không có dấu hiệu gì.</p>
+
+<div class="sub">Vì sao ba loại này bị soi kỹ</div>
+<p>Vì chúng không khấu hao đều mỗi năm như cái máy. Một cái máy có đời sống hữu hạn, hao mòn dần lộ ra trên sổ. Goodwill và vô hình vô thời hạn thì không bị bào mòn tự động. Nếu không bắt khám định kỳ, giá trị rỗng có thể nằm im trên sổ rất lâu mà không ai phát hiện.</p>
+
+<div class="sub">Một lưu ý về thời điểm</div>
+<p>Khám hằng năm có thể làm vào bất kỳ lúc nào trong năm, nhưng phải cùng một thời điểm mỗi năm. Riêng tài sản vô hình mới ghi nhận trong năm nay thì phải khám trước khi hết năm đó — không được hoãn sang năm sau.</p>
+  </section>
+
+  <section class="gaps">
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Chỗ vấp · Lỗ hổng</span><h2>Mấy chỗ nghe xuôi mà nghĩ kỹ chưa thông</h2></div>
+    </div>
+    <div class="gap-q"><span class="q">“Không có dấu hiệu gì mà vẫn bắt khám — chẳng phí công sao?”</span><p>Với tài sản thường thì đúng là phí, nên chuẩn không bắt. Nhưng ba loại VIP không có cơ chế tự lộ ra hao mòn. Goodwill có thể đã rỗng từ lâu mà sổ vẫn ghi nguyên. Khám định kỳ là cách duy nhất để bắt được sự rỗng đó kịp thời.</p></div>
+<div class="gap-q"><span class="q">“Sao vô hình ‘vô thời hạn’ lại nguy hiểm hơn vô hình thường?”</span><p>Vì vô hình có thời hạn thì được phân bổ dần mỗi năm — giá trị tự đi xuống, sai số nhỏ. Vô hình vô thời hạn KHÔNG phân bổ, đứng nguyên trên sổ. Không bào mòn tự động thì phải có người chủ động kiểm, nếu không nó dễ bị ghi cao hơn thực mà không ai hay.</p></div>
+<div class="gap-q"><span class="q">“Vô hình ‘chưa sẵn sàng dùng’ thì liên quan gì?”</span><p>Vì khi tài sản chưa chạy, chưa kiếm ra tiền, khả năng nó tạo lợi ích còn rất bấp bênh — dễ hứa hẹn mà không thành. Một dự án dở dang có thể đã hỏng từ trong trứng. Bắt khám hằng năm để không nuôi một con số đẹp trên sổ cho thứ có thể không bao giờ về đích.</p></div>
+<div class="gap-q"><span class="q">“Khám hằng năm có chắc bắt được suy giảm đúng lúc không?”</span><p>Không chắc tuyệt đối. Một năm vẫn là khoảng dài; tài sản có thể rỗng giữa năm mà tới kỳ khám mới lộ. Vì thế quy tắc dấu hiệu vẫn chạy đồng thời: nếu giữa năm có dấu hiệu rõ, phải kiểm ngay, không đợi tới lịch khám định kỳ.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví von &amp; ví dụ đời thường</span><h2>Neo vào thứ bạn đã biết</h2></div>
+    </div>
+    <div class="analogy-card"><span class="tag">Ví dụ trung tâm</span>
+<p>Như khám sức khỏe. Người bình thường đi khám khi thấy triệu chứng — đau đâu khám đó. Nhưng nhóm nguy cơ cao — người lớn tuổi, người có bệnh nền — được khuyên khám tổng quát định kỳ mỗi năm, dù đang thấy khỏe. Vì bệnh của họ có thể âm thầm, không báo trước. Goodwill và vô hình vô thời hạn chính là nhóm “nguy cơ cao” đó của bảng cân đối: phải khám lịch, không đợi tới lúc đổ bệnh.</p>
+<p class="limit"><b>Chỗ ví von này hỏng:</b> khám sức khỏe người ta có các chỉ số đo khách quan như huyết áp, đường huyết. “Khám” goodwill lại là ước tính giá trị thu hồi — vốn đầy giả định về dòng tiền tương lai. Nên kết quả “khám” goodwill chủ quan hơn nhiều một lần xét nghiệm máu, và hai người khám có thể ra hai kết luận khác nhau.</p>
+</div>
+<p>Gần đời hơn: một công ty mua lại thương hiệu nước giải khát, ghi nhận nó như tài sản vô hình vô thời hạn. Năm nay thương hiệu vẫn bán chạy, không một dấu hiệu xấu nào. Dù vậy, công ty vẫn phải làm bài kiểm tra suy giảm cho nó đúng kỳ hằng năm — không được viện cớ “đang khỏe” để bỏ qua.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Đoạn 12 liệt kê dấu hiệu suy giảm, chia hai nhóm. <strong>Bên ngoài</strong>: giá trị thị trường của tài sản rớt mạnh hơn dự kiến; môi trường công nghệ/thị trường/kinh tế/pháp lý đổi xấu; lãi suất thị trường tăng (kéo tỷ lệ chiết khấu lên, làm giá trị thu hồi co lại); vốn hóa công ty thấp hơn giá trị tài sản thuần trên sổ. <strong>Bên trong</strong>: tài sản hư hỏng hoặc lỗi thời; có kế hoạch ngừng dùng, tái cơ cấu hoặc thanh lý sớm; báo cáo nội bộ cho thấy hiệu quả kém hơn kỳ vọng. Đoạn 12 nói rõ đây là danh sách TỐI THIỂU, không vét hết — dấu hiệu khác vẫn phải xét.</p>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">4</div>
+      <div class="step-meta"><span class="lbl">Kể lại gọn gàng</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Hầu hết tài sản chỉ kiểm tra suy giảm khi có dấu hiệu — đỡ tốn công. Nhưng ba loại phải khám hằng năm dù không triệu chứng: goodwill, vô hình đời sống vô thời hạn, và vô hình chưa sẵn sàng dùng.</p>
+<p>Vì chúng không bị khấu hao bào mòn tự động, nên giá trị rỗng có thể nằm im trên sổ rất lâu. Khám định kỳ là cách bắt sự rỗng đó kịp thời.</p>
+<p class="core">Tài sản thường chỉ kiểm tra suy giảm khi có dấu hiệu, <span>nhưng ba loại đặc biệt phải khám tổng quát hằng năm — dù không có triệu chứng nào.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã hiểu chưa?</h3>
+      <ol>
+        <li>Một thương hiệu vô thời hạn đang bán rất chạy, không dấu hiệu xấu nào. Có phải kiểm tra suy giảm năm nay không? Vì sao?</li>
+        <li>Vì sao tài sản vô hình có thời hạn ít cần soi định kỳ hơn vô hình vô thời hạn?</li>
+        <li>Giữa năm xuất hiện dấu hiệu suy giảm rõ ràng cho một cái máy — có được đợi tới kỳ khám định kỳ không?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nếu giải thích được cho bà ngoại hiểu, bạn mới thật sự hiểu.</p>
+  </footer>
+
+</div></div>
+<script>
+  var bar=document.getElementById('progress');
+  function upd(){var h=document.documentElement;var s=h.scrollTop||document.body.scrollTop;
+    var max=(h.scrollHeight-h.clientHeight)||1;bar.style.width=(s/max*100)+'%';}
+  window.addEventListener('scroll',upd,{passive:true});upd();
+  var io=new IntersectionObserver(function(es){es.forEach(function(e){
+    if(e.isIntersecting){e.target.style.animation='rise .7s cubic-bezier(.2,.7,.3,1) forwards';io.unobserve(e.target);}});},{threshold:.12});
+  document.querySelectorAll('section').forEach(function(s){s.style.opacity='0';io.observe(s);});
+</script>
+
+<script>
+(function(){
+  var tabs=[].slice.call(document.querySelectorAll('.tabbar .tab'));
+  var panels=[].slice.call(document.querySelectorAll('.concept-panel'));
+  function show(i){
+    tabs.forEach(function(t,j){t.classList.toggle('active',j===i);});
+    panels.forEach(function(p,j){
+      var on=(j===i); p.classList.toggle('active',on);
+      if(on){p.querySelectorAll('section').forEach(function(s){s.style.opacity='';s.style.animation='';});}
+    });
+    try{history.replaceState(null,'','#'+panels[i].id);}catch(e){}
+    window.scrollTo(0,0); window.dispatchEvent(new Event('scroll'));
+  }
+  tabs.forEach(function(t){t.addEventListener('click',function(){show(+t.getAttribute('data-i'));});});
+  var start=0; panels.forEach(function(p,j){if('#'+p.id===location.hash)start=j;});
+  show(start);
+})();
+</script>
+
+</body></html>

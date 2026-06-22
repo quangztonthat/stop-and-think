@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Bài 3 (Ch2) — Bên phòng thủ quá xa</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/chessboard-js/1.0.0/chessboard-1.0.0.min.css">
+<style>
+* { box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; max-width: 980px; margin: 0 auto; padding: 24px; color: #1a1a1a; line-height: 1.6; background: #fafafa; }
+h1 { color: #1a3a52; font-size: 28px; margin: 0 0 8px; }
+h2 { color: #2c5282; font-size: 20px; margin: 32px 0 12px; padding-bottom: 6px; border-bottom: 2px solid #e1e8ed; }
+.source { color: #888; font-size: 13px; margin-bottom: 24px; }
+.nav-link { font-size: 13px; color: #2c5282; text-decoration: none; }
+.stage { background: white; border-radius: 8px; padding: 20px 24px; margin: 16px 0; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
+.stage-label { display: inline-block; background: #2c5282; color: white; font-size: 12px; font-weight: 600; padding: 3px 10px; border-radius: 12px; margin-bottom: 8px; }
+.hook-question { font-size: 17px; color: #1a3a52; background: #fff8e1; border-left: 4px solid #faad14; padding: 14px 18px; border-radius: 0 6px 6px 0; margin: 12px 0; }
+.reveal-btn { background: #faad14; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-size: 14px; }
+.hidden { display: none; }
+.board-layout { display: grid; grid-template-columns: 440px 1fr; gap: 24px; align-items: start; margin-top: 16px; }
+@media (max-width: 820px) { .board-layout { grid-template-columns: 1fr; } }
+#board { width: 420px; max-width: 100%; }
+.mini-board { width: 300px; max-width: 100%; margin: 14px auto; }
+.controls { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; justify-content: center; }
+.controls button { padding: 7px 12px; background: #2c5282; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 13px; }
+.info-panel { background: #f8f9fb; padding: 16px; border-radius: 6px; border: 1px solid #e1e8ed; min-height: 380px; }
+.move-display { font-family: monospace; font-size: 16px; color: #2c5282; font-weight: 600; margin-bottom: 8px; }
+.commentary { font-size: 14px; color: #444; margin-bottom: 12px; }
+.info-box { background: white; padding: 10px; border-radius: 4px; border: 1px solid #e1e8ed; margin: 12px 0; font-size: 13px; text-align: center; }
+.info-box.win { background: #f6ffed; border-color: #b7eb8f; color: #389e0d; font-weight: 600; }
+.highlight-square { background: rgba(255, 215, 0, 0.45) !important; box-shadow: inset 0 0 0 1px rgba(255, 165, 0, 0.6) !important; }
+.highlight-king-blue { box-shadow: inset 0 0 0 4px #1d39c4 !important; }
+.self-test { background: #fff8e1; border: 2px dashed #faad14; border-radius: 6px; padding: 16px; margin-top: 16px; }
+.self-test-question { font-weight: 600; color: #874d00; margin-bottom: 8px; }
+.feedback { margin-top: 10px; padding: 10px 14px; border-radius: 4px; font-size: 14px; }
+.feedback.correct { background: #f6ffed; color: #389e0d; border-left: 4px solid #52c41a; }
+.feedback.wrong { background: #fff1f0; color: #cf1322; border-left: 4px solid #ff4d4f; }
+.quiz { background: #f0f7ff; border-left: 4px solid #2c5282; border-radius: 0 6px 6px 0; padding: 14px 18px; margin: 12px 0; }
+.quiz-q { font-weight: 600; margin-bottom: 10px; color: #1a3a52; }
+.quiz-options { display: flex; flex-direction: column; gap: 6px; }
+.quiz-option { padding: 8px 12px; background: white; border: 1px solid #c9d6e2; border-radius: 4px; cursor: pointer; text-align: left; font-size: 14px; }
+.quiz-option.correct { background: #f6ffed; border-color: #52c41a; color: #389e0d; }
+.quiz-option.wrong { background: #fff1f0; border-color: #ff4d4f; color: #cf1322; }
+.quiz-explain { margin-top: 8px; font-size: 13px; color: #555; font-style: italic; }
+.summary-card { background: linear-gradient(135deg, #1a3a52, #2c5282); color: white; padding: 20px 24px; border-radius: 8px; margin-top: 24px; }
+.summary-card h2 { color: white; border: none; margin-top: 0; }
+.summary-card ul { padding-left: 20px; }
+code { background: #f1f3f5; padding: 1px 6px; border-radius: 3px; font-family: monospace; font-size: 0.9em; }
+.summary-card code { background: rgba(255,255,255,0.2); color: white; }
+.progress-bar { height: 4px; background: #e1e8ed; border-radius: 2px; overflow: hidden; margin: 8px 0 16px; }
+.progress-fill { height: 100%; background: #52c41a; transition: width 0.3s; width: 0%; }
+</style>
+</head>
+<body>
+
+<h1>Bài 3 — Bên phòng thủ quá xa (Vua quá xa)</h1>
+<div class="source">
+  Chương 2 — Ngoại lệ tốt biên<br>
+  <a class="nav-link" href="../index.html">← Trang chủ</a> ·
+  <a class="nav-link" href="chapter_02_rooks_pawn.html">← Chương 2</a>
+</div>
+
+<div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+
+<div class="stage">
+  <span class="stage-label">GIAI ĐOẠN 1 · DẪN NHẬP</span>
+  <h2 style="margin-top:8px">Khi tốt biên THẮNG được</h2>
+  <p>Ở 2 bài trước: Đen hòa được tốt biên nhờ vua ở góc a8. Nhưng nếu vua đen QUÁ XA?</p>
+  <p>Thế cờ: Trắng Vua f5 + tốt a5, Đen Vua g7. Đến lượt Trắng.</p>
+  <div id="hookBoard" class="mini-board"></div>
+  <div class="hook-question">
+    🤔 <strong>Đen có kịp về a8 không?</strong> Khoảng cách Kg7 đến a8 = 6 cột.
+    Tốt a5 đến a8 = 3 nước. Cuộc đua?
+  </div>
+  <button class="reveal-btn" onclick="document.getElementById('hookAnswer').classList.remove('hidden'); markStage(1);">Hiển thị đáp án</button>
+  <div id="hookAnswer" class="hidden" style="margin-top:14px">
+    <p><strong>Trắng thắng!</strong> Tốt cần 3 nước Trắng (a6, a7, a8=Q). Vua đen cần 6 nước
+       để chạy đến a8 — không kịp. Bài học: tốt biên vẫn THẮNG nếu bên phòng thủ ở quá xa.</p>
+    <p>Quy tắc nhanh: Đếm số nước tốt cần để tới hàng phong cấp so với khoảng cách Chebyshev của vua đen
+       đến a8/h8. Nếu vua đen chậm hơn → Trắng thắng.</p>
+  </div>
+</div>
+
+<div class="stage">
+  <span class="stage-label">GIAI ĐOẠN 2 · KHÁI NIỆM</span>
+  <h2 style="margin-top:8px">Tính khoảng cách</h2>
+  <p>Khoảng cách Chebyshev = max(|Δcột|, |Δhàng|). Vua di chuyển 1 ô bất kỳ → 1 nước = 1 đơn vị Chebyshev.</p>
+  <ul>
+    <li>Tốt a5 → a8: 3 nước Trắng (đẩy 3 lần)</li>
+    <li>Vua đen Kg7 → a8: max(6, 1) = 6 nước</li>
+  </ul>
+  <p>Trắng đi trước, có lợi thế 1 nhịp. Cuộc đua kết thúc: 3 nước Trắng so với 6 nước Đen → Trắng nhanh hơn 3 nhịp.</p>
+  <div id="conceptBoard" class="mini-board"></div>
+  <p style="text-align:center;font-size:13px;color:#666;margin-top:6px">
+    Tốt ở a5 (vàng). Đường đi tốt → a8: 3 ô. Đường đi Kg7 → a8: ít nhất 6 ô (đi ngang).
+  </p>
+  <div class="hook-question" style="background:#f0f7ff; border-left-color:#2c5282; color:#1a3a52">
+    🔑 <strong>Quy tắc</strong>: Vua bên phòng thủ cần ở trong "vùng cứu" của góc — thường hàng 6/7
+    cột a-c (cho tốt a) hoặc f-h (cho tốt h). Nếu xa hơn, không kịp về.
+  </div>
+</div>
+
+<div class="stage">
+  <span class="stage-label">GIAI ĐOẠN 3 · TƯƠNG TÁC TỪNG BƯỚC</span>
+  <div class="board-layout">
+    <div>
+      <div id="board"></div>
+      <div class="controls">
+        <button onclick="resetBoard()">⟨⟨ Đầu</button>
+        <button onclick="prevMove()">⟨ Lùi</button>
+        <button onclick="nextMove()">Tiến ⟩</button>
+        <button onclick="goToEnd()">Cuối ⟩⟩</button>
+      </div>
+    </div>
+    <div class="info-panel">
+      <div class="move-display" id="moveDisplay">Thế cờ khởi đầu</div>
+      <div class="commentary" id="commentary">Trắng Kf5 + tốt a5 đấu Đen Kg7. Cuộc đua bắt đầu.</div>
+      <div class="info-box" id="infoBox">Đến lượt: <strong>Trắng</strong></div>
+    </div>
+  </div>
+</div>
+
+<div class="stage">
+  <span class="stage-label">GIAI ĐOẠN 4 · TỰ KIỂM TRA</span>
+  <h2 style="margin-top:8px">Vua đen ở đâu thì HÒA được?</h2>
+  <p>Cùng tốt Trắng a5 + Vua trắng đâu đó. Vua đen ở vị trí nào để bên phòng thủ vẫn HÒA?</p>
+  <div class="self-test">
+    <div class="self-test-question">Chọn vị trí vua đen mà cứu được hòa:</div>
+    <div class="quiz-options" id="selfTestOptions">
+      <button class="quiz-option" onclick="checkSelfTest(this, false, 'Kh1 quá xa — 7 nước đến a8. Tốt chỉ cần 3 nước → Trắng thắng dễ.')">Vua đen ở h1</button>
+      <button class="quiz-option" onclick="checkSelfTest(this, false, 'Kh8 cùng hàng với ô phong cấp nhưng cách 7 cột — 7 nước. Quá chậm.')">Vua đen ở h8</button>
+      <button class="quiz-option" onclick="checkSelfTest(this, true, 'Kc6 cách a8 = 2 nước (b7 → a8 hoặc Kb6 → a7 → phong tỏa). Bên phòng thủ kịp về góc → HÒA.')">Vua đen ở c6</button>
+      <button class="quiz-option" onclick="checkSelfTest(this, false, 'Kd5 cách a8 = 3 nước. Tốt cũng cần 3 nước Trắng (sau lợi thế 1 nhịp). Cuộc đua rất sát — thường thua nửa nước.')">Vua đen ở d5</button>
+    </div>
+    <div class="feedback hidden" id="selfTestFeedback"></div>
+  </div>
+</div>
+
+<div class="stage">
+  <span class="stage-label">GIAI ĐOẠN 5 · TRẮC NGHIỆM NHANH</span>
+  <h2 style="margin-top:8px">3 câu hỏi củng cố</h2>
+  <div class="quiz">
+    <div class="quiz-q">Câu 1. Khoảng cách Chebyshev từ <code>e3</code> đến <code>a8</code>?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" onclick="quizCheck(this, false)">9 (4 cột + 5 hàng)</button>
+      <button class="quiz-option" onclick="quizCheck(this, true)">5 (max của 4 cột và 5 hàng)</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">4</button>
+    </div>
+    <div class="quiz-explain hidden">
+      Chebyshev = max(|Δcột|, |Δhàng|). e3 đến a8: |e-a| = 4, |3-8| = 5. Max = 5. Vua đi 5 nước (kết hợp chéo và thẳng).
+    </div>
+  </div>
+  <div class="quiz">
+    <div class="quiz-q">Câu 2. Khi bên phòng thủ quá xa góc, bên tấn công phong cấp thành công và tàn cuộc là gì?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" onclick="quizCheck(this, true)">Vua + Hậu đấu Vua → thắng cơ bản (chiếu hết trong khoảng 10 nước)</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Hòa do không đủ lực</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Cần thêm tốt để thắng</button>
+    </div>
+    <div class="quiz-explain hidden">
+      Sau khi tốt a phong cấp thành Hậu, bên tấn công có Vua + Hậu đấu Vua. Đây là "chiếu hết cơ bản" — kỹ thuật chuẩn để chiếu hết trong 10 nước.
+    </div>
+  </div>
+  <div class="quiz">
+    <div class="quiz-q">Câu 3. So sánh 3 bài Chương 2 — bài nào bên phòng thủ HÒA được?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" onclick="quizCheck(this, true)">Bài 1 (trú ẩn trong góc) và Bài 2 (hết nước) — bên phòng thủ ở góc</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Cả 3 bài</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Chỉ Bài 3 (bên phòng thủ ở xa)</button>
+    </div>
+    <div class="quiz-explain hidden">
+      Bài 1: vua đen ở a8, Trắng phong cấp nhưng Đen ăn Hậu → hòa.
+      Bài 2: vua đen ở a8, Trắng đẩy a7 làm hết nước (pat) → hòa.
+      Bài 3: vua đen ở g7 quá xa → Trắng thắng.
+    </div>
+  </div>
+</div>
+
+<div class="summary-card">
+  <h2>📌 Tóm tắt</h2>
+  <ul>
+    <li><strong>Tốt biên không phải lúc nào cũng hòa</strong>: chỉ hòa khi vua bên phòng thủ kịp về góc.</li>
+    <li><strong>Tính khoảng cách Chebyshev</strong>: max(|Δcột|, |Δhàng|) — số nước vua tối thiểu.</li>
+    <li><strong>Quy tắc cuộc đua</strong>: đếm tốt cần X nước, vua đen cần Y nước. Nếu X &lt; Y - lợi thế nhịp → bên tấn công thắng.</li>
+    <li><strong>Vùng cứu cho tốt a</strong>: định nghĩa lỏng — vua đen cần ở hàng 6-8 và cột a-d (hoặc tương đương cho tốt h). Nếu ngoài vùng này, thua cuộc đua.</li>
+    <li><strong>Tóm tắt Chương 2</strong>: 3 bài cho 3 tình huống — trú ẩn trong góc (Bài 1), bẫy hết nước (pat) (Bài 2), bên phòng thủ quá xa (Bài 3).</li>
+  </ul>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chessboard-js/1.0.0/chessboard-1.0.0.min.js"></script>
+<script>
+const START_FEN = '8/6k1/8/P4K2/8/8/8/8 w - - 0 1';
+const MOVES = ['a6', 'Kf7', 'a7', 'Ke7', 'a8=Q'];
+const COMMENTARY = {
+  0: { move: 'Thế cờ khởi đầu', text: 'Trắng Kf5 + tốt a5 đấu Đen Kg7. Tốt còn 3 nước nữa là phong cấp, vua đen còn 6 nước nữa mới về a8.' },
+  1: { move: '1. a6', text: 'Tốt đẩy a5→a6. Tốt cần 2 nước nữa.' },
+  2: { move: '1... Kf7', text: 'Vua đen tiến lại gần — nhưng vẫn quá xa góc a8.' },
+  3: { move: '2. a7', text: 'Tốt lên a7. Còn 1 nước nữa là phong cấp.' },
+  4: { move: '2... Ke7', text: 'Vua đen tiến tiếp — không kịp.' },
+  5: { move: '3. a8=Q  1-0', text: 'Tốt phong cấp! Trắng có Vua + Hậu đấu Vua → thắng cơ bản. Vua đen Ke7 quá xa, không thể ngăn.' }
+};
+
+let board, game, currentMove = 0, stagesCompleted = new Set();
+
+function initBoard() {
+  game = new Chess(START_FEN);
+  board = Chessboard('board', { position: START_FEN, draggable: true,
+    pieceTheme: 'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png',
+    onDrop: (s,t) => { const m = game.move({from:s,to:t,promotion:'q'}); if(!m) return 'snapback'; setTimeout(updateOverlays,100); },
+    onSnapEnd: () => { board.position(game.fen()); updateOverlays(); }});
+  updateDisplay();
+}
+function nextMove() { if(currentMove>=MOVES.length) return; game.move(MOVES[currentMove]); board.position(game.fen()); currentMove++; setTimeout(()=>{updateDisplay();updateOverlays();},50); if(currentMove>=MOVES.length) markStage(3); }
+function prevMove() { if(currentMove<=0) return; game.undo(); currentMove--; board.position(game.fen()); setTimeout(()=>{updateDisplay();updateOverlays();},50); }
+function resetBoard() { game = new Chess(START_FEN); board.position(START_FEN); currentMove = 0; setTimeout(()=>{updateDisplay();updateOverlays();},50); }
+function goToEnd() { while(currentMove<MOVES.length){game.move(MOVES[currentMove]);currentMove++;} board.position(game.fen()); setTimeout(()=>{updateDisplay();updateOverlays();},50); }
+
+function updateDisplay() {
+  const cm = COMMENTARY[currentMove] || COMMENTARY[0];
+  document.getElementById('moveDisplay').textContent = cm.move;
+  document.getElementById('commentary').innerHTML = cm.text;
+  const box = document.getElementById('infoBox');
+  if (currentMove >= MOVES.length) { box.className = 'info-box win'; box.innerHTML = '1 — 0  TRẮNG THẮNG'; }
+  else { box.className = 'info-box'; box.innerHTML = 'Đến lượt: <strong>' + (game.turn()==='w'?'Trắng':'Đen') + '</strong>'; }
+  updateProgress();
+}
+function findPiece(p) {
+  const fen = game.fen().split(' ')[0]; const ranks = fen.split('/');
+  for (let r=0;r<8;r++) { let f=0; for (const ch of ranks[r]) {
+    if (/\d/.test(ch)) f+=parseInt(ch);
+    else { const w = ch===ch.toUpperCase(), t = ch.toUpperCase();
+      if ((p[0]==='w'&&w&&p[1]===t) || (p[0]==='b'&&!w&&p[1]===t)) return String.fromCharCode(97+f) + (8-r);
+      f++; } } }
+  return null;
+}
+function updateOverlays() {
+  $('#board .square-55d63').removeClass('highlight-square highlight-king-blue');
+  const wP = findPiece('wP');
+  if (wP) {
+    // Highlight pawn's path to a8
+    const f = wP.charCodeAt(0) - 97;
+    for (let r = parseInt(wP[1]); r <= 8; r++) {
+      $('#board .square-' + String.fromCharCode(97 + f) + r).addClass('highlight-square');
+    }
+  }
+  $('#board .square-a8').addClass('highlight-square');
+  const bK = findPiece('bK'); if (bK) $('#board .square-' + bK).addClass('highlight-king-blue');
+}
+function checkSelfTest(btn, ok, exp) {
+  document.querySelectorAll('#selfTestOptions .quiz-option').forEach(el=>el.disabled=true);
+  btn.classList.add(ok?'correct':'wrong');
+  const fb = document.getElementById('selfTestFeedback');
+  fb.classList.remove('hidden'); fb.className = 'feedback ' + (ok?'correct':'wrong');
+  fb.textContent = (ok?'✓ ':'✗ ') + exp; markStage(4);
+}
+function quizCheck(btn, ok) {
+  const q = btn.closest('.quiz');
+  q.querySelectorAll('.quiz-option').forEach(el=>el.disabled=true);
+  btn.classList.add(ok?'correct':'wrong');
+  if (!ok) q.querySelectorAll('.quiz-option').forEach(el => { if (el.getAttribute('onclick').includes('true')) el.classList.add('correct'); });
+  q.querySelector('.quiz-explain').classList.remove('hidden'); markStage(5);
+}
+function markStage(n) { stagesCompleted.add(n); updateProgress(); }
+function updateProgress() { document.getElementById('progressFill').style.width = (stagesCompleted.si

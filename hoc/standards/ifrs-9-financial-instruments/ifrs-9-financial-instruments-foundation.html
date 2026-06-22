@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="vi"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IFRS 9 Financial Instruments — Nền tảng, hiểu từ gốc</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,500&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  /* Design tokens shared with ebook-to-study-html + feynman-from-study (styles_v2.css) */
+  :root{
+    --bg:#fafaf7; --bg-elevated:#ffffff; --bg-soft:#f3f3ee;
+    --border:#e0e0d8; --border-soft:#ececea; --border-strong:#d2c8b6;
+    --ink:#1a1a1f; --ink-soft:#3f3f4a; --muted:#7a7a85;
+    --accent:#b8860b; --accent-2:#8b6508; --gold:#a07c1f; --bridge:#5a6b4f;
+    --serif:"Fraunces",Georgia,"Iowan Old Style",serif;
+    --sans:"Geist",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    --mono:"Geist Mono","JetBrains Mono",Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:var(--sans);
+    font-size:19px;line-height:1.72;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}
+  .progress{position:fixed;top:0;left:0;height:3px;width:0;z-index:50;
+    background:linear-gradient(90deg,var(--gold),var(--accent));transition:width .08s linear}
+  .wrap{max-width:920px;margin:0 auto;padding:0 36px}
+  .rise{opacity:0;transform:translateY(14px);animation:rise .7s cubic-bezier(.2,.7,.3,1) forwards}
+  @keyframes rise{to{opacity:1;transform:none}}
+
+  header{padding:104px 0 60px;border-bottom:1px solid var(--border)}
+  .kicker{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.18em;
+    text-transform:uppercase;color:var(--accent);margin-bottom:26px}
+  h1{font-family:var(--serif);font-weight:600;font-size:clamp(42px,7.6vw,72px);
+    line-height:1.0;letter-spacing:-.022em;margin-bottom:28px;font-optical-sizing:auto;color:var(--ink)}
+  h1 em{font-style:italic;color:var(--accent)}
+  .core{font-family:var(--serif);font-style:italic;font-weight:400;
+    font-size:clamp(21px,3.6vw,27px);line-height:1.44;color:var(--ink-soft)}
+  .core span{font-style:normal;font-weight:600;color:var(--accent-2);
+    box-shadow:inset 0 -.5em 0 rgba(184,134,11,.16)}
+
+  /* ---- BƯỚC 0: ĐỊNH VỊ (what it is + why it's the foundation) ---- */
+  .anchor .rule{font-family:var(--serif);font-size:19px;line-height:1.5;color:var(--ink);
+    background:var(--bg-soft);border-left:3px solid var(--accent);
+    padding:18px 24px;border-radius:0 4px 4px 0;margin:0}
+  .anchor .rule em{font-style:italic;color:var(--accent-2)}
+  .anchor .rule strong{color:var(--ink);font-weight:600}
+  .anchor .why{color:var(--ink-soft)}
+
+  section{padding:72px 0;border-bottom:1px solid var(--border);position:relative}
+  .step-head{display:flex;align-items:flex-start;gap:22px;margin-bottom:34px}
+  .big-num{font-family:var(--serif);font-weight:700;font-size:62px;line-height:.8;
+    color:var(--border-strong);flex:none;font-optical-sizing:auto;letter-spacing:-.03em}
+  .step-meta{padding-top:4px}
+  .lbl{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--accent);display:block;margin-bottom:10px}
+  h2{font-family:var(--serif);font-weight:600;font-size:clamp(27px,4.4vw,37px);
+    line-height:1.12;letter-spacing:-.012em;color:var(--ink)}
+  h2 em{font-style:italic;color:var(--accent)}
+  p{margin-bottom:21px}
+  p:last-child{margin-bottom:0}
+  strong{font-weight:600;color:var(--ink)}
+  em{font-style:italic;color:var(--accent-2)}
+  .gloss{color:var(--muted);font-style:italic}
+
+  .lead::first-letter{font-family:var(--serif);font-weight:700;float:left;
+    font-size:74px;line-height:.74;padding:8px 12px 0 0;color:var(--accent)}
+
+  .sub{font-family:var(--serif);font-weight:600;font-size:17px;letter-spacing:.01em;
+    color:var(--ink);margin:34px 0 14px;display:flex;align-items:center;gap:11px}
+  .sub::before{content:"";width:18px;height:2px;background:var(--accent);flex:none;border-radius:2px}
+
+  /* ---- BƯỚC 1: VẤN ĐỀ (why it exists) ---- */
+  .problem{background:var(--bg-soft)}
+  .problem .big-num{color:#e2d6b4}
+
+  /* ---- BƯỚC 3: VÍ DỤ (concrete worked example) ---- */
+  .example-card{border:1px solid #e8c876;border-radius:4px;padding:30px 32px;margin:8px 0 28px;
+    background:linear-gradient(135deg,#fef9ed 0%,#fdf3e0 100%)}
+  .example-card .tag{font-family:var(--mono);font-weight:600;font-size:11px;
+    letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin-bottom:16px;display:block}
+  .example-card p{color:#5a4810}
+  .example-card strong{color:var(--accent-2)}
+  .example-card p:last-child{margin-bottom:0}
+
+  /* ---- DỄ NHẦM (optional clarify / boundaries) ---- */
+  .clarify{background:var(--bg-soft)}
+  .clarify .big-num{color:#d8cdb2}
+  .mix-q{margin:0 0 30px;padding-left:24px;border-left:2px solid var(--border-strong)}
+  .mix-q:last-child{margin-bottom:0}
+  .mix-q .q{font-family:var(--serif);font-style:italic;font-weight:500;
+    font-size:22px;line-height:1.35;color:var(--accent-2);margin-bottom:12px;display:block}
+  .mix-q p:last-child{margin-bottom:0}
+
+  /* ---- NỐI TIẾP (bridge to the harder concepts) ---- */
+  .bridge .big-num{color:#bcc7b2}
+  .bridge .lbl{color:var(--bridge)}
+  .bridge-card{border-left:3px solid var(--bridge);background:#f4f6f1;
+    padding:22px 26px;border-radius:0 4px 4px 0;margin-top:6px}
+  .bridge-card p:last-child{margin-bottom:0}
+  .bridge-card strong{color:#42513a}
+
+  /* ---- KỂ LẠI GỌN (refined retell) ---- */
+  .retell{background:linear-gradient(180deg,var(--bg-soft) 0%,var(--bg) 100%);border-bottom:none}
+  .retell h2{color:var(--ink)}
+  .retell strong{color:var(--accent-2)}
+  .retell .core{margin-top:6px}
+  .testbox{border:1px solid var(--border);background:var(--bg-elevated);
+    border-radius:4px;padding:28px 32px;margin-top:40px;box-shadow:0 1px 2px rgba(0,0,0,.03)}
+  .testbox h3{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--accent);margin-bottom:20px}
+  .testbox ol{margin:0;padding-left:22px;counter-reset:t}
+  .testbox li{margin-bottom:16px;color:var(--ink-soft);padding-left:6px}
+  .testbox li:last-child{margin-bottom:0}
+
+  footer{text-align:center;padding:60px 0 88px}
+  footer .mark{font-family:var(--serif);font-weight:700;color:var(--accent);
+    font-size:26px;display:block;margin-bottom:14px}
+  footer p{font-family:var(--serif);font-style:italic;color:var(--muted);font-size:17px;max-width:400px;margin:0 auto}
+
+  @media(max-width:560px){
+    body{font-size:18px}
+    header{padding:70px 0 44px}
+    section{padding:52px 0}
+    .step-head{gap:16px}
+    .big-num{font-size:46px}
+    .lead::first-letter{font-size:60px}
+  }
+</style>
+<style>
+ .tabbar{position:fixed;top:0;left:0;right:0;width:100%;box-sizing:border-box;z-index:40;background:rgba(250,250,247,.93);
+   backdrop-filter:saturate(1.1) blur(8px);-webkit-backdrop-filter:saturate(1.1) blur(8px);
+   border-bottom:1px solid var(--border);display:flex;gap:6px;overflow-x:auto;
+   padding:10px max(36px,calc((100% - 992px)/2));scrollbar-width:thin}
+ .tabbar .tab{flex:0 0 auto;display:flex;align-items:baseline;gap:9px;cursor:pointer;
+   background:transparent;border:1px solid transparent;border-radius:999px;
+   padding:8px 17px;transition:.15s;white-space:nowrap;color:var(--muted)}
+ .tabbar .tab:hover{color:var(--ink);background:var(--bg-soft)}
+ .tabbar .tab.active{color:var(--accent-2);background:var(--bg-soft);border-color:var(--border-strong)}
+ .tabbar .tn{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.1em;color:var(--accent)}
+ .tabbar .tl{font-family:var(--serif);font-weight:500;font-size:16px}
+ body{padding-top:56px} .concept-panel{display:none}
+ .concept-panel.active{display:block}
+ .concept-panel header{padding-top:50px}
+ @media(max-width:560px){.tabbar .tl{max-width:48vw;overflow:hidden;text-overflow:ellipsis}}
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+<nav class="tabbar" aria-label="Các khái niệm nền" role="tablist"><button class="tab" data-i="0" id="tab-0" role="tab" aria-controls="c-cong-cu-tai-chinh" aria-selected="false" tabindex="-1"><span class="tn">01</span><span class="tl">Công cụ tài chính</span></button><button class="tab" data-i="1" id="tab-1" role="tab" aria-controls="c-hai-cay-thuoc" aria-selected="false" tabindex="-1"><span class="tn">02</span><span class="tl">Hai cây thước</span></button><button class="tab" data-i="2" id="tab-2" role="tab" aria-controls="c-hai-cua-phan-loai" aria-selected="false" tabindex="-1"><span class="tn">03</span><span class="tl">Hai cửa phân loại</span></button><button class="tab" data-i="3" id="tab-3" role="tab" aria-controls="c-lai-suat-hieu-luc" aria-selected="false" tabindex="-1"><span class="tn">04</span><span class="tl">Lãi suất hiệu lực</span></button><button class="tab" data-i="4" id="tab-4" role="tab" aria-controls="c-rui-ro-tin-dung-ecl" aria-selected="false" tabindex="-1"><span class="tn">05</span><span class="tl">Rủi ro &amp; tổn thất</span></button><button class="tab" data-i="5" id="tab-5" role="tab" aria-controls="c-lai-lo-va-oci" aria-selected="false" tabindex="-1"><span class="tn">06</span><span class="tl">Lãi lỗ &amp; OCI</span></button></nav>
+<div class="concept-panel" id="c-cong-cu-tai-chinh" role="tabpanel" aria-labelledby="tab-0" tabindex="0"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Nền tảng · hiểu từ gốc</div>
+    <h1 class="rise" style="animation-delay:.08s">Công cụ tài chính là gì — và vì sao phải biết trước mọi thứ</h1>
+    <p class="core rise" style="animation-delay:.16s">Trước khi phân loại hay đo, <span>phải biết thứ trong tay có phải công cụ tài chính không.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Định vị · nó là gì &amp; vì sao học trước</span><h2>Nền dưới cùng: công cụ tài chính</h2></div>
+    </div>
+    <div class="rule">Cả cuốn IFRS 9 xoay quanh <strong>công cụ tài chính</strong> (financial instrument): một hợp đồng làm phát sinh <em>tài sản tài chính</em> cho bên này, và <em>nợ phải trả tài chính</em> hoặc <em>công cụ vốn</em> cho bên kia (định nghĩa gốc nằm ở IAS 32). Mục tiêu ¶1.1: trình bày tài sản và nợ tài chính sao cho người đọc thấy được số tiền, thời điểm và độ chắc chắn của dòng tiền tương lai. Chuẩn dựng trên ba trụ: phân loại &amp; đo lường, suy giảm giá trị (mô hình ECL), và kế toán phòng ngừa rủi ro.</div>
+    <div class="sub">Vì sao đây là nền</div>
+    <div class="why"><p>Đây là cánh cửa vào. Mọi quy tắc sau đều cần nó: xếp nhóm, đo giá, tính tổn thất. Các quy tắc đó chỉ chạy khi thứ trong tay đúng là công cụ tài chính, và đúng nằm trong phạm vi chuẩn. Chưa phân biệt được một trái phiếu với một cái máy, bạn chưa biết quy tắc nào áp lên cái gì. Bộ nền này lo phần lõi: nhận diện, phân loại, đo lường và tổn thất. Phòng ngừa rủi ro là một tầng riêng, để dành sau.</p></div>
+  </section>
+
+  <section class="problem">
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Vấn đề nó sinh ra để giải quyết</span><h2>Trái phiếu, cái máy, lời hứa trả tiền — cái nào lên sổ?</h2></div>
+    </div>
+    <p class="lead">Bạn có ba thứ trong tay: một tờ trái phiếu công ty, một cái máy pha cà phê, và một lời hứa miệng 'tháng sau trả'. Hỏi: thứ nào là công cụ tài chính, thứ nào không? Nếu trả lời sai ngay từ đây, mọi bước sau đều lệch.</p>
+
+<p>Vấn đề là ranh giới không nằm ở chỗ 'có đáng tiền hay không'. Cái máy đáng tiền, nhưng nó không phải công cụ tài chính. Tờ trái phiếu mới là.</p>
+
+<div class="sub">Cái gì làm nên một công cụ tài chính</div>
+<p>Điểm chung của trái phiếu, khoản cho vay, khoản phải thu là: chúng là một <em>hợp đồng</em> về tiền trong tương lai. Một bên có quyền nhận tiền. Bên kia có nghĩa vụ trả tiền. Cái máy thì không hứa trả ai đồng nào, nên đứng ngoài.</p>
+
+<p>Nên trước khi hỏi 'xếp nhóm nào, đo giá ra sao', phải hỏi trước: đây có phải hợp đồng về tiền không. Câu đó để Bước 2 trả lời.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Mô hình đơn giản · cách nó chạy</span><h2>Ba mảnh: tài sản, nợ, và công cụ vốn</h2></div>
+    </div>
+    <p>Một công cụ tài chính luôn có hai phía của cùng một hợp đồng. Nhìn từ phía bạn, nó rơi vào một trong ba mảnh.</p>
+
+<div class="sub">Mảnh một: tài sản tài chính — bên được nhận</div>
+<p>Là quyền nhận tiền hoặc nhận một công cụ tài chính khác. Tiền mặt bạn giữ, khoản người ta nợ bạn, trái phiếu bạn mua, cổ phiếu bạn nắm — đều là tài sản tài chính. Điểm chung: chúng mang tiền về cho bạn.</p>
+
+<div class="sub">Mảnh hai: nợ phải trả tài chính — bên phải trả</div>
+<p>Là nghĩa vụ giao tiền cho người khác. Khoản vay bạn đi vay, trái phiếu bạn phát hành, tiền bạn còn nợ nhà cung cấp. Cùng một tờ giấy nợ: tài sản của người cho vay, nợ của người đi vay.</p>
+
+<div class="sub">Mảnh ba: công cụ vốn — phần sở hữu</div>
+<p>Là phần còn lại sau khi lấy tài sản trừ hết nợ. Cần tách hai góc nhìn cho rõ. Đứng từ người tự phát hành cổ phần của mình, đó là công cụ vốn, theo một chuẩn riêng. Nhưng đứng từ người mua cổ phiếu đó, nó lại là tài sản tài chính, nằm trọn trong cuốn này.</p>
+
+<div class="sub">Một cửa lọc nữa: có nằm trong phạm vi không</div>
+<p>Vài thứ trông giống mà chuẩn khác quản: phần hùn vào công ty con, hợp đồng thuê, hợp đồng bảo hiểm. Nên sau khi nhận ra 'đây là công cụ tài chính', còn một bước: kiểm xem nó có thuộc phạm vi cuốn này không.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví dụ cụ thể</span><h2>Soi ba thứ trong tay</h2></div>
+    </div>
+    <div class="example-card"><span class="tag">Bài toán</span>
+<p>Quay lại ba thứ lúc đầu: trái phiếu, cái máy, lời hứa 'tháng sau trả'.</p>
+<p>Trái phiếu: một hợp đồng cho công ty vay tiền, có quyền nhận lại gốc và lãi. Đây là <strong>tài sản tài chính</strong>. Cái máy: một vật, không hứa trả ai đồng nào. Không phải công cụ tài chính, dù nó đáng tiền. Lời hứa 'tháng sau trả' tiền hàng đã giao: đó là khoản phải thu, cũng là <strong>tài sản tài chính</strong>.</p>
+<p>Đổi góc nhìn cho vui. Chính lời hứa đó, nhìn từ người mua hàng, lại là một <strong>khoản nợ</strong> phải trả. Một hợp đồng, hai phía, hai tên gọi.</p>
+</div>
+<p>Đời thường hơn: số dư trong tài khoản ngân hàng của bạn là một tài sản tài chính — ngân hàng có nghĩa vụ trả lại bạn. Còn chiếc điện thoại trong túi thì không, dù bán được tiền. Khác nhau ở chỗ có ai 'mắc nợ' bạn hay không.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Định nghĩa chính thức của <em>financial asset</em>, <em>financial liability</em> và <em>equity instrument</em> không nằm trong IFRS 9 mà ở IAS 32. IFRS 9 lo phần sau: ghi nhận (¶3.1.1 — ghi khi và chỉ khi trở thành một bên của hợp đồng), phân loại, đo lường, suy giảm và phòng ngừa. Một hợp đồng mua bán hàng phi tài chính vẫn có thể bị kéo vào phạm vi nếu được thanh toán ròng bằng tiền (net settlement), trừ ngoại lệ 'own use'.</p>
+  </section>
+
+  <section class="clarify">
+    <div class="step-head">
+      <div class="big-num">≠</div>
+      <div class="step-meta"><span class="lbl">Dễ nhầm · ranh giới</span><h2>Đừng nhầm 'có giá trị' với 'là công cụ tài chính'</h2></div>
+    </div>
+    <div class="mix-q"><span class="q">"Cái gì đáng tiền cũng là tài sản tài chính chứ?"</span><p>Không. Nhà, máy móc, hàng tồn kho đều đáng tiền, nhưng chúng là tài sản <em>phi</em> tài chính. Tài sản tài chính phải là một <strong>quyền theo hợp đồng</strong> để nhận tiền hay công cụ tài chính khác. Không có ai ở đầu bên kia mắc nợ bạn thì không phải.</p></div>
+<div class="mix-q"><span class="q">"Vàng dự trữ cũng là tiền, vậy là tài sản tài chính?"</span><p>Không. Vàng là hàng hóa, không phải quyền đòi ai trả. Tiền mặt thì lại là tài sản tài chính, vì nó là phương tiện trao đổi. Mẹo nhỏ: hỏi 'có ai mắc nợ mình ở đây không'. Có thì tài chính, không thì thôi.</p></div>
+  </section>
+
+  <section class="bridge">
+    <div class="step-head">
+      <div class="big-num">→</div>
+      <div class="step-meta"><span class="lbl">Nối tiếp · nó dẫn tới đâu</span><h2>Biết nó là công cụ tài chính rồi — hai trang khó đang đợi</h2></div>
+    </div>
+    <div class="bridge-card"><p>Giữ chắc viên gạch này: thứ trong tay là một hợp đồng về tiền, nhìn từ một phía. Có nó rồi, hai trang khó mới mở ra được.</p>
+<p>Trang <strong>'Vì sao một trái phiếu lại có thể thành FVTPL?'</strong> hỏi một câu: cùng là tài sản tài chính, sao lại xếp khác nhóm. Muốn theo, phải biết 'trái phiếu là tài sản tài chính' trước. Trang <strong>'Bán hợp pháp mà tài sản vẫn nằm trên sổ?'</strong> bàn lúc nào gỡ tài sản khỏi sổ. Trang đó chỉ sáng khi bạn đã biết vì sao tài sản lên sổ từ đầu.</p></div>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">✦</div>
+      <div class="step-meta"><span class="lbl">Kể lại trong một hơi</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Công cụ tài chính là một hợp đồng về tiền tương lai. Một phía có quyền nhận: tài sản tài chính. Phía kia có nghĩa vụ trả: nợ tài chính. Phần sở hữu còn lại là công cụ vốn. Đáng tiền chưa đủ — phải có ai đó mắc nợ ở đầu bên kia. Nhận ra đúng nó, mọi quy tắc sau mới có chỗ bám.</p>
+<p class="core">Trước khi phân loại hay đo, <span>có ai mắc nợ ở đầu bên kia thì mới là công cụ tài chính.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã nắm nền chưa?</h3>
+      <ol>
+        <li>Cái máy và tờ trái phiếu đều đáng tiền — vì sao chỉ một là công cụ tài chính?</li>
+        <li>Cùng một tờ giấy nợ lại vừa là tài sản, vừa là nợ. Vì sao?</li>
+        <li>Trước khi xếp nhóm hay đo giá, vì sao phải hỏi 'nó có nằm trong phạm vi chuẩn không'?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nền vững thì cái khó tự nhẹ đi. Hiểu từ gốc, không học vẹt.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-hai-cay-thuoc" role="tabpanel" aria-labelledby="tab-1" tabindex="0"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Nền tảng · hiểu từ gốc</div>
+    <h1 class="rise" style="animation-delay:.08s">Hai cây thước đo: giá thị trường hôm nay, hay giá gốc rải dần?</h1>
+    <p class="core rise" style="animation-delay:.16s">Cùng một tài sản, <span>đo bằng giá thị trường hay giá gốc rải dần ra hai con số khác nhau.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Định vị · nó là gì &amp; vì sao học trước</span><h2>Nền: hai cách đo một công cụ tài chính</h2></div>
+    </div>
+    <div class="rule">Sau khi ghi nhận, IFRS 9 đo công cụ tài chính theo một trong hai 'thước'. <strong>Giá trị hợp lý</strong> (fair value) là giá thị trường hôm nay, đo theo IFRS 13. <strong>Giá phân bổ</strong> (amortised cost) là giá gốc ban đầu, cuốn dần theo thời gian. Kết quả phân loại (¶4.1.1) chỉ là chọn thước nào và lãi/lỗ đi đâu: <em>amortised cost</em>, <em>FVOCI</em>, hay <em>FVTPL</em>. Ngay lúc ghi nhận ban đầu (¶5.1.1) thì đo theo giá trị hợp lý, cộng hoặc trừ chi phí giao dịch trực tiếp (riêng nhóm FVTPL cho chi phí vào lãi lỗ ngay).</div>
+    <div class="sub">Vì sao đây là nền</div>
+    <div class="why"><p>Cả ba nhóm đo lường của IFRS 9 chỉ là biến tấu của hai cây thước này. Chưa phân biệt 'giá thị trường' với 'giá gốc rải dần', bạn sẽ thấy ba nhóm như ba thứ rời rạc, phải học vẹt. Nắm hai thước, ba nhóm tự gọn lại thành vài lựa chọn dễ nhớ.</p></div>
+  </section>
+
+  <section class="problem">
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Vấn đề nó sinh ra để giải quyết</span><h2>Trái phiếu trong két: ghi giá nào lên sổ?</h2></div>
+    </div>
+    <p class="lead">Công ty bạn mua một trái phiếu giá 100. Một năm sau, trên thị trường nó đang mua bán ở giá 95. Cuối năm, sổ sách nên ghi trái phiếu đó là 100 hay 95? Hai con số, hai câu chuyện rất khác.</p>
+
+<p>Đây là vấn đề thật, không phải bắt bẻ. Ghi 95 thì sổ bám sát thị trường, nhưng nhảy lên xuống mỗi kỳ. Ghi 100 thì ổn định, nhưng có thể đã lỗi thời.</p>
+
+<div class="sub">Vì sao không có một câu trả lời chung</div>
+<p>Cái đúng tùy bạn định làm gì với trái phiếu. Định giữ tới hạn để thu gốc lãi, thì giá chợ lên xuống hôm nay ít liên quan. Định bán bất cứ lúc nào, thì giá chợ mới là cái đáng ghi. Nên chuẩn cần hai thước, không phải một.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Mô hình đơn giản · cách nó chạy</span><h2>Thước thị trường và thước giá gốc</h2></div>
+    </div>
+    <p>Hai thước trả lời cùng câu hỏi 'tài sản này đáng bao nhiêu', nhưng theo hai lối khác hẳn.</p>
+
+<div class="sub">Thước một: giá trị hợp lý — ảnh chụp hôm nay</div>
+<p>Là số tiền bán được tài sản trên thị trường ngay lúc này. Mỗi kỳ chụp lại một tấm mới. Giá chợ lên thì con số lên, giá chợ xuống thì con số xuống. Ưu điểm: luôn cập nhật. Nhược điểm: nhảy nhót.</p>
+
+<div class="sub">Thước hai: giá phân bổ — cuốn phim từ giá gốc</div>
+<p>Bắt đầu từ giá đã trả lúc mua. Rồi mỗi kỳ cuốn nó đi một chút theo lãi và theo các khoản thu trả. Nó không nhìn ra chợ, chỉ chạy theo nội dung hợp đồng. Ưu điểm: mượt, ổn định. Nhược điểm: có thể xa giá chợ.</p>
+
+<div class="sub">Mảnh thứ ba: lãi/lỗ rơi đi đâu</div>
+<p>Chọn thước chưa đủ. Còn phải hỏi: phần tăng giảm giá trị ghi vào đâu. Có nhóm cho thẳng vào lãi lỗ trong kỳ. Có nhóm để riêng một chỗ, chưa tính vào lãi lỗ vội. Đó chính là chỗ tab 'Lãi lỗ và thu nhập khác' lo.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví dụ cụ thể</span><h2>Cùng một trái phiếu, hai cây thước</h2></div>
+    </div>
+    <div class="example-card"><span class="tag">Bài toán</span>
+<p>Trái phiếu mua giá <strong>100</strong>, lãi suất hợp đồng 5% một năm. Cuối năm thị trường định giá nó còn <strong>95</strong>.</p>
+<p>Đo bằng thước thị trường: ghi <strong>95</strong>. Phần rớt 5 phải hạch toán đâu đó. Đo bằng thước giá gốc: vẫn quanh <strong>100</strong>, không thèm biết chợ rớt giá; chỉ lo thu đủ gốc lãi theo hợp đồng.</p>
+<p>Cùng một tài sản, cùng một ngày, hai con số khác nhau. Khác nhau vì hai mục đích nắm giữ khác nhau, chứ không phải ai sai.</p>
+</div>
+<p>Giống cái xe bạn mua. Kiểu thứ nhất: ghi giá còn lại sau khi trừ hao mòn dần — đó là lối giá gốc rải dần. Kiểu thứ hai: hôm nay rao bán được bao nhiêu, đó là giá thị trường. Hai con số phục vụ hai câu hỏi khác nhau.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Ba nhóm đo lường gắn với hai thước như sau. <em>Amortised cost</em>: thước giá gốc, lãi/lỗ vào P/L. <em>FVTPL</em>: thước giá trị hợp lý, toàn bộ thay đổi vào P/L. <em>FVOCI</em>: thước giá trị hợp lý trên bảng cân đối, nhưng phần lãi/lỗ tính như thể đang dùng giá gốc thì vào P/L, phần dôi ra để ở OCI. <em>Fair value</em> đo theo IFRS 13; <em>amortised cost</em> định nghĩa ở Appendix A của IFRS 9.</p>
+  </section>
+
+  <section class="clarify">
+    <div class="step-head">
+      <div class="big-num">≠</div>
+      <div class="step-meta"><span class="lbl">Dễ nhầm · ranh giới</span><h2>Đừng nhầm giá phân bổ với giá thị trường</h2></div>
+    </div>
+    <div class="mix-q"><span class="q">"Giá gốc rải dần chắc cũng xấp xỉ giá chợ chứ?"</span><p>Không chắc. Giá gốc rải dần chạy theo hợp đồng, mặc kệ chợ. Chợ có thể rớt mạnh vì lãi suất đổi hay công ty phát hành yếu đi, mà sổ theo giá gốc vẫn đi mượt. Hai con số có thể lệch nhau khá xa.</p></div>
+<div class="mix-q"><span class="q">"Vậy giá thị trường mới là 'giá thật', còn giá gốc là giả?"</span><p>Không có cái nào giả. Mỗi thước trả lời một câu khác nhau. Giá thị trường: bán bây giờ được bao nhiêu. Giá gốc rải dần: giữ tới cùng thì thu về thế nào. Mục đích nắm giữ quyết định thước nào hợp.</p></div>
+  </section>
+
+  <section class="bridge">
+    <div class="step-head">
+      <div class="big-num">→</div>
+      <div class="step-meta"><span class="lbl">Nối tiếp · nó dẫn tới đâu</span><h2>Hai thước này dẫn thẳng vào trang FVOCI</h2></div>
+    </div>
+    <div class="bridge-card"><p>Giữ chắc: chọn nhóm đo lường chỉ là chọn thước nào, và lãi/lỗ đi đâu. Còn thước nào áp cho tài sản nào thì tab <strong>'Hai cửa phân loại'</strong> lo. Ý đó cũng mở đúng trang khó <strong>'Bảng cân đối theo giá thị trường, lời lãi lại như cũ?'</strong>.</p>
+<p>Ở đó, một trái phiếu nhóm FVOCI dùng cả hai thước cùng lúc. Bảng cân đối hiện giá thị trường. Nhưng phần lãi lỗ lại tính y như đang dùng giá gốc rải dần. Nghe vô lý, cho tới khi bạn đã tách bạch hai thước ngay tại đây.</p></div>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">✦</div>
+      <div class="step-meta"><span class="lbl">Kể lại trong một hơi</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Một công cụ tài chính đo được theo hai thước. Giá trị hợp lý là giá chợ hôm nay, cập nhật mà nhảy nhót. Giá phân bổ là giá gốc cuốn dần theo hợp đồng, mượt mà có thể xa chợ. Chọn thước nào tùy bạn định giữ hay định bán. Và còn một câu nữa: phần tăng giảm đó ghi vào lãi lỗ ngay, hay để riêng.</p>
+<p class="core">Cùng một tài sản, <span>giá chợ hôm nay, hay giá gốc rải dần — tùy bạn định giữ hay bán.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã nắm nền chưa?</h3>
+      <ol>
+        <li>Cùng một trái phiếu ngày cuối năm, vì sao thước thị trường và thước giá gốc cho hai con số khác nhau?</li>
+        <li>Khi nào giá phân bổ (giá gốc rải dần) hợp hơn giá thị trường, và vì sao?</li>
+        <li>Chọn nhóm đo lường thật ra là chọn hai thứ gì?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nền vững thì cái khó tự nhẹ đi. Hiểu từ gốc, không học vẹt.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-hai-cua-phan-loai" role="tabpanel" aria-labelledby="tab-2" tabindex="0"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Nền tảng · hiểu từ gốc</div>
+    <h1 class="rise" style="animation-delay:.08s">Hai cửa quyết định: tài sản rơi vào thước nào?</h1>
+    <p class="core rise" style="animation-delay:.16s">Hai câu hỏi <span>định đoạt một tài sản đo bằng giá gốc, giá thị trường, hay cả hai.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Định vị · nó là gì &amp; vì sao học trước</span><h2>Nền: hai cửa phân loại tài sản tài chính</h2></div>
+    </div>
+    <div class="rule">Một tài sản tài chính rơi vào nhóm đo lường nào, theo ¶4.1.1, phụ thuộc <strong>cả hai</strong> cửa: (a) <strong>mô hình kinh doanh</strong> (business model) đơn vị dùng để quản lý tài sản, và (b) <strong>đặc tính dòng tiền hợp đồng</strong> — phép thử <em>SPPI</em> (solely payments of principal and interest, chỉ là gốc và lãi trên gốc còn lại). Hai cửa giao nhau cho ba nhóm: giữ-để-thu và đạt SPPI cho <em>amortised cost</em>; vừa-giữ-vừa-bán và đạt SPPI cho <em>FVOCI</em>; còn lại, hoặc trượt SPPI, thì <em>FVTPL</em>.</div>
+    <div class="sub">Vì sao đây là nền</div>
+    <div class="why"><p>Tab 'Hai cây thước' cho biết có những thước nào. Tab này cho biết thước nào áp vào tài sản nào. Thiếu nó, bạn thuộc tên ba nhóm mà vẫn không biết một trái phiếu sẽ rơi vào đâu. Đây đúng là luật định tuyến mà trang khó về FVTPL dựng lên trên.</p></div>
+  </section>
+
+  <section class="problem">
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Vấn đề nó sinh ra để giải quyết</span><h2>Hai trái phiếu giống nhau, sao xếp khác nhóm?</h2></div>
+    </div>
+    <p class="lead">Hai ngân hàng cùng mua một loại trái phiếu y hệt, cùng giá, cùng lãi. Cuối năm, một bên ghi nó theo giá gốc, bên kia ghi theo giá thị trường. Cùng một tài sản mà hai cách ghi — vì sao được phép vậy?</p>
+
+<p>Hóa ra bản thân tờ trái phiếu chưa đủ để quyết định. Phải biết thêm hai điều: đơn vị định làm gì với nó, và dòng tiền của nó có 'hiền' không. Thiếu một trong hai, chưa thể xếp nhóm.</p>
+
+<div class="sub">Vì sao cần một luật rõ</div>
+<p>Nếu để ai thích ghi kiểu nào cũng được, sổ sách loạn ngay. Nên chuẩn dựng hai cửa cứng, ai đi qua cũng ra cùng kết quả. Hai cửa đó là nội dung Bước 2.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Mô hình đơn giản · cách nó chạy</span><h2>Cửa mô hình kinh doanh, rồi cửa dòng tiền</h2></div>
+    </div>
+    <p>Mỗi tài sản phải đi qua hai cửa. Cửa nào cũng hỏi một câu đơn giản. Trả lời xong cả hai, nhóm đo lường tự lộ ra.</p>
+
+<div class="sub">Cửa một: đơn vị định làm gì với tài sản</div>
+<p>Đây là mô hình kinh doanh. Có ba lối. Một, giữ để thu dòng tiền tới hạn. Hai, vừa giữ thu vừa sẵn sàng bán. Ba, mua bán kiếm chênh lệch là chính. Xét theo cả nhóm tài sản, không theo ý định với từng tờ.</p>
+
+<div class="sub">Cửa hai: dòng tiền có 'hiền' không</div>
+<p>Hỏi: tiền tài sản trả về có chỉ là gốc, cộng lãi trên phần gốc còn nợ không. Lãi ở đây là bù cho thời gian chờ, cho rủi ro người vay quỵt, cộng chút biên. Nếu dòng tiền gắn vào giá cổ phiếu, vào đòn bẩy, vào giá hàng hóa, thì hết 'hiền'.</p>
+
+<div class="sub">Hai cửa giao nhau ra ba nhóm</div>
+<p>Giữ để thu và dòng tiền hiền: ghi theo giá gốc rải dần. Vừa giữ vừa bán và dòng tiền hiền: ghi theo giá thị trường, nhưng phần lãi tính như giá gốc. Còn lại, hoặc dòng tiền không hiền: ghi thẳng theo giá thị trường, mọi thay đổi vào lãi lỗ.</p>
+
+<div class="sub">Một chốt quan trọng</div>
+<p>Cửa dòng tiền là cửa chặn. Dòng tiền mà không hiền thì rớt thẳng vào nhóm giá thị trường, dù đơn vị định giữ tới cùng đi nữa.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví dụ cụ thể</span><h2>Ba tài sản, ba nhóm</h2></div>
+    </div>
+    <div class="example-card"><span class="tag">Bài toán</span>
+<p>Ba tài sản, chạy thử qua hai cửa.</p>
+<p>Một: khoản cho vay thường, ngân hàng định giữ tới khi thu hết. Dòng tiền chỉ là gốc và lãi, rất hiền. Hai cửa đều thuận, nên ghi theo <strong>giá gốc rải dần</strong>.</p>
+<p>Hai: một trái phiếu ngân hàng vừa giữ vừa sẵn sàng bán khi cần tiền. Dòng tiền vẫn hiền. Nên ghi theo <strong>giá thị trường</strong>, mà phần lãi vẫn tính như giá gốc.</p>
+<p>Ba: một trái phiếu mà tiền trả gắn vào giá cổ phiếu công ty. Dòng tiền hết hiền, trượt ngay cửa hai. Dù định giữ tới cùng, vẫn phải ghi thẳng theo <strong>giá thị trường</strong>.</p>
+</div>
+<p>Nghĩ như xếp đồ vào ba ngăn tủ. Cửa một hỏi bạn định dùng món đồ ra sao. Cửa hai kiểm món đồ có 'lành' không. Chỉ món vừa lành vừa để dành mới được cất ngăn êm nhất; món lạ đời phải để ngăn nhìn-giá-mỗi-ngày.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Theo ¶4.1.1–4.1.2A: hold-to-collect + SPPI → <em>amortised cost</em>; hold-to-collect-and-sell + SPPI → <em>FVOCI</em> (công cụ nợ); còn lại → <em>FVTPL</em>. SPPI (¶4.1.3): <em>principal</em> là giá trị hợp lý lúc ghi nhận ban đầu; <em>interest</em> bù cho time value of money, rủi ro tín dụng trên gốc còn lại, chi phí cho vay cơ bản và biên lợi nhuận. Đòn bẩy, gắn vốn chủ, gắn chỉ số hàng hóa → trượt SPPI → FVTPL. Có hai lựa chọn riêng: chỉ định FVTPL để giảm bất nhất kế toán, và bầu chọn FVOCI cho công cụ vốn (không recycle).</p>
+  </section>
+
+  <section class="clarify">
+    <div class="step-head">
+      <div class="big-num">≠</div>
+      <div class="step-meta"><span class="lbl">Dễ nhầm · ranh giới</span><h2>Đừng nhầm: SPPI là cửa chặn, không phải cửa phụ</h2></div>
+    </div>
+    <div class="mix-q"><span class="q">"Cứ định giữ tới cùng là được ghi theo giá gốc chứ?"</span><p>Chưa chắc. Ý định giữ chỉ qua được cửa một. Còn cửa dòng tiền phải 'hiền' nữa. Dòng tiền gắn vào cổ phiếu hay đòn bẩy thì trượt cửa hai, và rơi thẳng vào nhóm giá thị trường, dù bạn định giữ mãi.</p></div>
+<div class="mix-q"><span class="q">"Mô hình kinh doanh là ý thích của sếp, đổi lúc nào cũng được?"</span><p>Không. Nó xét theo cách cả nhóm tài sản thật sự được quản, không theo ý định nhất thời với một tờ. Đổi mô hình là chuyện rất hiếm, do thay đổi lớn trong hoạt động. Không phải cái nhãn dán tùy lúc.</p></div>
+  </section>
+
+  <section class="bridge">
+    <div class="step-head">
+      <div class="big-num">→</div>
+      <div class="step-meta"><span class="lbl">Nối tiếp · nó dẫn tới đâu</span><h2>Hai cửa này mở thẳng trang khó về FVTPL</h2></div>
+    </div>
+    <div class="bridge-card"><p>Giữ chắc: cửa mô hình lo 'định làm gì', cửa dòng tiền lo 'có hiền không'. Có hai cửa trong đầu, trang khó kế tiếp mới đọc nổi.</p>
+<p>Trang <strong>'Vì sao một trái phiếu lại có thể thành FVTPL?'</strong> chính là một tờ trái phiếu trượt cửa dòng tiền. Nhìn thì giống khoản cho vay hiền lành, mà bên trong gài thứ làm dòng tiền hết hiền. Trượt cửa hai là rơi thẳng vào giá thị trường — đúng cái bạn vừa dựng ở đây.</p></div>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">✦</div>
+      <div class="step-meta"><span class="lbl">Kể lại trong một hơi</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Một tài sản đi qua hai cửa. Cửa một: đơn vị định giữ để thu, vừa giữ vừa bán, hay mua bán kiếm lời. Cửa hai: dòng tiền có chỉ là gốc và lãi không. Hiền và giữ để thu thì ghi giá gốc. Hiền mà còn bán thì giá thị trường, phần lãi như giá gốc. Còn lại, hoặc trượt cửa dòng tiền, thì giá thị trường trọn gói.</p>
+<p class="core">Chốt một câu: <span>mô hình kinh doanh và dòng tiền — hai cửa định ra thước đo.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã nắm nền chưa?</h3>
+      <ol>
+        <li>Hai trái phiếu y hệt, vì sao một bên ghi giá gốc, bên kia ghi giá thị trường?</li>
+        <li>Dòng tiền 'hiền' nghĩa là gì trong phép thử gốc và lãi?</li>
+        <li>Vì sao một tài sản trượt cửa dòng tiền thì rơi thẳng vào nhóm giá thị trường, dù định giữ tới cùng?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nền vững thì cái khó tự nhẹ đi. Hiểu từ gốc, không học vẹt.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-lai-suat-hieu-luc" role="tabpanel" aria-labelledby="tab-3" tabindex="0"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Nền tảng · hiểu từ gốc</div>
+    <h1 class="rise" style="animation-delay:.08s">Lãi suất hiệu lực: cỗ máy rải lãi đều và cuốn giá gốc lên</h1>
+    <p class="core rise" style="animation-delay:.16s">Một con lãi suất duy nhất <span>rải đều thu nhập và cuốn khoản vay tiến dần tới ngày đáo hạn.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Định vị · nó là gì &amp; vì sao học trước</span><h2>Nền: lãi suất hiệu lực và giá phân bổ</h2></div>
+    </div>
+    <div class="rule"><strong>Lãi suất hiệu lực</strong> (effective interest rate, EIR) là lãi suất chiết khấu đúng mọi dòng tiền tương lai của một tài sản về <em>gross carrying amount</em> của nó (hoặc về amortised cost của một khoản nợ) — định nghĩa ở Appendix A. Theo ¶5.4.1, thu nhập lãi tính bằng EIR nhân với gross carrying amount. <em>Amortised cost</em> chính là số ghi nhận ban đầu, trừ gốc đã trả, cộng hoặc trừ phần phân bổ lũy kế theo EIR, và (với tài sản) trừ dự phòng tổn thất.</div>
+    <div class="sub">Vì sao đây là nền</div>
+    <div class="why"><p>Đây là động cơ chạy bên trong rất nhiều quy tắc. 'Giá phân bổ' ở tab 'Hai cây thước' cuốn được là nhờ cỗ máy này. Khi sang phần tổn thất, lúc lãi tính trên số lớn, lúc trên số nhỏ — vẫn là cỗ máy này, chỉ đổi chỗ bấm. Chưa nắm nó, các quy tắc đó chỉ là công thức rời.</p></div>
+  </section>
+
+  <section class="problem">
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Vấn đề nó sinh ra để giải quyết</span><h2>Phí trả trước, lãi cuối kỳ — lợi suất thật là bao nhiêu?</h2></div>
+    </div>
+    <p class="lead">Bạn cho một người vay, trên giấy ghi khoản vay 1.000. Nhưng bạn chỉ đưa tay họ 950, vì giữ lại 50 làm phí ngay từ đầu. Đúng một năm sau, họ trả bạn 1.000 gốc cộng 50 lãi. Hỏi: một năm đó bạn thật sự kiếm bao nhiêu phần trăm?</p>
+
+<p>Rắc rối là tiền không vào ra cùng một lúc. Bạn bỏ ra 950 ngay đầu, mãi cuối năm mới thu về 1.050. Lại còn 50 phí đã ăn sẵn từ trước. Con lãi suất 5% ghi trên giấy không gói hết mấy chuyện đó.</p>
+
+<div class="sub">Vì sao cần một con số gói hết</div>
+<p>Ta muốn một lợi suất duy nhất, phản ánh đủ cả phí, cả lãi, cả thời điểm tiền ra vào. Có nó, thu nhập mỗi kỳ mới rải ra cho đều và đúng. Con số đó là lãi suất hiệu lực ở Bước 2.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Mô hình đơn giản · cách nó chạy</span><h2>Một lãi suất, kéo mọi dòng tiền về khớp giá hôm nay</h2></div>
+    </div>
+    <p>Cỗ máy chỉ làm một việc. Nó tìm <strong>một</strong> con lãi suất sao cho mọi dòng tiền tương lai, kéo về hôm nay, cộng lại vừa đúng số tiền bỏ ra ban đầu.</p>
+
+<div class="sub">Lõi: tiền tương lai phải kéo về cho cùng tuổi</div>
+<p>Tiền nhận càng muộn càng nhẹ giá, vì tiền có ngay thì sinh lời được ngay. Muốn so hay cộng, phải kéo mọi khoản về cùng một mốc. Con lãi suất hiệu lực chính là tỷ lệ dùng để kéo.</p>
+
+<div class="sub">Vì sao chỉ một con số mà gói được hết</div>
+<p>Vì khi tìm nó, ta ép cả phí ban đầu, cả lãi từng kỳ, cả gốc cuối cùng vào chung một phép tính. Con số nào làm hai bên khớp nhau thì đó là lợi suất thật của khoản vay.</p>
+
+<div class="sub">Cuốn phim: giá gốc lớn dần rồi xẹp về 0</div>
+<p>Mỗi năm, lấy số đang nợ nhân lãi suất hiệu lực, ra phần lãi của năm. Cộng lãi vào, trừ khoản đã thu ra, số dư cuốn sang năm sau. Cứ thế tới ngày chót, số dư về đúng 0. Đó là 'giá phân bổ' đang chạy.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví dụ cụ thể</span><h2>Khoản vay có phí: rải lãi ra sao</h2></div>
+    </div>
+    <div class="example-card"><span class="tag">Bài toán</span>
+<p>Bạn bỏ ra <strong>950</strong> để được nhận về <strong>1.000</strong> sau một năm, cộng <strong>50</strong> lãi cuối năm. Vậy năm đó nhận tổng 1.050, mà chỉ bỏ ra 950.</p>
+<p>Lợi suất thật không phải 5%. Bỏ 950, cuối năm thu 1.050, tức lời 100 trên 950. Lãi suất hiệu lực ở đây khoảng <strong>10,5%</strong>, cao hơn con 5% ghi trên giấy, vì có thêm 50 phí giữ lại lúc đầu.</p>
+<p>Đổi thử cho thấm. Giữ phí cao hơn, đưa tay người vay ít hơn, thì lợi suất thật còn vọt cao nữa. Phí dồn vào đầu kéo lợi suất lên.</p>
+</div>
+<p>Giống mua trái phiếu giá thấp hơn mệnh giá. Bỏ ra 92, tới hạn nhận lại 100, giữa chừng có lãi. Phần chênh 8 không nhảy hết vào năm cuối, mà được rải đều qua các năm bằng đúng cỗ máy này.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Công thức gọn: tìm lãi suất <em>r</em> sao cho tổng các dòng tiền tương lai chia cho (1 + r) mũ số kỳ đúng bằng số tiền ban đầu. Khi tính EIR, ta gộp mọi phí và điểm là một phần của lãi suất, nhưng <strong>không</strong> tính trước tổn thất tín dụng kỳ vọng. Riêng tài sản POCI dùng <em>credit-adjusted EIR</em> — con lãi suất đã gài sẵn tổn thất ngay từ đầu.</p>
+  </section>
+
+  <section class="clarify">
+    <div class="step-head">
+      <div class="big-num">≠</div>
+      <div class="step-meta"><span class="lbl">Dễ nhầm · ranh giới</span><h2>Đừng nhầm lãi hợp đồng với lãi hiệu lực</h2></div>
+    </div>
+    <div class="mix-q"><span class="q">"Lãi suất hiệu lực có phải là lãi suất ghi trên hợp đồng không?"</span><p>Thường là không. Lãi hợp đồng chỉ là con số in trên giấy. Lãi hiệu lực gói thêm phí, chiết khấu, và thời điểm các dòng tiền. Khi có phí trả trước hay mua dưới mệnh giá, hai con số lệch nhau rõ.</p></div>
+<div class="mix-q"><span class="q">"Cỗ máy này có liên quan gì tới giá trị tiền theo thời gian?"</span><p>Liên quan tận gốc. Kéo dòng tiền tương lai về hôm nay chính là vì một đồng mai sau nhẹ giá hơn một đồng hôm nay. Lãi suất hiệu lực đúng là tỷ lệ dùng để kéo. Bỏ ý 'tiền theo thời gian', cỗ máy này mất nền.</p></div>
+  </section>
+
+  <section class="bridge">
+    <div class="step-head">
+      <div class="big-num">→</div>
+      <div class="step-meta"><span class="lbl">Nối tiếp · nó dẫn tới đâu</span><h2>Cỗ máy này là chìa cho hai trang khó về lãi</h2></div>
+    </div>
+    <div class="bridge-card"><p>Giữ chắc một hình: lãi mỗi kỳ là số đang nợ nhân lãi suất hiệu lực. Đổi 'số đang nợ' là số ra đổi. Đó đúng là chỗ hai trang khó xoay quanh.</p>
+<p>Trang <strong>'Vì sao lãi đột nhiên tính trên số nhỏ hơn?'</strong> chỉ là lúc đem nhân với số dư đã trừ dự phòng, thay vì số gốc đầy đủ. Trang <strong>'Mua nợ xấu: gài sẵn tổn thất vào lãi suất'</strong> là khi chính con lãi suất hiệu lực đã trừ sẵn phần dự kiến mất. Cùng một máy, đổi đầu vào.</p></div>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">✦</div>
+      <div class="step-meta"><span class="lbl">Kể lại trong một hơi</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Lãi suất hiệu lực là một con số gói hết phí, lãi và thời điểm các dòng tiền. Nó là tỷ lệ kéo tiền tương lai về hôm nay cho khớp số bỏ ra ban đầu. Mỗi kỳ, lấy số đang nợ nhân nó ra phần lãi, rồi cuốn số dư sang kỳ sau. Đó chính là giá phân bổ đang chạy, tới hạn thì về 0.</p>
+<p class="core">Một câu giữ lại: <span>gói hết phí và lãi, rồi rải đều và cuốn khoản vay về đáo hạn.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã nắm nền chưa?</h3>
+      <ol>
+        <li>Vì sao lãi suất ghi trên hợp đồng thường không phải lợi suất thật của khoản vay?</li>
+        <li>Phí giữ lại lúc đầu làm lãi suất hiệu lực cao lên hay thấp đi? Vì sao?</li>
+        <li>Lãi suất hiệu lực dính tới 'giá trị tiền theo thời gian' ở chỗ nào?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nền vững thì cái khó tự nhẹ đi. Hiểu từ gốc, không học vẹt.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-rui-ro-tin-dung-ecl" role="tabpanel" aria-labelledby="tab-4" tabindex="0"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Nền tảng · hiểu từ gốc</div>
+    <h1 class="rise" style="animation-delay:.08s">Rủi ro tín dụng và tổn thất kỳ vọng: lo mất tiền trước khi mất</h1>
+    <p class="core rise" style="animation-delay:.16s">Không đợi vỡ nợ mới ghi, <span>tổn thất kỳ vọng đặt trước một khoản phòng cho phần có thể mất.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Định vị · nó là gì &amp; vì sao học trước</span><h2>Nền: rủi ro tín dụng và tổn thất tín dụng kỳ vọng</h2></div>
+    </div>
+    <div class="rule"><strong>Rủi ro tín dụng</strong> là khả năng con nợ không trả đủ, đúng hạn. IFRS 9 buộc lập trước một khoản dự phòng cho <strong>tổn thất tín dụng kỳ vọng</strong> (expected credit loss, ECL). Theo Appendix A, <em>credit loss</em> là chênh lệch giữa mọi dòng tiền hợp đồng đáng được nhận và mọi dòng tiền thực kỳ vọng nhận được, kéo về hiện tại theo EIR gốc. ECL là bình quân các khoản tổn thất đó, có trọng số theo xác suất vỡ nợ (mục tiêu ¶5.5.4; đo lường ¶5.5.17). Thực hành hay tách: ECL bằng PD nhân LGD nhân EAD, có chiết khấu.</div>
+    <div class="sub">Vì sao đây là nền</div>
+    <div class="why"><p>Đây là nền của chủ đề lớn nhất trong chuẩn: suy giảm giá trị. Mọi thứ về ba giai đoạn, về 'tổn thất 12 tháng' hay 'trọn đời' đều đứng trên hai ý. Một: rủi ro tín dụng là gì. Hai: tổn thất kỳ vọng đo ra sao. Chưa nắm hai ý này, các quy tắc giai đoạn chỉ là chữ.</p></div>
+  </section>
+
+  <section class="problem">
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Vấn đề nó sinh ra để giải quyết</span><h2>Một nghìn người vay: ghi sổ thế nào khi chưa ai quỵt?</h2></div>
+    </div>
+    <p class="lead">Ngân hàng cho một nghìn người vay, mỗi người 100. Hôm nay chưa ai trễ một đồng. Nhưng ai cũng biết: kiểu gì rồi cũng có vài người không trả nổi. Câu hỏi: hôm nay, khi mọi thứ còn 'sạch', sổ có nên ghi nhận chút mất mát nào chưa?</p>
+
+<p>Lối cũ nói: chờ đã, có ai thật sự quỵt thì mới ghi lỗ. Nghe hợp lý mà nguy. Tới lúc vỡ hàng loạt mới ghi thì quá muộn, người đọc sổ bị bất ngờ.</p>
+
+<div class="sub">Vì sao phải lo trước</div>
+<p>Vì rủi ro đã có ngay từ lúc cho vay, dù chưa thành sự thật. Một nghìn khoản vay luôn ẩn vài khoản sẽ hỏng. Khôn ngoan là đặt sẵn một khoản phòng, đo theo phần có thể mất. Đo thế nào là việc của Bước 2.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Mô hình đơn giản · cách nó chạy</span><h2>Đặt trước khoản phòng, đo bằng phần có thể mất</h2></div>
+    </div>
+    <p>Mô hình xoay quanh một câu: <strong>không đợi mất mới ghi, mà lo trước phần dự kiến mất</strong>.</p>
+
+<div class="sub">Rủi ro tín dụng là gì</div>
+<p>Là khả năng người vay trả thiếu hoặc trả trễ so với hợp đồng. Người vay càng yếu, rủi ro càng cao. Nó có sẵn từ ngày cho vay, không phải đợi tới lúc quỵt mới xuất hiện.</p>
+
+<div class="sub">Tổn thất kỳ vọng là gì</div>
+<p>Lấy số tiền đáng lẽ nhận đủ theo hợp đồng, trừ số tiền thực sự mong nhận về. Phần hụt đó là tổn thất. Nhưng chưa chắc xảy ra, nên nhân với khả năng nó xảy ra. Kết quả là tổn thất kỳ vọng.</p>
+
+<div class="sub">Ba câu hỏi gói gọn cách đo</div>
+<p>Người ta hay tách làm ba. Khả năng vỡ nợ là bao nhiêu. Nếu vỡ thì mất bao nhiêu phần. Và lúc vỡ thì đang nợ bao nhiêu. Nhân ba lại, kéo về hôm nay, ra con số phòng cần đặt.</p>
+
+<div class="sub">Vì sao kéo về hôm nay</div>
+<p>Vì khoản mất xảy ra trong tương lai. Tiền mất muộn nhẹ giá hơn tiền mất ngay. Nên phần hụt cũng phải kéo về hôm nay, đúng bằng cỗ máy ở tab 'Lãi suất hiệu lực'.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví dụ cụ thể</span><h2>Một nghìn khoản vay, đặt phòng bao nhiêu</h2></div>
+    </div>
+    <div class="example-card"><span class="tag">Bài toán</span>
+<p>Một nghìn khoản vay, mỗi khoản đang nợ <strong>100</strong>. Nhìn vào lịch sử, chừng <strong>2%</strong> số khoản sẽ vỡ. Khi một khoản vỡ, thường chỉ mất <strong>nửa</strong>, vì còn siết được tài sản bảo đảm.</p>
+<p>Đặt phòng bao nhiêu? Khả năng vỡ 2%, mất một nửa khi vỡ, đang nợ 100. Nhân lại: mỗi khoản gánh tổn thất kỳ vọng khoảng <strong>1</strong>. Cả nghìn khoản, khoản phòng đặt trước cỡ <strong>1.000</strong>.</p>
+<p>Đáng chú ý: chưa ai trễ một đồng, mà sổ đã đặt phòng 1.000. Đó là tinh thần 'lo trước', khác hẳn lối chờ vỡ mới ghi. Ở đây ta bỏ qua bước chiết khấu cho gọn; con số thật còn phải kéo về hôm nay.</p>
+</div>
+<p>Giống quán bán chịu cho khách quen. Cuối tháng nhìn sổ nợ, chủ quán tự nhủ: kiểu gì cũng vài người không trả. Họ trừ bớt một phần trong đầu, coi như mất. Đó chính là tổn thất kỳ vọng phiên bản đời thường.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Cách tách phổ biến: ECL = PD × LGD × EAD, rồi chiết khấu. PD là xác suất vỡ nợ, LGD là tỷ lệ tổn thất khi vỡ, EAD là dư nợ tại thời điểm vỡ. Hai mức hay gặp: <em>12-month ECL</em> chỉ tính phần tổn thất từ các sự kiện vỡ nợ có thể xảy ra trong 12 tháng tới — không phải tổn thất của riêng năm tới. <em>Lifetime ECL</em> tính cho mọi khả năng vỡ trên suốt vòng đời. ¶5.5.17 buộc ECL phải khách quan, có trọng số xác suất, có giá trị thời gian của tiền, và dùng thông tin hợp lý sẵn có.</p>
+  </section>
+
+  <section class="clarify">
+    <div class="step-head">
+      <div class="big-num">≠</div>
+      <div class="step-meta"><span class="lbl">Dễ nhầm · ranh giới</span><h2>Đừng nhầm 'kỳ vọng' với 'đã mất'</h2></div>
+    </div>
+    <div class="mix-q"><span class="q">"Đặt phòng 1.000 nghĩa là đã mất 1.000 rồi à?"</span><p>Chưa mất đồng nào. Đó là ước tính phần <em>có thể</em> mất, đặt sẵn cho khôn ngoan. Nếu sau này thu đủ, khoản phòng được hoàn lại. Tổn thất kỳ vọng là dự phòng nhìn tới trước, không phải mất mát đã thành sự thật.</p></div>
+<div class="mix-q"><span class="q">"'Tổn thất 12 tháng' là tổn thất ngân hàng mất trong năm tới?"</span><p>Không phải. Nó là phần tổn thất đến từ các cú vỡ nợ <em>có thể</em> rơi vào 12 tháng tới. Khoản vỡ có thể nhỏ, nhưng hậu quả tính cho cả phần còn lại của khoản vay. Nhầm hai cái này là bẫy thi kinh điển.</p></div>
+  </section>
+
+  <section class="bridge">
+    <div class="step-head">
+      <div class="big-num">→</div>
+      <div class="step-meta"><span class="lbl">Nối tiếp · nó dẫn tới đâu</span><h2>Hai ý này mở ba trang khó về tổn thất</h2></div>
+    </div>
+    <div class="bridge-card"><p>Giữ chắc hai viên gạch: rủi ro tín dụng có sẵn từ đầu, và tổn thất kỳ vọng là phần dự kiến mất, kéo về hôm nay. Có chúng, mấy trang khó về tổn thất mới đọc được.</p>
+<p>Trang <strong>'12-month ECL không phải tổn thất của năm tới'</strong> chính là gỡ đúng cái nhầm ở mục trên. Trang <strong>'Cắt ở khi nào vỡ, không cắt ở mất bao nhiêu'</strong> mổ kỹ câu hỏi 'khả năng vỡ' trong ba câu ta vừa tách. Bạn đã có nền để vào.</p></div>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">✦</div>
+      <div class="step-meta"><span class="lbl">Kể lại trong một hơi</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Rủi ro tín dụng là khả năng con nợ không trả đủ, có sẵn từ ngày cho vay. IFRS 9 không đợi mất mới ghi, mà đặt trước một khoản phòng. Khoản đó là tổn thất kỳ vọng: phần đáng nhận trừ phần thực mong nhận, nhân khả năng xảy ra, rồi kéo về hôm nay. Lo trước, không chờ vỡ.</p>
+<p class="core">Không đợi vỡ nợ mới ghi, <span>lo trước phần có thể mất, đừng đợi tới lúc đã mất.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã nắm nền chưa?</h3>
+      <ol>
+        <li>Vì sao IFRS 9 ghi nhận tổn thất ngay khi chưa ai trễ nợ, thay vì đợi có người vỡ?</li>
+        <li>Tổn thất kỳ vọng được tách thành ba câu hỏi nào?</li>
+        <li>'Tổn thất 12 tháng' khác 'tổn thất ngân hàng mất trong năm tới' ở chỗ nào?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nền vững thì cái khó tự nhẹ đi. Hiểu từ gốc, không học vẹt.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-lai-lo-va-oci" role="tabpanel" aria-labelledby="tab-5" tabindex="0"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Nền tảng · hiểu từ gốc</div>
+    <h1 class="rise" style="animation-delay:.08s">Lãi lỗ hay 'để riêng': tiền lời chưa chốt thì ghi vào đâu?</h1>
+    <p class="core rise" style="animation-delay:.16s">Một khoản lời có thể <span>chạy thẳng vào lãi lỗ, hoặc đỗ tạm một chỗ riêng chờ chốt.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Định vị · nó là gì &amp; vì sao học trước</span><h2>Nền: lãi lỗ trong kỳ và thu nhập toàn diện khác</h2></div>
+    </div>
+    <div class="rule">Khi giá trị một công cụ thay đổi, phần lời hoặc lỗ đó đi vào một trong hai chỗ. <strong>Lãi lỗ trong kỳ</strong> (profit or loss, P/L): tính ngay vào kết quả kinh doanh của kỳ. <strong>Thu nhập toàn diện khác</strong> (other comprehensive income, OCI): một ngăn riêng trong vốn chủ theo IAS 1, đỗ tạm những khoản chưa muốn cho vào lãi lỗ. ¶5.7.1 đặt mặc định: lời/lỗ trên công cụ đo theo giá trị hợp lý vào P/L, trừ vài ngoại lệ — công cụ vốn chọn FVOCI (¶5.7.5), rủi ro tín dụng bản thân của nợ FVTPL chỉ định (¶5.7.7), và công cụ nợ FVOCI (¶5.7.10).</div>
+    <div class="sub">Vì sao đây là nền</div>
+    <div class="why"><p>Đây là cái trục chạy ngầm khắp chuẩn. Phân loại tài sản, kế toán phòng ngừa, rủi ro tín dụng bản thân — chỗ nào cũng hỏi chung một câu. Lời lỗ này vào lãi lỗ ngay, hay đỗ tạm ở ngăn riêng? Chưa nắm hai ngăn và luật 'đỗ rồi có chạy lại không', bạn sẽ thấy các quy tắc như mâu thuẫn nhau.</p></div>
+  </section>
+
+  <section class="problem">
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Vấn đề nó sinh ra để giải quyết</span><h2>Cổ phiếu lên giá nhưng chưa bán: đã 'lời' chưa?</h2></div>
+    </div>
+    <p class="lead">Công ty mua cổ phiếu giá 100. Cuối năm nó lên 130, nhưng công ty chưa bán, vẫn giữ. Khoản 'lời' 30 đó có nên tính vào kết quả kinh doanh năm nay không? Lời trên giấy mà gọi là lãi thì hơi vội, vì mai giá có thể rớt lại.</p>
+
+<p>Vấn đề là khoản lời chưa chốt rất dễ gây hiểu lầm. Cho thẳng vào lãi lỗ thì kết quả năm nay phồng lên vì một con số chưa thật. Bỏ lơ thì lại giấu mất một thay đổi có thật trên bảng cân đối.</p>
+
+<div class="sub">Cần một chỗ ở giữa</div>
+<p>Nên kế toán mở một ngăn thứ hai. Khoản lời chưa chốt được đỗ tạm vào đó, hiện ra cho người đọc thấy, mà chưa nhập vào lãi lỗ. Tới khi bán thật mới tính sổ. Ngăn đó là thu nhập toàn diện khác.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Mô hình đơn giản · cách nó chạy</span><h2>Hai ngăn, và luật 'đỗ rồi có chạy lại'</h2></div>
+    </div>
+    <p>Mọi thay đổi giá trị phải vào một trong hai ngăn. Quan trọng không kém: khoản đỗ ở ngăn riêng, sau này có chạy ngược vào lãi lỗ hay không.</p>
+
+<div class="sub">Ngăn một: lãi lỗ trong kỳ</div>
+<p>Là kết quả kinh doanh của kỳ, con số ai cũng nhìn vào. Khoản nào cho vào đây là tính ngay vào lời lỗ năm nay. Đa số thay đổi giá trị mặc định rơi vào ngăn này.</p>
+
+<div class="sub">Ngăn hai: thu nhập toàn diện khác</div>
+<p>Là chỗ đỗ tạm cho những khoản chưa muốn cho vào lãi lỗ. Chúng vẫn hiện trong vốn chủ, người đọc vẫn thấy. Chỉ là chưa nhập vào kết quả kinh doanh vội.</p>
+
+<div class="sub">Luật then chốt: đỗ rồi có chạy lại không</div>
+<p>Có khoản đỗ ở ngăn hai, tới khi bán thì <strong>chạy ngược</strong> vào lãi lỗ. Có khoản đỗ ở đó <strong>mãi mãi</strong>, bán cũng không bao giờ chạy vào lãi lỗ. Cùng một ngăn, hai số phận. Biết khoản nào theo luật nào là chìa của cả phần này.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví dụ cụ thể</span><h2>Hai khoản cùng đỗ ngăn riêng, hai số phận</h2></div>
+    </div>
+    <div class="example-card"><span class="tag">Bài toán</span>
+<p>Hai khoản đầu tư, cùng lời 30 chưa bán, cùng đỗ ở ngăn thu nhập khác. Khác nhau ở loại.</p>
+<p>Một là <strong>trái phiếu</strong> dạng vừa giữ vừa có thể bán. Khi bán, khoản lời đỗ đó <strong>chạy ngược</strong> vào lãi lỗ, thành lời của kỳ bán. Một là <strong>cổ phiếu</strong> công ty chọn để mãi ở ngăn riêng. Khi bán, khoản lời <strong>không</strong> chạy vào lãi lỗ; nó chỉ chuyển chỗ bên trong vốn chủ.</p>
+<p>Cùng đỗ một ngăn, cùng lời 30, mà lúc bán hai số phận khác hẳn. Đó là vì sao phải biết khoản nào theo luật nào.</p>
+</div>
+<p>Hình dung hai cái ví tạm. Tiền bỏ ví A, sau này dồn vào thu nhập chính. Tiền bỏ ví B, mãi nằm trong tài sản chung, không bao giờ tính là thu nhập. Cùng là tiền để dành, mà đường ra khác nhau.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Khoản 'chạy ngược' gọi là <em>recycling</em> (tái phân loại sang P/L). Công cụ nợ <em>FVOCI</em>: lãi/lỗ lũy kế trong OCI được recycle sang P/L khi dừng ghi nhận (¶5.7.10). Công cụ vốn chọn <em>FVOCI</em> (¶5.7.5): không bao giờ recycle — chỉ chuyển trong vốn chủ; cổ tức vẫn vào P/L. Phần <em>own credit risk</em> của nợ FVTPL chỉ định vào OCI và cũng không recycle (¶5.7.7). Đây là điểm thi rất hay hỏi.</p>
+  </section>
+
+  <section class="clarify">
+    <div class="step-head">
+      <div class="big-num">≠</div>
+      <div class="step-meta"><span class="lbl">Dễ nhầm · ranh giới</span><h2>Đừng nhầm 'để riêng' với 'không có thật'</h2></div>
+    </div>
+    <div class="mix-q"><span class="q">"Đỗ ở ngăn riêng nghĩa là khoản lời đó không quan trọng?"</span><p>Không. Nó vẫn hiện trong vốn chủ, người đọc vẫn thấy đủ. Đỗ ở ngăn riêng chỉ là chưa cho vào kết quả kinh doanh của kỳ, vì khoản lời chưa chốt. Quan trọng và 'tính vào lãi lỗ' là hai chuyện khác.</p></div>
+<div class="mix-q"><span class="q">"Cứ đỗ ngăn riêng thì sau bán đều chạy vào lãi lỗ chứ?"</span><p>Không phải khoản nào cũng vậy. Trái phiếu loại vừa giữ vừa bán thì có chạy lại. Cổ phiếu công ty chọn để riêng thì không bao giờ. Phải nhìn loại công cụ mới biết khoản đỗ sẽ đi đâu khi bán.</p></div>
+  </section>
+
+  <section class="bridge">
+    <div class="step-head">
+      <div class="big-num">→</div>
+      <div class="step-meta"><span class="lbl">Nối tiếp · nó dẫn tới đâu</span><h2>Hai ngăn này mở hai trang khó nhất về 'ghi vào đâu'</h2></div>
+    </div>
+    <div class="bridge-card"><p>Giữ chắc: lời lỗ vào lãi lỗ ngay, hay đỗ ngăn riêng, và đỗ rồi có chạy lại không. Hai trang khó dưới đây chỉ là ý này ở dạng khó hơn.</p>
+<p>Trang <strong>'Bảng cân đối theo giá thị trường, lời lãi lại như cũ?'</strong> là một trái phiếu để ngăn riêng phần dôi, nhưng lãi vẫn vào lãi lỗ như thường. Trang <strong>'Tín dụng mình xấu đi, sao lại ghi lãi?'</strong> là khoản lời lạ lùng từ chính mình yếu đi, được đẩy vào ngăn riêng cho khỏi gây hiểu lầm. Có hai ngăn trong đầu rồi, hai trang đó hết rối.</p></div>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">✦</div>
+      <div class="step-meta"><span class="lbl">Kể lại trong một hơi</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Thay đổi giá trị phải vào một trong hai ngăn. Ngăn lãi lỗ tính ngay vào kết quả kỳ. Ngăn thu nhập khác đỗ tạm khoản chưa muốn chốt, vẫn hiện trong vốn chủ. Rồi một luật nữa: có khoản tới khi bán thì chạy ngược vào lãi lỗ, có khoản nằm đó mãi. Biết khoản nào theo luật nào là xong phần này.</p>
+<p class="core">Gọn một câu: <span>vào lãi lỗ ngay, hay đỗ ngăn riêng — và đỗ rồi có chạy lại không.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã nắm nền chưa?</h3>
+      <ol>
+        <li>Cổ phiếu lên giá mà chưa bán — vì sao khoản 'lời' đó chưa chắc vào lãi lỗ năm nay?</li>
+        <li>Hai khoản cùng đỗ ngăn thu nhập khác, vì sao lúc bán lại có số phận khác nhau?</li>
+        <li>Đỗ một khoản ở ngăn riêng có nghĩa là nó không quan trọng? Vì sao không?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nền vững thì cái khó tự nhẹ đi. Hiểu từ gốc, không học vẹt.</p>
+  </footer>
+
+</div></div>
+<script>
+  var bar=document.getElementById('progress');
+  function upd(){var h=document.documentElement;var s=h.scrollTop||document.body.scrollTop;
+    var max=(h.scrollHeight-h.clientHeight)||1;bar.style.width=(s/max*100)+'%';}
+  window.addEventListener('scroll',upd,{passive:true});upd();
+  var io=new IntersectionObserver(function(es){es.forEach(function(e){
+    if(e.isIntersecting){e.target.style.animation='rise .7s cubic-bezier(.2,.7,.3,1) forwards';io.unobserve(e.target);}});},{threshold:.12});
+  document.querySelectorAll('section').forEach(function(s){s.style.opacity='0';io.observe(s);});
+</script>
+
+<script>
+(function(){
+  var tabs=[].slice.call(document.querySelectorAll('.tabbar .tab'));
+  var panels=[].slice.call(document.querySelectorAll('.concept-panel'));
+  function show(i){
+    tabs.forEach(function(t,j){var on=(j===i);t.classList.toggle('active',on);t.setAttribute('aria-selected',on?'true':'false');t.setAttribute('tabindex',on?'0':'-1');});
+    panels.forEach(function(p,j){
+      var on=(j===i); p.classList.toggle('active',on); p.setAttribute('aria-hidden',on?'false':'true');
+      if(on){p.querySelectorAll('section').forEach(function(s){s.style.opacity='';s.style.animation='';});}
+    });
+    try{history.replaceState(null,'','#'+panels[i].id);}catch(e){}
+    window.scrollTo(0,0); window.dispatchEvent(new Event('scroll'));
+  }
+  tabs.forEach(function(t){t.addEventListener('click',function(){show(+t.getAttribute('data-i'));});});
+  var start=0; panels.forEach(function(p,j){if('#'+p.id===location.hash)start=j;});
+  show(start);
+  var tablist=document.querySelector('.tabbar');
+  if(tablist){tablist.addEventListener('keydown',function(e){
+    var i=tabs.indexOf(document.activeElement); if(i<0)return;
+    var n=tabs.length,k=null;
+    if(e.key==='ArrowRight'||e.key==='ArrowDown')k=(i+1)%n;
+    else if(e.key==='ArrowLeft'||e.key==='ArrowUp')k=(i-1+n)%n;
+    else if(e.key==='Home')k=0; else if(e.key==='End')k=n-1;
+    if(k!==null){e.preventDefault();show(k);tabs[k].focus();}
+  });}
+})();
+</script>
+
+</body></html>

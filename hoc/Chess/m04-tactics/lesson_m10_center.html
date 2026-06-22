@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bài 1 (Ch4-Mid) — Vồ quân trung tâm</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/chessboard-js/1.0.0/chessboard-1.0.0.min.css">
+<style>
+* { box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; max-width: 980px; margin: 0 auto; padding: 24px; color: #1a1a1a; line-height: 1.6; background: #fafafa; }
+h1 { color: #1a3a52; font-size: 28px; margin: 0 0 8px; }
+h2 { color: #2c5282; font-size: 20px; margin: 32px 0 12px; padding-bottom: 6px; border-bottom: 2px solid #e1e8ed; }
+.source { color: #888; font-size: 13px; margin-bottom: 24px; }
+.nav-link { font-size: 13px; color: #2c5282; text-decoration: none; }
+.stage { background: white; border-radius: 8px; padding: 20px 24px; margin: 16px 0; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
+.stage-label { display: inline-block; background: #2c5282; color: white; font-size: 12px; font-weight: 600; padding: 3px 10px; border-radius: 12px; margin-bottom: 8px; }
+.hook-question { font-size: 17px; color: #1a3a52; background: #fff8e1; border-left: 4px solid #faad14; padding: 14px 18px; border-radius: 0 6px 6px 0; margin: 12px 0; }
+.reveal-btn { background: #faad14; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-size: 14px; }
+.hidden { display: none; }
+.board-layout { display: grid; grid-template-columns: 440px 1fr; gap: 24px; align-items: start; margin-top: 16px; }
+@media (max-width: 820px) { .board-layout { grid-template-columns: 1fr; } }
+#board { width: 420px; max-width: 100%; }
+.mini-board { width: 300px; max-width: 100%; margin: 14px auto; }
+.controls { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; justify-content: center; }
+.controls button { padding: 7px 12px; background: #2c5282; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 13px; }
+.info-panel { background: #f8f9fb; padding: 16px; border-radius: 6px; border: 1px solid #e1e8ed; min-height: 380px; }
+.move-display { font-family: monospace; font-size: 16px; color: #2c5282; font-weight: 600; margin-bottom: 8px; }
+.commentary { font-size: 14px; color: #444; margin-bottom: 12px; }
+.info-box { background: white; padding: 10px; border-radius: 4px; border: 1px solid #e1e8ed; margin: 12px 0; font-size: 13px; text-align: center; }
+.info-box.win { background: #f6ffed; border-color: #b7eb8f; color: #389e0d; font-weight: 600; }
+.hl { background: rgba(255, 215, 0, 0.45) !important; box-shadow: inset 0 0 0 2px #faad14 !important; }
+.self-test { background: #fff8e1; border: 2px dashed #faad14; border-radius: 6px; padding: 16px; margin-top: 16px; }
+.feedback { margin-top: 10px; padding: 10px 14px; border-radius: 4px; font-size: 14px; }
+.feedback.correct { background: #f6ffed; color: #389e0d; border-left: 4px solid #52c41a; }
+.feedback.wrong { background: #fff1f0; color: #cf1322; border-left: 4px solid #ff4d4f; }
+.quiz { background: #f0f7ff; border-left: 4px solid #2c5282; border-radius: 0 6px 6px 0; padding: 14px 18px; margin: 12px 0; }
+.quiz-q { font-weight: 600; margin-bottom: 10px; color: #1a3a52; }
+.quiz-options { display: flex; flex-direction: column; gap: 6px; }
+.quiz-option { padding: 8px 12px; background: white; border: 1px solid #c9d6e2; border-radius: 4px; cursor: pointer; text-align: left; font-size: 14px; }
+.quiz-option.correct { background: #f6ffed; border-color: #52c41a; color: #389e0d; }
+.quiz-option.wrong { background: #fff1f0; border-color: #ff4d4f; color: #cf1322; }
+.quiz-explain { margin-top: 8px; font-size: 13px; color: #555; font-style: italic; }
+.summary-card { background: linear-gradient(135deg, #1a3a52, #2c5282); color: white; padding: 20px 24px; border-radius: 8px; margin-top: 24px; }
+.summary-card h2 { color: white; border: none; margin-top: 0; }
+.summary-card ul { padding-left: 20px; }
+code { background: #f1f3f5; padding: 1px 6px; border-radius: 3px; font-family: monospace; font-size: 0.9em; }
+.summary-card code { background: rgba(255,255,255,0.2); color: white; }
+.progress-bar { height: 4px; background: #e1e8ed; border-radius: 2px; overflow: hidden; margin: 8px 0 16px; }
+.progress-fill { height: 100%; background: #52c41a; transition: width 0.3s; width: 0%; }
+.tag { display:inline-block; background:#fde9c8; color:#874d00; font-size:11px; font-weight:600; padding:2px 8px; border-radius:10px; margin-left:6px; }
+</style>
+</head>
+<body>
+
+<h1>Bài 1 — Vồ quân trung tâm <span class="tag">Căng thẳng trung tâm</span></h1>
+<div class="source">
+  Chương 4 (Trung cuộc) — Đòn phối hợp · Trung cấp → Nâng cao<br>
+  <a class="nav-link" href="../index-middle.html">← Trang chủ Trung cuộc</a> ·
+  <a class="nav-link" href="chapter_m04_tactics.html">← Chương 4</a>
+</div>
+
+<div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+
+<div class="stage">
+  <span class="stage-label">STAGE 1 · HOOK</span>
+  <h2 style="margin-top:8px">Ăn một quân "được bảo vệ" — vẫn thắng</h2>
+  <p>Căng thẳng trung tâm: tốt trắng <strong>d4</strong> đối mặt tốt đen <strong>e5</strong>. Mã trắng e4 nhắm tượng đen d6 (đang được Hậu d8 giữ).</p>
+  <div id="hookBoard" class="mini-board"></div>
+  <div class="hook-question">
+    🤔 <strong>Tượng d6 có Hậu giữ — ăn nó liệu có mất quân?</strong> Hãy tính nước ăn LẠI của Đen, rồi tới nước XEN của Trắng.
+  </div>
+  <button class="reveal-btn" onclick="document.getElementById('hookAnswer').classList.remove('hidden'); markStage(1);">Hiển thị đáp án</button>
+  <div id="hookAnswer" class="hidden" style="margin-top:14px">
+    <p><strong>1.Nxd6! Qxd6 2.dxe5!</strong> — tốt d4 ăn e5 và NĨA cùng lúc Hậu d6 + Mã f6. Hậu chạy, <code>3.exf6</code> ăn Mã → Trắng thắng một quân. Stockfish: +6, vật chất ban đầu cân bằng.</p>
+  </div>
+</div>
+
+<div class="stage">
+  <span class="stage-label">STAGE 2 · CONCEPT</span>
+  <h2 style="margin-top:8px">Tính hết chuỗi ăn — đừng dừng ở nước đầu</h2>
+  <ul>
+    <li><strong>Căng thẳng trung tâm</strong> (d4 ↔ e5) là kho chứa chiến thuật: khi cờ mở ra, các đòn nĩa/xiên/mở xuất hiện.</li>
+    <li><strong>Quy tắc vàng</strong>: trước khi ăn một quân được bảo vệ, hãy tính nước ĐÁP của đối thủ — và xem mình có nước XEN (in-between) nào không.</li>
+    <li><strong>Ở đây</strong>: ăn tượng d6 trông như đổi quân; nhưng sau khi Hậu ăn lại, tốt d4×e5 hóa thành nĩa (Hậu + Mã) → thắng quân.</li>
+  </ul>
+</div>
+
+<div class="stage">
+  <span class="stage-label">STAGE 3 · WALKTHROUGH</span>
+  <div class="board-layout">
+    <div>
+      <div id="board"></div>
+      <div class="controls">
+        <button onclick="resetBoard()">⟨⟨ Đầu</button>
+        <button onclick="prevMove()">⟨ Lùi</button>
+        <button onclick="nextMove()">Tiến ⟩</button>
+      </div>
+    </div>
+    <div class="info-panel">
+      <div class="move-display" id="moveDisplay">Thế cờ khởi đầu</div>
+      <div class="commentary" id="commentary">Tốt d4 ↔ e5 căng thẳng. Mã e4 nhắm tượng d6. Chìa khóa nằm ở tốt d4 sau khi Đen ăn lại.</div>
+      <div class="info-box" id="infoBox">Đến lượt: <strong>Trắng</strong></div>
+    </div>
+  </div>
+</div>
+
+<div class="stage">
+  <span class="stage-label">STAGE 4 · SELF-TEST</span>
+  <h2 style="margin-top:8px">Vì sao 1.Nxd6 thắng quân dù d6 có Hậu giữ?</h2>
+  <div class="self-test">
+    <div class="quiz-options" id="selfTestOptions">
+      <button class="quiz-option" onclick="checkSelfTest(this, true, 'Đúng! Sau 1...Qxd6, nước xen 2.dxe5 NĨA Hậu d6 + Mã f6 cùng lúc. Hậu chạy → 3.exf6 ăn Mã. Lời một quân.')">Sau Qxd6, nước xen dxe5 nĩa Hậu + Mã</button>
+      <button class="quiz-option" onclick="checkSelfTest(this, false, 'Sai. Mã e4 không bị ghim; vấn đề là chuỗi ăn lại + nước xen.')">Vì Mã e4 đang ghim quân nào đó</button>
+      <button class="quiz-option" onclick="checkSelfTest(this, false, 'Sai. Nxd6 không chiếu; sức mạnh nằm ở đòn nĩa tốt sau đó.')">Vì Nxd6 là nước chiếu</button>
+    </div>
+    <div class="feedback hidden" id="selfTestFeedback"></div>
+  </div>
+</div>
+
+<div class="stage">
+  <span class="stage-label">STAGE 5 · MINI-QUIZ</span>
+  <div class="quiz">
+    <div class="quiz-q">Q1. "Nước xen" (in-between / Zwischenzug) là gì?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" onclick="quizCheck(this, true)">Một nước chen vào GIỮA chuỗi ăn (thường là đòn mạnh) trước khi "ăn lại" như dự kiến</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Nước bỏ lượt</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Nước nhập thành</button>
+    </div>
+    <div class="quiz-explain hidden">Thay vì ăn lại ngay, ta chen một đòn (nĩa/chiếu/bắt quân) làm thay đổi cục diện — rồi mới thu hoạch.</div>
+  </div>
+  <div class="quiz">
+    <div class="quiz-q">Q2. Thói quen tính toán quan trọng nhất ở đây?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" onclick="quizCheck(this, false)">Đếm số tốt</button>
+      <button class="quiz-option" onclick="quizCheck(this, true)">Tính hết chuỗi ăn của cả hai bên + tìm nước xen, đừng dừng ở nước đầu</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Luôn nhập thành trước</button>
+    </div>
+    <div class="quiz-explain hidden">Nhiều đòn ẩn sau nước "ăn lại". Tính tới khi cờ "lặng" (không còn nước ăn) mới đánh giá đúng.</div>
+  </div>
+  <div class="quiz">
+    <div class="quiz-q">Q3. Vai trò của căng thẳng trung tâm (d4 ↔ e5)?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" onclick="quizCheck(this, true)">Là "ngòi nổ" chiến thuật: khi mở ra, sinh nĩa/xiên/đòn mở</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Không quan trọng</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Luôn nên giải tỏa ngay lập tức</button>
+    </div>
+    <div class="quiz-explain hidden">Tốt trung tâm chạm nhau = nhiều nước ăn tiềm tàng. Bên tính sâu hơn thường vớ được đòn chiến thuật.</div>
+  </div>
+</div>
+
+<div class="summary-card">
+  <h2>📌 Tóm tắt</h2>
+  <ul>
+    <li><strong>Đòn mẫu</strong>: <code>Nxd6! Qxd6 dxe5!</code> — tốt d4×e5 nĩa Hậu + Mã → thắng quân.</li>
+    <li><strong>Nước xen</strong> (Zwischenzug): chen một đòn mạnh trước khi "ăn lại" như dự kiến.</li>
+    <li><strong>Quy tắc</strong>: trước khi ăn quân được bảo vệ, tính hết chuỗi ăn của hai bên + tìm nước xen.</li>
+    <li><strong>Trung tâm căng</strong> (d4 ↔ e5) = kho chiến thuật; bên tính sâu hơn thắng.</li>
+  </ul>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chessboard-js/1.0.0/chessboard-1.0.0.min.js"></script>
+<script>
+const START_FEN = 'r1bq1rk1/pp3pp1/2nb1n1p/4p3/3PN3/3B1N2/PP3PPP/R1BQ1RK1 w - - 0 1';
+const MOVES = ['Nxd6', 'Qxd6', 'dxe5', 'Qd7', 'exf6'];
+const COMMENTARY = {
+  0: { move: 'Thế cờ khởi đầu', text: 'Tốt d4 ↔ e5 căng thẳng. Mã e4 nhắm tượng d6 (Hậu d8 giữ). Chìa khóa: tốt d4 sau khi Đen ăn lại.' },
+  1: { move: '1. Nxd6', text: 'Mã ăn tượng d6. Trông như chỉ đổi quân...' },
+  2: { move: '1... Qxd6', text: 'Đen ăn lại bằng Hậu — tự nhiên nhất. Nhưng Hậu nay đứng trên d6, cùng "tầm" với Mã f6.' },
+  3: { move: '2. dxe5 !', text: 'NƯỚC XEN! Tốt d4 ăn e5 và NĨA: tấn công Hậu d6 (dọc) + Mã f6 (chéo). Hai quân, một tốt.' },
+  4: { move: '2... Qd7', text: 'Hậu buộc chạy (cứu mình). Mã f6 bị bỏ rơi.' },
+  5: { move: '3. exf6', text: 'Tốt ăn Mã f6! Kết toán: Trắng thắng một quân nhẹ. Đòn nĩa tốt sau nước ăn "tưởng như đổi".' }
+};
+let board, game, currentMove = 0, stagesCompleted = new Set();
+function initBoard() {
+  game = new Chess(START_FEN);
+  board = Chessboard('board', { position: START_FEN, draggable: true,
+    pieceTheme: 'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png',
+    onDrop: (s,t) => { const m = game.move({from:s,to:t,promotion:'q'}); if(!m) return 'snapback'; setTimeout(updateOverlays,100); },
+    onSnapEnd: () => { board.position(game.fen()); updateOverlays(); }});
+  updateDisplay();
+}
+function nextMove() { if(currentMove>=MOVES.length) return; game.move(MOVES[currentMove]); board.position(game.fen()); currentMove++; setTimeout(()=>{updateDisplay();updateOverlays();},50); if(currentMove>=MOVES.length) markStage(3); }
+function prevMove() { if(currentMove<=0) return; game.undo(); currentMove--; board.position(game.fen()); setTimeout(()=>{updateDisplay();updateOverlays();},50); }
+function resetBoard() { game = new Chess(START_FEN); board.position(START_FEN); currentMove = 0; setTimeout(()=>{updateDisplay();updateOverlays();},50); }
+function updateDisplay() {
+  const cm = COMMENTARY[currentMove] || COMMENTARY[0];
+  document.getElementById('moveDisplay').textContent = cm.move;
+  document.getElementById('commentary').innerHTML = cm.text;
+  const box = document.getElementById('infoBox');
+  if (currentMove >= MOVES.length) { box.className = 'info-box win'; box.innerHTML = '⚡ Thắng quân — nĩa tốt sau nước xen'; }
+  else { box.className = 'info-box'; box.innerHTML = 'Đến lượt: <strong>' + (game.turn()==='w'?'Trắng':'Đen') + '</strong>'; }
+  updateProgress();
+}
+function updateOverlays() { $('#board .square-55d63').removeClass('hl'); ['d4','e5','d6','f6'].forEach(sq => $('#board .square-' + sq).addClass('hl')); }
+function checkSelfTest(btn, ok, exp) {
+  document.querySelectorAll('#selfTestOptions .quiz-option').forEach(el=>el.disabled=true);
+  btn.classList.add(ok?'correct':'wrong');
+  const fb = document.getElementById('selfTestFeedback');
+  fb.classList.remove('hidden'); fb.className = 'feedback ' + (ok?'correct':'wrong');
+  fb.textContent = (ok?'✓ ':'✗ ') + exp; markStage(4);
+}
+function quizCheck(btn, ok) {
+  const q = btn.closest('.quiz');
+  q.querySelectorAll('.quiz-option').forEach(el=>el.disabled=true);
+  btn.classList.add(ok?'correct':'wrong');
+  if (!ok) q.querySelectorAll('.quiz-option').forEach(el => { if (el.getAttribute('onclick').includes('true')) el.classList.add('correct'); });
+  q.querySelector('.quiz-explain').classList.remove('hidden'); markStage(5);
+}
+function markStage(n) { stagesCompleted.add(n); updateProgress(); }
+function updateProgress() { document.getElementById('progressFill').style.width = (stagesCompleted.size/5*100) + '%'; }
+function initMiniBoards() { Chessboard('hookBoard', { position: START_FEN, draggable: false, pieceTheme: 'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png' }); }
+$(document).ready(() => { initBoard(); initMiniBoards(); setTimeout(()=>markStage(2),500); });
+</script>
+
+</body>
+</htm

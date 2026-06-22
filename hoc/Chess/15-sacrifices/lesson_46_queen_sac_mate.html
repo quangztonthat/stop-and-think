@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bài 2 (Ch15) — Hy sinh Hậu → chiếu hết nghẹt (Smothered Mate)</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/chessboard-js/1.0.0/chessboard-1.0.0.min.css">
+<style>
+* { box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; max-width: 980px; margin: 0 auto; padding: 24px; color: #1a1a1a; line-height: 1.6; background: #fafafa; }
+h1 { color: #1a3a52; font-size: 28px; margin: 0 0 8px; }
+h2 { color: #2c5282; font-size: 20px; margin: 32px 0 12px; padding-bottom: 6px; border-bottom: 2px solid #e1e8ed; }
+.source { color: #888; font-size: 13px; margin-bottom: 24px; }
+.nav-link { font-size: 13px; color: #2c5282; text-decoration: none; }
+.stage { background: white; border-radius: 8px; padding: 20px 24px; margin: 16px 0; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
+.stage-label { display: inline-block; background: #2c5282; color: white; font-size: 12px; font-weight: 600; padding: 3px 10px; border-radius: 12px; margin-bottom: 8px; }
+.hook-question { font-size: 17px; color: #1a3a52; background: #fff8e1; border-left: 4px solid #faad14; padding: 14px 18px; border-radius: 0 6px 6px 0; margin: 12px 0; }
+.reveal-btn { background: #faad14; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-size: 14px; }
+.hidden { display: none; }
+.board-layout { display: grid; grid-template-columns: 440px 1fr; gap: 24px; align-items: start; margin-top: 16px; }
+@media (max-width: 820px) { .board-layout { grid-template-columns: 1fr; } }
+#board { width: 420px; max-width: 100%; }
+.mini-board { width: 300px; max-width: 100%; margin: 14px auto; }
+.controls { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; justify-content: center; }
+.controls button { padding: 7px 12px; background: #2c5282; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 13px; }
+.info-panel { background: #f8f9fb; padding: 16px; border-radius: 6px; border: 1px solid #e1e8ed; min-height: 380px; }
+.move-display { font-family: monospace; font-size: 16px; color: #2c5282; font-weight: 600; margin-bottom: 8px; }
+.commentary { font-size: 14px; color: #444; margin-bottom: 12px; }
+.info-box { background: white; padding: 10px; border-radius: 4px; border: 1px solid #e1e8ed; margin: 12px 0; font-size: 13px; text-align: center; }
+.info-box.win { background: #f6ffed; border-color: #b7eb8f; color: #389e0d; font-weight: 600; }
+.hl { background: rgba(255, 215, 0, 0.45) !important; box-shadow: inset 0 0 0 2px #faad14 !important; }
+.self-test { background: #fff8e1; border: 2px dashed #faad14; border-radius: 6px; padding: 16px; margin-top: 16px; }
+.feedback { margin-top: 10px; padding: 10px 14px; border-radius: 4px; font-size: 14px; }
+.feedback.correct { background: #f6ffed; color: #389e0d; border-left: 4px solid #52c41a; }
+.feedback.wrong { background: #fff1f0; color: #cf1322; border-left: 4px solid #ff4d4f; }
+.quiz { background: #f0f7ff; border-left: 4px solid #2c5282; border-radius: 0 6px 6px 0; padding: 14px 18px; margin: 12px 0; }
+.quiz-q { font-weight: 600; margin-bottom: 10px; color: #1a3a52; }
+.quiz-options { display: flex; flex-direction: column; gap: 6px; }
+.quiz-option { padding: 8px 12px; background: white; border: 1px solid #c9d6e2; border-radius: 4px; cursor: pointer; text-align: left; font-size: 14px; }
+.quiz-option.correct { background: #f6ffed; border-color: #52c41a; color: #389e0d; }
+.quiz-option.wrong { background: #fff1f0; border-color: #ff4d4f; color: #cf1322; }
+.quiz-explain { margin-top: 8px; font-size: 13px; color: #555; font-style: italic; }
+.summary-card { background: linear-gradient(135deg, #1a3a52, #2c5282); color: white; padding: 20px 24px; border-radius: 8px; margin-top: 24px; }
+.summary-card h2 { color: white; border: none; margin-top: 0; }
+.summary-card ul { padding-left: 20px; }
+code { background: #f1f3f5; padding: 1px 6px; border-radius: 3px; font-family: monospace; font-size: 0.9em; }
+.summary-card code { background: rgba(255,255,255,0.2); color: white; }
+.progress-bar { height: 4px; background: #e1e8ed; border-radius: 2px; overflow: hidden; margin: 8px 0 16px; }
+.progress-fill { height: 100%; background: #52c41a; transition: width 0.3s; width: 0%; }
+.tag { display:inline-block; background:#fde9c8; color:#874d00; font-size:11px; font-weight:600; padding:2px 8px; border-radius:10px; margin-left:6px; }
+</style>
+</head>
+<body>
+
+<h1>Bài 2 — Hy sinh Hậu → chiếu hết nghẹt <span class="tag">Smothered Mate</span></h1>
+<div class="source">
+  Chương 15 — Hy sinh · Trung cấp → Nâng cao<br>
+  <a class="nav-link" href="../index.html">← Trang chủ</a> ·
+  <a class="nav-link" href="chapter_15_sacrifices.html">← Chương 15</a>
+</div>
+
+<div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+
+<div class="stage">
+  <span class="stage-label">CHẶNG 1 · GỢI MỞ</span>
+  <h2 style="margin-top:8px">Hy sinh cả Hậu để... chiếu hết bằng Mã</h2>
+  <p>Trắng: Qb3 (chéo a2–g8), Ng5. Đen: Kh8 (góc), Rf8, tốt g7/h7. Vua đen gần như đã bị chính quân mình bịt kín.</p>
+  <div id="hookBoard" class="mini-board"></div>
+  <div class="hook-question">
+    🤔 <strong>Vua h8 bị tốt g7, h7 vây.</strong> Trắng có thể ép cho xe f8 tự bịt nốt ô g8 rồi cho Mã chiếu hết. Cái giá? <strong>Cả Hậu.</strong> Đáng không?
+  </div>
+  <button class="reveal-btn" onclick="document.getElementById('hookAnswer').classList.remove('hidden'); markStage(1);">Hiển thị đáp án</button>
+  <div id="hookAnswer" class="hidden" style="margin-top:14px">
+    <p><strong>Chiếu hết sau 4 nước!</strong> <code>1.Nf7+ Kg8 2.Nh6+ Kh8 3.Qg8+!! Rxg8 4.Nf7#</code>. Đây là <em>"Di sản của Philidor"</em> — Stockfish xác nhận chiếu hết ép buộc sau 4 nước.</p>
+  </div>
+</div>
+
+<div class="stage">
+  <span class="stage-label">CHẶNG 2 · KHÁI NIỆM</span>
+  <h2 style="margin-top:8px">Cơ chế "chiếu hết nghẹt" (chiếu hết ngạt thở)</h2>
+  <ul>
+    <li><strong>Chiếu hết nghẹt</strong> = vua bị chính quân/tốt của mình bịt hết ô thoát; chỉ <strong>Mã</strong> chiếu hết được vì Mã "nhảy qua tường".</li>
+    <li><strong>Chiếu đôi</strong> là vũ khí ép vua: không thể chặn, không thể ăn — vua <em>buộc</em> phải chạy. Ta dùng nó để lùa vua về đúng góc.</li>
+    <li><strong>Hy sinh Hậu (dụ quân)</strong>: <code>Qg8+!!</code> dụ xe f8 lên g8. Xe lên g8 = tự bịt ô thoát cuối cùng của vua → Mã f7 kết liễu.</li>
+  </ul>
+</div>
+
+<div class="stage">
+  <span class="stage-label">CHẶNG 3 · DIỄN GIẢI</span>
+  <div class="board-layout">
+    <div>
+      <div id="board"></div>
+      <div class="controls">
+        <button onclick="resetBoard()">⟨⟨ Đầu</button>
+        <button onclick="prevMove()">⟨ Lùi</button>
+        <button onclick="nextMove()">Tiến ⟩</button>
+      </div>
+    </div>
+    <div class="info-panel">
+      <div class="move-display" id="moveDisplay">Thế cờ khởi đầu</div>
+      <div class="commentary" id="commentary">Qb3 nhắm đường chéo a2–g8. Ng5 sẵn sàng nhảy f7. Vua h8 đã nửa nghẹt thở.</div>
+      <div class="info-box" id="infoBox">Đến lượt: <strong>Trắng</strong></div>
+    </div>
+  </div>
+</div>
+
+<div class="stage">
+  <span class="stage-label">CHẶNG 4 · TỰ KIỂM TRA</span>
+  <h2 style="margin-top:8px">Sau 2...Kh8, đòn kết liễu là gì?</h2>
+  <div class="self-test">
+    <div class="quiz-options" id="selfTestOptions">
+      <button class="quiz-option" onclick="checkSelfTest(this, true, 'Đúng! 3.Qg8+!! Rxg8 (xe buộc ăn — vua không ăn được vì Nh6 giữ g8) 4.Nf7# — vua h8 nghẹt thở giữa Rg8 + g7 + h7.')">Qg8+!! Rxg8, rồi Nf7#</button>
+      <button class="quiz-option" onclick="checkSelfTest(this, false, 'Sai. Nxf7+ chỉ lặp lại chiếu, vua về g8 — không tiến triển (lặp nước).')">Nf7+ lần nữa</button>
+      <button class="quiz-option" onclick="checkSelfTest(this, false, 'Sai. Qxf7?? bỏ lỡ; không chiếu hết và Đen gỡ được.')">Qxf7</button>
+    </div>
+    <div class="feedback hidden" id="selfTestFeedback"></div>
+  </div>
+</div>
+
+<div class="stage">
+  <span class="stage-label">CHẶNG 5 · TRẮC NGHIỆM</span>
+  <div class="quiz">
+    <div class="quiz-q">Q1. Vì sao chỉ Mã mới chiếu hết được trong thế "ngạt thở"?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" onclick="quizCheck(this, true)">Mã nhảy qua quân chắn; vua bị quân nhà bịt hết ô, không quân nào ăn nổi Mã</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Vì Mã mạnh nhất trong tàn cuộc</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Vì Mã được phong cấp</button>
+    </div>
+    <div class="quiz-explain hidden">Khi mọi ô quanh vua bị chính quân mình chiếm, các quân đi đường thẳng/chéo bị "tường" cản. Mã nhảy qua nên vẫn chiếu — và không gì gỡ được.</div>
+  </div>
+  <div class="quiz">
+    <div class="quiz-q">Q2. Vai trò của 3.Qg8+!! (hy sinh Hậu)?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" onclick="quizCheck(this, false)">Để đổi Hậu lấy xe cho gọn</button>
+      <button class="quiz-option" onclick="quizCheck(this, true)">Dụ xe f8 lên g8 → tự bịt ô thoát cuối của vua (đòn dụ quân)</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Để chiếu vĩnh viễn hòa cờ</button>
+    </div>
+    <div class="quiz-explain hidden">Đây là đòn dụ quân: ép một quân đối phương đến đúng ô ta cần. Xe lên g8 khóa nốt ô thoát → Nf7 chiếu hết.</div>
+  </div>
+  <div class="quiz">
+    <div class="quiz-q">Q3. Tên gọi cổ điển của đòn phối hợp Mã + thí Hậu này?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" onclick="quizCheck(this, false)">thế Lucena</button>
+      <button class="quiz-option" onclick="quizCheck(this, true)">Philidor's Legacy (Di sản của Philidor)</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Réti Manoeuvre</button>
+    </div>
+    <div class="quiz-explain hidden">Mẫu chiếu hết ngạt thở kinh điển được Philidor phân tích từ thế kỷ 18 — gọi là "Philidor's Legacy".</div>
+  </div>
+</div>
+
+<div class="summary-card">
+  <h2>📌 Tóm tắt</h2>
+  <ul>
+    <li><strong>Chiếu hết nghẹt</strong>: vua nghẹt thở giữa quân nhà — chỉ <strong>Mã</strong> chiếu hết được.</li>
+    <li><strong>Công thức Philidor's Legacy</strong>: <code>Nf7+ Kg8 → Nh6+ (CHIẾU ĐÔI) → Kh8 → Qg8+!! Rxg8 → Nf7#</code>.</li>
+    <li><strong>2 chìa khóa</strong>: (1) chiếu đôi ép vua về góc; (2) hy sinh Hậu để chính xe đen bịt ô g8.</li>
+    <li><strong>Nhận diện</strong>: vua địch ở góc + Mã ta tới được f7/h6 + Hậu kiểm soát chéo a2–g8.</li>
+  </ul>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chessboard-js/1.0.0/chessboard-1.0.0.min.js"></script>
+<script>
+const START_FEN = '5r1k/6pp/8/6N1/8/1Q6/8/6K1 w - - 0 1';
+const MOVES = ['Nf7+', 'Kg8', 'Nh6+', 'Kh8', 'Qg8+', 'Rxg8', 'Nf7#'];
+const COMMENTARY = {
+  0: { move: 'Thế cờ khởi đầu', text: 'Qb3 nhắm chéo a2–g8. Ng5 sẵn sàng. Vua h8 đã bị tốt g7/h7 vây — chỉ còn ô g8 để thở.' },
+  1: { move: '1. Nf7+', text: 'Mã nhảy vào f7, chiếu vua h8. Vua chỉ có một ô: g8 (g7, h7 là tốt nhà).' },
+  2: { move: '1... Kg8', text: 'Vua buộc ra g8.' },
+  3: { move: '2. Nh6+ !', text: 'CHIẾU ĐÔI! Mã về h6 (chiếu g8) ĐỒNG THỜI mở chiếu của Hậu b3 theo chéo a2–g8 (f7 vừa trống). Chiếu đôi = không chặn, không ăn được.' },
+  4: { move: '2... Kh8', text: 'Vua buộc về h8 (f8 có xe nhà, g8 bị mã + hậu). Đúng góc ta cần.' },
+  5: { move: '3. Qg8+ !!', text: 'HY SINH HẬU! Hậu đâm vào g8 chiếu. Vua không ăn được (Nh6 giữ g8). Xe f8 buộc phải ăn.' },
+  6: { move: '3... Rxg8', text: 'Xe f8 ăn Hậu — và vô tình tự bịt nốt ô g8, ô thở cuối cùng của vua.' },
+  7: { move: '4. Nf7#', text: 'Mã quay lại f7 chiếu hết! Vua h8 nghẹt thở giữa Rg8 + g7 + h7. Không gì ăn được f7. CHIẾU HẾT NGHẸT.' }
+};
+let board, game, currentMove = 0, stagesCompleted = new Set();
+function initBoard() {
+  game = new Chess(START_FEN);
+  board = Chessboard('board', { position: START_FEN, draggable: true,
+    pieceTheme: 'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png',
+    onDrop: (s,t) => { const m = game.move({from:s,to:t,promotion:'q'}); if(!m) return 'snapback'; setTimeout(updateOverlays,100); },
+    onSnapEnd: () => { board.position(game.fen()); updateOverlays(); }});
+  updateDisplay();
+}
+function nextMove() { if(currentMove>=MOVES.length) return; game.move(MOVES[currentMove]); board.position(game.fen()); currentMove++; setTimeout(()=>{updateDisplay();updateOverlays();},50); if(currentMove>=MOVES.length) markStage(3); }
+function prevMove() { if(currentMove<=0) return; game.undo(); currentMove--; board.position(game.fen()); setTimeout(()=>{updateDisplay();updateOverlays();},50); }
+function resetBoard() { game = new Chess(START_FEN); board.position(START_FEN); currentMove = 0; setTimeout(()=>{updateDisplay();updateOverlays();},50); }
+function updateDisplay() {
+  const cm = COMMENTARY[currentMove] || COMMENTARY[0];
+  document.getElementById('moveDisplay').textContent = cm.move;
+  document.getElementById('commentary').innerHTML = cm.text;
+  const box = document.getElementById('infoBox');
+  if (currentMove >= MOVES.length) { box.className = 'info-box win'; box.innerHTML = '♚ Smothered mate — chiếu hết ngạt thở!'; }
+  else { box.className = 'info-box'; box.innerHTML = 'Đến lượt: <strong>' + (game.turn()==='w'?'Trắng':'Đen') + '</strong>'; }
+  updateProgress();
+}
+function updateOverlays() { $('#board .square-55d63').removeClass('hl'); ['f7','h6','g8','h8'].forEach(sq => $('#board .square-' + sq).addClass('hl')); }
+function checkSelfTest(btn, ok, exp) {
+  document.querySelectorAll('#selfTestOptions .quiz-option').forEach(el=>el.disabled=true);
+  btn.classList.add(ok?'correct':'wrong');
+  const fb = document.getElementById('selfTestFeedback');
+  fb.classList.remove('hidden'); fb.className = 'feedback ' + (ok?'correct':'wrong');
+  fb.textContent = (ok?'✓ ':'✗ ') + exp; markStage(4);
+}
+function quizCheck(btn, ok) {
+  const q = btn.closest('.quiz');
+  q.querySelectorAll('.quiz-option').forEach(el=>el.disabled=true);
+  btn.classList.add(ok?'correct':'wrong');
+  if (!ok) q.querySelectorAll('.quiz-option').forEach(el => { if (el.getAttribute('onclick').includes('true')) el.classList.add('correct'); });
+  q.querySelector('.quiz-explain').classList.remove('hidden'); markStage(5);
+}
+function markStage(n) { stagesCompleted.add(n); updateProgress(); }
+function updateProgress() { document.getElementById('progressFill').style.width = (stagesCompleted.size/5*100) + '%'; }
+function initMiniBoards() { Chessboard('hookBoard', { position: START_FEN, draggable: false, pieceTheme: 'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png' }); }
+$(document).ready((

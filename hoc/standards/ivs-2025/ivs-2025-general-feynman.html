@@ -1,0 +1,1002 @@
+<!DOCTYPE html>
+<html lang="vi"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IVS 2025 — Chuẩn mực chung (IVS 100–106) — Hiểu sâu theo Feynman</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,500&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  /* Design tokens shared with ebook-to-study-html (styles_v2.css) */
+  :root{
+    --bg:#fafaf7; --bg-elevated:#ffffff; --bg-soft:#f3f3ee;
+    --border:#e0e0d8; --border-soft:#ececea; --border-strong:#d2c8b6;
+    --ink:#1a1a1f; --ink-soft:#3f3f4a; --muted:#7a7a85;
+    --accent:#b8860b; --accent-2:#8b6508; --gold:#a07c1f; --gap:#8b6508;
+    --serif:"Fraunces",Georgia,"Iowan Old Style",serif;
+    --sans:"Geist",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    --mono:"Geist Mono","JetBrains Mono",Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:var(--sans);
+    font-size:19px;line-height:1.72;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}
+  .progress{position:fixed;top:0;left:0;height:3px;width:0;z-index:50;
+    background:linear-gradient(90deg,var(--gold),var(--accent));transition:width .08s linear}
+  .wrap{max-width:920px;margin:0 auto;padding:0 36px}
+  .rise{opacity:0;transform:translateY(14px);animation:rise .7s cubic-bezier(.2,.7,.3,1) forwards}
+  @keyframes rise{to{opacity:1;transform:none}}
+
+  header{padding:104px 0 60px;border-bottom:1px solid var(--border)}
+  .kicker{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.18em;
+    text-transform:uppercase;color:var(--accent);margin-bottom:26px}
+  h1{font-family:var(--serif);font-weight:600;font-size:clamp(42px,7.6vw,72px);
+    line-height:1.0;letter-spacing:-.022em;margin-bottom:28px;font-optical-sizing:auto;color:var(--ink)}
+  h1 em{font-style:italic;color:var(--accent)}
+  .core{font-family:var(--serif);font-style:italic;font-weight:400;
+    font-size:clamp(21px,3.6vw,27px);line-height:1.44;color:var(--ink-soft)}
+  .core span{font-style:normal;font-weight:600;color:var(--accent-2);
+    box-shadow:inset 0 -.5em 0 rgba(184,134,11,.16)}
+
+  /* ---- BƯỚC 0: ANCHOR (state the rule + plan before explaining) ---- */
+  .anchor .rule{font-family:var(--serif);font-size:19px;line-height:1.5;color:var(--ink);
+    background:var(--bg-soft);border-left:3px solid var(--accent);
+    padding:18px 24px;border-radius:0 4px 4px 0;margin:0}
+  .anchor .rule em{font-style:italic;color:var(--accent-2)}
+  .anchor .rule strong{color:var(--ink);font-weight:600}
+  .anchor .approach{color:var(--ink-soft)}
+
+  section{padding:72px 0;border-bottom:1px solid var(--border);position:relative}
+  .step-head{display:flex;align-items:flex-start;gap:22px;margin-bottom:34px}
+  .big-num{font-family:var(--serif);font-weight:700;font-size:62px;line-height:.8;
+    color:var(--border-strong);flex:none;font-optical-sizing:auto;letter-spacing:-.03em}
+  .step-meta{padding-top:4px}
+  .lbl{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--accent);display:block;margin-bottom:10px}
+  h2{font-family:var(--serif);font-weight:600;font-size:clamp(27px,4.4vw,37px);
+    line-height:1.12;letter-spacing:-.012em;color:var(--ink)}
+  h2 em{font-style:italic;color:var(--accent)}
+  p{margin-bottom:21px}
+  p:last-child{margin-bottom:0}
+  strong{font-weight:600;color:var(--ink)}
+  em{font-style:italic;color:var(--accent-2)}
+  .gloss{color:var(--muted);font-style:italic}
+
+  .lead::first-letter{font-family:var(--serif);font-weight:700;float:left;
+    font-size:74px;line-height:.74;padding:8px 12px 0 0;color:var(--accent)}
+
+  .sub{font-family:var(--serif);font-weight:600;font-size:17px;letter-spacing:.01em;
+    color:var(--ink);margin:34px 0 14px;display:flex;align-items:center;gap:11px}
+  .sub::before{content:"";width:18px;height:2px;background:var(--accent);flex:none;border-radius:2px}
+
+  .gaps{background:var(--bg-soft)}
+  .gaps .big-num{color:#e2d6b4}
+  .gaps .lbl{color:var(--gap)}
+  .gap-q{margin:0 0 30px;padding-left:24px;border-left:2px solid var(--border-strong)}
+  .gap-q:last-child{margin-bottom:0}
+  .gap-q .q{font-family:var(--serif);font-style:italic;font-weight:500;
+    font-size:22px;line-height:1.35;color:var(--gap);margin-bottom:12px;display:block}
+  .gap-q p:last-child{margin-bottom:0}
+
+  .analogy-card{border:1px solid #e8c876;border-radius:4px;padding:30px 32px;margin:8px 0 28px;
+    background:linear-gradient(135deg,#fef9ed 0%,#fdf3e0 100%)}
+  .analogy-card .tag{font-family:var(--mono);font-weight:600;font-size:11px;
+    letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin-bottom:16px;display:block}
+  .analogy-card p{color:#5a4810}
+  .analogy-card strong{color:var(--accent-2)}
+  .limit{font-size:17px;line-height:1.6;color:#5a4810;
+    border-top:1px solid #e8c876;padding-top:20px;margin-top:22px}
+  .limit b{color:var(--accent-2);font-weight:600;font-family:var(--serif)}
+
+  .retell{background:linear-gradient(180deg,var(--bg-soft) 0%,var(--bg) 100%);border-bottom:none}
+  .retell h2{color:var(--ink)}
+  .retell strong{color:var(--accent-2)}
+  .retell .core{margin-top:6px}
+  .testbox{border:1px solid var(--border);background:var(--bg-elevated);
+    border-radius:4px;padding:28px 32px;margin-top:40px;box-shadow:0 1px 2px rgba(0,0,0,.03)}
+  .testbox h3{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--accent);margin-bottom:20px}
+  .testbox ol{margin:0;padding-left:22px;counter-reset:t}
+  .testbox li{margin-bottom:16px;color:var(--ink-soft);padding-left:6px}
+  .testbox li:last-child{margin-bottom:0}
+
+  footer{text-align:center;padding:60px 0 88px}
+  footer .mark{font-family:var(--serif);font-weight:700;color:var(--accent);
+    font-size:26px;display:block;margin-bottom:14px}
+  footer p{font-family:var(--serif);font-style:italic;color:var(--muted);font-size:17px;max-width:380px;margin:0 auto}
+
+  @media(max-width:560px){
+    body{font-size:18px}
+    header{padding:70px 0 44px}
+    section{padding:52px 0}
+    .step-head{gap:16px}
+    .big-num{font-size:46px}
+    .lead::first-letter{font-size:60px}
+  }
+</style>
+<style>
+ .tabbar{position:fixed;top:0;left:0;right:0;width:100%;box-sizing:border-box;z-index:40;background:rgba(250,250,247,.93);
+   backdrop-filter:saturate(1.1) blur(8px);-webkit-backdrop-filter:saturate(1.1) blur(8px);
+   border-bottom:1px solid var(--border);display:flex;gap:6px;overflow-x:auto;
+   padding:10px max(36px,calc((100% - 992px)/2));scrollbar-width:thin}
+ .tabbar .tab{flex:0 0 auto;display:flex;align-items:baseline;gap:9px;cursor:pointer;
+   background:transparent;border:1px solid transparent;border-radius:999px;
+   padding:8px 17px;transition:.15s;white-space:nowrap;color:var(--muted)}
+ .tabbar .tab:hover{color:var(--ink);background:var(--bg-soft)}
+ .tabbar .tab.active{color:var(--accent-2);background:var(--bg-soft);border-color:var(--border-strong)}
+ .tabbar .tn{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.1em;color:var(--accent)}
+ .tabbar .tl{font-family:var(--serif);font-weight:500;font-size:16px}
+ body{padding-top:56px} .concept-panel{display:none}
+ .concept-panel.active{display:block}
+ .concept-panel header{padding-top:50px}
+ @media(max-width:560px){.tabbar .tl{max-width:48vw;overflow:hidden;text-overflow:ellipsis}}
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+<nav class="tabbar" aria-label="Các khái niệm"><button class="tab" data-i="0"><span class="tn">01</span><span class="tl">Giá · Chi phí · Giá trị</span></button><button class="tab" data-i="1"><span class="tn">02</span><span class="tl">Scope of Work (101)</span></button><button class="tab" data-i="2"><span class="tn">03</span><span class="tl">Giá trị thị trường</span></button><button class="tab" data-i="3"><span class="tn">04</span><span class="tl">Equitable vs Fair Value</span></button><button class="tab" data-i="4"><span class="tn">05</span><span class="tl">Highest &amp; Best Use</span></button><button class="tab" data-i="5"><span class="tn">06</span><span class="tl">Forced sale</span></button><button class="tab" data-i="6"><span class="tn">07</span><span class="tl">Assumption vs Special</span></button><button class="tab" data-i="7"><span class="tn">08</span><span class="tl">Ba approaches (103)</span></button><button class="tab" data-i="8"><span class="tn">09</span><span class="tl">Documentation (106)</span></button><button class="tab" data-i="9"><span class="tn">10</span><span class="tl">Must vs Should</span></button></nav>
+<div class="concept-panel" id="c-price-value-cost"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Giải thích theo phương pháp Feynman</div>
+    <h1 class="rise" style="animation-delay:.08s">Ba từ ai cũng tưởng giống nhau: Giá, Chi phí, Giá trị</h1>
+    <p class="core rise" style="animation-delay:.16s">Giá là tiền người ta hỏi hay trả, <span>còn giá trị là kết luận của người thẩm định.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Điều cần hiểu &amp; cách tiếp cận</span><h2>Quy tắc: Price, Cost và Value là ba thứ khác nhau</h2></div>
+    </div>
+    <div class="rule">Glossary IVS: <em>Price</em> (10.21) = số tiền được hỏi, chào, hoặc trả cho một tài sản — và <strong>price và value có thể khác nhau</strong>. <em>Cost</em> (10.05) = khoản chi để mua hoặc tạo ra tài sản. <em>Value</em> (10.38) = <strong>kết luận định lượng</strong> của valuer sau một quy trình định giá tuân thủ IVS, tại ngày định giá.</div>
+    <div class="sub">Cách giải thích</div>
+    <div class="approach"><p>Chỗ vấp: ai cũng tưởng ba từ này là một. Cách làm: kể ba con số quanh một chiếc điện thoại. Số bạn trả khi mua. Số tiền bỏ ra để làm ra nó. Và số nó thật sự đáng hôm nay. Ba con số, ba câu chuyện khác nhau.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Giải thích đơn giản</span><h2>Một chiếc điện thoại, ba con số khác hẳn nhau</h2></div>
+    </div>
+    <p class="lead">Bạn mua một chiếc điện thoại. Có ba con số quấn quanh nó, nghe giống nhau mà khác hẳn. Một là số tiền bạn trả ở quầy. Hai là số tiền để làm ra nó. Ba là số nó thật sự đáng. Ba con số này hiếm khi bằng nhau.</p>
+
+<div class="sub">Giá — số tiền đổi tay</div>
+<p><strong>Giá</strong> là con số người ta hỏi, chào, hay đã trả. Cửa hàng dán 15 triệu, bạn mặc cả còn 14. Vậy 14 triệu là giá. Nó là chuyện đã xảy ra, ai cũng thấy.</p>
+
+<div class="sub">Chi phí — số tiền bỏ ra để có</div>
+<p><strong>Chi phí</strong> là tiền tốn để mua hoặc tạo ra món đồ. Nhà máy tốn 9 triệu linh kiện và công. Đó là chi phí. Nó nói về quá khứ làm ra, không nói món đồ đáng bao nhiêu.</p>
+
+<div class="sub">Giá trị — kết luận sau khi cân nhắc</div>
+<p><strong>Giá trị</strong> là con số người thẩm định chốt lại, sau khi xem xét đủ thứ. Điện thoại đời cũ, pin chai, model mới ra rồi. Người thẩm định bảo nó chỉ còn đáng 8 triệu. Đó là giá trị hôm nay.</p>
+<p>Ba con số: trả 14, tốn 9, đáng 8. Cùng một chiếc máy. Lẫn lộn ba từ là sai ngay từ gốc.</p>
+  </section>
+
+  <section class="gaps">
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Chỗ vấp · Lỗ hổng</span><h2>Mấy chỗ nghe xuôi mà nghĩ kỹ chưa thông</h2></div>
+    </div>
+    <div class="gap-q"><span class="q">“Nếu đã trả 14 triệu thì nó đáng 14 chứ?”</span><p>Không hẳn. Số bạn trả chỉ là giá của một lần mua, một hoàn cảnh. Bạn có thể trả hớ, hoặc vớ món hời. Giá trị hỏi câu khác: hôm nay, bình thường, nó đáng bao nhiêu? Vì thế giá và giá trị hay lệch nhau.</p></div>
+<div class="gap-q"><span class="q">“Cost Approach lấy chi phí làm giá trị — vậy chi phí chính là giá trị à?”</span><p>Vẫn không. Ngay cả khi định giá từ chi phí, chuẩn bắt trừ hao mòn rồi mới ra giá trị. Một cái máy tốn 9 triệu để làm, nhưng lỗi mốt thì chỉ còn đáng 4. Chi phí là điểm xuất phát, không phải đích.</p></div>
+<div class="gap-q"><span class="q">“Vậy ba con số có bao giờ bằng nhau không?”</span><p>Có thể trùng, nhưng do may. Trong một thị trường sôi động, lành mạnh, giá giao dịch hay bám sát giá trị. Nhưng chuẩn nhắc thẳng: giá và giá trị có thể khác nhau. Đừng mặc định chúng bằng nhau rồi suy ngược.</p></div>
+<div class="gap-q"><span class="q">“Nếu giá trị là phán đoán của người thẩm định, có chủ quan quá không?”</span><p>Đây là chỗ nghề này dễ bị nghi. Giá trị đúng là một kết luận, nên có phần phán đoán. Vì thế chuẩn vây nó bằng kỷ luật: phải theo đúng quy trình IVS, nêu rõ giả định, dựa trên dữ liệu quan sát được. Phán đoán có khung, không phải đoán bừa.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví von &amp; ví dụ đời thường</span><h2>Neo vào thứ bạn đã biết</h2></div>
+    </div>
+    <div class="analogy-card"><span class="tag">Ví dụ trung tâm</span>
+<p>Nghĩ về chiếc điện thoại cũ trong ngăn kéo. <strong>Giá</strong> là số người mua trên chợ mạng chịu trả. <strong>Chi phí</strong> là số hồi xưa hãng bỏ ra làm nó. <strong>Giá trị</strong> là số một người rành định ra hôm nay, sau khi soi pin, đời máy, thị trường. Ba con số sống ở ba thế giới khác nhau.</p>
+<p class="limit"><b>Chỗ ví von này hỏng:</b> với điện thoại, ai cũng mò ra giá trên chợ mạng trong một phút. Nhiều tài sản thật thì không — một nhà máy đặc thù, một thương hiệu, một mỏ quặng. Không có chợ để liếc giá. Lúc đó valuer phải dựng mô hình, và ba con số càng dễ tách xa nhau.</p>
+</div>
+<p>Gần hơn nữa: bạn xây quán cà phê hết 500 triệu (chi phí). Có người trả 400 để sang lại (giá). Người thẩm định nhìn doanh thu yếu, bảo nó đáng 350 (giá trị). Tiền đã bỏ ra nhiều không cứu được giá trị, nếu quán không kiếm ra tiền.</p>
+<div class="sub">Nâng một bậc — vì sao Cost Approach vẫn không phải chi phí thô</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. IVS 102 A10.05 nói: muốn dùng <em>cost approach</em> để chỉ ra market value, phải lấy chi phí của một tài sản có cùng công dụng, rồi điều chỉnh cho hao mòn <em>physical</em> (cũ kỹ), <em>functional</em> (lỗi thiết kế) và <em>economic</em> (thị trường quay lưng). Cơ chế cost approach và ba loại hao mòn được trình bày chi tiết ở <strong>IVS 103</strong> (§40 và Appendix A30); A10.05 chỉ là nơi IVS 102 nhắc lại để bảo đảm đầu vào nhất quán với market value. Vì thế ngay cả cách định giá dựa trên chi phí cũng không trả về đúng số tiền đã chi — nó luôn trừ đi phần đã mất giá.</p>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">4</div>
+      <div class="step-meta"><span class="lbl">Kể lại gọn gàng</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Một chiếc điện thoại, ba con số khác hẳn. <strong>Giá</strong> là tiền người ta hỏi hay trả. <strong>Chi phí</strong> là tiền bỏ ra để có nó. <strong>Giá trị</strong> là số người thẩm định chốt, sau khi cân đời máy, pin, thị trường. Ba thứ khác nhau — đừng lẫn.</p>
+<p class="core">Giá là tiền người ta hỏi hay trả, <span>còn giá trị là kết luận của người thẩm định.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã hiểu chưa?</h3>
+      <ol>
+        <li>Cùng một chiếc máy: hãng tốn 9 triệu làm ra, bạn mua 14 triệu, nay đáng 8 triệu. Đâu là giá, chi phí, giá trị?</li>
+        <li>Vì sao IVS nhấn mạnh rằng giá (price) và giá trị (value) có thể khác nhau?</li>
+        <li>Một cái máy tốn 9 triệu để chế tạo nhưng đã lỗi mốt. Vì sao giá trị có thể thấp hơn 9 triệu, dù dùng cách định giá từ chi phí?</li>
+        <li>Nếu giá trị là một 'kết luận' của valuer, điều gì giữ cho nó không thành đoán bừa?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nếu giải thích được cho bà ngoại hiểu, bạn mới thật sự hiểu.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-scope-of-work"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Giải thích theo phương pháp Feynman</div>
+    <h1 class="rise" style="animation-delay:.08s">Scope of Work: bản thỏa thuận định ra mọi giới hạn</h1>
+    <p class="core rise" style="animation-delay:.16s">Chốt rõ công việc trước khi làm <span>chính là một yêu cầu bắt buộc của chuẩn.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Điều cần hiểu &amp; cách tiếp cận</span><h2>Quy tắc: chốt phạm vi bằng văn bản, trước khi làm</h2></div>
+    </div>
+    <div class="rule">IVS 101 §10.01: <em>scope of work</em> mô tả các điều khoản nền tảng của một cuộc định giá (tài sản, mục đích, trách nhiệm các bên). §10.03: <strong>bắt buộc cho mọi cuộc định giá</strong>, dù nội bộ hay bên ngoài. §10.04: client và valuer phải <strong>thỏa thuận</strong>. §20.02: lập <strong>bằng văn bản trước khi hoàn thành báo cáo</strong>; mọi thay đổi phải thống nhất bằng văn bản. §10.05 &amp; §20.03: nếu phạm vi <strong>quá hạn chế</strong> đến mức không cho ra kết quả tuân thủ IVS thì không còn là định giá tuân thủ IVS.</div>
+    <div class="sub">Cách giải thích</div>
+    <div class="approach"><p>Chỗ vấp: nhiều người tưởng cứ thế định giá, scope of work chỉ là giấy tờ. Cách làm: coi nó như bản thỏa thuận đặt đường biên cho cả cuộc chơi. Ai cũng phải ký trước. Và nếu đường biên bóp quá chặt, kết quả không còn được gọi là 'tuân thủ IVS'.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Giải thích đơn giản</span><h2>Chốt luật chơi trước khi vào trận</h2></div>
+    </div>
+    <p class="lead">Trước khi định giá bất cứ thứ gì, valuer và khách phải thống nhất một bản gọi là scope of work. Nó ghi rõ: định giá cái gì, cho mục đích gì, ai dùng, ngày nào. Theo cơ sở giá trị nào, được xem gì và bị giới hạn ra sao. Chốt luật chơi trước, rồi mới chơi.</p>
+
+<div class="sub">Vì sao bắt buộc, không phải thủ tục cho có</div>
+<p>Chuẩn bắt phải có scope of work cho mọi cuộc định giá, kể cả làm nội bộ. Vì nó định ra mọi giới hạn của kết quả. Thiếu nó, không ai biết con số áp cho cái gì, dùng vào việc gì. Phải thỏa thuận bằng văn bản, trước khi xong báo cáo.</p>
+
+<div class="sub">Được làm với thông tin hạn chế — nếu khai</div>
+<p>Không phải lúc nào cũng xem được mọi thứ. Có khi không vào được hiện trường, thiếu giấy tờ. Vẫn làm được, nhưng phải ghi rõ giới hạn đó trong scope of work, và thêm các giả định cần thiết. Giấu giới hạn mới là sai; khai ra thì hợp lệ.</p>
+
+<div class="sub">Nhưng bóp quá chặt thì hỏng</div>
+<p>Có một lằn ranh. Nếu khách giới hạn đến mức valuer không thể ra một con số đáng tin, thì kết quả không còn tuân thủ IVS. Lúc đó valuer phải nói thẳng với khách bằng văn bản. Không thể vừa bị trói tay vừa dán nhãn 'đúng chuẩn'.</p>
+  </section>
+
+  <section class="gaps">
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Chỗ vấp · Lỗ hổng</span><h2>Mấy chỗ nghe xuôi mà nghĩ kỹ chưa thông</h2></div>
+    </div>
+    <div class="gap-q"><span class="q">“Làm cho sếp mình, nội bộ thôi, cần scope of work không?”</span><p>Cần. Chuẩn nói rõ: bắt buộc cho mọi cuộc định giá, nội bộ hay bên ngoài. Định giá nội bộ vẫn có thể bị dùng cho quyết định lớn. Nên vẫn phải chốt rõ cái gì, mục đích gì, giới hạn nào — y như làm cho khách ngoài.</p></div>
+<div class="gap-q"><span class="q">“Đang làm dở mà phát hiện phạm vi không ổn thì sao?”</span><p>Phải báo. Nếu giữa chừng thấy phạm vi sẽ không cho ra kết quả tuân thủ IVS, valuer phải báo khách bằng văn bản. Mọi thay đổi scope cũng phải thống nhất bằng văn bản. Không tự ý nới hay siết rồi im lặng làm tiếp.</p></div>
+<div class="gap-q"><span class="q">“Khách không cho vào xem tài sản — vẫn định giá được chứ?”</span><p>Thường là được, nhưng có điều kiện. Phải ghi rõ giới hạn 'không khảo sát hiện trường' và nêu giả định đi kèm. Người đọc nhờ vậy biết con số dựa trên gì. Cái khác giữa hợp lệ và ẩu nằm ở chỗ có khai giới hạn hay không.</p></div>
+<div class="gap-q"><span class="q">“Ranh giới 'hạn chế quá mức' nằm ở đâu? Nghe mơ hồ.”</span><p>Đúng là mơ hồ, và đây là chỗ cần phán đoán nghề. Chuẩn không cho một con số cứng. Câu hỏi là: với giới hạn này, valuer còn ra được kết luận đáng tin cho mục đích đã định không? Nếu không, dừng và báo khách. Phán đoán đó phải ghi lại.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví von &amp; ví dụ đời thường</span><h2>Neo vào thứ bạn đã biết</h2></div>
+    </div>
+    <div class="analogy-card"><span class="tag">Ví dụ trung tâm</span>
+<p>Hình dung thuê thợ sửa nhà. Trước khi gõ búa, hai bên ký một tờ: sửa phòng nào, ngân sách bao nhiêu, xong khi nào, được đụng vào đâu và <strong>không</strong> đụng vào đâu. <em>Scope of work</em> của định giá y hệt tờ đó. Nó không phải giấy thừa — nó định ra mọi thứ con số cuối cùng áp vào.</p>
+<p class="limit"><b>Chỗ ví von này hỏng:</b> hợp đồng sửa nhà mà chủ bóp ngân sách thì thợ vẫn sửa được phần nào hay phần đó. Định giá thì khác. Nếu khách bóp phạm vi đến mức valuer không ra nổi kết luận đáng tin, kết quả <em>mất</em> luôn nhãn 'tuân thủ IVS'. Không có chuyện 'tuân thủ một phần'.</p>
+</div>
+<p>Một ngân hàng cần định giá tòa nhà để cho vay, nhưng không cho vào trong vì đang có người thuê. Valuer ghi trong scope: 'không khảo sát nội thất', kèm giả định 'nội thất ở tình trạng bình thường'. Hợp lệ. Nhưng nếu ngân hàng cấm cả xem sổ đỏ lẫn so giá thị trường, thì có thể đã quá chặt.</p>
+<div class="sub">Nâng một bậc — scope of work phải ghi gì</div>
+<p>Phần này hơi nặng. IVS 101 §20.01 liệt kê các mục bắt buộc (a–p): tài sản được định giá, khách, mục đích (intended use), người dùng (intended user), valuer, đồng tiền, <em>ngày định giá</em> (và nếu ngày báo cáo khác thì nêu luôn), cơ sở giá trị, bản chất và giới hạn công việc, nguồn thông tin dựa vào, special assumptions đã biết trước, vai trò specialist, yếu tố ESG, loại báo cáo, hạn chế sử dụng/phát hành, và tuyên bố tuân thủ IVS. Mục (i) và (k) nối thẳng sang IVS 102 §50–60 về assumptions/special assumptions.</p>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">4</div>
+      <div class="step-meta"><span class="lbl">Kể lại gọn gàng</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Trước khi định giá, valuer và khách chốt một scope of work bằng văn bản: định giá cái gì, cho ai, mục đích gì, giới hạn nào. Bắt buộc cho mọi cuộc, kể cả nội bộ. Làm với thông tin hạn chế thì được — miễn khai rõ và thêm giả định. Nhưng bóp quá chặt thì kết quả mất nhãn 'tuân thủ IVS'.</p>
+<p class="core">Chốt rõ công việc trước khi làm <span>chính là một yêu cầu bắt buộc của chuẩn.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã hiểu chưa?</h3>
+      <ol>
+        <li>Định giá nội bộ cho công ty mình có cần scope of work không? Vì sao?</li>
+        <li>Khách không cho khảo sát hiện trường. Valuer xử lý thế nào để vẫn hợp lệ?</li>
+        <li>Giữa chừng phát hiện phạm vi quá hạn chế — chuẩn buộc valuer làm gì?</li>
+        <li>Vì sao ngày định giá và ngày báo cáo lại được nêu riêng trong scope of work?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nếu giải thích được cho bà ngoại hiểu, bạn mới thật sự hiểu.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-market-value-special-buyer"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Giải thích theo phương pháp Feynman</div>
+    <h1 class="rise" style="animation-delay:.08s">Giá trị thị trường: vì sao bỏ qua người trả giá cao nhất</h1>
+    <p class="core rise" style="animation-delay:.16s">Giá trị thị trường là giá của một người mua bất kỳ, <span>không phải người mua đặc biệt sẵn lòng trả cao hơn.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Điều cần hiểu &amp; cách tiếp cận</span><h2>Quy tắc: thị trường giả định người mua bất kỳ, không phải người mua cụ thể</h2></div>
+    </div>
+    <div class="rule">IVS 102 A10.01: <em>market value</em> (giá trị thị trường) là số tiền ước tính mà tài sản trao đổi giữa một <em>willing buyer</em> và <em>willing seller</em> trong giao dịch <em>arm's-length</em>, sau khi rao bán đúng cách. A10.07: market value <strong>bỏ qua</strong> mọi lợi thế chỉ có giá trị với một người mua/chủ cụ thể — vì chỉ giả định có <strong>một người mua bất kỳ, không phải một người mua cụ thể</strong>. Para 30.01 &amp; 40.02: yếu tố riêng của entity và synergy chỉ-một-người-có đều bị loại.</div>
+    <div class="sub">Cách giải thích</div>
+    <div class="approach"><p>Chỗ vấp: nếu hàng xóm chịu trả cao nhất, sao đó không phải giá thị trường? Cách làm: tách hai câu hỏi. 'Người mua điển hình trả bao nhiêu?' khác với 'người mua đặc biệt nhất trả bao nhiêu?'. Giá trị thị trường hỏi câu đầu. Ta sẽ thấy cái giá cao của hàng xóm thuộc về một loại giá trị khác.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Giải thích đơn giản</span><h2>Bán mảnh đất: vì sao không lấy giá cao nhất</h2></div>
+    </div>
+    <p class="lead">Bạn bán một mảnh đất. Mười người hỏi mua, đa số trả quanh 2 tỷ. Riêng ông hàng xóm trả 3 tỷ — vì đất bạn ghép vào đất ông thành lô lớn, ông xây được nhiều hơn. Giá trị thị trường của mảnh đất là 2 tỷ, không phải 3. Nghe ngược đời, nhưng có lý do.</p>
+
+<div class="sub">Người mua trong định nghĩa là người bất kỳ</div>
+<p>Giá trị thị trường giả định một người mua <em>điển hình</em>, không phải người mua cụ thể nào. Là người bình thường trên thị trường, không có lợi thế riêng. Đa số người như vậy trả 2 tỷ. Nên 2 tỷ mới là mức thị trường.</p>
+
+<div class="sub">Vì sao cái 3 tỷ của hàng xóm bị loại</div>
+<p>Ba tỷ là giá <em>chỉ</em> đúng với ông hàng xóm. Không ai khác hưởng được cái lợi ghép đất đó. Đó là lợi thế riêng của một người. Chuẩn bắt bỏ qua, vì thị trường chỉ giả định 'một người mua', chứ không phải 'ông hàng xóm này'.</p>
+
+<div class="sub">Cái giá cao đó có tên riêng</div>
+<p>Nó không biến mất, chỉ đổi tên. Khoản ông hàng xóm trả thêm nhờ ghép đất gọi là <em>giá trị cộng hưởng</em>. Còn giá trị với riêng một chủ, theo mục tiêu của họ, là <em>giá trị đầu tư</em>. Khác tên, khác câu hỏi.</p>
+  </section>
+
+  <section class="gaps">
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Chỗ vấp · Lỗ hổng</span><h2>Mấy chỗ nghe xuôi mà nghĩ kỹ chưa thông</h2></div>
+    </div>
+    <div class="gap-q"><span class="q">“Bán được 3 tỷ thì tội gì khai 2 tỷ?”</span><p>Bạn cứ bán cho hàng xóm 3 tỷ nếu muốn — đó là giá thật của vụ đó. Nhưng giá trị thị trường không hỏi 'bán được nhiều nhất bao nhiêu'. Nó hỏi 'một người mua bình thường trả bao nhiêu'. Hai câu khác nhau, nên hai con số khác nhau.</p></div>
+<div class="gap-q"><span class="q">“Người mua bình thường cũng là người thật mà — sao gọi là giả định?”</span><p>Định nghĩa lấy một người mua <em>tưởng tượng</em>, đại diện cho số đông trên thị trường. Không gắn với hoàn cảnh riêng của ai. Người chủ hiện tại cũng được tính như một phần của thị trường đó. Nhờ vậy con số không lệ thuộc vào một cá nhân may rủi.</p></div>
+<div class="gap-q"><span class="q">“Vậy lợi thế cộng hưởng có bao giờ được tính vào giá trị thị trường không?”</span><p>Có, nhưng chỉ khi nhiều người mua đều hưởng được. Nếu cái lợi ghép đó ai mua cũng có, nó thành chuyện chung của thị trường, không còn là lợi thế riêng. Khi đó được tính. Chỉ thứ riêng-một-người mới bị loại.</p></div>
+<div class="gap-q"><span class="q">“Sao không cứ định giá theo người trả cao nhất cho gần thực tế?”</span><p>Vì 'người trả cao nhất' không ổn định. Hôm nay là ông hàng xóm, mai ông dọn đi thì sao? Giá trị thị trường cần một thước đo lặp lại được, không phụ thuộc một người. Đổi lại, nó cố tình bỏ sót cái giá đỉnh. Đó là cái giá của sự khách quan.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví von &amp; ví dụ đời thường</span><h2>Neo vào thứ bạn đã biết</h2></div>
+    </div>
+    <div class="analogy-card"><span class="tag">Ví dụ trung tâm</span>
+<p>Hình dung bán căn nhà. Chục người xem, đa số trả quanh 2 tỷ — đó là mức <strong>thị trường</strong>. Một anh mê đúng con hẻm tuổi thơ, trả 2,6 tỷ. Cái 2,6 đó là tình riêng của anh, không phải giá thị trường. Thị trường nhìn người mua bình thường, không nhìn người đang phải lòng.</p>
+<p class="limit"><b>Chỗ ví von này hỏng:</b> 'tình cảm với con hẻm' nghe như cảm xúc vu vơ. Trong định giá thật, phần trả thêm thường rất cụ thể và tính ra tiền được: ghép đất, gộp nhà máy, cắt trùng chi phí. Lúc đó nó có tên hẳn hoi — <em>synergistic value</em> hoặc <em>investment value</em> — và được đo riêng, không lẫn vào market value.</p>
+</div>
+<p>Trong thương vụ mua bán doanh nghiệp: một công ty đáng 100 tỷ trên thị trường. Nhưng với 'ông lớn' cùng ngành, mua về cắt được trùng chi phí, nó đáng 130 tỷ. Một trăm là giá trị thị trường. Một ba mươi là giá trị cộng hưởng — chỉ đúng với người mua đặc biệt đó.</p>
+<div class="sub">Nâng một bậc — sáu cơ sở giá trị (và bốn cái hay bị lẫn)</div>
+<p>Phần này hơi nặng. IVS 102 §20.02 định nghĩa <strong>sáu</strong> cơ sở giá trị (A10–A60): <em>Market Value</em> (A10), <em>Market Rent</em> (A20), <em>Equitable Value</em> (A30), <em>Investment Value/worth</em> (A40), <em>Synergistic Value</em> (A50), <em>Liquidation Value</em> (A60). Ngoài ra còn 2 cơ sở 'ngoài IVS' (A70 Fair Value theo IFRS, A80 Fair Value pháp lý) và 4 <em>premise of value</em> (A90–A120). Đừng nhớ nhầm thành năm — <em>Market Rent</em> (A20) là cái hay bị bỏ sót nhất.</p>
+<p>Bốn cái <strong>hay bị lẫn</strong> nhất khi đi thi: <em>Market Value</em> (A10) — người mua–bán giả định, loại synergy và yếu tố riêng. <em>Investment Value/worth</em> (A40) — giá trị với một chủ cụ thể theo mục tiêu của họ, không giả định một cuộc trao đổi. <em>Synergistic Value</em> (A50) — giá khi gộp hai tài sản, phần dôi ra gọi là <em>marriage value</em>; nếu chỉ một người mua hưởng thì khác market value. <em>Equitable Value</em> (A30) — giá công bằng giữa hai bên đã biết danh tính, có thể tính cả lợi ích riêng của hai bên đó.</p>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">4</div>
+      <div class="step-meta"><span class="lbl">Kể lại gọn gàng</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Bán mảnh đất: đa số trả 2 tỷ, riêng hàng xóm trả 3 vì ghép được đất. Giá trị thị trường là 2 tỷ. Vì nó giả định một người mua <strong>bình thường</strong>, không phải người mua đặc biệt. Cái 3 tỷ vẫn có thật, nhưng mang tên khác: giá trị cộng hưởng.</p>
+<p class="core">Giá trị thị trường là giá của một người mua bất kỳ, <span>không phải người mua đặc biệt sẵn lòng trả cao hơn.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã hiểu chưa?</h3>
+      <ol>
+        <li>Mảnh đất: 9 người trả 2 tỷ, 1 hàng xóm trả 3 tỷ vì ghép đất. Giá trị thị trường là bao nhiêu, vì sao?</li>
+        <li>IVS 102 định nghĩa mấy cơ sở giá trị, đánh số từ A bao nhiêu đến A bao nhiêu? Kể đủ tên.</li>
+        <li>Phân biệt giá trị thị trường, giá trị đầu tư và giá trị cộng hưởng cho cùng một tài sản.</li>
+        <li>Vì sao 'định giá theo người trả cao nhất' lại kém khách quan hơn 'người mua điển hình'?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nếu giải thích được cho bà ngoại hiểu, bạn mới thật sự hiểu.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-equitable-vs-fair-value"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Giải thích theo phương pháp Feynman</div>
+    <h1 class="rise" style="animation-delay:.08s">Ba chữ 'giá trị' dễ lẫn: Market, Equitable, và IFRS Fair Value</h1>
+    <p class="core rise" style="animation-delay:.16s">'Công bằng' giữa hai người cụ thể <span>không giống 'fair value' của thị trường nói chung.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Điều cần hiểu &amp; cách tiếp cận</span><h2>Quy tắc: Equitable xét hai bên cụ thể; Market và IFRS Fair Value xét thị trường</h2></div>
+    </div>
+    <div class="rule">IVS 102 A30.01: <em>equitable value</em> là giá hợp lý cho việc chuyển giao giữa <strong>hai bên đã biết danh tính</strong>, phản ánh lợi ích của chính hai bên đó. A30.02: trái lại, <em>market value</em> phải <strong>bỏ qua</strong> mọi lợi thế không sẵn cho người tham gia thị trường nói chung. A70.01: <em>IFRS 13 fair value</em> là giá để bán/chuyển trong giao dịch có trật tự <strong>giữa market participants</strong> tại ngày đo lường. IVS xếp IFRS Fair Value là một cơ sở 'ngoài IVS' (A70).</div>
+    <div class="sub">Cách giải thích</div>
+    <div class="approach"><p>Chỗ vấp: ba chữ đều có 'giá trị', và 'equitable' nghe như 'fair' — đều là 'công bằng'. Cách làm: hỏi đúng một câu cho mỗi cái — 'công bằng với ai?'. Market Value và IFRS Fair Value hỏi 'với thị trường'. Equitable Value hỏi 'với đúng hai người này'. Một câu hỏi tách bạch cả ba.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Giải thích đơn giản</span><h2>Cùng chữ 'giá trị', ba câu hỏi khác nhau</h2></div>
+    </div>
+    <p class="lead">Có ba cụm dễ lẫn: <em>market value</em>, <em>equitable value</em>, và <em>fair value</em> của IFRS. Chúng đều dịch ra 'giá trị', và 'equitable' lẫn 'fair' đều nghĩa là 'công bằng'. Nhưng chúng trả lời ba câu hỏi khác nhau. Mẹo gỡ rối: hỏi 'công bằng, nhưng với ai?'.</p>
+
+<div class="sub">Market Value — công bằng với thị trường</div>
+<p>Market value nhìn người mua–bán điển hình. Nó cố tình bỏ qua mọi lợi thế chỉ một bên có. Là giá 'với thị trường nói chung'. Đây là cái ta đã gặp ở panel Market Value.</p>
+
+<div class="sub">Equitable Value — công bằng giữa đúng hai người</div>
+<p>Equitable value khác hẳn: nó xét <em>hai bên đã biết tên</em>. Giá hợp lý giữa <em>chính họ</em>, tính cả lợi và thiệt riêng của từng người. Vì thế nó có thể đưa vào những thứ market value phải bỏ — như một phần lợi thế cộng hưởng giữa hai bên đó. Nó rộng hơn market value.</p>
+
+<div class="sub">IFRS Fair Value — lại nhìn thị trường</div>
+<p>Đây là cái bẫy. 'Fair value' của IFRS nghe như 'equitable', nhưng thật ra nó nhìn <em>market participants</em> — gần market value hơn, KHÔNG phải equitable value. IVS để IFRS Fair Value thành một cơ sở riêng 'ngoài IVS'. Đừng vì chữ 'fair' mà ghép nó với equitable.</p>
+  </section>
+
+  <section class="gaps">
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Chỗ vấp · Lỗ hổng</span><h2>Mấy chỗ nghe xuôi mà nghĩ kỹ chưa thông</h2></div>
+    </div>
+    <div class="gap-q"><span class="q">“'Equitable' và 'fair' đều là 'công bằng' — sao lại khác nhau?”</span><p>Vì 'công bằng với ai' khác nhau. Equitable value công bằng giữa hai người cụ thể, tính cả lợi thế riêng của họ. IFRS fair value công bằng theo nghĩa thị trường — giá giữa các market participant chung. Cùng một chữ tiếng Việt, hai gốc khác hẳn.</p></div>
+<div class="gap-q"><span class="q">“Vậy IFRS Fair Value có bằng IVS Market Value không?”</span><p>Rất gần, nhưng đừng dán bằng. Cả hai đều nhìn market participant, nên khái niệm sát nhau. Nhưng do hai tổ chức khác nhau định nghĩa (IVSC và IASB), chúng không nghiễm nhiên là một. IVS xếp IFRS Fair Value thành cơ sở 'ngoài IVS' riêng. Coi là 'họ hàng gần', không phải 'sinh đôi'.</p></div>
+<div class="gap-q"><span class="q">“Khi nào dùng equitable value thay vì market value?”</span><p>Khi cần một giá công bằng giữa hai bên đã xác định, không phải giá mở cho cả thị trường. Ví dụ: định giá cổ phần một công ty chưa niêm yết giữa hai cổ đông đã biết nhau. Giá công bằng cho riêng họ có thể khác giá rao ngoài thị trường.</p></div>
+<div class="gap-q"><span class="q">“Sao IVS đổi tên, không gọi luôn là 'fair value' cho gọn?”</span><p>Chính vì để tránh cái bẫy này. (Bối cảnh: các bản IVS cũ từng gọi khái niệm hai-bên là 'Fair Value', trùng chữ với IFRS 13 nên gây lẫn.) Đổi sang 'Equitable Value' giúp tách bạch: 'fair value' giờ chỉ còn nghĩa IFRS, 'equitable' là giá giữa hai bên. Tên khác nhau để nghĩa khỏi dính.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví von &amp; ví dụ đời thường</span><h2>Neo vào thứ bạn đã biết</h2></div>
+    </div>
+    <div class="analogy-card"><span class="tag">Ví dụ trung tâm</span>
+<p>Hình dung bán chiếc xe cho <strong>người em ruột</strong>. Giá thị trường (market value) là cái người lạ bất kỳ trả — tra bảng giá xe cũ. Nhưng giá <strong>công bằng giữa hai anh em</strong> (equitable value) có thể khác: em gánh nốt khoản vay còn lại, lại tiện chỗ gửi xe của bạn. Tính cả lợi–thiệt riêng của <em>hai người này</em>, ra một con số công bằng cho riêng họ.</p>
+<p class="limit"><b>Chỗ ví von này hỏng:</b> 'người em ruột' khiến equitable value nghe như chuyện tình cảm. Thực ra A30.02 nói về <em>lợi thế và bất lợi cụ thể, tính được</em> của hai bên: thuế, cộng hưởng, nghĩa vụ kế thừa. Không phải cảm xúc. Và đừng suy ngược: 'fair value' của IFRS lại KHÔNG phải chuyện hai người, mà là giá thị trường.</p>
+</div>
+<p>Hai cổ đông của một công ty gia đình, một người muốn mua lại phần của người kia. Giá rao ngoài thị trường (market value) có thể thấp vì cổ phần thiểu số khó bán. Nhưng giữa hai người này, gộp lại thành cổ phần chi phối, một mức giá công bằng riêng (equitable value) có thể cao hơn.</p>
+<div class="sub">Nâng một bậc — bản đồ ba chữ và chỗ nối IFRS 13</div>
+<p>Phần này hơi nặng. Tóm gọn: <em>Market Value</em> (A10) và <em>IFRS 13 Fair Value</em> (A70) đều dựa trên <em>market participants</em> — khái niệm sát nhau, nhưng do hai bộ tiêu chuẩn khác nhau định nghĩa nên không đồng nhất; IVS coi IFRS Fair Value là cơ sở 'ngoài IVS'. <em>Equitable Value</em> (A30) dựa trên <em>hai bên đã xác định</em>, rộng hơn market value vì có thể gồm một phần synergy giữa họ. Một lưu ý IFRS 13: fair value là 'exit price' và với tài sản phi tài chính đo theo highest-and-best-use. Nối thẳng sang app IFRS 13 của bạn để xem đủ fair value hierarchy (Level 1/2/3) — chính là chỗ panel 'Bậc thang quan sát được' ở file Asset chạm tới.</p>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">4</div>
+      <div class="step-meta"><span class="lbl">Kể lại gọn gàng</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Ba chữ dễ lẫn, gỡ bằng một câu: 'công bằng với ai?'. <strong>Market value</strong> và <strong>IFRS fair value</strong> đều nhìn thị trường nói chung — họ hàng gần nhau. <strong>Equitable value</strong> nhìn đúng hai bên đã biết tên, tính cả lợi–thiệt riêng của họ, nên rộng hơn. Đừng vì chữ 'fair' mà ghép nó với 'equitable'.</p>
+<p class="core">'Công bằng' giữa hai người cụ thể <span>không giống 'fair value' của thị trường nói chung.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã hiểu chưa?</h3>
+      <ol>
+        <li>'Công bằng với ai?' — trả lời cho Market Value, Equitable Value, và IFRS Fair Value.</li>
+        <li>IFRS 13 Fair Value gần với Market Value hay Equitable Value hơn? Vì sao?</li>
+        <li>Cho một tình huống nên dùng equitable value thay vì market value.</li>
+        <li>Vì sao IVS đặt IFRS Fair Value thành một cơ sở 'ngoài IVS' riêng (A70)?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nếu giải thích được cho bà ngoại hiểu, bạn mới thật sự hiểu.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-highest-best-use"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Giải thích theo phương pháp Feynman</div>
+    <h1 class="rise" style="animation-delay:.08s">Định giá theo công dụng... chưa hề xảy ra</h1>
+    <p class="core rise" style="animation-delay:.16s">Một tài sản đáng giá theo cách dùng tốt nhất, <span>kể cả khi chủ của nó chưa hề dùng như thế.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Điều cần hiểu &amp; cách tiếp cận</span><h2>Quy tắc: định giá theo cách dùng cho giá trị cao nhất</h2></div>
+    </div>
+    <div class="rule">IVS 102 A90.01: <em>highest and best use</em> (HBU) là cách dùng — nhìn từ góc người tham gia thị trường — tạo ra <strong>giá trị cao nhất</strong> cho tài sản. A90.03: HBU phải <strong>khả thi vật lý</strong>, <strong>được phép về pháp lý</strong>, <strong>khả thi tài chính</strong> và <strong>cho giá trị cao nhất</strong>. A100.01: cách dùng hiện tại <em>có thể</em>, nhưng <strong>không nhất thiết</strong>, là HBU. A10.04: market value phản ánh HBU.</div>
+    <div class="sub">Cách giải thích</div>
+    <div class="approach"><p>Chỗ vấp: sao lại định giá theo cách dùng mà chủ đâu có làm? Cách làm: tách 'đang dùng làm gì' khỏi 'dùng cách nào đáng nhất'. Thị trường trả tiền theo tiềm năng cao nhất, không theo thói quen của chủ. Nhưng tiềm năng đó phải qua bốn cửa, không phải mơ gì cũng được.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Giải thích đơn giản</span><h2>Căn nhà làm kho mà được định giá như cửa hàng</h2></div>
+    </div>
+    <p class="lead">Một căn nhà mặt phố đang được dùng làm kho chứa đồ. Chủ thấy tiện thì để vậy. Nhưng ngay vị trí đó, mở cửa hàng sẽ kiếm ra tiền gấp mấy lần. Người mua nào cũng nhìn thấy điều đó. Nên giá của nó được định theo 'làm cửa hàng', dù hôm nay nó vẫn đang là cái kho.</p>
+
+<div class="sub">Thị trường trả tiền cho tiềm năng</div>
+<p>Người mua không trả tiền cho việc chủ cũ dùng thế nào. Họ trả cho cái họ sẽ làm được. Nếu chỗ đó hợp làm cửa hàng, họ tính tiền theo cửa hàng. Cách dùng đáng nhất kéo giá lên, kể cả khi nó chưa xảy ra.</p>
+
+<div class="sub">Nhưng phải qua bốn cửa</div>
+<p>Không phải mơ gì cũng tính. Cách dùng đó phải làm được trên thực địa, luật phải cho phép, tính tiền ra có lời, và cho giá trị cao nhất trong các lựa chọn. Thiếu một cửa là loại. Mơ xây cao ốc trên đất cấm thì không tính.</p>
+
+<div class="sub">Đừng quên chi phí cải tạo</div>
+<p>Đổi từ kho sang cửa hàng tốn tiền sửa sang. Khoản đó phải trừ vào giá. HBU không phải 'giá trị trên trời' của cách dùng mới, mà là giá trị sau khi trừ chi phí biến nó thành hiện thực.</p>
+  </section>
+
+  <section class="gaps">
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Chỗ vấp · Lỗ hổng</span><h2>Mấy chỗ nghe xuôi mà nghĩ kỹ chưa thông</h2></div>
+    </div>
+    <div class="gap-q"><span class="q">“Chủ đang dùng làm kho — sao không định giá theo kho cho đúng thực tế?”</span><p>Vì người mua không mua 'thói quen của chủ cũ'. Họ mua quyền dùng tài sản theo cách có lợi nhất cho họ. Thị trường định giá theo cái đó. Cách dùng hiện tại chỉ thành HBU khi nó tình cờ cũng là cách đáng tiền nhất.</p></div>
+<div class="gap-q"><span class="q">“Vậy cứ tưởng tượng công dụng thật kêu để đẩy giá lên à?”</span><p>Không. Bốn cửa chặn đúng chuyện đó. Phải làm được thật, luật phải cho, và quan trọng nhất: phải tính ra có lời sau khi trừ chi phí chuyển đổi. Một giấc mơ đẹp mà lỗ thì rớt ở cửa 'khả thi tài chính'.</p></div>
+<div class="gap-q"><span class="q">“Cùng một thửa đất, đứng riêng và nằm trong khu, HBU có khác nhau không?”</span><p>Có thể khác. Đứng một mình, thửa đất đáng nhất khi làm bãi xe. Nằm trong khu quy hoạch lớn, nó đáng nhất khi góp vào dự án chung. Chuẩn nói rõ: HBU đứng riêng có thể khác HBU khi là một phần của nhóm.</p></div>
+<div class="gap-q"><span class="q">“Pháp lý 'được phép' — tính theo luật hôm nay hay luật có thể đổi?”</span><p>Đây là chỗ cần phán đoán. Chuẩn bảo xét cả các hạn chế hiện hành lẫn <em>khả năng</em> chúng thay đổi. Nếu khả năng đổi quy hoạch là có thật và người mua tin vào đó, nó ảnh hưởng giá. Nhưng phải có cơ sở, không phải tin đồn.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví von &amp; ví dụ đời thường</span><h2>Neo vào thứ bạn đã biết</h2></div>
+    </div>
+    <div class="analogy-card"><span class="tag">Ví dụ trung tâm</span>
+<p>Hình dung một căn nhà cổ mặt tiền, đang để chứa đồ cũ. Hỏi 'nó đáng bao nhiêu?' thì đừng nhìn đống đồ. Hãy hỏi: ở đúng chỗ này, ai đó làm được gì sinh lời nhất mà luật cho phép? Mở quán. Giá bám theo cái quán tưởng tượng đó, trừ tiền sửa, chứ không bám theo nhà kho.</p>
+<p class="limit"><b>Chỗ ví von này hỏng:</b> 'mở quán' nghe như chuyện ai cũng đoán được. Thực tế, xác định HBU có thể rất khó. Phải dò quy hoạch, ước chi phí xây, mô phỏng dòng tiền từng phương án mới biết cái nào 'cao nhất'. Và với nhiều tài sản tài chính vốn không có công dụng thay thế, HBU gần như không đặt ra.</p>
+</div>
+<p>Gần hơn: một lô đất nông nghiệp ven đô. Trồng lúa, mỗi năm lời ít. Nhưng sắp lên thổ cư, xây nhà bán thì đáng gấp mười. Nếu việc lên thổ cư là khả thi và hợp luật, giá đất đã phản ánh 'xây nhà', dù trên đất vẫn đang là ruộng.</p>
+<div class="sub">Nâng một bậc — bốn cửa của HBU, gọi đúng tên</div>
+<p>Phần này hơi nặng. Bốn điều kiện trong A90.03: <em>physically possible</em> (địa hình, kích thước, kết cấu cho phép), <em>legally permissible</em> (quy hoạch, zoning, và khả năng thay đổi của chúng), <em>financially feasible</em> (phương án tạo đủ lợi nhuận cho một người tham gia điển hình, sau chi phí chuyển đổi, vượt trên lợi nhuận của cách dùng hiện tại), và <em>results in the highest value</em> (chọn phương án cho giá trị cao nhất trong các phương án còn lại). Bốn cửa lọc dần theo thứ tự đó.</p>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">4</div>
+      <div class="step-meta"><span class="lbl">Kể lại gọn gàng</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Một căn nhà đang làm kho, nhưng ở vị trí đó mở cửa hàng đáng tiền hơn nhiều. Người mua trả theo cách dùng đáng nhất, không theo cách chủ đang dùng. Với điều kiện cách đó qua bốn cửa: làm được, luật cho, có lời, và cao nhất. Trừ luôn chi phí biến nó thành thật.</p>
+<p class="core">Một tài sản đáng giá theo cách dùng tốt nhất, <span>kể cả khi chủ của nó chưa hề dùng như thế.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã hiểu chưa?</h3>
+      <ol>
+        <li>Nhà mặt phố đang làm kho. Vì sao giá lại định theo 'cửa hàng', và cần trừ thêm khoản gì?</li>
+        <li>Kể bốn điều kiện một cách dùng phải thỏa để được coi là HBU.</li>
+        <li>Cách dùng hiện tại có khi nào là HBU không? Khi nào thì không?</li>
+        <li>Vì sao HBU của một thửa đất khi đứng riêng có thể khác khi nó nằm trong một khu quy hoạch?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nếu giải thích được cho bà ngoại hiểu, bạn mới thật sự hiểu.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-forced-sale-not-basis"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Giải thích theo phương pháp Feynman</div>
+    <h1 class="rise" style="animation-delay:.08s">'Bán tháo' là một hoàn cảnh, không phải một loại giá trị</h1>
+    <p class="core rise" style="animation-delay:.16s">Bán tháo mô tả tình huống ép buộc, <span>chứ không phải một cơ sở giá trị riêng.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Điều cần hiểu &amp; cách tiếp cận</span><h2>Quy tắc: forced sale là mô tả tình huống, không phải cơ sở giá trị</h2></div>
+    </div>
+    <div class="rule">IVS 102 A120.01: <strong>'forced sale' là mô tả tình huống</strong> diễn ra giao dịch, <strong>không phải một cơ sở giá trị riêng</strong>. A120.04: bán trong thị trường ế ẩm hay đang xuống <strong>không tự động</strong> là forced sale — trừ khi người bán bị một hạn chót ép, không kịp rao bán đúng cách. A60: cái <em>là</em> cơ sở giá trị là <em>liquidation value</em>, với hai tiền đề: thanh lý có trật tự (<em>orderly</em>) hoặc bán ép (<em>forced</em>).</div>
+    <div class="sub">Cách giải thích</div>
+    <div class="approach"><p>Chỗ vấp: nhiều người tưởng 'giá bán tháo' là một loại giá trị để chọn như món trong thực đơn. Cách làm: tách 'cái gì được đo' khỏi 'đo trong hoàn cảnh nào'. Bán tháo là hoàn cảnh — sức ép thời gian. Còn loại giá trị thật sự thì có tên: giá trị thanh lý.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Giải thích đơn giản</span><h2>Bán xe trong hai tiếng: con số đó là gì?</h2></div>
+    </div>
+    <p class="lead">Bạn phải bán chiếc xe máy trong hai tiếng vì kẹt tiền gấp. Không kịp đăng tin, không kịp chờ người trả giá tốt. Ai trả ngay là bán. Con số thấp đó không phải một 'loại giá trị' mới của chiếc xe. Nó chỉ là cái giá rơi ra từ một hoàn cảnh: bị ép thời gian.</p>
+
+<div class="sub">Hoàn cảnh, không phải loại giá trị</div>
+<p>'Bán tháo' nói về <em>tình huống</em> bán, không nói về bản chất giá trị. Cùng chiếc xe, bán thong thả thì được giá khác. Sức ép thời gian mới là thứ kéo giá xuống. Nên bán tháo là một cái <em>cách</em>, không phải một cái <em>loại</em>.</p>
+
+<div class="sub">Thị trường xuống không tự động là bán tháo</div>
+<p>Đây là bẫy hay gặp. Thị trường đang ế, bán được giá thấp — nhiều người vội gọi đó là 'bán tháo'. Sai. Nếu bạn vẫn có thời gian rao bán tử tế, bạn vẫn là người bán tự nguyện. Chỉ khi một hạn chót cắt mất thời gian đó, mới thành bán tháo.</p>
+
+<div class="sub">Loại giá trị thật thì có tên</div>
+<p>Khi bán trong cảnh thanh lý, cái được đo gọi là <em>giá trị thanh lý</em>. Nó có hai kiểu: bán có thời gian hợp lý (trật tự), hoặc bán gấp (ép). Người thẩm định phải nói rõ đang giả định kiểu nào. 'Bán tháo' chỉ là một trong hai kiểu đó.</p>
+  </section>
+
+  <section class="gaps">
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Chỗ vấp · Lỗ hổng</span><h2>Mấy chỗ nghe xuôi mà nghĩ kỹ chưa thông</h2></div>
+    </div>
+    <div class="gap-q"><span class="q">“Vậy không có 'giá trị bán tháo' để báo cáo à?”</span><p>Không có nó như một cơ sở đứng riêng. Muốn đưa ra con số trong cảnh bán gấp, bạn phải nêu rõ: ép bởi cái gì, hạn chót ra sao, hậu quả nếu không kịp. Và nếu cảnh đó chưa xảy ra ở ngày định giá, phải ghi là <em>giả định đặc biệt</em>.</p></div>
+<div class="gap-q"><span class="q">“Thị trường đang sập, ai cũng bán lỗ — sao không phải bán tháo?”</span><p>Vì giá thấp do thị trường khác với giá thấp do bị ép giờ. Trong thị trường xuống, người bán khôn ngoan vẫn bán theo thông tin tốt nhất lúc đó — vẫn là người bán tự nguyện. Bán tháo cần một sức ép cá nhân cắt mất thời gian rao bán.</p></div>
+<div class="gap-q"><span class="q">“Bán tháo và thanh lý trật tự khác nhau chỗ nào?”</span><p>Khác ở thời gian. Thanh lý <em>trật tự</em> cho một khoảng hợp lý để tìm người mua, bán theo kiểu as-is. Bán <em>ép</em> thì thời gian bị bóp ngắn, người mua không kịp tìm hiểu kỹ. Cùng là thanh lý, nhưng hai mức sức ép thời gian khác nhau.</p></div>
+<div class="gap-q"><span class="q">“Sao chuẩn không cho 'giá bán tháo' thành một cơ sở cho gọn?”</span><p>Vì con số bán tháo không có một nghĩa ổn định. Nó phụ thuộc sức ép riêng của từng người bán — gấp một giờ khác gấp một tuần. Không nêu rõ lý do ép thì không thể ước lượng. Một cơ sở giá trị cần định nghĩa chung; sức ép cá nhân thì không.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví von &amp; ví dụ đời thường</span><h2>Neo vào thứ bạn đã biết</h2></div>
+    </div>
+    <div class="analogy-card"><span class="tag">Ví dụ trung tâm</span>
+<p>Tưởng tượng bạn ra sân bay, 30 phút nữa bay, mà cần bán cái laptop để có tiền mặt. Bạn chộp lấy người trả ngay, dù rẻ. Cái giá hớ đó không phải 'giá trị thật' của laptop. Nó là dấu vết của 30 phút. Cho bạn cả buổi chiều, con số đã khác hẳn.</p>
+<p class="limit"><b>Chỗ ví von này hỏng:</b> chuyện sân bay làm 'sức ép' nghe rất rõ ràng. Ngoài đời, sức ép thường mờ và khó chứng minh — chuẩn nói thẳng là rất khó xác nhận một giao dịch có thật sự là bán tháo hay không. Vì thế các giao dịch nghi bán tháo thường bị loại khỏi dữ liệu khi tính giá trị thị trường.</p>
+</div>
+<p>Một công ty vỡ nợ, tòa buộc bán nhà máy trong 30 ngày. Đó là thanh lý, và vì thời gian quá ngắn nên là kiểu 'ép'. Cũng nhà máy đó, nếu được sáu tháng rao bán, là thanh lý 'trật tự' — và giá thường cao hơn. Phải khai rõ đang giả định kiểu nào.</p>
+<div class="sub">Nâng một bậc — bản đồ các khái niệm dễ lẫn</div>
+<p>Phần này hơi nặng. <em>Liquidation value</em> (A60) là cơ sở giá trị — số thu được khi bán trong cảnh thanh lý, người bán bị buộc bán. Nó có hai <em>premise</em>: <em>orderly liquidation</em> (A110, có thời gian hợp lý) và forced (thời gian bị bóp ngắn). <em>Forced sale</em> (A120) bản thân không phải cơ sở giá trị — chỉ là mô tả hoàn cảnh. Nếu hoàn cảnh ép chưa tồn tại ở ngày định giá, mọi con số bán tháo phải gắn nhãn <em>special assumption</em>.</p>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">4</div>
+      <div class="step-meta"><span class="lbl">Kể lại gọn gàng</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Bán chiếc xe trong hai tiếng vì kẹt tiền: giá thấp đó không phải một 'loại giá trị', mà là dấu vết của sức ép thời gian. Thị trường xuống không tự động là bán tháo — chỉ khi một hạn chót cắt mất thời gian rao bán. Cái <strong>là</strong> cơ sở giá trị có tên riêng: giá trị thanh lý.</p>
+<p class="core">Bán tháo mô tả tình huống ép buộc, <span>chứ không phải một cơ sở giá trị riêng.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã hiểu chưa?</h3>
+      <ol>
+        <li>Vì sao 'giá bán tháo' không được coi là một cơ sở giá trị độc lập trong IVS?</li>
+        <li>Thị trường đang lao dốc, bạn bán lỗ. Đây có phải forced sale không? Điều kiện nào mới biến nó thành forced sale?</li>
+        <li>Phân biệt thanh lý trật tự (orderly) và bán ép (forced) — khác nhau ở đâu?</li>
+        <li>Cần đưa ra con số trong cảnh bán gấp mà cảnh đó chưa xảy ra ở ngày định giá. Valuer phải gắn nhãn gì cho con số đó?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nếu giải thích được cho bà ngoại hiểu, bạn mới thật sự hiểu.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-assumptions-special"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Giải thích theo phương pháp Feynman</div>
+    <h1 class="rise" style="animation-delay:.08s">Giả định thường và 'giả định đặc biệt': ranh giới ở thực tại</h1>
+    <p class="core rise" style="animation-delay:.16s">Giả định đặc biệt cho phép định giá <span>như thể một điều chưa đúng ở hiện tại là đúng.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Điều cần hiểu &amp; cách tiếp cận</span><h2>Quy tắc: assumption hợp thực tại; special assumption trái thực tại ngày định giá</h2></div>
+    </div>
+    <div class="rule">IVS 102 §50.01: <em>assumption</em> làm rõ trạng thái tài sản hoặc hoàn cảnh trao đổi giả định. §50.03: assumption là điều <strong>hợp với (hoặc có thể hợp với)</strong> thực tế ở ngày định giá — thường do giới hạn điều tra. §60.01: khi điều giả định <strong>khác</strong> thực tế ở ngày định giá, đó là <em>special assumption</em> — phải gắn nhãn 'special' để báo người đọc rằng con số phụ thuộc vào một thay đổi. §50.04 &amp; §60.02: cả hai phải hợp lý, có bằng chứng, phù hợp mục đích.</div>
+    <div class="sub">Cách giải thích</div>
+    <div class="approach"><p>Chỗ vấp: 'giả định' nghe như đoán bừa, và sao lại được giả định điều chưa đúng? Cách làm: kẻ một vạch — thực tại ở ngày định giá. Giả định thường nằm <em>bên trong</em> thực tại đó (chỉ chưa kiểm hết). Special assumption bước <em>ra ngoài</em> thực tại — nên phải gắn cờ đỏ.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Giải thích đơn giản</span><h2>Một vạch kẻ: hợp thực tại, hay trái thực tại?</h2></div>
+    </div>
+    <p class="lead">Định giá luôn phải giả định vài điều. Có hai loại, chia nhau bởi đúng một vạch: thực tế ở ngày định giá. <em>Giả định thường</em> nằm trong vùng hợp với thực tế. <em>Giả định đặc biệt</em> bước ra ngoài — coi một điều khác với thực tế hôm nay là đúng. Loại sau phải gắn cờ đỏ.</p>
+
+<div class="sub">Giả định thường — hợp thực tại, chỉ chưa soi kỹ</div>
+<p>Đây là điều đúng, hoặc có thể đúng, ở ngày định giá — chỉ là valuer chưa kiểm hết. Ví dụ: 'giả định sổ đỏ sạch nợ' khi chưa tra cứu đầy đủ. Nó không bẻ cong thực tế, chỉ lấp chỗ chưa soi. Thường sinh ra do giới hạn thời gian hay quyền truy cập.</p>
+
+<div class="sub">Giả định đặc biệt — bước ra ngoài thực tại</div>
+<p>Loại này giả định một điều <em>khác</em> hiện thực ở ngày định giá. Ví dụ kinh điển: 'coi như tòa nhà đã xây xong' khi nó còn là bãi đất. Hoặc 'coi như đã có giấy phép' khi chưa có. Con số ra được chỉ đúng <em>nếu</em> điều đó thành thật. Nên bắt buộc dán nhãn 'special'.</p>
+
+<div class="sub">Vì sao phải gắn cờ</div>
+<p>Vì người đọc cần biết con số này có điều kiện. Một mức giá 'nếu xây xong' rất khác giá 'đất trống hôm nay'. Không gắn cờ, người đọc tưởng đó là giá thực tại — và ra quyết định sai. Nhãn 'special' chính là lời cảnh báo đó.</p>
+  </section>
+
+  <section class="gaps">
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Chỗ vấp · Lỗ hổng</span><h2>Mấy chỗ nghe xuôi mà nghĩ kỹ chưa thông</h2></div>
+    </div>
+    <div class="gap-q"><span class="q">“Giả định điều chưa đúng — nghe như nói dối mà?”</span><p>Không, vì nó được dán nhãn công khai. Nói dối là giấu. Special assumption làm ngược lại: phơi ra rằng 'con số này chỉ đúng nếu điều X xảy ra'. Nó là công cụ để cho thấy ảnh hưởng của một thay đổi, không phải để lừa.</p></div>
+<div class="gap-q"><span class="q">“Làm sao biết một giả định là 'thường' hay 'đặc biệt'?”</span><p>Hỏi một câu: điều này có đúng với thực tế ở ngày định giá không? Nếu đúng, hoặc có thể đúng mà chỉ chưa kiểm — là giả định thường. Nếu nó khác thực tế hôm nay — là special. Vạch chia nằm đúng ở chữ 'khác thực tại'.</p></div>
+<div class="gap-q"><span class="q">“Special assumption thì muốn giả định gì cũng được à?”</span><p>Không. Chuẩn buộc nó vẫn phải hợp lý, có bằng chứng, và phù hợp mục đích định giá. 'Coi như có giấy phép' chỉ ổn nếu khả năng được cấp là có thật. Special không có nghĩa tùy tiện — chỉ là 'trái thực tại nhưng có cơ sở và được khai'.</p></div>
+<div class="gap-q"><span class="q">“Cái bãi đất 'coi như đã xây xong' — nối với panel nào?”</span><p>Nối thẳng panel Residual (file Asset). Định giá đất phát triển buộc dùng special assumption 'dự án coi như đã hoàn thành'. Cũng nối panel Forced sale: nếu cảnh ép buộc chưa xảy ra ở ngày định giá, con số bán tháo phải gắn nhãn special. Đây là khái niệm chạy xuyên nhiều chuẩn.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví von &amp; ví dụ đời thường</span><h2>Neo vào thứ bạn đã biết</h2></div>
+    </div>
+    <div class="analogy-card"><span class="tag">Ví dụ trung tâm</span>
+<p>Hình dung định giá một căn nhà. <strong>Giả định thường</strong>: 'coi như đường ống nước vẫn tốt' — bạn không đào lên kiểm, nhưng hợp lý với thực tế. <strong>Giả định đặc biệt</strong>: 'coi như cái hồ bơi trong bản vẽ đã xây xong' — hồ bơi đó <em>chưa</em> tồn tại. Giá 'có hồ bơi' cao hơn hẳn, nên phải dán nhãn để không ai nhầm với nhà hiện tại.</p>
+<p class="limit"><b>Chỗ ví von này hỏng:</b> 'ống nước' và 'hồ bơi' nghe rạch ròi, nhưng đời thật vạch chia có thể nhòe. 'Coi như người thuê sẽ gia hạn hợp đồng' — hợp thực tại hay trái? Tùy bối cảnh và xác suất. Phân loại sai là dán nhầm nhãn, và người đọc hiểu sai mức độ chắc chắn của con số.</p>
+</div>
+<p>Một mảnh đất nông nghiệp đang chờ chuyển thành đất ở. Định giá 'theo hiện trạng nông nghiệp' thì không cần special. Nhưng nếu khách muốn con số 'coi như đã được duyệt lên đất ở', đó là special assumption. Phải ghi rõ, vì giấy phép đó chưa có ở ngày định giá.</p>
+<div class="sub">Nâng một bậc — bốn ví dụ special assumption trong chuẩn</div>
+<p>Phần này hơi nặng. IVS 102 §60.01 cho bốn ví dụ special assumption: (a) coi một bất động sản là sở hữu tự do, trống người ở; (b) coi một công trình đang đề xuất đã hoàn thành ở ngày định giá; (c) coi một hợp đồng cụ thể đã tồn tại ở ngày định giá dù thực ra chưa; (d) định giá một công cụ tài chính bằng đường cong lợi suất khác với đường mà market participant dùng. §50.03 cho ví dụ assumption thường: coi tài sản được chuyển như một thực thể vận hành trọn vẹn, hay coi một lô cổ phần được chuyển nguyên khối. Mẹo phân biệt vẫn là: §50 hợp thực tại, §60 trái thực tại ngày định giá.</p>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">4</div>
+      <div class="step-meta"><span class="lbl">Kể lại gọn gàng</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Định giá luôn cần giả định, chia bởi một vạch: thực tế ở ngày định giá. <strong>Giả định thường</strong> hợp thực tại, chỉ chưa soi kỹ. <strong>Giả định đặc biệt</strong> bước ra ngoài — coi một điều chưa đúng là đúng, như 'tòa nhà đã xây xong'. Con số đó có điều kiện, nên phải dán nhãn 'special' để người đọc khỏi nhầm.</p>
+<p class="core">Giả định đặc biệt cho phép định giá <span>như thể một điều chưa đúng ở hiện tại là đúng.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã hiểu chưa?</h3>
+      <ol>
+        <li>Phân biệt assumption và special assumption — vạch chia nằm ở đâu?</li>
+        <li>'Coi như đã có giấy phép xây dựng' là loại giả định nào? Vì sao phải gắn nhãn?</li>
+        <li>Special assumption có được giả định bất cứ điều gì không? Điều kiện là gì?</li>
+        <li>Nêu một special assumption bắt buộc phải dùng trong định giá đất phát triển.</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nếu giải thích được cho bà ngoại hiểu, bạn mới thật sự hiểu.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-three-approaches"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Giải thích theo phương pháp Feynman</div>
+    <h1 class="rise" style="animation-delay:.08s">Ba cách định giá: không phải chọn cái mình thích</h1>
+    <p class="core rise" style="animation-delay:.16s">Có ba cách tiếp cận giá trị, <span>và khi dùng nhiều cách, ta hòa giải chứ không lấy trung bình.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Điều cần hiểu &amp; cách tiếp cận</span><h2>Quy tắc: ba approaches, chọn theo bằng chứng, hòa giải không lấy trung bình</h2></div>
+    </div>
+    <div class="rule">IVS 103 §10.01: ba cách tiếp cận chính — <em>market</em> (so sánh, §20.01), <em>income</em> (quy dòng tiền về hiện tại, §30.01), <em>cost</em> (chi phí thay thế trừ hao mòn, §40.01). §10.02: chọn cách sao cho <strong>tối đa hóa đầu vào quan sát được</strong>. §10.04: chọn cách <strong>phù hợp nhất với hoàn cảnh</strong>, không cách nào hợp mọi tình huống. §10.05: không bắt buộc dùng nhiều phương pháp nếu một cái đã đủ tin cậy. §10.07: khi dùng nhiều cách, phải <strong>hòa giải</strong> về một kết luận — <strong>không lấy trung bình</strong>.</div>
+    <div class="sub">Cách giải thích</div>
+    <div class="approach"><p>Chỗ vấp: tưởng valuer được tự chọn cách mình thích, và nếu ra hai số thì lấy trung bình. Cách làm: coi ba cách như ba ống nhòm cùng ngắm một vật. Chọn ống nào rõ nhất tùy vật và tùy bằng chứng. Và nếu nhìn bằng hai ống, ta cân nhắc chọn, chứ không cộng chia đôi.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Giải thích đơn giản</span><h2>Ba ống nhòm cùng ngắm một giá trị</h2></div>
+    </div>
+    <p class="lead">Có ba cách tiếp cận để ra giá trị một tài sản. So với thứ tương tự đã có giá (market). Quy dòng tiền tương lai về hôm nay (income). Hay tính chi phí làm lại rồi trừ hao mòn (cost). Ba ống nhòm, cùng ngắm một vật — chọn ống nào rõ nhất tùy tài sản và bằng chứng trong tay.</p>
+
+<div class="sub">Market — so với thứ tương tự</div>
+<p>Cách thị trường so tài sản với những thứ giống nó vừa được mua bán. Hợp khi có nhiều giao dịch tương tự để tra. Như định giá căn hộ bằng giá các căn cùng tòa vừa bán. Cần dữ liệu so sánh thật.</p>
+
+<div class="sub">Income — quy dòng tiền về hôm nay</div>
+<p>Cách thu nhập hỏi: tài sản này đẻ ra bao nhiêu tiền tương lai, quy về hôm nay đáng mấy? Hợp với thứ tạo dòng tiền: tòa nhà cho thuê, doanh nghiệp, bằng sáng chế. Tiền tương lai phải kéo về hiện tại mới cộng được.</p>
+
+<div class="sub">Cost — làm lại tốn bao nhiêu, trừ hao mòn</div>
+<p>Cách chi phí hỏi: làm lại một tài sản cùng công dụng tốn bao nhiêu, rồi trừ phần đã hao mòn? Hợp với tài sản đặc thù, hiếm giao dịch, ít dòng tiền riêng. Như một nhà máy chuyên dụng. Đây là cách ta gặp ở panel ba loại hao mòn.</p>
+
+<div class="sub">Dùng nhiều cách thì hòa giải, đừng chia trung bình</div>
+<p>Đôi khi nên ngắm bằng hai ống cho chắc. Nhưng nếu ra hai con số, tuyệt đối không cộng chia đôi. Phải cân xem cách nào đáng tin hơn trong trường hợp này, rồi chốt một số, và giải thích vì sao. Trung bình là lười, chuẩn cấm.</p>
+  </section>
+
+  <section class="gaps">
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Chỗ vấp · Lỗ hổng</span><h2>Mấy chỗ nghe xuôi mà nghĩ kỹ chưa thông</h2></div>
+    </div>
+    <div class="gap-q"><span class="q">“Valuer thích cách nào thì dùng cách đó à?”</span><p>Không. Cách được chọn theo tài sản và bằng chứng, không theo sở thích. Chuẩn bảo ưu tiên cách tối đa hóa dữ liệu quan sát được, và phù hợp nhất với hoàn cảnh. Một bãi đất hiếm giao dịch thì market yếu; một nhà máy đặc thù thì cost mạnh hơn.</p></div>
+<div class="gap-q"><span class="q">“Bắt buộc phải dùng cả ba cách cho chắc chứ?”</span><p>Không bắt buộc. Nếu một phương pháp đã cho kết quả đáng tin cao, dùng một là đủ. Chuẩn khuyến khích cân nhắc nhiều cách, nhất là khi dữ liệu cho một phương pháp quá mỏng. Nhiều cách là để chắc thêm, không phải để làm cho có.</p></div>
+<div class="gap-q"><span class="q">“Ra hai con số khác nhau thì lấy trung bình cho công bằng?”</span><p>Không — chuẩn nói thẳng là không lấy trung bình. Hai số khác nhau nghĩa là hai cách có độ tin khác nhau ở đây. Việc của valuer là cân, nghiêng về cách chắc hơn, chốt một số, rồi mô tả lý do trong báo cáo. Chia đôi là né phán đoán.</p></div>
+<div class="gap-q"><span class="q">“Nối thế nào với các panel khác và với IFRS?”</span><p>Nối nhiều chỗ. Cost approach chính là panel ba loại hao mòn (file Asset). Income approach là gốc của MPEEM và relief-from-royalty. Và đây cũng là khung ba approaches mà IFRS 13 dùng cho fair value. Hiểu ba cách này là chìa khóa cho gần như mọi bài định giá.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví von &amp; ví dụ đời thường</span><h2>Neo vào thứ bạn đã biết</h2></div>
+    </div>
+    <div class="analogy-card"><span class="tag">Ví dụ trung tâm</span>
+<p>Hình dung định giá một chiếc xe cũ. <strong>Market</strong>: xem mấy chiếc cùng đời vừa rao bán bao nhiêu. <strong>Income</strong>: nếu đem chạy taxi, mỗi tháng kiếm bao nhiêu, gộp lại đáng mấy. <strong>Cost</strong>: mua xe mới tương đương rồi trừ phần đã cũ. Ba ngả cùng hỏi 'chiếc xe đáng bao nhiêu' — chọn ngả nào rõ nhất tùy bạn có gì trong tay.</p>
+<p class="limit"><b>Chỗ ví von này hỏng:</b> với chiếc xe cũ, cả ba ngả đều dễ và thường ra số gần nhau. Tài sản thật thì lệch xa: một startup chưa có lãi thì income đầy giả định, market thì hiếm comparable, cost thì gần như vô nghĩa. Lúc đó chọn ngả nào, nặng nhẹ ra sao, là cả một bài phán đoán.</p>
+</div>
+<p>Định giá một tòa văn phòng cho thuê: income approach mạnh nhất (có dòng tiền thuê rõ), market bổ trợ (giá tòa tương tự vừa bán). Định giá một trạm biến áp chuyên dụng: gần như chỉ cost approach dùng được, vì không ai mua bán thứ đó và nó không tự đẻ dòng tiền riêng.</p>
+<div class="sub">Nâng một bậc — năm yếu tố khi chọn phương pháp</div>
+<p>Phần này hơi nặng. IVS 103 §10.04 liệt kê tối thiểu năm điều phải cân khi chọn: (a) cơ sở giá trị và tiền đề phù hợp với mục đích; (b) điểm mạnh–yếu của từng approach/method; (c) bản chất tài sản và cách mà market participant trong ngành đó hay dùng; (d) có sẵn thông tin đáng tin để áp dụng không; (e) thông tin giá từ một thị trường đang hoạt động. §10.07 nhấn: khi dùng nhiều cách, hòa giải về một kết luận <em>không bằng cách lấy trung bình</em>, và phải mô tả quá trình hòa giải trong báo cáo. Đây là điểm cực hay ra đề.</p>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">4</div>
+      <div class="step-meta"><span class="lbl">Kể lại gọn gàng</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Ba cách định giá: so sánh (market), quy dòng tiền về hôm nay (income), chi phí thay thế trừ hao mòn (cost). Không phải chọn cách mình thích — chọn theo tài sản và bằng chứng, ưu tiên dữ liệu quan sát được. Một phương pháp đủ tin thì dùng một. Dùng nhiều cách thì hòa giải về một số, tuyệt đối không lấy trung bình.</p>
+<p class="core">Có ba cách tiếp cận giá trị, <span>và khi dùng nhiều cách, ta hòa giải chứ không lấy trung bình.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã hiểu chưa?</h3>
+      <ol>
+        <li>Kể ba cách tiếp cận và một tình huống mỗi cách là phù hợp nhất.</li>
+        <li>Có bắt buộc dùng nhiều hơn một phương pháp không? Khi nào nên dùng nhiều?</li>
+        <li>Hai approach ra hai con số. Valuer xử lý thế nào — và KHÔNG được làm gì?</li>
+        <li>Yếu tố nào dẫn dắt việc chọn approach: sở thích valuer, hay bản chất tài sản và bằng chứng?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nếu giải thích được cho bà ngoại hiểu, bạn mới thật sự hiểu.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-documentation-reporting"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Giải thích theo phương pháp Feynman</div>
+    <h1 class="rise" style="animation-delay:.08s">Báo cáo định giá: hai ngày khác nhau, và 'đúng chuẩn' là tất-cả-hoặc-không</h1>
+    <p class="core rise" style="animation-delay:.16s">Ngày báo cáo có thể khác ngày định giá, <span>và 'tuân thủ IVS' thì không có cửa 'một phần'.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Điều cần hiểu &amp; cách tiếp cận</span><h2>Quy tắc: nội dung tối thiểu; report date ≠ valuation date; compliance là tất-cả-hoặc-không</h2></div>
+    </div>
+    <div class="rule">IVS 106 §30.06: báo cáo phải có tối thiểu các mục (a)–(r): phạm vi, tài sản, valuer, khách, mục đích, cơ sở giá trị, approach/method, giả định, giá trị và lý do, tuyên bố tuân thủ IVS. Mục (h) <em>ngày định giá</em> và mục (r) <strong>ngày báo cáo — có thể khác ngày định giá</strong>. §30.08: nếu một giới hạn ảnh hưởng đến việc tuân thủ IVS, valuer <strong>không được</strong> tuyên bố báo cáo tuân thủ IVS.</div>
+    <div class="sub">Cách giải thích</div>
+    <div class="approach"><p>Chỗ vấp: tưởng báo cáo chỉ có một ngày, và 'gần đúng chuẩn' cũng kể là đúng chuẩn. Cách làm: tách rõ hai ngày — ngày đo giá trị, và ngày viết báo cáo. Rồi đóng một cánh cửa: tuân thủ IVS không có nấc 'một phần'. Hai ý nhỏ này ăn điểm rất nhiều trong đề.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Giải thích đơn giản</span><h2>Hai cái ngày, và một cánh cửa không mở hé</h2></div>
+    </div>
+    <p class="lead">Báo cáo định giá có một danh mục nội dung bắt buộc, và hai điểm hay bị bẫy. Một: trong báo cáo có <em>hai</em> ngày khác nhau, không phải một. Hai: 'tuân thủ IVS' là chuyện tất-cả-hoặc-không — không có 'tuân thủ một phần'. Nắm hai điểm này là nhặt điểm dễ.</p>
+
+<div class="sub">Ngày định giá khác ngày báo cáo</div>
+<p>Ngày định giá là thời điểm con số <em>áp vào</em> — giá trị tính tại ngày đó. Ngày báo cáo là hôm valuer <em>viết xong</em> và phát hành. Hai ngày này thường khác nhau. Ví dụ: định giá tại 31/12, nhưng báo cáo viết xong giữa tháng 1. Chuẩn buộc nêu cả hai.</p>
+
+<div class="sub">Tuân thủ IVS: tất cả hoặc không</div>
+<p>Chẳng có nhãn 'tuân thủ IVS một phần'. Nếu một giới hạn nào đó làm báo cáo không đáp ứng đủ IVS, valuer không được nói nó tuân thủ IVS. Một là đủ chuẩn và được dán nhãn, hai là không. Cánh cửa này không mở hé.</p>
+
+<div class="sub">Danh mục nội dung tối thiểu</div>
+<p>Báo cáo phải có đủ một danh sách bắt buộc. Gồm: định giá cái gì, cho ai, mục đích, cơ sở giá trị, cách tiếp cận. Thêm giả định quan trọng, con số và lý do, tuyên bố tuân thủ IVS, và hai ngày. Thiếu mục là báo cáo chưa đạt. Danh sách này là khung xương của mọi báo cáo.</p>
+  </section>
+
+  <section class="gaps">
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Chỗ vấp · Lỗ hổng</span><h2>Mấy chỗ nghe xuôi mà nghĩ kỹ chưa thông</h2></div>
+    </div>
+    <div class="gap-q"><span class="q">“Ngày định giá với ngày báo cáo khác gì nhau, sao phải tách?”</span><p>Vì giá trị gắn với một thời điểm cụ thể. Thị trường đổi từng ngày, nên con số chỉ đúng cho <em>ngày định giá</em>. Báo cáo có thể viết sau đó nhiều tuần. Tách hai ngày để người đọc biết con số áp cho thời điểm nào, và biết nó được viết ra khi nào.</p></div>
+<div class="gap-q"><span class="q">“Làm gần đủ IVS, ghi 'tuân thủ IVS một phần' được không?”</span><p>Không. Chuẩn nói thẳng: nếu một giới hạn ảnh hưởng đến tuân thủ, không được tuyên bố tuân thủ IVS. Không có nấc trung gian. Đây nối thẳng panel Must và Should: bỏ một 'must' là mất quyền nói 'tuân thủ'.</p></div>
+<div class="gap-q"><span class="q">“Thiếu một mục nhỏ trong danh sách có sao không?”</span><p>Danh mục (a)–(r) là <em>tối thiểu</em>, tức sàn chứ không phải trần. Thiếu một mục bắt buộc là báo cáo chưa đạt yêu cầu trình bày. Một số mục hay quên: tuyên bố tuân thủ IVS, giả định đặc biệt, và đủ cả hai ngày.</p></div>
+<div class="gap-q"><span class="q">“Review một định giá của người khác — có phải định giá không?”</span><p>Bản thân review thì không phải định giá. Nó là rà soát: kiểm quy trình (process review), hoặc kiểm tính hợp lý của con số (value review), hoặc cả hai. Nhưng có bẫy: nếu trong value review bạn tự đưa ra một con số, thì <em>chính nó</em> là một định giá, và phải tuân thủ IVS đầy đủ.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví von &amp; ví dụ đời thường</span><h2>Neo vào thứ bạn đã biết</h2></div>
+    </div>
+    <div class="analogy-card"><span class="tag">Ví dụ trung tâm</span>
+<p>Nghĩ về một tờ giấy khám sức khỏe. <strong>Ngày khám</strong> là hôm bác sĩ đo các chỉ số — kết quả áp cho cơ thể bạn <em>ngày đó</em>. <strong>Ngày ký giấy</strong> có thể là vài hôm sau. Hai ngày khác nhau, và không ai nhầm. Báo cáo định giá cũng vậy: ngày định giá là 'ngày khám', ngày báo cáo là 'ngày ký'.</p>
+<p class="limit"><b>Chỗ ví von này hỏng:</b> giấy khám sức khỏe sai vài chỉ số vẫn là giấy khám. Báo cáo định giá khắt khe hơn ở chỗ nhãn: chỉ cần một giới hạn ảnh hưởng tuân thủ là <em>mất</em> quyền ghi 'tuân thủ IVS'. 'Khám gần đủ' vẫn là giấy khám; 'định giá gần đủ chuẩn' thì không được gọi là đúng chuẩn.</p>
+</div>
+<p>Một báo cáo ghi ngày định giá 31/12/2025, ngày báo cáo 20/01/2026 — đúng, vì giá trị tính cho cuối năm còn báo cáo hoàn tất sau Tết dương. Nhưng nếu valuer bị cấm tiếp cận một thông tin trọng yếu, làm kết quả không đủ chuẩn, thì không được đóng dấu 'tuân thủ IVS'. Dù các mục kia đều đủ.</p>
+<div class="sub">Nâng một bậc — 18 mục tối thiểu và review</div>
+<p>Phần này hơi nặng. IVS 106 §30.06 yêu cầu tối thiểu (a)–(r), tức 18 mục: scope, tài sản, valuer, khách, intended use, intended users, đồng tiền, <em>valuation date</em> (h), cơ sở giá trị, approach, method/model, nguồn và dữ liệu, yếu tố ESG, <em>giả định quan trọng/special assumptions</em> (n), kết quả của specialist, giá trị và lý do, <em>tuyên bố tuân thủ IVS</em> (q), và <em>ngày báo cáo — có thể khác valuation date</em> (r). §30.08: giới hạn ảnh hưởng tuân thủ thì không được tuyên bố compliant. §40.01: review là process review (kiểm tuân thủ) hoặc value review (kiểm tính hợp lý) hoặc cả hai; nếu value review đưa ra một giá trị thì nó trở thành một định giá đầy đủ.</p>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">4</div>
+      <div class="step-meta"><span class="lbl">Kể lại gọn gàng</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Báo cáo định giá có danh mục nội dung tối thiểu (a)–(r), và hai bẫy hay quên. Một: ngày định giá (con số áp cho ngày nào) khác ngày báo cáo (hôm viết xong) — phải nêu cả hai. Hai: 'tuân thủ IVS' không có nấc 'một phần' — một giới hạn ảnh hưởng tuân thủ là mất quyền dán nhãn đó.</p>
+<p class="core">Ngày báo cáo có thể khác ngày định giá, <span>và 'tuân thủ IVS' thì không có cửa 'một phần'.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã hiểu chưa?</h3>
+      <ol>
+        <li>Phân biệt ngày định giá và ngày báo cáo. Vì sao phải nêu cả hai?</li>
+        <li>Báo cáo đủ gần hết các mục nhưng một giới hạn ảnh hưởng tuân thủ. Được ghi 'tuân thủ IVS' không?</li>
+        <li>Kể vài mục bắt buộc tối thiểu trong báo cáo mà người ta hay quên.</li>
+        <li>Một value review tự đưa ra một con số giá trị — nó có trở thành một định giá không?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nếu giải thích được cho bà ngoại hiểu, bạn mới thật sự hiểu.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-must-vs-should"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Giải thích theo phương pháp Feynman</div>
+    <h1 class="rise" style="animation-delay:.08s">'Must' và 'Should': một chữ làm đổi cả câu trả lời</h1>
+    <p class="core rise" style="animation-delay:.16s">'Must' là bắt buộc không có cửa thoát, <span>'should' là kỳ vọng có cửa thoát nếu chứng minh được.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Điều cần hiểu &amp; cách tiếp cận</span><h2>Quy tắc: must là bắt buộc, should là kỳ vọng có điều kiện</h2></div>
+    </div>
+    <div class="rule">Glossary IVS 10.19 — <em>Must</em>: hành động hoặc thủ tục <strong>bắt buộc</strong>. Glossary 10.25 — <em>Should</em>: valuer <strong>được kỳ vọng</strong> tuân thủ, <strong>trừ khi</strong> chứng minh được rằng hành động thay thế là đủ. IVS 100 §40.02: 'must' là yêu cầu bắt buộc để được coi là tuân thủ IVS. §40.03: một số phần chỉ nêu nguyên tắc cần được cân nhắc (should), không ép một hành động cụ thể.</div>
+    <div class="sub">Cách giải thích</div>
+    <div class="approach"><p>Chỗ vấp: trong tiếng Việt, 'phải' và 'nên' nghe gần giống, dễ đọc lướt. Cách làm: coi hai chữ này như hai loại luật chơi khác hẳn. Một loại đóng kín, một loại có một cánh cửa hẹp. Biết cửa đó ở đâu là biết cách trả lời gần như mọi câu hỏi trong đề.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Giải thích đơn giản</span><h2>Hai chữ nhỏ quyết định câu trả lời</h2></div>
+    </div>
+    <p class="lead">Đọc một chuẩn IVS, để ý hai chữ nhỏ: <em>must</em> và <em>should</em>. Chúng quyết định câu trả lời nhiều hơn bạn tưởng. 'Must' là phải làm, hết chuyện. 'Should' là nên làm — nhưng có một cánh cửa thoát hẹp, nếu bạn chứng minh được cách khác cũng đủ tốt.</p>
+
+<div class="sub">Must — cửa đóng</div>
+<p>Gặp 'must', đừng tìm lối tránh. Đó là bắt buộc. Không làm là không tuân thủ IVS, đơn giản vậy. Ví dụ: valuer <em>phải</em> tuân thủ các nguyên tắc đạo đức. Không có 'tùy hoàn cảnh' ở đây.</p>
+
+<div class="sub">Should — cửa hé</div>
+<p>Gặp 'should', mặc định vẫn là làm theo. Nhưng có một lối ra: nếu bạn chứng minh được một lối làm khác cũng đạt mục tiêu, thì được phép đi đường khác. Cửa này hẹp — phải có lý lẽ, bằng chứng, rồi ghi lại. Không phải muốn bỏ là bỏ.</p>
+
+<div class="sub">Vì sao chuyện này ăn điểm</div>
+<p>Đề thi rất hay gài đúng chỗ này. Một câu hỏi 'valuer có buộc phải...' mà điều luật dùng 'should', thì đáp án 'bắt buộc tuyệt đối' là sai. Đọc trúng chữ must hay should là một nửa câu trả lời. Đọc lướt là mất điểm oan.</p>
+  </section>
+
+  <section class="gaps">
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Chỗ vấp · Lỗ hổng</span><h2>Mấy chỗ nghe xuôi mà nghĩ kỹ chưa thông</h2></div>
+    </div>
+    <div class="gap-q"><span class="q">“'Should' nghĩa là tùy ý, thích thì làm à?”</span><p>Không. Mặc định của 'should' vẫn là phải làm. Cửa thoát chỉ mở khi bạn chứng minh được cách thay thế <em>cũng đủ</em> đạt mục tiêu. Không chứng minh được thì 'should' hành xử y như 'must'. Nó là kỳ vọng có điều kiện, không phải tùy hứng.</p></div>
+<div class="gap-q"><span class="q">“Bỏ qua một 'should' rồi thì có còn tuân thủ IVS không?”</span><p>Còn — nếu bạn làm đúng thủ tục: nêu cách thay thế, chứng minh nó đủ, và ghi lại lý do. Bỏ ngang không giải thích thì thành lệch chuẩn. Cửa thoát đi kèm nghĩa vụ chứng minh, không phải đi kèm sự im lặng.</p></div>
+<div class="gap-q"><span class="q">“Làm sao nhớ chữ nào là chữ nào giữa lúc thi căng?”</span><p>Một mẹo: <strong>must</strong> nghe như 'mật' — khóa chặt; <strong>should</strong> nghe như 'sẽ' — còn co giãn. Gặp must thì khoanh ngay 'bắt buộc'. Gặp should thì hỏi tiếp 'có cách khác đủ tốt không?'. Phản xạ này tiết kiệm cả phút mỗi câu.</p></div>
+<div class="gap-q"><span class="q">“Sao chuẩn không viết 'must' hết cho khỏi rối?”</span><p>Vì định giá có quá nhiều hoàn cảnh khác nhau. Một quy tắc cứng cho mọi trường hợp sẽ có lúc phản tác dụng. 'Should' cho phép valuer dùng phán đoán nghề nghiệp — nhưng vẫn ràng bằng nghĩa vụ chứng minh, để tự do không thành tùy tiện.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví von &amp; ví dụ đời thường</span><h2>Neo vào thứ bạn đã biết</h2></div>
+    </div>
+    <div class="analogy-card"><span class="tag">Ví dụ trung tâm</span>
+<p>Nghĩ về luật đi đường. 'Dừng đèn đỏ' là <strong>must</strong> — không có ngoại lệ, vượt là sai. 'Nên bảo dưỡng xe mỗi năm' là <strong>should</strong> — nên làm, nhưng nếu bạn chứng minh xe vẫn an toàn theo cách khác thì chấp nhận được. Một chữ khóa chặt, một chữ chừa lối — miễn bạn giải trình được.</p>
+<p class="limit"><b>Chỗ ví von này hỏng:</b> ngoài đời, 'nên bảo dưỡng xe' chẳng ai bắt bạn giải trình nếu bỏ qua. Trong IVS thì khác: bỏ một 'should' mà <em>không</em> chứng minh và ghi lại là đã lệch chuẩn. Cửa thoát của IVS đi kèm một hóa đơn — nghĩa vụ chứng minh — mà luật giao thông đời thường không đòi.</p>
+</div>
+<p>Trong chuẩn: 'Valuer <em>must</em> follow ethical principles' (IVS 100, 10.01) — khóa chặt. 'The controls <em>should</em> assess the judgements...' (20.04) — kỳ vọng, nhưng nếu có cách kiểm soát khác đủ tốt và được ghi lại, vẫn ổn. Hai câu, hai mức ràng buộc.</p>
+<div class="sub">Nâng một bậc — must/should và tuyên bố tuân thủ</div>
+<p>Phần này hơi nặng. IVS 100 §40.02 nói các yêu cầu 'must' là bắt buộc để tuyên bố một định giá là 'IVS-compliant'. §40.03 nói một số phần chỉ là nguyên tắc nền tảng cần được cân nhắc — đây là vùng 'should'. Hệ quả thực tế: chỉ cần bỏ một 'must' là mất quyền nói 'tuân thủ IVS'; còn đi chệch một 'should' thì vẫn giữ được, miễn giải thích, chứng minh là đủ, và lập hồ sơ. Đây là lý do đọc đúng modal verb quan trọng đến vậy.</p>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">4</div>
+      <div class="step-meta"><span class="lbl">Kể lại gọn gàng</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Hai chữ nhỏ đổi cả câu trả lời. <strong>Must</strong> là bắt buộc, cửa đóng — không làm là không tuân thủ IVS. <strong>Should</strong> là kỳ vọng, cửa hé — được đi đường khác, nhưng phải chứng minh cách đó đủ tốt và ghi lại. Đọc lướt qua hai chữ này là mất điểm oan.</p>
+<p class="core">'Must' là bắt buộc không có cửa thoát, <span>'should' là kỳ vọng có cửa thoát nếu chứng minh được.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã hiểu chưa?</h3>
+      <ol>
+        <li>Một điều khoản dùng chữ 'should'. Valuer có được làm khác đi không, và với điều kiện gì?</li>
+        <li>Bỏ qua một yêu cầu 'must' thì ảnh hưởng thế nào tới tuyên bố 'tuân thủ IVS'?</li>
+        <li>Vì sao 'should' không có nghĩa là 'tùy ý'?</li>
+        <li>Đề hỏi 'valuer có bắt buộc phải X', mà luật dùng 'should'. Đáp án 'bắt buộc tuyệt đối' đúng hay sai? Vì sao?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nếu giải thích được cho bà ngoại hiểu, bạn mới thật sự hiểu.</p>
+  </footer>
+
+</div></div>
+<script>
+  var bar=document.getElementById('progress');
+  function upd(){var h=document.documentElement;var s=h.scrollTop||document.body.scrollTop;
+    var max=(h.scrollHeight-h.clientHeight)||1;bar.style.width=(s/max*100)+'%';}
+  window.addEventListener('scroll',upd,{passive:true});upd();
+  var io=new IntersectionObserver(function(es){es.forEach(function(e){
+    if(e.isIntersecting){e.target.style.animation='rise .7s cubic-bezier(.2,.7,.3,1) forwards';io.unobserve(e.target);}});},{threshold:.12});
+  document.querySelectorAll('section').forEach(function(s){s.style.opacity='0';io.observe(s);});
+</script>
+
+<script>
+(function(){
+  var tabs=[].slice.call(document.querySelectorAll('.tabbar .tab'));
+  var panels=[].slice.call(document.querySelectorAll('.concept-panel'));
+  function show(i){
+    tabs.forEach(function(t,j){t.classList.toggle('active',j===i);});
+    panels.forEach(function(p,j){
+      var on=(j===i); p.classList.toggle('active',on);
+      if(on){p.querySelectorAll('section').forEach(function(s){s.style.opacity='';s.style.animation='';});}
+    });
+    try{history.replaceState(null,'','#'+panels[i].id);}catch(e){}
+    window.scrollTo(0,0); window.dispatchEvent(new Event('scroll'));
+  }
+  tabs.forEach(function(t){t.addEventListener('click',function(){show(+t.getAttribute('data-i'));});});
+  var start=0; panels.forEach(function(p,j){if('#'+p.id===location.hash)start=j;});
+  show(start);
+})();
+</script>
+
+</body></html>

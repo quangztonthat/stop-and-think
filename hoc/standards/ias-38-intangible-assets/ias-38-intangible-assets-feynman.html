@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="vi"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IAS 38 Intangible Assets — Hiểu sâu theo Feynman</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,500&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  /* Design tokens shared with ebook-to-study-html (styles_v2.css) */
+  :root{
+    --bg:#fafaf7; --bg-elevated:#ffffff; --bg-soft:#f3f3ee;
+    --border:#e0e0d8; --border-soft:#ececea; --border-strong:#d2c8b6;
+    --ink:#1a1a1f; --ink-soft:#3f3f4a; --muted:#7a7a85;
+    --accent:#b8860b; --accent-2:#8b6508; --gold:#a07c1f; --gap:#8b6508;
+    --serif:"Fraunces",Georgia,"Iowan Old Style",serif;
+    --sans:"Geist",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    --mono:"Geist Mono","JetBrains Mono",Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:var(--sans);
+    font-size:19px;line-height:1.72;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}
+  .progress{position:fixed;top:0;left:0;height:3px;width:0;z-index:50;
+    background:linear-gradient(90deg,var(--gold),var(--accent));transition:width .08s linear}
+  .wrap{max-width:920px;margin:0 auto;padding:0 36px}
+  .rise{opacity:0;transform:translateY(14px);animation:rise .7s cubic-bezier(.2,.7,.3,1) forwards}
+  @keyframes rise{to{opacity:1;transform:none}}
+
+  header{padding:104px 0 60px;border-bottom:1px solid var(--border)}
+  .kicker{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.18em;
+    text-transform:uppercase;color:var(--accent);margin-bottom:26px}
+  h1{font-family:var(--serif);font-weight:600;font-size:clamp(42px,7.6vw,72px);
+    line-height:1.0;letter-spacing:-.022em;margin-bottom:28px;font-optical-sizing:auto;color:var(--ink)}
+  h1 em{font-style:italic;color:var(--accent)}
+  .core{font-family:var(--serif);font-style:italic;font-weight:400;
+    font-size:clamp(21px,3.6vw,27px);line-height:1.44;color:var(--ink-soft)}
+  .core span{font-style:normal;font-weight:600;color:var(--accent-2);
+    box-shadow:inset 0 -.5em 0 rgba(184,134,11,.16)}
+
+  /* ---- BƯỚC 0: ANCHOR (state the rule + plan before explaining) ---- */
+  .anchor .rule{font-family:var(--serif);font-size:19px;line-height:1.5;color:var(--ink);
+    background:var(--bg-soft);border-left:3px solid var(--accent);
+    padding:18px 24px;border-radius:0 4px 4px 0;margin:0}
+  .anchor .rule em{font-style:italic;color:var(--accent-2)}
+  .anchor .rule strong{color:var(--ink);font-weight:600}
+  .anchor .approach{color:var(--ink-soft)}
+
+  section{padding:72px 0;border-bottom:1px solid var(--border);position:relative}
+  .step-head{display:flex;align-items:flex-start;gap:22px;margin-bottom:34px}
+  .big-num{font-family:var(--serif);font-weight:700;font-size:62px;line-height:.8;
+    color:var(--border-strong);flex:none;font-optical-sizing:auto;letter-spacing:-.03em}
+  .step-meta{padding-top:4px}
+  .lbl{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--accent);display:block;margin-bottom:10px}
+  h2{font-family:var(--serif);font-weight:600;font-size:clamp(27px,4.4vw,37px);
+    line-height:1.12;letter-spacing:-.012em;color:var(--ink)}
+  h2 em{font-style:italic;color:var(--accent)}
+  p{margin-bottom:21px}
+  p:last-child{margin-bottom:0}
+  strong{font-weight:600;color:var(--ink)}
+  em{font-style:italic;color:var(--accent-2)}
+  .gloss{color:var(--muted);font-style:italic}
+
+  .lead::first-letter{font-family:var(--serif);font-weight:700;float:left;
+    font-size:74px;line-height:.74;padding:8px 12px 0 0;color:var(--accent)}
+
+  .sub{font-family:var(--serif);font-weight:600;font-size:17px;letter-spacing:.01em;
+    color:var(--ink);margin:34px 0 14px;display:flex;align-items:center;gap:11px}
+  .sub::before{content:"";width:18px;height:2px;background:var(--accent);flex:none;border-radius:2px}
+
+  .gaps{background:var(--bg-soft)}
+  .gaps .big-num{color:#e2d6b4}
+  .gaps .lbl{color:var(--gap)}
+  .gap-q{margin:0 0 30px;padding-left:24px;border-left:2px solid var(--border-strong)}
+  .gap-q:last-child{margin-bottom:0}
+  .gap-q .q{font-family:var(--serif);font-style:italic;font-weight:500;
+    font-size:22px;line-height:1.35;color:var(--gap);margin-bottom:12px;display:block}
+  .gap-q p:last-child{margin-bottom:0}
+
+  .analogy-card{border:1px solid #e8c876;border-radius:4px;padding:30px 32px;margin:8px 0 28px;
+    background:linear-gradient(135deg,#fef9ed 0%,#fdf3e0 100%)}
+  .analogy-card .tag{font-family:var(--mono);font-weight:600;font-size:11px;
+    letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin-bottom:16px;display:block}
+  .analogy-card p{color:#5a4810}
+  .analogy-card strong{color:var(--accent-2)}
+  .limit{font-size:17px;line-height:1.6;color:#5a4810;
+    border-top:1px solid #e8c876;padding-top:20px;margin-top:22px}
+  .limit b{color:var(--accent-2);font-weight:600;font-family:var(--serif)}
+
+  .retell{background:linear-gradient(180deg,var(--bg-soft) 0%,var(--bg) 100%);border-bottom:none}
+  .retell h2{color:var(--ink)}
+  .retell strong{color:var(--accent-2)}
+  .retell .core{margin-top:6px}
+  .testbox{border:1px solid var(--border);background:var(--bg-elevated);
+    border-radius:4px;padding:28px 32px;margin-top:40px;box-shadow:0 1px 2px rgba(0,0,0,.03)}
+  .testbox h3{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--accent);margin-bottom:20px}
+  .testbox ol{margin:0;padding-left:22px;counter-reset:t}
+  .testbox li{margin-bottom:16px;color:var(--ink-soft);padding-left:6px}
+  .testbox li:last-child{margin-bottom:0}
+
+  footer{text-align:center;padding:60px 0 88px}
+  footer .mark{font-family:var(--serif);font-weight:700;color:var(--accent);
+    font-size:26px;display:block;margin-bottom:14px}
+  footer p{font-family:var(--serif);font-style:italic;color:var(--muted);font-size:17px;max-width:380px;margin:0 auto}
+
+  @media(max-width:560px){
+    body{font-size:18px}
+    header{padding:70px 0 44px}
+    section{padding:52px 0}
+    .step-head{gap:16px}
+    .big-num{font-size:46px}
+    .lead::first-letter{font-size:60px}
+  }
+</style>
+<style>
+ .tabbar{position:fixed;top:0;left:0;right:0;width:100%;box-sizing:border-box;z-index:40;background:rgba(250,250,247,.93);
+   backdrop-filter:saturate(1.1) blur(8px);-webkit-backdrop-filter:saturate(1.1) blur(8px);
+   border-bottom:1px solid var(--border);display:flex;gap:6px;overflow-x:auto;
+   padding:10px max(36px,calc((100% - 992px)/2));scrollbar-width:thin}
+ .tabbar .tab{flex:0 0 auto;display:flex;align-items:baseline;gap:9px;cursor:pointer;
+   background:transparent;border:1px solid transparent;border-radius:999px;
+   padding:8px 17px;transition:.15s;white-space:nowrap;color:var(--muted)}
+ .tabbar .tab:hover{color:var(--ink);background:var(--bg-soft)}
+ .tabbar .tab.active{color:var(--accent-2);background:var(--bg-soft);border-color:var(--border-strong)}
+ .tabbar .tn{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.1em;color:var(--accent)}
+ .tabbar .tl{font-family:var(--serif);font-weight:500;font-size:16px}
+ body{padding-top:56px} .concept-panel{display:none}
+ .concept-panel.active{display:block}
+ .concept-panel header{padding-top:50px}
+ @media(max-width:560px){.tabbar .tl{max-width:48vw;overflow:hidden;text-overflow:ellipsis}}
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+<nav class="tabbar" aria-label="Các khái niệm"><button class="tab" data-i="0"><span class="tn">01</span><span class="tl">Vô hình là gì</span></button><button class="tab" data-i="1"><span class="tn">02</span><span class="tl">Goodwill tự tạo</span></button><button class="tab" data-i="2"><span class="tn">03</span><span class="tl">Nghiên cứu vs Phát triển</span></button><button class="tab" data-i="3"><span class="tn">04</span><span class="tl">Mua qua M&amp;A: nới tay</span></button><button class="tab" data-i="4"><span class="tn">05</span><span class="tl">Khấu hao &amp; residual = 0</span></button><button class="tab" data-i="5"><span class="tn">06</span><span class="tl">Vô thời hạn ≠ vô hạn</span></button><button class="tab" data-i="6"><span class="tn">07</span><span class="tl">Đánh giá lại cần “chợ”</span></button></nav>
+<div class="concept-panel" id="c-tieu-chi-ghi-nhan"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Giải thích theo phương pháp Feynman</div>
+    <h1 class="rise" style="animation-delay:.08s">Khi nào một thứ vô hình được lên sổ thành tài sản?</h1>
+    <p class="core rise" style="animation-delay:.16s">Không sờ được vẫn lên sổ được, <span>miễn nó tách bạch được, do bạn nắm, hứa ra tiền, và đo được giá.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Điều cần hiểu &amp; cách tiếp cận</span><h2>Quy tắc: định nghĩa + hai điều kiện ghi nhận</h2></div>
+    </div>
+    <div class="rule">IAS 38 <strong>đoạn 8</strong>: tài sản vô hình là một tài sản phi tiền tệ, <em>nhận diện được</em>, không có hình thái vật chất. <strong>Đoạn 12–17</strong>: “nhận diện được” nghĩa là <strong>tách rời được HOẶC sinh ra từ quyền hợp đồng/pháp lý</strong> (12); cộng với <em>control</em> (13) và <em>lợi ích kinh tế tương lai</em> (17). <strong>Đoạn 18 &amp; 21</strong>: chỉ ghi nhận khi (a) <em>probable</em> — lợi ích kinh tế tương lai có khả năng chảy về, VÀ (b) đo được <em>cost</em> một cách đáng tin.</div>
+    <div class="sub">Cách giải thích</div>
+    <div class="approach"><p>Chỗ vấp: “không sờ được” mà vẫn là tài sản nghe đã lạ. Lạ hơn: cùng một thứ, chỗ này lên sổ được, chỗ kia thì không. Cách làm: tôi dựng một cái cửa bốn chốt. Một thứ vô hình phải qua đủ bốn chốt — tách bạch, nắm được, hứa tiền, đo được giá — mới lên sổ. Thiếu một chốt là rớt.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Giải thích đơn giản</span><h2>Bốn chốt cửa cho một thứ không sờ được</h2></div>
+    </div>
+    <p class="lead">Tưởng tượng có một cánh cửa với bốn cái chốt. Một thứ vô hình — cái tên, một công thức, một giấy phép — muốn vào sổ thành tài sản thì phải mở hết bốn chốt. Sờ được hay không, không quan trọng. Quan trọng là qua đủ bốn chốt. Thiếu một cái là đứng ngoài.</p>
+
+<div class="sub">Chốt 1 — Tách bạch được</div>
+<p>Bạn phải gọi tên nó riêng ra, không lẫn vào cả công ty. Hoặc nó bán/cho thuê riêng được, hoặc nó đến từ một hợp đồng, một quyền pháp lý. Một danh sách khách có thể bán — tách bạch. Một “đội ngũ giỏi” thì không gỡ riêng ra được.</p>
+
+<div class="sub">Chốt 2 — Bạn nắm được nó</div>
+<p>Bạn phải có quyền hưởng lợi từ nó và chặn người khác hưởng. Một bằng sáng chế: luật cho bạn độc quyền — nắm được. Còn “nhân viên trung thành”? Họ có thể nghỉ việc bất cứ lúc nào. Bạn không nắm được họ, nên không tính.</p>
+
+<div class="sub">Chốt 3 — Nó hứa hẹn ra tiền</div>
+<p>Phải có khả năng nó mang lại tiền cho bạn về sau — bán thêm hàng, hoặc tiết kiệm chi phí. Không cần chắc chắn, chỉ cần “có khả năng”. Một công nghệ giúp làm nhanh hơn là một lời hứa ra tiền.</p>
+
+<div class="sub">Chốt 4 — Đo được giá đáng tin</div>
+<p>Phải gắn được cho nó một con số tiền đáng tin. Mua riêng thì dễ: giá trả là con số. Tự làm ra thì khó tách chi phí, nên hay rớt ở chốt này. Đo không nổi thì không lên sổ, dù ba chốt kia đã qua.</p>
+  </section>
+
+  <section class="gaps">
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Chỗ vấp · Lỗ hổng</span><h2>Mấy chỗ nghe xuôi mà nghĩ kỹ chưa thông</h2></div>
+    </div>
+    <div class="gap-q"><span class="q">“Bốn chốt nghe rườm — gom lại một câu được không?”</span><p>Được: nó có phải một thứ tách bạch, do bạn nắm, hứa ra tiền, và đo được giá không? Đủ bốn thì lên sổ. Hai chốt đầu — tách bạch và nắm được — là phần định nghĩa. Hai chốt sau — hứa tiền và đo được giá — là điều kiện ghi nhận. Gộp lại thành một cửa.</p></div>
+<div class="gap-q"><span class="q">“Vì sao ‘đội ngũ giỏi’ hay ‘khách hàng trung thành’ không vào sổ được?”</span><p>Vì chúng rớt chốt. Đội ngũ giỏi không tách riêng ra bán được, và nhân viên có thể nghỉ — bạn không nắm được. Khách trung thành cũng khó tách và khó đo riêng. Chúng đáng tiền thật, nhưng không qua đủ cửa. Phần giá trị đó về sau gộp vào goodwill khi có người mua cả công ty.</p></div>
+<div class="gap-q"><span class="q">“‘Có khả năng ra tiền’ — mơ hồ vậy ai cũng nói có được?”</span><p>Đúng là chốt này dựa trên phán đoán. Nhưng nó đi kèm chốt “đo được giá đáng tin”, vốn chặt hơn nhiều. Một lời hứa ra tiền mà không quy được thành con số tin cậy thì vẫn rớt. Hai chốt cuối khóa lẫn nhau: mơ hồ ở chốt ba sẽ lộ ra ở chốt bốn.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví von &amp; ví dụ đời thường</span><h2>Neo vào thứ bạn đã biết</h2></div>
+    </div>
+    <div class="analogy-card"><span class="tag">Ví dụ trung tâm</span>
+<p>Hình dung một câu lạc bộ kén người, cửa có bốn chốt. Chốt một: giấy tờ tùy thân riêng (tách bạch). Chốt hai: thẻ đứng tên bạn (nắm được). Chốt ba: lý do vào rõ ràng (hứa ích lợi). Chốt bốn: đóng đúng mức phí ghi được vào sổ (đo được giá). Thiếu một chốt, dù bạn “có vẻ” xứng đáng, vẫn phải đứng ngoài. Tài sản vô hình vào sổ y như vậy.</p>
+<p class="limit"><b>Chỗ ví von này hỏng:</b> cửa câu lạc bộ thì bốn chốt độc lập, mở cái nào trước cũng được. Bốn tiêu chí của IAS 38 lại quấn vào nhau — “đo được giá” thường phụ thuộc “tách bạch”, vì tách bạch được thì mới có giá riêng để đo. Và ranh giới “có khả năng ra tiền” mờ hơn một cái chốt cơ học nhiều: nó là phán đoán, không phải bật/tắt.</p>
+</div>
+<p>Gần đời hơn: một tiệm bánh mua công thức kem độc quyền kèm hợp đồng. Nó qua cả bốn chốt — tách bạch (có hợp đồng), nắm được (độc quyền), hứa tiền (bán chạy hơn), đo được (giá đã trả). Đủ bốn, lên sổ. Nhưng “tay nghề khéo của thợ làm bánh” thì rớt: không tách ra được, thợ nghỉ là mất.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. IAS 38 chia rõ: đoạn 8 định nghĩa (phi tiền tệ, nhận diện được, không có hình thái vật chất); đoạn 12 nêu tiêu chí <em>identifiability</em> (tách rời HOẶC quyền hợp đồng/pháp lý); đoạn 13–16 nói về <em>control</em>; đoạn 17 về <em>future economic benefits</em>. Đoạn 18 và 21 mới là hai điều kiện ghi nhận: <em>probable</em> lợi ích và đo <em>cost</em> tin cậy. Lưu ý đoạn 12 dùng đúng tiêu chí “tách rời / hợp đồng-pháp lý” mà IFRS 3 B32–B33 mượn lại — đó là cây cầu giữa hai chuẩn.</p>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">4</div>
+      <div class="step-meta"><span class="lbl">Kể lại gọn gàng</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Một thứ không sờ được vẫn lên sổ thành tài sản, nếu nó qua đủ bốn chốt. Hai chốt định nghĩa: tách bạch được (bán riêng hoặc có quyền pháp lý) và bạn nắm được nó. Hai chốt ghi nhận: nó có khả năng ra tiền, và đo được giá đáng tin. Thiếu một chốt là đứng ngoài.</p>
+<p>Vì thế “đội ngũ giỏi” hay “khách trung thành” đáng tiền mà không vào sổ — chúng rớt chốt tách bạch hoặc đo lường.</p>
+<p class="core">Không sờ được vẫn lên sổ được, <span>miễn nó tách bạch được, do bạn nắm, hứa ra tiền, và đo được giá.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã hiểu chưa?</h3>
+      <ol>
+        <li>Một công ty có “đội ngũ kỹ sư xuất sắc” — vì sao không ghi được thành tài sản vô hình, dù rõ ràng nó đáng tiền?</li>
+        <li>Hai điều kiện ghi nhận (ngoài phần định nghĩa) của một tài sản vô hình là gì?</li>
+        <li>Vì sao “có khả năng ra tiền” tuy mơ hồ nhưng vẫn khó bị lạm dụng để ghi khống tài sản?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nếu giải thích được cho bà ngoại hiểu, bạn mới thật sự hiểu.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-goodwill-tu-tao"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Giải thích theo phương pháp Feynman</div>
+    <h1 class="rise" style="animation-delay:.08s">Tự mình giỏi lên — sao không được ghi sổ?</h1>
+    <p class="core rise" style="animation-delay:.16s">Giá trị bạn tự gây dựng <span>chỉ lên sổ khi có người khác trả tiền mua nó.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Điều cần hiểu &amp; cách tiếp cận</span><h2>Quy tắc: goodwill tự tạo — không bao giờ ghi nhận</h2></div>
+    </div>
+    <div class="rule">IAS 38, đoạn 48: <em>internally generated goodwill</em> (lợi thế thương mại tự tạo) <strong>không được ghi nhận</strong> là tài sản. Đoạn 49&ndash;50: nó không phải nguồn lực <em>identifiable</em> (xác định được), doanh nghiệp không kiểm soát rõ ràng, và không đo được giá gốc đáng tin cậy. Lợi thế thương mại chỉ lên sổ khi mua trong một <em>business combination</em> (hợp nhất kinh doanh) theo IFRS 3.</div>
+    <div class="sub">Cách giải thích</div>
+    <div class="approach"><p>Chỗ vấp: bạn làm ăn giỏi, thương hiệu mạnh dần lên. Rõ ràng có giá trị. Vậy sao kế toán không cho ghi? Cách làm: tôi tách "giá trị có thật" khỏi "tài sản ghi sổ được". Hai thứ đó không giống nhau. Tôi sẽ chỉ ra vì sao cái bạn tự nuôi lớn lại không đếm được thành tiền.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Giải thích đơn giản</span><h2>Giá trị tự nuôi lớn — thật, mà không cân đo được</h2></div>
+    </div>
+    <p class="lead">Tưởng tượng bạn bán nước chanh trước cổng trường. Pha mãi cũng ngon, lại vui tính, nên khách quen kéo tới đông. Quán bắt đầu "có tiếng". Cái tiếng đó đáng tiền thật: nó kéo khách về cho bạn. Nhưng bạn không gỡ "cái tiếng" ra bán riêng được. Và cũng chẳng ai nói chính xác nó đáng mấy đồng.</p>
+
+<div class="sub">Ba thứ kế toán đòi mà "cái tiếng" không có</div>
+<p>Để lên sổ, một tài sản phải qua ba cửa. Một: <strong>gọi tên tách ra được</strong>. Hai: <strong>bạn nắm chắc trong tay</strong>. Ba: <strong>đong được thành tiền gốc</strong>. "Cái tiếng" của quán rớt cả ba.</p>
+<p><strong>Tách ra:</strong> bạn bán quán thì bán, chứ không bán mỗi "cái tiếng". Nó dính chặt vào cả quán. <strong>Nắm chắc:</strong> khách thương bạn hôm nay, mai giận là đi. Bạn đâu trói được họ. <strong>Đong tiền gốc:</strong> bạn tốn tiền pha chanh, mua đá, nhưng phần nào đẻ ra "cái tiếng"? Không tách nổi.</p>
+
+<div class="sub">Vì sao mua thì lại được ghi</div>
+<p>Lạ ở đây: nếu có người mua đứt cả quán, họ trả thêm một khoản "vì cái tiếng". Khoản trả thêm đó là con số có thật. Người mua được ghi nó lên sổ, gọi là goodwill. Cùng cái tiếng ấy: bạn tự nuôi thì cấm, người mua trả tiền thì được.</p>
+  </section>
+
+  <section class="gaps">
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Chỗ vấp · Lỗ hổng</span><h2>Mấy chỗ nghe xuôi mà nghĩ kỹ chưa thông</h2></div>
+    </div>
+    <div class="gap-q"><span class="q">"Giá trị có thật mà — sao kế toán giả vờ như không thấy?"</span><p>Kế toán thấy chứ. Nó chỉ không cho ghi một con số nó không kiểm chứng được. Nếu để mỗi công ty tự định giá "cái tiếng" mình, ai cũng thổi cho to. Sổ sách sẽ đầy số trong mơ. Cấm hẳn cho sạch.</p></div>
+<div class="gap-q"><span class="q">"Vậy chi phí xây thương hiệu đổ đi đâu?"</span><p>Ghi thẳng vào chi phí của kỳ đó. Tiền quảng cáo, tiền chăm khách, tiêu là tốn, không thành tài sản. Lý do vẫn thế: không tách được phần nào đẻ ra thương hiệu, phần nào chỉ là vận hành thường ngày.</p></div>
+<div class="gap-q"><span class="q">"Mua thương hiệu của người khác thì goodwill hay không?"</span><p>Hơi khác. Mua đứt một thương hiệu riêng lẻ thì nó lên sổ thành tài sản vô hình, vì có giá mua rõ ràng. Goodwill là phần trả thêm khi mua cả một doanh nghiệp, phần vượt trên giá trị từng món đếm được.</p></div>
+<div class="gap-q"><span class="q">"Cấm hẳn — thế có lúc nào sai không?"</span><p>Có, và chuẩn mực biết điều đó. Một công ty tự gây dựng thương hiệu khủng vẫn ghi sổ gần như trắng. Sổ sách thua xa giá trị thật. Chuẩn chấp nhận thiệt đó để đổi lấy con số đáng tin, thà thiếu còn hơn thổi phồng.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví von &amp; ví dụ đời thường</span><h2>Neo vào thứ bạn đã biết</h2></div>
+    </div>
+    <div class="analogy-card"><span class="tag">Ví dụ trung tâm</span>
+<p>Quay lại quán nước chanh. "Cái tiếng" của quán là goodwill bạn tự nuôi. Nó kéo khách, nên đáng tiền. Nhưng bạn không gỡ nó ra bán, không đong được nó hết bao nhiêu. Nên nó không lên sổ. Chỉ khi ai đó mua cả quán và trả thêm "vì cái tiếng", con số mới hiện ra, và người mua mới được ghi.</p>
+<p class="limit"><b>Chỗ ví von này hỏng:</b> "cái tiếng" của quán nghe như một thứ duy nhất. Goodwill thật thì lẫn lộn nhiều thứ: đội ngũ giỏi, khách trung thành, vị trí đẹp. Kế toán không tách rời từng mảnh. Nó chỉ tóm gọn cả cục "phần trả thêm khi mua", và đó là lý do nó chỉ hiện ra lúc có mua bán.</p>
+</div>
+<p>Gần đời hơn: một YouTuber có hàng triệu người mê. Cái "được yêu" đó hái ra tiền quảng cáo. Nhưng nó không nằm trên sổ sách của kênh. Chỉ khi một công ty mua lại kênh và trả giá cao "vì lượng fan", phần trả thêm mới thành goodwill trên sổ bên mua.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Đoạn 50 nói: chênh lệch giữa <em>fair value</em> (giá trị hợp lý) của cả doanh nghiệp và <em>carrying amount</em> (giá trị ghi sổ) của tài sản thuần phản ánh nhiều thứ. Nhưng chênh lệch đó không phải là <em>cost</em> (giá gốc) của một tài sản vô hình mà doanh nghiệp kiểm soát. Vì thế không thể lấy nó làm goodwill tự tạo để ghi sổ.</p>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">4</div>
+      <div class="step-meta"><span class="lbl">Kể lại gọn gàng</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Giá trị bạn tự gây dựng — thương hiệu, danh tiếng — có thật và hái ra tiền. Nhưng kế toán không ghi nó lên sổ. Vì bạn không tách rời nó ra được, không nắm chắc nó, và không đong được nó tốn đúng bao nhiêu tiền gốc.</p>
+<p>Cùng cái danh tiếng ấy, nếu người khác trả tiền mua cả công ty, phần trả thêm mới hiện thành con số. Lúc đó người mua mới được ghi goodwill.</p>
+<p class="core">Giá trị bạn tự gây dựng <span>chỉ lên sổ khi có người khác trả tiền mua nó.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã hiểu chưa?</h3>
+      <ol>
+        <li>Cùng một thương hiệu mạnh, vì sao tự gây dựng thì cấm ghi, mà mua lại thì được?</li>
+        <li>Ba cửa kế toán đòi — tách ra, nắm chắc, đong tiền gốc — "cái tiếng" của quán rớt cửa nào?</li>
+        <li>Tiền chi để xây thương hiệu nội bộ đi về đâu trên báo cáo?</li>
+        <li>Goodwill chỉ hiện ra lúc nào, và ai là người ghi nó lên sổ?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nếu giải thích được cho bà ngoại hiểu, bạn mới thật sự hiểu.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-nghien-cuu-phat-trien"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Giải thích theo phương pháp Feynman</div>
+    <h1 class="rise" style="animation-delay:.08s">Cùng một dự án, một lằn ranh đảo cách ghi sổ</h1>
+    <p class="core rise" style="animation-delay:.16s">Tiền đổ vào một ý tưởng <span>chỉ thành tài sản sau khi bạn gần như cầm chắc nó chạy được.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Điều cần hiểu &amp; cách tiếp cận</span><h2>Quy tắc: nghiên cứu cho vào chi phí, phát triển mới được vốn hóa</h2></div>
+    </div>
+    <div class="rule">IAS 38 chia một dự án tự tạo làm hai. Đoạn 54: chi phí <em>research phase</em> (giai đoạn nghiên cứu) <strong>ghi thẳng vào chi phí</strong> khi phát sinh, không được vốn hóa. Đoạn 57: chi phí <em>development phase</em> (giai đoạn phát triển) <strong>chỉ</strong> thành tài sản khi chứng minh đủ <strong>cả sáu</strong> điều kiện. Đoạn 53: nếu không tách được hai giai đoạn, coi hết là nghiên cứu.</div>
+    <div class="sub">Cách giải thích</div>
+    <div class="approach"><p>Chỗ vấp: cùng một dự án, cùng phòng thí nghiệm. Sao tiền lúc đầu là chi phí, tiền lúc sau lại là tài sản? Cách làm: tôi coi đây là một con đường từ "mò mẫm" tới "gần xong". Lằn ranh là lúc bạn chuyển từ hỏi "có làm được không?" sang "làm cho xong thôi". Tôi sẽ chỉ đúng chỗ vạch đó.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Giải thích đơn giản</span><h2>Hai chặng: mò mẫm, rồi đóng cho xong</h2></div>
+    </div>
+    <p class="lead">Tưởng tượng bạn chế một loại bánh quy mới để bán ở hội chợ trường. Chặng đầu, bạn mò: trộn thử bơ nhiều, đường ít, nướng lâu hơn. Mẻ cháy, mẻ nhạt, mẻ tạm được. Lúc này chưa ai dám chắc bánh sẽ ngon, sẽ bán chạy. Tiền mua bơ đường để thử coi như tiêu mất. Đó là "nghiên cứu".</p>
+
+<div class="sub">Chặng sau: đã trúng công thức</div>
+<p>Rồi một hôm bạn trúng: một mẻ bánh ngon thật. Bạn nếm thử, bạn bè khen, có đứa đòi mua. Giờ bạn không còn mò nữa. Bạn biết bánh ngon, biết có người mua, biết mình đủ bơ đường làm tiếp. Việc còn lại chỉ là làm cho xong và đem bán. Đây là "phát triển".</p>
+
+<div class="sub">Vì sao lằn ranh đổi cách ghi</div>
+<p>Ở chặng mò, tiền bỏ ra chưa chắc đẻ ra gì. Ghi nó thành "tài sản" là nói dối: biết đâu cả dự án xịt. Nên cho thẳng vào chi phí. Ở chặng đã trúng, tiền bỏ ra gần như chắc thành món bán được. Lúc đó mới gọi nó là tài sản, phần tiền tiêu từ ngày trúng trở đi.</p>
+
+<div class="sub">Sáu cửa của chặng phát triển</div>
+<p>Không phải cứ qua chặng sau là tự động ghi. Đoạn 57 bắt qua đủ sáu cửa. Tóm gọn: làm được về kỹ thuật, có ý định làm xong, dùng hoặc bán được. Thêm nữa: chứng minh có lời, đủ nguồn lực, và đong được chi phí. Thiếu một cửa thôi là tất cả lại về chi phí.</p>
+  </section>
+
+  <section class="gaps">
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Chỗ vấp · Lỗ hổng</span><h2>Mấy chỗ nghe xuôi mà nghĩ kỹ chưa thông</h2></div>
+    </div>
+    <div class="gap-q"><span class="q">"Cùng tiền bỏ ra, sao chỉ khác thời điểm mà số phận khác hẳn?"</span><p>Vì thứ đổi không phải tiền, mà là độ chắc. Tài sản chỉ có nghĩa khi nó gần như chắc đẻ lợi ích. Đồng tiền ở chặng mò gánh quá nhiều rủi ro. Đồng tiền ở chặng đã trúng thì gần như nắm phần thắng. Khác nhau ở chỗ đó.</p></div>
+<div class="gap-q"><span class="q">"Tiền tiêu hồi mò mẫm, sau trúng rồi có được tính lại không?"</span><p>Không. Đoạn 65 và 71 chốt: đã ghi vào chi phí là vĩnh viễn, không lôi lại được. Chỉ phần tiêu từ ngày qua đủ sáu cửa mới thành giá gốc tài sản. Bao công sức mò mẫm trước đó coi như mất trắng trên sổ.</p></div>
+<div class="gap-q"><span class="q">"Nếu không tách nổi đâu là mò, đâu là đã trúng thì sao?"</span><p>Chuẩn chọn cách thận trọng. Đoạn 53: không tách được thì coi hết là nghiên cứu. Tức cho cả cục vào chi phí. Thà ghi thiếu tài sản còn hơn ghi khống một thứ chưa chắc.</p></div>
+<div class="gap-q"><span class="q">"Sáu cửa nghe rõ, nhưng 'gần như chắc' vẫn là người tự chấm mà?"</span><p>Đúng, đây là chỗ mong manh. Chính công ty tự nói mình đã đủ sáu cửa hay chưa. Có công ty vạch sớm để vốn hóa cho đẹp sổ. Vì thế chuẩn bắt phải có bằng chứng: kế hoạch kinh doanh, cam kết cấp vốn, thị trường cho đầu ra. Người kiểm toán soi đúng chỗ này.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví von &amp; ví dụ đời thường</span><h2>Neo vào thứ bạn đã biết</h2></div>
+    </div>
+    <div class="analogy-card"><span class="tag">Ví dụ trung tâm</span>
+<p>Quay lại mẻ bánh quy. Hồi mò công thức, tiền mua bơ đường là chi phí, vì chưa chắc ra cái gì. Đến khi trúng mẻ ngon, có người đòi mua, bạn mới bước sang chặng "làm cho xong". Từ đây tiền bỏ vào mới được gọi là tài sản. Cái đổi không phải số tiền, mà là việc bạn đã hết mò.</p>
+<p class="limit"><b>Chỗ ví von này hỏng:</b> mẻ bánh có một khoảnh khắc "trúng" rõ ràng, cắn một miếng là biết. Dự án thật hiếm khi gọn vậy. Ranh giới mò và chắc thường mờ, kéo dài, ai nhìn cũng thấy khác nhau. Đó đúng là lý do chuẩn phải dựng sáu cửa cụ thể, để bớt chuyện mỗi người vạch ranh một kiểu.</p>
+</div>
+<p>Gần đời hơn: một công ty viết app mới. Giai đoạn dò xem ý tưởng có khả thi, lương lập trình viên ghi vào chi phí. Khi đã chốt thiết kế chạy được, có kế hoạch ra mắt, tiền code tiếp mới được vốn hóa thành tài sản vô hình.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Đoạn 54&ndash;55 giải thích lý do cấm vốn hóa <em>research</em>: ở giai đoạn này doanh nghiệp không thể chứng minh có một tài sản tạo <em>probable future economic benefits</em> (lợi ích kinh tế tương lai có khả năng xảy ra). Sáu điều kiện của đoạn 57 chính là phép thử cho "đã chứng minh được". Lưu ý đoạn 52: hai cụm "research phase" và "development phase" trong IAS 38 mang nghĩa rộng hơn nghĩa thường ngày.</p>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">4</div>
+      <div class="step-meta"><span class="lbl">Kể lại gọn gàng</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Một ý tưởng đi qua hai chặng. Chặng đầu bạn còn mò, chưa chắc ra gì, tiền bỏ vào là chi phí, tiêu mất. Chặng sau bạn đã trúng, gần như chắc nó chạy được và bán được, tiền bỏ vào mới thành tài sản.</p>
+<p>Lằn ranh là lúc hết mò. Nhưng phải qua đủ sáu cửa của đoạn 57 mới được ghi, và chỉ ghi phần tiêu từ ngày đó trở đi.</p>
+<p class="core">Tiền đổ vào một ý tưởng <span>chỉ thành tài sản sau khi bạn gần như cầm chắc nó chạy được.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã hiểu chưa?</h3>
+      <ol>
+        <li>Cùng tiền lương kỹ sư, vì sao chi hồi đầu là chi phí mà chi về sau lại là tài sản?</li>
+        <li>Một dự án không tách được đâu là nghiên cứu, đâu là phát triển thì ghi thế nào? Vì sao?</li>
+        <li>Đã qua chặng phát triển có tự động được vốn hóa không? Còn thiếu gì nữa?</li>
+        <li>Tiền tiêu hồi mò mẫm, sau khi dự án thành công, có được cộng vào giá trị tài sản không?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nếu giải thích được cho bà ngoại hiểu, bạn mới thật sự hiểu.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-do-luong-ban-dau"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Giải thích theo phương pháp Feynman</div>
+    <h1 class="rise" style="animation-delay:.08s">Tự làm thì cấm, mua qua thâu tóm thì lên sổ ào ào</h1>
+    <p class="core rise" style="animation-delay:.16s">Cùng một thương hiệu, một danh sách khách — <span>tự gây dựng thì khó lên sổ, nhưng mua qua thâu tóm thì gần như mặc nhiên được ghi.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Điều cần hiểu &amp; cách tiếp cận</span><h2>Quy tắc: ghi theo cost; mua qua M&amp;A thì đo theo fair value và coi tiêu chí đã thỏa</h2></div>
+    </div>
+    <div class="rule">IAS 38 <strong>đoạn 24</strong>: tài sản vô hình ghi nhận ban đầu theo <em>cost</em> (giá phí). <strong>Đoạn 27</strong>: mua riêng lẻ thì cost = giá mua cộng chi phí trực tiếp để đưa vào dùng. <strong>Đoạn 33</strong>: vô hình mua trong một <em>business combination</em> thì đo theo <em>fair value</em> ngày mua — và tiêu chí “<em>probable</em> lợi ích” cùng “đo được tin cậy” được coi như <strong>LUÔN thỏa</strong>. <strong>Đoạn 35</strong>: nếu đo được fair value tin cậy, ghi riêng khỏi goodwill.</div>
+    <div class="sub">Cách giải thích</div>
+    <div class="approach"><p>Chỗ vấp: IAS 38 nổi tiếng khắt khe — tự làm ra thương hiệu thì cấm ghi. Vậy sao một vụ M&amp;A lại bóc ra cả tá vô hình? Cách làm: tôi đặt cạnh nhau hai con đường một thứ vô hình đi vào sổ — tự gây dựng, và mua qua thâu tóm. Cùng đích, nhưng một đường bị chặn gắt, đường kia cửa mở rộng.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Giải thích đơn giản</span><h2>Hai con đường vào sổ, hai mức khó khác hẳn</h2></div>
+    </div>
+    <p class="lead">Tưởng tượng một thương hiệu. Có hai cách nó vào sổ kế toán. Cách một: công ty tự gây dựng nó qua nhiều năm quảng cáo. Cách hai: một công ty khác bỏ tiền mua đứt cả công ty này. Lạ ở chỗ: cùng một thương hiệu, đường tự làm gần như bị cấm ghi, còn đường mua lại thì gần như mặc nhiên được ghi.</p>
+
+<div class="sub">Đường tự làm: cửa hẹp</div>
+<p>Tự xây thương hiệu thì tiền quảng cáo trộn lẫn với tiền bán hàng, tiền lương, đủ thứ. Không tách được “bao nhiêu là tiền tạo ra thương hiệu”. Đo không nổi, nên IAS 38 cấm ghi thương hiệu tự tạo lên sổ. Tiền đó tính thẳng vào chi phí.</p>
+
+<div class="sub">Đường mua qua thâu tóm: cửa mở</div>
+<p>Khi mua đứt cả công ty, có một con số rõ ràng: tổng tiền đã trả. Từ đó định giá được từng thứ vô hình theo giá hợp lý ngày mua. Vì đã có giá thị trường của cả vụ, chốt “đo được giá” coi như mở sẵn.</p>
+
+<div class="sub">Vì sao chuẩn lại nới tay khi mua</div>
+<p>Vì giá hợp lý đã tự nó gói sẵn hai chốt khó. Người mua chịu trả tiền tức là họ tin nó “có khả năng ra tiền”. Và con số họ trả chính là thước đo đáng tin. Nên đoạn 33 nói thẳng: hai tiêu chí đó coi như luôn thỏa khi mua qua M&amp;A.</p>
+
+<div class="sub">Đây là cây cầu sang IFRS 3</div>
+<p>Chính chỗ này lý giải vì sao một vụ PPA bóc ra hàng loạt vô hình. Thương hiệu, quan hệ khách, công nghệ — thứ công ty tự làm không ghi nổi — nay hiện ra khi bị mua. IFRS 3 lo việc bóc tách; IAS 38 cho phép ghi chúng nhờ đoạn 33.</p>
+  </section>
+
+  <section class="gaps">
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Chỗ vấp · Lỗ hổng</span><h2>Mấy chỗ nghe xuôi mà nghĩ kỹ chưa thông</h2></div>
+    </div>
+    <div class="gap-q"><span class="q">“Cùng một thương hiệu mà chỗ cấm chỗ cho — nghe bất công, vì sao?”</span><p>Không phải bất công, mà vì độ tin của con số. Tự làm: không tách nổi bao nhiêu tiền đã tạo ra thương hiệu, nên dễ ghi khống. Mua: có một giá thật trên bàn đàm phán, đo được. Chuẩn không chặn thương hiệu — nó chặn những con số không đáng tin.</p></div>
+<div class="gap-q"><span class="q">“‘Probable’ coi như luôn thỏa khi mua — chẳng phải bỏ qua một tiêu chí?”</span><p>Không bỏ qua, mà gói nó vào giá. Giá hợp lý đã phản ánh kỳ vọng của thị trường về khả năng ra tiền. Nếu thị trường nghĩ khả năng thấp, giá sẽ thấp theo. Vậy “probable” không biến mất — nó nằm sẵn trong con số fair value rồi.</p></div>
+<div class="gap-q"><span class="q">“Vậy mua qua M&amp;A là ghi được MỌI thứ vô hình?”</span><p>Không. Vẫn phải qua chốt nhận diện: thứ đó phải tách bạch được hoặc đến từ quyền hợp đồng/pháp lý. “Đội ngũ giỏi” mua qua M&amp;A vẫn không ghi riêng được — nó không tách bạch. Nó tan vào goodwill. Đoạn 33 nới hai chốt sau, không nới chốt nhận diện.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví von &amp; ví dụ đời thường</span><h2>Neo vào thứ bạn đã biết</h2></div>
+    </div>
+    <div class="analogy-card"><span class="tag">Ví dụ trung tâm</span>
+<p>Hình dung một cuộc thi mà giám khảo chấm “món này đáng bao nhiêu tiền”. Tự nấu ở nhà: bạn nói món ăn đáng 500 nghìn, nhưng không có hóa đơn, không ai định giá — giám khảo gạt, vì con số tự khai. Mua ở nhà hàng: có hóa đơn 500 nghìn rõ ràng — giám khảo nhận ngay. Cùng một món, khác ở chỗ có một con số thật do thị trường đặt ra hay không.</p>
+<p class="limit"><b>Chỗ ví von này hỏng:</b> hóa đơn nhà hàng là một con số có sẵn, đọc là xong. Fair value của một thương hiệu mua qua M&amp;A thì không in sẵn ở đâu. Phải dựng mô hình định giá để tách nó ra khỏi tổng giá vụ mua. “Có con số đáng tin” ở đây là cả một quy trình ước lượng, không phải tờ hóa đơn. Đó cũng là chỗ tốn công và dễ tranh cãi nhất của PPA.</p>
+</div>
+<p>Gần đời hơn: một startup tự xây tên tuổi nhiều năm, trên sổ thương hiệu ghi 0 đồng. Một tập đoàn mua lại startup đó. Trong sổ hợp nhất, thương hiệu bỗng hiện ra với giá trị hợp lý hàng chục tỷ. Cùng thương hiệu, cùng sức mạnh — chỉ là giờ có một giao dịch thật đặt giá cho nó.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. IAS 38 đoạn 33 nói tiêu chí <em>probable</em> (đoạn 21a) luôn coi là thỏa cho vô hình mua qua business combination, vì fair value đã phản ánh xác suất; đoạn 35 nói nếu đo được fair value tin cậy thì ghi riêng khỏi goodwill. Đây khớp chính xác với IFRS 3 đoạn 18/B31: nhận diện rồi đo theo fair value. Lưu ý đoạn 48 vẫn cấm goodwill tự tạo, và đoạn 63–64 cấm thương hiệu, danh mục khách tự tạo — sự nới tay chỉ dành cho vô hình MUA, không cho tự tạo.</p>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">4</div>
+      <div class="step-meta"><span class="lbl">Kể lại gọn gàng</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>IAS 38 ghi tài sản vô hình ban đầu theo giá phí. Tự gây dựng thương hiệu thì gần như bị cấm ghi — tiền tạo ra nó trộn lẫn đủ thứ, không đo nổi. Nhưng khi mua qua một vụ thâu tóm, có giá hợp lý của cả vụ làm thước đo. Đoạn 33 coi hai tiêu chí “có khả năng ra tiền” và “đo được tin cậy” là luôn thỏa.</p>
+<p>Vì thế PPA bóc ra được hàng loạt vô hình mà công ty tự tạo không ghi nổi. Đây là cây cầu nối IAS 38 với IFRS 3.</p>
+<p class="core">Cùng một thương hiệu, một danh sách khách — <span>tự gây dựng thì khó lên sổ, nhưng mua qua thâu tóm thì gần như mặc nhiên được ghi.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã hiểu chưa?</h3>
+      <ol>
+        <li>Vì sao một thương hiệu công ty tự gây dựng gần như không được ghi sổ, còn cùng thương hiệu đó khi bị mua lại thì được ghi theo giá trị hợp lý?</li>
+        <li>Đoạn 33 coi tiêu chí “probable” luôn thỏa khi mua qua M&amp;A — điều đó có nghĩa tiêu chí này bị bỏ qua không? Vì sao?</li>
+        <li>Mua cả một công ty, có phải mọi tài sản vô hình của nó đều được ghi riêng khỏi goodwill không?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nếu giải thích được cho bà ngoại hiểu, bạn mới thật sự hiểu.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-khau-hao-huu-han"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Giải thích theo phương pháp Feynman</div>
+    <h1 class="rise" style="animation-delay:.08s">Vô hình hữu hạn: mặc định mòn về 0, không chừa giá trị thải</h1>
+    <p class="core rise" style="animation-delay:.16s">Một tài sản hữu hình thường còn giá sắt vụn, <span>nhưng vô hình hữu hạn mặc định mòn sạch về 0 — trừ khi có chợ hoặc có người cam kết mua lại.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Điều cần hiểu &amp; cách tiếp cận</span><h2>Quy tắc: khấu hao theo đời hữu dụng, residual mặc định = 0</h2></div>
+    </div>
+    <div class="rule">IAS 38 <strong>đoạn 97</strong>: tài sản vô hình có đời hữu dụng hữu hạn thì <em>khấu hao</em> đều đặn suốt đời đó; bắt đầu khi tài sản <em>sẵn sàng dùng</em>; phương pháp phản ánh cách lợi ích được tiêu dùng (không xác định được thì dùng đường thẳng). <strong>Đoạn 100</strong>: <em>residual value</em> (giá trị thanh lý) của vô hình hữu hạn coi như <strong>BẰNG 0</strong>, trừ khi (a) có bên thứ ba cam kết mua lại cuối đời, hoặc (b) có một <em>active market</em> và giá thải xác định được theo chợ đó. <strong>Đoạn 104</strong>: rà lại thời gian và phương pháp khấu hao ít nhất mỗi cuối năm.</div>
+    <div class="sub">Cách giải thích</div>
+    <div class="approach"><p>Chỗ vấp: với máy móc nhà xưởng, ta quen chừa lại “giá sắt vụn” cuối đời. Vô hình thì ngược: mặc định mòn sạch về 0. Cách làm: tôi neo vào hai thứ ai cũng từng cầm — một cái máy cũ bán được sắt vụn, và một thẻ tập gym hết hạn. Cái thẻ hết hạn thì còn lại đúng 0 đồng, không bán cho ai được.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Giải thích đơn giản</span><h2>Mòn dần như mọi tài sản, nhưng mòn về 0</h2></div>
+    </div>
+    <p class="lead">Tưởng tượng một bằng sáng chế còn hiệu lực 10 năm. Nó là tài sản vô hình “hữu hạn” — có ngày hết rõ ràng. Vậy chia tiền mua nó đều ra 10 năm, mỗi năm một phần. Đó là khấu hao, giống hệt cách ta làm với máy móc. Nhưng có một chỗ khác bất ngờ ở cuối đường.</p>
+
+<div class="sub">Bắt đầu mòn từ khi sẵn sàng dùng</div>
+<p>Khấu hao khởi động khi tài sản sẵn sàng hoạt động, không phải khi nó bắt đầu sinh lời. Mua xong, cài đặt xong, dùng được là bắt đầu chia. Cứ thế mỗi năm gọt một phần giá trị vào chi phí.</p>
+
+<div class="sub">Chỗ khác máy móc: cuối đời còn 0</div>
+<p>Một cái máy cũ hết đời vẫn bán được ít tiền sắt vụn — đó là “giá trị thanh lý”. Khi khấu hao máy, ta chừa phần sắt vụn đó lại, không gọt hết. Vô hình thì ngược: mặc định cuối đời còn 0 đồng. Nên ta gọt cho mòn sạch.</p>
+
+<div class="sub">Vì sao vô hình lại về 0</div>
+<p>Một bằng sáng chế hết hạn thì hết độc quyền — chẳng còn ai trả tiền cho nó. Một hợp đồng hết hạn cũng vậy. Khác cái máy, vô hình hết đời thường không có “xác” để bán. Nên mặc định giá trị thải bằng 0.</p>
+
+<div class="sub">Hai ngoại lệ hiếm cho residual lớn hơn 0</div>
+<p>Chỉ hai trường hợp mới được chừa giá trị thải. Một: có người đã cam kết mua lại tài sản vào cuối đời. Hai: có một “chợ” thật cho loại tài sản đó để biết giá thải. Ngoài hai cửa này, cứ mặc định 0.</p>
+  </section>
+
+  <section class="gaps">
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Chỗ vấp · Lỗ hổng</span><h2>Mấy chỗ nghe xuôi mà nghĩ kỹ chưa thông</h2></div>
+    </div>
+    <div class="gap-q"><span class="q">“Sao vô hình lại mặc định về 0, còn máy móc thì không?”</span><p>Vì hết đời, vô hình thường chẳng còn gì để bán. Bằng sáng chế hết hạn là ai cũng dùng được, độc quyền tan. Cái máy cũ ít ra còn đống sắt bán theo cân. Vô hình không có “xác vật chất” để thu hồi, nên mặc định 0 là sát thực tế hơn.</p></div>
+<div class="gap-q"><span class="q">“Residual = 0 thì ảnh hưởng gì tới con số khấu hao?”</span><p>Ảnh hưởng lớn. Khấu hao mỗi năm tính trên phần giá trị bị mòn, tức giá gốc trừ giá trị thải. Thải bằng 0 nghĩa là gọt nguyên cả giá gốc xuống số không. Nếu lỡ giả định một giá thải dương không có cơ sở, khấu hao mỗi năm sẽ thấp đi — lợi nhuận bị thổi cao giả tạo.</p></div>
+<div class="gap-q"><span class="q">“Khấu hao bắt đầu lúc nào — khi mua hay khi sinh lời?”</span><p>Khi sẵn sàng dùng, không đợi tới lúc sinh lời. Mua một phần mềm về, cài đặt xong, chạy được là bắt đầu khấu hao — dù chưa kịp tạo ra đồng doanh thu nào. Đợi tới lúc có lời mới gọt là sai, và làm chi phí các năm đầu trông nhẹ giả.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví von &amp; ví dụ đời thường</span><h2>Neo vào thứ bạn đã biết</h2></div>
+    </div>
+    <div class="analogy-card"><span class="tag">Ví dụ trung tâm</span>
+<p>So hai thứ. Một cái xe máy cũ: chạy mười năm rồi hỏng, nhưng vẫn bán được mấy triệu tiền sắt vụn. Khi chia tiền mua xe theo năm, bạn chừa lại phần mấy triệu đó. Một thẻ tập gym hai năm: hết hạn là thành tờ giấy lộn, không bán cho ai được, còn đúng 0 đồng. Nên tiền mua thẻ phải gọt sạch trong hai năm, không chừa gì. Vô hình hữu hạn giống cái thẻ, không giống cái xe.</p>
+<p class="limit"><b>Chỗ ví von này hỏng:</b> thẻ gym có ngày hết hạn in trên thẻ, rõ mồn một. Đời hữu dụng của nhiều vô hình thì phải ước — một quan hệ khách hàng “dùng được mấy năm” là phán đoán, không in sẵn. Và “phương pháp gọt” không phải lúc nào cũng chia đều. Chuẩn đòi phản ánh cách lợi ích thật sự được tiêu dùng; chỉ khi chịu thua mới dùng đường thẳng.</p>
+</div>
+<p>Gần đời hơn: mua một giấy phép khai thác 8 năm, không gia hạn. Mỗi năm gọt một phần tám giá mua vào chi phí, hết 8 năm còn 0. Không chừa “giá trị thải”, vì giấy phép hết hạn thì vô giá trị — chẳng có chợ nào mua lại một giấy phép đã chết.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Đoạn 97: khấu hao bắt đầu khi tài sản <em>available for use</em>; phương pháp phản ánh pattern tiêu dùng lợi ích, mặc định đường thẳng nếu không xác định được. Đoạn 98 nêu các phương pháp (đường thẳng, số dư giảm dần, theo sản lượng). Đoạn 100: residual bằng 0 trừ hai ngoại lệ (cam kết mua lại, hoặc có active market). Đoạn 104: rà lại đời hữu dụng và phương pháp ít nhất mỗi cuối năm; đổi thì xử lý như <em>change in estimate</em> theo IAS 8. Một bẫy thực hành: gán residual dương vô căn cứ để giảm khấu hao, làm đẹp lợi nhuận.</p>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">4</div>
+      <div class="step-meta"><span class="lbl">Kể lại gọn gàng</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Vô hình có đời hữu hạn thì khấu hao đều suốt đời đó, bắt đầu từ khi sẵn sàng dùng. Tới đây giống hệt máy móc. Chỗ khác nằm ở cuối đường: máy còn bán được sắt vụn, nên ta chừa “giá trị thải”. Vô hình thì mặc định cuối đời còn 0 — hết hạn là hết giá trị, chẳng có xác để bán.</p>
+<p>Chỉ hai ngoại lệ hiếm cho phép residual dương: có người cam kết mua lại, hoặc có một chợ thật cho loại tài sản đó.</p>
+<p class="core">Một tài sản hữu hình thường còn giá sắt vụn, <span>vô hình hữu hạn mặc định mòn sạch về 0, trừ khi có chợ hoặc có người cam kết mua lại.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã hiểu chưa?</h3>
+      <ol>
+        <li>Vì sao giá trị thanh lý của một tài sản vô hình hữu hạn mặc định bằng 0, trong khi máy móc thường được chừa lại một phần?</li>
+        <li>Hai trường hợp ngoại lệ nào cho phép một tài sản vô hình có giá trị thanh lý lớn hơn 0?</li>
+        <li>Khấu hao một phần mềm mới mua bắt đầu từ thời điểm nào — khi mua, khi sẵn sàng dùng, hay khi nó bắt đầu sinh lời?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nếu giải thích được cho bà ngoại hiểu, bạn mới thật sự hiểu.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-vo-thoi-han-khac-vo-han"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Giải thích theo phương pháp Feynman</div>
+    <h1 class="rise" style="animation-delay:.08s">"Vô thời hạn" không phải "sống đời đời"</h1>
+    <p class="core rise" style="animation-delay:.16s">Một tài sản không có ngày hết hạn <span>thì không bào mòn dần, mà bị soi lại mỗi năm.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Điều cần hiểu &amp; cách tiếp cận</span><h2>Quy tắc: vô thời hạn thì không khấu hao, nhưng soi suy giảm mỗi năm</h2></div>
+    </div>
+    <div class="rule">IAS 38, đoạn 88: doanh nghiệp đánh giá <em>useful life</em> (thời gian hữu dụng) là hữu hạn hay <em>indefinite</em> (vô thời hạn). Đoạn 91: "<em>indefinite</em> không có nghĩa là <em>infinite</em>", vô thời hạn không phải vô hạn. Đoạn 107: tài sản vô thời hạn <strong>không khấu hao</strong>. Đoạn 108&ndash;109: thay vào đó kiểm tra suy giảm hằng năm, và rà lại đánh giá "vô thời hạn" mỗi kỳ.</div>
+    <div class="sub">Cách giải thích</div>
+    <div class="approach"><p>Chỗ vấp: hai chữ "vô thời hạn" nghe như "mãi mãi". Người ta tưởng tài sản đó sống đời đời, nên không bao giờ mất giá. Sai. Cách làm: tôi tách hai ý, "chưa thấy ngày kết thúc" khác hẳn "không bao giờ kết thúc". Rồi tôi chỉ vì sao không bào mòn dần lại đi kèm một cuộc soi hằng năm.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Giải thích đơn giản</span><h2>"Chưa thấy điểm dừng" — không phải "không có điểm dừng"</h2></div>
+    </div>
+    <p class="lead">Tưởng tượng hai món trong bếp: một bánh xà phòng và một cái chảo gang. Bánh xà phòng dùng mỗi ngày mòn một ít. Bạn biết chừng hai tháng là hết. Nên bạn chia tiền mua nó đều ra cho mỗi ngày dùng. Kế toán gọi cách chia đều đó là khấu hao.</p>
+
+<div class="sub">Cái chảo gang thì khác</div>
+<p>Cái chảo gang dùng mười năm vẫn tốt, có khi truyền đời. Bạn không nhìn ra ngày nó "hết". Vậy chia tiền mua chảo cho bao nhiêu năm? Không biết. Không có mốc nào để chia đều. Nên kế toán bảo: thôi, đừng bào mòn dần. Đây là tài sản "vô thời hạn".</p>
+
+<div class="sub">Nhưng vô thời hạn không phải bất tử</div>
+<p>Đây là chỗ dễ hiểu lầm nhất. "Vô thời hạn" chỉ là "chưa thấy ngày dừng". Nó tuyệt nhiên không phải "sống mãi". Cái chảo vẫn có thể nứt, gỉ, hỏng. Khi đó nó mất giá thật, chỉ là mất bất ngờ, chứ không mòn đều.</p>
+
+<div class="sub">Không bào mòn, vậy canh kiểu gì</div>
+<p>Vì không chia đều mỗi năm, kế toán đổi sang một việc khác. Mỗi năm, lôi cái chảo ra soi một lần. Hỏi: nó còn đáng giá như sổ ghi không? Còn thì để yên. Tụt rồi thì ghi giảm ngay năm đó. Cuộc soi này gọi là kiểm tra suy giảm.</p>
+  </section>
+
+  <section class="gaps">
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Chỗ vấp · Lỗ hổng</span><h2>Mấy chỗ nghe xuôi mà nghĩ kỹ chưa thông</h2></div>
+    </div>
+    <div class="gap-q"><span class="q">"Không bào mòn dần — chẳng phải công ty được lợi, đỡ tốn chi phí?"</span><p>Không hẳn lợi. Đổi lại, công ty bị soi gắt mỗi năm. Tài sản hữu hạn cứ mòn đều cho hết. Tài sản vô thời hạn có thể đứng yên nhiều năm, rồi rớt một phát thật đau khi cuộc soi phát hiện nó hỏng. Không nhẹ hơn, chỉ khác kiểu.</p></div>
+<div class="gap-q"><span class="q">"Cái gì ngoài đời lại 'không thấy ngày dừng'?"</span><p>Một thương hiệu mạnh là ví dụ kinh điển. Coca-Cola bán cả trăm năm, chưa thấy mốc nào nó hết hút khách. Một giấy phép gia hạn mãi không tốn kém cũng vậy. Quan trọng: phải xét thật, không phải cứ thích là gắn mác "vô thời hạn".</p></div>
+<div class="gap-q"><span class="q">"Đã gắn mác vô thời hạn rồi thì yên một bề luôn?"</span><p>Không. Đoạn 109 bắt rà lại nhãn đó mỗi kỳ. Nếu hoàn cảnh đổi, đối thủ mạnh lên hay công nghệ lỗi thời, thì "vô thời hạn" thành "hữu hạn". Từ đó tài sản bắt đầu bị bào mòn dần như mọi món khác.</p></div>
+<div class="gap-q"><span class="q">"Ai dám chắc một thứ 'chưa thấy ngày dừng'? Nghe như đoán mò."</span><p>Đây đúng là chỗ yếu. "Không thấy điểm dừng" dựa trên phán đoán về tương lai, mà tương lai thì khó. Một thương hiệu hôm nay khỏe, mai có thể sập nhanh. Vì thế chuẩn không cho yên tâm: bắt soi suy giảm mỗi năm và rà lại nhãn mỗi kỳ. Soi đều đặn để bù cho chỗ phán đoán mong manh đó.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví von &amp; ví dụ đời thường</span><h2>Neo vào thứ bạn đã biết</h2></div>
+    </div>
+    <div class="analogy-card"><span class="tag">Ví dụ trung tâm</span>
+<p>Quay lại hai món trong bếp. Bánh xà phòng có ngày hết rõ ràng, nên chia tiền đều cho tới lúc mòn hết, đó là khấu hao. Cái chảo gang không có ngày hết nhìn thấy được, nên không chia đều. Nhưng nó không bất tử: mỗi năm bạn xem chảo còn tốt không, nứt gỉ thì ghi giảm. Khác nhau ở chỗ: một cái mòn đều, một cái bị soi.</p>
+<p class="limit"><b>Chỗ ví von này hỏng:</b> cái chảo là vật cầm được, nó nứt gỉ thì mắt thấy ngay. Tài sản vô hình thì không sờ được. Một thương hiệu "hỏng" không lộ ra như vết nứt, nó là doanh số tụt, khách quay lưng. Vì thế cuộc soi hằng năm phải dựa vào con số và dự báo, khó hơn nhìn cái chảo nhiều.</p>
+</div>
+<p>Gần đời hơn: một hãng nước ngọt mua lại thương hiệu cổ trăm tuổi. Họ không thấy mốc nào thương hiệu này hết bán được. Nên không khấu hao nó. Nhưng cái nhãn “vô thời hạn” phải đến từ phân tích thật — vị thế cạnh tranh, bảo hộ pháp lý, sức cầu. Không phải cứ thương hiệu mạnh là mặc định vô thời hạn. Và mỗi năm vẫn phải soi: thương hiệu còn đáng số tiền đã bỏ ra không?</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Đoạn 107 cấm khấu hao tài sản <em>indefinite life</em>; đoạn 108 thay bằng <em>impairment test</em> hằng năm theo IAS 36, so <em>carrying amount</em> với <em>recoverable amount</em>. Đoạn 109&ndash;110: khi đổi đánh giá từ vô thời hạn sang hữu hạn, xử lý như <em>change in accounting estimate</em> theo IAS 8, và đó cũng là một dấu hiệu phải kiểm tra suy giảm.</p>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">4</div>
+      <div class="step-meta"><span class="lbl">Kể lại gọn gàng</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>"Vô thời hạn" chỉ nghĩa là chưa nhìn ra ngày tài sản hết tạo tiền. Nó không có nghĩa sống mãi. Vì không có mốc kết thúc, ta không bào mòn giá trị đều mỗi năm.</p>
+<p>Nhưng không bào mòn không phải buông lỏng. Mỗi năm phải soi lại: tài sản còn đáng giá như sổ không? Tụt thì ghi giảm. Và nhãn "vô thời hạn" cũng bị rà lại mỗi kỳ.</p>
+<p class="core">Một tài sản không có ngày hết hạn <span>thì không bào mòn dần, mà bị soi lại mỗi năm.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã hiểu chưa?</h3>
+      <ol>
+        <li>Vì sao tài sản "vô thời hạn" lại không được khấu hao, trong khi tài sản hữu hạn thì có?</li>
+        <li>"Vô thời hạn" và "vô hạn" khác nhau ở đâu? Vì sao nhầm hai cái lại nguy hiểm?</li>
+        <li>Không khấu hao, vậy giá trị tài sản vô thời hạn được canh giữ bằng cách nào?</li>
+        <li>Khi nào một tài sản "vô thời hạn" phải chuyển thành "hữu hạn", và kéo theo điều gì?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nếu giải thích được cho bà ngoại hiểu, bạn mới thật sự hiểu.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-danh-gia-lai-can-cho"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Giải thích theo phương pháp Feynman</div>
+    <h1 class="rise" style="animation-delay:.08s">Muốn ghi theo giá thị trường? Phải có cái chợ đã</h1>
+    <p class="core rise" style="animation-delay:.16s">Một tài sản vô hình <span>gần như không bao giờ được ghi theo giá thị trường, vì nó độc nhất.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Điều cần hiểu &amp; cách tiếp cận</span><h2>Quy tắc: chỉ đánh giá lại khi có active market</h2></div>
+    </div>
+    <div class="rule">IAS 38, đoạn 72: sau ghi nhận, chọn <em>cost model</em> (giá gốc) hoặc <em>revaluation model</em> (đánh giá lại). Đoạn 75: theo mô hình đánh giá lại, ghi tài sản theo <em>fair value</em> (giá trị hợp lý), và fair value <strong>phải</strong> đo bằng tham chiếu một <em>active market</em> (thị trường hoạt động). Đoạn 78: active market <strong>hiếm khi</strong> tồn tại cho tài sản vô hình, vì mỗi tài sản thường là độc nhất.</div>
+    <div class="sub">Cách giải thích</div>
+    <div class="approach"><p>Chỗ vấp: với nhà xưởng máy móc, công ty đánh giá lại khá thoải mái. Sao tài sản vô hình lại gần như không được? Cách làm: tôi chỉ ra cái cửa chặn là hai chữ "active market". Tôi sẽ cho bạn thấy một active market đòi gì. Rồi vì sao một thương hiệu hay bằng sáng chế không bao giờ có nổi cái chợ đó.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Giải thích đơn giản</span><h2>"Active market" — cái chợ có giá niêm yết</h2></div>
+    </div>
+    <p class="lead">Đi chợ mua gạo, bạn biết ngay hôm nay một ký giá bao nhiêu. Vì gạo nào cũng na ná gạo nào, và bán mua suốt ngày. Vàng cũng thế: tra một cái là ra giá mỗi chỉ. Cái "giá đang chạy" đó gọi là giá thị trường. Có nó vì hàng giống hệt nhau, đổi qua đổi lại liên tục.</p>
+
+<div class="sub">Chợ này đòi ba thứ</div>
+<p>Một cái chợ thật sự đòi: hàng phải giống hệt nhau, mua bán xảy ra thường xuyên, và ai cũng xem được giá. Đủ ba thứ thì mới có "giá đang chạy" để tin. Gạo, vàng, cổ phiếu đều đủ. Kế toán gọi chợ kiểu đó là active market.</p>
+
+<div class="sub">Tài sản vô hình hầu như không có chợ đó</div>
+<p>Giờ thử một thương hiệu, hay một bằng sáng chế. Mỗi cái là một mình một kiểu. Không có cái thứ hai "giống hệt" để so giá. Người ta cũng ít mua bán, mà mua thì ngồi mặc cả riêng. Giá một vụ không nói lên giá vụ khác. Vậy là không có chợ.</p>
+
+<div class="sub">Không chợ thì không được đánh giá lại</div>
+<p>Đây là chỗ chốt. Muốn ghi tài sản theo giá thị trường, đoạn 75 bắt phải có active market. Không chợ thì không có giá để tin. Nên gần hết tài sản vô hình đành ở yên với giá gốc, tức giá mua ban đầu trừ khấu hao. Khác hẳn nhà xưởng máy móc, vốn có giá trị hợp lý dễ xác định hơn.</p>
+  </section>
+
+  <section class="gaps">
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Chỗ vấp · Lỗ hổng</span><h2>Mấy chỗ nghe xuôi mà nghĩ kỹ chưa thông</h2></div>
+    </div>
+    <div class="gap-q"><span class="q">"Sao không thuê thẩm định viên định giá thương hiệu, như định giá nhà?"</span><p>Định giá thì làm được, nhưng IAS 38 không nhận. Đoạn 75 đòi đúng một thứ: giá từ active market. Một con số do chuyên gia ước tính không phải giá chợ. Chuẩn sợ những con số đoán đó bị nắn cho đẹp sổ, nên chặn thẳng.</p></div>
+<div class="gap-q"><span class="q">"Vậy có tài sản vô hình nào thật sự có chợ không?"</span><p>Có, nhưng ít. Đoạn 78 nêu vài ví dụ: hạn ngạch sản xuất, giấy phép taxi hay giấy phép đánh cá tự do chuyển nhượng. Mấy thứ này na ná nhau và mua bán đủ nhiều. Còn thương hiệu, bằng sáng chế thì không, mỗi cái một khác.</p></div>
+<div class="gap-q"><span class="q">"Đã có chợ rồi thì dùng đánh giá lại đưa thương hiệu tự tạo lên sổ được chứ?"</span><p>Không. Đoạn 76 chặn đúng mẹo này. Đánh giá lại không được dùng để lần đầu ghi một tài sản chưa từng lên sổ. Thương hiệu bạn tự nuôi vẫn nằm ngoài sổ. Đánh giá lại chỉ chỉnh giá một tài sản đã có sẵn trên sổ.</p></div>
+<div class="gap-q"><span class="q">"Bắt dùng giá gốc mãi — sổ sách lạc hậu so với giá trị thật thì sao?"</span><p>Đúng, đó là cái giá phải trả. Một thương hiệu lên giá vùn vụt vẫn nằm sổ theo giá mua cũ. Sổ trông thấp hơn thực tế. Chuẩn chấp nhận lạc hậu đó để đổi lấy con số chắc chắn. Một giá gốc có hóa đơn thật vẫn hơn một giá thị trường đoán mò.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví von &amp; ví dụ đời thường</span><h2>Neo vào thứ bạn đã biết</h2></div>
+    </div>
+    <div class="analogy-card"><span class="tag">Ví dụ trung tâm</span>
+<p>Nghĩ về hai món bạn muốn biết giá. Một chỉ vàng: tra bảng là ra, vì vàng nào cũng như vàng nào. Chiếc nhẫn cưới của bà: vô giá với nhà bạn, nhưng không có "giá đang chạy" nào cả. Nó độc nhất. Tài sản vô hình phần lớn giống chiếc nhẫn của bà, một mình một kiểu, nên không có chợ để soi giá.</p>
+<p class="limit"><b>Chỗ ví von này hỏng:</b> chiếc nhẫn của bà ít ra còn đem cân vàng để áng giá phần kim loại. Một thương hiệu thì không có cả "phần kim loại" nào để cân. Giá trị nó nằm hết trong đầu khách hàng. Đó là lý do active market cho tài sản vô hình còn hiếm hơn cả cho một món đồ độc bản thường.</p>
+</div>
+<p>Gần đời hơn: hạn ngạch khí thải mua bán trên sàn thì có active market, nên đánh giá lại được. Còn logo của một quán cà phê nổi tiếng thì chịu: không sàn nào niêm yết giá "logo cà phê". Nó ở yên trên sổ theo giá gốc.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Đoạn 75 yêu cầu <em>fair value</em> đo bằng tham chiếu <em>active market</em>; đoạn 72 thêm: nếu chọn revaluation model thì áp cho cả <em>class</em> (nhóm) tài sản. Đoạn 81 và 83: nếu một tài sản trong nhóm mất chợ để đánh giá, nó chuyển về giá gốc tại lần định giá gần nhất, trừ khấu hao và suy giảm sau đó. Lưu ý IFRS 13 mới là chuẩn định nghĩa đầy đủ "fair value".</p>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">4</div>
+      <div class="step-meta"><span class="lbl">Kể lại gọn gàng</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Muốn ghi một tài sản theo giá thị trường, bạn cần một cái chợ thật. Chợ thật đòi: hàng giống hệt nhau, mua bán thường xuyên, giá ai cũng xem được. Gạo, vàng, cổ phiếu thì có. Còn thương hiệu hay bằng sáng chế thì mỗi cái một mình một kiểu, nên không.</p>
+<p>Không chợ thì không có giá để tin. Vậy nên gần hết tài sản vô hình phải nằm yên theo giá gốc.</p>
+<p class="core">Một tài sản vô hình <span>gần như không bao giờ được ghi theo giá thị trường, vì nó độc nhất.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã hiểu chưa?</h3>
+      <ol>
+        <li>Vì sao một thương hiệu hầu như không bao giờ được đánh giá lại theo giá thị trường?</li>
+        <li>Một active market đòi ba điều gì? Gạo có đủ, còn bằng sáng chế thiếu điều nào?</li>
+        <li>Có thể dùng mô hình đánh giá lại để đưa thương hiệu tự tạo lên sổ lần đầu không? Vì sao?</li>
+        <li>Bắt giữ giá gốc khiến sổ sách lạc hậu, vì sao chuẩn vẫn chấp nhận đánh đổi đó?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nếu giải thích được cho bà ngoại hiểu, bạn mới thật sự hiểu.</p>
+  </footer>
+
+</div></div>
+<script>
+  var bar=document.getElementById('progress');
+  function upd(){var h=document.documentElement;var s=h.scrollTop||document.body.scrollTop;
+    var max=(h.scrollHeight-h.clientHeight)||1;bar.style.width=(s/max*100)+'%';}
+  window.addEventListener('scroll',upd,{passive:true});upd();
+  var io=new IntersectionObserver(function(es){es.forEach(function(e){
+    if(e.isIntersecting){e.target.style.animation='rise .7s cubic-bezier(.2,.7,.3,1) forwards';io.unobserve(e.target);}});},{threshold:.12});
+  document.querySelectorAll('section').forEach(function(s){s.style.opacity='0';io.observe(s);});
+</script>
+
+<script>
+(function(){
+  var tabs=[].slice.call(document.querySelectorAll('.tabbar .tab'));
+  var panels=[].slice.call(document.querySelectorAll('.concept-panel'));
+  function show(i){
+    tabs.forEach(function(t,j){t.classList.toggle('active',j===i);});
+    panels.forEach(function(p,j){
+      var on=(j===i); p.classList.toggle('active',on);
+      if(on){p.querySelectorAll('section').forEach(function(s){s.style.opacity='';s.style.animation='';});}
+    });
+    try{history.replaceState(null,'','#'+panels[i].id);}catch(e){}
+    window.scrollTo(0,0); window.dispatchEvent(new Event('scroll'));
+  }
+  tabs.forEach(function(t){t.addEventListener('click',function(){show(+t.getAttribute('data-i'));});});
+  var start=0; panels.forEach(function(p,j){if('#'+p.id===location.hash)start=j;});
+  show(start);
+})();
+</script>
+
+</body></html>

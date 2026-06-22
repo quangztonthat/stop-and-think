@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bài 3 (Ch5-Open) — Bogo-Indian</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/chessboard-js/1.0.0/chessboard-1.0.0.min.css">
+<style>
+* { box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; max-width: 980px; margin: 0 auto; padding: 24px; color: #1a1a1a; line-height: 1.6; background: #fafafa; }
+h1 { color: #1a3a52; font-size: 26px; margin: 0 0 8px; }
+h2 { color: #2c5282; font-size: 20px; margin: 32px 0 12px; padding-bottom: 6px; border-bottom: 2px solid #e1e8ed; }
+.source { color: #888; font-size: 13px; margin-bottom: 24px; }
+.nav-link { font-size: 13px; color: #2c5282; text-decoration: none; }
+.stage { background: white; border-radius: 8px; padding: 20px 24px; margin: 16px 0; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
+.stage-label { display: inline-block; background: #2c5282; color: white; font-size: 12px; font-weight: 600; padding: 3px 10px; border-radius: 12px; margin-bottom: 8px; }
+.hook-question { font-size: 17px; color: #1a3a52; background: #fff8e1; border-left: 4px solid #faad14; padding: 14px 18px; border-radius: 0 6px 6px 0; margin: 12px 0; }
+.reveal-btn { background: #faad14; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-size: 14px; }
+.hidden { display: none; }
+.board-layout { display: grid; grid-template-columns: 440px 1fr; gap: 24px; align-items: start; margin-top: 16px; }
+@media (max-width: 820px) { .board-layout { grid-template-columns: 1fr; } }
+#board { width: 420px; max-width: 100%; }
+.mini-board { width: 300px; max-width: 100%; margin: 14px auto; }
+.controls { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; justify-content: center; }
+.controls button { padding: 7px 12px; background: #2c5282; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 13px; }
+.info-panel { background: #f8f9fb; padding: 16px; border-radius: 6px; border: 1px solid #e1e8ed; min-height: 380px; }
+.move-display { font-family: monospace; font-size: 16px; color: #2c5282; font-weight: 600; margin-bottom: 8px; }
+.commentary { font-size: 14px; color: #444; margin-bottom: 12px; }
+.info-box { background: white; padding: 10px; border-radius: 4px; border: 1px solid #e1e8ed; margin: 12px 0; font-size: 13px; text-align: center; }
+.info-box.win { background: #f6ffed; border-color: #b7eb8f; color: #389e0d; font-weight: 600; }
+.hl { background: rgba(255, 215, 0, 0.45) !important; box-shadow: inset 0 0 0 2px #faad14 !important; }
+.self-test { background: #fff8e1; border: 2px dashed #faad14; border-radius: 6px; padding: 16px; margin-top: 16px; }
+.feedback { margin-top: 10px; padding: 10px 14px; border-radius: 4px; font-size: 14px; }
+.feedback.correct { background: #f6ffed; color: #389e0d; border-left: 4px solid #52c41a; }
+.feedback.wrong { background: #fff1f0; color: #cf1322; border-left: 4px solid #ff4d4f; }
+.quiz { background: #f0f7ff; border-left: 4px solid #2c5282; border-radius: 0 6px 6px 0; padding: 14px 18px; margin: 12px 0; }
+.quiz-q { font-weight: 600; margin-bottom: 10px; color: #1a3a52; }
+.quiz-options { display: flex; flex-direction: column; gap: 6px; }
+.quiz-option { padding: 8px 12px; background: white; border: 1px solid #c9d6e2; border-radius: 4px; cursor: pointer; text-align: left; font-size: 14px; }
+.quiz-option.correct { background: #f6ffed; border-color: #52c41a; color: #389e0d; }
+.quiz-option.wrong { background: #fff1f0; border-color: #ff4d4f; color: #cf1322; }
+.quiz-explain { margin-top: 8px; font-size: 13px; color: #555; font-style: italic; }
+.summary-card { background: linear-gradient(135deg, #1a3a52, #2c5282); color: white; padding: 20px 24px; border-radius: 8px; margin-top: 24px; }
+.summary-card h2 { color: white; border: none; margin-top: 0; }
+.summary-card ul { padding-left: 20px; }
+code { background: #f1f3f5; padding: 1px 6px; border-radius: 3px; font-family: monospace; font-size: 0.9em; }
+.summary-card code { background: rgba(255,255,255,0.2); color: white; }
+.progress-bar { height: 4px; background: #e1e8ed; border-radius: 2px; overflow: hidden; margin: 8px 0 16px; }
+.progress-fill { height: 100%; background: #52c41a; transition: width 0.3s; width: 0%; }
+.tag { display:inline-block; background:#fde9c8; color:#874d00; font-size:11px; font-weight:600; padding:2px 8px; border-radius:10px; margin-left:6px; }
+.movelist { font-family: monospace; font-size: 13px; background:#fff8e1; border-radius:6px; padding:8px 12px; margin-top:10px; color:#874d00; line-height:1.7; }
+</style>
+</head>
+<body>
+
+<h1>Bogo-Indian <span class="tag">vs 3.Nf3</span></h1>
+<div class="source">
+  Chương 5 (Khai cuộc) — Openings for Black · Trung cấp → Nâng cao<br>
+  <a class="nav-link" href="../index-opening.html">← Trang chủ Khai cuộc</a> ·
+  <a class="nav-link" href="chapter_o5_nimzo.html">← Chương 5</a>
+</div>
+
+<div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+
+<div class="stage">
+  <span class="stage-label">STAGE 1 · HOOK</span>
+  <h2 style="margin-top:8px">Khi Trắng chơi 3.Nf3 (không Nc3)</h2>
+  <p>Nếu Trắng đi <strong>3.Nf3</strong> (chưa Nc3, nên chưa có Nimzo), Đen chiếu <strong>3…Bb4+</strong> = Bogo-Indian — anh em của Nimzo, vững &amp; ít lý thuyết.</p>
+  <div id="hookBoard" class="mini-board"></div>
+  <div class="movelist">1.d4 Nf6 2.c4 e6 3.Nf3 Bb4+</div>
+  <div class="hook-question">🤔 <strong>3…Bb4+ chiếu.</strong> Sau khi Trắng chặn, Đen sắp xếp quân theo kế hoạch nào?</div>
+  <button class="reveal-btn" onclick="document.getElementById('hookAnswer').classList.remove('hidden'); markStage(1);">Hiển thị đáp án</button>
+  <div id="hookAnswer" class="hidden" style="margin-top:14px"><p><strong>4.Bd2 Qe7 5.g3 Bxd2+ 6.Qxd2 O-O 7.Bg2 d6</strong> — Đen giữ tượng cho tới khi đổi có lợi, rồi dựng kế hoạch <strong>…d6 + …e5</strong> (kiểu King's Indian nhẹ) hoặc …d5 chắc. Vững, dễ hiểu, ít biến cần thuộc.</p></div>
+</div>
+
+<div class="stage">
+  <span class="stage-label">STAGE 2 · CONCEPT</span>
+  <h2 style="margin-top:8px">Bogo — Nimzo khi không có Nc3</h2>
+  <ul><li><strong>3.Nf3</strong> (thay 3.Nc3): không cho Đen chơi Nimzo (…Bb4 ghim Nc3) → Đen chuyển sang <strong>3…Bb4+</strong> (Bogo).</li><li><strong>4.Bd2 Qe7</strong>: giữ tượng (không vội đổi), chuẩn bị đổi đúng lúc &amp; nhập thành.</li><li><strong>Kế hoạch</strong>: …d6 + …e5 (đánh trung tâm kiểu King's Indian nhẹ), hoặc …d5/…b6 chắc — linh hoạt, ít lý thuyết.</li></ul>
+</div>
+
+<div class="stage">
+  <span class="stage-label">STAGE 3 · WALKTHROUGH</span>
+  <div class="board-layout">
+    <div>
+      <div id="board"></div>
+      <div class="controls">
+        <button onclick="resetBoard()">⟨⟨ Đầu</button>
+        <button onclick="prevMove()">⟨ Lùi</button>
+        <button onclick="nextMove()">Tiến ⟩</button>
+      </div>
+    </div>
+    <div class="info-panel">
+      <div class="move-display" id="moveDisplay">Vị trí xuất phát</div>
+      <div class="commentary" id="commentary">Bấm "Tiến ⟩" để đi qua main line và đọc ý đồ từng nước.</div>
+      <div class="info-box" id="infoBox">Đến lượt: <strong>Trắng</strong></div>
+    </div>
+  </div>
+</div>
+
+<div class="stage">
+  <span class="stage-label">STAGE 4 · SELF-TEST</span>
+  <h2 style="margin-top:8px">Vì sao Đen chơi Bogo (3…Bb4+) khi Trắng đi 3.Nf3?</h2>
+  <div class="self-test">
+    <div class="quiz-options" id="selfTestOptions"><button class="quiz-option" onclick="checkSelfTest(this, true, 'Đúng! Nimzo cần Nc3 để ghim. Khi Trắng tránh bằng 3.Nf3, Bogo (Bb4+) giữ tinh thần tương tự: phát triển nhanh, chắc, dễ chơi.')">Vì 3.Nf3 (không Nc3) không cho Nimzo; Bb4+ là 'người anh em' vững, ít lý thuyết</button>
+      <button class="quiz-option" onclick="checkSelfTest(this, false, 'Sai. Chỉ là nước chiếu phát triển; Trắng chặn dễ dàng (Bd2/Nbd2).')">Vì Bb4+ thắng quân</button>
+      <button class="quiz-option" onclick="checkSelfTest(this, false, 'Sai. Đen có lựa chọn khác (…d5,…b6), nhưng Bogo gọn &amp; nhất quán với repertoire.')">Vì bắt buộc theo luật</button></div>
+    <div class="feedback hidden" id="selfTestFeedback"></div>
+  </div>
+</div>
+
+<div class="stage">
+  <span class="stage-label">STAGE 5 · MINI-QUIZ</span>
+  <div class="quiz"><div class="quiz-q">Q1. Bogo-Indian xuất hiện khi nào?</div><div class="quiz-options"><button class="quiz-option" onclick="quizCheck(this, true)">Khi Trắng chơi 3.Nf3 (chưa Nc3) → 3…Bb4+</button><button class="quiz-option" onclick="quizCheck(this, false)">Khi Trắng chơi 3.Nc3</button><button class="quiz-option" onclick="quizCheck(this, false)">Chỉ sau 1.e4</button></div><div class="quiz-explain hidden">3.Nc3 → Nimzo (…Bb4); 3.Nf3 → Bogo (…Bb4+). Cùng tinh thần.</div></div>
+  <div class="quiz"><div class="quiz-q">Q2. 4.Bd2 Qe7 thể hiện điều gì?</div><div class="quiz-options"><button class="quiz-option" onclick="quizCheck(this, true)">Giữ tượng, đổi đúng lúc; chuẩn bị nhập thành &amp; …d6/…e5</button><button class="quiz-option" onclick="quizCheck(this, false)">Thí tượng</button><button class="quiz-option" onclick="quizCheck(this, false)">Tấn công vua ngay</button></div><div class="quiz-explain hidden">…Qe7 đỡ ghim/giữ tượng linh hoạt, không đổi vội.</div></div>
+  <div class="quiz"><div class="quiz-q">Q3. Kế hoạch trung tâm của Đen?</div><div class="quiz-options"><button class="quiz-option" onclick="quizCheck(this, true)">…d6 + …e5 (King's Indian nhẹ) hoặc …d5 chắc — linh hoạt</button><button class="quiz-option" onclick="quizCheck(this, false)">Bão tốt cánh hậu</button><button class="quiz-option" onclick="quizCheck(this, false)">Bỏ trung tâm</button></div><div class="quiz-explain hidden">Bogo cho Đen vài kế hoạch rõ ràng, dễ chơi, ít phải thuộc.</div></div>
+</div>
+
+<div class="summary-card">
+  <h2>📌 Tóm tắt</h2>
+  <ul><li><strong>Line</strong>: <code>1.d4 Nf6 2.c4 e6 3.Nf3 Bb4+ 4.Bd2 Qe7 5.g3 Bxd2+ 6.Qxd2 O-O 7.Bg2 d6</code>.</li><li><strong>Bogo</strong>: 3.Nf3 → 3…Bb4+ (Nimzo không có thì chơi Bogo).</li><li><strong>4.Bd2 Qe7</strong>: giữ tượng, đổi đúng lúc, nhập thành.</li><li><strong>Kế hoạch</strong>: …d6+…e5 hoặc …d5 — vững, ít lý thuyết.</li></ul>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chessboard-js/1.0.0/chessboard-1.0.0.min.js"></script>
+<script>
+const START_FEN = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
+const MOVES = ['d4', 'Nf6', 'c4', 'e6', 'Nf3', 'Bb4+', 'Bd2', 'Qe7', 'g3', 'Bxd2+', 'Qxd2', 'O-O', 'Bg2', 'd6', 'O-O', 'Nbd7'];
+const COMMENTARY = {
+  0: { move: 'Vị trí xuất phát', text: 'Bàn nhìn từ phía ĐEN. Bogo-Indian (3…Bb4+) — anh em của Nimzo, dùng khi Trắng chơi 3.Nf3 (không có Nc3 để ghim). Đơn giản, vững, dễ chơi.' },
+  1: { move: '1. d4', text: 'Trắng 1.d4 chiếm trung tâm.' },
+  2: { move: '1… Nf6', text: '…Nf6 kiểm soát e4.' },
+  3: { move: '2. c4', text: 'Trắng 2.c4 giành không gian.' },
+  4: { move: '2… e6', text: '…e6 chuẩn bị tượng f8 ra b4.' },
+  5: { move: '3. Nf3', text: '3.Nf3 — Trắng tránh Nimzo (không chơi Nc3, nên không có mã c3 để bị ghim).' },
+  6: { move: '3… Bb4+', text: '…Bb4+! BOGO-INDIAN — chiếu; vì không có Nc3 chắn, Đen ép Trắng chặn bằng quân (Bd2/Nbd2), giải quyết tượng f8 dễ dàng.' },
+  7: { move: '4. Bd2', text: '4.Bd2 — Trắng chặn bằng tượng (phổ biến nhất; Nbd2 thụ động hơn).' },
+  8: { move: '4… Qe7', text: '…Qe7! Giữ tượng (không đổi vội), bảo vệ tượng b4, chuẩn bị nhập thành và …d6/…e5.' },
+  9: { move: '5. g3', text: '5.g3 — Trắng fianchetto Bg2, ép ô trắng và cột d.' },
+  10: { move: '5… Bxd2+', text: '…Bxd2+ đổi đúng lúc (Trắng đã cam kết g3; đổi bớt quân cho dễ thở).' },
+  11: { move: '6. Qxd2', text: 'Qxd2 ăn lại — cờ thoáng nhưng Đen vững, không yếu điểm.' },
+  12: { move: '6… O-O', text: '…O-O nhập thành an toàn.' },
+  13: { move: '7. Bg2', text: 'Bg2 — Trắng hoàn tất fianchetto, tượng ghì đường chéo dài.' },
+  14: { move: '7… d6', text: '…d6 — chuẩn bị đòn …e5 phá trung tâm (kiểu Phòng thủ Ấn Độ Vua nhẹ).' },
+  15: { move: '8. O-O', text: 'Trắng O-O — hai bên an toàn, cờ định hình.' },
+  16: { move: '8… Nbd7', text: '…Nbd7 — phát triển mã, dọn đường …e5 đánh trung tâm. Thế chắc, cân bằng: Bogo cho Đen ván cờ không rủi ro. TABIYA.' }
+};
+const ORIENT = 'black';
+let board, game, currentMove = 0, stagesCompleted = new Set();
+function initBoard() {
+  game = new Chess(START_FEN);
+  board = Chessboard('board', { position: 'start', orientation: ORIENT, draggable: true,
+    pieceTheme: 'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png',
+    onDrop: (s,t) => { const m = game.move({from:s,to:t,promotion:'q'}); if(!m) return 'snapback'; setTimeout(updateOverlays,100); },
+    onSnapEnd: () => { board.position(game.fen()); updateOverlays(); }});
+  updateDisplay();
+}
+function nextMove() { if(currentMove>=MOVES.length) return; game.move(MOVES[currentMove]); board.position(game.fen()); currentMove++; setTimeout(()=>{updateDisplay();updateOverlays();},50); if(currentMove>=MOVES.length) markStage(3); }
+function prevMove() { if(currentMove<=0) return; game.undo(); currentMove--; board.position(game.fen()); setTimeout(()=>{updateDisplay();updateOverlays();},50); }
+function resetBoard() { game = new Chess(START_FEN); board.position('start'); currentMove = 0; setTimeout(()=>{updateDisplay();updateOverlays();},50); }
+function updateDisplay() {
+  const cm = COMMENTARY[currentMove] || COMMENTARY[0];
+  document.getElementById('moveDisplay').textContent = cm.move;
+  document.getElementById('commentary').innerHTML = cm.text;
+  const box = document.getElementById('infoBox');
+  if (currentMove >= MOVES.length) { box.className = 'info-box win'; box.innerHTML = '★ Bogo — vững &amp; dễ chơi vs 3.Nf3'; }
+  else { box.className = 'info-box'; box.innerHTML = 'Đến lượt: <strong>' + (game.turn()==='w'?'Trắng':'Đen') + '</strong>'; }
+  updateProgress();
+}
+function updateOverlays() { $('#board .square-55d63').removeClass('hl'); ['b4', 'd2', 'e7', 'd6'].forEach(sq => $('#board .square-' + sq).addClass('hl')); }
+function checkSelfTest(btn, ok, exp) {
+  document.querySelectorAll('#selfTestOptions .quiz-option').forEach(el=>el.disabled=true);
+  btn.classList.add(ok?'correct':'wrong');
+  const fb = document.getElementById('selfTestFeedback');
+  fb.classList.remove('hidden'); fb.className = 'feedback ' + (ok?'correct':'wrong');
+  fb.textContent = (ok?'✓ ':'✗ ') + exp; markStage(4);
+}
+function quizCheck(btn, ok) {
+  const q = btn.closest('.quiz');
+  q.querySelectorAll('.quiz-option').forEach(el=>el.disabled=true);
+  btn.classList.add(ok?'correct':'wrong');
+  if (!ok) q.querySelectorAll('.quiz-option').forEach(el => { if (el.getAttribute('onclick').includes('true')) el.classList.add('correct'); });
+  q.querySelector('.quiz-explain').classList.remove('hidden'); markStage(5);
+}
+function markStage(n) { stagesCompleted.add(n); updateProgress(); }
+function updateProgress() { document.getElementById('progressFill').style.width = (stagesCompleted.size/5*100) + '%'; }
+function initMiniBoards() { Chessboard('hookBoard', { position: 'rnbqk2r/pppp1ppp/4pn2/8/1bPP4/5N2/PP2PPPP/RNBQKB1R', orientation: ORIENT, draggable: false, pieceTheme: 'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png' }); }
+$(document).ready(() => { initBoard(); initMiniBoards(); setTimeout(()=>markStage(2),500); });
+</script>
+
+</body>
+</html>

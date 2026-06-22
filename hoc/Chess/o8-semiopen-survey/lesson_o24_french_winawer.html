@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bài 1 (Ch8-Open) — French Winawer</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/chessboard-js/1.0.0/chessboard-1.0.0.min.css">
+<style>
+* { box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; max-width: 980px; margin: 0 auto; padding: 24px; color: #1a1a1a; line-height: 1.6; background: #fafafa; }
+h1 { color: #1a3a52; font-size: 26px; margin: 0 0 8px; }
+h2 { color: #2c5282; font-size: 20px; margin: 32px 0 12px; padding-bottom: 6px; border-bottom: 2px solid #e1e8ed; }
+.source { color: #888; font-size: 13px; margin-bottom: 24px; }
+.nav-link { font-size: 13px; color: #2c5282; text-decoration: none; }
+.stage { background: white; border-radius: 8px; padding: 20px 24px; margin: 16px 0; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
+.stage-label { display: inline-block; background: #2c5282; color: white; font-size: 12px; font-weight: 600; padding: 3px 10px; border-radius: 12px; margin-bottom: 8px; }
+.hook-question { font-size: 17px; color: #1a3a52; background: #fff8e1; border-left: 4px solid #faad14; padding: 14px 18px; border-radius: 0 6px 6px 0; margin: 12px 0; }
+.reveal-btn { background: #faad14; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-size: 14px; }
+.hidden { display: none; }
+.board-layout { display: grid; grid-template-columns: 440px 1fr; gap: 24px; align-items: start; margin-top: 16px; }
+@media (max-width: 820px) { .board-layout { grid-template-columns: 1fr; } }
+#board { width: 420px; max-width: 100%; }
+.mini-board { width: 300px; max-width: 100%; margin: 14px auto; }
+.controls { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; justify-content: center; }
+.controls button { padding: 7px 12px; background: #2c5282; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 13px; }
+.info-panel { background: #f8f9fb; padding: 16px; border-radius: 6px; border: 1px solid #e1e8ed; min-height: 380px; }
+.move-display { font-family: monospace; font-size: 16px; color: #2c5282; font-weight: 600; margin-bottom: 8px; }
+.commentary { font-size: 14px; color: #444; margin-bottom: 12px; }
+.info-box { background: white; padding: 10px; border-radius: 4px; border: 1px solid #e1e8ed; margin: 12px 0; font-size: 13px; text-align: center; }
+.info-box.win { background: #f6ffed; border-color: #b7eb8f; color: #389e0d; font-weight: 600; }
+.hl { background: rgba(255, 215, 0, 0.45) !important; box-shadow: inset 0 0 0 2px #faad14 !important; }
+.self-test { background: #fff8e1; border: 2px dashed #faad14; border-radius: 6px; padding: 16px; margin-top: 16px; }
+.feedback { margin-top: 10px; padding: 10px 14px; border-radius: 4px; font-size: 14px; }
+.feedback.correct { background: #f6ffed; color: #389e0d; border-left: 4px solid #52c41a; }
+.feedback.wrong { background: #fff1f0; color: #cf1322; border-left: 4px solid #ff4d4f; }
+.quiz { background: #f0f7ff; border-left: 4px solid #2c5282; border-radius: 0 6px 6px 0; padding: 14px 18px; margin: 12px 0; }
+.quiz-q { font-weight: 600; margin-bottom: 10px; color: #1a3a52; }
+.quiz-options { display: flex; flex-direction: column; gap: 6px; }
+.quiz-option { padding: 8px 12px; background: white; border: 1px solid #c9d6e2; border-radius: 4px; cursor: pointer; text-align: left; font-size: 14px; }
+.quiz-option.correct { background: #f6ffed; border-color: #52c41a; color: #389e0d; }
+.quiz-option.wrong { background: #fff1f0; border-color: #ff4d4f; color: #cf1322; }
+.quiz-explain { margin-top: 8px; font-size: 13px; color: #555; font-style: italic; }
+.summary-card { background: linear-gradient(135deg, #1a3a52, #2c5282); color: white; padding: 20px 24px; border-radius: 8px; margin-top: 24px; }
+.summary-card h2 { color: white; border: none; margin-top: 0; }
+.summary-card ul { padding-left: 20px; }
+code { background: #f1f3f5; padding: 1px 6px; border-radius: 3px; font-family: monospace; font-size: 0.9em; }
+.summary-card code { background: rgba(255,255,255,0.2); color: white; }
+.progress-bar { height: 4px; background: #e1e8ed; border-radius: 2px; overflow: hidden; margin: 8px 0 16px; }
+.progress-fill { height: 100%; background: #52c41a; transition: width 0.3s; width: 0%; }
+.tag { display:inline-block; background:#fde9c8; color:#874d00; font-size:11px; font-weight:600; padding:2px 8px; border-radius:10px; margin-left:6px; }
+.movelist { font-family: monospace; font-size: 13px; background:#fff8e1; border-radius:6px; padding:8px 12px; margin-top:10px; color:#874d00; line-height:1.7; }
+</style>
+</head>
+<body>
+
+<h1>French Winawer <span class="tag">1.e4 e6 · sắc bén</span></h1>
+<div class="source">
+  Chương 8 (Khai cuộc) — The complete 1.e4 (Djurić–Komarov–Pantaleoni) · Nâng cao<br>
+  <a class="nav-link" href="../index-opening.html">← Trang chủ Khai cuộc</a> ·
+  <a class="nav-link" href="chapter_o8_survey.html">← Chương 8</a>
+</div>
+
+<div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+
+<div class="stage">
+  <span class="stage-label">CHẶNG 1 · DẪN NHẬP</span>
+  <h2 style="margin-top:8px">Ghim mã c3 — đổi cấu trúc lấy cặp tượng và tấn công</h2>
+  <p><strong>Winawer</strong> (3…Bb4) là biến sắc bén nhất của French: ghim mã c3 (quân giữ e4). Sau 4.e5 c5, hai bên bước vào ván cờ mất cân bằng kinh điển: Trắng có cặp tượng và tấn công, Đen có cấu trúc tốt hơn.</p>
+  <div id="hookBoard" class="mini-board"></div>
+  <div class="movelist">1.e4 e6 2.d4 d5 3.Nc3 Bb4 — ghim mã c3</div>
+  <div class="hook-question">
+    🤔 <strong>Sau 3…Bb4 4.e5 c5 5.a3 Bxc3+ 6.bxc3</strong> — ai được gì trong cuộc đánh đổi?
+  </div>
+  <button class="reveal-btn" onclick="document.getElementById('hookAnswer').classList.remove('hidden'); markStage(1);">Hiển thị đáp án</button>
+  <div id="hookAnswer" class="hidden" style="margin-top:14px">
+    <p><strong>Trắng</strong>: cặp tượng + trung tâm e5/d4 + tấn công cánh vua (Qg4 nhắm g7). <strong>Đen</strong>: cấu trúc tốt tốt hơn (Trắng dính tốt đôi c) + đòn phá …c5 vào đáy chuỗi tốt d4 + phản công cánh hậu. Đây là một trong những thế mất cân bằng giàu nội dung nhất khai cuộc.</p>
+  </div>
+</div>
+
+<div class="stage">
+  <span class="stage-label">CHẶNG 2 · KHÁI NIỆM</span>
+  <h2 style="margin-top:8px">Ý tưởng của French Winawer</h2>
+  <ul>
+    <li><strong>Ghim e4</strong>: 3…Bb4 ghim mã c3 — quân giữ e4; buộc Trắng quyết (e5 đóng tâm, hay đỡ ghim).</li>
+    <li><strong>Đánh đổi tượng lấy cấu trúc</strong>: …Bxc3+ tặng Trắng cặp tượng nhưng làm tốt đôi c3 — Đen nhắm khai thác lâu dài.</li>
+    <li><strong>Đòn phá …c5</strong>: đánh vào đáy chuỗi tốt (d4); Trắng phản công cánh vua với Qg4 nhắm g7 — đôi-lưỡi.</li>
+  </ul>
+</div>
+
+<div class="stage">
+  <span class="stage-label">CHẶNG 3 · TƯƠNG TÁC TỪNG BƯỚC</span>
+  <div class="board-layout">
+    <div>
+      <div id="board"></div>
+      <div class="controls">
+        <button onclick="resetBoard()">⟨⟨ Đầu</button>
+        <button onclick="prevMove()">⟨ Lùi</button>
+        <button onclick="nextMove()">Tiến ⟩</button>
+      </div>
+    </div>
+    <div class="info-panel">
+      <div class="move-display" id="moveDisplay">Vị trí xuất phát</div>
+      <div class="commentary" id="commentary">Bấm Tiến ⟩ đi qua biến chính Winawer và đọc cuộc đánh đổi cấu trúc – tấn công.</div>
+      <div class="info-box" id="infoBox">Đến lượt: <strong>Trắng</strong></div>
+    </div>
+  </div>
+</div>
+
+<div class="stage">
+  <span class="stage-label">CHẶNG 4 · TỰ KIỂM TRA</span>
+  <h2 style="margin-top:8px">Trong Winawer, đánh đổi cốt lõi sau 5…Bxc3+ 6.bxc3 là gì?</h2>
+  <div class="self-test">
+    <div class="quiz-options" id="selfTestOptions">
+      <button class="quiz-option" onclick="checkSelfTest(this, true, 'Đúng. Đen đổi tượng b4 lấy mã c3, để lại Trắng tốt đôi c3/c2 (cấu trúc xấu) nhưng Trắng được cặp tượng và trung tâm/tấn công. Mất cân bằng kiểu mẫu.')">Đen tặng cặp tượng để Trắng dính tốt đôi c — cấu trúc đổi lấy quân</button>
+      <button class="quiz-option" onclick="checkSelfTest(this, false, 'Sai — không thắng tốt; đây là đánh đổi cấu trúc lấy quân.')">Đen thắng một tốt sạch</button>
+      <button class="quiz-option" onclick="checkSelfTest(this, false, 'Sai — …Bxc3+ không ảnh hưởng nhập thành của Đen.')">Đen mất quyền nhập thành</button>
+    </div>
+    <div class="feedback hidden" id="selfTestFeedback"></div>
+  </div>
+</div>
+
+<div class="stage">
+  <span class="stage-label">CHẶNG 5 · TRẮC NGHIỆM NHANH</span>
+  <div class="quiz">
+    <div class="quiz-q">Q1. 3…Bb4 trong Winawer nhắm vào đâu?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" onclick="quizCheck(this, true)">Ghim mã c3 — quân đang giữ tốt e4</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Chiếu hết f2</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Tấn công Hậu d1</button>
+    </div>
+    <div class="quiz-explain hidden">Bb4 ghim Nc3; vì Nc3 giữ e4 nên Trắng phải xử lý sức ép trung tâm này.</div>
+  </div>
+  <div class="quiz">
+    <div class="quiz-q">Q2. Đòn phá đặc trưng của Đen chống chuỗi tốt e5/d4?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" onclick="quizCheck(this, true)">…c5 đánh vào đáy chuỗi (tốt d4)</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">…f6 ngay lập tức</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">…g5</button>
+    </div>
+    <div class="quiz-explain hidden">…c5 là đòn phá kinh điển của French nhắm gốc chuỗi tốt d4.</div>
+  </div>
+  <div class="quiz">
+    <div class="quiz-q">Q3. Bù lại tốt đôi c, Trắng có gì?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" onclick="quizCheck(this, true)">Cặp tượng + trung tâm + tấn công cánh vua (Qg4 nhắm g7)</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Một tốt thông</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Tàn cuộc thắng dễ</button>
+    </div>
+    <div class="quiz-explain hidden">Cặp tượng và sáng kiến cánh vua đền cho cấu trúc tốt đôi — đôi-lưỡi.</div>
+  </div>
+</div>
+
+<div class="summary-card">
+  <h2>📌 Tóm tắt</h2>
+  <ul>
+    <li><strong>Biến</strong>: <code>1.e4 e6 2.d4 d5 3.Nc3 Bb4 4.e5 c5 5.a3 Bxc3+ 6.bxc3 Ne7 7.Qg4</code>.</li>
+    <li><strong>Ý tưởng</strong>: ghim e4; đổi tượng lấy tốt đôi c của Trắng; …c5 phá d4; Qg4 phản công g7.</li>
+    <li><strong>Bản chất</strong>: mất cân bằng sắc bén — cặp tượng/tấn công đổi cấu trúc.</li>
+    <li><strong>Khác repertoire</strong>: repertoire chống French bằng Exchange (3.exd5); đây là biến chính sắc bén nhất.</li>
+  </ul>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chessboard-js/1.0.0/chessboard-1.0.0.min.js"></script>
+<script>
+const START_FEN = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
+const MOVES = ['e4','e6','d4','d5','Nc3','Bb4','e5','c5','a3','Bxc3+','bxc3','Ne7','Qg4'];
+const COMMENTARY = {
+  0: { move: 'Vị trí xuất phát', text: 'French Winawer — biến sắc bén nhất của French; …Bb4 ghim mã c3.' },
+  1: { move: '1. e4', text: 'Chiếm trung tâm.' },
+  2: { move: '1… e6', text: 'French — chuẩn bị …d5 đánh e4, nhưng tốt e6 nhốt tượng c8.' },
+  3: { move: '2. d4', text: 'Dựng trung tâm đôi tốt.' },
+  4: { move: '2… d5', text: '…d5 đánh trung tâm.' },
+  5: { move: '3. Nc3', text: 'Nc3 bảo vệ e4, phát triển.' },
+  6: { move: '3… Bb4', text: '…Bb4! WINAWER — ghim mã c3 (quân giữ e4), gây sức ép trung tâm; buộc Trắng quyết.' },
+  7: { move: '4. e5', text: 'e5! Đóng trung tâm, giành không gian, mở cuộc đấu cấu trúc; tốt e5 chặn mã f6 sau này.' },
+  8: { move: '4… c5', text: '…c5! Đòn phá đặc trưng — đánh vào đáy chuỗi tốt (gốc d4).' },
+  9: { move: '5. a3', text: 'a3 hỏi tượng — buộc Đen đổi hoặc lùi.' },
+  10: { move: '5… Bxc3+', text: '…Bxc3+ đổi tượng lấy mã — tặng Trắng cặp tượng nhưng làm hỏng cấu trúc.' },
+  11: { move: '6. bxc3', text: 'bxc3 — Trắng nhận tốt đôi c3/c2 (cấu trúc xấu) đổi lấy cặp tượng và trung tâm.' },
+  12: { move: '6… Ne7', text: '…Ne7 — mã đi đường vòng tới f5/g6 (không cản …f6), nhắm áp lực d4/e5.' },
+  13: { move: '7. Qg4', text: 'Qg4! Phản công cánh vua — nhắm tốt g7 (điểm yếu vì tượng đen đã rời f8). Đôi-lưỡi: Trắng tấn công, Đen khai thác cấu trúc và …c5. TABIYA.' }
+};
+let board, game, currentMove = 0, stagesCompleted = new Set();
+function initBoard() {
+  game = new Chess(START_FEN);
+  board = Chessboard('board', { position: 'start', draggable: true,
+    pieceTheme: 'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png',
+    onDrop: (s,t) => { const m = game.move({from:s,to:t,promotion:'q'}); if(!m) return 'snapback'; setTimeout(updateOverlays,100); },
+    onSnapEnd: () => { board.position(game.fen()); updateOverlays(); }});
+  updateDisplay();
+}
+function nextMove() { if(currentMove>=MOVES.length) return; game.move(MOVES[currentMove]); board.position(game.fen()); currentMove++; setTimeout(()=>{updateDisplay();updateOverlays();},50); if(currentMove>=MOVES.length) markStage(3); }
+function prevMove() { if(currentMove<=0) return; game.undo(); currentMove--; board.position(game.fen()); setTimeout(()=>{updateDisplay();updateOverlays();},50); }
+function resetBoard() { game = new Chess(START_FEN); board.position('start'); currentMove = 0; setTimeout(()=>{updateDisplay();updateOverlays();},50); }
+function updateDisplay() {
+  const cm = COMMENTARY[currentMove] || COMMENTARY[0];
+  document.getElementById('moveDisplay').textContent = cm.move;
+  document.getElementById('commentary').innerHTML = cm.text;
+  const box = document.getElementById('infoBox');
+  if (currentMove >= MOVES.length) { box.className = 'info-box win'; box.innerHTML = '★ Tabiya Winawer — cấu trúc đổi cặp tượng & tấn công'; }
+  else { box.className = 'info-box'; box.innerHTML = 'Đến lượt: <strong>' + (game.turn()==='w'?'Trắng':'Đen') + '</strong>'; }
+  updateProgress();
+}
+function updateOverlays() { $('#board .square-55d63').removeClass('hl'); ['e4','e5','d4'].forEach(sq => $('#board .square-' + sq).addClass('hl')); }
+function checkSelfTest(btn, ok, exp) {
+  document.querySelectorAll('#selfTestOptions .quiz-option').forEach(el=>el.disabled=true);
+  btn.classList.add(ok?'correct':'wrong');
+  const fb = document.getElementById('selfTestFeedback');
+  fb.classList.remove('hidden'); fb.className = 'feedback ' + (ok?'correct':'wrong');
+  fb.textContent = (ok?'✓ ':'✗ ') + exp; markStage(4);
+}
+function quizCheck(btn, ok) {
+  const q = btn.closest('.quiz');
+  q.querySelectorAll('.quiz-option').forEach(el=>el.disabled=true);
+  btn.classList.add(ok?'correct':'wrong');
+  if (!ok) q.querySelectorAll('.quiz-option').forEach(el => { if (el.getAttribute('onclick').includes('true')) el.classList.add('correct'); });
+  q.querySelector('.quiz-explain').classList.remove('hidden'); markStage(5);
+}
+function markStage(n) { stagesCompleted.add(n); updateProgress(); }
+function updateProgress() { document.getElementById('progressFill').style.width = (stagesCompleted.size/5*100) + '%'; }
+function initMiniBoards() { Chessboard('hookBoard', { position: 'rnbqk1nr/ppp2ppp/4p3/3p4/1b1PP3/2N5/PPP2PPP/R1BQKBNR', draggable: false, pieceTheme: 'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png' }); }
+$(document).ready(() => { initBoard(); initMiniBoards(); setTimeout(()=>markStage(2),500); });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Bài 1 (Ch7) — Đòn xiên</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/chessboard-js/1.0.0/chessboard-1.0.0.min.css">
+<style>
+* { box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; max-width: 980px; margin: 0 auto; padding: 24px; color: #1a1a1a; line-height: 1.6; background: #fafafa; }
+h1 { color: #1a3a52; font-size: 28px; margin: 0 0 8px; }
+h2 { color: #2c5282; font-size: 20px; margin: 32px 0 12px; padding-bottom: 6px; border-bottom: 2px solid #e1e8ed; }
+.source { color: #888; font-size: 13px; margin-bottom: 24px; }
+.nav-link { font-size: 13px; color: #2c5282; text-decoration: none; }
+.stage { background: white; border-radius: 8px; padding: 20px 24px; margin: 16px 0; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
+.stage-label { display: inline-block; background: #2c5282; color: white; font-size: 12px; font-weight: 600; padding: 3px 10px; border-radius: 12px; margin-bottom: 8px; }
+.hook-question { font-size: 17px; color: #1a3a52; background: #fff8e1; border-left: 4px solid #faad14; padding: 14px 18px; border-radius: 0 6px 6px 0; margin: 12px 0; }
+.reveal-btn { background: #faad14; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-size: 14px; }
+.hidden { display: none; }
+.board-layout { display: grid; grid-template-columns: 440px 1fr; gap: 24px; align-items: start; margin-top: 16px; }
+@media (max-width: 820px) { .board-layout { grid-template-columns: 1fr; } }
+#board { width: 420px; max-width: 100%; }
+.mini-board { width: 300px; max-width: 100%; margin: 14px auto; }
+.controls { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; justify-content: center; }
+.controls button { padding: 7px 12px; background: #2c5282; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 13px; }
+.info-panel { background: #f8f9fb; padding: 16px; border-radius: 6px; border: 1px solid #e1e8ed; min-height: 380px; }
+.move-display { font-family: monospace; font-size: 16px; color: #2c5282; font-weight: 600; margin-bottom: 8px; }
+.commentary { font-size: 14px; color: #444; margin-bottom: 12px; }
+.info-box { background: white; padding: 10px; border-radius: 4px; border: 1px solid #e1e8ed; margin: 12px 0; font-size: 13px; text-align: center; }
+.info-box.win { background: #f6ffed; border-color: #b7eb8f; color: #389e0d; font-weight: 600; }
+.highlight-skewer { background: rgba(255, 215, 0, 0.45) !important; box-shadow: inset 0 0 0 2px #faad14 !important; }
+.self-test { background: #fff8e1; border: 2px dashed #faad14; border-radius: 6px; padding: 16px; margin-top: 16px; }
+.self-test-question { font-weight: 600; color: #874d00; margin-bottom: 8px; }
+.feedback { margin-top: 10px; padding: 10px 14px; border-radius: 4px; font-size: 14px; }
+.feedback.correct { background: #f6ffed; color: #389e0d; border-left: 4px solid #52c41a; }
+.feedback.wrong { background: #fff1f0; color: #cf1322; border-left: 4px solid #ff4d4f; }
+.quiz { background: #f0f7ff; border-left: 4px solid #2c5282; border-radius: 0 6px 6px 0; padding: 14px 18px; margin: 12px 0; }
+.quiz-q { font-weight: 600; margin-bottom: 10px; color: #1a3a52; }
+.quiz-options { display: flex; flex-direction: column; gap: 6px; }
+.quiz-option { padding: 8px 12px; background: white; border: 1px solid #c9d6e2; border-radius: 4px; cursor: pointer; text-align: left; font-size: 14px; }
+.quiz-option.correct { background: #f6ffed; border-color: #52c41a; color: #389e0d; }
+.quiz-option.wrong { background: #fff1f0; border-color: #ff4d4f; color: #cf1322; }
+.quiz-explain { margin-top: 8px; font-size: 13px; color: #555; font-style: italic; }
+.summary-card { background: linear-gradient(135deg, #1a3a52, #2c5282); color: white; padding: 20px 24px; border-radius: 8px; margin-top: 24px; }
+.summary-card h2 { color: white; border: none; margin-top: 0; }
+.summary-card ul { padding-left: 20px; }
+code { background: #f1f3f5; padding: 1px 6px; border-radius: 3px; font-family: monospace; font-size: 0.9em; }
+.summary-card code { background: rgba(255,255,255,0.2); color: white; }
+.progress-bar { height: 4px; background: #e1e8ed; border-radius: 2px; overflow: hidden; margin: 8px 0 16px; }
+.progress-fill { height: 100%; background: #52c41a; transition: width 0.3s; width: 0%; }
+</style>
+</head>
+<body>
+
+<h1>Bài 1 — Xiên (Đòn xiên hai quân cùng đường)</h1>
+<div class="source">
+  Chương 7 — Các thế đòn chiến thuật tàn cuộc<br>
+  <a class="nav-link" href="../index.html">← Trang chủ</a> ·
+  <a class="nav-link" href="chapter_07_tactics.html">← Chương 7</a>
+</div>
+
+<div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+
+<div class="stage">
+  <span class="stage-label">STAGE 1 · MỞ ĐẦU</span>
+  <h2 style="margin-top:8px">2 quân địch trên cùng đường = Đòn xiên</h2>
+  <p>Thế cờ: Trắng Vua g1 + Xe a1 (+ tốt g2, h2). Đen Vua d4 + Hậu d8 (+ tốt g7, h7). <strong>Trắng đang KÉM lực — Xe đấu Hậu.</strong></p>
+  <div id="hookBoard" class="mini-board"></div>
+  <div class="hook-question">
+    🤔 <strong>Vua đen d4 đứng TRƯỚC Hậu đen d8 trên cùng cột d.</strong> Đang kém lực, làm sao Trắng lật ngược và thắng Hậu chỉ với một Xe?
+  </div>
+  <button class="reveal-btn" onclick="document.getElementById('hookAnswer').classList.remove('hidden'); markStage(1);">Hiển thị đáp án</button>
+  <div id="hookAnswer" class="hidden" style="margin-top:14px">
+    <p><strong>1.Rd1+!</strong> Xe tới d1 chiếu Vua dọc cột d. Vua d4 nằm GIỮA Xe và Hậu nên <strong>buộc phải rời cột d</strong> — không thể chắn (Hậu ở SAU Vua) cũng không ăn được Xe. Vua vừa đi, <strong>2.Rxd8</strong> bắt Hậu!</p>
+    <p>Đó là <strong>đòn XIÊN</strong>: quân quan trọng (Vua) ở TRƯỚC bị đuổi đi, để lộ quân phía SAU (Hậu) cho Xe bắt. Trắng từ kém lực thành hơn hẳn một Xe → thắng.</p>
+  </div>
+</div>
+
+<div class="stage">
+  <span class="stage-label">STAGE 2 · KHÁI NIỆM</span>
+  <h2 style="margin-top:8px">Ghim và Xiên</h2>
+  <ul>
+    <li><strong>GHIM</strong>: Quân yếu hơn ở GIỮA, quân quan trọng hơn (Hậu hoặc Vua) ở SAU. Quân yếu KHÔNG di chuyển được vì sẽ phơi quân lớn ra.</li>
+    <li><strong>XIÊN</strong>: Quân QUAN TRỌNG hơn ở GIỮA (thường là Vua), quân yếu hơn ở SAU. Quân quan trọng buộc phải ĐI → quân yếu phía sau bị bắt.</li>
+  </ul>
+  <p>Trong bài này: Vua đen d4 + Hậu d8 cùng cột d, <strong>Vua đứng trước</strong>. Xe chiếu (1.Rd1+) đuổi Vua khỏi cột d → Hậu phía sau bị bắt (2.Rxd8). Đây là đòn XIÊN.</p>
+  <p><em>Phân biệt với "ăn quân treo": ở đòn xiên, quân phía trước (Vua) PHẢI DI CHUYỂN trước đã, rồi quân phía sau mới phơi ra để bị bắt — chứ không phải ăn thẳng quân đứng đó.</em></p>
+</div>
+
+<div class="stage">
+  <span class="stage-label">STAGE 3 · DIỄN GIẢI TỪNG NƯỚC</span>
+  <div class="board-layout">
+    <div>
+      <div id="board"></div>
+      <div class="controls">
+        <button onclick="resetBoard()">⟨⟨ Đầu</button>
+        <button onclick="prevMove()">⟨ Lùi</button>
+        <button onclick="nextMove()">Tiến ⟩</button>
+      </div>
+    </div>
+    <div class="info-panel">
+      <div class="move-display" id="moveDisplay">Thế cờ ban đầu</div>
+      <div class="commentary" id="commentary">Trắng Kg1 + Ra1 (kém lực: Xe đấu Hậu) gặp Đen Kd4 + Qd8 trên cùng cột d. Vua đứng trước Hậu — thế bố trí đòn xiên. Bấm Tiến ⟩ để xem.</div>
+      <div class="info-box" id="infoBox">Đến lượt: <strong>Trắng</strong></div>
+    </div>
+  </div>
+</div>
+
+<div class="stage">
+  <span class="stage-label">STAGE 4 · TỰ KIỂM TRA</span>
+  <h2 style="margin-top:8px">Sau 1.Rd1+, vì sao Đen KHÔNG cứu được Hậu?</h2>
+  <div class="self-test">
+    <div class="quiz-options" id="selfTestOptions">
+      <button class="quiz-option" onclick="checkSelfTest(this, false, 'Sai. …Qd2 phạm luật: Vua đen d4 đứng CHẮN giữa Hậu d8 và ô d2 — Hậu không thể vượt qua Vua mình để chắn.')">Chắn bằng …Qd2</button>
+      <button class="quiz-option" onclick="checkSelfTest(this, false, 'Sai. …Qxd1 phạm luật: Hậu d8 bị chính Vua d4 chặn đường đi xuống d1, không tới được Xe.')">Ăn Xe bằng …Qxd1</button>
+      <button class="quiz-option" onclick="checkSelfTest(this, true, 'Đúng! Vua đang bị chiếu nên BUỘC phải đi — mà Vua chính là vật chắn duy nhất giữa Xe và Hậu. Vua rời cột d → 2.Rxd8 bắt Hậu. Đó là bản chất đòn xiên.')">Vì Vua buộc phải đi, để lộ Hậu phía sau</button>
+    </div>
+    <div class="feedback hidden" id="selfTestFeedback"></div>
+  </div>
+</div>
+
+<div class="stage">
+  <span class="stage-label">STAGE 5 · TRẮC NGHIỆM NHANH</span>
+  <div class="quiz">
+    <div class="quiz-q">Q1. Quân nào có thể thực hiện đòn xiên?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" onclick="quizCheck(this, true)">Quân di chuyển dọc đường thẳng/chéo: Xe, Tượng, Hậu</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Mọi quân đều xiên được</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Chỉ Mã xiên được</button>
+    </div>
+    <div class="quiz-explain hidden">
+      Đòn xiên cần đường thẳng hoặc đường chéo dài. Xe (cột/hàng), Tượng (đường chéo), Hậu (cả hai). Mã không xiên được vì Mã không khống chế theo đường thẳng/chéo.
+    </div>
+  </div>
+  <div class="quiz">
+    <div class="quiz-q">Q2. Khi xiên Vua + Hậu (hoặc Xe), bên thực hiện được lợi gì?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" onclick="quizCheck(this, true)">Thắng Hậu (hoặc Xe) — quân giá trị cao bị mất sau khi Vua chạy thoát</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Chiếu hết ngay</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Thắng một tốt</button>
+    </div>
+    <div class="quiz-explain hidden">
+      Xiên Vua + Hậu: Hậu đứng sau Vua, Vua buộc phải đi khỏi đường, Hậu bị khống chế → bắt Hậu. Lợi: lực lượng lớn (Hậu = 9 điểm).
+    </div>
+  </div>
+  <div class="quiz">
+    <div class="quiz-q">Q3. Thế cờ: Vua + Hậu cùng một đường thẳng — đó là đòn chiến thuật gì?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" onclick="quizCheck(this, false)">Chiếu mở (chiếu lộ)</button>
+      <button class="quiz-option" onclick="quizCheck(this, true)">Xiên (nếu Vua đứng trước) hoặc Ghim (nếu Hậu đứng trước)</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Nỉa (đòn chĩa đôi)</button>
+    </div>
+    <div class="quiz-explain hidden">
+      Vua trước = Xiên. Hậu trước = Ghim. Cần phân biệt rõ: Xiên thường ép đổi lực; Ghim làm đông cứng quân.
+    </div>
+  </div>
+</div>
+
+<div class="summary-card">
+  <h2>📌 Tóm tắt</h2>
+  <ul>
+    <li><strong>Xiên</strong>: Quân quan trọng (Vua) ở giữa, quân yếu phía sau. Vua buộc phải đi → quân yếu bị bắt.</li>
+    <li><strong>Ghim</strong>: Quân yếu ở giữa, quân quan trọng (Vua, Hậu) phía sau. Quân yếu không di chuyển được.</li>
+    <li><strong>Quân xiên được</strong>: Xe, Tượng, Hậu (đường thẳng hoặc chéo).</li>
+    <li><strong>Thực hành</strong>: Trong tàn cuộc, luôn kiểm tra xem Vua + Hậu/Xe của đối thủ có cùng đường không. Nếu có → tìm cơ hội xiên.</li>
+  </ul>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chessboard-js/1.0.0/chessboard-1.0.0.min.js"></script>
+<script>
+const START_FEN = '3q4/6pp/8/8/3k4/8/6PP/R5K1 w - - 0 1';
+const MOVES = ['Rd1+', 'Ke5', 'Rxd8'];
+const COMMENTARY = {
+  0: { move: 'Thế cờ ban đầu', text: 'Trắng Kg1 + Ra1 đang KÉM lực (Xe đấu Hậu) gặp Đen Kd4 + Qd8 trên cùng cột d. Vua đen đứng TRƯỚC Hậu — thế bố trí đòn xiên.' },
+  1: { move: '1. Rd1+ !', text: 'Xe tới d1 chiếu Vua dọc cột d. Vua d4 nằm GIỮA Xe và Hậu d8 — buộc phải rời cột d. Không thể chắn (Hậu ở SAU Vua) cũng không ăn được Xe. Đòn xiên bắt đầu!' },
+  2: { move: '1... Ke5', text: 'Vua chạy khỏi cột d (đi d3/d5 vẫn nằm trên cột d nên vẫn bị chiếu). Vua vừa rời đi, cột d thông suốt từ d1 tới d8 — Hậu phơi ra.' },
+  3: { move: '2. Rxd8', text: 'Xe ăn Hậu! Xiên thành công: quân quan trọng (Vua) ở trước bị đuổi, quân sau (Hậu) bị bắt. Trắng từ kém lực thành hơn hẳn một Xe → thắng dễ.' }
+};
+
+let board, game, currentMove = 0, stagesCompleted = new Set();
+
+function initBoard() {
+  game = new Chess(START_FEN);
+  board = Chessboard('board', { position: START_FEN, draggable: true,
+    pieceTheme: 'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png',
+    onDrop: (s,t) => { const m = game.move({from:s,to:t,promotion:'q'}); if(!m) return 'snapback'; setTimeout(updateOverlays,100); },
+    onSnapEnd: () => { board.position(game.fen()); updateOverlays(); }});
+  updateDisplay();
+}
+function nextMove() { if(currentMove>=MOVES.length) return; game.move(MOVES[currentMove]); board.position(game.fen()); currentMove++; setTimeout(()=>{updateDisplay();updateOverlays();},50); if(currentMove>=MOVES.length) markStage(3); }
+function prevMove() { if(currentMove<=0) return; game.undo(); currentMove--; board.position(game.fen()); setTimeout(()=>{updateDisplay();updateOverlays();},50); }
+function resetBoard() { game = new Chess(START_FEN); board.position(START_FEN); currentMove = 0; setTimeout(()=>{updateDisplay();updateOverlays();},50); }
+
+function updateDisplay() {
+  

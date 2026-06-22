@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="vi"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IFRS 2 Share-based Payment — Nền tảng, hiểu từ gốc</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,500&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  /* Design tokens shared with ebook-to-study-html + feynman-from-study (styles_v2.css) */
+  :root{
+    --bg:#fafaf7; --bg-elevated:#ffffff; --bg-soft:#f3f3ee;
+    --border:#e0e0d8; --border-soft:#ececea; --border-strong:#d2c8b6;
+    --ink:#1a1a1f; --ink-soft:#3f3f4a; --muted:#7a7a85;
+    --accent:#b8860b; --accent-2:#8b6508; --gold:#a07c1f; --bridge:#5a6b4f;
+    --serif:"Fraunces",Georgia,"Iowan Old Style",serif;
+    --sans:"Geist",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    --mono:"Geist Mono","JetBrains Mono",Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:var(--sans);
+    font-size:19px;line-height:1.72;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}
+  .progress{position:fixed;top:0;left:0;height:3px;width:0;z-index:50;
+    background:linear-gradient(90deg,var(--gold),var(--accent));transition:width .08s linear}
+  .wrap{max-width:920px;margin:0 auto;padding:0 36px}
+  .rise{opacity:0;transform:translateY(14px);animation:rise .7s cubic-bezier(.2,.7,.3,1) forwards}
+  @keyframes rise{to{opacity:1;transform:none}}
+
+  header{padding:104px 0 60px;border-bottom:1px solid var(--border)}
+  .kicker{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.18em;
+    text-transform:uppercase;color:var(--accent);margin-bottom:26px}
+  h1{font-family:var(--serif);font-weight:600;font-size:clamp(42px,7.6vw,72px);
+    line-height:1.0;letter-spacing:-.022em;margin-bottom:28px;font-optical-sizing:auto;color:var(--ink)}
+  h1 em{font-style:italic;color:var(--accent)}
+  .core{font-family:var(--serif);font-style:italic;font-weight:400;
+    font-size:clamp(21px,3.6vw,27px);line-height:1.44;color:var(--ink-soft)}
+  .core span{font-style:normal;font-weight:600;color:var(--accent-2);
+    box-shadow:inset 0 -.5em 0 rgba(184,134,11,.16)}
+
+  /* ---- BƯỚC 0: ĐỊNH VỊ (what it is + why it's the foundation) ---- */
+  .anchor .rule{font-family:var(--serif);font-size:19px;line-height:1.5;color:var(--ink);
+    background:var(--bg-soft);border-left:3px solid var(--accent);
+    padding:18px 24px;border-radius:0 4px 4px 0;margin:0}
+  .anchor .rule em{font-style:italic;color:var(--accent-2)}
+  .anchor .rule strong{color:var(--ink);font-weight:600}
+  .anchor .why{color:var(--ink-soft)}
+
+  section{padding:72px 0;border-bottom:1px solid var(--border);position:relative}
+  .step-head{display:flex;align-items:flex-start;gap:22px;margin-bottom:34px}
+  .big-num{font-family:var(--serif);font-weight:700;font-size:62px;line-height:.8;
+    color:var(--border-strong);flex:none;font-optical-sizing:auto;letter-spacing:-.03em}
+  .step-meta{padding-top:4px}
+  .lbl{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--accent);display:block;margin-bottom:10px}
+  h2{font-family:var(--serif);font-weight:600;font-size:clamp(27px,4.4vw,37px);
+    line-height:1.12;letter-spacing:-.012em;color:var(--ink)}
+  h2 em{font-style:italic;color:var(--accent)}
+  p{margin-bottom:21px}
+  p:last-child{margin-bottom:0}
+  strong{font-weight:600;color:var(--ink)}
+  em{font-style:italic;color:var(--accent-2)}
+  .gloss{color:var(--muted);font-style:italic}
+
+  .lead::first-letter{font-family:var(--serif);font-weight:700;float:left;
+    font-size:74px;line-height:.74;padding:8px 12px 0 0;color:var(--accent)}
+
+  .sub{font-family:var(--serif);font-weight:600;font-size:17px;letter-spacing:.01em;
+    color:var(--ink);margin:34px 0 14px;display:flex;align-items:center;gap:11px}
+  .sub::before{content:"";width:18px;height:2px;background:var(--accent);flex:none;border-radius:2px}
+
+  /* ---- BƯỚC 1: VẤN ĐỀ (why it exists) ---- */
+  .problem{background:var(--bg-soft)}
+  .problem .big-num{color:#e2d6b4}
+
+  /* ---- BƯỚC 3: VÍ DỤ (concrete worked example) ---- */
+  .example-card{border:1px solid #e8c876;border-radius:4px;padding:30px 32px;margin:8px 0 28px;
+    background:linear-gradient(135deg,#fef9ed 0%,#fdf3e0 100%)}
+  .example-card .tag{font-family:var(--mono);font-weight:600;font-size:11px;
+    letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin-bottom:16px;display:block}
+  .example-card p{color:#5a4810}
+  .example-card strong{color:var(--accent-2)}
+  .example-card p:last-child{margin-bottom:0}
+
+  /* ---- DỄ NHẦM (optional clarify / boundaries) ---- */
+  .clarify{background:var(--bg-soft)}
+  .clarify .big-num{color:#d8cdb2}
+  .mix-q{margin:0 0 30px;padding-left:24px;border-left:2px solid var(--border-strong)}
+  .mix-q:last-child{margin-bottom:0}
+  .mix-q .q{font-family:var(--serif);font-style:italic;font-weight:500;
+    font-size:22px;line-height:1.35;color:var(--accent-2);margin-bottom:12px;display:block}
+  .mix-q p:last-child{margin-bottom:0}
+
+  /* ---- NỐI TIẾP (bridge to the harder concepts) ---- */
+  .bridge .big-num{color:#bcc7b2}
+  .bridge .lbl{color:var(--bridge)}
+  .bridge-card{border-left:3px solid var(--bridge);background:#f4f6f1;
+    padding:22px 26px;border-radius:0 4px 4px 0;margin-top:6px}
+  .bridge-card p:last-child{margin-bottom:0}
+  .bridge-card strong{color:#42513a}
+
+  /* ---- KỂ LẠI GỌN (refined retell) ---- */
+  .retell{background:linear-gradient(180deg,var(--bg-soft) 0%,var(--bg) 100%);border-bottom:none}
+  .retell h2{color:var(--ink)}
+  .retell strong{color:var(--accent-2)}
+  .retell .core{margin-top:6px}
+  .testbox{border:1px solid var(--border);background:var(--bg-elevated);
+    border-radius:4px;padding:28px 32px;margin-top:40px;box-shadow:0 1px 2px rgba(0,0,0,.03)}
+  .testbox h3{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--accent);margin-bottom:20px}
+  .testbox ol{margin:0;padding-left:22px;counter-reset:t}
+  .testbox li{margin-bottom:16px;color:var(--ink-soft);padding-left:6px}
+  .testbox li:last-child{margin-bottom:0}
+
+  footer{text-align:center;padding:60px 0 88px}
+  footer .mark{font-family:var(--serif);font-weight:700;color:var(--accent);
+    font-size:26px;display:block;margin-bottom:14px}
+  footer p{font-family:var(--serif);font-style:italic;color:var(--muted);font-size:17px;max-width:400px;margin:0 auto}
+
+  @media(max-width:560px){
+    body{font-size:18px}
+    header{padding:70px 0 44px}
+    section{padding:52px 0}
+    .step-head{gap:16px}
+    .big-num{font-size:46px}
+    .lead::first-letter{font-size:60px}
+  }
+</style>
+<style>
+ .tabbar{position:fixed;top:0;left:0;right:0;width:100%;box-sizing:border-box;z-index:40;background:rgba(250,250,247,.93);
+   backdrop-filter:saturate(1.1) blur(8px);-webkit-backdrop-filter:saturate(1.1) blur(8px);
+   border-bottom:1px solid var(--border);display:flex;gap:6px;overflow-x:auto;
+   padding:10px max(36px,calc((100% - 992px)/2));scrollbar-width:thin}
+ .tabbar .tab{flex:0 0 auto;display:flex;align-items:baseline;gap:9px;cursor:pointer;
+   background:transparent;border:1px solid transparent;border-radius:999px;
+   padding:8px 17px;transition:.15s;white-space:nowrap;color:var(--muted)}
+ .tabbar .tab:hover{color:var(--ink);background:var(--bg-soft)}
+ .tabbar .tab.active{color:var(--accent-2);background:var(--bg-soft);border-color:var(--border-strong)}
+ .tabbar .tn{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.1em;color:var(--accent)}
+ .tabbar .tl{font-family:var(--serif);font-weight:500;font-size:16px}
+ body{padding-top:56px} .concept-panel{display:none}
+ .concept-panel.active{display:block}
+ .concept-panel header{padding-top:50px}
+ @media(max-width:560px){.tabbar .tl{max-width:48vw;overflow:hidden;text-overflow:ellipsis}}
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+<nav class="tabbar" role="tablist" aria-label="Các khái niệm nền"><button class="tab" data-i="0" role="tab" id="tab-0" aria-controls="c-co-phieu-la-chi-phi" aria-selected="true" tabindex="0"><span class="tn">01</span><span class="tl">Cổ phiếu là chi phí</span></button><button class="tab" data-i="1" role="tab" id="tab-1" aria-controls="c-hai-the-gioi-equity-cash" aria-selected="false" tabindex="-1"><span class="tn">02</span><span class="tl">Hai thế giới</span></button><button class="tab" data-i="2" role="tab" id="tab-2" aria-controls="c-do-bang-cong-cu" aria-selected="false" tabindex="-1"><span class="tn">03</span><span class="tl">Đo bằng công cụ</span></button><button class="tab" data-i="3" role="tab" id="tab-3" aria-controls="c-fair-value-vs-intrinsic" aria-selected="false" tabindex="-1"><span class="tn">04</span><span class="tl">Fair value vs intrinsic</span></button><button class="tab" data-i="4" role="tab" id="tab-4" aria-controls="c-cac-moc-thoi-gian" aria-selected="false" tabindex="-1"><span class="tn">05</span><span class="tl">Ba cái mốc</span></button><button class="tab" data-i="5" role="tab" id="tab-5" aria-controls="c-vesting-trai-chi-phi" aria-selected="false" tabindex="-1"><span class="tn">06</span><span class="tl">Vesting &amp; true-up</span></button></nav>
+<div class="concept-panel" id="c-co-phieu-la-chi-phi" role="tabpanel" aria-labelledby="tab-0" tabindex="0"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Nền tảng · hiểu từ gốc</div>
+    <h1 class="rise" style="animation-delay:.08s">Trả công bằng cổ phiếu — vẫn là một khoản chi phí</h1>
+    <p class="core rise" style="animation-delay:.16s">Không mất tiền mặt <span>không có nghĩa là không tốn gì.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Định vị · nó là gì &amp; vì sao học trước</span><h2>Nguyên tắc nền: cho đi cổ phiếu cũng là cho đi giá trị</h2></div>
+    </div>
+    <div class="rule">IFRS 2 (đoạn 1) buộc doanh nghiệp phản ánh vào lãi/lỗ mọi <strong>share-based payment</strong> — kể cả khi trả nhân viên bằng <em>quyền chọn cổ phiếu</em> thay vì tiền. Đoạn 7 nói: khi nhận hàng hóa hay dịch vụ, phải ghi nhận; đoạn 8 nói tiếp: nếu phần đó không đủ điều kiện là tài sản thì ghi thành <strong>chi phí</strong>.</div>
+    <div class="sub">Vì sao đây là nền</div>
+    <div class="why"><p>Đây là viên gạch dưới cùng. Cả chuẩn mực dựng trên một câu: trả bằng cổ phiếu vẫn là một khoản chi phí. Chưa chịu nhận điều này thì mọi quy tắc sau — đo bao nhiêu, ghi khi nào — đều thành vô nghĩa. Nhận rồi, phần còn lại chỉ là làm rõ con số và thời điểm.</p></div>
+  </section>
+
+  <section class="problem">
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Vấn đề nó sinh ra để giải quyết</span><h2>Không có tiền ra khỏi két — vậy có tốn gì không?</h2></div>
+    </div>
+    <p class="lead">Một công ty trả cho kỹ sư bằng quyền chọn cổ phiếu, thay cho một phần lương tiền. Cuối năm, không một đồng nào rời két. Vậy năm đó công ty có gánh chi phí gì cho người kỹ sư này không? Phản xạ đầu tiên của hầu hết mọi người: không mất tiền thì không tốn gì.</p>
+
+<p>Bẫy nằm đúng ở đó. Nếu trả bằng cổ phiếu là miễn phí, mọi công ty sẽ trả toàn bộ lương bằng cổ phiếu và báo cáo lợi nhuận khổng lồ. Rõ ràng vô lý.</p>
+
+<div class="sub">Cái gì đã được trao đi</div>
+<p>Công ty đã trao một thứ có giá thật: cổ phiếu, thứ nhà đầu tư sẵn sàng bỏ tiền ra mua. Trao nó đi để đổi lấy công sức. Đó là một giao dịch, y như trả lương.</p>
+
+<p>Nên ta cần một góc nhìn khác: đo bằng giá trị cho đi, không phải bằng tiền mặt chi ra. Đó là nội dung Bước 2.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Mô hình đơn giản · cách nó chạy</span><h2>Chi phí đo bằng giá trị trao đi, không phải tiền chi ra</h2></div>
+    </div>
+    <p>Mô hình chỉ có một ý: chi phí là <strong>giá trị bạn cho đi để nhận về công sức</strong>. Tiền mặt là một dạng giá trị. Cổ phiếu cũng là một dạng giá trị. Cho đi dạng nào cũng là tốn.</p>
+
+<div class="sub">Cổ phiếu có giá trị thật</div>
+<p>Một quyền chọn không phải tờ giấy rỗng. Người ngoài trả tiền để có nó. Khi công ty đem nó trả cho nhân viên, công ty đã móc ra một thứ đáng tiền.</p>
+
+<div class="sub">Ai gánh phần đó</div>
+<p>Phát hành thêm cổ phiếu làm phần của cổ đông cũ nhỏ lại. Họ chia sẻ công ty cho người mới. Đó là cái giá thật, dù không hiện ra bằng tiền.</p>
+
+<div class="sub">Nên ghi vào đâu</div>
+<p>Đổi lấy dịch vụ đã dùng hết trong kỳ, nên ghi thành chi phí của kỳ đó. Bên kia của bút toán là phần tăng thêm trong vốn chủ sở hữu — phần mới trao cho nhân viên.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví dụ cụ thể</span><h2>Thử với một startup trả lương bằng quyền chọn</h2></div>
+    </div>
+    <div class="example-card"><span class="tag">Bài toán</span>
+<p>Một startup ít tiền mặt muốn thuê kỹ sư giỏi. Thay vì trả 50 nghìn đô tiền mặt, công ty trao quyền chọn trị giá đúng 50 nghìn đô. Năm đó công ty có chi phí lương không?</p>
+<p>Có. Nhìn từ phía công ty, hai cách đều tốn 50 nghìn đô giá trị. Một bên là tiền. Một bên là cổ phiếu cho đi. Khác cái vỏ, giống cái ruột.</p>
+<p>Thử nghĩ ngược lại. Nếu cách trả bằng quyền chọn là miễn phí, công ty sẽ khai chi phí lương bằng 0 mà vẫn có người làm. Lợi nhuận sẽ là con số dối.</p>
+</div>
+<p>Đời thường hơn: bạn nhờ hàng xóm sửa xe, trả công bằng cách cho anh ta một phần cửa hàng của bạn. Bạn không đưa đồng nào, nhưng rõ ràng bạn đã trả công — bằng một miếng tài sản của mình.</p>
+  </section>
+
+  <section class="clarify">
+    <div class="step-head">
+      <div class="big-num">≠</div>
+      <div class="step-meta"><span class="lbl">Dễ nhầm · ranh giới</span><h2>Đừng nhầm 'không có tiền ra' với 'không có chi phí'</h2></div>
+    </div>
+    <div class="mix-q"><span class="q">"Không ghi tiền mặt nào ra, sao lại có chi phí?"</span><p>Chi phí không đo bằng tiền ra khỏi két. Nó đo bằng giá trị bạn cho đi để nhận công sức. Cổ phiếu là giá trị, nên cho đi cổ phiếu là tốn. Bút toán đối ứng nằm ở vốn chủ sở hữu, không ở tiền mặt.</p></div>
+<div class="mix-q"><span class="q">"Vậy phát hành cổ phiếu huy động vốn cũng là chi phí à?"</span><p>Không. Lúc đó bạn đổi cổ phiếu lấy tiền của nhà đầu tư, không đổi lấy dịch vụ. IFRS 2 chỉ chạm tới cổ phiếu đem ra trả công cho hàng hóa hay dịch vụ.</p></div>
+  </section>
+
+  <section class="bridge">
+    <div class="step-head">
+      <div class="big-num">→</div>
+      <div class="step-meta"><span class="lbl">Nối tiếp · nó dẫn tới đâu</span><h2>Đã là chi phí — giờ hỏi: trả bằng cách nào?</h2></div>
+    </div>
+    <div class="bridge-card"><p>Khi đã chịu rằng đây là một khoản chi phí, câu hỏi kế tiếp bật ra ngay: công ty 'trả' bằng cách nào? Trao cổ phiếu thật, hay hứa trả tiền tính theo giá cổ phiếu? Hai cách dẫn tới hai kiểu hạch toán khác hẳn.</p>
+<p>Đó là tab nền tiếp theo — <strong>'Hai thế giới'</strong>. Nó là ngã ba quyết định mọi thứ phía sau.</p></div>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">✦</div>
+      <div class="step-meta"><span class="lbl">Kể lại trong một hơi</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Trả công bằng cổ phiếu không tốn tiền mặt, nhưng vẫn tốn giá trị. Cổ phiếu cho đi là thứ đáng tiền, và công ty trao nó để đổi lấy công sức. Vậy đó là chi phí của kỳ, đối ứng tăng vốn chủ sở hữu. Nếu coi là miễn phí, lợi nhuận sẽ là con số dối.</p>
+<p class="core">Không mất tiền mặt <span>cho đi cổ phiếu là cho đi giá trị — và đó là chi phí.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã nắm nền chưa?</h3>
+      <ol>
+        <li>Vì sao trả lương bằng quyền chọn vẫn tạo ra chi phí, dù không có đồng tiền mặt nào rời két?</li>
+        <li>Nếu coi việc trả bằng cổ phiếu là 'miễn phí', báo cáo lợi nhuận sẽ sai lệch thế nào?</li>
+        <li>Phát hành cổ phiếu để huy động vốn khác gì với phát hành cổ phiếu trả công cho dịch vụ?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nền vững thì cái khó tự nhẹ đi. Hiểu từ gốc, không học vẹt.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-hai-the-gioi-equity-cash" role="tabpanel" aria-labelledby="tab-1" tabindex="0"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Nền tảng · hiểu từ gốc</div>
+    <h1 class="rise" style="animation-delay:.08s">Hai thế giới: trả bằng cổ phiếu, hay trả tiền theo giá cổ phiếu</h1>
+    <p class="core rise" style="animation-delay:.16s">Cùng một phần thưởng <span>nhưng hai cách hạch toán khác hẳn.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Định vị · nó là gì &amp; vì sao học trước</span><h2>Nguyên tắc nền: hình thức thanh toán quyết định cách ghi sổ</h2></div>
+    </div>
+    <div class="rule">IFRS 2 (đoạn 2) chia mọi giao dịch thành các loại, trong đó hai loại cốt lõi: <strong>equity-settled</strong> (trả bằng công cụ vốn của chính công ty) và <strong>cash-settled</strong> (trả bằng tiền, số tiền dựa trên giá cổ phiếu). Đoạn 7 đặt bút toán đối ứng: equity-settled ghi tăng <em>vốn chủ sở hữu</em>, cash-settled ghi một <em>khoản nợ phải trả</em>; đoạn 30 buộc đo lại khoản nợ đó mỗi kỳ.</div>
+    <div class="sub">Vì sao đây là nền</div>
+    <div class="why"><p>Đây là ngã ba lớn nhất của chuẩn. Mọi chương sau đều rẽ theo nó: ghi vào vốn hay vào nợ, đóng băng giá hay đo lại liên tục. Chọn nhầm nhánh ngay từ đầu thì cả bài hạch toán sai theo. Nắm chắc ngã ba này, phần sau tự xếp vào đúng chỗ.</p></div>
+  </section>
+
+  <section class="problem">
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Vấn đề nó sinh ra để giải quyết</span><h2>Cùng thưởng theo giá cổ phiếu — ghi sổ có giống nhau?</h2></div>
+    </div>
+    <p class="lead">Hai nhân viên cùng được thưởng 'gắn với giá cổ phiếu'. Người thứ nhất nhận cổ phiếu thật. Người thứ hai nhận tiền mặt, bằng đúng mức tăng của giá cổ phiếu. Phần thưởng kinh tế gần như y hệt. Vậy kế toán có ghi giống nhau không?</p>
+
+<p>Phản xạ đầu tiên: cùng dựa trên giá cổ phiếu thì chắc ghi như nhau. Sai. Hai trường hợp này rơi vào hai thế giới kế toán khác hẳn.</p>
+
+<div class="sub">Khác nhau ở chỗ công ty nợ ai cái gì</div>
+<p>Trao cổ phiếu xong là xong, công ty không nợ tiền ai. Còn hứa trả tiền theo giá cổ phiếu thì công ty đang ôm một khoản nợ — và khoản nợ đó phình hay teo theo giá.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Mô hình đơn giản · cách nó chạy</span><h2>Trao vốn thì đóng băng; nợ tiền thì đo lại</h2></div>
+    </div>
+    <p>Hai thế giới, hai luật chơi. Phân biệt bằng một câu: công ty trao đi vốn, hay công ty ôm một khoản nợ tiền?</p>
+
+<div class="sub">Thế giới 1 — trả bằng cổ phiếu (equity-settled)</div>
+<p>Công ty trao công cụ vốn của chính mình. Bút toán đối ứng ghi tăng vốn chủ sở hữu. Giá trị được chốt tại ngày trao, rồi <strong>đóng băng</strong> — không chạy theo giá cổ phiếu nữa.</p>
+
+<div class="sub">Thế giới 2 — trả tiền theo giá (cash-settled)</div>
+<p>Công ty hứa trả tiền, nên ghi một khoản nợ phải trả. Khoản nợ này được <strong>đo lại</strong> mỗi cuối kỳ theo giá mới, chênh lệch chạy qua lãi/lỗ — cho tới khi trả xong.</p>
+
+<div class="sub">Vì sao một bên đóng băng, một bên không</div>
+<p>Trao cổ phiếu rồi thì hết nghĩa vụ, giá lên xuống là chuyện của cổ đông, không phải của công ty. Còn nợ tiền thì số tiền cuối cùng tùy giá ngày trả, nên phải bám sát giá tới phút chót.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví dụ cụ thể</span><h2>Cùng một mức thưởng, hai sổ khác nhau</h2></div>
+    </div>
+    <div class="example-card"><span class="tag">Bài toán</span>
+<p>Công ty thưởng 1.000 đơn vị 'theo mức tăng giá cổ phiếu'. Giá lúc trao là thấp, cuối năm tăng mạnh. Xét hai cách trả.</p>
+<p>Trả bằng cổ phiếu (equity-settled): chốt giá trị tại ngày trao, ví dụ 9 nghìn đồng một đơn vị. Giá cổ phiếu sau đó tăng gấp đôi cũng không làm con số này nhúc nhích.</p>
+<p>Trả bằng tiền theo giá (cash-settled): khoản nợ được đo lại theo giá mới mỗi cuối kỳ. Giá tăng gấp đôi thì khoản nợ và chi phí phình theo. Cùng phần thưởng, hai con số rất khác.</p>
+</div>
+<p>Ví dụ gần đời: bạn hứa thưởng em mình. Cách một, đưa luôn một chỉ vàng — xong, giá vàng sau đó là chuyện của em. Cách hai, hứa 'cuối năm đưa tiền bằng một chỉ vàng' — bạn phải theo dõi giá vàng tới tận lúc trả.</p>
+  </section>
+
+  <section class="clarify">
+    <div class="step-head">
+      <div class="big-num">≠</div>
+      <div class="step-meta"><span class="lbl">Dễ nhầm · ranh giới</span><h2>Đừng nhầm 'dựa trên giá cổ phiếu' với 'equity-settled'</h2></div>
+    </div>
+    <div class="mix-q"><span class="q">"Thưởng nào gắn với giá cổ phiếu cũng là equity-settled?"</span><p>Không. Cash-settled cũng gắn với giá cổ phiếu, nhưng trả bằng tiền. Điều phân loại không phải 'có dựa trên giá hay không', mà là 'trả bằng cổ phiếu hay bằng tiền'.</p></div>
+<div class="mix-q"><span class="q">"Vậy nhìn vào đâu để biết mình ở thế giới nào?"</span><p>Hỏi: cuối cùng công ty giao cổ phiếu, hay giao tiền? Giao cổ phiếu thì ghi tăng vốn và đóng băng giá. Giao tiền thì ghi nợ và đo lại mỗi kỳ.</p></div>
+  </section>
+
+  <section class="bridge">
+    <div class="step-head">
+      <div class="big-num">→</div>
+      <div class="step-meta"><span class="lbl">Nối tiếp · nó dẫn tới đâu</span><h2>Cái 'đo lại' của thế giới tiền là chỗ dễ sai nhất</h2></div>
+    </div>
+    <div class="bridge-card"><p>Thế giới cash-settled có một nếp gấp khó: khoản nợ đo lại mỗi kỳ, nên chi phí nhảy theo giá cổ phiếu tới tận ngày trả. Đây là chỗ người mới hay lẫn với equity-settled.</p>
+<p>Mở <strong>Chủ đề 04</strong> trong study app ('Cash-settled &amp; lựa chọn thanh toán'), và sơ đồ <strong>'Đóng băng hay đo lại?'</strong>. Đó là nơi một trang đào sâu sẽ mổ kỹ vì sao hai bên xử lý ngược nhau.</p></div>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">✦</div>
+      <div class="step-meta"><span class="lbl">Kể lại trong một hơi</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Cùng một phần thưởng theo giá cổ phiếu vẫn rơi vào hai thế giới. Trả bằng cổ phiếu: ghi tăng vốn, chốt giá ngày trao, đóng băng. Trả bằng tiền theo giá: ghi một khoản nợ, đo lại mỗi kỳ qua lãi/lỗ. Hỏi 'giao cổ phiếu hay giao tiền' là biết mình ở nhánh nào.</p>
+<p class="core">Cùng một phần thưởng <span>trao vốn thì đóng băng, nợ tiền thì đo lại.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã nắm nền chưa?</h3>
+      <ol>
+        <li>Hai nhân viên cùng thưởng theo giá cổ phiếu — một nhận cổ phiếu, một nhận tiền. Vì sao kế toán ghi khác nhau?</li>
+        <li>Vì sao bên equity-settled đóng băng giá tại ngày trao, còn bên cash-settled phải đo lại mỗi kỳ?</li>
+        <li>Một khoản thưởng 'dựa trên giá cổ phiếu' có chắc là equity-settled không? Nhìn vào đâu để phân loại?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nền vững thì cái khó tự nhẹ đi. Hiểu từ gốc, không học vẹt.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-do-bang-cong-cu" role="tabpanel" aria-labelledby="tab-2" tabindex="0"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Nền tảng · hiểu từ gốc</div>
+    <h1 class="rise" style="animation-delay:.08s">Đặt một con số: đo bằng cổ phiếu, không đo bằng công sức</h1>
+    <p class="core rise" style="animation-delay:.16s">Khó định giá công sức <span>nên ta định giá thứ đem ra trả.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Định vị · nó là gì &amp; vì sao học trước</span><h2>Nguyên tắc nền: đo qua công cụ vốn cấp, chốt tại grant date</h2></div>
+    </div>
+    <div class="rule">IFRS 2 (đoạn 10) đo equity-settled tại <strong>fair value</strong> của hàng hóa/dịch vụ nhận về. Nhưng với nhân viên (đoạn 11), thường không đo tin cậy được giá của dịch vụ, nên đo <em>gián tiếp</em> — <strong>by reference to</strong> fair value của công cụ vốn cấp, và giá đó chốt tại <strong>grant date</strong>. Với bên ngoài có giá dịch vụ tin cậy (đoạn 13) thì đo thẳng giá dịch vụ.</div>
+    <div class="sub">Vì sao đây là nền</div>
+    <div class="why"><p>Đây là nền của toàn bộ phần đo lường equity-settled. Nó trả lời câu 'ghi bao nhiêu' và giải thích vì sao con số đóng băng tại ngày trao. Chưa nắm ý này, các quy tắc sửa đổi và phân bổ phía sau chỉ là công thức rời rạc.</p></div>
+  </section>
+
+  <section class="problem">
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Vấn đề nó sinh ra để giải quyết</span><h2>Ghi bao nhiêu cho 'một năm công sức của kỹ sư'?</h2></div>
+    </div>
+    <p class="lead">Công ty trao cho kỹ sư 1.000 quyền chọn để đổi lấy công việc. Ta đã đồng ý đây là chi phí. Nhưng chi phí <em>bao nhiêu</em>? Thử định giá thẳng 'một năm công sức của kỹ sư' xem — không có hóa đơn, không có giá thị trường. Tắc.</p>
+
+<p>May thay, có một thứ trong giao dịch lại định giá được khá tốt: chính cái quyền chọn đem ra trả. Vậy sao không đo bằng nó?</p>
+
+<div class="sub">Một mẹo đổi vế</div>
+<p>Không đo được vế 'công sức', ta đo vế kia của cùng giao dịch: thứ công ty cho đi. Hai vế là hai mặt của một trao đổi, nên giá trị xấp xỉ nhau.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Mô hình đơn giản · cách nó chạy</span><h2>Định giá công cụ, nhân số lượng, chốt tại ngày trao</h2></div>
+    </div>
+    <p>Mô hình có ba nhịp. Định giá cái quyền chọn. Nhân với số lượng thực sự về tay nhân viên. Và chốt mức giá đó tại ngày trao, rồi để yên.</p>
+
+<div class="sub">Vì sao đo công cụ chứ không đo dịch vụ</div>
+<p>Công sức nhân viên không có giá niêm yết. Nhưng quyền chọn thì định giá được bằng mô hình. Nên ta mượn giá của công cụ để thay cho giá của công sức.</p>
+
+<div class="sub">'By reference to' nghĩa là gì</div>
+<p>Chuẩn dùng chữ 'tham chiếu tới', không phải 'bằng'. Con số cuối là giá một công cụ nhân số công cụ thực sự về tay người ta. Giá thì cố định, chỉ số lượng mới đổi.</p>
+
+<div class="sub">Vì sao chốt tại grant date</div>
+<p>Giá được khóa ở ngày hai bên thỏa thuận. Cổ phiếu sau đó lên hay xuống là chuyện của cổ đông. Con số chi phí của nhân viên đã trao thì không đổi theo.</p>
+
+<div class="sub">Khi nào đo thẳng dịch vụ</div>
+<p>Với bên ngoài, ví dụ một nhà tư vấn có giá dịch vụ rõ ràng, ta đo thẳng giá dịch vụ đó. Mẹo đổi vế chỉ dùng khi vế công sức không định giá nổi.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví dụ cụ thể</span><h2>Thử với 1.000 quyền chọn cho nhân viên</h2></div>
+    </div>
+    <div class="example-card"><span class="tag">Bài toán</span>
+<p>Công ty trao kỹ sư 1.000 quyền chọn. Mô hình định giá nói mỗi quyền đáng 4 đồng tại ngày trao. Ghi chi phí bao nhiêu?</p>
+<p>Đo qua công cụ: 1.000 nhân 4, là 4.000 đồng giá trị dịch vụ. Số này được trải dần theo thời gian phục vụ, nhưng mức giá gốc thì khóa ở 4 đồng.</p>
+<p>Một năm sau giá cổ phiếu tăng gấp đôi. Mức 4 đồng có đổi không? Không. Đây là equity-settled, giá đã đóng băng tại ngày trao.</p>
+</div>
+<p>Đổi sang bên ngoài cho thấy mặt còn lại. Một nhà thiết kế tự do nhận cổ phiếu để làm logo. Phí làm logo của họ là 30 triệu, rõ ràng. Lúc này đo thẳng 30 triệu, không cần mượn giá cổ phiếu.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Mô hình định giá quyền chọn ăn vào sáu thứ: giá thực hiện, đời quyền chọn, giá cổ phiếu hiện tại, độ biến động, cổ tức kỳ vọng và lãi suất phi rủi ro. Ghép lại ra <em>fair value</em> mỗi quyền — chính con số 4 đồng ở trên.</p>
+  </section>
+
+  <section class="clarify">
+    <div class="step-head">
+      <div class="big-num">≠</div>
+      <div class="step-meta"><span class="lbl">Dễ nhầm · ranh giới</span><h2>Đừng nhầm 'đo bằng công cụ' với 'đo bằng dịch vụ'</h2></div>
+    </div>
+    <div class="mix-q"><span class="q">"Sao không cứ đo thẳng giá trị công việc cho gọn?"</span><p>Vì với nhân viên, giá trị công việc riêng lẻ không đo tin cậy được. Không có thị trường cho 'một năm của kỹ sư A'. Quyền chọn thì định giá được, nên ta mượn giá của nó.</p></div>
+<div class="mix-q"><span class="q">"Vậy lúc nào cũng đo qua công cụ vốn?"</span><p>Không. Với bên ngoài có giá dịch vụ tin cậy, đo thẳng giá dịch vụ. Chỉ khi vế dịch vụ mù mờ mới đổi sang đo công cụ.</p></div>
+  </section>
+
+  <section class="bridge">
+    <div class="step-head">
+      <div class="big-num">→</div>
+      <div class="step-meta"><span class="lbl">Nối tiếp · nó dẫn tới đâu</span><h2>Nếu giá công cụ bị 'sửa' sau ngày trao thì sao?</h2></div>
+    </div>
+    <div class="bridge-card"><p>Con số đã đóng băng tại ngày trao. Nhưng đôi khi công ty cố ý sửa điều khoản, ví dụ giảm giá thực hiện cho quyền chọn đáng giá hơn. Lúc đó phần giá trị tăng thêm xử lý thế nào?</p>
+<p>Đó là <strong>Chủ đề 03</strong> trong study app ('Sửa đổi, hủy bỏ &amp; tất toán') và bài tính <strong>incremental fair value</strong>. Nền 'đo bằng công cụ, chốt tại ngày trao' chính là cái mốc để đo phần tăng thêm đó.</p></div>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">✦</div>
+      <div class="step-meta"><span class="lbl">Kể lại trong một hơi</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Không đo nổi giá công sức, nên đo thứ đem ra trả: cái quyền chọn. Lấy giá một quyền nhân số quyền thực sự về tay người ta, và chốt mức giá tại ngày trao. Giá cổ phiếu sau đó đổi cũng kệ. Với bên ngoài có giá dịch vụ rõ thì đo thẳng dịch vụ.</p>
+<p class="core">Khó định giá công sức <span>đo thứ trao đi, khóa giá tại ngày trao.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã nắm nền chưa?</h3>
+      <ol>
+        <li>Vì sao IFRS 2 đo chi phí qua giá của quyền chọn, thay vì đo thẳng giá trị công sức nhân viên?</li>
+        <li>'By reference to' khác 'at' ở chỗ nào — cái gì cố định, cái gì được điều chỉnh?</li>
+        <li>Khi nào thì lại đo thẳng giá dịch vụ thay vì mượn giá công cụ vốn?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nền vững thì cái khó tự nhẹ đi. Hiểu từ gốc, không học vẹt.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-fair-value-vs-intrinsic" role="tabpanel" aria-labelledby="tab-3" tabindex="0"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Nền tảng · hiểu từ gốc</div>
+    <h1 class="rise" style="animation-delay:.08s">Giá trị quyền chọn: phần nội tại cộng phần thời gian</h1>
+    <p class="core rise" style="animation-delay:.16s">Mua đúng bằng giá <span>vẫn chưa phải là vô giá trị.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Định vị · nó là gì &amp; vì sao học trước</span><h2>Nguyên tắc nền: fair value rộng hơn intrinsic value</h2></div>
+    </div>
+    <div class="rule">Appendix A định nghĩa <strong>intrinsic value</strong> là chênh giữa giá cổ phiếu và giá phải trả khi thực hiện. IFRS 2 (đoạn 16-17) lại đo bằng <strong>fair value</strong> đầy đủ qua một <em>option pricing model</em> (đoạn B6) — gồm cả phần giá trị thời gian. Riêng trường hợp hiếm (đoạn 24), khi không đo tin cậy được fair value, mới dùng intrinsic value và đo lại mỗi kỳ.</div>
+    <div class="sub">Vì sao đây là nền</div>
+    <div class="why"><p>Đây là nền để không nhầm 'giá trị quyền chọn' với 'lãi nếu bán ngay'. Hai khái niệm này hiện đi hiện lại: trong định giá, trong thuyết minh, và trong cách hạch toán hiếm gặp ở đoạn 24. Lẫn hai cái là hiểu sai cả cách đo chi phí.</p></div>
+  </section>
+
+  <section class="problem">
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Vấn đề nó sinh ra để giải quyết</span><h2>Quyền mua cổ phiếu 20 với giá 20 — vô dụng?</h2></div>
+    </div>
+    <p class="lead">Bạn được trao quyền mua một cổ phiếu giá 20 đồng, với giá thực hiện đúng 20 đồng. Thực hiện ngay thì lãi bằng 0. Vậy cái quyền này vô giá trị? Phản xạ đầu tiên: đúng, chẳng đáng gì.</p>
+
+<p>Nhưng ngoài thị trường, người ta vẫn trả tiền thật cho những quyền chọn như thế. Lạ chưa? Phải có một phần giá trị mà phép tính 'lãi nếu bán ngay' không thấy.</p>
+
+<div class="sub">Cái phần bị bỏ sót</div>
+<p>Quyền chọn còn hạn nhiều tháng. Trong khoảng đó giá có thể vọt lên, mà nếu giá rớt thì bạn chỉ việc không mua. Khả năng được lợi mà không sợ lỗ thêm — chính nó đáng tiền.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Mô hình đơn giản · cách nó chạy</span><h2>Hai mảnh: phần nội tại cộng phần thời gian</h2></div>
+    </div>
+    <p>Giá trị một quyền chọn gồm hai mảnh cộng lại. Phần nội tại, và phần thời gian. IFRS 2 đo cả hai, gọi là fair value.</p>
+
+<div class="sub">Phần nội tại (intrinsic value)</div>
+<p>Là lãi nếu thực hiện ngay: giá cổ phiếu trừ giá phải trả. Không bao giờ âm — nếu lỗ thì bạn chỉ việc không thực hiện, nên nó dừng ở 0.</p>
+
+<div class="sub">Phần thời gian (time value)</div>
+<p>Là giá của cơ hội còn lại. Còn hạn càng dài, giá càng dễ biến động, cơ hội lên giá càng lớn. Mảnh này khiến quyền chọn 'mua đúng bằng giá' vẫn đáng tiền.</p>
+
+<div class="sub">Fair value gộp cả hai</div>
+<p>IFRS 2 đo fair value đầy đủ, tức nội tại cộng thời gian, qua một mô hình định giá. Đo thiếu phần thời gian là khai chi phí thấp hơn thực.</p>
+
+<div class="sub">Khi nào tụt về chỉ còn nội tại</div>
+<p>Sát ngày hết hạn, phần thời gian teo dần về gần 0. Lúc đó fair value xấp xỉ phần nội tại. Càng nhiều thời gian, hai con số càng cách xa.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví dụ cụ thể</span><h2>Hai quyền chọn, hai khoảng cách giá trị</h2></div>
+    </div>
+    <div class="example-card"><span class="tag">Bài toán</span>
+<p>Quyền A: mua cổ phiếu giá 20 với giá thực hiện 20. Nội tại bằng 0. Nhưng còn hạn hai năm, nên phần thời gian có thể là 5 đồng. Fair value khoảng 5 đồng, không phải 0.</p>
+<p>Quyền B: theo ví dụ trong chuẩn, giá thực hiện 15, cổ phiếu 20. Nội tại là 5. Fair value còn cao hơn 5, vì cộng thêm phần thời gian.</p>
+<p>Thử đẩy tới sát ngày hết hạn. Phần thời gian gần như biến mất, nên fair value của cả hai tụt về xấp xỉ phần nội tại.</p>
+</div>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Mô hình định giá ăn sáu đầu vào (đoạn B6), trong đó độ biến động và đời quyền chọn nuôi phần thời gian. Trường hợp hiếm ở đoạn 24: khi không đo tin cậy được fair value, công ty đo bằng <em>intrinsic value</em> và đo lại mỗi cuối kỳ qua lãi/lỗ — gần giống cách của cash-settled.</p>
+  </section>
+
+  <section class="clarify">
+    <div class="step-head">
+      <div class="big-num">≠</div>
+      <div class="step-meta"><span class="lbl">Dễ nhầm · ranh giới</span><h2>Đừng nhầm fair value với intrinsic value</h2></div>
+    </div>
+    <div class="mix-q"><span class="q">"Quyền chọn 'mua đúng bằng giá' thì coi như bằng 0?"</span><p>Không. Nội tại bằng 0, nhưng phần thời gian thì còn. Chừng nào còn hạn và giá còn biến động, quyền chọn vẫn đáng tiền. Fair value bắt được phần này, intrinsic value thì không.</p></div>
+<div class="mix-q"><span class="q">"Vậy IFRS 2 đo bằng cái nào?"</span><p>Mặc định đo bằng fair value đầy đủ. Chỉ trong trường hợp hiếm không đo nổi fair value mới lùi về intrinsic value, và khi đó phải đo lại mỗi kỳ.</p></div>
+  </section>
+
+  <section class="bridge">
+    <div class="step-head">
+      <div class="big-num">→</div>
+      <div class="step-meta"><span class="lbl">Nối tiếp · nó dẫn tới đâu</span><h2>Chỗ duy nhất intrinsic value tự mình cầm lái</h2></div>
+    </div>
+    <div class="bridge-card"><p>Gần như mọi lúc IFRS 2 dùng fair value. Nhưng có một góc hiếm — đoạn 24 — nơi không đo nổi fair value, và intrinsic value tự mình quyết chi phí, đo lại mỗi kỳ.</p>
+<p>Mở <strong>Chủ đề 02</strong> trong study app (mục 'intrinsic value', đoạn 24) và bài tính <strong>'Phương pháp intrinsic value'</strong> trong tab Tính toán. Hiểu hai mảnh giá trị ở đây rồi, góc hiếm đó hết khó.</p></div>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">✦</div>
+      <div class="step-meta"><span class="lbl">Kể lại trong một hơi</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Giá trị quyền chọn gồm hai mảnh: phần nội tại là lãi nếu bán ngay, phần thời gian là cơ hội còn lại. Quyền 'mua đúng bằng giá' có nội tại 0 nhưng vẫn đáng tiền nhờ phần thời gian. IFRS 2 đo fair value gồm cả hai. Sát ngày hết hạn, phần thời gian teo, fair value tụt về gần nội tại.</p>
+<p class="core">Mua đúng bằng giá <span>fair value là nội tại cộng thời gian, không chỉ lãi-nếu-bán-ngay.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã nắm nền chưa?</h3>
+      <ol>
+        <li>Vì sao một quyền chọn 'mua đúng bằng giá' (nội tại 0) vẫn được người ta trả tiền để có?</li>
+        <li>Phần thời gian của một quyền chọn đến từ đâu, và khi nào nó teo lại?</li>
+        <li>IFRS 2 mặc định đo bằng fair value hay intrinsic value — và ngoại lệ nằm ở đâu?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nền vững thì cái khó tự nhẹ đi. Hiểu từ gốc, không học vẹt.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-cac-moc-thoi-gian" role="tabpanel" aria-labelledby="tab-4" tabindex="0"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Nền tảng · hiểu từ gốc</div>
+    <h1 class="rise" style="animation-delay:.08s">Ba cái mốc: ngày trao, ngày đo, ngày chín</h1>
+    <p class="core rise" style="animation-delay:.16s">Cùng một grant <span>mỗi mốc làm một việc khác nhau.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Định vị · nó là gì &amp; vì sao học trước</span><h2>Nguyên tắc nền: ba mốc, ba nhiệm vụ riêng</h2></div>
+    </div>
+    <div class="rule">Appendix A định nghĩa ba mốc. <strong>Grant date</strong>: ngày hai bên chốt thỏa thuận (nếu cần phê duyệt thì là ngày được phê duyệt). <strong>Measurement date</strong>: ngày chốt fair value — với nhân viên trùng grant date, với bên ngoài là ngày nhận hàng/dịch vụ. <strong>Vesting date</strong>: ngày quyền hết phụ thuộc mọi <em>vesting condition</em>, tức quyền đã 'chín'.</div>
+    <div class="sub">Vì sao đây là nền</div>
+    <div class="why"><p>Đây là nền về thời gian. Giá được khóa tại một mốc, chi phí trải tới một mốc khác. Lẫn ba mốc là tính sai cả con số lẫn thời điểm. Phân biệt rõ ba việc làm, mọi bài phân bổ sau đó vào đúng nhịp.</p></div>
+  </section>
+
+  <section class="problem">
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Vấn đề nó sinh ra để giải quyết</span><h2>Một grant, mấy ngày — ngày nào khóa giá?</h2></div>
+    </div>
+    <p class="lead">Một đợt cấp quyền chọn có cả mớ ngày lượn quanh. Ngày sếp và nhân viên gật đầu. Ngày đại hội cổ đông duyệt. Ngày nhân viên làm xong ba năm. Hỏi đơn giản: ngày nào khóa mức giá để đo chi phí? Ngày nào kết thúc việc rải chi phí? Người mới thường gộp chúng làm một.</p>
+
+<p>Gộp là sai, vì mỗi ngày làm một việc khác hẳn. Tách rõ ra thì mọi thứ về đúng chỗ.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Mô hình đơn giản · cách nó chạy</span><h2>Ngày trao khóa giá, ngày chín dừng rải</h2></div>
+    </div>
+    <p>Ba mốc, ba nhiệm vụ. Đừng để chúng đè lên nhau.</p>
+
+<div class="sub">Grant date — ngày trao</div>
+<p>Là ngày hai bên cùng hiểu và chốt điều khoản. Nếu thỏa thuận cần phê duyệt, ví dụ bởi cổ đông, thì grant date là ngày được duyệt, không phải ngày bàn xong.</p>
+
+<div class="sub">Measurement date — ngày đo</div>
+<p>Là ngày khóa fair value để đo. Với nhân viên, nó trùng grant date. Với bên ngoài, nó là ngày họ giao hàng hay cung cấp dịch vụ.</p>
+
+<div class="sub">Vesting date — ngày chín</div>
+<p>Là ngày quyền hết phụ thuộc điều kiện, thuộc hẳn về người nhận. Chi phí được rải từ ngày trao cho tới đúng ngày này.</p>
+
+<div class="sub">Ráp lại</div>
+<p>Giá khóa ở ngày đo. Chi phí trải từ ngày trao tới ngày chín. Hai việc, hai mốc — đừng trộn.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví dụ cụ thể</span><h2>Lần theo một đợt cấp quyền chọn</h2></div>
+    </div>
+    <div class="example-card"><span class="tag">Bài toán</span>
+<p>Ngày 1 tháng 3, ban điều hành chốt điều khoản với nhân viên. Thỏa thuận cần đại hội cổ đông duyệt, và việc duyệt diễn ra ngày 15 tháng 4. Grant date là ngày nào?</p>
+<p>Là 15 tháng 4. Trước đó còn chờ duyệt, chưa có ràng buộc chắc. Với nhân viên, measurement date trùng grant date, nên giá cũng khóa ở 15 tháng 4.</p>
+<p>Điều kiện là làm đủ ba năm. Vậy vesting date rơi vào cuối năm thứ ba, và chi phí được rải từ 15 tháng 4 cho tới ngày đó.</p>
+</div>
+<p>Với bên ngoài thì khác hẳn. Ngày 1/1 công ty ký với một studio thiết kế: làm bộ nhận diện thương hiệu, đổi lấy 1.000 cổ phiếu. Studio giao xong ngày 1/6. Measurement date là 1/6 — ngày nhận dịch vụ, không phải ngày ký. Vì studio có báo giá rõ, công ty đo thẳng giá dịch vụ đó tại lúc giao. Cùng số cổ phiếu ấy cấp cho nhân viên thì lại khóa giá ở grant date.</p>
+  </section>
+
+  <section class="clarify">
+    <div class="step-head">
+      <div class="big-num">≠</div>
+      <div class="step-meta"><span class="lbl">Dễ nhầm · ranh giới</span><h2>Đừng để ba mốc đè lên nhau</h2></div>
+    </div>
+    <div class="mix-q"><span class="q">"Grant date với vesting date là một?"</span><p>Không. Grant date là lúc bắt đầu, khi chốt thỏa thuận. Vesting date là lúc kết thúc, khi quyền đã chín. Khoảng giữa hai mốc chính là quãng rải chi phí.</p></div>
+<div class="mix-q"><span class="q">"Measurement date luôn bằng grant date?"</span><p>Chỉ với nhân viên. Với bên ngoài, measurement date là ngày họ giao hàng hay dịch vụ — có thể lệch hẳn grant date.</p></div>
+  </section>
+
+  <section class="bridge">
+    <div class="step-head">
+      <div class="big-num">→</div>
+      <div class="step-meta"><span class="lbl">Nối tiếp · nó dẫn tới đâu</span><h2>Hai mốc này dựng nên cái khung của vesting</h2></div>
+    </div>
+    <div class="bridge-card"><p>Ngày trao và ngày chín chính là hai đầu của quãng rải chi phí. Nền tiếp theo — <strong>'Vesting &amp; true-up'</strong> — sống trên đúng cái khung này.</p>
+<p>Nó cũng mở ra ca khó hơn: khi quyền chín làm nhiều đợt (graded vesting), mỗi đợt có một ngày chín riêng, nên chi phí dồn về đầu. Phần đó nằm ở study app, Chủ đề 02.</p></div>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">✦</div>
+      <div class="step-meta"><span class="lbl">Kể lại trong một hơi</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Một grant có ba mốc, mỗi mốc một việc. Ngày trao là lúc chốt thỏa thuận, hoặc ngày được duyệt nếu cần duyệt. Ngày đo khóa giá — nhân viên trùng ngày trao, bên ngoài là ngày giao dịch vụ. Ngày chín là khi quyền hết điều kiện. Chi phí trải từ ngày trao tới ngày chín.</p>
+<p class="core">Cùng một grant <span>ngày trao khóa giá, ngày chín dừng rải.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã nắm nền chưa?</h3>
+      <ol>
+        <li>Một thỏa thuận cần cổ đông phê duyệt — grant date là ngày bàn xong hay ngày được duyệt? Vì sao?</li>
+        <li>Với nhân viên thì measurement date trùng mốc nào, còn với bên ngoài thì khác ra sao?</li>
+        <li>Chi phí của một grant được rải giữa hai mốc nào?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nền vững thì cái khó tự nhẹ đi. Hiểu từ gốc, không học vẹt.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-vesting-trai-chi-phi" role="tabpanel" aria-labelledby="tab-5" tabindex="0"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Nền tảng · hiểu từ gốc</div>
+    <h1 class="rise" style="animation-delay:.08s">Vesting: mua dịch vụ dần, và có thể không phải trả gì</h1>
+    <p class="core rise" style="animation-delay:.16s">Quyền chưa 'chín' <span>thì chi phí trải dần — và có thể về 0.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Định vị · nó là gì &amp; vì sao học trước</span><h2>Nguyên tắc nền: trải theo thời gian phục vụ, true-up theo số thực chín</h2></div>
+    </div>
+    <div class="rule">IFRS 2 (đoạn 15): khi quyền chọn chỉ <strong>vest</strong> — chính thức thuộc về nhân viên, trang này gọi nôm na là 'chín' — sau một thời gian phục vụ, thì chi phí được trải đều qua <em>vesting period</em> (quãng chờ vest). Đoạn 19-20: với điều kiện không phải <em>market condition</em>, công ty không đưa nó vào giá mà điều chỉnh <strong>số lượng</strong> công cụ theo ước tính số sẽ vest. Con số này được sửa lại mỗi kỳ, rồi chốt bằng số <em>thực sự</em> vest — gọi là <strong>true-up</strong>. Trên cơ sở lũy kế, quyền nào không vest thì không ghi gì.</div>
+    <div class="sub">Vì sao đây là nền</div>
+    <div class="why"><p>Đây là nền cho phân bổ và true-up, và là bệ đỡ cho ý khó nhất của chuẩn: cách xử lý khác nhau giữa market và non-market condition. Chưa nắm 'trải dần và có thể về 0', cái rule khó kia chỉ là phép màu khó nhớ.</p></div>
+  </section>
+
+  <section class="problem">
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Vấn đề nó sinh ra để giải quyết</span><h2>Quyền chỉ 'thuộc về' sau ba năm — ghi chi phí khi nào?</h2></div>
+    </div>
+    <p class="lead">Công ty trao quyền chọn, nhưng kèm điều kiện: phải làm đủ ba năm thì quyền mới thật sự thuộc về nhân viên. Vậy ghi hết chi phí ngay lúc trao, hay rải ra? Và nếu nhân viên nghỉ ở năm thứ hai thì sao?</p>
+
+<p>Ghi hết ngay thì sai, vì công ty chưa nhận đủ ba năm công sức. Nhưng rải ra rồi mà người ta nghỉ giữa chừng thì phần đã ghi tính sao? Cần một lối vừa rải, vừa sửa được.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Mô hình đơn giản · cách nó chạy</span><h2>Trải theo năm phục vụ, rồi sửa về số thực chín</h2></div>
+    </div>
+    <p>Coi như công ty 'mua' công sức dần qua các năm. Nên chi phí cũng rải dần, và mỗi kỳ lại sửa cho khớp số người thật sự ở lại.</p>
+
+<div class="sub">Vì sao rải, không ghi một lần</div>
+<p>Ba năm công sức đến dần, không đến hết trong ngày trao. Mỗi năm công ty nhận một phần, nên ghi một phần chi phí tương ứng.</p>
+
+<div class="sub">Ước tính rồi sửa mỗi kỳ</div>
+<p>Đầu đường chưa biết ai sẽ ở lại, nên công ty đoán số sẽ chín. Có tin mới thì sửa con đoán. Đến ngày chín, sửa lần cuối cho bằng số thật.</p>
+
+<div class="sub">Có thể về 0</div>
+<p>Ai nghỉ trước khi đủ điều kiện thì quyền không chín, công ty coi như chưa nhận công sức đó. Trên cơ sở lũy kế, phần của người đó về 0, và chi phí đã ghi bị đảo lại.</p>
+
+<div class="sub">Con số cuối cùng</div>
+<p>Chốt lại là: giá đã khóa ở ngày trao, nhân số quyền thật sự chín. Giá không đổi, chỉ số lượng chạy theo thực tế.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví dụ cụ thể</span><h2>500 nhân viên, ba năm, có người nghỉ</h2></div>
+    </div>
+    <div class="example-card"><span class="tag">Bài toán</span>
+<p>Công ty trao 500 nhân viên mỗi người 100 quyền chọn, giá khóa 15 đồng một quyền, điều kiện làm đủ ba năm. Cuối năm một, công ty đoán 400 người sẽ ở lại đủ.</p>
+<p>Số quyền dự kiến chín là 400 nhân 100, tức 40.000. Nhân 15 đồng ra 600.000 đồng tổng dự kiến. Trải đều ba năm, năm một ghi một phần ba, tức 200.000 đồng.</p>
+<p>Một nhân viên nghỉ ở năm hai. Quyền của người đó không chín, nên phần chi phí đã ghi cho họ bị đảo về 0. Con đoán được sửa, và chi phí các năm chạy theo.</p>
+</div>
+<p>Gần đời hơn: bạn hứa thưởng con một chiếc xe nếu học hết ba năm cấp ba. Bạn không 'tốn' trọn chiếc xe ngay năm đầu. Bạn gánh dần, và nếu con bỏ học giữa chừng thì lời hứa đó coi như không phải trả.</p>
+  </section>
+
+  <section class="clarify">
+    <div class="step-head">
+      <div class="big-num">≠</div>
+      <div class="step-meta"><span class="lbl">Dễ nhầm · ranh giới</span><h2>Đừng nhầm 'trao' với 'chín'</h2></div>
+    </div>
+    <div class="mix-q"><span class="q">"Đã trao quyền thì coi như đã thuộc về nhân viên?"</span><p>Chưa. Trao chỉ là bắt đầu. Quyền chỉ 'chín' khi thỏa hết điều kiện, ví dụ làm đủ ba năm. Nghỉ trước đó thì quyền không chín, và chi phí về 0.</p></div>
+<div class="mix-q"><span class="q">"Điều kiện nào cũng làm chi phí về 0 nếu trượt?"</span><p>Không phải điều kiện nào cũng vậy. Điều kiện kiểu 'làm đủ thời gian' thì trượt là về 0. Nhưng điều kiện gắn với giá cổ phiếu (market condition) lại xử lý ngược — đó chính là ý khó ở bước sau.</p></div>
+  </section>
+
+  <section class="bridge">
+    <div class="step-head">
+      <div class="big-num">→</div>
+      <div class="step-meta"><span class="lbl">Nối tiếp · nó dẫn tới đâu</span><h2>Tới đây là chạm ngưỡng ý khó nhất của chuẩn</h2></div>
+    </div>
+    <div class="bridge-card"><p>'Trượt điều kiện thì về 0' đúng cho điều kiện dịch vụ. Nhưng với điều kiện gắn giá cổ phiếu thì ngược hẳn: trượt mục tiêu giá mà vẫn ghi đủ chi phí. Đây là chỗ phản trực giác nhất của IFRS 2.</p>
+<p>Mở <strong>Chủ đề 02</strong> trong study app và sơ đồ <strong>'Market vs Non-market'</strong> (hình 02). Đó là nơi một trang đào sâu sẽ mổ vì sao hai loại điều kiện lại đi hai hướng. Nền vesting bạn vừa nắm chính là bệ để hiểu nó.</p></div>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">✦</div>
+      <div class="step-meta"><span class="lbl">Kể lại trong một hơi</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Quyền chỉ chín sau một thời gian phục vụ, nên chi phí trải qua các năm đó. Mỗi kỳ công ty đoán số sẽ chín và sửa con đoán. Ai nghỉ trước khi đủ điều kiện thì quyền không chín, phần của họ về 0. Con số cuối là giá đã khóa nhân số quyền thật sự chín.</p>
+<p class="core">Quyền chưa 'chín' <span>trải theo năm phục vụ, true-up về số thực chín.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã nắm nền chưa?</h3>
+      <ol>
+        <li>Vì sao chi phí của một grant ba năm được rải ra, thay vì ghi hết ngay lúc trao?</li>
+        <li>Nhân viên nghỉ ở năm hai trong điều kiện 'làm đủ ba năm' — phần chi phí đã ghi xử lý thế nào trên cơ sở lũy kế?</li>
+        <li>Có phải mọi điều kiện trượt đều làm chi phí về 0 không? Loại nào là ngoại lệ?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nền vững thì cái khó tự nhẹ đi. Hiểu từ gốc, không học vẹt.</p>
+  </footer>
+
+</div></div>
+<script>
+  var bar=document.getElementById('progress');
+  function upd(){var h=document.documentElement;var s=h.scrollTop||document.body.scrollTop;
+    var max=(h.scrollHeight-h.clientHeight)||1;bar.style.width=(s/max*100)+'%';}
+  window.addEventListener('scroll',upd,{passive:true});upd();
+  var io=new IntersectionObserver(function(es){es.forEach(function(e){
+    if(e.isIntersecting){e.target.style.animation='rise .7s cubic-bezier(.2,.7,.3,1) forwards';io.unobserve(e.target);}});},{threshold:.12});
+  document.querySelectorAll('section').forEach(function(s){s.style.opacity='0';io.observe(s);});
+</script>
+
+<script>
+(function(){
+  var tabs=[].slice.call(document.querySelectorAll('.tabbar .tab'));
+  var panels=[].slice.call(document.querySelectorAll('.concept-panel'));
+  function show(i){
+    tabs.forEach(function(t,j){t.classList.toggle('active',j===i);});
+    panels.forEach(function(p,j){
+      var on=(j===i); p.classList.toggle('active',on);
+      if(on){p.querySelectorAll('section').forEach(function(s){s.style.opacity='';s.style.animation='';});}
+    });
+    try{history.replaceState(null,'','#'+panels[i].id);}catch(e){}
+    window.scrollTo(0,0); window.dispatchEvent(new Event('scroll'));
+  }
+  tabs.forEach(function(t){t.addEventListener('click',function(){show(+t.getAttribute('data-i'));});});
+  var start=0; panels.forEach(function(p,j){if('#'+p.id===location.hash)start=j;});
+  show(start);
+})();
+</script>
+
+
+<script>
+(function(){var t=[].slice.call(document.querySelectorAll('.tabbar .tab'));
+function sync(a){t.forEach(function(x){var on=x===a;x.setAttribute('aria-selected',on?'true':'false');x.tabIndex=on?0:-1;});}
+t.forEach(function(x){x.addEventListener('click',function(){sync(x);});
+x.addEventListener('keydown',function(e){var i=t.indexOf(x),n=t.length,j=null;
+if(e.key==='ArrowRight'||e.key==='ArrowDown')j=(i+1)%n;else if(e.key==='ArrowLeft'||e.key==='ArrowUp')j=(i-1+n)%n;
+else if(e.key==='Home')j=0;else if(e.key==='End')j=n-1;
+if(j!==null){e.preventDefault();t[j].click();t[j].focus();}});});})();
+</script>
+</body></html>

@@ -1,0 +1,917 @@
+<!DOCTYPE html>
+<html lang="vi"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IVS 2025 — Chuẩn mực tài sản (IVS 200–500) — Hiểu sâu theo Feynman</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,500&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  /* Design tokens shared with ebook-to-study-html (styles_v2.css) */
+  :root{
+    --bg:#fafaf7; --bg-elevated:#ffffff; --bg-soft:#f3f3ee;
+    --border:#e0e0d8; --border-soft:#ececea; --border-strong:#d2c8b6;
+    --ink:#1a1a1f; --ink-soft:#3f3f4a; --muted:#7a7a85;
+    --accent:#b8860b; --accent-2:#8b6508; --gold:#a07c1f; --gap:#8b6508;
+    --serif:"Fraunces",Georgia,"Iowan Old Style",serif;
+    --sans:"Geist",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    --mono:"Geist Mono","JetBrains Mono",Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:var(--sans);
+    font-size:19px;line-height:1.72;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}
+  .progress{position:fixed;top:0;left:0;height:3px;width:0;z-index:50;
+    background:linear-gradient(90deg,var(--gold),var(--accent));transition:width .08s linear}
+  .wrap{max-width:920px;margin:0 auto;padding:0 36px}
+  .rise{opacity:0;transform:translateY(14px);animation:rise .7s cubic-bezier(.2,.7,.3,1) forwards}
+  @keyframes rise{to{opacity:1;transform:none}}
+
+  header{padding:104px 0 60px;border-bottom:1px solid var(--border)}
+  .kicker{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.18em;
+    text-transform:uppercase;color:var(--accent);margin-bottom:26px}
+  h1{font-family:var(--serif);font-weight:600;font-size:clamp(42px,7.6vw,72px);
+    line-height:1.0;letter-spacing:-.022em;margin-bottom:28px;font-optical-sizing:auto;color:var(--ink)}
+  h1 em{font-style:italic;color:var(--accent)}
+  .core{font-family:var(--serif);font-style:italic;font-weight:400;
+    font-size:clamp(21px,3.6vw,27px);line-height:1.44;color:var(--ink-soft)}
+  .core span{font-style:normal;font-weight:600;color:var(--accent-2);
+    box-shadow:inset 0 -.5em 0 rgba(184,134,11,.16)}
+
+  /* ---- BƯỚC 0: ANCHOR (state the rule + plan before explaining) ---- */
+  .anchor .rule{font-family:var(--serif);font-size:19px;line-height:1.5;color:var(--ink);
+    background:var(--bg-soft);border-left:3px solid var(--accent);
+    padding:18px 24px;border-radius:0 4px 4px 0;margin:0}
+  .anchor .rule em{font-style:italic;color:var(--accent-2)}
+  .anchor .rule strong{color:var(--ink);font-weight:600}
+  .anchor .approach{color:var(--ink-soft)}
+
+  section{padding:72px 0;border-bottom:1px solid var(--border);position:relative}
+  .step-head{display:flex;align-items:flex-start;gap:22px;margin-bottom:34px}
+  .big-num{font-family:var(--serif);font-weight:700;font-size:62px;line-height:.8;
+    color:var(--border-strong);flex:none;font-optical-sizing:auto;letter-spacing:-.03em}
+  .step-meta{padding-top:4px}
+  .lbl{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--accent);display:block;margin-bottom:10px}
+  h2{font-family:var(--serif);font-weight:600;font-size:clamp(27px,4.4vw,37px);
+    line-height:1.12;letter-spacing:-.012em;color:var(--ink)}
+  h2 em{font-style:italic;color:var(--accent)}
+  p{margin-bottom:21px}
+  p:last-child{margin-bottom:0}
+  strong{font-weight:600;color:var(--ink)}
+  em{font-style:italic;color:var(--accent-2)}
+  .gloss{color:var(--muted);font-style:italic}
+
+  .lead::first-letter{font-family:var(--serif);font-weight:700;float:left;
+    font-size:74px;line-height:.74;padding:8px 12px 0 0;color:var(--accent)}
+
+  .sub{font-family:var(--serif);font-weight:600;font-size:17px;letter-spacing:.01em;
+    color:var(--ink);margin:34px 0 14px;display:flex;align-items:center;gap:11px}
+  .sub::before{content:"";width:18px;height:2px;background:var(--accent);flex:none;border-radius:2px}
+
+  .gaps{background:var(--bg-soft)}
+  .gaps .big-num{color:#e2d6b4}
+  .gaps .lbl{color:var(--gap)}
+  .gap-q{margin:0 0 30px;padding-left:24px;border-left:2px solid var(--border-strong)}
+  .gap-q:last-child{margin-bottom:0}
+  .gap-q .q{font-family:var(--serif);font-style:italic;font-weight:500;
+    font-size:22px;line-height:1.35;color:var(--gap);margin-bottom:12px;display:block}
+  .gap-q p:last-child{margin-bottom:0}
+
+  .analogy-card{border:1px solid #e8c876;border-radius:4px;padding:30px 32px;margin:8px 0 28px;
+    background:linear-gradient(135deg,#fef9ed 0%,#fdf3e0 100%)}
+  .analogy-card .tag{font-family:var(--mono);font-weight:600;font-size:11px;
+    letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin-bottom:16px;display:block}
+  .analogy-card p{color:#5a4810}
+  .analogy-card strong{color:var(--accent-2)}
+  .limit{font-size:17px;line-height:1.6;color:#5a4810;
+    border-top:1px solid #e8c876;padding-top:20px;margin-top:22px}
+  .limit b{color:var(--accent-2);font-weight:600;font-family:var(--serif)}
+
+  .retell{background:linear-gradient(180deg,var(--bg-soft) 0%,var(--bg) 100%);border-bottom:none}
+  .retell h2{color:var(--ink)}
+  .retell strong{color:var(--accent-2)}
+  .retell .core{margin-top:6px}
+  .testbox{border:1px solid var(--border);background:var(--bg-elevated);
+    border-radius:4px;padding:28px 32px;margin-top:40px;box-shadow:0 1px 2px rgba(0,0,0,.03)}
+  .testbox h3{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--accent);margin-bottom:20px}
+  .testbox ol{margin:0;padding-left:22px;counter-reset:t}
+  .testbox li{margin-bottom:16px;color:var(--ink-soft);padding-left:6px}
+  .testbox li:last-child{margin-bottom:0}
+
+  footer{text-align:center;padding:60px 0 88px}
+  footer .mark{font-family:var(--serif);font-weight:700;color:var(--accent);
+    font-size:26px;display:block;margin-bottom:14px}
+  footer p{font-family:var(--serif);font-style:italic;color:var(--muted);font-size:17px;max-width:380px;margin:0 auto}
+
+  @media(max-width:560px){
+    body{font-size:18px}
+    header{padding:70px 0 44px}
+    section{padding:52px 0}
+    .step-head{gap:16px}
+    .big-num{font-size:46px}
+    .lead::first-letter{font-size:60px}
+  }
+</style>
+<style>
+ .tabbar{position:fixed;top:0;left:0;right:0;width:100%;box-sizing:border-box;z-index:40;background:rgba(250,250,247,.93);
+   backdrop-filter:saturate(1.1) blur(8px);-webkit-backdrop-filter:saturate(1.1) blur(8px);
+   border-bottom:1px solid var(--border);display:flex;gap:6px;overflow-x:auto;
+   padding:10px max(36px,calc((100% - 992px)/2));scrollbar-width:thin}
+ .tabbar .tab{flex:0 0 auto;display:flex;align-items:baseline;gap:9px;cursor:pointer;
+   background:transparent;border:1px solid transparent;border-radius:999px;
+   padding:8px 17px;transition:.15s;white-space:nowrap;color:var(--muted)}
+ .tabbar .tab:hover{color:var(--ink);background:var(--bg-soft)}
+ .tabbar .tab.active{color:var(--accent-2);background:var(--bg-soft);border-color:var(--border-strong)}
+ .tabbar .tn{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.1em;color:var(--accent)}
+ .tabbar .tl{font-family:var(--serif);font-weight:500;font-size:16px}
+ body{padding-top:56px} .concept-panel{display:none}
+ .concept-panel.active{display:block}
+ .concept-panel header{padding-top:50px}
+ @media(max-width:560px){.tabbar .tl{max-width:48vw;overflow:hidden;text-overflow:ellipsis}}
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+<nav class="tabbar" aria-label="Các khái niệm"><button class="tab" data-i="0"><span class="tn">01</span><span class="tl">Goodwill = phần dư</span></button><button class="tab" data-i="1"><span class="tn">02</span><span class="tl">DLOM &amp; DLOC (200)</span></button><button class="tab" data-i="2"><span class="tn">03</span><span class="tl">Bóc dòng tiền vô hình</span></button><button class="tab" data-i="3"><span class="tn">04</span><span class="tl">Non-fin liabilities (220)</span></button><button class="tab" data-i="4"><span class="tn">05</span><span class="tl">Inventory step-up (230)</span></button><button class="tab" data-i="5"><span class="tn">06</span><span class="tl">Ba loại hao mòn</span></button><button class="tab" data-i="6"><span class="tn">07</span><span class="tl">Real property (400)</span></button><button class="tab" data-i="7"><span class="tn">08</span><span class="tl">Residual method (410)</span></button><button class="tab" data-i="8"><span class="tn">09</span><span class="tl">Bậc thang quan sát được</span></button></nav>
+<div class="concept-panel" id="c-goodwill-residual"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Giải thích theo phương pháp Feynman</div>
+    <h1 class="rise" style="animation-delay:.08s">Goodwill: phần dư bạn không chỉ tay vào được</h1>
+    <p class="core rise" style="animation-delay:.16s">Goodwill không phải một món bạn chỉ ra được, <span>mà là phần còn lại sau khi đã trừ hết mọi tài sản kể tên được.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Điều cần hiểu &amp; cách tiếp cận</span><h2>Quy tắc: goodwill là phần dư sau khi trừ mọi tài sản nhận diện được</h2></div>
+    </div>
+    <div class="rule">IVS 210 §20.07: <em>goodwill</em> nói chung là lợi ích kinh tế tương lai từ một doanh nghiệp hoặc nhóm tài sản <strong>chưa được ghi nhận riêng ở một tài sản khác</strong>. Giá trị goodwill thường được đo là <strong>phần dư</strong>: lấy giá trị doanh nghiệp <strong>trừ đi</strong> mọi tài sản hữu hình, vô hình và tiền tệ nhận diện được (đã điều chỉnh nợ). §20.08: vì là phần dư, số goodwill <strong>thay đổi</strong> tùy theo những tài sản nào được nhận diện.</div>
+    <div class="sub">Cách giải thích</div>
+    <div class="approach"><p>Chỗ vấp: ai cũng tưởng goodwill là 'thương hiệu' hay 'danh tiếng', một món cụ thể. Cách làm: lật ngược cách tính. Goodwill không được đo trực tiếp. Nó là cái còn sót lại sau khi ta đã bóc tách và định giá mọi thứ gọi tên được. Hiểu nó là 'phần dư' thì mọi tính chất lạ của nó sáng ra.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Giải thích đơn giản</span><h2>Mua quán phở 2 tỷ, kể tên được 1,5 tỷ — phần kia là gì?</h2></div>
+    </div>
+    <p class="lead">Bạn mua cả một quán phở đang đông khách với giá 2 tỷ. Bạn liệt kê mọi thứ sờ và gọi tên được: bàn ghế, bếp, công thức, thương hiệu, hợp đồng thuê. Cộng hết được 1,5 tỷ. Vậy 0,5 tỷ còn lại là gì? Đó là goodwill — phần dư bạn trả thêm mà không gắn được vào món nào.</p>
+
+<div class="sub">Tính bằng cách trừ ra, không đo thẳng</div>
+<p>Không ai đo goodwill trực tiếp. Cách làm luôn là lấy giá trị cả doanh nghiệp, trừ đi mọi tài sản nhận diện được. Cái còn lại là goodwill. Nó được định nghĩa bằng phép trừ, nên bản chất là 'phần thừa ra'.</p>
+
+<div class="sub">Nhận diện được nhiều hơn thì goodwill nhỏ đi</div>
+<p>Đây là điểm lạ. Nếu bạn tách được thêm một tài sản — ví dụ định giá riêng danh sách khách quen — thì phần dư co lại. Cùng một quán, cùng giá mua, mà goodwill to hay nhỏ tùy bạn bóc tách được bao nhiêu món. Nó không phải con số cố định.</p>
+
+<div class="sub">Trong nó có gì</div>
+<p>Goodwill thường gói những thứ khó tách rời. Đó là lợi thế khi gộp hai doanh nghiệp, cơ hội mở rộng thị trường, một đội ngũ đã ráp sẵn, khách hàng tương lai. Toàn thứ có thật, sinh ra tiền, nhưng không bán lẻ từng cái được.</p>
+  </section>
+
+  <section class="gaps">
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Chỗ vấp · Lỗ hổng</span><h2>Mấy chỗ nghe xuôi mà nghĩ kỹ chưa thông</h2></div>
+    </div>
+    <div class="gap-q"><span class="q">“Thương hiệu là goodwill đúng không?”</span><p>Thường là không. Nếu thương hiệu tách ra và định giá riêng được, nó là một tài sản vô hình <em>nhận diện được</em> — nằm ngoài goodwill. Goodwill chỉ là phần còn lại sau khi đã bóc cả thương hiệu ra. Lẫn hai cái là lỗi kinh điển trong đề.</p></div>
+<div class="gap-q"><span class="q">“Sao cùng một thương vụ mà goodwill mỗi nơi tính một khác?”</span><p>Vì nó là phần dư. Số goodwill phụ thuộc vào những tài sản nào được nhận diện. Theo chuẩn kế toán, một vô hình chỉ được ghi nhận nếu nó tách rời được, hoặc sinh từ quyền hợp đồng và pháp lý. Nhận diện được nhiều thì dư ít, và ngược lại.</p></div>
+<div class="gap-q"><span class="q">“Tự gây dựng quán nổi tiếng — goodwill đó có được ghi sổ không?”</span><p>Goodwill tự tạo trong nội bộ thường không được ghi nhận. Lý do: không có một giao dịch mua để lòi ra phần dư mà đo. Chỉ khi ai đó <em>mua</em> doanh nghiệp, chênh lệch giữa giá mua và tài sản nhận diện được mới hiện hình thành goodwill.</p></div>
+<div class="gap-q"><span class="q">“Nếu goodwill chỉ là 'phần còn lại', nó có thật không hay chỉ là con số kẹt lại?”</span><p>Có thật, nhưng pha trộn. Phần dư đó chứa lợi ích kinh tế thật — đội ngũ giỏi, khách trung thành. Nhưng vì đo bằng cách trừ, nó cũng hứng mọi sai số của các bước định giá trước. Định giá tài sản khác lệch một chút là goodwill lệch theo. Đó là chỗ phải cẩn thận.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví von &amp; ví dụ đời thường</span><h2>Neo vào thứ bạn đã biết</h2></div>
+    </div>
+    <div class="analogy-card"><span class="tag">Ví dụ trung tâm</span>
+<p>Hình dung mua một giỏ quà đã gói kín giá 500 nghìn. Bạn mở ra, định giá từng món đếm được: bánh, trà, ly — cộng 380 nghìn. 120 nghìn còn lại là gì? Là phần bạn trả cho 'sự khéo' không nằm trong món nào: cách bày, thương hiệu tiệm, cảm giác sang. Đó chính là goodwill.</p>
+<p class="limit"><b>Chỗ ví von này hỏng:</b> giỏ quà có giá niêm yết 500 nghìn rõ ràng để bắt đầu trừ. Doanh nghiệp thì không — bạn phải <em>định giá</em> cả doanh nghiệp trước, rồi định giá từng tài sản nhận diện được, mỗi bước đều là ước lượng. Vì thế goodwill thực tế gánh sai số chồng lên, chứ không sạch sẽ như phép trừ 500 trừ 380.</p>
+</div>
+<p>Trong một thương vụ M&amp;A: mua công ty giá 100 tỷ. Bóc ra: máy móc 30, thương hiệu 20, công nghệ 15, khách hàng 10, trừ nợ 5 — tài sản nhận diện ròng 70 tỷ. Goodwill là 30 tỷ còn lại. Nếu định giá riêng được thêm 'đội ngũ', phần 30 tỷ đó sẽ nhỏ lại.</p>
+<div class="sub">Nâng một bậc — vì sao chuẩn kế toán siết &#x27;nhận diện được&#x27;</div>
+<p>Phần này hơi nặng. IVS 210 §20.08 dẫn chuẩn kế toán (IFRS/US GAAP): một tài sản vô hình chỉ được ghi nhận riêng nếu nó <em>separable</em> (tách ra bán, chuyển, cấp phép được, dù có ý định đó hay không) hoặc sinh từ <em>contractual/legal rights</em>. Ngưỡng này càng rộng thì càng nhiều vô hình bị bóc khỏi goodwill, và phần dư càng nhỏ. §20.09 liệt kê những gì hay nằm lại trong goodwill: synergy của thương vụ, cơ hội thị trường mới, đội ngũ ráp sẵn (<em>assembled workforce</em>), và phần <em>going-concern</em>.</p>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">4</div>
+      <div class="step-meta"><span class="lbl">Kể lại gọn gàng</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Mua quán phở 2 tỷ, kể tên được 1,5 tỷ tài sản, thì 0,5 tỷ còn lại là goodwill. Nó không được đo thẳng — luôn là phần dư sau khi trừ mọi thứ nhận diện được. Nên tách được càng nhiều tài sản, goodwill càng nhỏ. Nó có thật, nhưng là phần bạn không chỉ tay vào từng món được.</p>
+<p class="core">Goodwill không phải một món bạn chỉ ra được, <span>mà là phần còn lại sau khi đã trừ hết mọi tài sản kể tên được.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã hiểu chưa?</h3>
+      <ol>
+        <li>Mua doanh nghiệp giá 100 tỷ, tài sản nhận diện ròng 70 tỷ. Goodwill là bao nhiêu và được tính thế nào?</li>
+        <li>Vì sao tách riêng được thêm một tài sản vô hình lại làm goodwill nhỏ đi?</li>
+        <li>Thương hiệu định giá riêng được — nó nằm trong hay ngoài goodwill?</li>
+        <li>Vì sao goodwill tự gây dựng trong nội bộ thường không được ghi nhận?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nếu giải thích được cho bà ngoại hiểu, bạn mới thật sự hiểu.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-dlom-dloc"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Giải thích theo phương pháp Feynman</div>
+    <h1 class="rise" style="animation-delay:.08s">Cổ phần thiểu số, khó bán: vì sao đáng ít hơn phần chia đều</h1>
+    <p class="core rise" style="animation-delay:.16s">Một lát cắt nhỏ, khó bán của doanh nghiệp <span>đáng ít hơn đúng tỷ lệ của nó trong cả công ty.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Điều cần hiểu &amp; cách tiếp cận</span><h2>Quy tắc: điều chỉnh cho quyền kiểm soát và tính thanh khoản</h2></div>
+    </div>
+    <div class="rule">IVS 200 §90.05(b): một <strong>controlling interest</strong> có thể đáng hơn một <strong>non-controlling interest</strong> — nên có thể cần <em>control premium</em> hoặc <em>discount for lack of control</em> (DLOC), tùy phương pháp. §60.11: khi dùng income approach, có thể phải điều chỉnh cho <strong>tính thanh khoản</strong> (marketability — DLOM) và cho việc phần vốn là kiểm soát hay không. §90.03: điều lệ công ty có thể hạn chế chuyển nhượng, ảnh hưởng giá trị.</div>
+    <div class="sub">Cách giải thích</div>
+    <div class="approach"><p>Chỗ vấp: nếu công ty đáng 100 tỷ, thì 10% phải đáng đúng 10 tỷ chứ? Cách làm: tách hai thứ một lát cắt nhỏ thường thiếu — quyền điều khiển công ty, và khả năng bán nhanh ra tiền. Thiếu mỗi thứ là trừ một khoản. Vì thế 10% thường đáng ít hơn 10 tỷ.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Giải thích đơn giản</span><h2>10% của công ty 100 tỷ thường không đáng 10 tỷ</h2></div>
+    </div>
+    <p class="lead">Một công ty đáng 100 tỷ. Bạn cầm 10% cổ phần. Nghe thì 10% phải đáng 10 tỷ. Nhưng thường nó đáng ít hơn. Vì lát cắt nhỏ đó thiếu hai thứ: quyền điều khiển công ty, và khả năng bán nhanh ra tiền mặt. Mỗi cái thiếu kéo giá xuống một nấc.</p>
+
+<div class="sub">Thiếu quyền kiểm soát — trừ DLOC</div>
+<p>Cầm 10% thì bạn không quyết được gì lớn: không định cổ tức, không chọn sếp, không bán tài sản. Người chủ thật sự là nhóm nắm đa số. Vì lát của bạn không có quyền đó, nó bị trừ một khoản — gọi là chiết khấu thiếu quyền kiểm soát. Ngược lại, ai mua được quyền điều khiển có thể trả thêm một khoản, gọi là phần thưởng kiểm soát.</p>
+
+<div class="sub">Khó bán — trừ DLOM</div>
+<p>Cổ phiếu niêm yết bán cái là ra tiền trong vài giây. Cổ phần một công ty gia đình chưa niêm yết thì không. Muốn bán phải tìm người mua, thương lượng, có khi cả năm. Tiền 'kẹt' đó kém giá hơn tiền 'lỏng'. Khoản trừ cho chuyện khó bán gọi là chiết khấu thanh khoản kém.</p>
+
+<div class="sub">Hai nấc trừ chồng lên nhau</div>
+<p>Hai khoản này tách bạch, và thường trừ nối tiếp. Trước hết quy ra giá trị cả công ty. Lấy tỷ lệ phần vốn. Trừ thiếu kiểm soát, rồi trừ khó bán. Con số cuối có thể thấp hơn 'tỷ lệ chia đều' khá nhiều. Đây là chỗ định giá cổ phần thiểu số rất hay bị làm sai.</p>
+  </section>
+
+  <section class="gaps">
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Chỗ vấp · Lỗ hổng</span><h2>Mấy chỗ nghe xuôi mà nghĩ kỹ chưa thông</h2></div>
+    </div>
+    <div class="gap-q"><span class="q">“Công ty 100 tỷ thì 10% là 10 tỷ, sao lại ít hơn?”</span><p>Vì '10 tỷ' giả định lát cắt của bạn ngang giá phần còn lại. Thực ra nó kém hơn: không có quyền điều khiển, lại khó bán. Hai nhược điểm đó là tiền thật người mua sẽ trừ. Nên giá một phần thiểu số thường dưới mức chia đều theo tỷ lệ.</p></div>
+<div class="gap-q"><span class="q">“DLOM và DLOC có phải một không?”</span><p>Không, hai thứ khác nhau. DLOC trừ vì <em>thiếu quyền điều khiển</em> — chuyện quyền lực. DLOM trừ vì <em>khó bán ra tiền</em> — chuyện thanh khoản. Một cổ phần có thể dính cả hai: vừa nhỏ không nắm quyền, vừa của công ty chưa niêm yết khó bán.</p></div>
+<div class="gap-q"><span class="q">“Vậy nắm cổ phần chi phối thì được cộng thêm?”</span><p>Có thể. Mua được quyền điều khiển công ty đáng giá hơn, nên người mua có thể trả thêm một <em>control premium</em>. Nhưng chuẩn nhắc: nếu phần trả thêm đó đến từ synergy riêng của một người mua, phải xét nó có áp cho tài sản đang định giá không. Đừng bê nguyên premium từ vụ khác sang.</p></div>
+<div class="gap-q"><span class="q">“Mức chiết khấu bao nhiêu phần trăm là đúng?”</span><p>Không có con số cố định, và đây là chỗ dễ cãi nhất. Mức DLOM/DLOC tùy công ty, tùy quyền gắn với cổ phần, tùy thị trường. Chuẩn không cho một bảng số sẵn — valuer phải lập luận từ bằng chứng (giao dịch tương tự, nghiên cứu thực nghiệm). Con số rút từ trên trời là sai.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví von &amp; ví dụ đời thường</span><h2>Neo vào thứ bạn đã biết</h2></div>
+    </div>
+    <div class="analogy-card"><span class="tag">Ví dụ trung tâm</span>
+<p>Hình dung một cái bánh pizza cả cái đáng 100 nghìn. Bạn cầm một miếng 1/10. Nhưng là miếng bạn <strong>không được chọn topping, không được cắt, không được quyết khi nào ăn</strong> — chủ tiệc quyết hết. Và muốn đổi miếng đó ra tiền thì phải đi mời từng người, cả buổi chưa chắc bán được. Miếng đó đáng dưới 10 nghìn.</p>
+<p class="limit"><b>Chỗ ví von này hỏng:</b> miếng pizza thì 'thiếu quyền' và 'khó bán' nghe như chuyện vui. Trong định giá thật, hai khoản trừ này là tiền lớn, dựa trên bằng chứng thị trường, và phụ thuộc đúng những quyền ghi trong điều lệ công ty. Lượng hóa chúng — bao nhiêu phần trăm — mới là phần khó và hay tranh cãi nhất.</p>
+</div>
+<p>Một thương vụ điển hình: định giá 15% cổ phần một công ty gia đình để chia thừa kế. Quy ra giá trị cả công ty bằng DCF, lấy 15%. Rồi trừ DLOC (15% không nắm quyền) và DLOM (chưa niêm yết, khó bán). Con số cuối có thể thấp hơn '15% chia đều' tới 30–40%, tùy bằng chứng.</p>
+<div class="sub">Nâng một bậc — trình tự DLOM/DLOC trong định giá doanh nghiệp</div>
+<p>Phần này hơi nặng. Trình tự thường gặp: (1) định giá 100% vốn chủ ở mức kiểm soát; (2) nhân tỷ lệ phần vốn; (3) áp <em>discount for lack of control</em> nếu là phần thiểu số (IVS 200 §90.05(b)); (4) áp <em>discount for lack of marketability</em> nếu khó bán (§60.11). Thứ tự, và việc dùng cơ sở giá trị ở mức control hay minority, ảnh hưởng lớn đến kết quả. §90.05(b) dẫn IVS 103 Appendix A10.17(b) về cách phương pháp ảnh hưởng tới premium/discount. Cảnh báo §90.05(b): khi lấy premium từ giao dịch đã hoàn tất, phải kiểm xem synergy gây ra premium đó có áp cho tài sản của bạn không — nếu không, đó là synergistic value, không phải market value (nối panel Market Value ở file General).</p>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">4</div>
+      <div class="step-meta"><span class="lbl">Kể lại gọn gàng</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Một công ty đáng 100 tỷ, nhưng 10% cổ phần thường không đáng 10 tỷ. Lát nhỏ đó thiếu hai thứ: quyền điều khiển (trừ DLOC) và khả năng bán nhanh (trừ DLOM). Nắm quyền chi phối thì ngược lại — có thể trả thêm control premium. Mức trừ bao nhiêu phải lập luận từ bằng chứng, không bịa.</p>
+<p class="core">Một lát cắt nhỏ, khó bán của doanh nghiệp <span>đáng ít hơn đúng tỷ lệ của nó trong cả công ty.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã hiểu chưa?</h3>
+      <ol>
+        <li>Công ty đáng 100 tỷ. Vì sao 10% cổ phần thường đáng dưới 10 tỷ?</li>
+        <li>Phân biệt DLOC và DLOM — mỗi cái trừ vì lý do gì?</li>
+        <li>Khi nào có control premium thay vì discount?</li>
+        <li>Vì sao không có một mức % chiết khấu cố định cho DLOM/DLOC?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nếu giải thích được cho bà ngoại hiểu, bạn mới thật sự hiểu.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-intangible-own-cashflow"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Giải thích theo phương pháp Feynman</div>
+    <h1 class="rise" style="animation-delay:.08s">Một thương hiệu kiếm ra bao nhiêu? Bóc dòng tiền của riêng nó</h1>
+    <p class="core rise" style="animation-delay:.16s">Một tài sản vô hình không kiếm tiền một mình, <span>nên muốn định giá nó, phải bóc lấy đúng phần dòng tiền của riêng nó.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Điều cần hiểu &amp; cách tiếp cận</span><h2>Quy tắc: định giá vô hình bằng phần dòng tiền thuộc riêng nó</h2></div>
+    </div>
+    <div class="rule">IVS 210 §60.06: <em>excess earnings method</em> định giá một vô hình bằng <strong>hiện giá phần dòng tiền thuộc riêng nó</strong>, sau khi <strong>loại bỏ</strong> phần dòng tiền thuộc các tài sản khác cùng góp sức (<em>contributory assets</em>). §60.11(f): mỗi kỳ, trừ 'phần thuê' các tài sản góp sức (<em>contributory asset charges</em>) khỏi lợi nhuận. §60.18: <em>relief-from-royalty</em> đo vô hình bằng khoản tiền bản quyền <strong>tiết kiệm được</strong> nhờ sở hữu thay vì đi thuê.</div>
+    <div class="sub">Cách giải thích</div>
+    <div class="approach"><p>Chỗ vấp: lợi nhuận là của cả doanh nghiệp, làm sao tách ra phần của riêng cái thương hiệu? Cách làm: hình dung lợi nhuận như tiền chung của một nhóm góp vốn. Mỗi thành viên — nhà xưởng, vốn, đội ngũ — đòi phần của mình trước. Cái còn lại mới là của thương hiệu. Hoặc cách hai: hỏi 'nếu không sở hữu, ta phải đi thuê nó tốn bao nhiêu?'.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Giải thích đơn giản</span><h2>Quán lời 600 triệu — riêng công thức đáng bao nhiêu?</h2></div>
+    </div>
+    <p class="lead">Một quán phở lời 600 triệu mỗi năm. Bạn muốn biết riêng <em>công thức nước dùng</em> đáng bao nhiêu. Nhưng 600 triệu đâu phải chỉ công thức làm ra — còn nhờ mặt bằng, bàn ghế, tiền vốn, người đứng bếp. Muốn định giá công thức, phải bóc lấy đúng phần lời mà chỉ riêng nó tạo ra.</p>
+
+<div class="sub">Cách 1: trừ phần của những thứ góp sức</div>
+<p>Coi 600 triệu là tiền chung. Mỗi thứ góp sức đòi 'tiền công' của mình trước. Mặt bằng đòi tiền thuê, vốn đòi lãi. Thiết bị đòi phần hao mòn, đội ngũ đòi lương xứng đáng. Trừ hết các khoản đó ra, phần dôi lại chính là công của công thức. Đó là cách 'excess earnings'.</p>
+
+<div class="sub">Cách 2: hỏi 'thuê nó tốn bao nhiêu'</div>
+<p>Cách khác cho thương hiệu hay bằng sáng chế: giả sử bạn không sở hữu nó, mà phải đi thuê của người khác và trả phí bản quyền. Sở hữu rồi thì khỏi trả khoản đó. Khoản tiền bản quyền tiết kiệm được, quy về hôm nay, chính là giá trị của nó. Đó là 'relief from royalty'.</p>
+
+<div class="sub">Vì sao phải bóc tách</div>
+<p>Nếu gán cả 600 triệu cho công thức, bạn đã tính trùng — vì mặt bằng và đội ngũ cũng đang được tính ở chỗ khác. Bóc tách giữ cho mỗi tài sản chỉ nhận đúng phần của mình. Không trùng, không sót.</p>
+  </section>
+
+  <section class="gaps">
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Chỗ vấp · Lỗ hổng</span><h2>Mấy chỗ nghe xuôi mà nghĩ kỹ chưa thông</h2></div>
+    </div>
+    <div class="gap-q"><span class="q">“Sao không lấy luôn cả lợi nhuận gán cho thương hiệu cho nhanh?”</span><p>Vì như thế là tính trùng. Lợi nhuận đó cũng nhờ mặt bằng, vốn, con người. Nếu thương hiệu 'ăn' hết, thì khi định giá mặt bằng hay vốn, bạn lại tính phần đó lần nữa. Cộng lại sẽ vượt giá trị cả doanh nghiệp. Bóc tách là để tổng không phình ra.</p></div>
+<div class="gap-q"><span class="q">“'Tiền công' của mỗi tài sản góp sức tính sao?”</span><p>Mỗi tài sản đòi một mức lợi suất theo rủi ro của nó. Vốn lưu động ít rủi ro nên đòi suất thấp. Máy móc chuyên dụng hay vô hình khác rủi ro cao thì đòi suất cao hơn. Nhân suất đó với giá trị tài sản, ra 'tiền công' phải trừ mỗi kỳ.</p></div>
+<div class="gap-q"><span class="q">“Hai cách — trừ phần góp sức và tiền thuê tiết kiệm — có ra cùng kết quả không?”</span><p>Trên lý thuyết thì gần nhau, nhưng dùng cho loại vô hình khác nhau. 'Excess earnings' (nhất là MPEEM) hợp với tài sản dẫn dắt doanh thu, như danh sách khách hàng hay công nghệ. 'Relief from royalty' hợp với cái có thể đem cho thuê, như thương hiệu, bằng sáng chế. Chọn cách hợp với bản chất tài sản.</p></div>
+<div class="gap-q"><span class="q">“Một dòng doanh thu, định giá được mấy vô hình bằng excess earnings?”</span><p>Chỉ <em>một</em>. Chuẩn nói rõ: excess earnings chỉ nên áp cho một vô hình trên một dòng doanh thu. Nếu hai vô hình cùng ăn một dòng tiền, gán cả cho cả hai là tính trùng. Phải chọn cái chính, các cái kia thành tài sản góp sức.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví von &amp; ví dụ đời thường</span><h2>Neo vào thứ bạn đã biết</h2></div>
+    </div>
+    <div class="analogy-card"><span class="tag">Ví dụ trung tâm</span>
+<p>Hình dung một ban nhạc đang chia tiền cát-sê một đêm diễn. Bạn muốn biết riêng <strong>giọng ca chính</strong> đáng bao nhiêu. Không thể vơ hết tiền cho ca sĩ — tay trống, tay guitar, dàn âm thanh đều có công. Trả 'tiền công' cho từng người trước. Phần dôi lại sau cùng mới là giá trị riêng của giọng hát.</p>
+<p class="limit"><b>Chỗ ví von này hỏng:</b> với ban nhạc, 'tiền công' từng người khá dễ hỏi. Với tài sản, mức lợi suất đòi hỏi của mỗi 'thành viên' (vốn, máy móc, đội ngũ) phải tự ước lượng theo rủi ro. Sai một mắt là phần dư của vô hình lệch theo. Và đời thật còn phải lo thuế, tax amortisation benefit, tuổi đời tài sản — những thứ ban nhạc không có.</p>
+</div>
+<p>Một hãng phần mềm: doanh thu chủ yếu nhờ <em>công nghệ lõi</em>. Định giá công nghệ bằng MPEEM. Dự báo dòng tiền, trừ 'tiền công' của vốn lưu động, máy chủ, đội ngũ bán hàng. Còn lại là phần của công nghệ. Riêng <em>thương hiệu</em> thì định giá bằng relief from royalty — phí bản quyền tiết kiệm được nhờ không phải đi thuê tên.</p>
+<div class="sub">Nâng một bậc — contributory asset charges và MPEEM</div>
+<p>Phần này hơi nặng. 'Tiền công' của các tài sản góp sức gọi là <em>contributory asset charges</em> (CAC): mỗi kỳ trừ một khoản return = (lợi suất yêu cầu) × (giá trị tài sản góp sức) khỏi lợi nhuận, để còn lại đúng <em>excess earnings</em> của vô hình chủ thể. <em>MPEEM</em> (multi-period excess earnings) làm việc này qua nhiều kỳ, cho phép dòng tiền và mức CAC thay đổi theo thời gian — nên là biến thể hay dùng nhất. Bước cuối, nếu phù hợp mục đích, cộng thêm <em>tax amortisation benefit</em> (TAB). Quy tắc vàng: một dòng doanh thu chỉ nuôi một vô hình chủ thể (§60.17), nếu không sẽ tính trùng.</p>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">4</div>
+      <div class="step-meta"><span class="lbl">Kể lại gọn gàng</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Quán lời 600 triệu, nhưng đó là công của cả mặt bằng, vốn, đội ngũ <em>và</em> công thức. Muốn định giá riêng công thức, trừ 'tiền công' của những thứ góp sức ra trước — phần dôi lại mới là của nó. Hoặc hỏi cách khác: nếu không sở hữu, đi thuê tốn bao nhiêu? Cốt lõi: bóc đúng phần dòng tiền của riêng tài sản, không tính trùng.</p>
+<p class="core">Một tài sản vô hình không kiếm tiền một mình, <span>nên muốn định giá nó, phải bóc lấy đúng phần dòng tiền của riêng nó.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã hiểu chưa?</h3>
+      <ol>
+        <li>Quán lời 600 triệu/năm. Vì sao không gán cả 600 cho công thức nước dùng?</li>
+        <li>Trong excess earnings, 'contributory asset charge' là gì và vì sao phải trừ nó?</li>
+        <li>Khi nào nên dùng relief-from-royalty thay vì MPEEM?</li>
+        <li>Vì sao một dòng doanh thu chỉ nên dùng để định giá MỘT tài sản vô hình chủ thể?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nếu giải thích được cho bà ngoại hiểu, bạn mới thật sự hiểu.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-non-financial-liabilities"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Giải thích theo phương pháp Feynman</div>
+    <h1 class="rise" style="animation-delay:.08s">Định giá một nghĩa vụ: vì sao phải cộng thêm lợi nhuận cho người gánh</h1>
+    <p class="core rise" style="animation-delay:.16s">Một nghĩa vụ phi tiền tệ đáng bằng chi phí làm xong nó, <span>cộng thêm khoản lời cho người chịu gánh hộ.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Điều cần hiểu &amp; cách tiếp cận</span><h2>Quy tắc: giá = chi phí hoàn thành nghĩa vụ + lợi nhuận để có người gánh</h2></div>
+    </div>
+    <div class="rule">IVS 220 §20.02: <em>non-financial liability</em> là nghĩa vụ phải hoàn thành bằng <strong>hàng/dịch vụ</strong>, không phải bằng tiền — như bảo hành, doanh thu chưa thực hiện, nghĩa vụ hoàn nguyên môi trường. §20.04: bên nhận gánh nghĩa vụ <strong>đòi một khoản lợi nhuận</strong> cho công sức và rủi ro hoàn thành. §60.01: giá trị = <strong>hiện giá chi phí hoàn thành</strong> nghĩa vụ <strong>cộng phần lợi nhuận</strong> mà ai đó đòi để nhận gánh. §20.05: nợ tiền tệ thì chỉ trả tiền, không cần khoản lời này.</div>
+    <div class="sub">Cách giải thích</div>
+    <div class="approach"><p>Chỗ vấp: nghĩa vụ là thứ mình NỢ, sao 'giá trị' của nó lại cộng thêm lợi nhuận? Cách làm: đổi góc nhìn — hỏi 'trả ai bao nhiêu để họ gánh hộ mình?'. Gánh một nghĩa vụ là làm việc, mà không ai làm không công. Nên giá của nó là chi phí làm xong, cộng tiền công cho người làm.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Giải thích đơn giản</span><h2>Trả bao nhiêu để ai đó gánh nghĩa vụ hộ bạn?</h2></div>
+    </div>
+    <p class="lead">Công ty bạn nợ một nghĩa vụ không trả bằng tiền: ví dụ bảo hành 1000 cái máy trong ba năm. Nó đáng bao nhiêu? Đừng hỏi 'tốn bao nhiêu để tự làm'. Hỏi: 'phải trả ai bao nhiêu để họ nhận gánh hộ?'. Câu trả lời gồm chi phí làm xong, cộng một khoản lời cho người chịu gánh.</p>
+
+<div class="sub">Nghĩa vụ phi tiền tệ là một việc phải làm</div>
+<p>Nợ tiền thì đơn giản: tới hạn trả đúng số tiền. Nhưng bảo hành, dọn môi trường, giao hàng đã thu tiền trước — đều là <em>việc phải làm</em>, tốn công và có rủi ro. Khác hẳn một khoản tiền phải trả. Chính 'công sức' này làm cách định giá khác đi.</p>
+
+<div class="sub">Vì sao cộng thêm lợi nhuận</div>
+<p>Tưởng tượng bạn muốn 'sang' nghĩa vụ bảo hành cho một công ty khác. Họ có nhận không nếu bạn chỉ trả đúng chi phí dự kiến? Không — vì họ bỏ công, chịu rủi ro, mà chẳng lời gì. Phải trả họ chi phí cộng một khoản lời. Khoản lời đó là một phần của giá trị nghĩa vụ.</p>
+
+<div class="sub">Nợ tiền tệ thì không có khoản lời này</div>
+<p>Với một khoản vay bằng tiền, hoàn thành chỉ là trả tiền. Không có công sức giao hàng, không rủi ro thực hiện. Nên không ai đòi thêm lợi nhuận để gánh hộ. Đây là điểm tách nợ tiền tệ khỏi nợ phi tiền tệ.</p>
+  </section>
+
+  <section class="gaps">
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Chỗ vấp · Lỗ hổng</span><h2>Mấy chỗ nghe xuôi mà nghĩ kỹ chưa thông</h2></div>
+    </div>
+    <div class="gap-q"><span class="q">“Nghĩa vụ là cái mình nợ — sao giá trị lại có lợi nhuận trong đó?”</span><p>Vì giá trị đo theo góc 'chuyển nghĩa vụ cho người khác'. Người nhận gánh là một doanh nghiệp, họ làm việc thì phải có lời. Khoản lời đó không phải của bạn — nó là cái bạn phải trả để thoát nghĩa vụ. Nên nó nằm trong giá trị hợp lý của nghĩa vụ.</p></div>
+<div class="gap-q"><span class="q">“Sao không lấy thẳng chi phí dự kiến làm giá trị cho gọn?”</span><p>Vì chi phí trần trụi bỏ sót hai thứ: khoản lời cho công sức, và phần bù rủi ro. Một người gánh hộ đòi cả hai. Lấy mỗi chi phí là định giá thấp nghĩa vụ — và trong hợp nhất kinh doanh, ghi nợ thấp đi là sai.</p></div>
+<div class="gap-q"><span class="q">“Nợ phi tiền tệ và nợ tiền tệ khác nhau ở đâu cho dễ nhớ?”</span><p>Nợ tiền tệ: hoàn thành là trả tiền, xong. Nợ phi tiền tệ: hoàn thành là làm một việc (giao hàng, bảo hành, dọn dẹp). Việc thì tốn công và rủi ro, nên phải cộng lời. Một bên trả tiền, một bên làm việc — đó là gốc khác nhau.</p></div>
+<div class="gap-q"><span class="q">“Bảo hành tương lai đầy bất định — đo chi phí kiểu gì?”</span><p>Đây là chỗ khó nhất. Vì tương lai nhiều kịch bản, chuẩn hay dựng nhiều kịch bản dòng tiền rồi lấy trung bình theo xác suất (Scenario Based Method). Cộng phần bù rủi ro cho sự bất định đó. Con số vì thế nhạy với giả định xác suất — phải nêu rõ.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví von &amp; ví dụ đời thường</span><h2>Neo vào thứ bạn đã biết</h2></div>
+    </div>
+    <div class="analogy-card"><span class="tag">Ví dụ trung tâm</span>
+<p>Hình dung bạn đã bán 100 vé 'rửa xe trọn năm', thu tiền rồi. Giờ bạn muốn nghỉ, nhờ tiệm khác rửa hộ cho khách của bạn. Tiệm đó lấy bao nhiêu? Không phải đúng chi phí xà phòng và nước. Họ tính chi phí <strong>cộng tiền công và chút lời</strong> — vì họ phải đứng rửa cả năm. Số đó mới là giá trị thật của nghĩa vụ bạn đang gánh.</p>
+<p class="limit"><b>Chỗ ví von này hỏng:</b> 'rửa xe' thì chi phí và lời dễ ước. Nghĩa vụ thật thì khác — bảo hành điện tử, dọn ô nhiễm, doanh thu hoãn lại. Chi phí trải nhiều năm, đầy bất định, phần bù rủi ro khó định lượng. Đó là lý do chuẩn phải dựng nhiều kịch bản xác suất, chứ không nhân một con số.</p>
+</div>
+<p>Trong một thương vụ M&A, công ty mục tiêu có nghĩa vụ bảo hành. Kế toán đòi ghi nó theo giá trị hợp lý. Valuer ước chi phí bảo hành dự kiến qua các năm, quy về hiện tại. Rồi cộng một biên lợi nhuận và phần bù rủi ro mà một bên gánh hộ sẽ đòi. Con số đó thường cao hơn 'chi phí thuần' công ty tự nhẩm.</p>
+<div class="sub">Nâng một bậc — vì sao nợ phi tiền tệ không có &#x27;asset-liability symmetry&#x27;</div>
+<p>Phần này hơi nặng. Với nợ tiền tệ, IVS 220 §20.05 nói thường có 'asset–liability symmetry': giá trị khoản nợ với người nợ xấp xỉ giá trị khoản phải thu với chủ nợ, nên định giá được bằng khung tài sản. Với nợ phi tiền tệ thì không — vì bên gánh đòi thêm lợi nhuận hoàn thành (§20.04), làm hai phía lệch nhau. §60.01: giá = PV(chi phí hoàn thành) + profit margin để assume. §100.02: hay dùng Scenario Based Method (dựng nhiều kịch bản, lấy kỳ vọng theo xác suất) cộng risk margin. Lưu ý: một số contingent consideration nằm ngoài phạm vi IVS 220 (§20.03) — kiểm kỹ trong PPA.</p>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">4</div>
+      <div class="step-meta"><span class="lbl">Kể lại gọn gàng</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Nghĩa vụ phi tiền tệ (bảo hành, dọn môi trường, giao hàng đã thu tiền) đáng bằng chi phí làm xong nó. <strong>Cộng một khoản lời</strong> cho người chịu gánh hộ. Vì gánh một việc thì tốn công và rủi ro, không ai làm không công. Khác nợ tiền tệ: trả tiền là xong, khỏi cộng lời.</p>
+<p class="core">Một nghĩa vụ phi tiền tệ đáng bằng chi phí làm xong nó, <span>cộng thêm khoản lời cho người chịu gánh hộ.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã hiểu chưa?</h3>
+      <ol>
+        <li>Vì sao giá trị một nghĩa vụ phi tiền tệ lại bao gồm một khoản lợi nhuận?</li>
+        <li>Nợ tiền tệ và nợ phi tiền tệ khác nhau cơ bản ở đâu?</li>
+        <li>Lấy thẳng chi phí dự kiến làm giá trị nghĩa vụ — thiếu những gì?</li>
+        <li>Bảo hành nhiều năm đầy bất định thường được mô hình hóa bằng phương pháp nào?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nếu giải thích được cho bà ngoại hiểu, bạn mới thật sự hiểu.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-inventory-step-up"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Giải thích theo phương pháp Feynman</div>
+    <h1 class="rise" style="animation-delay:.08s">Hàng tồn kho trong M&A: định giá theo giá bán, trừ ngược</h1>
+    <p class="core rise" style="animation-delay:.16s">Hàng tồn kho không định giá bằng giá vốn, <span>mà bằng giá bán trừ ngược phần công sức bán chưa làm.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Điều cần hiểu &amp; cách tiếp cận</span><h2>Quy tắc: top-down — giá bán trừ chi phí còn lại trừ lợi nhuận của khâu chưa làm</h2></div>
+    </div>
+    <div class="rule">IVS 230 §60.01: định giá hàng tồn kho là tách phần giá trị <strong>đã tạo trước ngày định giá</strong> khỏi phần <strong>còn tạo sau đó</strong>. §60.03 (<em>top-down method</em>): bắt đầu từ <strong>giá bán ước tính</strong>, trừ chi phí còn lại và lợi nhuận của phần việc còn lại. §60.05: với thành phẩm, trừ <em>chi phí bán</em> (disposal) và <strong>phần lợi nhuận của khâu bán</strong>; với hàng dở dang (WIP), trừ thêm <em>chi phí hoàn thiện</em> và lợi nhuận của khâu hoàn thiện.</div>
+    <div class="sub">Cách giải thích</div>
+    <div class="approach"><p>Chỗ vấp: hàng tồn kho cứ ghi sổ theo giá vốn, sao phải định giá lại? Cách làm: nhớ rằng trong một thương vụ, hàng sắp bán đã 'gần thành tiền' rồi. Nên định giá đi ngược từ giá bán. Nhưng phần lợi nhuận của khâu bán chưa diễn ra thì không tính cho người mua — phải trừ ra.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Giải thích đơn giản</span><h2>Đi ngược từ giá bán, không xuôi từ giá vốn</h2></div>
+    </div>
+    <p class="lead">Khi một công ty bị mua lại, hàng tồn kho phải được định giá lại, không lấy nguyên giá vốn trong sổ. Vì hàng sắp bán thực ra đã 'gần thành tiền'. Cách làm đi ngược: bắt đầu từ giá bán, rồi trừ dần những chi phí và lợi nhuận của phần việc <em>chưa</em> làm xong.</p>
+
+<div class="sub">Vì sao không lấy giá vốn</div>
+<p>Sổ sách ghi hàng theo chi phí đã bỏ ra. Nhưng giá trị thật của lô hàng sắp bán nằm ở giá bán nó sắp đạt. Phần lớn công sức làm ra nó đã xong rồi. Nên định giá theo giá bán mới phản ánh đúng, không phải theo giá vốn quá khứ.</p>
+
+<div class="sub">Trừ ngược những gì</div>
+<p>Từ giá bán, trừ dần. Với thành phẩm: trừ chi phí còn phải bỏ để bán (tiếp thị, giao hàng), và trừ phần lợi nhuận thuộc về khâu bán đó. Với hàng dở dang: trừ thêm chi phí làm cho xong, và lợi nhuận của khâu hoàn thiện. Cái còn lại là giá trị hôm nay.</p>
+
+<div class="sub">Vì sao trừ cả 'lợi nhuận của khâu chưa làm'</div>
+<p>Đây là mấu chốt. Người mua hàng tồn kho rồi vẫn phải tốn công bán nó ra. Phần lời của công sức bán đó là của <em>người mua</em> kiếm sau này, không phải giá trị có sẵn trong lô hàng hôm nay. Nên phải trừ ra, kẻo tính lố.</p>
+  </section>
+
+  <section class="gaps">
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Chỗ vấp · Lỗ hổng</span><h2>Mấy chỗ nghe xuôi mà nghĩ kỹ chưa thông</h2></div>
+    </div>
+    <div class="gap-q"><span class="q">“Hàng tồn kho có giá vốn trong sổ rồi, định giá lại làm gì?”</span><p>Vì giá vốn là quá khứ, không phải giá trị hôm nay trong một thương vụ. Hàng thành phẩm gần như đã sẵn sàng ra tiền theo giá bán. Trong hợp nhất kinh doanh, kế toán đòi ghi tài sản theo giá trị hợp lý — nên phải định giá lại, thường cao hơn giá vốn.</p></div>
+<div class="gap-q"><span class="q">“Sao không lấy thẳng giá bán làm giá trị cho nhanh?”</span><p>Vì giá bán còn gói phần lời của khâu bán <em>chưa</em> xảy ra. Người mua mới là người bỏ công bán nốt và hưởng phần lời đó. Lấy nguyên giá bán là tính cả công sức tương lai của người mua vào hôm nay — tính lố. Phải trừ phần đó ra.</p></div>
+<div class="gap-q"><span class="q">“Thành phẩm và hàng dở dang trừ khác nhau chỗ nào?”</span><p>Thành phẩm chỉ còn khâu bán, nên trừ chi phí bán và lợi nhuận khâu bán. Hàng dở dang còn phải làm cho xong, nên trừ thêm chi phí hoàn thiện và lợi nhuận của khâu hoàn thiện. Càng nhiều việc còn lại, càng trừ nhiều, giá trị càng thấp.</p></div>
+<div class="gap-q"><span class="q">“Đây là IVS hay là chuyện kế toán PPA?”</span><p>Cả hai gặp nhau ở đây. IVS 230 cho phương pháp định giá. Còn 'step-up' là tên kế toán cho việc nâng hàng tồn từ giá vốn lên giá trị hợp lý khi hợp nhất kinh doanh (IFRS 3). Đây là bút toán kiểm toán soi rất kỹ, vì nó ăn thẳng vào lợi nhuận sau M&A.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví von &amp; ví dụ đời thường</span><h2>Neo vào thứ bạn đã biết</h2></div>
+    </div>
+    <div class="analogy-card"><span class="tag">Ví dụ trung tâm</span>
+<p>Hình dung bạn mua lại một xe bánh mì, trong đó có sẵn 100 ổ vừa nướng. Mỗi ổ bán được 20 nghìn. Nhưng để bán hết, bạn còn phải đứng bán cả buổi, trả tiền chỗ, tiền túi đựng. Vậy 100 ổ đó <em>hôm nay</em> đáng bao nhiêu với bạn? Lấy 2 triệu (giá bán) trừ chi phí bán và phần công bán của bạn — chứ không phải nguyên 2 triệu.</p>
+<p class="limit"><b>Chỗ ví von này hỏng:</b> 100 ổ bánh thì bán hết trong một buổi, phần lời khâu bán nhỏ và dễ ước. Hàng tồn kho thật thì khác — ô tô, dược phẩm, hàng qua nhà phân phối. Chuỗi bán dài, nhiều tầng lợi nhuận. Tách 'lời đã tạo' khỏi 'lời chưa tạo' cần nhiều giả định. Đó là chỗ kiểm toán và valuer hay tranh luận.</p>
+</div>
+<p>Mua một hãng dược: kho thành phẩm ghi sổ 50 tỷ (giá vốn). Giá bán dự kiến 80 tỷ. Trừ chi phí bán và phần lợi nhuận của khâu phân phối, giá trị hợp lý có thể là 68 tỷ. Lô hàng được 'step-up' từ 50 lên 68 tỷ. Khi bán ra sau đó, lợi nhuận ghi nhận sẽ mỏng đi tương ứng.</p>
+<div class="sub">Nâng một bậc — các bước top-down và bẫy lợi nhuận theo chi phí</div>
+<p>Phần này hơi nặng. IVS 230 §60.05 cho các bước top-down: (a) ước giá bán (quan sát trực tiếp, hoặc áp gross margin lên net book value thành phẩm); (b) trừ chi phí hoàn thiện — chỉ cho WIP; (c) trừ chi phí bán/giao (disposal), bóc các khoản lợi cho kỳ sau; (d) trừ <em>phần lợi nhuận</em> của khâu hoàn thiện và khâu bán; (e) tính cả chi phí giữ hàng (holding) và rủi ro. Bẫy ở bước (d): không nên mặc định lợi nhuận tỷ lệ thuận với chi phí — phần đã làm (mua, sản xuất) thường gánh nhiều lợi nhuận hơn phần chỉ-còn-bán, nên lợi nhuận phân bổ cho khâu bán thường nhỏ (xem §90). §50 (market approach) thì dùng biên lợi nhuận nhà phân phối làm proxy thị trường.</p>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">4</div>
+      <div class="step-meta"><span class="lbl">Kể lại gọn gàng</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Trong M&A, hàng tồn kho không lấy giá vốn trong sổ. Định giá đi ngược từ giá bán. Trừ chi phí còn lại để bán, và để hoàn thiện nếu là hàng dở dang. Rồi trừ phần lợi nhuận của những khâu <em>chưa</em> làm. Vì phần lời đó là của người mua kiếm sau, không phải giá trị sẵn trong lô hàng hôm nay.</p>
+<p class="core">Hàng tồn kho không định giá bằng giá vốn, <span>mà bằng giá bán trừ ngược phần công sức bán chưa làm.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã hiểu chưa?</h3>
+      <ol>
+        <li>Trong PPA, vì sao hàng tồn kho không được định giá bằng giá vốn trong sổ?</li>
+        <li>Top-down method bắt đầu từ đâu và trừ dần những gì?</li>
+        <li>Vì sao phải trừ 'lợi nhuận của khâu bán chưa làm'?</li>
+        <li>Thành phẩm và hàng dở dang (WIP) khác nhau ở các khoản trừ nào?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nếu giải thích được cho bà ngoại hiểu, bạn mới thật sự hiểu.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-obsolescence-three-types"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Giải thích theo phương pháp Feynman</div>
+    <h1 class="rise" style="animation-delay:.08s">Đồ mới tinh vẫn có thể gần như vô giá trị</h1>
+    <p class="core rise" style="animation-delay:.16s">Chi phí làm ra một tài sản không phải giá trị của nó, <span>vì còn phải trừ ba kiểu hao mòn — kể cả khi đồ chưa hề cũ.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Điều cần hiểu &amp; cách tiếp cận</span><h2>Quy tắc: chi phí thay thế phải trừ ba loại hao mòn</h2></div>
+    </div>
+    <div class="rule">IVS 300 §90.01 &amp; §90.03: định giá máy móc theo <em>cost approach</em>, lấy chi phí thay thế bằng một tài sản <strong>cùng công dụng</strong>, rồi <strong>trừ hao mòn</strong>: <em>physical</em> (xuống cấp), <em>functional/technological</em> (lỗi thiết kế, lỗi thời công nghệ) và <em>economic</em> (yếu tố ngoài tài sản — thị trường, nhu cầu). Cost approach và ba loại hao mòn được định nghĩa ở <strong>IVS 103</strong> (§40 &amp; Appendix A30); với máy móc thì IVS 300 §90 là chuẩn áp dụng. (IVS 102 A10.05 chỉ nhắc lại nguyên tắc này để đầu vào nhất quán với market value.)</div>
+    <div class="sub">Cách giải thích</div>
+    <div class="approach"><p>Chỗ vấp: 'máy mới mua, còn nguyên đai, sao lại mất giá?'. Cách làm: tách 'mới' khỏi 'đáng tiền'. Một món có thể còn mới cứng mà vẫn rớt giá, nếu công nghệ lỗi thời hoặc không ai cần nó nữa. Ta sẽ soi ba thủ phạm kéo giá xuống, trong đó hai cái chẳng liên quan gì đến độ cũ.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Giải thích đơn giản</span><h2>Máy mới tinh trong kho mà rớt giá thảm</h2></div>
+    </div>
+    <p class="lead">Một cái máy in công nghiệp mua 1 tỷ, còn mới tinh trong kho. Nhưng cả ngành vừa chuyển sang công nghệ in mới, không ai mua loại cũ nữa. Cái máy 'mới' đó giờ chỉ còn đáng vài trăm triệu. Chi phí bỏ ra không cứu được giá trị. Giá trị bị ba kiểu hao mòn kéo xuống.</p>
+
+<div class="sub">Hao mòn vật lý — cái dễ thấy nhất</div>
+<p>Đây là kiểu ai cũng nghĩ tới: máy chạy lâu, mòn, han gỉ, hỏng vặt. Càng dùng nhiều, càng cũ, càng mất giá. Đây là loại hao mòn <em>nằm trong</em> bản thân cái máy. Nhưng nó chỉ là một trong ba.</p>
+
+<div class="sub">Hao mòn chức năng — máy ổn nhưng thiết kế lỗi thời</div>
+<p>Máy còn chạy tốt, nhưng đời mới làm nhanh gấp đôi, tốn điện nửa phần. So với bản hiện đại, máy của bạn 'kém duyên' dù chưa hỏng. Phần thua kém về thiết kế, công nghệ đó cũng kéo giá xuống. Mới hay cũ không cứu được.</p>
+
+<div class="sub">Hao mòn kinh tế — thủ phạm đến từ bên ngoài</div>
+<p>Đây là kiểu khó chịu nhất: máy tốt, thiết kế ổn, nhưng <em>thị trường</em> quay lưng. Sản phẩm nó làm ra hết người mua, hoặc luật cấm, hoặc nguyên liệu tăng giá. Lỗi không nằm ở máy, mà ở thế giới quanh nó. Vẫn phải trừ vào giá trị.</p>
+  </section>
+
+  <section class="gaps">
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Chỗ vấp · Lỗ hổng</span><h2>Mấy chỗ nghe xuôi mà nghĩ kỹ chưa thông</h2></div>
+    </div>
+    <div class="gap-q"><span class="q">“Máy còn mới mà, sao lại trừ hao mòn?”</span><p>Vì 'mới' chỉ chặn được hao mòn vật lý. Hai kiểu kia không quan tâm máy cũ hay mới. Thiết kế có thể lỗi thời ngay ngày xuất xưởng. Thị trường có thể sập trước khi máy chạy buổi đầu. Mới tinh vẫn có thể mất giá nặng.</p></div>
+<div class="gap-q"><span class="q">“Hao mòn chức năng và kinh tế khác nhau ở đâu?”</span><p>Ở chỗ lỗi <em>nằm đâu</em>. Chức năng: lỗi ở chính cái máy — thiết kế cũ, ăn điện, chậm. Kinh tế: lỗi ở bên ngoài — không ai cần sản phẩm, luật đổi, thị trường co. Một cái sửa được bằng máy đời mới; một cái thì máy nào cũng dính.</p></div>
+<div class="gap-q"><span class="q">“Vậy chi phí bỏ ra có ý nghĩa gì trong định giá không?”</span><p>Có — nó là <em>điểm xuất phát</em>, không phải đích. Cost approach bắt đầu từ chi phí thay thế bằng tài sản cùng công dụng. Nhưng ngay sau đó phải trừ cả ba hao mòn. Bỏ bước trừ là biến chi phí thành giá trị — đúng cái lỗi chuẩn cảnh báo.</p></div>
+<div class="gap-q"><span class="q">“Hao mòn kinh tế đến từ bên ngoài — đo nó kiểu gì cho khỏi cảm tính?”</span><p>Đây là chỗ khó và dễ tranh cãi nhất. Vì nguyên nhân ở thị trường, valuer phải nhìn dữ liệu ngoài: công suất dư thừa, giá sản phẩm rớt, nhu cầu giảm. Một hướng là so công suất cần với công suất máy, phần thừa quy ra 'phạt'. Luôn cần bằng chứng thị trường, không đoán mò.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví von &amp; ví dụ đời thường</span><h2>Neo vào thứ bạn đã biết</h2></div>
+    </div>
+    <div class="analogy-card"><span class="tag">Ví dụ trung tâm</span>
+<p>Nghĩ về một chiếc điện thoại đời cũ còn <strong>nguyên hộp</strong>, chưa bóc. Vật lý: hoàn hảo, không trầy. Nhưng chức năng: chip đời 2018, chạy app mới ì ạch. Và kinh tế: hãng ngừng cập nhật, không ai thèm mua. Còn nguyên seal mà giá rớt thảm — vì hai thủ phạm chẳng liên quan gì tới độ mới.</p>
+<p class="limit"><b>Chỗ ví von này hỏng:</b> điện thoại có chợ cũ để biết ngay giá rớt bao nhiêu. Máy móc công nghiệp chuyên dụng thì hiếm có chợ như vậy. Valuer phải <em>ước lượng</em> từng loại hao mòn, nhất là hao mòn kinh tế, từ dữ liệu thị trường rời rạc. Phần 'rớt giá' không hiện lên sẵn như giá điện thoại cũ trên mạng.</p>
+</div>
+<p>Một nhà máy dệt mua dây chuyền 50 tỷ. Năm sau, máy vẫn còn tốt (vật lý ổn). Nhưng đời mới tiết kiệm điện hơn nhiều (hao mòn chức năng). Và đơn hàng dệt chuyển hết sang nước khác (hao mòn kinh tế). Giá trị có thể chỉ còn 20 tỷ — dù tiền bỏ ra là 50 và máy gần như chưa chạy.</p>
+<div class="sub">Nâng một bậc — ba (hoặc bốn) loại hao mòn, gọi đúng tên</div>
+<p>Phần này hơi nặng. IVS 300 §90.03 (dẫn IVS 103 A30.15–A30.22) chia: <em>physical deterioration</em> (xuống cấp do dùng và thời gian), <em>functional/technological obsolescence</em> (thiết kế hoặc công nghệ thua tài sản hiện đại tương đương — đo bằng chênh lệch chi phí vận hành hoặc vốn so với 'modern equivalent asset'), và <em>economic/external obsolescence</em> (nguyên nhân ngoài tài sản: cầu giảm, dư công suất, pháp lý, giá đầu vào). Một cách đo hao mòn kinh tế là <em>cost-to-capacity</em>: nếu máy có công suất 100 nhưng thị trường chỉ cần 60, phần công suất thừa bị 'phạt' tương ứng. Mục tiêu cuối: đưa giá trị về đúng bằng một <em>modern equivalent asset</em> xét trên công dụng và sản lượng.</p>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">4</div>
+      <div class="step-meta"><span class="lbl">Kể lại gọn gàng</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Một cái máy mới tinh 1 tỷ vẫn có thể chỉ còn đáng vài trăm triệu. Chi phí bỏ ra chỉ là điểm xuất phát; phải trừ ba kiểu hao mòn. Vật lý là cái cũ kỹ ai cũng thấy. Nhưng chức năng (thiết kế lỗi thời) và kinh tế (thị trường quay lưng) chẳng cần máy phải cũ. Vì thế chi phí không bao giờ là giá trị.</p>
+<p class="core">Chi phí làm ra một tài sản không phải giá trị của nó, <span>vì còn phải trừ ba kiểu hao mòn — kể cả khi đồ chưa hề cũ.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã hiểu chưa?</h3>
+      <ol>
+        <li>Máy in mới tinh 1 tỷ nhưng cả ngành đã đổi công nghệ. Kiểu hao mòn nào đang kéo giá xuống?</li>
+        <li>Phân biệt hao mòn chức năng và hao mòn kinh tế — lỗi nằm ở đâu trong mỗi loại?</li>
+        <li>Vì sao cost approach không cho phép lấy thẳng chi phí làm giá trị?</li>
+        <li>Vì sao hao mòn kinh tế khó đo nhất, và một cách đo nó là gì?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nếu giải thích được cho bà ngoại hiểu, bạn mới thật sự hiểu.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-real-property-interests"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Giải thích theo phương pháp Feynman</div>
+    <h1 class="rise" style="animation-delay:.08s">Định giá bất động sản: bạn định giá quyền, không phải gạch</h1>
+    <p class="core rise" style="animation-delay:.16s">Cùng một tòa nhà có thể mang nhiều 'quyền' chồng lên nhau, <span>và mỗi quyền là một giá trị riêng.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Điều cần hiểu &amp; cách tiếp cận</span><h2>Quy tắc: định giá lợi ích pháp lý (interest), không phải vật chất</h2></div>
+    </div>
+    <div class="rule">IVS 400 §20.03: cái được định giá là <strong>interest</strong> (lợi ích pháp lý) trong bất động sản, có ba loại chính: <em>superior interest</em> (sở hữu tuyệt đối, lâu dài — freehold), <em>subordinate interest</em> (quyền chiếm dụng có thời hạn — lease), và quyền sử dụng không độc quyền. §140.01: các lợi ích <strong>không loại trừ nhau</strong> — một superior interest có thể bị một/nhiều lease 'đè' lên. §140.03: <strong>tổng giá trị các lợi ích riêng lẻ thường KHÁC</strong> giá trị superior interest khi không vướng gì. §150.02: định giá phần đang cho thuê phải xét <em>contract rent</em> và <em>market rent</em>.</div>
+    <div class="sub">Cách giải thích</div>
+    <div class="approach"><p>Chỗ vấp: tưởng 'định giá nhà đất' là định giá cái nhà và miếng đất. Cách làm: nhìn nó như định giá <em>quyền</em>. Cùng một tòa nhà, chủ đất có một quyền, người thuê có một quyền khác — hai giá trị tách biệt. Và giá quyền của chủ phụ thuộc tiền thuê đang thu, không phải viên gạch.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Giải thích đơn giản</span><h2>Cùng một tòa nhà, nhiều 'quyền' chồng lên nhau</h2></div>
+    </div>
+    <p class="lead">Hỏi 'tòa nhà này đáng bao nhiêu' là hỏi chưa đủ. Phải hỏi: đáng bao nhiêu với <em>ai</em>, theo <em>quyền</em> nào? Vì cùng một tòa nhà có thể mang nhiều quyền chồng lên nhau. Chủ đất nắm quyền sở hữu lâu dài, người thuê nắm quyền dùng có thời hạn. Định giá bất động sản là định giá quyền, không phải định giá gạch.</p>
+
+<div class="sub">Ba loại quyền chính</div>
+<p>Quyền cao nhất là sở hữu tuyệt đối, lâu dài (freehold) — toàn quyền với đất và nhà, mãi mãi. Dưới nó là quyền thuê (lease) — được dùng độc quyền một khoảng thời gian. Thấp hơn nữa là quyền dùng không độc quyền, như quyền đi qua đất. Mỗi loại là một 'lát' quyền khác nhau.</p>
+
+<div class="sub">Các quyền chồng lên nhau</div>
+<p>Chúng không loại trừ nhau. Chủ sở hữu lâu dài có thể cho thuê, tạo ra một quyền thuê 'đè' lên quyền của mình. Người thuê lại có thể cho thuê lại. Trên cùng một tòa nhà giờ có một chồng quyền, mỗi quyền một chủ, mỗi quyền một giá trị.</p>
+
+<div class="sub">Tổng các quyền thường khác giá 'sạch'</div>
+<p>Đây là điểm hay sai. Cộng giá trị từng quyền riêng lẻ <em>thường không bằng</em> giá tòa nhà khi không vướng ai (vacant possession). Có thể cao hơn hoặc thấp hơn. Vì các quyền ràng buộc lẫn nhau — một hợp đồng thuê dài, giá thấp có thể kéo giá quyền của chủ xuống.</p>
+
+<div class="sub">Giá quyền của chủ tùy tiền thuê đang thu</div>
+<p>Định giá quyền của chủ một tòa đang cho thuê thì phải nhìn tiền thuê. So <em>contract rent</em> (tiền thuê theo hợp đồng) với <em>market rent</em> (giá thuê thị trường). Hợp đồng thu cao hơn thị trường thì quyền của chủ đáng hơn; thu thấp hơn thì đáng kém đi.</p>
+  </section>
+
+  <section class="gaps">
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Chỗ vấp · Lỗ hổng</span><h2>Mấy chỗ nghe xuôi mà nghĩ kỹ chưa thông</h2></div>
+    </div>
+    <div class="gap-q"><span class="q">“Hỏi 'nhà này đáng bao nhiêu' thì sai chỗ nào?”</span><p>Thiếu vế 'theo quyền nào'. Cùng tòa nhà, quyền sở hữu lâu dài và quyền thuê là hai thứ khác giá hẳn. Chưa nói rõ đang định giá quyền nào thì con số vô nghĩa. Đây là lý do scope of work phải ghi rõ loại lợi ích được định giá.</p></div>
+<div class="gap-q"><span class="q">“Sao tổng giá các quyền lại không bằng giá cả tòa nhà?”</span><p>Vì các quyền ràng buộc nhau, không cộng rời được. Một hợp đồng thuê 20 năm giá rẻ trói tay chủ, kéo giá quyền của chủ xuống. Khi gộp lại các quyền (chủ mua đứt phần thuê), có thể bật lên một phần giá trị mới — đôi khi gọi là marriage value.</p></div>
+<div class="gap-q"><span class="q">“Tiền thuê hợp đồng thì liên quan gì tới giá trị quyền của chủ?”</span><p>Liên quan trực tiếp. Quyền của chủ một tòa cho thuê thực ra là quyền nhận dòng tiền thuê đó. Hợp đồng thu cao hơn giá thị trường (over-rented) thì dòng tiền ngon, quyền đáng hơn. Thu thấp hơn (under-rented) thì quyền kém đi, dù tòa nhà y hệt.</p></div>
+<div class="gap-q"><span class="q">“Tòa nhà giống hệt nhau, sao giá quyền lại khác?”</span><p>Vì giá nằm ở <em>quyền</em>, không ở gạch. Hai tòa giống hệt: một cái cho thuê giá cao 20 năm, một cái bỏ trống. Quyền của chủ ở hai cái khác giá hẳn, dù bê tông như nhau. Định giá bất động sản, suy cho cùng, là định giá một bó quyền và dòng tiền nó mang lại.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví von &amp; ví dụ đời thường</span><h2>Neo vào thứ bạn đã biết</h2></div>
+    </div>
+    <div class="analogy-card"><span class="tag">Ví dụ trung tâm</span>
+<p>Nghĩ về một căn nhà như một <strong>xấp vé</strong> quyền, không phải khối bê tông. Chủ đất giữ tấm vé 'sở hữu mãi mãi'. Anh ta cắt một tấm vé 'được ở 10 năm' đưa người thuê. Giờ hai người cầm hai tấm vé khác nhau trên cùng căn nhà. Mỗi tấm có giá riêng — và giá tấm của chủ tùy người thuê trả bao nhiêu mỗi tháng.</p>
+<p class="limit"><b>Chỗ ví von này hỏng:</b> 'xấp vé' làm các quyền nghe tách rời gọn gàng. Thực ra chúng ràng vào nhau: một điều khoản thuê có thể cấm cho thuê lại, một quyền đi qua đất có thể đè giá trị xuống. Và tổng giá các tấm vé thường không bằng giá bán cả căn cho một người — đó là chỗ phải tính kỹ, không cộng rời.</p>
+</div>
+<p>Một tòa văn phòng cho thuê 15 năm, giá thuê chốt từ 2015 nay đã thấp hơn thị trường. Quyền của chủ (nhận tiền thuê dưới giá) đáng kém hơn một tòa giống hệt được thuê đúng giá thị trường. Người mua quyền của chủ thực chất mua dòng tiền thuê còn lại — nên định giá phải soi hợp đồng, không chỉ soi tòa nhà.</p>
+<div class="sub">Nâng một bậc — hierarchy of interests và reversion</div>
+<p>Phần này hơi nặng. IVS 400 §140.01: từ <em>superior/absolute interest</em>, chủ cấp một <em>head lease</em>; người giữ head lease có thể cấp tiếp <em>sub-lease</em> (luôn ngắn hơn hoặc bằng head lease). Hết hạn thuê, bất động sản <em>reverts</em> về chủ superior (§140.02(b)) — nên quyền của chủ gồm cả dòng tiền thuê lẫn giá trị nhận lại tài sản sau này. §140.03: tổng giá các lợi ích riêng lẻ thường khác giá superior interest 'sạch'. §150.02–150.03: định giá phần cho thuê phải tách contract rent và market rent; chênh lệch hai cái tạo ra over-rented (đáng hơn) hoặc under-rented (đáng kém). Đây là gốc của định giá đầu tư bất động sản.</p>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">4</div>
+      <div class="step-meta"><span class="lbl">Kể lại gọn gàng</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Định giá bất động sản là định giá <strong>quyền</strong>, không phải gạch. Cùng một tòa nhà mang nhiều quyền chồng lên nhau: chủ sở hữu lâu dài, người thuê có thời hạn — mỗi quyền một giá. Tổng các quyền thường khác giá 'sạch' của tòa nhà. Và giá quyền của chủ tùy tiền thuê đang thu so với giá thị trường.</p>
+<p class="core">Cùng một tòa nhà có thể mang nhiều 'quyền' chồng lên nhau, <span>và mỗi quyền là một giá trị riêng.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã hiểu chưa?</h3>
+      <ol>
+        <li>Vì sao 'tòa nhà này đáng bao nhiêu' là câu hỏi chưa đủ?</li>
+        <li>Kể ba loại lợi ích (interest) chính trong bất động sản.</li>
+        <li>Vì sao tổng giá trị các lợi ích riêng lẻ thường khác giá trị superior interest 'sạch'?</li>
+        <li>Hai tòa nhà giống hệt, một over-rented một under-rented. Giá quyền của chủ khác nhau thế nào, vì sao?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nếu giải thích được cho bà ngoại hiểu, bạn mới thật sự hiểu.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-residual-development"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Giải thích theo phương pháp Feynman</div>
+    <h1 class="rise" style="animation-delay:.08s">Định giá miếng đất trống bằng tòa nhà chưa xây</h1>
+    <p class="core rise" style="animation-delay:.16s">Giá miếng đất hôm nay được suy ngược <span>từ giá trị của dự án chưa hề được xây.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Điều cần hiểu &amp; cách tiếp cận</span><h2>Quy tắc: giá đất = giá trị dự án hoàn thành trừ chi phí trừ lợi nhuận</h2></div>
+    </div>
+    <div class="rule">IVS 410 §100.03: <em>residual method</em> tính ra phần <strong>còn lại</strong>: lấy giá trị dự án <strong>khi hoàn thành</strong> (<em>gross development value</em>) <strong>trừ đi</strong> mọi chi phí để hoàn thành <strong>và</strong> lợi nhuận nhà phát triển — đó là giá trị đất. §100.01: nó là <strong>hỗn hợp</strong> của cách thị trường, thu nhập và chi phí. §100.04–100.05: kết quả <strong>rất nhạy</strong> với thay đổi nhỏ ở đầu vào, nên phải làm phân tích độ nhạy.</div>
+    <div class="sub">Cách giải thích</div>
+    <div class="approach"><p>Chỗ vấp: làm sao định giá một bãi đất trống bằng thứ chưa tồn tại? Cách làm: nghĩ như một nhà phát triển sắp mua đất. Họ hỏi ngược: xây xong bán được bao nhiêu, tốn bao nhiêu để xây, mình cần lời bao nhiêu? Cái còn lại là số tối đa họ dám trả cho đất. Định giá đất chính là phép trừ ngược đó.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Giải thích đơn giản</span><h2>Bãi đất trống đáng bao nhiêu? Hỏi tòa nhà chưa xây</h2></div>
+    </div>
+    <p class="lead">Bạn nhìn một bãi đất trống và hỏi: nó đáng bao nhiêu? Kỳ lạ là câu trả lời nằm ở một tòa nhà chưa hề xây. Hãy nghĩ như người sắp mua đất để xây rồi bán. Xây xong bán được 50 tỷ. Xây và lo thủ tục tốn 35 tỷ. Họ muốn lời 8 tỷ. Vậy đất chỉ đáng phần còn lại: 7 tỷ.</p>
+
+<div class="sub">Suy ngược từ thành phẩm</div>
+<p>Cách này đi lùi. Bắt đầu từ cái cuối: dự án xây xong bán được bao nhiêu. Rồi trừ dần mọi thứ để đến được đó. Phần sót lại ở đáy phép trừ chính là số trả được cho đất. Nên gọi là 'phần dư'.</p>
+
+<div class="sub">Trừ những gì</div>
+<p>Từ giá bán thành phẩm, trừ chi phí xây, phí tư vấn, phí pháp lý, tiền tiếp thị, lãi vay trong lúc xây, một khoản dự phòng. Và đừng quên trừ cả khoản <em>lợi nhuận</em> nhà phát triển muốn có. Hết các khoản đó, còn lại là giá đất.</p>
+
+<div class="sub">Vì sao con số rất 'mong manh'</div>
+<p>Đây là điểm chuẩn nhấn mạnh. Đất là phần dư, nên nó hứng mọi sai số. Giá bán đoán cao hơn một chút, hay chi phí xây trượt một chút, là giá đất nhảy rất mạnh. Vì thế chuẩn bắt làm phân tích độ nhạy cho từng yếu tố lớn.</p>
+  </section>
+
+  <section class="gaps">
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Chỗ vấp · Lỗ hổng</span><h2>Mấy chỗ nghe xuôi mà nghĩ kỹ chưa thông</h2></div>
+    </div>
+    <div class="gap-q"><span class="q">“Định giá bằng thứ chưa xây — nghe như đoán mò?”</span><p>Không hẳn, vì từng mảnh đều dựa trên dữ liệu thật. Giá bán thành phẩm tra từ thị trường nhà tương tự. Chi phí xây tra từ định mức xây dựng. Lợi nhuận theo mức nhà phát triển thường đòi. Nó là suy luận có căn cứ, không phải mơ. Nhưng phải nêu rõ giả định 'dự án đã hoàn thành'.</p></div>
+<div class="gap-q"><span class="q">“Sao phải trừ lợi nhuận nhà phát triển? Đó đâu phải chi phí?”</span><p>Vì không ai bỏ công xây mà không lấy lời. Nếu không chừa phần lời, sẽ chẳng nhà phát triển nào mua đất để làm. Lợi nhuận là cái họ <em>đòi</em> để chịu rủi ro dự án. Không trừ nó ra là định giá đất cao hơn mức thật sự có người trả.</p></div>
+<div class="gap-q"><span class="q">“Vì sao gọi nó là phương pháp 'hỗn hợp'?”</span><p>Vì nó mượn cả ba cách. Ước giá bán thành phẩm dùng cách thị trường hoặc thu nhập. Ước chi phí xây dùng cách chi phí. Ghép lại thành một phép trừ ra giá đất. Nên nó không thuần là cost approach — gọi vậy là một lỗi hay gặp.</p></div>
+<div class="gap-q"><span class="q">“Đất là phần dư nhỏ ở đáy — sai số dồn hết vào nó có nguy hiểm không?”</span><p>Rất nguy hiểm, và chuẩn thừa nhận thẳng. Vì đất là hiệu của hai số lớn (giá bán trừ chi phí), một thay đổi nhỏ ở hai số lớn làm phần hiệu nhỏ nhảy mạnh. Đó là lý do bắt buộc phân tích độ nhạy, và phải thận trọng khi nhiều đầu vào chưa chắc chắn ở ngày định giá.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví von &amp; ví dụ đời thường</span><h2>Neo vào thứ bạn đã biết</h2></div>
+    </div>
+    <div class="analogy-card"><span class="tag">Ví dụ trung tâm</span>
+<p>Hình dung bạn mua nguyên liệu về làm một mâm cỗ để bán. Mâm cỗ bán được 1 triệu. Gia vị, gas, công nấu tốn 600 nghìn. Bạn muốn lời 150 nghìn cho công sức. Vậy bạn dám trả tối đa bao nhiêu cho phần <strong>nguyên liệu sống</strong>? Đúng 250 nghìn — phần còn lại. Miếng đất chính là 'nguyên liệu sống' đó.</p>
+<p class="limit"><b>Chỗ ví von này hỏng:</b> nấu mâm cỗ xong trong một buổi, giá bán biết gần như chắc. Dự án bất động sản kéo dài nhiều năm — giá bán tương lai, chi phí xây, lãi vay đều là dự báo xa, dễ trượt. Vì thế phần 'còn lại' (giá đất) mong manh hơn nhiều so với 250 nghìn nguyên liệu, và phải kèm phân tích độ nhạy.</p>
+</div>
+<p>Một lô đất trong phố: xây chung cư xong bán được 500 tỷ (giá thị trường căn hộ tương tự). Tổng chi phí xây, phí, lãi, dự phòng khoảng 350 tỷ. Nhà phát triển đòi lời 80 tỷ. Vậy giá trị lô đất khoảng 70 tỷ. Nếu giá căn hộ dự báo giảm 5% (còn 475), giá đất rớt xuống khoảng 45 tỷ — bốc hơi một phần ba.</p>
+<div class="sub">Nâng một bậc — các cấu phần của residual</div>
+<p>Phần này hơi nặng. IVS 410 §100.08 liệt kê các yếu tố cơ bản: giá trị thành phẩm (<em>gross development value</em>), chi phí xây, phí tư vấn, phí pháp lý, chi phí tiếp thị, tiến độ thời gian, chi phí tài chính (lãi vay), lợi nhuận phát triển (trên cả đất và công trình), dự phòng, và tỷ lệ chiết khấu. §100.10 buộc nêu rõ một <em>special assumption</em>: hoặc 'dự án coi như đã hoàn thành theo bản vẽ ở ngày định giá', hoặc 'sẽ hoàn thành vào ngày dự kiến'. §100.03–100.05: vì đất là phần dư của hai số lớn, độ nhạy cao, nên phân tích độ nhạy cho từng yếu tố lớn là bắt buộc.</p>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">4</div>
+      <div class="step-meta"><span class="lbl">Kể lại gọn gàng</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Giá một bãi đất trống được suy ngược từ tòa nhà chưa xây. Nghĩ như nhà phát triển: xây xong bán được bao nhiêu, trừ chi phí xây, trừ phần lời họ đòi — còn lại là số trả được cho đất. Vì đất là 'phần dư', nó rất nhạy với sai số, nên luôn phải phân tích độ nhạy.</p>
+<p class="core">Giá miếng đất hôm nay được suy ngược <span>từ giá trị của dự án chưa hề được xây.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã hiểu chưa?</h3>
+      <ol>
+        <li>Xây xong bán 50 tỷ, chi phí 35 tỷ, lợi nhuận nhà phát triển 8 tỷ. Giá trị đất là bao nhiêu, theo residual method?</li>
+        <li>Vì sao phải trừ cả lợi nhuận nhà phát triển ra khỏi giá trị thành phẩm?</li>
+        <li>Vì sao residual method được gọi là phương pháp 'hỗn hợp', không phải cost approach?</li>
+        <li>Vì sao kết quả của residual method rất nhạy, và chuẩn yêu cầu làm gì để xử lý chuyện đó?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nếu giải thích được cho bà ngoại hiểu, bạn mới thật sự hiểu.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-financial-instrument-observability"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Giải thích theo phương pháp Feynman</div>
+    <h1 class="rise" style="animation-delay:.08s">Định giá thứ không có giá: bậc thang dữ liệu quan sát được</h1>
+    <p class="core rise" style="animation-delay:.16s">Có những tài sản tài chính không có giá niêm yết, <span>và càng ít dữ liệu quan sát được, càng nhiều phán đoán và rủi ro.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Điều cần hiểu &amp; cách tiếp cận</span><h2>Quy tắc: dải observability — từ giá sẵn đến mô hình tự xây</h2></div>
+    </div>
+    <div class="rule">IVS 500 §30.01: định giá công cụ tài chính trải trên một dải. Có cái <strong>quan sát trực tiếp</strong> được từ giao dịch đã công bố. Có cái dựng bằng <em>mô hình chuẩn ngành</em> với đầu vào quan sát được ở mức độ khác nhau. Cái phức tạp hoặc kém thanh khoản cần <strong>mô hình riêng</strong> và đầu vào tự xây. §40.03: ưu tiên dùng <em>observable data</em>. §110.01(b): mô hình mua ngoài cũng phải được đánh giá <strong>ngang mức</strong> mô hình tự xây.</div>
+    <div class="sub">Cách giải thích</div>
+    <div class="approach"><p>Chỗ vấp: cổ phiếu niêm yết có giá sẵn, nhưng một trái phiếu lạ, một phái sinh hiếm thì lấy giá đâu ra? Cách làm: xếp mọi công cụ lên một bậc thang theo mức 'nhìn thấy được' của dữ liệu. Càng lên cao, càng ít giá thật để dựa, càng phải dựng mô hình và tự đặt giả định. Mức quan sát được tụt thì rủi ro định giá tăng.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Giải thích đơn giản</span><h2>Có giá thì dễ, không có giá thì phải dựng mô hình</h2></div>
+    </div>
+    <p class="lead">Một cổ phiếu lớn có giá chạy trên bảng từng giây — định giá nó dễ, cứ lấy giá chợ. Nhưng một trái phiếu doanh nghiệp ít người mua bán, hay một hợp đồng phái sinh kỳ lạ, thì chẳng có 'giá chợ' nào. Vẫn định giá được, nhưng phải dựng mô hình. Và càng ít số liệu thật, càng nhiều phán đoán.</p>
+
+<div class="sub">Bậc dưới: có giá thật để nhìn</div>
+<p>Sướng nhất là khi có giao dịch công bố của đúng món đó. Cổ phiếu blue-chip, trái phiếu chính phủ. Giá nằm sẵn trên thị trường, ai cũng thấy. Định giá gần như chỉ là đọc giá. Đây là dữ liệu 'quan sát được' theo đúng nghĩa.</p>
+
+<div class="sub">Bậc giữa: mô hình với đầu vào pha trộn</div>
+<p>Lên một bậc: không có giá của đúng món, nhưng có dữ liệu gần đúng. Dùng mô hình chuẩn ngành, nạp lãi suất, đường cong lợi suất, giá món tương tự. Một số đầu vào quan sát được, một số phải suy ra. Mô hình gánh phần việc mà giá chợ không làm thay.</p>
+
+<div class="sub">Bậc trên: mô hình riêng, đầu vào tự xây</div>
+<p>Cao nhất là món phức tạp, ít người giao dịch. Không có giá, cũng ít dữ liệu gần đúng. Phải dựng mô hình riêng và tự đặt nhiều giả định. Ở đây phán đoán nghề nghiệp là chủ đạo — và rủi ro định giá cũng cao nhất. Chuẩn vẫn bắt ưu tiên dữ liệu quan sát được đến mức có thể.</p>
+  </section>
+
+  <section class="gaps">
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Chỗ vấp · Lỗ hổng</span><h2>Mấy chỗ nghe xuôi mà nghĩ kỹ chưa thông</h2></div>
+    </div>
+    <div class="gap-q"><span class="q">“Không có giá thị trường thì sao dám gọi là 'định giá'?”</span><p>Vì giá không phải nguồn duy nhất. Khi thiếu giá của đúng món, valuer dùng mô hình ăn các đầu vào quan sát được khác: lãi suất, giá món tương tự, dữ liệu thị trường. Mô hình biến những thứ nhìn thấy được thành một con số có cơ sở. Nhưng phải ưu tiên dữ liệu thật trước.</p></div>
+<div class="gap-q"><span class="q">“Càng lên bậc cao thì điều gì xấu đi?”</span><p>Độ tin cậy. Càng ít dữ liệu quan sát được, càng phải tự đặt giả định, và con số càng dễ lệch. Chuẩn gọi đó là rủi ro định giá. Nó không cấm định giá món khó, nhưng buộc valuer nhận diện và xử lý mức rủi ro tăng thêm đó.</p></div>
+<div class="gap-q"><span class="q">“Mua mô hình của bên ngoài về dùng thì khỏi phải kiểm tra chứ?”</span><p>Sai. Chuẩn nói thẳng: mô hình mua ngoài phải được đánh giá ngang mức một mô hình tự xây. Người định giá không 'khoán' trách nhiệm cho bên bán mô hình. Mô hình ai làm cũng phải qua kiểm định như nhau, và valuer vẫn chịu trách nhiệm cuối.</p></div>
+<div class="gap-q"><span class="q">“Nếu không kiếm nổi đầu vào đủ tốt thì sao?”</span><p>Thì không được cố đấm ăn xôi. Nếu không dựng được các đầu vào trọng yếu 'fit for use', valuer phải tìm phương pháp khác. Hoặc cân nhắc có nên nhận định giá này cho mục đích đó không. Có lúc câu trả lời đúng là 'chưa đủ cơ sở để định giá'.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví von &amp; ví dụ đời thường</span><h2>Neo vào thứ bạn đã biết</h2></div>
+    </div>
+    <div class="analogy-card"><span class="tag">Ví dụ trung tâm</span>
+<p>Hình dung định giá một món đồ cũ. <strong>Bậc dễ</strong>: iPhone phổ biến — gõ lên chợ mạng, hàng trăm tin rao, biết giá ngay. <strong>Bậc giữa</strong>: món ít gặp — không có tin đúng món, phải suy từ vài món na ná. <strong>Bậc khó</strong>: đồ độc bản — chẳng ai từng bán, phải tự dựng ước tính từ vật liệu, công, độ hiếm. Càng hiếm dữ liệu, con số càng dựa vào phán đoán.</p>
+<p class="limit"><b>Chỗ ví von này hỏng:</b> đồ cũ trên chợ mạng cùng lắm sai vài trăm nghìn. Một công cụ tài chính phức tạp định sai có thể lệch hàng triệu đô, và còn biến động theo lãi suất, tín dụng, thanh khoản từng ngày. Vì thế chuẩn bắt kiểm định mô hình, kiểm soát chất lượng, và nêu rõ rủi ro — chặt hơn nhiều việc rao bán món đồ cũ.</p>
+</div>
+<p>Một quỹ nắm ba thứ. Cổ phiếu Vingroup có giá sàn — đó là bậc dưới. Một trái phiếu doanh nghiệp ít giao dịch, định giá bằng mô hình từ đường cong lợi suất — bậc giữa. Một hợp đồng phái sinh may đo riêng, mô hình riêng và nhiều giả định — bậc trên. Cùng một quỹ, ba mức quan sát được, ba mức rủi ro định giá.</p>
+<div class="sub">Nâng một bậc — observability, rủi ro định giá, và IFRS 13</div>
+<p>Phần này hơi nặng. IVS 500 mô tả một dải <em>observability</em> chứ không tự đặt tên 'Level 1/2/3'. Nhưng nó ăn khớp với <em>fair value hierarchy</em> của IFRS 13: <em>Level 1</em> = giá niêm yết của đúng tài sản trên thị trường hoạt động; <em>Level 2</em> = đầu vào quan sát được khác (giá món tương tự, lãi suất, đường cong); <em>Level 3</em> = đầu vào không quan sát được, tự xây. Càng xuống Level 3, phán đoán và rủi ro càng lớn. Lưu ý phân biệt: 'Level 1/2/3' là ngôn ngữ IFRS 13, không phải thuật ngữ chính thức của IVS 500 — đừng gán nhầm khi đi thi. IVS 500 §110.01(b) thêm: mô hình của bên thứ ba (vendor) phải được kiểm định ngang mô hình nội bộ; trách nhiệm cuối vẫn thuộc valuer.</p>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">4</div>
+      <div class="step-meta"><span class="lbl">Kể lại gọn gàng</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Cổ phiếu lớn có giá sẵn, định giá dễ. Trái phiếu lạ hay phái sinh hiếm thì không có giá — phải dựng mô hình. Xếp mọi công cụ lên một bậc thang theo mức dữ liệu nhìn thấy được: càng lên cao, càng ít số liệu thật, càng nhiều phán đoán và rủi ro. Và mô hình mua ngoài vẫn phải kiểm định như mô hình tự làm.</p>
+<p class="core">Có những tài sản tài chính không có giá niêm yết, <span>và càng ít dữ liệu quan sát được, càng nhiều phán đoán và rủi ro.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã hiểu chưa?</h3>
+      <ol>
+        <li>Xếp ba thứ theo mức 'quan sát được' giảm dần: phái sinh may đo, cổ phiếu blue-chip, trái phiếu ít giao dịch.</li>
+        <li>Khi mức dữ liệu quan sát được tụt xuống, điều gì xảy ra với rủi ro định giá, và vì sao?</li>
+        <li>Mua mô hình định giá từ một nhà cung cấp ngoài — valuer còn phải làm gì trước khi dùng?</li>
+        <li>'Level 1/2/3' là thuật ngữ của chuẩn nào? Có phải của IVS 500 không?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nếu giải thích được cho bà ngoại hiểu, bạn mới thật sự hiểu.</p>
+  </footer>
+
+</div></div>
+<script>
+  var bar=document.getElementById('progress');
+  function upd(){var h=document.documentElement;var s=h.scrollTop||document.body.scrollTop;
+    var max=(h.scrollHeight-h.clientHeight)||1;bar.style.width=(s/max*100)+'%';}
+  window.addEventListener('scroll',upd,{passive:true});upd();
+  var io=new IntersectionObserver(function(es){es.forEach(function(e){
+    if(e.isIntersecting){e.target.style.animation='rise .7s cubic-bezier(.2,.7,.3,1) forwards';io.unobserve(e.target);}});},{threshold:.12});
+  document.querySelectorAll('section').forEach(function(s){s.style.opacity='0';io.observe(s);});
+</script>
+
+<script>
+(function(){
+  var tabs=[].slice.call(document.querySelectorAll('.tabbar .tab'));
+  var panels=[].slice.call(document.querySelectorAll('.concept-panel'));
+  function show(i){
+    tabs.forEach(function(t,j){t.classList.toggle('active',j===i);});
+    panels.forEach(function(p,j){
+      var on=(j===i); p.classList.toggle('active',on);
+      if(on){p.querySelectorAll('section').forEach(function(s){s.style.opacity='';s.style.animation='';});}
+    });
+    try{history.replaceState(null,'','#'+panels[i].id);}catch(e){}
+    window.scrollTo(0,0); window.dispatchEvent(new Event('scroll'));
+  }
+  tabs.forEach(function(t){t.addEventListener('click',function(){show(+t.getAttribute('data-i'));});});
+  var start=0; panels.forEach(function(p,j){if('#'+p.id===location.hash)start=j;});
+  show(start);
+})();
+</script>
+
+</body></html>

@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="vi"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mergers and Acquisitions from A to Z — Nền tảng, hiểu từ gốc</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,500&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  /* Design tokens shared with ebook-to-study-html + feynman-from-study (styles_v2.css) */
+  :root{
+    --bg:#fafaf7; --bg-elevated:#ffffff; --bg-soft:#f3f3ee;
+    --border:#e0e0d8; --border-soft:#ececea; --border-strong:#d2c8b6;
+    --ink:#1a1a1f; --ink-soft:#3f3f4a; --muted:#7a7a85;
+    --accent:#b8860b; --accent-2:#8b6508; --gold:#a07c1f; --bridge:#5a6b4f;
+    --serif:"Fraunces",Georgia,"Iowan Old Style",serif;
+    --sans:"Geist",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    --mono:"Geist Mono","JetBrains Mono",Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:var(--sans);
+    font-size:19px;line-height:1.72;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}
+  .progress{position:fixed;top:0;left:0;height:3px;width:0;z-index:50;
+    background:linear-gradient(90deg,var(--gold),var(--accent));transition:width .08s linear}
+  .wrap{max-width:920px;margin:0 auto;padding:0 36px}
+  .rise{opacity:0;transform:translateY(14px);animation:rise .7s cubic-bezier(.2,.7,.3,1) forwards}
+  @keyframes rise{to{opacity:1;transform:none}}
+
+  header{padding:104px 0 60px;border-bottom:1px solid var(--border)}
+  .kicker{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.18em;
+    text-transform:uppercase;color:var(--accent);margin-bottom:26px}
+  h1{font-family:var(--serif);font-weight:600;font-size:clamp(42px,7.6vw,72px);
+    line-height:1.0;letter-spacing:-.022em;margin-bottom:28px;font-optical-sizing:auto;color:var(--ink)}
+  h1 em{font-style:italic;color:var(--accent)}
+  .core{font-family:var(--serif);font-style:italic;font-weight:400;
+    font-size:clamp(21px,3.6vw,27px);line-height:1.44;color:var(--ink-soft)}
+  .core span{font-style:normal;font-weight:600;color:var(--accent-2);
+    box-shadow:inset 0 -.5em 0 rgba(184,134,11,.16)}
+
+  /* ---- BƯỚC 0: ĐỊNH VỊ (what it is + why it's the foundation) ---- */
+  .anchor .rule{font-family:var(--serif);font-size:19px;line-height:1.5;color:var(--ink);
+    background:var(--bg-soft);border-left:3px solid var(--accent);
+    padding:18px 24px;border-radius:0 4px 4px 0;margin:0}
+  .anchor .rule em{font-style:italic;color:var(--accent-2)}
+  .anchor .rule strong{color:var(--ink);font-weight:600}
+  .anchor .why{color:var(--ink-soft)}
+
+  section{padding:72px 0;border-bottom:1px solid var(--border);position:relative}
+  .step-head{display:flex;align-items:flex-start;gap:22px;margin-bottom:34px}
+  .big-num{font-family:var(--serif);font-weight:700;font-size:62px;line-height:.8;
+    color:var(--border-strong);flex:none;font-optical-sizing:auto;letter-spacing:-.03em}
+  .step-meta{padding-top:4px}
+  .lbl{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--accent);display:block;margin-bottom:10px}
+  h2{font-family:var(--serif);font-weight:600;font-size:clamp(27px,4.4vw,37px);
+    line-height:1.12;letter-spacing:-.012em;color:var(--ink)}
+  h2 em{font-style:italic;color:var(--accent)}
+  p{margin-bottom:21px}
+  p:last-child{margin-bottom:0}
+  strong{font-weight:600;color:var(--ink)}
+  em{font-style:italic;color:var(--accent-2)}
+  .gloss{color:var(--muted);font-style:italic}
+
+  .lead::first-letter{font-family:var(--serif);font-weight:700;float:left;
+    font-size:74px;line-height:.74;padding:8px 12px 0 0;color:var(--accent)}
+
+  .sub{font-family:var(--serif);font-weight:600;font-size:17px;letter-spacing:.01em;
+    color:var(--ink);margin:34px 0 14px;display:flex;align-items:center;gap:11px}
+  .sub::before{content:"";width:18px;height:2px;background:var(--accent);flex:none;border-radius:2px}
+
+  /* ---- BƯỚC 1: VẤN ĐỀ (why it exists) ---- */
+  .problem{background:var(--bg-soft)}
+  .problem .big-num{color:#e2d6b4}
+
+  /* ---- BƯỚC 3: VÍ DỤ (concrete worked example) ---- */
+  .example-card{border:1px solid #e8c876;border-radius:4px;padding:30px 32px;margin:8px 0 28px;
+    background:linear-gradient(135deg,#fef9ed 0%,#fdf3e0 100%)}
+  .example-card .tag{font-family:var(--mono);font-weight:600;font-size:11px;
+    letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin-bottom:16px;display:block}
+  .example-card p{color:#5a4810}
+  .example-card strong{color:var(--accent-2)}
+  .example-card p:last-child{margin-bottom:0}
+
+  /* ---- DỄ NHẦM (optional clarify / boundaries) ---- */
+  .clarify{background:var(--bg-soft)}
+  .clarify .big-num{color:#d8cdb2}
+  .mix-q{margin:0 0 30px;padding-left:24px;border-left:2px solid var(--border-strong)}
+  .mix-q:last-child{margin-bottom:0}
+  .mix-q .q{font-family:var(--serif);font-style:italic;font-weight:500;
+    font-size:22px;line-height:1.35;color:var(--accent-2);margin-bottom:12px;display:block}
+  .mix-q p:last-child{margin-bottom:0}
+
+  /* ---- NỐI TIẾP (bridge to the harder concepts) ---- */
+  .bridge .big-num{color:#bcc7b2}
+  .bridge .lbl{color:var(--bridge)}
+  .bridge-card{border-left:3px solid var(--bridge);background:#f4f6f1;
+    padding:22px 26px;border-radius:0 4px 4px 0;margin-top:6px}
+  .bridge-card p:last-child{margin-bottom:0}
+  .bridge-card strong{color:#42513a}
+
+  /* ---- KỂ LẠI GỌN (refined retell) ---- */
+  .retell{background:linear-gradient(180deg,var(--bg-soft) 0%,var(--bg) 100%);border-bottom:none}
+  .retell h2{color:var(--ink)}
+  .retell strong{color:var(--accent-2)}
+  .retell .core{margin-top:6px}
+  .testbox{border:1px solid var(--border);background:var(--bg-elevated);
+    border-radius:4px;padding:28px 32px;margin-top:40px;box-shadow:0 1px 2px rgba(0,0,0,.03)}
+  .testbox h3{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--accent);margin-bottom:20px}
+  .testbox ol{margin:0;padding-left:22px;counter-reset:t}
+  .testbox li{margin-bottom:16px;color:var(--ink-soft);padding-left:6px}
+  .testbox li:last-child{margin-bottom:0}
+
+  footer{text-align:center;padding:60px 0 88px}
+  footer .mark{font-family:var(--serif);font-weight:700;color:var(--accent);
+    font-size:26px;display:block;margin-bottom:14px}
+  footer p{font-family:var(--serif);font-style:italic;color:var(--muted);font-size:17px;max-width:400px;margin:0 auto}
+
+  @media(max-width:560px){
+    body{font-size:18px}
+    header{padding:70px 0 44px}
+    section{padding:52px 0}
+    .step-head{gap:16px}
+    .big-num{font-size:46px}
+    .lead::first-letter{font-size:60px}
+  }
+</style>
+<style>
+ .tabbar{position:fixed;top:0;left:0;right:0;width:100%;box-sizing:border-box;z-index:40;background:rgba(250,250,247,.93);
+   backdrop-filter:saturate(1.1) blur(8px);-webkit-backdrop-filter:saturate(1.1) blur(8px);
+   border-bottom:1px solid var(--border);display:flex;gap:6px;overflow-x:auto;
+   padding:10px max(36px,calc((100% - 992px)/2));scrollbar-width:thin}
+ .tabbar .tab{flex:0 0 auto;display:flex;align-items:baseline;gap:9px;cursor:pointer;
+   background:transparent;border:1px solid transparent;border-radius:999px;
+   padding:8px 17px;transition:.15s;white-space:nowrap;color:var(--muted)}
+ .tabbar .tab:hover{color:var(--ink);background:var(--bg-soft)}
+ .tabbar .tab.active{color:var(--accent-2);background:var(--bg-soft);border-color:var(--border-strong)}
+ .tabbar .tn{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.1em;color:var(--accent)}
+ .tabbar .tl{font-family:var(--serif);font-weight:500;font-size:16px}
+ body{padding-top:56px} .concept-panel{display:none}
+ .concept-panel.active{display:block}
+ .concept-panel header{padding-top:50px}
+ @media(max-width:560px){.tabbar .tl{max-width:48vw;overflow:hidden;text-overflow:ellipsis}}
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+<nav role="tablist" class="tabbar" aria-label="Các khái niệm nền"><button class="tab" data-i="0" role="tab" id="tab-0" aria-controls="c-ma-la-quy-trinh" aria-selected="true" tabindex="0"><span class="tn">01</span><span class="tl">M&amp;A là quy trình</span></button><button class="tab" data-i="1" role="tab" id="tab-1" aria-controls="c-merger-khac-acquisition" aria-selected="false" tabindex="-1"><span class="tn">02</span><span class="tl">Merger ≠ Acquisition</span></button><button class="tab" data-i="2" role="tab" id="tab-2" aria-controls="c-synergy" aria-selected="false" tabindex="-1"><span class="tn">03</span><span class="tl">Synergy (1+1=3)</span></button><button class="tab" data-i="3" role="tab" id="tab-3" aria-controls="c-dinh-gia-va-dieu-khoan" aria-selected="false" tabindex="-1"><span class="tn">04</span><span class="tl">Định giá &amp; Điều khoản</span></button><button class="tab" data-i="4" role="tab" id="tab-4" aria-controls="c-due-diligence" aria-selected="false" tabindex="-1"><span class="tn">05</span><span class="tl">Due diligence</span></button></nav>
+<div class="concept-panel" id="c-ma-la-quy-trinh" role="tabpanel" aria-labelledby="tab-0" tabindex="0"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Nền tảng · hiểu từ gốc</div>
+    <h1 class="rise" style="animation-delay:.08s">M&A là một quy trình học được, không phải canh bạc</h1>
+    <p class="core rise" style="animation-delay:.16s">Deal hay deal dở <span>khác nhau ở quy trình, không phải may rủi.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Định vị · nó là gì &amp; vì sao học trước</span><h2>Nguyên tắc nền: M&A là một quy trình</h2></div>
+    </div>
+    <div class="rule">Theo Sherman (Phần mở đầu cuốn sách), một thương vụ <strong>M&amp;A</strong> thành công không phải <em>nghệ thuật</em>, cũng không phải <em>khoa học</em> — mà là một <strong>quy trình</strong> (process). Những deal mà cả người mua lẫn người bán đều hài lòng đều đi qua cùng một chuỗi bước đã được kiểm chứng.</div>
+    <div class="sub">Vì sao đây là nền</div>
+    <div class="why"><p>Đây là cái khung của cả cuốn. Mỗi tab nền còn lại chỉ là một chặng trong quy trình này. Chưa thấy bản đồ chung, các chương sau dễ thành rời rạc, khó nhớ. Thấy rồi, chúng xâu lại thành một chuỗi.</p></div>
+  </section>
+
+  <section class="problem">
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Vấn đề nó sinh ra để giải quyết</span><h2>Vì sao hai deal giống hệt lại một thành một bại?</h2></div>
+    </div>
+    <p class="lead">Hai công ty cùng đi mua một đối thủ. Số liệu đẹp như nhau, giá trả gần bằng nhau. Một năm sau, một bên ăn nên làm ra, bên kia tan tành. Vì sao?</p>
+
+<p>Nếu deal là canh bạc thì chịu, chẳng học được gì. Nhưng phần lớn khác biệt không nằm ở may rủi. Nó nằm ở chỗ bên thắng làm đúng từng bước, bên thua bỏ bước.</p>
+
+<div class="sub">Đừng coi deal là phép màu</div>
+<p>Người mới hay nghĩ mua bán công ty là tài thiên bẩm, hoặc gặp thời. Nghĩ vậy thì bó tay: ai không có 'khiếu' coi như thua. Sherman lật lại: deal tốt đi theo một lối có thể học và lặp.</p>
+
+<p>Nên trước khi học kỹ thuật, ta cần thấy cái lối đó trước. Đó là Bước 2.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Mô hình đơn giản · cách nó chạy</span><h2>Quy trình: một chuỗi bước, đi từ đầu đến cuối</h2></div>
+    </div>
+    <p>Quy trình M&amp;A chỉ là một chuỗi bước nối nhau. Sherman xếp cả cuốn theo đúng chuỗi đó.</p>
+
+<div class="sub">Ba chặng lớn</div>
+<p>Chặng một: hiểu mục tiêu hai bên — ai bán, ai mua, vì sao. Chặng hai: đàm phán cho tới lúc ký xong (closing). Chặng ba: từ lúc ký trở đi — ghép hai công ty làm một.</p>
+
+<div class="sub">Mỗi chặng là một tab nền</div>
+<p>Trong mỗi chặng lại có các bước nhỏ. Chuẩn bị, thẩm định, định giá, dựng hợp đồng, rồi tích hợp. Bốn tab nền còn lại chính là những bước hay bị làm ẩu nhất.</p>
+
+<div class="sub">Vì sao gọi là quy trình</div>
+<p>Vì nó lặp lại được. Làm deal này rút kinh nghiệm, deal sau làm tốt hơn. Không cần 'khiếu', chỉ cần đi đủ bước và không nhảy cóc.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví dụ cụ thể</span><h2>Bán nhà: chuẩn bị kỹ hay dọn vội?</h2></div>
+    </div>
+    <div class="example-card"><span class="tag">Ví dụ</span>
+<p>Sherman ví bán công ty như bán nhà. Một cặp vợ chồng bỏ <strong>hai năm</strong> tân trang trước khi rao. Cặp kia dọn dẹp <strong>một tuần</strong> rồi treo biển 'bán như hiện trạng'.</p>
+<p>Cùng một căn nhà tương đương, cặp chuẩn bị kỹ bán được giá cao hơn hẳn. Khác biệt không phải may — mà là số bước họ chịu làm trước.</p>
+<p>Deal cũng vậy. Bên đi đủ quy trình mua (hoặc bán) được giá tốt hơn bên làm tắt.</p>
+</div>
+<p>Đời thường hơn: thi cử. Hai bạn cùng sức học, một bạn ôn theo lịch từng phần, một bạn học dồn đêm cuối. Điểm chênh nhau không phải vì 'số hên', mà vì cách ôn có quy trình hay không.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Sherman dẫn một phân tích hồi quy: yếu tố số một quyết định <em>bội số</em> (multiple) mà một doanh nghiệp đáng giá là <em>tốc độ tăng trưởng</em>. Tăng trưởng càng nhanh, bội số dòng tiền càng cao. Nhưng để 'bán' được mức tăng trưởng đó, vẫn phải đi đúng quy trình.</p>
+  </section>
+
+  <section class="clarify">
+    <div class="step-head">
+      <div class="big-num">≠</div>
+      <div class="step-meta"><span class="lbl">Dễ nhầm · ranh giới</span><h2>Đừng nhầm 'quy trình' với 'thủ tục cứng nhắc'</h2></div>
+    </div>
+    <div class="mix-q"><span class="q">"Quy trình nghĩa là cứ làm theo checklist là xong?"</span><p>Không. Quy trình là chuỗi bước phải đi, nhưng mỗi bước vẫn cần đầu óc. Bỏ bước thì hỏng; làm bước cho có cũng hỏng. Checklist là bản đồ, không phải cái nạng chống thay cho suy nghĩ.</p></div>
+<div class="mix-q"><span class="q">"Đã là quy trình thì deal nào cũng chắc thắng?"</span><p>Không chắc thắng, nhưng bớt thua. Quy trình không xoá hết rủi ro. Nó chỉ giúp bạn thấy trước vấn đề và không vấp những cú ngã ai cũng vấp.</p></div>
+  </section>
+
+  <section class="bridge">
+    <div class="step-head">
+      <div class="big-num">→</div>
+      <div class="step-meta"><span class="lbl">Nối tiếp · nó dẫn tới đâu</span><h2>Quy trình đúng rồi, vì sao deal vẫn đổ?</h2></div>
+    </div>
+    <div class="bridge-card"><p>Giữ chắc cái khung này: M&amp;A là chuỗi bước học được. Nhưng có một sự thật khó nuốt phía trước. Kể cả khi số liệu đẹp và làm đủ bước, vẫn có tới khoảng <strong>80%</strong> deal không tạo được giá trị sau sáp nhập.</p>
+<p>Vì sao? Vì bước khó nhất — ghép người, ghép văn hoá — thường bị xem nhẹ, và synergy bị thổi phồng. Trang feynman <strong>'Vì sao deal tốt vẫn đổ vỡ?'</strong> mổ kỹ chỗ này: deal đổ ở phần mềm, không phải phần cứng.</p></div>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">✦</div>
+      <div class="step-meta"><span class="lbl">Kể lại trong một hơi</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>M&amp;A không phải canh bạc hay tài thiên bẩm. Deal tốt đi theo một chuỗi bước học được: hiểu hai bên, đàm phán tới ký, rồi ghép hai công ty. Làm đủ bước, không nhảy cóc, thì bớt thua. Đó là cái khung cho mọi tab sau.</p>
+<p class="core">Nhớ một câu: <span>deal hay deal dở khác nhau ở quy trình, không phải may rủi.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã nắm nền chưa?</h3>
+      <ol>
+        <li>Vì sao Sherman nói M&amp;A là 'quy trình', không phải nghệ thuật hay khoa học?</li>
+        <li>Hai deal có số liệu đẹp như nhau, vì sao một thành một bại?</li>
+        <li>Ba chặng lớn của quy trình M&amp;A là gì?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nền vững thì cái khó tự nhẹ đi. Hiểu từ gốc, không học vẹt.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-merger-khac-acquisition" role="tabpanel" aria-labelledby="tab-1" tabindex="0"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Nền tảng · hiểu từ gốc</div>
+    <h1 class="rise" style="animation-delay:.08s">Merger và Acquisition: nghe giống, làm khác hẳn</h1>
+    <p class="core rise" style="animation-delay:.16s">Hai chữ hay bị lẫn, <span>nhưng thuế, quyền lực và văn hoá khác hẳn.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Định vị · nó là gì &amp; vì sao học trước</span><h2>Merger và Acquisition là gì</h2></div>
+    </div>
+    <div class="rule">Theo Sherman (Chương 1): <strong>merger</strong> (sáp nhập) là hai hay nhiều công ty hợp thành một, thường qua <em>hoán đổi cổ phần</em>, như những bên ngang hàng; công ty mua giữ pháp nhân gốc. <strong>Acquisition</strong> (mua lại) là một bên — người mua — mua <em>tài sản</em> hoặc <em>cổ phần</em> của bên kia, trả bằng tiền, cổ phiếu của mình, hoặc tài sản khác.</div>
+    <div class="sub">Vì sao đây là nền</div>
+    <div class="why"><p>Đây là bộ từ vựng cả cuốn dựa vào. Thuế, ai nắm quyền, thẩm định một chiều hay hai chiều — tất cả đổi theo việc deal là merger hay acquisition. Chưa phân biệt được, các chương cấu trúc và thuế sau sẽ rối.</p></div>
+  </section>
+
+  <section class="problem">
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Vấn đề nó sinh ra để giải quyết</span><h2>Cùng là 'về chung một nhà', sao lại khác nhau?</h2></div>
+    </div>
+    <p class="lead">Báo hay viết 'hai ông lớn sáp nhập'. Người mới đọc nghĩ: sáp nhập hay mua lại thì cũng là hai công ty về chung một nhà, khác gì nhau? Thật ra khác rất nhiều.</p>
+
+<p>Vấn đề là: gọi sai tên thì hiểu sai cả cuộc chơi. Ai cầm trịch? Ai gánh nợ cũ? Ai phải chứng minh mình đáng giá? Câu trả lời đổi theo loại deal.</p>
+
+<div class="sub">Hai hình hài khác nhau</div>
+<p>Trong <em>merger</em>, hai bên gần như ngang hàng, gộp lại thành một. Trong <em>acquisition</em>, có người mua rõ ràng và người bán rõ ràng. Một bên trả tiền, một bên nhận tiền rồi rút.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Mô hình đơn giản · cách nó chạy</span><h2>Phân biệt theo: ai cầm trịch, và mua cái gì</h2></div>
+    </div>
+    <p>Có hai câu hỏi tách bạch mọi deal.</p>
+
+<div class="sub">Câu một: merger hay acquisition?</div>
+<p>Merger: hai bên ngang hàng đổi cổ phần cho nhau, thành một công ty. Không có 'kẻ mua, người bán' cố định. Acquisition: một bên bỏ tiền mua, bên kia bán rồi rút. Có buyer, có seller rõ ràng.</p>
+
+<div class="sub">Câu hai: mua cổ phần hay mua tài sản?</div>
+<p>Khi đã là mua lại, còn chọn tiếp. <em>Mua cổ phần</em> (stock): mua cả công ty, thường giữ riêng thành công ty con. <em>Mua tài sản</em> (asset): chỉ nhặt những tài sản mình cần, gộp vào công ty mình.</p>
+
+<div class="sub">Vì sao phân biệt lại quan trọng</div>
+<p>Vì hệ quả thuế, quyền kiểm soát và cả văn hoá đổi theo từng lựa chọn. Mua cổ phần thì gánh luôn nợ cũ. Mua tài sản thì né được phần lớn nợ, nhưng thủ tục phức tạp hơn.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví dụ cụ thể</span><h2>Sirius XM và Oracle–Sun: hai kiểu khác nhau</h2></div>
+    </div>
+    <div class="example-card"><span class="tag">Ví dụ</span>
+<p>Hai đài XM và Sirius hợp thành <strong>Sirius XM</strong> — một <em>merger</em> của hai bên ngang hàng, đổi cổ phần cho nhau. Không ai 'nuốt' ai; cả hai thành một.</p>
+<p>Còn <strong>Oracle mua Sun Microsystems</strong> (2009) là <em>acquisition</em>: Oracle bỏ tiền mua, Sun về dưới trướng Oracle. Có người mua, có người bán rõ ràng.</p>
+<p>Cùng là 'hai công ty thành một nhà', nhưng luật chơi hai vụ khác hẳn.</p>
+</div>
+<p>Mua cổ phần hay mua tài sản? Hình dung mua một quán phở. Mua cả quán kèm pháp nhân — gồm cả khoản nợ nhà cung cấp còn treo — là kiểu mua cổ phần. Chỉ mua cái bếp, bộ bàn ghế và công thức, bỏ lại nợ cũ cho chủ — là kiểu mua tài sản.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Vì merger không có buyer/seller cố định, <em>due diligence</em> thành hai chiều: mỗi bên phải chứng minh đóng góp của mình để giành tỷ lệ vốn và quyền quản lý. Còn việc chọn cấu trúc stock hay asset bị chi phối bởi thuế, bản chất ngành, và mục tiêu của người mua.</p>
+  </section>
+
+  <section class="clarify">
+    <div class="step-head">
+      <div class="big-num">≠</div>
+      <div class="step-meta"><span class="lbl">Dễ nhầm · ranh giới</span><h2>Đừng nhầm merger với acquisition trá hình</h2></div>
+    </div>
+    <div class="mix-q"><span class="q">"Cứ gọi 'merger' cho lịch sự, thực ra vẫn là một bên nuốt bên kia?"</span><p>Hay xảy ra thật. Nhiều vụ gắn mác 'merger of equals' cho êm, nhưng thực chất một bên cầm trịch. Mác không đổi được bản chất: cứ nhìn ai nắm quyền và tiền chảy chiều nào.</p></div>
+<div class="mix-q"><span class="q">"Mua cổ phần hay mua tài sản thì khác gì, cuối cùng cũng đổi chủ?"</span><p>Khác ở nợ và thuế. Mua cổ phần là ôm cả công ty, gồm cả nợ ẩn. Mua tài sản là chọn món, thường bỏ lại nợ cũ. Đổi chủ thì giống, nhưng cái 'ôm' theo lại rất khác.</p></div>
+  </section>
+
+  <section class="bridge">
+    <div class="step-head">
+      <div class="big-num">→</div>
+      <div class="step-meta"><span class="lbl">Nối tiếp · nó dẫn tới đâu</span><h2>Từ đây mở sang cấu trúc và thuế</h2></div>
+    </div>
+    <div class="bridge-card"><p>Giữ chắc hai câu hỏi: merger hay acquisition, và mua cổ phần hay mua tài sản. Đây là ngã rẽ đầu tiên của mọi thương vụ.</p>
+<p>Sang phần <strong>cấu trúc &amp; thuế</strong>, bạn sẽ gặp một ý khó hơn. Vì sao người mua thường thích mua tài sản? Để được <em>step-up basis</em>: ghi tài sản theo giá đã trả, khấu hao nhiều hơn, đỡ thuế. Trang feynman <strong>'Sao người mua lại chọn đường khó hơn?'</strong> mổ đúng ý đó — nắm cổ phần và tài sản ở đây trước đã.</p></div>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">✦</div>
+      <div class="step-meta"><span class="lbl">Kể lại trong một hơi</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Merger là hai bên ngang hàng đổi cổ phần thành một, không có kẻ mua người bán cố định. Acquisition là một bên bỏ tiền mua bên kia. Khi đã mua, còn chọn mua cổ phần (ôm cả công ty và nợ) hay mua tài sản (nhặt món cần, bỏ nợ cũ). Thuế và quyền lực đổi theo lựa chọn.</p>
+<p class="core">Một câu nhớ: <span>merger là ngang hàng gộp lại, acquisition là một bên mua đứt.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã nắm nền chưa?</h3>
+      <ol>
+        <li>Sirius XM và Oracle–Sun khác nhau ở chỗ nào: đâu là merger, đâu là acquisition?</li>
+        <li>Mua cổ phần và mua tài sản khác nhau ra sao về việc gánh nợ cũ?</li>
+        <li>Vì sao trong một merger, due diligence lại là 'hai chiều'?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nền vững thì cái khó tự nhẹ đi. Hiểu từ gốc, không học vẹt.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-synergy" role="tabpanel" aria-labelledby="tab-2" tabindex="0"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Nền tảng · hiểu từ gốc</div>
+    <h1 class="rise" style="animation-delay:.08s">Synergy: vì sao 1+1 có thể bằng 3</h1>
+    <p class="core rise" style="animation-delay:.16s">Hai công ty ghép lại <span>có thể đáng hơn tổng hai phần — nếu synergy là thật.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Định vị · nó là gì &amp; vì sao học trước</span><h2>Synergy là gì</h2></div>
+    </div>
+    <div class="rule">Theo Sherman (Chương 1), tiền đề cốt lõi của mọi thương vụ là <strong>synergy</strong>: <em>“tổng thể sẽ lớn hơn tổng các phần”</em> (the whole will be greater than the sum of its parts). Người mua chấp nhận trả thêm — một khoản <em>premium</em> — vì tin hai công ty ghép lại tạo ra giá trị mà đứng riêng không có.</div>
+    <div class="sub">Vì sao đây là nền</div>
+    <div class="why"><p>Đây là động cơ chạy ngầm dưới mọi deal. Vì sao trả cao hơn giá trị 'đứng một mình'? Vì sao deal hay đổ vỡ? Vì sao có earn-out? Tất cả quay quanh synergy. Chưa nắm ý này, nửa cuốn sau chỉ là thuật ngữ.</p></div>
+  </section>
+
+  <section class="problem">
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Vấn đề nó sinh ra để giải quyết</span><h2>Vì sao chịu trả nhiều hơn giá trị 'đứng một mình'?</h2></div>
+    </div>
+    <p class="lead">Một công ty đang làm ăn, đứng riêng đáng 100 tỷ. Vậy mà người mua sẵn lòng trả 130 tỷ. Nghe vô lý: ai lại trả hơn giá trị thật? Nhưng họ làm thế mỗi ngày.</p>
+
+<p>Lý do nằm ở thứ chỉ xuất hiện khi hai bên về chung một nhà. Ghép xong, công ty mua bán thêm được hàng cho khách của mình, cắt được chi phí trùng, dùng được kênh phân phối có sẵn.</p>
+
+<div class="sub">Giá trị mọc thêm sau khi ghép</div>
+<p>Phần giá trị mọc thêm đó là synergy. Nó không nằm sẵn trong công ty bị mua. Nó chỉ ra đời khi hai bên cộng lại. Đó là cái người mua thật sự trả tiền để có.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Mô hình đơn giản · cách nó chạy</span><h2>Tổng lớn hơn các phần — nhưng chỉ khi có thật</h2></div>
+    </div>
+    <p>Mô hình một câu: ghép hai công ty, mong tổng đáng hơn cộng từng cái. Viết gọn là 1+1=3.</p>
+
+<div class="sub">Synergy đến từ đâu</div>
+<p>Từ ba chỗ quen thuộc. Bán chéo: khách bên này mua thêm hàng bên kia. Cắt trùng lặp: bỏ bớt chi phí làm hai lần. Dùng chung: lấy ngay kênh, công nghệ, thương hiệu có sẵn.</p>
+
+<div class="sub">Vì sao người mua trả premium</div>
+<p>Người mua trả thêm vì tin mình moi được phần giá trị mọc thêm đó. Nếu chỉ trả đúng giá 'đứng một mình', mọi giá trị synergy tạo ra sau này là lời của người mua.</p>
+
+<div class="sub">Cạm bẫy: synergy ảo</div>
+<p>Nhưng synergy rất dễ tưởng tượng ra. Trên giấy thì cộng nào cũng đẹp. Ngoài đời, phần lớn lại không thành. Trả premium cho synergy ảo là cách nhanh nhất để lỗ.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví dụ cụ thể</span><h2>Tiệm bánh mua lò rang cà phê</h2></div>
+    </div>
+    <div class="example-card"><span class="tag">Bài toán</span>
+<p>Một tiệm bánh đông khách. Cạnh đó có lò rang cà phê nhỏ, đứng riêng đáng <strong>1 tỷ</strong>. Tiệm bánh trả <strong>1,3 tỷ</strong> để mua. Vì sao chịu trả thêm 300 triệu?</p>
+<p>Vì khách bánh sẽ mua thêm cà phê mỗi sáng. Tiệm cũng khỏi xây quầy cà phê từ đầu. Phần tiền mọc thêm mỗi năm từ việc ghép đó là synergy — nó biện minh cho 300 triệu trả thêm.</p>
+<p>Nhưng thử đổi tình huống. Nếu khách bánh chẳng ai uống cà phê, phần mọc thêm bằng không. Khi đó 300 triệu kia là tiền ném đi: synergy chỉ có trên giấy.</p>
+</div>
+<p>Sherman gọi tên một phần synergy quen thuộc: <em>goodwill</em>. Mua một thương hiệu đã có khách trung thành thường rẻ hơn tự gây dựng từ đầu. Người mua trả thêm cho lòng tin của khách — thứ không hiện đủ trên sổ sách người bán.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Một deal có lý khi doanh nghiệp <em>đáng giá hơn với người mua so với người bán</em> — chênh lệch đó chính là synergy. Nhưng Sherman cảnh báo một con số đáng sợ. Tỷ lệ deal không tạo được giá trị sau sáp nhập cao tới khoảng 80%. Phần lớn vì synergy bị phóng đại thành ảo (illusory), kế hoạch sơ sài, và lịch ép tới closing quá gấp.</p>
+  </section>
+
+  <section class="clarify">
+    <div class="step-head">
+      <div class="big-num">≠</div>
+      <div class="step-meta"><span class="lbl">Dễ nhầm · ranh giới</span><h2>Đừng nhầm synergy với 'mua cho to'</h2></div>
+    </div>
+    <div class="mix-q"><span class="q">"Cứ ghép hai công ty là tự nhiên có synergy chứ gì?"</span><p>Không tự nhiên. Synergy phải có nguồn cụ thể: bán chéo cho ai, cắt được khoản nào, dùng chung cái gì. Hứa suông 'sẽ có synergy' mà không chỉ ra được nguồn thì thường là ảo.</p></div>
+<div class="mix-q"><span class="q">"To hơn thì mạnh hơn, đáng tiền hơn?"</span><p>Không hẳn. To thêm mà chi phí cũng phình theo thì tổng không lớn hơn các phần. Synergy đo bằng giá trị mọc thêm, không đo bằng quy mô.</p></div>
+  </section>
+
+  <section class="bridge">
+    <div class="step-head">
+      <div class="big-num">→</div>
+      <div class="step-meta"><span class="lbl">Nối tiếp · nó dẫn tới đâu</span><h2>Synergy dẫn tới câu hỏi khó: vì sao deal vẫn đổ?</h2></div>
+    </div>
+    <div class="bridge-card"><p>Giữ chắc: synergy là phần giá trị mọc thêm khi hai bên ghép lại, và là lý do người mua trả premium. Nhưng đây cũng là chỗ deal dễ chết nhất.</p>
+<p>Nối sang trang feynman <strong>'Vì sao deal tốt vẫn đổ vỡ?'</strong>: ai cũng hứa synergy, ít ai làm nó thành thật. Khi synergy hoá ảo, premium đã trả thành lỗ. Hiểu synergy là chìa khoá hiểu cả tỷ lệ thất bại 80% lẫn vì sao có earn-out để 'giữ chân lửa' người bán. Và trang <strong>'Vì sao synergy doanh thu hay bốc hơi nhất?'</strong> tách loại synergy nào chắc, loại nào ảo.</p></div>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">✦</div>
+      <div class="step-meta"><span class="lbl">Kể lại trong một hơi</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Synergy là phần giá trị chỉ mọc thêm khi hai công ty ghép lại: bán chéo, cắt trùng, dùng chung. Vì tin vào nó, người mua trả cao hơn giá trị đứng một mình. Nhưng synergy rất dễ tưởng tượng ra mà không thành. Trả premium cho synergy ảo là cách nhanh nhất để lỗ.</p>
+<p class="core">Nhớ một câu: <span>1+1 chỉ bằng 3 khi synergy là thật, không phải trên giấy.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã nắm nền chưa?</h3>
+      <ol>
+        <li>Vì sao người mua chịu trả hơn giá trị 'đứng một mình' của công ty bị mua?</li>
+        <li>Synergy thường đến từ những nguồn nào?</li>
+        <li>Vì sao 'synergy ảo' lại là cách nhanh nhất khiến một deal đẹp thành lỗ?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nền vững thì cái khó tự nhẹ đi. Hiểu từ gốc, không học vẹt.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-dinh-gia-va-dieu-khoan" role="tabpanel" aria-labelledby="tab-3" tabindex="0"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Nền tảng · hiểu từ gốc</div>
+    <h1 class="rise" style="animation-delay:.08s">Định giá: không có 'một con số đúng', và giá chưa phải tất cả</h1>
+    <p class="core rise" style="animation-delay:.16s">Doanh nghiệp đáng bao nhiêu? <span>Thị trường trả lời, không phải công thức — và điều khoản nặng ngang giá.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Định vị · nó là gì &amp; vì sao học trước</span><h2>Định giá, giá và điều khoản</h2></div>
+    </div>
+    <div class="rule">Theo Sherman (Chương 9): <strong>định giá</strong> (valuation) <em>không phải khoa học chính xác</em>. Có nhiều phương pháp, mỗi cái cho một kết quả khác. Không cái nào trả lời dứt khoát 'doanh nghiệp đáng bao nhiêu' — câu đó chỉ ngã ngũ qua <em>term sheet</em>, tức qua thị trường. Và phải luôn tách <strong>giá</strong> (price) khỏi <strong>điều khoản</strong> (terms).</div>
+    <div class="sub">Vì sao đây là nền</div>
+    <div class="why"><p>Đây là nền cho cả nửa sau cuốn sách. Đàm phán, hợp đồng, tài trợ, earn-out — tất cả xoay quanh giá và điều khoản. Người mới hay tưởng mỗi công ty có một 'giá đúng', và tưởng giá là tất cả. Hai lầm tưởng đó phải gỡ trước.</p></div>
+  </section>
+
+  <section class="problem">
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Vấn đề nó sinh ra để giải quyết</span><h2>Cùng một công ty, vì sao mỗi người định một giá?</h2></div>
+    </div>
+    <p class="lead">Thuê ba chuyên gia định giá cùng một công ty. Họ ra ba con số khác nhau. Ai đúng? Câu hỏi này làm người mới bối rối: lẽ ra phải có một giá đúng chứ?</p>
+
+<p>Sự thật phũ phàng: không có con số đúng duy nhất. Định giá dựa một phần vào dữ kiện, một phần vào niềm tin về tương lai. Mà tương lai thì không ai chắc.</p>
+
+<div class="sub">Vậy ai quyết giá?</div>
+<p>Cuối cùng, giá là cái người mua chịu trả. Giống căn nhà: thẩm định viên cho một con số, nhưng nhà chỉ đáng đúng cái giá người mua thật sự đặt xuống.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Mô hình đơn giản · cách nó chạy</span><h2>Định giá chỉ là gợi ý; thị trường mới chốt</h2></div>
+    </div>
+    <p>Hãy tách hai việc dễ bị gộp làm một: ước giá, và chốt giá.</p>
+
+<div class="sub">Ước giá: nhiều thước, nhiều kết quả</div>
+<p>Có vài cách ước thông dụng: so với công ty tương tự, tính theo tài sản, hoặc chiết khấu dòng tiền tương lai. Mỗi cách một kết quả. Chúng cho một <em>khoảng</em>, không phải một điểm.</p>
+
+<div class="sub">Chốt giá: do thị trường</div>
+<p>Con số thật chỉ hiện ra khi có người trả. Còn cạnh tranh thì người mua còn động cơ nâng giá. Hết cạnh tranh, giá rơi về mức thấp.</p>
+
+<div class="sub">Và giá chưa phải tất cả</div>
+<p>Cùng một con số, điều khoản đi kèm đổi hẳn giá trị thật. Trả hết bằng tiền ngay khác xa trả góp ba năm kèm điều kiện. Giá đẹp mà điều khoản xấu thì thành deal tệ.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví dụ cụ thể</span><h2>Đấu giá kiểu eBay và bội số EBITDA</h2></div>
+    </div>
+    <div class="example-card"><span class="tag">Ví dụ</span>
+<p>Sherman lấy eBay làm ví dụ. Giá người bán nhận thường <strong>không</strong> phải mức tối đa của người thắng. Nó chỉ nhỉnh hơn mức tối đa của người trả giá <strong>cao thứ nhì</strong> một chút.</p>
+<p>Bài học: chính cạnh tranh đẩy giá lên, không phải công thức. Còn người thứ hai bám đuổi, người thắng còn phải trả cao.</p>
+<p>Khoảng giá cũng dao động mạnh. Ngành nóng có thể bán được 8 đến 12 lần lợi nhuận (EBITDA). Thị trường yếu may ra được 1,5 đến 2 lần. Cùng một công ty, thời điểm khác là giá khác.</p>
+</div>
+<p>Giá đẹp chưa chắc deal đẹp. Một lời chào '10 tỷ, trả hết khi ký' rõ ràng hơn hẳn lời '12 tỷ nhưng trả góp ba năm, kèm điều kiện'. Con số to hơn mà điều khoản bóp nghẹt thì lại thành đắt và rủi ro.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Cách định giá phổ biến nhất là <em>chiết khấu dòng tiền</em> (DCF): dự phóng dòng tiền tương lai rồi kéo về hôm nay, vì tiền hôm nay đáng hơn tiền mai sau. Điểm yếu của DCF là phụ thuộc giả định, dễ sai. Công ty nhỏ, đóng còn bị trừ thêm một khoản — <em>private-company discount</em> — thường 20 đến 50%, vì thiếu thông tin và rủi ro cao.</p>
+  </section>
+
+  <section class="clarify">
+    <div class="step-head">
+      <div class="big-num">≠</div>
+      <div class="step-meta"><span class="lbl">Dễ nhầm · ranh giới</span><h2>Đừng nhầm giá trị với giá, và giá với điều khoản</h2></div>
+    </div>
+    <div class="mix-q"><span class="q">"Định giá ra 100 tỷ thì bán được 100 tỷ chứ?"</span><p>Không chắc. Định giá là ước lượng trên giấy. Bán được bao nhiêu là do người mua chịu trả. Có cạnh tranh thì vượt 100; ế khách thì dưới 100.</p></div>
+<div class="mix-q"><span class="q">"Giá càng cao thì deal càng có lợi cho người bán?"</span><p>Chưa chắc. Giá cao mà trả góp lâu, kèm điều kiện ngặt, có thể tệ hơn giá thấp trả ngay. Phải nhìn giá và điều khoản cùng lúc.</p></div>
+  </section>
+
+  <section class="bridge">
+    <div class="step-head">
+      <div class="big-num">→</div>
+      <div class="step-meta"><span class="lbl">Nối tiếp · nó dẫn tới đâu</span><h2>Từ giá và điều khoản sang cơ chế chia rủi ro</h2></div>
+    </div>
+    <div class="bridge-card"><p>Giữ chắc hai điều: không có con số đúng duy nhất, và điều khoản nặng ngang giá. Đây là nền cho mọi cuộc đàm phán phía sau.</p>
+<p>Nối sang phần khó hơn — <strong>hợp đồng và chia rủi ro</strong>. Chính 'điều khoản' là nơi sinh ra các cơ chế dịch rủi ro qua lại hai bên. Ví dụ: trả thêm theo kết quả, giữ lại một phần tiền trong két, đặt ngưỡng và trần cho khoản đòi bồi thường. Hai trang feynman mổ tiếp: <strong>'Giá cao hơn, vụ lại tệ hơn?'</strong> và <strong>'Ký xong rồi, sao rủi ro vẫn chạy về người bán?'</strong>.</p></div>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">✦</div>
+      <div class="step-meta"><span class="lbl">Kể lại trong một hơi</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Định giá không cho một con số đúng — nó cho một khoảng. Con số thật chỉ hiện khi có người trả, và cạnh tranh đẩy nó lên. Quan trọng không kém: giá chỉ là một nửa. Điều khoản đi kèm có thể biến giá đẹp thành deal tệ. Luôn nhìn cả hai.</p>
+<p class="core">Một câu nhớ: <span>thị trường định giá, không phải công thức — và điều khoản nặng ngang giá.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã nắm nền chưa?</h3>
+      <ol>
+        <li>Vì sao ba chuyên gia định giá cùng một công ty lại ra ba con số khác nhau?</li>
+        <li>Ví dụ eBay cho thấy điều gì về vai trò của cạnh tranh khi chốt giá?</li>
+        <li>Vì sao một mức giá cao vẫn có thể là deal tệ cho người bán?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nền vững thì cái khó tự nhẹ đi. Hiểu từ gốc, không học vẹt.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-due-diligence" role="tabpanel" aria-labelledby="tab-4" tabindex="0"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Nền tảng · hiểu từ gốc</div>
+    <h1 class="rise" style="animation-delay:.08s">Due diligence: phép thử xem deal đẹp là thật hay ảo</h1>
+    <p class="core rise" style="animation-delay:.16s">Trước khi mua, <span>phải kiểm xem bên trong căn nhà có đẹp như bên ngoài không.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Định vị · nó là gì &amp; vì sao học trước</span><h2>Due diligence là gì</h2></div>
+    </div>
+    <div class="rule">Theo Sherman (Chương 5): <strong>due diligence</strong> (thẩm định) là rà soát pháp lý, tài chính và chiến lược toàn bộ tài liệu, hợp đồng và lịch sử của người bán. Quan trọng nhất, nó là một <em>reality test</em> (phép thử sự thật): kiểm xem những thứ làm deal hấp dẫn là <em>thật</em> hay <em>ảo</em>. Là một quy trình, không phải một sự kiện.</div>
+    <div class="sub">Vì sao đây là nền</div>
+    <div class="why"><p>Đây là viên gạch chống cho cả nửa sau. Vì thẩm định có thể sót, mới sinh ra reps &amp; warranties (lời cam kết) và bồi thường. Vì nó lộ vấn đề, mới có 'kẻ giết deal' và đàm phán lại giá. Nắm nó trước, các chương hợp đồng và tích hợp mới thông.</p></div>
+  </section>
+
+  <section class="problem">
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Vấn đề nó sinh ra để giải quyết</span><h2>Bên ngoài đẹp, bên trong thì sao?</h2></div>
+    </div>
+    <p class="lead">Bạn sắp mua một căn nhà nhìn rất đẹp từ ngoài. Bạn ký hợp đồng ngay, hay gọi thợ vào kiểm tra móng, đường ống, mái trước? Ai cũng muốn kiểm trước. Mua công ty cũng vậy.</p>
+
+<p>Vấn đề là: hồ sơ người bán đưa luôn cho thấy mặt đẹp nhất. Doanh thu trông ngon, khách trông trung thành, hợp đồng trông chắc. Nhưng đó là điều thật, hay chỉ là lớp sơn?</p>
+
+<div class="sub">Cần một phép thử</div>
+<p>Nên trước khi trả tiền, người mua cần một phép thử: những thứ khiến deal hấp dẫn có chịu được soi kỹ không? Đó chính là phần việc của due diligence.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Mô hình đơn giản · cách nó chạy</span><h2>Một phép thử sự thật, vừa nghệ thuật vừa khoa học</h2></div>
+    </div>
+    <p>Đừng hiểu lầm due diligence là đi săn cớ phá deal. Nó là phép thử xem giá trị làm nên deal là thật hay ảo.</p>
+
+<div class="sub">Phần khoa học</div>
+<p>Lập danh sách câu hỏi theo ngành, đọc tài liệu có hệ thống, lượng hoá rủi ro tìm thấy. Đây là phần làm được bằng phương pháp, ai chăm cũng làm được.</p>
+
+<div class="sub">Phần nghệ thuật</div>
+<p>Biết hỏi câu gì, hỏi lúc nào, đọc nét mặt người trả lời. Tạo bầu không khí vừa tin vừa hơi sợ để người bán khai thật. Phần này cần kinh nghiệm.</p>
+
+<div class="sub">Không quá ít, không quá nhiều</div>
+<p>Làm qua loa cho xong thì sót rủi ro lớn. Soi vô tận thì thành câu cá vô bổ, người bán phát cáu. Cốt là hỏi đúng câu, không phải hỏi thật nhiều câu.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví dụ cụ thể</span><h2>Mua quán đông khách — khách của ai?</h2></div>
+    </div>
+    <div class="example-card"><span class="tag">Bài toán</span>
+<p>Một quán ăn sổ sách đẹp, khách đông. Người mua sắp trả giá cao vì 'khách trung thành'. Due diligence đặt một câu: khách tới vì quán, hay vì người chủ đang đứng bếp?</p>
+<p>Hỏi kỹ mới lộ: khách quen tới vì ông chủ. Ông đi, khách đi theo. Vậy 'khách trung thành' là <strong>ảo</strong> — nó không chuyển sang người mua được.</p>
+<p>Phép thử vừa cứu người mua khỏi trả giá cao cho một thứ không có thật. Nó không phá deal; nó cho thấy deal thật ra đáng bao nhiêu.</p>
+</div>
+<p>Giống mua xe cũ. Người bán khoe máy êm, nhưng bạn vẫn đưa thợ kiểm tra gầm, soi số khung. Không phải để bắt lỗi cho bõ ghét — mà để biết cái xe thật sự đáng giá nào trước khi xuống tiền.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Vì due diligence có thể sót, hợp đồng cần thêm <em>reps &amp; warranties</em> (lời cam kết của người bán) và <em>indemnification</em> (bồi thường nếu cam kết sai). Với deal xuyên biên giới, làm thẩm định sâu về <em>FCPA</em> (luật chống hối lộ) còn được cơ quan Mỹ 'thưởng' bằng cách xử nhẹ tay hơn nếu sau này lộ vi phạm cũ.</p>
+  </section>
+
+  <section class="clarify">
+    <div class="step-head">
+      <div class="big-num">≠</div>
+      <div class="step-meta"><span class="lbl">Dễ nhầm · ranh giới</span><h2>Đừng nhầm thẩm định với đi săn cớ phá deal</h2></div>
+    </div>
+    <div class="mix-q"><span class="q">"Due diligence là moi cho ra lỗi để ép giá hoặc bỏ deal?"</span><p>Không. Mục tiêu là kiểm xem giá trị làm nên deal có thật không, để quyết định nên đi tiếp hay dừng. Tìm ra vấn đề chỉ là phương tiện, không phải đích.</p></div>
+<div class="mix-q"><span class="q">"Cứ hỏi thật nhiều, soi thật lâu là thẩm định kỹ?"</span><p>Không hẳn. Hỏi tràn lan thành 'câu cá', tốn tiền và làm người bán phát cáu. Thẩm định kỹ là hỏi đúng câu quan trọng, không phải hỏi cho nhiều.</p></div>
+  </section>
+
+  <section class="bridge">
+    <div class="step-head">
+      <div class="big-num">→</div>
+      <div class="step-meta"><span class="lbl">Nối tiếp · nó dẫn tới đâu</span><h2>Phép thử lộ vấn đề — rồi hợp đồng phân rủi ro</h2></div>
+    </div>
+    <div class="bridge-card"><p>Giữ chắc: due diligence là phép thử thật-hay-ảo, không phải cuộc săn cớ. Nó quyết định nên đi tiếp hay dừng.</p>
+<p>Nối sang phần khó hơn — <strong>hợp đồng và 'kẻ giết deal'</strong>. Vì phép thử có thể sót, hợp đồng dựng một lưới an toàn. Lưới đó gồm: lời cam kết của người bán, tiền bồi thường, và một khoản giữ lại phòng hờ. Còn khi phép thử lộ vấn đề lớn, deal dễ chết. Trang feynman <strong>'Ký xong rồi, sao rủi ro vẫn chạy về người bán?'</strong> mổ chính lưới an toàn đó. Còn trang <strong>'Sao đào càng sâu lại càng được tha?'</strong> mổ mặt phản trực giác: soi kỹ lại được thưởng.</p></div>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">✦</div>
+      <div class="step-meta"><span class="lbl">Kể lại trong một hơi</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Due diligence là kiểm tra trước khi mua: những thứ làm deal hấp dẫn là thật hay ảo? Nó vừa khoa học (danh sách, đọc tài liệu) vừa nghệ thuật (biết hỏi gì, đọc người). Không làm qua loa, cũng đừng soi vô tận. Đích không phải bắt lỗi, mà là quyết định nên đi tiếp hay dừng.</p>
+<p class="core">Một câu nhớ: <span>kiểm xem bên trong căn nhà có đẹp như bên ngoài không.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã nắm nền chưa?</h3>
+      <ol>
+        <li>Vì sao due diligence được gọi là 'phép thử sự thật' chứ không phải cuộc săn cớ phá deal?</li>
+        <li>Phần 'khoa học' và phần 'nghệ thuật' của due diligence khác nhau ra sao?</li>
+        <li>Vì sao 'làm qua loa' và 'soi vô tận' đều là cách thẩm định tồi?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nền vững thì cái khó tự nhẹ đi. Hiểu từ gốc, không học vẹt.</p>
+  </footer>
+
+</div></div>
+<script>
+  var bar=document.getElementById('progress');
+  function upd(){var h=document.documentElement;var s=h.scrollTop||document.body.scrollTop;
+    var max=(h.scrollHeight-h.clientHeight)||1;bar.style.width=(s/max*100)+'%';}
+  window.addEventListener('scroll',upd,{passive:true});upd();
+  var io=new IntersectionObserver(function(es){es.forEach(function(e){
+    if(e.isIntersecting){e.target.style.animation='rise .7s cubic-bezier(.2,.7,.3,1) forwards';io.unobserve(e.target);}});},{threshold:.12});
+  document.querySelectorAll('section').forEach(function(s){s.style.opacity='0';io.observe(s);});
+</script>
+
+<script>
+(function(){
+  var tabs=[].slice.call(document.querySelectorAll('.tabbar .tab'));
+  var panels=[].slice.call(document.querySelectorAll('.concept-panel'));
+  function show(i){
+    tabs.forEach(function(t,j){t.classList.toggle('active',j===i);});
+    panels.forEach(function(p,j){
+      var on=(j===i); p.classList.toggle('active',on);
+      if(on){p.querySelectorAll('section').forEach(function(s){s.style.opacity='';s.style.animation='';});}
+    });
+    try{history.replaceState(null,'','#'+panels[i].id);}catch(e){}
+    window.scrollTo(0,0); window.dispatchEvent(new Event('scroll'));
+  }
+  tabs.forEach(function(t){t.addEventListener('click',function(){show(+t.getAttribute('data-i'));});});
+  var start=0; panels.forEach(function(p,j){if('#'+p.id===location.hash)start=j;});
+  show(start);
+})();
+</script>
+
+<script>(function(){var t=[].slice.call(document.querySelectorAll(".tabbar .tab"));function s(){t.forEach(function(x){var a=x.classList.contains("active");x.setAttribute("aria-selected",a?"true":"false");x.tabIndex=a?0:-1;});}t.forEach(function(x){x.addEventListener("click",s);new MutationObserver(s).observe(x,{attributes:true,attributeFilter:["class"]});});s();})();</script>
+</body></html>

@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="vi"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IFRS 13 Fair Value Measurement — Hiểu sâu theo Feynman</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,500&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  /* Design tokens shared with ebook-to-study-html (styles_v2.css) */
+  :root{
+    --bg:#fafaf7; --bg-elevated:#ffffff; --bg-soft:#f3f3ee;
+    --border:#e0e0d8; --border-soft:#ececea; --border-strong:#d2c8b6;
+    --ink:#1a1a1f; --ink-soft:#3f3f4a; --muted:#7a7a85;
+    --accent:#b8860b; --accent-2:#8b6508; --gold:#a07c1f; --gap:#8b6508;
+    --serif:"Fraunces",Georgia,"Iowan Old Style",serif;
+    --sans:"Geist",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    --mono:"Geist Mono","JetBrains Mono",Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:var(--sans);
+    font-size:19px;line-height:1.72;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}
+  .progress{position:fixed;top:0;left:0;height:3px;width:0;z-index:50;
+    background:linear-gradient(90deg,var(--gold),var(--accent));transition:width .08s linear}
+  .wrap{max-width:920px;margin:0 auto;padding:0 36px}
+  .rise{opacity:0;transform:translateY(14px);animation:rise .7s cubic-bezier(.2,.7,.3,1) forwards}
+  @keyframes rise{to{opacity:1;transform:none}}
+
+  header{padding:104px 0 60px;border-bottom:1px solid var(--border)}
+  .kicker{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.18em;
+    text-transform:uppercase;color:var(--accent);margin-bottom:26px}
+  h1{font-family:var(--serif);font-weight:600;font-size:clamp(42px,7.6vw,72px);
+    line-height:1.0;letter-spacing:-.022em;margin-bottom:28px;font-optical-sizing:auto;color:var(--ink)}
+  h1 em{font-style:italic;color:var(--accent)}
+  .core{font-family:var(--serif);font-style:italic;font-weight:400;
+    font-size:clamp(21px,3.6vw,27px);line-height:1.44;color:var(--ink-soft)}
+  .core span{font-style:normal;font-weight:600;color:var(--accent-2);
+    box-shadow:inset 0 -.5em 0 rgba(184,134,11,.16)}
+
+  /* ---- BƯỚC 0: ANCHOR (state the rule + plan before explaining) ---- */
+  .anchor .rule{font-family:var(--serif);font-size:19px;line-height:1.5;color:var(--ink);
+    background:var(--bg-soft);border-left:3px solid var(--accent);
+    padding:18px 24px;border-radius:0 4px 4px 0;margin:0}
+  .anchor .rule em{font-style:italic;color:var(--accent-2)}
+  .anchor .rule strong{color:var(--ink);font-weight:600}
+  .anchor .approach{color:var(--ink-soft)}
+
+  section{padding:72px 0;border-bottom:1px solid var(--border);position:relative}
+  .step-head{display:flex;align-items:flex-start;gap:22px;margin-bottom:34px}
+  .big-num{font-family:var(--serif);font-weight:700;font-size:62px;line-height:.8;
+    color:var(--border-strong);flex:none;font-optical-sizing:auto;letter-spacing:-.03em}
+  .step-meta{padding-top:4px}
+  .lbl{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--accent);display:block;margin-bottom:10px}
+  h2{font-family:var(--serif);font-weight:600;font-size:clamp(27px,4.4vw,37px);
+    line-height:1.12;letter-spacing:-.012em;color:var(--ink)}
+  h2 em{font-style:italic;color:var(--accent)}
+  p{margin-bottom:21px}
+  p:last-child{margin-bottom:0}
+  strong{font-weight:600;color:var(--ink)}
+  em{font-style:italic;color:var(--accent-2)}
+  .gloss{color:var(--muted);font-style:italic}
+
+  .lead::first-letter{font-family:var(--serif);font-weight:700;float:left;
+    font-size:74px;line-height:.74;padding:8px 12px 0 0;color:var(--accent)}
+
+  .sub{font-family:var(--serif);font-weight:600;font-size:17px;letter-spacing:.01em;
+    color:var(--ink);margin:34px 0 14px;display:flex;align-items:center;gap:11px}
+  .sub::before{content:"";width:18px;height:2px;background:var(--accent);flex:none;border-radius:2px}
+
+  .gaps{background:var(--bg-soft)}
+  .gaps .big-num{color:#e2d6b4}
+  .gaps .lbl{color:var(--gap)}
+  .gap-q{margin:0 0 30px;padding-left:24px;border-left:2px solid var(--border-strong)}
+  .gap-q:last-child{margin-bottom:0}
+  .gap-q .q{font-family:var(--serif);font-style:italic;font-weight:500;
+    font-size:22px;line-height:1.35;color:var(--gap);margin-bottom:12px;display:block}
+  .gap-q p:last-child{margin-bottom:0}
+
+  .analogy-card{border:1px solid #e8c876;border-radius:4px;padding:30px 32px;margin:8px 0 28px;
+    background:linear-gradient(135deg,#fef9ed 0%,#fdf3e0 100%)}
+  .analogy-card .tag{font-family:var(--mono);font-weight:600;font-size:11px;
+    letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin-bottom:16px;display:block}
+  .analogy-card p{color:#5a4810}
+  .analogy-card strong{color:var(--accent-2)}
+  .limit{font-size:17px;line-height:1.6;color:#5a4810;
+    border-top:1px solid #e8c876;padding-top:20px;margin-top:22px}
+  .limit b{color:var(--accent-2);font-weight:600;font-family:var(--serif)}
+
+  .retell{background:linear-gradient(180deg,var(--bg-soft) 0%,var(--bg) 100%);border-bottom:none}
+  .retell h2{color:var(--ink)}
+  .retell strong{color:var(--accent-2)}
+  .retell .core{margin-top:6px}
+  .testbox{border:1px solid var(--border);background:var(--bg-elevated);
+    border-radius:4px;padding:28px 32px;margin-top:40px;box-shadow:0 1px 2px rgba(0,0,0,.03)}
+  .testbox h3{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--accent);margin-bottom:20px}
+  .testbox ol{margin:0;padding-left:22px;counter-reset:t}
+  .testbox li{margin-bottom:16px;color:var(--ink-soft);padding-left:6px}
+  .testbox li:last-child{margin-bottom:0}
+
+  footer{text-align:center;padding:60px 0 88px}
+  footer .mark{font-family:var(--serif);font-weight:700;color:var(--accent);
+    font-size:26px;display:block;margin-bottom:14px}
+  footer p{font-family:var(--serif);font-style:italic;color:var(--muted);font-size:17px;max-width:380px;margin:0 auto}
+
+  @media(max-width:560px){
+    body{font-size:18px}
+    header{padding:70px 0 44px}
+    section{padding:52px 0}
+    .step-head{gap:16px}
+    .big-num{font-size:46px}
+    .lead::first-letter{font-size:60px}
+  }
+</style>
+<style>
+ .tabbar{position:fixed;top:0;left:0;right:0;width:100%;box-sizing:border-box;z-index:40;background:rgba(250,250,247,.93);
+   backdrop-filter:saturate(1.1) blur(8px);-webkit-backdrop-filter:saturate(1.1) blur(8px);
+   border-bottom:1px solid var(--border);display:flex;gap:6px;overflow-x:auto;
+   padding:10px max(36px,calc((100% - 992px)/2));scrollbar-width:thin}
+ .tabbar .tab{flex:0 0 auto;display:flex;align-items:baseline;gap:9px;cursor:pointer;
+   background:transparent;border:1px solid transparent;border-radius:999px;
+   padding:8px 17px;transition:.15s;white-space:nowrap;color:var(--muted)}
+ .tabbar .tab:hover{color:var(--ink);background:var(--bg-soft)}
+ .tabbar .tab.active{color:var(--accent-2);background:var(--bg-soft);border-color:var(--border-strong)}
+ .tabbar .tn{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.1em;color:var(--accent)}
+ .tabbar .tl{font-family:var(--serif);font-weight:500;font-size:16px}
+ body{padding-top:56px} .concept-panel{display:none}
+ .concept-panel.active{display:block}
+ .concept-panel header{padding-top:50px}
+ @media(max-width:560px){.tabbar .tl{max-width:48vw;overflow:hidden;text-overflow:ellipsis}}
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+<nav class="tabbar" aria-label="Các khái niệm"><button class="tab" data-i="0"><span class="tn">01</span><span class="tl">Người mua giả định</span></button><button class="tab" data-i="1"><span class="tn">02</span><span class="tl">Giá thoát ≠ giá mua</span></button><button class="tab" data-i="2"><span class="tn">03</span><span class="tl">Thị trường chính</span></button><button class="tab" data-i="3"><span class="tn">04</span><span class="tl">Highest &amp; best use</span></button><button class="tab" data-i="4"><span class="tn">05</span><span class="tl">Ba cách đo</span></button><button class="tab" data-i="5"><span class="tn">06</span><span class="tl">Nợ: chuyển, không dàn xếp</span></button><button class="tab" data-i="6"><span class="tn">07</span><span class="tl">Phân cấp: đầu vào</span></button></nav>
+<div class="concept-panel" id="c-nguoi-tham-gia"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Giải thích theo phương pháp Feynman</div>
+    <h1 class="rise" style="animation-delay:.08s">Giá trị hợp lý nhìn bằng mắt một người mua giả định — và phải là một vụ bán đàng hoàng</h1>
+    <p class="core rise" style="animation-delay:.16s">Giá trị hợp lý không phải giá BẠN chấp nhận, <span>mà là giá một người mua điển hình, tỉnh táo trả trong một vụ bán bình thường — không phải bán tháo.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Điều cần hiểu &amp; cách tiếp cận</span><h2>Quy tắc: market participant + orderly transaction</h2></div>
+    </div>
+    <div class="rule">IFRS 13 <strong>đoạn 2–3</strong>: fair value là phép đo <strong>dựa trên thị trường</strong>, không dựa trên đơn vị cụ thể — đo bằng giả định mà <em>market participants</em> (người tham gia thị trường) dùng; ý định giữ hay bán của bạn <strong>không liên quan</strong>. <strong>Đoạn 22–23 &amp; Phụ lục A</strong>: market participant là người mua/bán <strong>độc lập, hiểu biết, có khả năng và tự nguyện</strong> — không bị ép. <strong>Đoạn 15 &amp; Phụ lục A</strong>: giao dịch phải <em>orderly</em> (trật tự) — có thời gian chào bán bình thường, KHÔNG phải bán tháo hay thanh lý ép buộc.</div>
+    <div class="sub">Cách giải thích</div>
+    <div class="approach"><p>Chỗ vấp: cả bốn panel kia đều nhắc “market participant” mà chưa ai định nghĩa. Hai chữ này quyết định mọi con số. Cách làm: tôi neo vào chuyện bán lại một chiếc điện thoại cũ. “Giá đúng” của nó là giá một người mua bình thường, hiểu rõ máy, trả khi bạn có thời gian rao tử tế. Không phải giá rẻ mạt lúc bạn cần tiền gấp trong một giờ.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Giải thích đơn giản</span><h2>Một người mua tưởng tượng, trong một vụ bán bình thường</h2></div>
+    </div>
+    <p class="lead">Bạn muốn biết chiếc điện thoại cũ đáng bao nhiêu. Không phải đáng bằng giá bạn sẽ chịu bán — vì có hôm kẹt tiền bạn bán rẻ bèo. Cũng không phải giá ông chú dễ tính trả vì thương bạn. Mà là giá một người mua BÌNH THƯỜNG, biết rõ máy, trả trong một vụ bán đàng hoàng. IFRS 13 đo giá trị hợp lý đúng bằng cái nhìn của người mua giả định đó.</p>
+
+<div class="sub">Không phải bạn, mà là một người điển hình</div>
+<p>Giá trị hợp lý “dựa trên thị trường”, không “dựa trên bạn”. Bạn có lý do riêng — cần tiền gấp, hay quý món đồ — nhưng thị trường thì không. Nên ta hỏi: một người mua bán điển hình sẽ trả gì? Không cần chỉ đích danh ai, chỉ cần hình dung kiểu người đó.</p>
+
+<div class="sub">Bốn nét của người mua giả định</div>
+<p>Người đó có bốn nét. Độc lập: không phải người thân dễ tính. Hiểu biết: đã tìm hiểu kỹ món đồ. Có khả năng: đủ tiền mua thật. Tự nguyện: muốn mua, nhưng không bị ép. Bốn nét này loại bỏ những vụ mua bán méo mó.</p>
+
+<div class="sub">“Orderly”: vụ bán đàng hoàng, không bán tháo</div>
+<p>Giao dịch còn phải “trật tự”: có thời gian rao bán bình thường, để tìm đúng người mua. Một vụ bán tháo — thanh lý gấp, siết nợ, dí dao vào cổ — KHÔNG phải orderly. Giá từ một vụ bán tháo không phải giá trị hợp lý, dù nó là giá có thật.</p>
+
+<div class="sub">Vì sao cái nền này quan trọng</div>
+<p>Mọi panel khác đứng trên nền này. Exit price là giá người mua giả định trả. Highest and best use là cách họ khai thác. Thị trường chính là chỗ họ giao dịch. Hiểu “họ là ai” thì cả bốn khái niệm kia mới chắc.</p>
+  </section>
+
+  <section class="gaps">
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Chỗ vấp · Lỗ hổng</span><h2>Mấy chỗ nghe xuôi mà nghĩ kỹ chưa thông</h2></div>
+    </div>
+    <div class="gap-q"><span class="q">“Tôi mới là người bán — sao lại đo theo cái người mua tưởng tượng nào đó?”</span><p>Vì giá trị hợp lý là con số khách quan, không phải con số của riêng bạn. Nếu đo theo hoàn cảnh của bạn, mỗi người ra một giá: người kẹt tiền ghi thấp, người tham ghi cao. Neo vào một người mua điển hình giúp ai đo cũng ra một mức gần nhau — đó là cái “hợp lý”.</p></div>
+<div class="gap-q"><span class="q">“Có một vụ bán thật, giá thật — sao lại bảo không phải giá trị hợp lý?”</span><p>Vì không phải vụ bán nào cũng “đàng hoàng”. Một vụ thanh lý gấp để trả nợ thường ép giá xuống thấp giả tạo — người bán không có thời gian tìm người trả đúng. IFRS 13 loại các vụ bán tháo đó. Giá có thật, nhưng nó méo, nên không dùng làm giá trị hợp lý.</p></div>
+<div class="gap-q"><span class="q">“Phải chỉ ra đúng một người mua cụ thể à? Lấy đâu ra?”</span><p>Không cần. Bạn không phải tìm một cái tên. Chỉ cần hình dung ĐẶC ĐIỂM của kiểu người sẽ mua món này trong thị trường của nó (đoạn 23). Ai sẽ quan tâm mua một dây chuyền sản xuất, một thương hiệu? Hình dung nhóm đó, rồi hỏi họ trả giá nào.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví von &amp; ví dụ đời thường</span><h2>Neo vào thứ bạn đã biết</h2></div>
+    </div>
+    <div class="analogy-card"><span class="tag">Ví dụ trung tâm</span>
+<p>Bán lại một chiếc điện thoại cũ. “Giá đúng” của nó không phải giá bạn chịu buông lúc kẹt tiền, cũng không phải giá ông chú trả vì nể. Mà là giá một người mua bình thường — đã dạo giá, biết máy còn tốt — trả khi bạn đăng bán tử tế và chờ được vài hôm. Người mua điển hình đó là “market participant”; còn việc bạn có vài hôm để rao, không bị dí bán trong một giờ, chính là “orderly”.</p>
+<p class="limit"><b>Chỗ ví von này hỏng:</b> chiếc điện thoại có cả chợ đồ cũ đông người mua, nên “người mua điển hình” dễ hình dung. Với một tài sản lạ — một nhà máy chuyên dụng, một bằng sáng chế — “người mua điển hình” là ai thì mờ mịt hơn nhiều. Bạn phải tự dựng ra chân dung đó. Và ranh giới “bao lâu mới hết là bán tháo” cũng không sắc như ví von gợi ý; nó là phán đoán.</p>
+</div>
+<p>Gần việc của anh hơn: định giá một dây chuyền trong thương vụ M&amp;A giữa lúc thị trường hoảng loạn. Vài tài sản quanh đó bị bán tháo giá rẻ mạt. Nhưng giá trị hợp lý KHÔNG lấy theo các vụ bán tháo đó — vì chúng không orderly. Phải ước giá mà một người mua điển hình trả trong điều kiện bình thường.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Phụ lục A định nghĩa market participants: độc lập (không phải bên liên quan theo IAS 24, trừ khi có bằng chứng giá vẫn theo điều kiện thị trường), hiểu biết, có khả năng và tự nguyện. Orderly transaction: giả định có thời gian phơi ra thị trường để marketing bình thường; không phải <em>forced liquidation</em>/distress sale. Đoạn 2–3 nhấn: fair value là market-based, nên synergy hay ý định riêng của bạn không tính — chỉ tính những gì market participant nói chung cũng hưởng. Đây là gốc của cả khung IFRS 13.</p>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">4</div>
+      <div class="step-meta"><span class="lbl">Kể lại gọn gàng</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Giá trị hợp lý không nhìn từ mắt BẠN, mà từ mắt một người mua giả định điển hình. Người đó độc lập, hiểu biết, có khả năng và tự nguyện — không bị ép. Và vụ mua bán phải “đàng hoàng”: có thời gian rao bình thường, không phải bán tháo.</p>
+<p>Nên một giá bán tháo có thật vẫn không phải giá trị hợp lý. Ý định hay hoàn cảnh riêng của bạn cũng không kéo được con số.</p>
+<p class="core">Giá trị hợp lý không phải giá BẠN chấp nhận, <span>mà là giá một người mua điển hình, tỉnh táo trả trong một vụ bán bình thường — không phải bán tháo.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã hiểu chưa?</h3>
+      <ol>
+        <li>Bạn cần tiền gấp nên định bán rẻ một tài sản. Giá bán vội đó có phải giá trị hợp lý không? Vì sao?</li>
+        <li>Bốn đặc điểm của một “market participant” là gì?</li>
+        <li>Vì sao ý định giữ hay bán của riêng bạn không ảnh hưởng tới giá trị hợp lý?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nếu giải thích được cho bà ngoại hiểu, bạn mới thật sự hiểu.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-exit-price"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Giải thích theo phương pháp Feynman</div>
+    <h1 class="rise" style="animation-delay:.08s">Giá trị hợp lý là giá BÁN RA, không phải giá bạn vừa trả</h1>
+    <p class="core rise" style="animation-delay:.16s">Vừa mua một món giá 100, <span>giá trị hợp lý của nó là số bạn BÁN LẠI được — có thể chẳng phải 100.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Điều cần hiểu &amp; cách tiếp cận</span><h2>Quy tắc: fair value là exit price</h2></div>
+    </div>
+    <div class="rule">IFRS 13 <strong>đoạn 24</strong>: <em>fair value</em> (giá trị hợp lý) là giá sẽ <strong>NHẬN ĐƯỢC khi bán</strong> một tài sản (hoặc trả để chuyển một khoản nợ) trong một giao dịch trật tự ở thị trường chính, tại ngày đo — tức một <strong>exit price</strong> (giá thoát). <strong>Đoạn 57</strong>: giá giao dịch là giá bạn TRẢ để mua (<em>entry price</em>); fair value là giá bạn NHẬN khi bán (exit price) — hai cái không nhất thiết bằng nhau. <strong>Đoạn 60</strong>: nếu chuẩn khác bắt ghi ban đầu theo fair value mà nó lệch giá giao dịch, ghi ngay lãi/lỗ vào lãi lỗ.</div>
+    <div class="sub">Cách giải thích</div>
+    <div class="approach"><p>Chỗ vấp: ai cũng nghĩ “đáng giá bao nhiêu” là “tôi trả bao nhiêu”. IFRS 13 lật lại: đáng giá là bán ra được bao nhiêu. Cách làm: tôi neo vào chiếc xe mới lăn bánh khỏi cửa hàng. Bạn vừa trả một giá; nhưng nếu bán lại ngay, con số khác hẳn. Cái “bán lại được” mới là giá trị hợp lý.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Giải thích đơn giản</span><h2>Hai con số cho cùng một món: lúc mua và lúc bán</h2></div>
+    </div>
+    <p class="lead">Tưởng tượng bạn vừa mua một chiếc xe mới, trả 800 triệu, lái khỏi cửa hàng. Có người hỏi: “xe đáng bao nhiêu?” Bạn đáp “800 triệu, vừa mua mà”. Nhưng nếu phải BÁN LẠI ngay chiều nay, bạn được bao nhiêu? Có khi chỉ 700. IFRS 13 nói: giá trị hợp lý là cái 700 đó — giá bán ra, không phải giá mua vào.</p>
+
+<div class="sub">Giá mua vào: entry price</div>
+<p>Lúc bạn bỏ tiền ra lấy món đồ, số tiền đó là “giá vào” (entry price). Đây là góc nhìn của người mua: tôi phải trả bao nhiêu để có nó.</p>
+
+<div class="sub">Giá bán ra: exit price</div>
+<p>Giờ đảo vai. Nếu bạn đứng ở phía người bán món đó đi, bạn nhận về bao nhiêu? Đó là “giá ra” (exit price). IFRS 13 chọn đúng góc nhìn này làm giá trị hợp lý — luôn là giá bán, dù bạn đang định bán hay không.</p>
+
+<div class="sub">Hai con số nhiều khi bằng nhau — nhưng không phải luôn</div>
+<p>Phần lớn trường hợp, mua ở đâu thì bán cũng ở đó, nên giá vào xấp xỉ giá ra. Nhưng không phải luôn. Mua sỉ rồi bán lẻ, hay mua ở chợ này định bán ở chợ khác, hai con số tách ra.</p>
+
+<div class="sub">Lệch nhau thì sao: lãi/lỗ ngày 1</div>
+<p>Nếu một chuẩn bắt ghi tài sản theo giá trị hợp lý ngay khi mua, mà giá đó khác giá bạn vừa trả, chênh lệch ghi thẳng vào lãi/lỗ. Vừa mua đã có thể lòi ra một khoản lãi hay lỗ “ngày đầu tiên”.</p>
+  </section>
+
+  <section class="gaps">
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Chỗ vấp · Lỗ hổng</span><h2>Mấy chỗ nghe xuôi mà nghĩ kỹ chưa thông</h2></div>
+    </div>
+    <div class="gap-q"><span class="q">“Vừa trả 800 mà bảo nó đáng 700 — vô lý, tôi đâu có ngu mua hớ?”</span><p>Không phải bạn mua hớ. Hai con số khác nhau vì hai vai khác nhau. 800 là giá người BÁN xe đòi (có lãi của họ, phí showroom). 700 là giá bạn nhận nếu giờ bán cho người khác. Cùng chiếc xe, nhưng đứng phía mua hay phía bán cho ra hai số.</p></div>
+<div class="gap-q"><span class="q">“Tôi không định bán — sao lại đo theo giá bán?”</span><p>Vì giá trị hợp lý hỏi một câu giả định, không phải kế hoạch của bạn. Câu hỏi là: NẾU đổi chủ hôm nay, thị trường trả bao nhiêu? Ý định giữ hay bán của bạn không đổi được con số đó. Giá bán là một thước đo khách quan, không phụ thuộc bạn tính làm gì với nó.</p></div>
+<div class="gap-q"><span class="q">“Phí giao dịch khi bán có trừ vào giá trị hợp lý không?”</span><p>Không. Giá trị hợp lý là giá ở thị trường chính, CHƯA trừ phí giao dịch (đoạn 25). Phí môi giới, phí sàn là chuyện riêng của từng giao dịch, không phải bản chất tài sản. Nhưng để ý: phí VẬN CHUYỂN thì lại trừ, nếu vị trí là một đặc tính của tài sản — như đưa lô hàng từ kho về chợ.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví von &amp; ví dụ đời thường</span><h2>Neo vào thứ bạn đã biết</h2></div>
+    </div>
+    <div class="analogy-card"><span class="tag">Ví dụ trung tâm</span>
+<p>Chiếc xe mới lăn bánh khỏi đại lý là ví dụ kinh điển. Bạn trả 800 triệu (giá vào). Nhưng vừa ra khỏi cổng, chiếc xe thành “xe đã qua sử dụng” — bán lại chỉ còn chừng 700 (giá ra). Không phải bạn dại; chỉ là giá mua gồm lãi đại lý và sự “mới tinh”, còn giá bán thì không. Giá trị hợp lý theo IFRS 13 là cái 700 — luôn nhìn từ phía bán ra.</p>
+<p class="limit"><b>Chỗ ví von này hỏng:</b> chiếc xe có cả một chợ xe cũ tấp nập để biết “bán lại được 700”. Nhiều tài sản trong kế toán không có chợ như vậy — một nhà máy chuyên dụng, một thương hiệu. Lúc đó “giá bán ra” không đọc được trên bảng giá, mà phải ước bằng mô hình. Ví dụ chiếc xe làm exit price nghe dễ, nhưng đo nó ngoài đời mới là phần khó.</p>
+</div>
+<p>Gần việc của anh hơn: trong một thương vụ M&amp;A, bên mua trả một giá cho cả gói. Khi bóc tách từng tài sản theo IFRS 13, có món đo ra giá trị hợp lý khác hẳn phần giá đã phân bổ. Chênh đó không phải lỗi — nó phản ánh đúng chuyện giá trả (entry) và giá bán ra (exit) là hai thứ.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Đoạn 24 định nghĩa fair value là exit price ở <em>principal market</em> (hoặc most advantageous), tại ngày đo, trong điều kiện thị trường hiện tại. Đoạn 57–58: entry price thường xấp xỉ exit price khi thị trường mua và bán trùng nhau. Đoạn 59 dẫn B4 liệt kê khi nào giá giao dịch KHÔNG bằng fair value (ví dụ giao dịch giữa các bên liên quan, bị ép buộc, hay đơn vị đo khác). Đoạn 60: lệch thì ghi lãi/lỗ ngày 1 — trừ khi chuẩn khác (như IFRS 9) chặn lại bằng quy định riêng.</p>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">4</div>
+      <div class="step-meta"><span class="lbl">Kể lại gọn gàng</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Giá trị hợp lý không phải số bạn đã trả, mà là số bạn BÁN RA được hôm nay — gọi là exit price. Giá mua (entry) là góc nhìn người mua; giá bán (exit) là góc nhìn người bán. Hai cái thường xấp xỉ, nhưng không phải luôn.</p>
+<p>Khi chuẩn bắt ghi theo giá trị hợp lý mà nó lệch giá vừa trả, chênh lệch thành lãi/lỗ ngay ngày đầu.</p>
+<p class="core">Vừa mua một món giá 100, <span>giá trị hợp lý của nó là số bạn BÁN LẠI được — có thể chẳng phải 100.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã hiểu chưa?</h3>
+      <ol>
+        <li>Bạn vừa mua một thiết bị giá 1 tỷ. Vì sao giá trị hợp lý của nó có thể không phải 1 tỷ?</li>
+        <li>Phân biệt entry price và exit price. IFRS 13 chọn cái nào làm giá trị hợp lý?</li>
+        <li>Phí giao dịch và phí vận chuyển — cái nào được trừ khi đo giá trị hợp lý, cái nào không?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nếu giải thích được cho bà ngoại hiểu, bạn mới thật sự hiểu.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-thi-truong-chinh"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Giải thích theo phương pháp Feynman</div>
+    <h1 class="rise" style="animation-delay:.08s">Phải bán ở CHỢ CHÍNH — kể cả khi chợ khác trả cao hơn</h1>
+    <p class="core rise" style="animation-delay:.16s">Bạn không được chọn cái chợ trả giá đẹp nhất; <span>phải dùng giá ở thị trường chính — nơi món đó giao dịch nhiều nhất — dù nơi khác trả cao hơn.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Điều cần hiểu &amp; cách tiếp cận</span><h2>Quy tắc: principal market trước; most advantageous chỉ khi không có principal</h2></div>
+    </div>
+    <div class="rule">IFRS 13 <strong>đoạn 16</strong>: fair value giả định giao dịch xảy ra ở <strong>thị trường chính</strong> (principal market) của tài sản; <strong>chỉ khi KHÔNG có</strong> thị trường chính mới dùng <strong>thị trường có lợi nhất</strong> (most advantageous). <strong>Đoạn 18</strong>: nếu có thị trường chính, phải lấy giá ở đó — <strong>kể cả khi một chợ khác đang trả cao hơn</strong>. <strong>Đoạn 17</strong>: chợ bạn thường giao dịch được coi là thị trường chính (trừ khi có bằng chứng ngược). <strong>Đoạn 19</strong>: bạn phải có quyền tiếp cận thị trường đó.</div>
+    <div class="sub">Cách giải thích</div>
+    <div class="approach"><p>Chỗ vấp: trực giác bảo “bán ở đâu được giá cao nhất thì bán”. IFRS 13 chặn lại: phải bán ở CHỢ CHÍNH, dù chợ khác trả hơn. Cách làm: tôi neo vào chuyện bán vé concert. Có sàn bán lại chính thức (đông người mua nhất) và một nhóm chat trả cao hơn. Chuẩn bắt định giá theo sàn chính, không theo cái giá đẹp lẻ tẻ kia.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Giải thích đơn giản</span><h2>Chợ đông nhất thắng, không phải chợ giá đẹp nhất</h2></div>
+    </div>
+    <p class="lead">Bạn có một cái vé concert muốn định giá. Có hai nơi bán lại. Một: sàn bán vé chính thức, lúc nào cũng đông kẻ mua người bán. Hai: một nhóm chat nhỏ, tình cờ có người trả cao hơn hôm nay. Bán ở đâu được giá hơn thì tính theo đó, đúng không? IFRS 13 nói KHÔNG — phải tính theo sàn chính, dù nhóm chat trả cao hơn.</p>
+
+<div class="sub">Thị trường chính: nơi giao dịch nhiều nhất</div>
+<p>Thị trường chính là chợ có khối lượng và mức độ giao dịch lớn nhất cho món đó. Không phải chợ giá cao nhất — mà chợ tấp nập nhất. Giá ở đó đáng tin vì có nhiều người mua bán dội vào, khó bị một giao dịch lẻ làm lệch.</p>
+
+<div class="sub">Có chợ chính rồi thì hết quyền chọn</div>
+<p>Đây là chỗ phản trực giác. Một khi đã xác định được thị trường chính, bạn buộc dùng giá ở đó. Thấy một chợ khác trả cao hơn hôm nay cũng kệ. Không được nhảy sang chợ giá đẹp để ghi sổ cao hơn.</p>
+
+<div class="sub">Không có chợ chính mới xét “có lợi nhất”</div>
+<p>Chỉ khi không có thị trường chính — không chợ nào nổi trội về khối lượng — bạn mới chuyển sang thị trường CÓ LỢI NHẤT (most advantageous). Đó là chợ cho con số tốt nhất sau khi trừ chi phí giao dịch và vận chuyển để tới chợ đó.</p>
+
+<div class="sub">Phải có quyền vào chợ đó</div>
+<p>Một điều kiện nữa: bạn phải có quyền tiếp cận chợ đó. Một chợ bán buôn chỉ cho dân trong ngành vào thì không tính cho người ngoài. Vì thế cùng một món, hai công ty khác nhau có thể có thị trường chính khác nhau.</p>
+  </section>
+
+  <section class="gaps">
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Chỗ vấp · Lỗ hổng</span><h2>Mấy chỗ nghe xuôi mà nghĩ kỹ chưa thông</h2></div>
+    </div>
+    <div class="gap-q"><span class="q">“Bán được giá cao hơn ở chợ khác mà không cho dùng — vô lý không?”</span><p>Nghe vô lý, nhưng có lý do. Một giá cao lẻ tẻ ở chợ nhỏ dễ là may rủi, không bền. Giá ở chợ tấp nập nhất phản ánh đúng “đồng thuận” của thị trường hơn. Nếu cho ai cũng nhảy sang chợ giá đẹp nhất, mỗi người sẽ chọn một con số khác — mất tính so sánh được.</p></div>
+<div class="gap-q"><span class="q">“Chọn chợ thì trừ chi phí giao dịch, nhưng giá cuối lại không trừ — rối quá?”</span><p>Đúng là dễ xoắn. Khi SO các chợ để chọn most advantageous, bạn trừ cả phí giao dịch lẫn phí vận chuyển — để so cho công bằng. Nhưng khi đã chọn xong chợ, giá trị hợp lý lấy giá ở chợ đó và CHỈ trừ phí vận chuyển, KHÔNG trừ phí giao dịch (đoạn 25). Phí giao dịch chỉ giúp chọn chợ, không nằm trong con số cuối.</p></div>
+<div class="gap-q"><span class="q">“Cùng một tài sản sao thị trường chính lại khác nhau giữa các công ty?”</span><p>Vì điều kiện tiếp cận khác nhau. Một nhà bán buôn quen giao dịch ở sàn sỉ; một tiệm lẻ chỉ bán ở chợ lẻ. Mỗi bên có một thị trường “thường giao dịch” riêng, nên thị trường chính khác nhau (đoạn 19). Giá trị hợp lý vì thế xét từ góc của chính đơn vị đang đo.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví von &amp; ví dụ đời thường</span><h2>Neo vào thứ bạn đã biết</h2></div>
+    </div>
+    <div class="analogy-card"><span class="tag">Ví dụ trung tâm</span>
+<p>Bán lại tấm vé concert. Có sàn vé chính thức — kẻ mua người bán tấp nập, giá rõ ràng. Và có một nhóm chat, hôm nay tình cờ một người trả cao hơn. Trực giác: bán cho nhóm chat, lời hơn. IFRS 13: định giá theo SÀN CHÍNH, vì đó là chợ đông nhất, giá đáng tin nhất. Cái giá cao lẻ ở nhóm chat không được dùng — trừ khi không hề có sàn chính nào.</p>
+<p class="limit"><b>Chỗ ví von này hỏng:</b> vé concert có một sàn chính rõ ràng, dễ chỉ tay. Nhiều tài sản gần như không có “chợ” nào tấp nập để gọi là thị trường chính — một dây chuyền chuyên dụng, một khoản đầu tư hiếm giao dịch. Lúc đó phải xét most advantageous, hoặc dựng mô hình. Và “chợ nào đông nhất” đôi khi cũng phải ước, không hiện rõ như sàn vé.</p>
+</div>
+<p>Gần việc của anh hơn: một khoản đầu tư niêm yết trên hai sàn. Sàn A khối lượng giao dịch lớn gấp bội; sàn B hôm định giá tình cờ giá nhỉnh hơn. Fair value lấy theo sàn A — thị trường chính — dù sàn B đang đẹp giá hơn. Chọn nhầm sàn B là sai chuẩn, dù con số “đẹp” hơn.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Đoạn 18: có principal market thì dùng giá ở đó kể cả khi chợ khác lợi hơn. Đoạn 17: chợ thường giao dịch được coi là principal trừ khi có bằng chứng ngược — không cần lùng sục mọi chợ. Đoạn 19–20: phải có quyền tiếp cận, nhưng không cần bán được đúng ngày đo. Vòng xoắn chi phí: most advantageous chọn sau khi trừ transaction + transport costs; nhưng fair value cuối chỉ trừ transport, không trừ transaction (đoạn 25–26). Transaction cost chỉ là bộ lọc để chọn chợ, không nằm trong con số cuối.</p>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">4</div>
+      <div class="step-meta"><span class="lbl">Kể lại gọn gàng</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Fair value giả định bán ở thị trường CHÍNH — chợ giao dịch tấp nập nhất cho món đó. Có chợ chính rồi thì phải dùng giá ở đó, kể cả khi một chợ khác trả cao hơn hôm nay. Bạn không được nhảy sang chợ giá đẹp.</p>
+<p>Chỉ khi KHÔNG có chợ chính mới dùng chợ “có lợi nhất”. Và bạn phải có quyền tiếp cận chợ đó — nên thị trường chính có thể khác nhau giữa các công ty.</p>
+<p class="core">Bạn không được chọn cái chợ trả giá đẹp nhất; <span>phải dùng giá ở thị trường chính — nơi món đó giao dịch nhiều nhất — dù nơi khác trả cao hơn.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã hiểu chưa?</h3>
+      <ol>
+        <li>Một tài sản giao dịch ở hai sàn; sàn đông khách hơn lại cho giá thấp hơn hôm nay. Lấy giá ở sàn nào?</li>
+        <li>Khi nào mới được dùng “most advantageous market” thay cho “principal market”?</li>
+        <li>Khi chọn chợ thì trừ phí giao dịch, nhưng giá trị hợp lý cuối cùng lại không trừ phí giao dịch. Giải thích nghịch lý này.</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nếu giải thích được cho bà ngoại hiểu, bạn mới thật sự hiểu.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-highest-and-best-use"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Giải thích theo phương pháp Feynman</div>
+    <h1 class="rise" style="animation-delay:.08s">Đo theo cách dùng TỐT NHẤT thị trường nghĩ ra, không phải cách bạn đang dùng</h1>
+    <p class="core rise" style="animation-delay:.16s">Một tài sản phi tài chính đáng giá theo <span>cách dùng sinh lời nhất mà thị trường thấy được — kể cả khi bạn đang dùng nó kiểu khác.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Điều cần hiểu &amp; cách tiếp cận</span><h2>Quy tắc: đo theo highest and best use của market participant</h2></div>
+    </div>
+    <div class="rule">IFRS 13 <strong>đoạn 27</strong>: giá trị hợp lý của một tài sản phi tài chính tính theo khả năng một <em>market participant</em> tạo lợi ích kinh tế bằng cách dùng tài sản ở <strong>highest and best use</strong> (sử dụng cao nhất và tốt nhất). <strong>Đoạn 28</strong>: cách dùng đó phải đồng thời <strong>khả thi vật lý, hợp pháp, và khả thi tài chính</strong>. <strong>Đoạn 29</strong>: xét từ góc nhìn thị trường, kể cả khi bạn định dùng kiểu khác; cách dùng hiện tại được GIẢ ĐỊNH là tốt nhất, trừ khi thị trường gợi ý cách khác sinh lời hơn. <strong>Đoạn 30</strong>: kể cả mua để “thủ” (defensive), không xài, vẫn đo theo highest and best use.</div>
+    <div class="sub">Cách giải thích</div>
+    <div class="approach"><p>Chỗ vấp: ta quen định giá theo “tôi đang dùng nó làm gì”. IFRS 13 hỏi ngược: “thị trường vắt được nhiều tiền nhất từ nó bằng cách nào?”. Cách làm: tôi neo vào một căn nhà nát trên mảnh đất góc phố đẹp. Giá của nó không nằm ở căn nhà, mà ở cái mảnh đất có thể xây cao ốc — dù chủ vẫn đang ở căn nhà nát đó.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Giải thích đơn giản</span><h2>Đáng giá theo cách dùng khôn nhất, không phải cách bạn xài</h2></div>
+    </div>
+    <p class="lead">Tưởng tượng một căn nhà cấp bốn cũ nát, nằm ngay góc phố trung tâm. Chủ vẫn ở trong đó. Nhưng người mua nào cũng nhìn ra: đập nhà đi, xây một tòa văn phòng thì hốt bạc. Vậy căn nhà đáng giá theo “chỗ ở cũ nát” hay theo “đất xây cao ốc”? IFRS 13 chọn cái sau — cách dùng tốt nhất mà thị trường nghĩ ra.</p>
+
+<div class="sub">Ba cửa một “cách dùng tốt nhất” phải qua</div>
+<p>Không phải mơ gì cũng được. Cách dùng đó phải qua ba cửa. Một: làm được về vật lý (đất đủ rộng, đủ chắc). Hai: hợp pháp (quy hoạch cho phép xây cao ốc). Ba: đáng tiền (xây xong bán hay cho thuê có lời). Thiếu một cửa là cách dùng đó bị loại.</p>
+
+<div class="sub">Nhìn bằng mắt thị trường, không phải mắt bạn</div>
+<p>Điểm mấu chốt: hỏi thị trường sẽ làm gì với nó, không phải bạn định làm gì. Bạn thích ở căn nhà cũ — kệ. Nếu thị trường thấy “đất xây cao ốc” đáng tiền hơn, giá trị hợp lý tính theo cách đó. Ý định riêng của bạn không kéo giá xuống được.</p>
+
+<div class="sub">Cách dùng hiện tại: giả định là tốt nhất, nhưng đừng dừng ở đó</div>
+<p>Để gọn, chuẩn cho phép giả định cách bạn đang dùng chính là tốt nhất. Nhưng đó chỉ là điểm xuất phát. Nếu có dấu hiệu thị trường vắt được nhiều tiền hơn bằng cách khác, phải đo theo cách khác đó.</p>
+
+<div class="sub">Mua để “thủ” cũng vẫn đo kiểu đó</div>
+<p>Có khi bạn mua một thứ chỉ để KHÓA đối thủ — ví dụ mua một thương hiệu rồi cất đi, không xài, để họ không dùng được. Dù bạn cố tình không khai thác, giá trị hợp lý vẫn đo theo cách dùng tốt nhất mà thị trường nghĩ ra. “Mua để đắp chiếu” không hạ được giá trị trên sổ.</p>
+  </section>
+
+  <section class="gaps">
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Chỗ vấp · Lỗ hổng</span><h2>Mấy chỗ nghe xuôi mà nghĩ kỹ chưa thông</h2></div>
+    </div>
+    <div class="gap-q"><span class="q">“Tôi đang ở căn nhà, sao bắt định giá theo cao ốc tôi chả định xây?”</span><p>Vì giá trị hợp lý đo “thị trường trả bao nhiêu”, không đo “bạn định làm gì”. Một người mua sẵn sàng trả giá đất xây cao ốc, vì họ sẽ xây. Bạn không xây là lựa chọn của bạn, nhưng nó không làm mảnh đất bớt giá trị trong mắt thị trường.</p></div>
+<div class="gap-q"><span class="q">“Vậy cứ tưởng tượng cách dùng nào sinh lời nhất là được sao?”</span><p>Không. Cách dùng đó phải qua đủ ba cửa: vật lý, pháp lý, tài chính. Mơ xây cao ốc trên mảnh đất quy hoạch chỉ cho làm nhà cấp bốn là phạm cửa pháp lý — loại. Phải là cách dùng vừa làm được, vừa hợp luật, vừa có lời thật.</p></div>
+<div class="gap-q"><span class="q">“Mua thương hiệu về cất đi mà vẫn ghi giá cao — chẳng phải thổi phồng tài sản?”</span><p>Nghe ngược đời, nhưng đúng. Cái thương hiệu đó vẫn có sức tạo tiền nếu đem ra dùng — thị trường thấy được sức đó. Việc bạn chọn đắp chiếu để thủ thế là quyết định riêng, không xóa được giá trị tiềm năng. Nên sổ ghi theo highest and best use, không theo “tôi đang để không”.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví von &amp; ví dụ đời thường</span><h2>Neo vào thứ bạn đã biết</h2></div>
+    </div>
+    <div class="analogy-card"><span class="tag">Ví dụ trung tâm</span>
+<p>Căn nhà cũ trên đất vàng là ví dụ rõ nhất. Chủ vẫn ở, coi nó là “chỗ chui ra chui vào”. Nhưng mọi người mua đều tính: đập đi, xây tòa cho thuê, lời gấp mấy lần. Giá họ trả là giá của MẢNH ĐẤT theo cách dùng béo bở đó, không phải giá căn nhà nát. Giá trị hợp lý bám theo cái nhìn của người mua, không theo thói quen của chủ.</p>
+<p class="limit"><b>Chỗ ví von này hỏng:</b> với mảnh đất, “cách dùng tốt nhất” khá dễ hình dung — nhà ở, văn phòng, hay trung tâm thương mại. Với một tài sản vô hình hay một dây chuyền chuyên dụng, “cách dùng tốt nhất của thị trường” mờ hơn nhiều. Bạn phải tưởng tượng ra cả một market participant giả định và cách họ khai thác. Mảnh đất làm khái niệm dễ thấy, nhưng nhiều tài sản thật không lộ cách dùng tốt nhất rõ như thế.</p>
+</div>
+<p>Gần việc của anh hơn. Trong PPA, một nhà xưởng cũ của bên bị mua có thể đáng giá theo “đất tái phát triển” chứ không theo “tiếp tục sản xuất”. Hoặc một thương hiệu mua về để khai tử, dồn khách sang thương hiệu mình. Nó vẫn phải đo theo highest and best use — như thể còn được khai thác.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Đoạn 31 nói highest and best use lập ra <em>valuation premise</em>: tài sản cho giá trị lớn nhất khi dùng <em>in combination</em> (cùng nhóm tài sản khác, như một dây chuyền) hay <em>stand-alone</em> (đứng một mình). Đoạn 32: dù đo theo “dùng kết hợp”, vẫn bán theo đúng <em>unit of account</em> mà chuẩn khác quy định — giả định market participant ĐÃ có sẵn các tài sản bổ trợ. Đây là chỗ nối thẳng với IFRS 3: khi định giá tài sản trong một thương vụ, premise “in combination” thường quyết định con số.</p>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">4</div>
+      <div class="step-meta"><span class="lbl">Kể lại gọn gàng</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Một tài sản phi tài chính không đo theo cách BẠN đang dùng, mà theo cách dùng sinh lời nhất mà THỊ TRƯỜNG nghĩ ra. Cách dùng đó phải qua ba cửa: làm được về vật lý, hợp pháp, và có lời. Một căn nhà nát trên đất vàng đáng giá như “đất xây cao ốc”, không như “chỗ ở cũ”.</p>
+<p>Kể cả khi bạn mua để cất đi, không xài, giá trị hợp lý vẫn đo theo cách dùng tốt nhất đó.</p>
+<p class="core">Một tài sản phi tài chính đáng giá theo <span>cách dùng sinh lời nhất mà thị trường thấy được — kể cả khi bạn đang dùng nó kiểu khác.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã hiểu chưa?</h3>
+      <ol>
+        <li>Một mảnh đất đang làm bãi giữ xe, nhưng quy hoạch cho xây chung cư và xây chung cư thì lời hơn nhiều. Đo giá trị hợp lý theo cách dùng nào?</li>
+        <li>Ba điều kiện để một “cách dùng” được coi là highest and best use là gì?</li>
+        <li>Vì sao mua một tài sản về để cất đi (defensive use) vẫn phải đo theo highest and best use?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nếu giải thích được cho bà ngoại hiểu, bạn mới thật sự hiểu.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-ba-phuong-phap"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Giải thích theo phương pháp Feynman</div>
+    <h1 class="rise" style="animation-delay:.08s">Ba cách đo cùng một exit price: so sánh, xây lại, hay dòng tiền</h1>
+    <p class="core rise" style="animation-delay:.16s">Chuẩn nói exit price là gì, nhưng đo nó <span>bằng một trong ba cách: nhìn món tương tự, tính chi phí xây lại, hay quy dòng tiền tương lai về hôm nay.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Điều cần hiểu &amp; cách tiếp cận</span><h2>Quy tắc: ba approaches — market, cost, income</h2></div>
+    </div>
+    <div class="rule">IFRS 13 <strong>đoạn 62</strong>: ba kỹ thuật định giá được dùng rộng rãi — <strong>market approach</strong>, <strong>cost approach</strong>, <strong>income approach</strong>; chi tiết ở <strong>B5–B11</strong>. <strong>B5–B7</strong> (market): dùng giá và dữ liệu từ giao dịch của món giống/tương tự, ví dụ market multiples. <strong>B8–B9</strong> (cost): chi phí hiện tại để thay thế năng lực phục vụ của tài sản (current replacement cost), trừ hao mòn. <strong>B10–B11</strong> (income): quy các khoản tương lai về một giá trị hiện tại — gồm present value, mô hình định giá quyền chọn, và <strong>MEEM</strong> (multi-period excess earnings method). <strong>Đoạn 63</strong>: có thể dùng một hoặc nhiều kỹ thuật.</div>
+    <div class="sub">Cách giải thích</div>
+    <div class="approach"><p>Chỗ vấp: ba panel kia dạy exit price LÀ GÌ, nhưng chưa panel nào dạy đo nó BẰNG CÁCH NÀO. Đây là phần ruột của định giá. Cách làm: tôi neo vào việc định giá một xe bán đồ ăn theo ba cách độc lập. Nhìn xe tương tự bán bao nhiêu; tính tiền đóng một xe y vậy; hay xem xe đẻ ra lời mỗi năm bao nhiêu.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Giải thích đơn giản</span><h2>Ba con đường tới cùng một con số</h2></div>
+    </div>
+    <p class="lead">Bạn muốn định giá một chiếc xe bán đồ ăn. Có ba cách hỏi, đều hợp lệ. Một: mấy xe tương tự ngoài kia bán được bao nhiêu? Hai: đóng mới một chiếc y hệt tốn bao nhiêu? Ba: chiếc xe này đẻ ra lời mỗi năm bao nhiêu, quy về hôm nay là mấy? Ba con đường, cùng nhắm một đích: cái giá bán ra hợp lý.</p>
+
+<div class="sub">Cách 1 — Nhìn món tương tự (market approach)</div>
+<p>So với những gì đã bán ngoài chợ. Mấy chiếc xe đồ ăn cỡ đó, đời đó, bán quanh giá nào? Cũng giống định giá nhà bằng cách xem nhà hàng xóm bán bao nhiêu. Với doanh nghiệp, hay dùng “bội số” như giá trên doanh thu hoặc trên lợi nhuận.</p>
+
+<div class="sub">Cách 2 — Tính chi phí xây lại (cost approach)</div>
+<p>Hỏi: đóng mới một chiếc cho cùng công năng tốn bao nhiêu? Đó là “chi phí thay thế hiện tại”. Rồi trừ hao mòn — xe cũ thì không đáng bằng xe mới tinh. Cách này hợp với tài sản mà ai cũng có thể dựng lại được, ít phụ thuộc dòng tiền riêng.</p>
+
+<div class="sub">Cách 3 — Quy dòng tiền về hôm nay (income approach)</div>
+<p>Hỏi: chiếc xe này còn đẻ ra bao nhiêu tiền trong các năm tới? Cộng dòng tiền tương lai đó, kéo về giá trị hôm nay bằng một tỷ lệ chiết khấu. Đây là họ rộng nhất: gồm chiết khấu dòng tiền, mô hình định giá quyền chọn, và MEEM.</p>
+
+<div class="sub">MEEM — tách phần lời riêng của một tài sản vô hình</div>
+<p>MEEM là một nhánh của income, hay dùng cho vô hình như thương hiệu hay quyền khai thác. Ý chính: một dòng lời do NHIỀU tài sản cùng tạo ra. Bóc đi phần lời thuộc về máy móc, vốn lưu động, nhân lực — phần “lời dôi” còn lại mới là của riêng cái vô hình đó.</p>
+  </section>
+
+  <section class="gaps">
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Chỗ vấp · Lỗ hổng</span><h2>Mấy chỗ nghe xuôi mà nghĩ kỹ chưa thông</h2></div>
+    </div>
+    <div class="gap-q"><span class="q">“Ba cách cho ba con số khác nhau thì tin cái nào?”</span><p>Cả ba cùng nhắm một đích là exit price, nhưng hiếm khi ra y hệt. Chuẩn cho phép dùng một hoặc nhiều cách. Nếu dùng nhiều, bạn xét khoảng giá chúng vẽ ra rồi chọn điểm đại diện nhất, không máy móc lấy trung bình. Cách nào có dữ liệu tốt hơn thì đáng tin hơn.</p></div>
+<div class="gap-q"><span class="q">“Cost approach: cứ tính tiền xây lại là xong giá trị?”</span><p>Không hẳn. Chi phí xây lại mới chỉ là điểm khởi đầu; phải trừ hao mòn — vật lý, lỗi thời công nghệ, lỗi thời kinh tế. Và cost approach yếu khi giá trị nằm ở dòng tiền hay danh tiếng, chứ không ở “đống vật liệu”. Một thương hiệu mạnh không đo nổi bằng “tốn bao nhiêu để dựng lại”.</p></div>
+<div class="gap-q"><span class="q">“MEEM nghe phức tạp — vì sao phải bóc phần lời của tài sản khác ra?”</span><p>Vì một thương hiệu không tự kiếm tiền một mình. Nó cần nhà xưởng, máy móc, người làm mới ra doanh thu. Nếu gán hết dòng lời cho thương hiệu, bạn thổi phồng nó. MEEM trừ “tiền thuê” cho các tài sản bổ trợ trước, phần dôi còn lại mới đúng là công của thương hiệu. Đây chính là cách anh định giá concession rights.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví von &amp; ví dụ đời thường</span><h2>Neo vào thứ bạn đã biết</h2></div>
+    </div>
+    <div class="analogy-card"><span class="tag">Ví dụ trung tâm</span>
+<p>Định giá một chiếc xe bán đồ ăn theo ba cách. <strong>So sánh</strong>: mấy xe cùng đời ngoài kia bán quanh 300 triệu. <strong>Xây lại</strong>: đóng một chiếc y vậy tốn 350, trừ hao còn 300. <strong>Dòng tiền</strong>: xe đẻ lời 120 mỗi năm, quy về hôm nay ra 320. Ba con đường, ba số gần nhau, cùng nhắm một đích. Bạn chọn con số đại diện nhất, dựa trên cách nào có dữ liệu chắc hơn.</p>
+<p class="limit"><b>Chỗ ví von này hỏng:</b> chiếc xe đồ ăn có cả ba dữ liệu sẵn — chợ xe cũ, giá đóng mới, dòng lời rõ. Nhiều tài sản chỉ hợp một cách: một thương hiệu gần như chỉ đo bằng income (MEEM), không có “chợ thương hiệu” để so, cũng chẳng “xây lại” được. Và ba con số ngoài đời nhiều khi lệch xa nhau, buộc phải xét đoán nặng — không gần gũi như ví dụ xe.</p>
+</div>
+<p>Đúng nghề của anh: trong một PPA, anh bóc tách concession rights bằng MEEM — một nhánh income approach mà IFRS 13 nêu đích danh ở B11. Tài sản hữu hình thường đo bằng cost (chi phí thay thế); cả doanh nghiệp thì so bằng market multiples. Ba approaches của IFRS 13 chính là bộ đồ nghề anh dùng mỗi ngày, giờ có tên gọi và chỗ đứng trong chuẩn.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. B5–B7 market approach: giá/dữ liệu từ giao dịch món giống hoặc tương tự, gồm market multiples và matrix pricing. B8–B9 cost approach: <em>current replacement cost</em> — chi phí dựng lại năng lực phục vụ, trừ hao mòn vật lý/chức năng/kinh tế. B10–B11 income approach: present value, option pricing (Black-Scholes-Merton, binomial), và MEEM cho một số vô hình. Đoạn 64: nếu giá giao dịch là fair value lúc đầu mà sau dùng kỹ thuật có đầu vào không quan sát được, phải calibrate để lúc ghi nhận đầu kết quả khớp giá giao dịch. Đoạn 65–66: đổi kỹ thuật được nếu đo tốt hơn, hạch toán như thay đổi ước tính (IAS 8) nhưng miễn thuyết minh.</p>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">4</div>
+      <div class="step-meta"><span class="lbl">Kể lại gọn gàng</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Chuẩn nói exit price là gì; ba phương pháp này đo nó ra con số. Market: nhìn món tương tự đã bán bao nhiêu. Cost: tính chi phí xây lại, trừ hao mòn. Income: quy dòng tiền tương lai về hôm nay — gồm cả MEEM cho tài sản vô hình.</p>
+<p>Có thể dùng một hay nhiều cách; nếu nhiều, chọn điểm đại diện nhất trong khoảng giá, không máy móc lấy trung bình. Đây chính là bộ đồ nghề của định giá PPA.</p>
+<p class="core">Chuẩn nói exit price là gì, nhưng đo nó <span>bằng một trong ba cách: nhìn món tương tự, tính chi phí xây lại, hay quy dòng tiền tương lai về hôm nay.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã hiểu chưa?</h3>
+      <ol>
+        <li>Kể ba phương pháp định giá của IFRS 13 và một câu mô tả mỗi cách.</li>
+        <li>Một thương hiệu mua trong M&A — phương pháp nào hợp nhất để đo, và vì sao cost approach lại yếu ở đây?</li>
+        <li>MEEM tách phần lợi nhuận thế nào để cô lập giá trị của một tài sản vô hình?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nếu giải thích được cho bà ngoại hiểu, bạn mới thật sự hiểu.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-no-chuyen-giao"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Giải thích theo phương pháp Feynman</div>
+    <h1 class="rise" style="animation-delay:.08s">Nợ đo theo giá CHUYỂN nó đi — tín nhiệm bạn xấu đi thì nợ lại “nhẹ” hơn</h1>
+    <p class="core rise" style="animation-delay:.16s">Giá trị hợp lý của một khoản nợ không phải số để TRẢ hết nó, <span>mà là số để CHUYỂN nó cho người khác gánh — đã tính cả rủi ro chính bạn không trả nổi.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Điều cần hiểu &amp; cách tiếp cận</span><h2>Quy tắc: nợ đo theo giá chuyển giao, gồm non-performance risk</h2></div>
+    </div>
+    <div class="rule">IFRS 13 <strong>đoạn 34</strong>: đo giá trị hợp lý của một khoản nợ (hay công cụ vốn) giả định nó được <strong>CHUYỂN GIAO</strong> cho một market participant tại ngày đo — khoản nợ vẫn còn đó, người nhận phải tiếp tục gánh; <strong>không</strong> giả định dàn xếp/xóa nợ. <strong>Đoạn 37</strong>: nếu không có giá chuyển giao, đo từ góc nhìn của bên đang nắm khoản đó <em>như một tài sản</em>. <strong>Đoạn 42</strong>: giá trị hợp lý của nợ phản ánh <em>non-performance risk</em> (rủi ro không thực hiện nghĩa vụ), gồm cả <strong>rủi ro tín dụng của chính bạn</strong>; và rủi ro này coi như KHÔNG đổi trước và sau khi chuyển giao.</div>
+    <div class="sub">Cách giải thích</div>
+    <div class="approach"><p>Chỗ vấp kép. Một: nợ đo theo giá “đẩy sang người khác gánh”, không phải giá trả dứt. Hai: tín nhiệm bạn càng tệ, khoản nợ lại càng “nhẹ” trên sổ — nghe như thưởng cho kẻ sắp vỡ nợ. Cách làm: tôi neo vào một tờ giấy nợ (IOU) bạn viết ra, rồi hỏi người khác chịu cầm nó với giá nào.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Giải thích đơn giản</span><h2>Đo nợ bằng giá đẩy nó đi, không phải giá trả dứt</h2></div>
+    </div>
+    <p class="lead">Bạn nợ một người 100 triệu, một năm nữa phải trả. Hỏi: khoản nợ đó “đáng” bao nhiêu hôm nay? Cách thường nghĩ: đáng 100, vì đó là số phải trả. IFRS 13 hỏi khác: nếu nhờ người khác GÁNH HỘ cục nợ này, bạn phải đưa họ bao nhiêu để họ chịu nhận? Con số “đẩy nợ đi” đó mới là giá trị hợp lý của khoản nợ.</p>
+
+<div class="sub">Chuyển giao, không phải dàn xếp</div>
+<p>Hai cách “thoát” một khoản nợ rất khác nhau. Dàn xếp là trả tiền cho chủ nợ để xóa sổ. Chuyển giao là đẩy nghĩa vụ sang một người khác, họ tiếp tục nợ thay bạn. IFRS 13 đo theo cách thứ hai: giả định nợ vẫn còn đó, chỉ đổi người gánh.</p>
+
+<div class="sub">Nhìn từ phía người cầm tờ nợ như tài sản</div>
+<p>Một khoản nợ của bạn lại là tài sản của chủ nợ — họ có quyền đòi. Khi không có giá chuyển giao trực tiếp, IFRS 13 nhìn từ phía người cầm tờ nợ đó. Với họ, tờ giấy này đáng bao nhiêu? Giá đó chính là giá trị khoản nợ của bạn.</p>
+
+<div class="sub">Rủi ro chính bạn không trả nổi — cũng tính vào</div>
+<p>Đây là phần lạ nhất. Người nhận gánh nợ thay bạn sẽ nhìn: liệu cuối cùng có thật phải trả đủ không? Nếu bạn nổi tiếng đáng tin, họ coi nghĩa vụ là “nặng”, đáng gần đủ 100. Nếu bạn đang lung lay sắp vỡ nợ, khả năng trả đủ thấp đi, nên cục nợ “nhẹ” hơn trong mắt họ.</p>
+
+<div class="sub">Nên tín nhiệm xấu đi lại ghi... lãi</div>
+<p>Hệ quả gây tranh cãi: khi tín nhiệm bạn tụt, giá trị hợp lý khoản nợ giảm xuống. Trên sổ, nợ giảm thì thành một khoản lãi. Nghe như thưởng cho kẻ sắp sập. Nhưng logic là: nếu thật sự đẩy được nợ đi lúc này, bạn tốn ít hơn — vì người gánh hộ cũng ngại bạn quỵt.</p>
+  </section>
+
+  <section class="gaps">
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Chỗ vấp · Lỗ hổng</span><h2>Mấy chỗ nghe xuôi mà nghĩ kỹ chưa thông</h2></div>
+    </div>
+    <div class="gap-q"><span class="q">“Tín nhiệm xấu đi mà ghi LÃI — phi lý, có khuyến khích vỡ nợ không?”</span><p>Cảm giác phi lý là có thật, và đây là điểm bị phê phán nhiều. Nhưng con số không “thưởng” gì cả: nó chỉ phản ánh đúng cái giá để đẩy nợ đi hôm nay. Khoản lãi này thường không thành tiền thật, và nếu sau đó bạn hồi phục, nó đảo ngược. Nó là hệ quả của cách đo nhất quán theo giá thị trường, không phải lời khen.</p></div>
+<div class="gap-q"><span class="q">“Chuyển nợ và trả dứt nợ — chẳng phải tốn như nhau sao?”</span><p>Không hẳn. Trả dứt là đưa tiền cho đúng chủ nợ để xóa. Chuyển giao là tìm một người thứ ba chịu ôm nghĩa vụ. Hai con số có thể lệch — ví dụ chủ nợ đòi phí phạt trả sớm, hay người thứ ba định giá rủi ro khác đi. IFRS 13 cố tình chọn góc “chuyển giao” để giá phản ánh thị trường, không phụ thuộc thỏa thuận riêng với chủ nợ.</p></div>
+<div class="gap-q"><span class="q">“Rủi ro tín dụng coi như không đổi trước và sau khi chuyển — nghĩa là sao?”</span><p>Nghĩa là khi tưởng tượng đẩy nợ sang người khác, ta KHÔNG giả định tín nhiệm của họ tốt hơn bạn. Vẫn đo rủi ro không trả nổi y như của bạn lúc này (đoạn 42). Nếu không, chỉ cần “tưởng tượng bán cho ông nhà giàu” là khoản nợ tự nhiên phình lên — vô lý. Nên rủi ro giữ nguyên qua phép chuyển giao giả định.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví von &amp; ví dụ đời thường</span><h2>Neo vào thứ bạn đã biết</h2></div>
+    </div>
+    <div class="analogy-card"><span class="tag">Ví dụ trung tâm</span>
+<p>Bạn viết một tờ giấy nợ: “Tôi sẽ trả 100 triệu sau một năm”. Giá trị hợp lý của khoản nợ là: phải đưa người khác bao nhiêu để họ cầm tờ này và gánh nghĩa vụ thay bạn? Nếu ai cũng tin bạn trả đủ, họ đòi gần 100. Nếu phố đồn bạn sắp phá sản, họ chỉ chịu cầm với giá thấp — vì biết đâu cuối năm chẳng đòi được đủ. Tín nhiệm bạn tụt, cái giá “đẩy nợ đi” cũng tụt theo.</p>
+<p class="limit"><b>Chỗ ví von này hỏng:</b> tờ giấy nợ gợi ý bạn có thể tìm người gánh hộ dễ dàng. Ngoài đời, hầu hết khoản nợ KHÔNG chuyển cho người khác được — chủ nợ đâu cho bạn đổi con nợ tùy ý. “Chuyển giao” ở đây là một phép giả định để định giá, không phải việc bạn làm thật. Và “đo lãi khi tín nhiệm xấu đi” vẫn là điểm nhiều người thấy chối, kể cả khi hiểu cơ chế.</p>
+</div>
+<p>Gần đời hơn: một công ty phát hành trái phiếu, ghi nhận khoản nợ theo giá trị hợp lý. Năm sau công ty làm ăn bết bát, bị hạ tín nhiệm; trái phiếu của họ rớt giá trên thị trường. Vì khoản nợ đo theo chính giá thị trường đó, nó giảm trên sổ — và công ty ghi một khoản lãi do tín nhiệm của chính mình xấu đi.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Đoạn 34 đặt giả định transfer (không settle). Đoạn 37–39: khi món nợ được bên khác nắm như tài sản, đo từ giá của tài sản đó, chỉ điều chỉnh cho yếu tố riêng và loại bỏ ảnh hưởng của hạn chế bán. Đoạn 42: non-performance risk gồm own credit risk, coi như không đổi trước/sau chuyển giao. Lưu ý IFRS 9 đã phản ứng với “nghịch lý own credit”: với nợ tài chính đo theo FVTPL do đơn vị tự chọn, phần thay đổi giá trị do rủi ro tín dụng của CHÍNH mình được đưa vào OCI, không vào lãi lỗ — để bớt cái phản trực giác này.</p>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">4</div>
+      <div class="step-meta"><span class="lbl">Kể lại gọn gàng</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Giá trị hợp lý của một khoản nợ không phải số để trả dứt. Nó là số để CHUYỂN nợ cho người khác gánh — nợ vẫn còn, chỉ đổi người ôm. Khi không có giá chuyển trực tiếp, đo từ phía người cầm tờ nợ như một tài sản.</p>
+<p>Giá đó đã gồm rủi ro chính bạn không trả nổi. Nên tín nhiệm bạn xấu đi thì khoản nợ “nhẹ” bớt trên sổ — ra một khoản lãi nghe rất ngược đời.</p>
+<p class="core">Giá trị hợp lý của một khoản nợ không phải số để TRẢ hết nó, <span>mà là số để CHUYỂN nó cho người khác gánh — đã tính cả rủi ro chính bạn không trả nổi.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã hiểu chưa?</h3>
+      <ol>
+        <li>Giá trị hợp lý của một khoản nợ đo theo “trả dứt” hay “chuyển giao”? Khác nhau ra sao?</li>
+        <li>Vì sao khi tín nhiệm của một công ty xấu đi, giá trị hợp lý khoản nợ của nó lại giảm và sinh ra một khoản lãi?</li>
+        <li>Khi đẩy nợ sang một market participant giả định, vì sao rủi ro tín dụng vẫn giữ nguyên của chính bạn, không phải của người nhận?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nếu giải thích được cho bà ngoại hiểu, bạn mới thật sự hiểu.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-phan-cap-gthl"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Giải thích theo phương pháp Feynman</div>
+    <h1 class="rise" style="animation-delay:.08s">Xếp hạng theo ĐẦU VÀO, không theo kỹ thuật — một đầu vào yếu kéo tụt cả phép đo</h1>
+    <p class="core rise" style="animation-delay:.16s">Độ tin của một con số giá trị hợp lý <span>xếp theo nguyên liệu đầu vào, và bị kéo xuống đúng bằng nguyên liệu yếu nhất có ý nghĩa.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Điều cần hiểu &amp; cách tiếp cận</span><h2>Quy tắc: phân cấp theo input; bậc thấp nhất có ý nghĩa quyết định cả phép đo</h2></div>
+    </div>
+    <div class="rule">IFRS 13 <strong>đoạn 72</strong>: chuẩn lập một <em>fair value hierarchy</em> (phân cấp ba bậc) xếp hạng các <strong>ĐẦU VÀO</strong> của kỹ thuật định giá — ưu tiên cao nhất cho Level 1 (giá niêm yết, chưa điều chỉnh, ở thị trường hoạt động cho tài sản y hệt), thấp nhất cho Level 3 (đầu vào không quan sát được). <strong>Đoạn 73</strong>: cả phép đo được xếp vào <strong>bậc THẤP NHẤT của một đầu vào CÓ Ý NGHĨA</strong> với toàn phép đo. <strong>Đoạn 74</strong>: phân cấp ưu tiên đầu vào, <strong>không phải kỹ thuật</strong>. <strong>Đoạn 76–77</strong>: Level 1 dùng KHÔNG điều chỉnh khi có sẵn.</div>
+    <div class="sub">Cách giải thích</div>
+    <div class="approach"><p>Chỗ vấp kép. Một: người ta tưởng “dùng mô hình xịn thì hạng cao” — sai, hạng phụ thuộc nguyên liệu (đầu vào), không phải công thức nấu. Hai: chỉ một nguyên liệu “đoán mò” có trọng số là kéo cả món xuống hạng thấp. Cách làm: tôi neo vào một nồi phở chấm điểm theo độ tin của nguyên liệu, không theo tay nghề đầu bếp.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Giải thích đơn giản</span><h2>Chấm điểm theo nguyên liệu, không theo tay nghề</h2></div>
+    </div>
+    <p class="lead">Tưởng tượng một cuộc thi nấu phở, ban giám khảo chấm độ “đáng tin” của nồi nước dùng. Họ không chấm bạn nấu khéo hay vụng. Họ chấm NGUYÊN LIỆU: xương bò có hóa đơn rõ ràng, hay gia vị “bí truyền” đoán bằng cảm tính? IFRS 13 xếp hạng một con số giá trị hợp lý y như vậy — theo độ tin của đầu vào, không theo kỹ thuật.</p>
+
+<div class="sub">Ba bậc nguyên liệu</div>
+<p>Level 1 là nguyên liệu tốt nhất: giá niêm yết sẵn của đúng món y hệt, ở một chợ giao dịch sôi động. Ví dụ giá cổ phiếu trên sàn. Level 2 là giá quan sát được nhưng phải suy ra đôi chút — giá của món tương tự. Level 3 là “đoán mò”: đầu vào không quan sát được, tự dựng từ giả định.</p>
+
+<div class="sub">Cùng kỹ thuật, hai hạng khác nhau</div>
+<p>Đây là chỗ hay nhầm. Hai người cùng dùng một mô hình chiết khấu dòng tiền. Người A nhét toàn số quan sát được vào — hạng cao hơn. Người B phải tự đoán một biến số quan trọng — tụt hạng. Cùng “công thức”, nhưng khác “nguyên liệu”, nên khác bậc.</p>
+
+<div class="sub">Một nguyên liệu yếu CÓ Ý NGHĨA kéo tụt cả nồi</div>
+<p>Phép đo bị xếp vào bậc thấp nhất của một đầu vào CÓ Ý NGHĨA với toàn bộ con số. Chín phần nguyên liệu hạng nhất, nhưng một gia vị “đoán mò” mà nó nặng ký, cả nồi tụt xuống Level 3. Không phải lấy trung bình các đầu vào — mà lấy cái yếu nhất có trọng số.</p>
+
+<div class="sub">Level 1 thì cấm “nêm nếm” lại</div>
+<p>Nếu đã có giá niêm yết của đúng món y hệt ở chợ sôi động, bạn phải dùng đúng giá đó, không tự điều chỉnh. Thấy giá “vô lý” cũng không được sửa (trừ vài ngoại lệ hẹp). Đụng tay vào giá Level 1 là tự kéo con số xuống hạng thấp hơn.</p>
+  </section>
+
+  <section class="gaps">
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Chỗ vấp · Lỗ hổng</span><h2>Mấy chỗ nghe xuôi mà nghĩ kỹ chưa thông</h2></div>
+    </div>
+    <div class="gap-q"><span class="q">“Tôi dùng mô hình phức tạp, xịn hơn — sao không được hạng cao hơn?”</span><p>Vì hạng đo độ TIN của số liệu, không đo độ phức tạp của mô hình. Một mô hình rối rắm chạy trên toàn số đoán mò vẫn là Level 3. Một phép tính đơn giản dựa trên giá niêm yết thật lại là Level 1. Giám khảo chấm nguyên liệu, không chấm bạn nấu cầu kỳ tới đâu.</p></div>
+<div class="gap-q"><span class="q">“Đa số đầu vào đã hạng cao, sao một cái nhỏ lại kéo tụt cả phép đo?”</span><p>Vì chuẩn lấy bậc thấp nhất của đầu vào CÓ Ý NGHĨA, không lấy trung bình. Nếu cái đầu vào “đoán mò” đó đủ nặng để xoay chuyển kết quả, thì cả con số chỉ đáng tin tới mức cái yếu nhất đó. Còn nếu nó nhỏ, không đáng kể, thì không kéo tụt — chỗ “có ý nghĩa” là nơi cần xét đoán.</p></div>
+<div class="gap-q"><span class="q">“Giá niêm yết Level 1 mà tôi tin là sai thì sao, vẫn phải dùng?”</span><p>Phải. Level 1 dùng nguyên, không điều chỉnh — đó là bằng chứng đáng tin nhất (đoạn 77). Ý kiến riêng “giá này sai” không cho bạn quyền sửa. Có vài ngoại lệ rất hẹp (ví dụ sự kiện lớn sau giờ đóng cửa), nhưng hễ điều chỉnh là con số tụt khỏi Level 1 ngay.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví von &amp; ví dụ đời thường</span><h2>Neo vào thứ bạn đã biết</h2></div>
+    </div>
+    <div class="analogy-card"><span class="tag">Ví dụ trung tâm</span>
+<p>Cuộc thi nấu phở. Giám khảo không nếm xem bạn khéo tay không — họ soi nguyên liệu. Xương, thịt có hóa đơn từ chợ đầu mối: nguyên liệu hạng nhất (Level 1). Gia vị mua lại của hàng xóm, na ná: hạng nhì (Level 2). Một loại “nước cốt bí truyền” bạn tự pha, không ai kiểm chứng: hạng ba (Level 3). Nồi phở bị xếp hạng đúng bằng nguyên liệu kém tin nhất mà lại quan trọng — chứ không phải trung bình.</p>
+<p class="limit"><b>Chỗ ví von này hỏng:</b> với nồi phở, “nguyên liệu nào quan trọng” khá dễ thấy — nước dùng là chính. Trong định giá, “đầu vào nào CÓ Ý NGHĨA” lại là phán đoán khó và đầy tranh cãi. Một biến số trông nhỏ vẫn có thể xoay chuyển kết quả. Và phở thì chấm một lần; phép đo giá trị hợp lý phải xét lại mỗi kỳ, bậc có thể đổi khi dữ liệu đổi.</p>
+</div>
+<p>Gần việc của anh hơn: định giá một bất động sản đầu tư bằng dòng tiền chiết khấu. Tiền thuê lấy từ hợp đồng thật và giá thuê thị trường (quan sát được). Nhưng tỷ lệ vốn hóa bạn phải tự ước cho tài sản đặc thù này — một đầu vào không quan sát được, nặng ký. Chính nó kéo cả phép đo xuống Level 3.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Đoạn 73: phép đo xếp vào bậc thấp nhất của đầu vào có ý nghĩa; các điều chỉnh kiểu “trừ chi phí bán” để ra giá trị hợp lý trừ chi phí KHÔNG tính vào việc xác định bậc. Đoạn 74: cùng một present value technique có thể là Level 2 hay Level 3 tùy đầu vào. Đoạn 79: chỉ vài trường hợp hẹp được điều chỉnh Level 1 (nắm nhiều tài sản tương tự, sự kiện sau giờ đóng cửa, hay nợ đo qua giá tài sản phải chỉnh) — và hễ chỉnh là tụt bậc. Đoạn 80: với vị thế trong tài sản giao dịch active, Level 1 = giá niêm yết × số lượng nắm giữ, kể cả khi bán cả lô sẽ làm động giá.</p>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">4</div>
+      <div class="step-meta"><span class="lbl">Kể lại gọn gàng</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Độ tin của một con số giá trị hợp lý xếp theo ĐẦU VÀO, không theo kỹ thuật. Ba bậc. Level 1 là giá niêm yết của món y hệt ở chợ sôi động. Level 2 là giá suy ra từ thứ tương tự. Level 3 là đầu vào tự đoán. Cùng một mô hình có thể ra Level 2 hay Level 3, tùy nguyên liệu.</p>
+<p>Cả phép đo bị kéo xuống bậc thấp nhất của một đầu vào CÓ Ý NGHĨA — không lấy trung bình. Và Level 1 thì cấm tự điều chỉnh.</p>
+<p class="core">Độ tin của một con số giá trị hợp lý <span>xếp theo nguyên liệu đầu vào, và bị kéo xuống đúng bằng nguyên liệu yếu nhất có ý nghĩa.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã hiểu chưa?</h3>
+      <ol>
+        <li>Hai người cùng dùng một mô hình chiết khấu dòng tiền, nhưng ra hai bậc phân cấp khác nhau. Vì sao có thể như vậy?</li>
+        <li>“Bậc thấp nhất có ý nghĩa” nghĩa là gì? Vì sao không lấy trung bình các đầu vào?</li>
+        <li>Có một giá niêm yết Level 1 cho đúng tài sản, nhưng bạn tin nó sai. Được điều chỉnh không? Hệ quả?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nếu giải thích được cho bà ngoại hiểu, bạn mới thật sự hiểu.</p>
+  </footer>
+
+</div></div>
+<script>
+  var bar=document.getElementById('progress');
+  function upd(){var h=document.documentElement;var s=h.scrollTop||document.body.scrollTop;
+    var max=(h.scrollHeight-h.clientHeight)||1;bar.style.width=(s/max*100)+'%';}
+  window.addEventListener('scroll',upd,{passive:true});upd();
+  var io=new IntersectionObserver(function(es){es.forEach(function(e){
+    if(e.isIntersecting){e.target.style.animation='rise .7s cubic-bezier(.2,.7,.3,1) forwards';io.unobserve(e.target);}});},{threshold:.12});
+  document.querySelectorAll('section').forEach(function(s){s.style.opacity='0';io.observe(s);});
+</script>
+
+<script>
+(function(){
+  var tabs=[].slice.call(document.querySelectorAll('.tabbar .tab'));
+  var panels=[].slice.call(document.querySelectorAll('.concept-panel'));
+  function show(i){
+    tabs.forEach(function(t,j){t.classList.toggle('active',j===i);});
+    panels.forEach(function(p,j){
+      var on=(j===i); p.classList.toggle('active',on);
+      if(on){p.querySelectorAll('section').forEach(function(s){s.style.opacity='';s.style.animation='';});}
+    });
+    try{history.replaceState(null,'','#'+panels[i].id);}catch(e){}
+    window.scrollTo(0,0); window.dispatchEvent(new Event('scroll'));
+  }
+  tabs.forEach(function(t){t.addEventListener('click',function(){show(+t.getAttribute('data-i'));});});
+  var start=0; panels.forEach(function(p,j){if('#'+p.id===location.hash)start=j;});
+  show(start);
+})();
+</script>
+
+</body></html>

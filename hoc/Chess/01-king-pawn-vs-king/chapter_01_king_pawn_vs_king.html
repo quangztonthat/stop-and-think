@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chương 1 — King + Pawn vs King</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,400&family=Geist:wght@300;400;500;600;700;800&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #fafaf7;
+  --bg-elevated: #ffffff;
+  --bg-card: #ffffff;
+  --bg-soft: #f3f3ee;
+  --border: #e0e0d8;
+  --border-soft: #ececea;
+  --text: #1a1a1f;
+  --text-soft: #3f3f4a;
+  --text-dim: #7a7a85;
+  --accent: #b8860b;
+  --accent-2: #8b6508;
+  --serif: 'Fraunces', Georgia, serif;
+  --sans: 'Geist', -apple-system, sans-serif;
+  --mono: 'Geist Mono', monospace;
+}
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--sans);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.7;
+  font-size: 16px;
+  background-image:
+    radial-gradient(ellipse 1200px 800px at 20% 0%, rgba(184,134,11,0.08), transparent),
+    radial-gradient(ellipse 800px 600px at 90% 50%, rgba(108,63,191,0.05), transparent),
+    radial-gradient(ellipse 1000px 700px at 50% 100%, rgba(13,128,116,0.05), transparent);
+  min-height: 100vh;
+}
+
+/* Hero */
+.hero {
+  padding: 60px 32px 32px;
+  text-align: center;
+  border-bottom: 1px solid var(--border);
+  position: relative;
+  overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(184,134,11,0.03) 2px, rgba(184,134,11,0.03) 4px);
+  pointer-events: none;
+}
+.hero-eyebrow {
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 18px;
+}
+.hero h1 {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: clamp(36px, 6vw, 60px);
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  margin-bottom: 14px;
+}
+.hero h1 em { font-style: italic; color: var(--accent); font-weight: 300; }
+.hero-sub {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: clamp(16px, 2vw, 19px);
+  color: var(--text-soft);
+  max-width: 680px;
+  margin: 0 auto 20px;
+}
+.hero-back {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--accent);
+  text-decoration: none;
+  letter-spacing: 0.1em;
+}
+.hero-back:hover { color: var(--accent-2); text-decoration: underline; }
+
+/* Overview section */
+.overview {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 48px 24px 16px;
+}
+.section-eyebrow {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 8px;
+}
+.section-h2 {
+  font-family: var(--serif);
+  font-size: clamp(26px, 4vw, 34px);
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+  margin-bottom: 24px;
+}
+.section-h2 em { font-style: italic; color: var(--accent); font-weight: 300; }
+
+/* Key idea cards */
+.key-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin: 24px 0 36px;
+}
+@media (max-width: 768px) {
+  .key-cards { grid-template-columns: 1fr; }
+}
+.key-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent);
+  border-radius: 6px;
+  padding: 22px 24px;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.key-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(184,134,11,0.08);
+}
+.key-card-num {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 32px;
+  color: var(--accent);
+  font-weight: 300;
+  line-height: 1;
+  margin-bottom: 6px;
+}
+.key-card-title {
+  font-family: var(--serif);
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--text);
+  margin-bottom: 8px;
+  line-height: 1.3;
+}
+.key-card-desc {
+  font-size: 14px;
+  color: var(--text-soft);
+  line-height: 1.55;
+}
+
+/* Mnemonic callout */
+.mnemonic {
+  background: linear-gradient(135deg, rgba(184,134,11,0.10), rgba(139,101,8,0.06));
+  border: 1px solid rgba(184,134,11,0.30);
+  border-radius: 10px;
+  padding: 28px 32px;
+  margin: 16px 0 36px;
+  position: relative;
+}
+.mnemonic::before {
+  content: '📖';
+  position: absolute;
+  top: 22px;
+  right: 26px;
+  font-size: 22px;
+  opacity: 0.5;
+}
+.mnemonic-label {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.25em;
+  color: var(--accent);
+  text-transform: uppercase;
+  margin-bottom: 12px;
+  font-weight: 600;
+}
+.mnemonic-title {
+  font-family: var(--serif);
+  font-size: 20px;
+  font-weight: 500;
+  color: var(--text);
+  margin-bottom: 16px;
+}
+.poem {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 19px;
+  line-height: 1.8;
+  color: var(--text);
+  padding: 8px 0 12px;
+  border-left: 3px solid var(--accent);
+  padding-left: 22px;
+  margin-bottom: 16px;
+}
+.poem strong { font-weight: 500; }
+.mnemonic-explain {
+  font-size: 14px;
+  color: var(--text-soft);
+  line-height: 1.65;
+}
+.mnemonic-explain strong { color: var(--text); font-weight: 600; }
+
+/* Tab navigation */
+.tabs-wrap {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: rgba(250,250,247,0.92);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+  border-top: 1px solid var(--border);
+  margin-top: 8px;
+}
+.tabs {
+  display: flex;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 16px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.tabs::-webkit-scrollbar { display: none; }
+.tab {
+  flex: 1;
+  min-width: 140px;
+  padding: 16px 18px;
+  background: transparent;
+  border: none;
+  color: var(--text-dim);
+  cursor: pointer;
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  transition: all 0.25s ease;
+  border-bottom: 2px solid transparent;
+  white-space: nowrap;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+}
+.tab-num {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text-dim);
+  letter-spacing: 0.15em;
+}
+.tab-name { font-weight: 600; }
+.tab:hover { color: var(--text-soft); background: rgba(184,134,11,0.05); }
+.tab.active {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+  background: rgba(184,134,11,0.08);
+}
+.tab.active .tab-num { color: var(--accent-2); }
+
+/* Iframe area */
+.frame-container { width: 100%; background: var(--bg); }
+.lesson-frame {
+  width: 100%;
+  height: 5500px;
+  border: none;
+  display: none;
+  background: var(--bg);
+}
+.lesson-frame.active { display: block; }
+
+/* Bottom nav */
+.bottom-nav {
+  background: var(--bg-elevated);
+  border-top: 1px solid var(--border);
+  padding: 14px 28px;
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+.bottom-nav button {
+  padding: 10px 22px;
+  background: var(--accent);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: var(--sans);
+  letter-spacing: 0.05em;
+}
+.bottom-nav button:hover { background: var(--accent-2); }
+.bottom-nav button:disabled { background: var(--bg-soft); color: var(--text-dim); cursor: not-allowed; }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <a href="../index.html" class="hero-back">← TRANG CHỦ</a>
+  <div class="hero-eyebrow" style="margin-top:12px">CHƯƠNG 01 · ENDGAME · FOUNDATION</div>
+  <h1>King + Pawn <em>vs</em> King</h1>
+  <p class="hero-sub">5 bài về nguyên lý cơ bản nhất — khi 1 pawn quyết định ván cờ</p>
+</header>
+
+<section class="overview">
+
+  <div class="section-eyebrow">3 ý chính nhất</div>
+  <h2 class="section-h2">Phải nhớ <em>những điều này</em></h2>
+
+  <div class="key-cards">
+    <div class="key-card">
+      <div class="key-card-num">01</div>
+      <div class="key-card-title">Hình vuông quyết định race</div>
+      <div class="key-card-desc">Vẽ hình vuông từ pawn đến hàng phong cấp. Vua đối thủ ngoài → pawn promote. Trong → bị bắt. Không cần đếm từng nước.</div>
+    </div>
+    <div class="key-card">
+      <div class="key-card-num">02</div>
+      <div class="key-card-title">Opposition khi pawn rank 6</div>
+      <div class="key-card-desc">Hai vua đối nhau cùng cột với 1 ô trống giữa. Bên KHÔNG đi giữ opposition. Cùng position có thể thắng hoặc hòa stalemate tùy lượt đi.</div>
+    </div>
+    <div class="key-card">
+      <div class="key-card-num">03</div>
+      <div class="key-card-title">Vua chặn đường = win</div>
+      <div class="key-card-desc">Vua mạnh đứng rank 7 cột bên cạnh pawn (Kc7 cho Pb) kiểm soát "vùng safe" b6/b7/b8 → vua đen không vào được → pawn promote tự do.</div>
+    </div>
+  </div>
+
+  <div class="mnemonic">
+    <div class="mnemonic-label">Câu thần chú</div>
+    <div class="mnemonic-title">Năm bài cô đọng thành năm câu</div>
+    <p class="poem">
+      <strong>"Hình vuông đếm bước, không cần lo,<br>
+      Đối vua rank sáu — ai không đi mới to,<br>
+      Vua trắng chặn đường, c-bảy khóa toàn dòng,<br>
+      Tam giác xoay nước — phá thế bế tắc xong,<br>
+      Cột g góc nhỏ — pawn knight vua kẹt mong."</strong>
+    </p>
+    <div class="mnemonic-explain">
+      <strong>Bài 1 (Hình vuông)</strong>: Rule of the Square — không cần đếm, vẽ vuông là biết.<br>
+      <strong>Bài 2 (Đối vua)</strong>: Opposition rank 6 quyết định pawn promote hay stalemate.<br>
+      <strong>Bài 3 (Chặn đường)</strong>: Kc7 với Pb-pawn kiểm soát vùng safe b6/b7/b8.<br>
+      <strong>Bài 4 (Tam giác)</strong>: Triangulation — đi 3 ô tạo tempo, ép đối thủ mất opposition.<br>
+      <strong>Bài 5 (Cột g/b)</strong>: Knight's pawn — defender vào ô promotion, capture queen sau promote → hòa.
+    </div>
+  </div>
+
+</section>
+
+<nav class="tabs-wrap">
+  <div class="tabs" id="tabBar">
+    <button class="tab active" data-lesson="1" onclick="switchTo(1)">
+      <span class="tab-num">BÀI 01</span><span class="tab-name">Rule of the Square</span></button>
+    <button class="tab" data-lesson="2" onclick="switchTo(2)">
+      <span class="tab-num">BÀI 02</span><span class="tab-name">Opposition</span></button>
+    <button class="tab" data-lesson="3" onclick="switchTo(3)">
+      <span class="tab-num">BÀI 03</span><span class="tab-name">Blocking the Way</span></button>
+    <button class="tab" data-lesson="4" onclick="switchTo(4)">
+      <span class="tab-num">BÀI 04</span><span class="tab-name">Losing Opposition</span></button>
+    <button class="tab" data-lesson="5" onclick="switchTo(5)">
+      <span class="tab-num">BÀI 05</span><span class="tab-name">Knight's Pawn</span></button>
+  </div>
+</nav>
+
+<div class="frame-container">
+  <iframe class="lesson-frame active" id="frame1" src="lesson_01_rule_of_the_square.html" title="Bài 1"></iframe>
+  <iframe class="lesson-frame" id="frame2" data-src="lesson_02_opposition.html" title="Bài 2"></iframe>
+  <iframe class="lesson-frame" id="frame3" data-src="lesson_03_blocking.html" title="Bài 3"></iframe>
+  <iframe class="lesson-frame" id="frame4" data-src="lesson_04_losing_opposition.html" title="Bài 4"></iframe>
+  <iframe class="lesson-frame" id="frame5" data-src="lesson_05_knights_pawn.html" title="Bài 5"></iframe>
+</div>
+
+<nav class="bottom-nav">
+  <button id="prevBtn" onclick="navigatePrev()" disabled>← BÀI TRƯỚC</button>
+  <button id="nextBtn" onclick="navigateNext()">BÀI TIẾP →</button>
+</nav>
+
+<script>
+let currentLesson = 1; const totalLessons = 5;
+function switchTo(n) {
+  if (n < 1 || n > totalLessons) return;
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelector(`.tab[data-lesson="${n}"]`).classList.add('active');
+  for (let i = 1; i <= totalLessons; i++) {
+    const f = document.getElementById('frame' + i);
+    if (i === n) { if (!f.src && f.dataset.src) f.src = f.dataset.src; f.classList.add('active'); }
+    else f.classList.remove('active');
+  }
+  currentLesson = n; updateNavButtons();
+  document.querySelector('.tabs-wrap').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  history.replaceState(null, '', '#bai-' + n);
+}
+function navigatePrev() { if (currentLesson > 1) switchTo(currentLesson - 1); }
+function navigateNext() { if (currentLesson < totalLessons) switchTo(currentLesson + 1); }
+function updateNavButtons() {
+  document.getElementById('prevBtn').disabled = (currentLesson === 1);
+  document.getElementById('nextBtn').disabled = (currentLesson === totalLessons);
+}
+document.addEventListener('keydown', (e) => {
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+  if (e.key === 'ArrowLeft' && e.altKey) navigatePrev();
+  if (e.key === 'ArrowRight' && e.altKey) navigateNext();
+});
+window.addEventListener('DOMContentLoaded', () => {
+  const m = location.hash.match(/^#bai-(\d+)$/);
+  if (m) { const n = parseInt(m[1]); if (n >= 1 && n <= totalLessons) { switchTo(n); return; } }
+  updateNavButtons();
+});
+</script>
+
+</body>
+</html>

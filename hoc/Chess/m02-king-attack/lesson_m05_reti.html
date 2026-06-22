@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bài 2 (Ch2-Mid) — Réti–Tartakower (thí Hậu + chiếu đôi)</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/chessboard-js/1.0.0/chessboard-1.0.0.min.css">
+<style>
+* { box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; max-width: 980px; margin: 0 auto; padding: 24px; color: #1a1a1a; line-height: 1.6; background: #fafafa; }
+h1 { color: #1a3a52; font-size: 28px; margin: 0 0 8px; }
+h2 { color: #2c5282; font-size: 20px; margin: 32px 0 12px; padding-bottom: 6px; border-bottom: 2px solid #e1e8ed; }
+.source { color: #888; font-size: 13px; margin-bottom: 24px; }
+.nav-link { font-size: 13px; color: #2c5282; text-decoration: none; }
+.stage { background: white; border-radius: 8px; padding: 20px 24px; margin: 16px 0; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
+.stage-label { display: inline-block; background: #2c5282; color: white; font-size: 12px; font-weight: 600; padding: 3px 10px; border-radius: 12px; margin-bottom: 8px; }
+.hook-question { font-size: 17px; color: #1a3a52; background: #fff8e1; border-left: 4px solid #faad14; padding: 14px 18px; border-radius: 0 6px 6px 0; margin: 12px 0; }
+.reveal-btn { background: #faad14; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-size: 14px; }
+.hidden { display: none; }
+.board-layout { display: grid; grid-template-columns: 440px 1fr; gap: 24px; align-items: start; margin-top: 16px; }
+@media (max-width: 820px) { .board-layout { grid-template-columns: 1fr; } }
+#board { width: 420px; max-width: 100%; }
+.mini-board { width: 300px; max-width: 100%; margin: 14px auto; }
+.controls { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; justify-content: center; }
+.controls button { padding: 7px 12px; background: #2c5282; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 13px; }
+.info-panel { background: #f8f9fb; padding: 16px; border-radius: 6px; border: 1px solid #e1e8ed; min-height: 380px; }
+.move-display { font-family: monospace; font-size: 16px; color: #2c5282; font-weight: 600; margin-bottom: 8px; }
+.commentary { font-size: 14px; color: #444; margin-bottom: 12px; }
+.info-box { background: white; padding: 10px; border-radius: 4px; border: 1px solid #e1e8ed; margin: 12px 0; font-size: 13px; text-align: center; }
+.info-box.win { background: #f6ffed; border-color: #b7eb8f; color: #389e0d; font-weight: 600; }
+.hl { background: rgba(255, 215, 0, 0.45) !important; box-shadow: inset 0 0 0 2px #faad14 !important; }
+.self-test { background: #fff8e1; border: 2px dashed #faad14; border-radius: 6px; padding: 16px; margin-top: 16px; }
+.feedback { margin-top: 10px; padding: 10px 14px; border-radius: 4px; font-size: 14px; }
+.feedback.correct { background: #f6ffed; color: #389e0d; border-left: 4px solid #52c41a; }
+.feedback.wrong { background: #fff1f0; color: #cf1322; border-left: 4px solid #ff4d4f; }
+.quiz { background: #f0f7ff; border-left: 4px solid #2c5282; border-radius: 0 6px 6px 0; padding: 14px 18px; margin: 12px 0; }
+.quiz-q { font-weight: 600; margin-bottom: 10px; color: #1a3a52; }
+.quiz-options { display: flex; flex-direction: column; gap: 6px; }
+.quiz-option { padding: 8px 12px; background: white; border: 1px solid #c9d6e2; border-radius: 4px; cursor: pointer; text-align: left; font-size: 14px; }
+.quiz-option.correct { background: #f6ffed; border-color: #52c41a; color: #389e0d; }
+.quiz-option.wrong { background: #fff1f0; border-color: #ff4d4f; color: #cf1322; }
+.quiz-explain { margin-top: 8px; font-size: 13px; color: #555; font-style: italic; }
+.summary-card { background: linear-gradient(135deg, #1a3a52, #2c5282); color: white; padding: 20px 24px; border-radius: 8px; margin-top: 24px; }
+.summary-card h2 { color: white; border: none; margin-top: 0; }
+.summary-card ul { padding-left: 20px; }
+code { background: #f1f3f5; padding: 1px 6px; border-radius: 3px; font-family: monospace; font-size: 0.9em; }
+.summary-card code { background: rgba(255,255,255,0.2); color: white; }
+.progress-bar { height: 4px; background: #e1e8ed; border-radius: 2px; overflow: hidden; margin: 8px 0 16px; }
+.progress-fill { height: 100%; background: #52c41a; transition: width 0.3s; width: 0%; }
+.tag { display:inline-block; background:#fde9c8; color:#874d00; font-size:11px; font-weight:600; padding:2px 8px; border-radius:10px; margin-left:6px; }
+</style>
+</head>
+<body>
+
+<h1>Bài 2 — Réti–Tartakower 1910 <span class="tag">Thí Hậu + chiếu đôi</span></h1>
+<div class="source">
+  Chương 2 (Trung cuộc) — Tấn công Vua · Nâng cao · Vienna 1910<br>
+  <a class="nav-link" href="../index-middle.html">← Trang chủ Trung cuộc</a> ·
+  <a class="nav-link" href="chapter_m02_king_attack.html">← Chương 2</a>
+</div>
+
+<div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+
+<div class="stage">
+  <span class="stage-label">STAGE 1 · HOOK</span>
+  <h2 style="margin-top:8px">Thí Hậu để dụ vua vào lưới chiếu đôi</h2>
+  <p>Vua đen còn kẹt giữa bàn (Ke8). Trắng đã nhập thành cánh hậu — xe d1 trên cột d nhắm thẳng vua, tượng d2 sẵn sàng.</p>
+  <div id="hookBoard" class="mini-board"></div>
+  <div class="hook-question">
+    🤔 <strong>Xe d1 + tượng d2 đều chĩa về cột d.</strong> Nếu lôi được vua tới d8, một nước "chiếu đôi" sẽ xuất hiện. Hy sinh gì để dụ vua?
+  </div>
+  <button class="reveal-btn" onclick="document.getElementById('hookAnswer').classList.remove('hidden'); markStage(1);">Hiển thị đáp án</button>
+  <div id="hookAnswer" class="hidden" style="margin-top:14px">
+    <p><strong>1.Qd8+!! Kxd8 2.Bg5+ Ke8 3.Rd8#</strong> — thí cả Hậu để dụ vua ra d8, rồi <code>Bg5+</code> mở chiếu đôi (tượng g5 + xe d1). Ván thật Réti–Tartakower, Vienna 1910. Stockfish: chiếu hết sau 3 nước.</p>
+  </div>
+</div>
+
+<div class="stage">
+  <span class="stage-label">STAGE 2 · CONCEPT</span>
+  <h2 style="margin-top:8px">Dụ quân + chiếu đôi</h2>
+  <ul>
+    <li><strong>Dụ quân</strong>: thí Hậu <code>Qd8+</code> để LÔI vua tới đúng ô d8 — nơi nó dính đòn tiếp theo. Vua buộc ăn (Kxd8) vì không có ô khác.</li>
+    <li><strong>Chiếu đôi</strong>: <code>Bg5+</code> vừa tự chiếu (g5–d8) vừa MỞ chiếu của xe d1 (cột d). Chiếu đôi không thể chặn hay ăn — vua <em>buộc</em> phải đi.</li>
+    <li><strong>Nền tảng</strong>: Trắng dẫn trước phát triển &amp; đã chiếm cột d (nhập thành cánh hậu sớm), trong khi vua đen còn ở trung tâm. Lỗi phát triển bị trừng phạt tức thì.</li>
+  </ul>
+</div>
+
+<div class="stage">
+  <span class="stage-label">STAGE 3 · WALKTHROUGH</span>
+  <div class="board-layout">
+    <div>
+      <div id="board"></div>
+      <div class="controls">
+        <button onclick="resetBoard()">⟨⟨ Đầu</button>
+        <button onclick="prevMove()">⟨ Lùi</button>
+        <button onclick="nextMove()">Tiến ⟩</button>
+      </div>
+    </div>
+    <div class="info-panel">
+      <div class="move-display" id="moveDisplay">Thế cờ khởi đầu</div>
+      <div class="commentary" id="commentary">Vua đen Ke8 (chưa nhập thành). Xe d1 + tượng d2 nhắm cột d. Đen vừa lỡ ...Nxe4 — đến lượt Trắng trừng phạt.</div>
+      <div class="info-box" id="infoBox">Đến lượt: <strong>Trắng</strong></div>
+    </div>
+  </div>
+</div>
+
+<div class="stage">
+  <span class="stage-label">STAGE 4 · SELF-TEST</span>
+  <h2 style="margin-top:8px">Sau 1.Qd8+, vì sao Kxd8 là BUỘC?</h2>
+  <div class="self-test">
+    <div class="quiz-options" id="selfTestOptions">
+      <button class="quiz-option" onclick="checkSelfTest(this, true, 'Đúng! Hậu d8 chiếu sát Vua e8. e7 bị Hậu khống chế, f7 là tốt nhà, f8 có tượng nhà → vua chỉ có thể ăn Hậu. Đó chính là cái bẫy dụ quân.')">Vua e8 không còn ô nào, buộc ăn Hậu — đúng ý đòn dụ</button>
+      <button class="quiz-option" onclick="checkSelfTest(this, false, 'Sai. Ke7 không được — Hậu d8 khống chế ô e7.')">Vua có thể chạy Ke7</button>
+      <button class="quiz-option" onclick="checkSelfTest(this, false, 'Sai. f7 là tốt nhà nên Kf7 bị chặn.')">Vua chạy Kf7 thoát</button>
+    </div>
+    <div class="feedback hidden" id="selfTestFeedback"></div>
+  </div>
+</div>
+
+<div class="stage">
+  <span class="stage-label">STAGE 5 · MINI-QUIZ</span>
+  <div class="quiz">
+    <div class="quiz-q">Q1. 1.Qd8+ là loại đòn gì?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" onclick="quizCheck(this, true)">Hy sinh + DỤ QUÂN: thí Hậu để lôi vua tới d8 vào lưới</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Đổi Hậu lấy thế hòa</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Chiếu vĩnh viễn</button>
+    </div>
+    <div class="quiz-explain hidden">Dụ quân: ép một quân (ở đây là Vua) tới đúng ô ta muốn — d8 — nơi đòn chiếu đôi tiếp theo kết liễu.</div>
+  </div>
+  <div class="quiz">
+    <div class="quiz-q">Q2. Vì sao 2.Bg5+ là chiếu đôi và mạnh đến vậy?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" onclick="quizCheck(this, false)">Vì tượng có giá trị cao</button>
+      <button class="quiz-option" onclick="quizCheck(this, true)">Tượng g5 tự chiếu + mở chiếu của xe d1 → không thể chặn/ăn, vua buộc đi</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Vì nó bắt Hậu đen</button>
+    </div>
+    <div class="quiz-explain hidden">Chiếu đôi: hai quân cùng chiếu một lúc. Không thể chặn cả hai, không thể ăn cả hai → vua bắt buộc phải di chuyển.</div>
+  </div>
+  <div class="quiz">
+    <div class="quiz-q">Q3. Bài học chung của đòn này?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" onclick="quizCheck(this, true)">Vua kẹt trung tâm + ta đã chiếm cột mở → đòn phối hợp thí quân kết liễu</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Luôn thí Hậu khi có thể</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Nhập thành cánh hậu là sai</button>
+    </div>
+    <div class="quiz-explain hidden">Tartakower lỡ phát triển (...Nxe4) khi vua còn ở e8; Réti đã O-O-O chiếm cột d. Thế là đòn thí Hậu + chiếu đôi xuất hiện.</div>
+  </div>
+</div>
+
+<div class="summary-card">
+  <h2>📌 Tóm tắt</h2>
+  <ul>
+    <li><strong>Đòn mẫu</strong>: <code>Qd8+!! Kxd8 → Bg5+ (chiếu đôi) Ke8 → Rd8#</code>.</li>
+    <li><strong>Dụ quân</strong>: thí Hậu để lôi vua tới ô chết; <strong>chiếu đôi</strong>: ép vua đi, không cãi được.</li>
+    <li><strong>Nền tảng</strong>: dẫn trước phát triển + chiếm cột d (O-O-O) trong khi vua địch còn ở trung tâm.</li>
+    <li>Ván thật <strong>Réti–Tartakower, Vienna 1910</strong> — một trong những đòn thí Hậu đẹp nhất lịch sử.</li>
+  </ul>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chessboard-js/1.0.0/chessboard-1.0.0.min.js"></script>
+<script>
+const START_FEN = 'rnb1kb1r/pp3ppp/2p5/4q3/4n3/3Q4/PPPB1PPP/2KR1BNR w kq - 0 9';
+const MOVES = ['Qd8+', 'Kxd8', 'Bg5+', 'Ke8', 'Rd8#'];
+const COMMENTARY = {
+  0: { move: 'Thế cờ khởi đầu', text: 'Vua đen Ke8 còn ở trung tâm. Xe d1 + tượng d2 nhắm cột d. Đen vừa lỡ ...Nxe4 — Trắng có đòn kết liễu.' },
+  1: { move: '1. Qd8+ !!', text: 'HY SINH HẬU! Hậu lao vào d8 chiếu. Đây là đòn DỤ: lôi vua tới d8 — ô của cạm bẫy.' },
+  2: { move: '1... Kxd8', text: 'Vua buộc ăn Hậu (e7 bị khống chế, f7 tốt nhà, f8 tượng nhà). Vua nay đứng ngay đầu nòng xe d1.' },
+  3: { move: '2. Bg5+ !', text: 'CHIẾU ĐÔI! Tượng d2–g5 tự chiếu (g5–d8) ĐỒNG THỜI mở chiếu của xe d1 (cột d). Không thể chặn/ăn — vua buộc đi.' },
+  4: { move: '2... Ke8', text: 'Vua chạy về e8 (ô duy nhất an toàn khỏi chiếu đôi).' },
+  5: { move: '3. Rd8#', text: 'CHIẾU HẾT! Xe d1–d8 chiếu Vua e8. Tượng g5 giữ e7 (và bảo vệ xe d8), tượng f8 + tốt f7 bịt nốt → vua hết ô. Réti–Tartakower!' }
+};
+let board, game, currentMove = 0, stagesCompleted = new Set();
+function initBoard() {
+  game = new Chess(START_FEN);
+  board = Chessboard('board', { position: START_FEN, draggable: true,
+    pieceTheme: 'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png',
+    onDrop: (s,t) => { const m = game.move({from:s,to:t,promotion:'q'}); if(!m) return 'snapback'; setTimeout(updateOverlays,100); },
+    onSnapEnd: () => { board.position(game.fen()); updateOverlays(); }});
+  updateDisplay();
+}
+function nextMove() { if(currentMove>=MOVES.length) return; game.move(MOVES[currentMove]); board.position(game.fen()); currentMove++; setTimeout(()=>{updateDisplay();updateOverlays();},50); if(currentMove>=MOVES.length) markStage(3); }
+function prevMove() { if(currentMove<=0) return; game.undo(); currentMove--; board.position(game.fen()); setTimeout(()=>{updateDisplay();updateOverlays();},50); }
+function resetBoard() { game = new Chess(START_FEN); board.position(START_FEN); currentMove = 0; setTimeout(()=>{updateDisplay();updateOverlays();},50); }
+function updateDisplay() {
+  const cm = COMMENTARY[currentMove] || COMMENTARY[0];
+  document.getElementById('moveDisplay').textContent = cm.move;
+  document.getElementById('commentary').innerHTML = cm.text;
+  const box = document.getElementById('infoBox');
+  if (currentMove >= MOVES.length) { box.className = 'info-box win'; box.innerHTML = '♚ Chiếu hết — thí Hậu + chiếu đôi'; }
+  else { box.className = 'info-box'; box.innerHTML = 'Đến lượt: <strong>' + (game.turn()==='w'?'Trắng':'Đen') + '</strong>'; }
+  updateProgress();
+}
+function updateOverlays() { $('#board .square-55d63').removeClass('hl'); ['d8','e8','g5','d1'].forEach(sq => $('#board .square-' + sq).addClass('hl')); }
+function checkSelfTest(btn, ok, exp) {
+  document.querySelectorAll('#selfTestOptions .quiz-option').forEach(el=>el.disabled=true);
+  btn.classList.add(ok?'correct':'wrong');
+  const fb = document.getElementById('selfTestFeedback');
+  fb.classList.remove('hidden'); fb.className = 'feedback ' + (ok?'correct':'wrong');
+  fb.textContent = (ok?'✓ ':'✗ ') + exp; markStage(4);
+}
+function quizCheck(btn, ok) {
+  const q = btn.closest('.quiz');
+  q.querySelectorAll('.quiz-option').forEach(el=>el.disabled=true);
+  btn.classList.add(ok?'correct':'wrong');
+  if (!ok) q.querySelectorAll('.quiz-option').forEach(el => { if (el.getAttribute('onclick').includes('true')) el.classList.add('correct'); });
+  q.querySelector('.quiz-explain').classList.remove('hidden'); markStage(5);
+}
+function markStage(n) { stagesCompleted.add(n); updateProgress(); }
+function updateProgress() { document.getElementById('progressFill').style.width = (stagesCompleted.size/5*100) + '%'; }
+function initMiniBoards() { Chessboard('hookBoard', { position: START_FEN, draggable: false, pieceTheme: 'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png' }); }
+$(document).ready(() => { initBoard(); initMiniBoards(); setTimeout(()=>markStage(2),500); });
+</script>
+
+</body>
+</html>
+                    

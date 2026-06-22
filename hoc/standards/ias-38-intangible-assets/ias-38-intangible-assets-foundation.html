@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="vi"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IAS 38 Intangible Assets — Nền tảng, hiểu từ gốc</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,500&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  /* Design tokens shared with ebook-to-study-html + feynman-from-study (styles_v2.css) */
+  :root{
+    --bg:#fafaf7; --bg-elevated:#ffffff; --bg-soft:#f3f3ee;
+    --border:#e0e0d8; --border-soft:#ececea; --border-strong:#d2c8b6;
+    --ink:#1a1a1f; --ink-soft:#3f3f4a; --muted:#7a7a85;
+    --accent:#b8860b; --accent-2:#8b6508; --gold:#a07c1f; --bridge:#5a6b4f;
+    --serif:"Fraunces",Georgia,"Iowan Old Style",serif;
+    --sans:"Geist",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    --mono:"Geist Mono","JetBrains Mono",Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:var(--sans);
+    font-size:19px;line-height:1.72;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}
+  .progress{position:fixed;top:0;left:0;height:3px;width:0;z-index:50;
+    background:linear-gradient(90deg,var(--gold),var(--accent));transition:width .08s linear}
+  .wrap{max-width:920px;margin:0 auto;padding:0 36px}
+  .rise{opacity:0;transform:translateY(14px);animation:rise .7s cubic-bezier(.2,.7,.3,1) forwards}
+  @keyframes rise{to{opacity:1;transform:none}}
+
+  header{padding:104px 0 60px;border-bottom:1px solid var(--border)}
+  .kicker{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.18em;
+    text-transform:uppercase;color:var(--accent);margin-bottom:26px}
+  h1{font-family:var(--serif);font-weight:600;font-size:clamp(42px,7.6vw,72px);
+    line-height:1.0;letter-spacing:-.022em;margin-bottom:28px;font-optical-sizing:auto;color:var(--ink)}
+  h1 em{font-style:italic;color:var(--accent)}
+  .core{font-family:var(--serif);font-style:italic;font-weight:400;
+    font-size:clamp(21px,3.6vw,27px);line-height:1.44;color:var(--ink-soft)}
+  .core span{font-style:normal;font-weight:600;color:var(--accent-2);
+    box-shadow:inset 0 -.5em 0 rgba(184,134,11,.16)}
+
+  /* ---- BƯỚC 0: ĐỊNH VỊ (what it is + why it's the foundation) ---- */
+  .anchor .rule{font-family:var(--serif);font-size:19px;line-height:1.5;color:var(--ink);
+    background:var(--bg-soft);border-left:3px solid var(--accent);
+    padding:18px 24px;border-radius:0 4px 4px 0;margin:0}
+  .anchor .rule em{font-style:italic;color:var(--accent-2)}
+  .anchor .rule strong{color:var(--ink);font-weight:600}
+  .anchor .why{color:var(--ink-soft)}
+
+  section{padding:72px 0;border-bottom:1px solid var(--border);position:relative}
+  .step-head{display:flex;align-items:flex-start;gap:22px;margin-bottom:34px}
+  .big-num{font-family:var(--serif);font-weight:700;font-size:62px;line-height:.8;
+    color:var(--border-strong);flex:none;font-optical-sizing:auto;letter-spacing:-.03em}
+  .step-meta{padding-top:4px}
+  .lbl{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--accent);display:block;margin-bottom:10px}
+  h2{font-family:var(--serif);font-weight:600;font-size:clamp(27px,4.4vw,37px);
+    line-height:1.12;letter-spacing:-.012em;color:var(--ink)}
+  h2 em{font-style:italic;color:var(--accent)}
+  p{margin-bottom:21px}
+  p:last-child{margin-bottom:0}
+  strong{font-weight:600;color:var(--ink)}
+  em{font-style:italic;color:var(--accent-2)}
+  .gloss{color:var(--muted);font-style:italic}
+
+  .lead::first-letter{font-family:var(--serif);font-weight:700;float:left;
+    font-size:74px;line-height:.74;padding:8px 12px 0 0;color:var(--accent)}
+
+  .sub{font-family:var(--serif);font-weight:600;font-size:17px;letter-spacing:.01em;
+    color:var(--ink);margin:34px 0 14px;display:flex;align-items:center;gap:11px}
+  .sub::before{content:"";width:18px;height:2px;background:var(--accent);flex:none;border-radius:2px}
+
+  /* ---- BƯỚC 1: VẤN ĐỀ (why it exists) ---- */
+  .problem{background:var(--bg-soft)}
+  .problem .big-num{color:#e2d6b4}
+
+  /* ---- BƯỚC 3: VÍ DỤ (concrete worked example) ---- */
+  .example-card{border:1px solid #e8c876;border-radius:4px;padding:30px 32px;margin:8px 0 28px;
+    background:linear-gradient(135deg,#fef9ed 0%,#fdf3e0 100%)}
+  .example-card .tag{font-family:var(--mono);font-weight:600;font-size:11px;
+    letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin-bottom:16px;display:block}
+  .example-card p{color:#5a4810}
+  .example-card strong{color:var(--accent-2)}
+  .example-card p:last-child{margin-bottom:0}
+
+  /* ---- DỄ NHẦM (optional clarify / boundaries) ---- */
+  .clarify{background:var(--bg-soft)}
+  .clarify .big-num{color:#d8cdb2}
+  .mix-q{margin:0 0 30px;padding-left:24px;border-left:2px solid var(--border-strong)}
+  .mix-q:last-child{margin-bottom:0}
+  .mix-q .q{font-family:var(--serif);font-style:italic;font-weight:500;
+    font-size:22px;line-height:1.35;color:var(--accent-2);margin-bottom:12px;display:block}
+  .mix-q p:last-child{margin-bottom:0}
+
+  /* ---- NỐI TIẾP (bridge to the harder concepts) ---- */
+  .bridge .big-num{color:#bcc7b2}
+  .bridge .lbl{color:var(--bridge)}
+  .bridge-card{border-left:3px solid var(--bridge);background:#f4f6f1;
+    padding:22px 26px;border-radius:0 4px 4px 0;margin-top:6px}
+  .bridge-card p:last-child{margin-bottom:0}
+  .bridge-card strong{color:#42513a}
+
+  /* ---- KỂ LẠI GỌN (refined retell) ---- */
+  .retell{background:linear-gradient(180deg,var(--bg-soft) 0%,var(--bg) 100%);border-bottom:none}
+  .retell h2{color:var(--ink)}
+  .retell strong{color:var(--accent-2)}
+  .retell .core{margin-top:6px}
+  .testbox{border:1px solid var(--border);background:var(--bg-elevated);
+    border-radius:4px;padding:28px 32px;margin-top:40px;box-shadow:0 1px 2px rgba(0,0,0,.03)}
+  .testbox h3{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--accent);margin-bottom:20px}
+  .testbox ol{margin:0;padding-left:22px;counter-reset:t}
+  .testbox li{margin-bottom:16px;color:var(--ink-soft);padding-left:6px}
+  .testbox li:last-child{margin-bottom:0}
+
+  footer{text-align:center;padding:60px 0 88px}
+  footer .mark{font-family:var(--serif);font-weight:700;color:var(--accent);
+    font-size:26px;display:block;margin-bottom:14px}
+  footer p{font-family:var(--serif);font-style:italic;color:var(--muted);font-size:17px;max-width:400px;margin:0 auto}
+
+  @media(max-width:560px){
+    body{font-size:18px}
+    header{padding:70px 0 44px}
+    section{padding:52px 0}
+    .step-head{gap:16px}
+    .big-num{font-size:46px}
+    .lead::first-letter{font-size:60px}
+  }
+</style>
+<style>
+ .tabbar{position:fixed;top:0;left:0;right:0;width:100%;box-sizing:border-box;z-index:40;background:rgba(250,250,247,.93);
+   backdrop-filter:saturate(1.1) blur(8px);-webkit-backdrop-filter:saturate(1.1) blur(8px);
+   border-bottom:1px solid var(--border);display:flex;gap:6px;overflow-x:auto;
+   padding:10px max(36px,calc((100% - 992px)/2));scrollbar-width:thin}
+ .tabbar .tab{flex:0 0 auto;display:flex;align-items:baseline;gap:9px;cursor:pointer;
+   background:transparent;border:1px solid transparent;border-radius:999px;
+   padding:8px 17px;transition:.15s;white-space:nowrap;color:var(--muted)}
+ .tabbar .tab:hover{color:var(--ink);background:var(--bg-soft)}
+ .tabbar .tab.active{color:var(--accent-2);background:var(--bg-soft);border-color:var(--border-strong)}
+ .tabbar .tn{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.1em;color:var(--accent)}
+ .tabbar .tl{font-family:var(--serif);font-weight:500;font-size:16px}
+ body{padding-top:56px} .concept-panel{display:none}
+ .concept-panel.active{display:block}
+ .concept-panel header{padding-top:50px}
+ @media(max-width:560px){.tabbar .tl{max-width:48vw;overflow:hidden;text-overflow:ellipsis}}
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+<nav class="tabbar" role="tablist" aria-label="Các khái niệm nền"><button class="tab" data-i="0" role="tab" id="tab-0" aria-controls="c-len-so-hay-vao-chi-phi" aria-selected="true" tabindex="0"><span class="tn">01</span><span class="tl">Lên sổ hay chi phí</span></button><button class="tab" data-i="1" role="tab" id="tab-1" aria-controls="c-vo-hinh-va-ba-dieu-kien" aria-selected="false" tabindex="-1"><span class="tn">02</span><span class="tl">Vô hình &amp; 3 điều kiện</span></button><button class="tab" data-i="2" role="tab" id="tab-2" aria-controls="c-gia-goc-do-luong-ban-dau" aria-selected="false" tabindex="-1"><span class="tn">03</span><span class="tl">Giá gốc</span></button><button class="tab" data-i="3" role="tab" id="tab-3" aria-controls="c-gia-tri-hop-ly-va-thi-truong" aria-selected="false" tabindex="-1"><span class="tn">04</span><span class="tl">Giá trị hợp lý &amp; chợ</span></button><button class="tab" data-i="4" role="tab" id="tab-4" aria-controls="c-tuoi-tho-va-khau-hao" aria-selected="false" tabindex="-1"><span class="tn">05</span><span class="tl">Tuổi thọ &amp; khấu hao</span></button></nav>
+<div class="concept-panel" id="c-len-so-hay-vao-chi-phi" role="tabpanel" aria-labelledby="tab-0" tabindex="0"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Nền tảng · hiểu từ gốc</div>
+    <h1 class="rise" style="animation-delay:.08s">Lên sổ thành tài sản, hay tính thẳng vào chi phí?</h1>
+    <p class="core rise" style="animation-delay:.16s">Cùng một khoản chi, <span>lên sổ thì còn nằm đó, vào chi phí thì bay ngay năm nay.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Định vị · nó là gì &amp; vì sao học trước</span><h2>Nền gốc: một đồng chi ra đi về đâu</h2></div>
+    </div>
+    <div class="rule">Theo IAS 38 (đoạn 18 &amp; 21), một khoản chi được <strong>ghi nhận thành tài sản vô hình</strong> (vốn hóa) <em>khi và chỉ khi</em>: (a) lợi ích kinh tế tương lai có khả năng (<em>probable</em>) chảy về, và (b) <em>cost</em> đo được đáng tin cậy. Nếu không đủ, đoạn 68 buộc ghi khoản đó vào <em>chi phí</em> (expense) ngay khi phát sinh. Đoạn 71 chốt thêm: đã ghi chi phí rồi thì <strong>vĩnh viễn</strong> không được vốn hóa trở lại.</div>
+    <div class="sub">Vì sao đây là nền</div>
+    <div class="why"><p>Đây là cái ngã ba nằm dưới gần như mọi quyết định trong cuốn này. Nghiên cứu hay phát triển, tự tạo hay mua ngoài, chi thêm sau khi mua — tất cả rốt cuộc quy về một câu. Khoản tiền này lên sổ, hay vào chi phí? Nắm chắc ngã ba này, các chương sau chỉ là cùng một lựa chọn lặp lại trong từng hoàn cảnh.</p></div>
+  </section>
+
+  <section class="problem">
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Vấn đề nó sinh ra để giải quyết</span><h2>Cùng một tỷ đồng, hai cách ghi khác hẳn nhau</h2></div>
+    </div>
+    <p class='lead'>Công ty chi 1 tỷ. Câu hỏi tưởng nhỏ mà quyết định cả bức tranh lãi lỗ: 1 tỷ đó đi vào đâu trên sổ sách? Có hai cánh cửa, và chọn cửa nào ra hai con số lợi nhuận rất khác nhau.</p>
+
+<p>Cửa thứ nhất: coi đó là mua được <em>một thứ còn dùng lâu</em>. Khoản chi nằm lại trên sổ như một tài sản, mỗi năm chỉ gặm một ít vào lãi. Cửa thứ hai: coi đó là tiền <em>dùng hết trong năm</em>. Cả 1 tỷ trừ thẳng vào lợi nhuận năm nay.</p>
+
+<p>Cùng một tỷ đồng. Đi cửa một, lợi nhuận năm nay gần như không suy chuyển. Đi cửa hai, lợi nhuận tụt hẳn một tỷ. Nên chuẩn mực không thể để tùy hứng. Phải có một quy tắc cứng chọn cửa — đó là nội dung Bước 2.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Mô hình đơn giản · cách nó chạy</span><h2>Một cái cổng hai câu hỏi, mặc định nghiêng về chi phí</h2></div>
+    </div>
+    <p>Mô hình chỉ là một cái cổng. Khoản chi muốn lên sổ phải qua cổng; không qua được thì rơi vào chi phí.</p>
+
+<div class='sub'>Lên sổ nghĩa là gì</div>
+<p>Lên sổ là gửi khoản chi vào kho tài sản, rồi rải dần giá của nó qua những năm nó còn giúp ta kiếm tiền. Tiền vẫn đã chi, nhưng trên sổ nó còn đó và chỉ mòn từ từ.</p>
+
+<div class='sub'>Vào chi phí nghĩa là gì</div>
+<p>Vào chi phí là coi khoản đó đã dùng hết. Nó trừ ngay vào lãi năm nay và không để lại gì trên sổ. Đơn giản, dứt khoát.</p>
+
+<div class='sub'>Cổng có đúng hai chốt</div>
+<p>Muốn lên sổ, khoản chi phải trả lời <strong>có</strong> cho cả hai câu. Một: nó có hứa mang tiền về sau này không? Hai: ta có đo được nó tốn bao nhiêu, đủ tin không? Thiếu một chốt là rớt, rơi xuống chi phí.</p>
+
+<div class='sub'>Khi lưỡng lự, ngả về chi phí</div>
+<p>Chuẩn mực cố ý dè dặt. Không chứng minh được rõ ràng thì ghi vào chi phí, đừng vội thổi tài sản lên. Và có một cánh cửa một chiều: đã ghi vào chi phí thì sau này không kéo ngược lên sổ được nữa.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví dụ cụ thể</span><h2>Phần mềm và mẩu quảng cáo: hai số phận</h2></div>
+    </div>
+    <div class="example-card"><span class="tag">Bài toán</span>
+<p>Công ty chi hai khoản, mỗi khoản 600. Khoản một: mua một phần mềm dùng được 6 năm. Khoản hai: thuê chạy một đợt quảng cáo ra mắt.</p>
+<p>Phần mềm qua cổng: nó hứa tiền nhiều năm, giá mua đo được rõ. Vậy nó lên sổ. Mỗi năm gặm 100 vào lãi, hết 6 năm mới mòn hết.</p>
+<p>Quảng cáo thì rớt cổng: ai dám chắc nó đem về bao nhiêu, đo kiểu gì? Cả 600 vào chi phí ngay năm nay.</p>
+<p>Kết quả: cùng chi 1.200, nhưng năm nay phần mềm chỉ trừ 100 vào lãi, còn quảng cáo trừ trọn 600.</p>
+</div>
+<p>Đời thường y hệt. Mua cái tủ lạnh là sắm một thứ dùng lâu — ở nhà ta vẫn coi nó như tài sản. Còn tiền đi chợ mua thức ăn tuần này thì ăn xong là hết, không ai ghi thành tài sản. Lên sổ hay vào chi phí, ranh giới nằm ở chỗ đó: còn dùng lâu, hay xài hết ngay.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Hai chốt của cổng chính là hai tiêu chí ghi nhận ở đoạn 21: <em>probable future economic benefits</em> và <em>cost measured reliably</em>. Đây cũng là cỗ máy chạy ngầm bên trong quy tắc nghiên cứu vs phát triển: chi cho <em>research</em> luôn rớt cổng nên ghi chi phí (đoạn 54); chi cho <em>development</em> chỉ lên sổ khi chứng minh đủ sáu điều kiện ở đoạn 57.</p>
+  </section>
+
+  <section class="clarify">
+    <div class="step-head">
+      <div class="big-num">≠</div>
+      <div class="step-meta"><span class="lbl">Dễ nhầm · ranh giới</span><h2>Đừng nhầm hai cánh cửa này với chuyện tốn tiền</h2></div>
+    </div>
+    <div class="mix-q"><span class="q">“Lên sổ thành tài sản nghĩa là chưa phải bỏ tiền ra à?”</span><p>Không. Tiền đã chi rồi trong cả hai trường hợp. Ngã ba này không bàn chuyện <em>có mất tiền hay không</em>. Nó chỉ bàn khoản đã chi đó <em>hiện ra ở đâu</em>. Hoặc nằm lại trên sổ như tài sản rồi mòn dần, hoặc trừ trọn vào lãi năm nay.</p></div>
+<div class="mix-q"><span class="q">“Vậy ghi vào chi phí là dại, là phí tiền sao?”</span><p>Không hề. Vào chi phí không có nghĩa là lãng phí. Một đợt quảng cáo có thể rất đáng tiền. Nó vào chi phí chỉ vì không qua được hai chốt của cổng, chứ không phải vì nó vô ích.</p></div>
+  </section>
+
+  <section class="bridge">
+    <div class="step-head">
+      <div class="big-num">→</div>
+      <div class="step-meta"><span class="lbl">Nối tiếp · nó dẫn tới đâu</span><h2>Ngã ba này là động cơ của hai trang khó</h2></div>
+    </div>
+    <div class="bridge-card"><p>Giữ chắc cái cổng hai chốt, vì hai trang Feynman khó nhất chạy bằng đúng nó. Trang <strong>'Nghiên cứu và Phát triển'</strong> cho thấy một điều. Cùng một dự án, vượt qua một lằn ranh là khoản chi đảo từ 'chi phí' sang 'lên sổ'. Đó chính là khoản chi vừa lọt qua cổng.</p>
+<p>Trang <strong>'Goodwill tự tạo'</strong> thì là mặt trái: thương hiệu bạn tự gây dựng không bao giờ lên sổ, vì nó rớt cổng. Hiểu ngã ba này trước, hai trang đó hết khó.</p></div>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">✦</div>
+      <div class="step-meta"><span class="lbl">Kể lại trong một hơi</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Một đồng chi ra có hai ngả. Lên sổ: gửi vào kho tài sản, mòn dần qua các năm. Vào chi phí: trừ trọn vào lãi năm nay, không để lại gì. Muốn lên sổ phải qua cổng hai chốt — có hứa tiền tương lai, và đo được giá. Thiếu một chốt là rơi vào chi phí. Khi lưỡng lự, ngả về chi phí.</p>
+<p class="core">Nhớ một câu: <span>qua cổng hai chốt thì lên sổ, không thì vào chi phí — và không quay đầu.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã nắm nền chưa?</h3>
+      <ol>
+        <li>Cùng chi 600, vì sao mua phần mềm và chạy quảng cáo lại hiện ra rất khác nhau trên báo cáo lãi lỗ?</li>
+        <li>Hai chốt của cái cổng 'được lên sổ' là gì, và vì sao thiếu một chốt là phải ghi vào chi phí?</li>
+        <li>“Đã ghi vào chi phí thì không vốn hóa lại” — quy tắc một chiều này (đoạn 71) ngăn chặn điều gì?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nền vững thì cái khó tự nhẹ đi. Hiểu từ gốc, không học vẹt.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-vo-hinh-va-ba-dieu-kien" role="tabpanel" aria-labelledby="tab-1" tabindex="0"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Nền tảng · hiểu từ gốc</div>
+    <h1 class="rise" style="animation-delay:.08s">Khi nào một thứ “không sờ được” mới là tài sản vô hình?</h1>
+    <p class="core rise" style="animation-delay:.16s">Không sờ được vẫn là tài sản, <span>miễn tách bạch được, bạn nắm được, và nó hứa ra tiền.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Định vị · nó là gì &amp; vì sao học trước</span><h2>Định nghĩa nền: ba điều kiện phải đủ cả ba</h2></div>
+    </div>
+    <div class="rule">Theo IAS 38 (đoạn 8), <strong>tài sản vô hình</strong> (intangible asset) là một tài sản phi tiền tệ, <em>nhận diện được</em> (identifiable), không có hình thái vật chất. Đoạn 10 nói rõ: một khoản mục chỉ là tài sản vô hình khi thỏa <em>đồng thời</em> ba điều kiện — <em>identifiability</em> (đoạn 12), <em>control</em> (đoạn 13), và <em>future economic benefits</em> (đoạn 17).</div>
+    <div class="sub">Vì sao đây là nền</div>
+    <div class="why"><p>Đây là cái khuôn. Mọi chương sau — ghi nhận, đo lường, khấu hao — đều mặc định khoản mục đã chui lọt cái khuôn này. Chưa phân biệt được thứ nào là tài sản vô hình, thứ nào chỉ là chi phí trá hình, bạn không có chỗ đứng để hiểu phần còn lại.</p></div>
+  </section>
+
+  <section class="problem">
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Vấn đề nó sinh ra để giải quyết</span><h2>Liệt kê thứ giá trị của công ty — thứ nào lên được sổ?</h2></div>
+    </div>
+    <p class='lead'>Hãy kể ra những thứ đáng giá của một công ty. Một bằng sáng chế, một thương hiệu gây dựng bao năm, một đội ngũ giỏi nghề, một danh sách khách quen. Hỏi: thứ nào được ghi thành tài sản vô hình trên sổ? Bất ngờ là không phải thứ nào cũng được.</p>
+
+<p>Trực giác mách rằng cứ đáng giá thì là tài sản. Nhưng trực giác đó sai, và sai khá xa. Có những thứ rõ ràng sinh ra tiền mà vẫn không được lên sổ.</p>
+
+<p>Vấn đề là thiếu một cây thước. Nếu mỗi người tự phán thứ gì đáng ghi, sổ sách mỗi nơi một kiểu. Ta cần một bài kiểm tra rõ ràng — đó là ba điều kiện ở Bước 2.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Mô hình đơn giản · cách nó chạy</span><h2>Ba cửa phải qua đủ: nhận diện, nắm được, hứa tiền</h2></div>
+    </div>
+    <p>Một thứ vô hình phải qua đủ ba cửa mới được gọi là tài sản vô hình. Rớt một cửa là trượt.</p>
+
+<div class='sub'>Cửa 1 — Nhận diện được</div>
+<p>Thứ đó phải <em>tách bạch</em>: bán, cho thuê hay cấp phép riêng ra được. Hoặc nó sinh ra từ một quyền hợp đồng, quyền pháp lý. Chỉ cần một trong hai là đủ. Cửa này để phân biệt nó với khối giá trị mờ chung của doanh nghiệp.</p>
+
+<div class='sub'>Cửa 2 — Nắm được (kiểm soát)</div>
+<p>Bạn phải vừa <em>thu được</em> lợi ích từ nó, vừa <em>chặn được</em> người khác hưởng ké. Quyền nắm này thường đến từ quyền pháp lý. Đây là cửa khó nhất, và là chỗ nhiều thứ đáng giá bị trượt.</p>
+
+<div class='sub'>Vì sao đội ngũ giỏi lại trượt cửa 2</div>
+<p>Một đội ngũ lành nghề rõ ràng sinh ra tiền. Nhưng nhân viên có quyền nghỉ việc bất cứ lúc nào, mang kỹ năng đi theo. Công ty không thật sự nắm được họ. Danh sách khách quen, lòng trung thành của khách cũng vậy: không có quyền pháp lý giữ, là không nắm.</p>
+
+<div class='sub'>Cửa 3 — Hứa ra tiền tương lai</div>
+<p>Thứ đó phải hứa mang lợi ích kinh tế về sau. Có thể là thêm doanh thu, mà cũng có thể chỉ là tiết kiệm chi phí. Cả hai đều được tính.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví dụ cụ thể</span><h2>Cho cả danh sách đi qua ba cửa</h2></div>
+    </div>
+    <div class="example-card"><span class="tag">Bài toán</span>
+<p>Lấy hai thứ trong danh sách lúc nãy đem soi.</p>
+<p><strong>Bằng sáng chế:</strong> tách bạch và có quyền pháp lý nên qua cửa 1; luật cho độc quyền nên qua cửa 2; mang lại doanh thu nên qua cửa 3. Đủ ba cửa, là tài sản vô hình.</p>
+<p><strong>Đội ngũ giỏi nghề:</strong> hứa ra tiền nên qua cửa 3; nhưng nhân viên được tự do nghỉ, công ty không nắm được, nên trượt cửa 2. Trượt một cửa là trượt — không lên sổ.</p>
+</div>
+<p>So một cặp gần nhau cho thấm. Một công thức pha chế giữ kín, ràng nhân viên ký cam kết bảo mật — công ty nắm được, qua cửa 2. Còn mớ kinh nghiệm chung nằm trong đầu thợ, ai cũng học được khi đi làm — không nắm được, trượt cửa 2. Cùng là tri thức, một thứ thành tài sản, một thứ thì không.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Cửa 1 (<em>identifiable</em>) chính là tiêu chí <em>separable HOẶC contractual-legal rights</em> ở đoạn 12 — và nó tồn tại để vạch ranh giới giữa tài sản vô hình với <em>goodwill</em>: goodwill là phần lợi ích không tách riêng ra được. Cửa 2 (<em>control</em>, đoạn 13–16) là lý do đội ngũ giỏi và quan hệ khách hàng phi hợp đồng thường không lên sổ.</p>
+  </section>
+
+  <section class="clarify">
+    <div class="step-head">
+      <div class="big-num">≠</div>
+      <div class="step-meta"><span class="lbl">Dễ nhầm · ranh giới</span><h2>Đừng nhầm “đáng giá” với “đủ điều kiện”</h2></div>
+    </div>
+    <div class="mix-q"><span class="q">“Có giá trị, sinh ra tiền — vậy đương nhiên là tài sản chứ?”</span><p>Chưa đủ. Hứa ra tiền mới chỉ qua cửa 3. Phải qua cả cửa nắm được nữa. Đội ngũ giỏi sinh tiền rõ ràng mà vẫn trượt, vì công ty không thật sự nắm được họ.</p></div>
+<div class="mix-q"><span class="q">“Nhận diện được và nắm được — hai cửa đó khác gì nhau?”</span><p>Nhận diện là <em>tách riêng ra được</em>, gọi tên nó tách khỏi phần còn lại của công ty. Nắm được là <em>giữ phần lợi ích cho mình</em> và chặn người khác. Một thứ có thể gọi tên rõ mà vẫn không giữ nổi lợi ích — như quan hệ khách hàng không có ràng buộc pháp lý.</p></div>
+  </section>
+
+  <section class="bridge">
+    <div class="step-head">
+      <div class="big-num">→</div>
+      <div class="step-meta"><span class="lbl">Nối tiếp · nó dẫn tới đâu</span><h2>Ba cửa này là nửa dưới của trang “Vô hình là gì”</h2></div>
+    </div>
+    <div class="bridge-card"><p>Bạn vừa dựng xong nửa nền. Trang Feynman <strong>'Vô hình là gì'</strong> chồng thêm nửa trên. Nó gộp ba cửa định nghĩa này với hai chốt ghi nhận — hứa tiền và đo được giá — thành một “cửa bốn chốt” duy nhất. Nắm ba cửa trước, cái cửa bốn chốt đó hiện ra gọn gàng.</p>
+<p>Cửa 2 — nắm được — còn dẫn thẳng sang trang <strong>'Goodwill tự tạo'</strong>: thương hiệu tự xây trượt đúng cửa này, nên không bao giờ lên sổ.</p></div>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">✦</div>
+      <div class="step-meta"><span class="lbl">Kể lại trong một hơi</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Không sờ được vẫn có thể là tài sản. Nhưng phải qua đủ ba cửa: tách bạch được, công ty nắm được, và nó hứa ra tiền. Đáng giá thôi chưa đủ — đội ngũ giỏi sinh tiền mà trượt cửa nắm được, nên không lên sổ. Rớt một cửa là rớt cả.</p>
+<p class="core">Một câu nhớ: <span>tách bạch, nắm được, hứa tiền — đủ ba mới là tài sản vô hình.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã nắm nền chưa?</h3>
+      <ol>
+        <li>Một đội ngũ nhân viên giỏi rõ ràng sinh ra tiền — vì sao vẫn không được ghi thành tài sản vô hình?</li>
+        <li>Cửa “nhận diện được” khác cửa “kiểm soát” ở điểm nào? Cho một ví dụ qua cửa này mà trượt cửa kia.</li>
+        <li>Vì sao điều kiện “nhận diện được” lại tồn tại để vạch ranh giới giữa tài sản vô hình và goodwill?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nền vững thì cái khó tự nhẹ đi. Hiểu từ gốc, không học vẹt.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-gia-goc-do-luong-ban-dau" role="tabpanel" aria-labelledby="tab-2" tabindex="0"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Nền tảng · hiểu từ gốc</div>
+    <h1 class="rise" style="animation-delay:.08s">Giá gốc: gói trọn chi phí để tài sản sẵn sàng chạy</h1>
+    <p class="core rise" style="animation-delay:.16s">Giá gốc không chỉ là giá mua, <span>mà là mọi đồng cần để tài sản sẵn sàng chạy.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Định vị · nó là gì &amp; vì sao học trước</span><h2>Nền đo lường: con số đầu tiên đặt lên sổ</h2></div>
+    </div>
+    <div class="rule">Theo IAS 38 (đoạn 24), một tài sản vô hình được đo lường ban đầu theo <strong>giá gốc</strong> (cost). Đoạn 27 nêu giá gốc gồm hai phần: <em>giá mua</em> (sau khi trừ chiết khấu, cộng thuế không hoàn lại) và <em>mọi chi phí trực tiếp</em> để đưa tài sản về trạng thái sẵn sàng dùng. Đoạn 30: ngừng cộng vào giá gốc khi tài sản đã sẵn sàng vận hành theo dự định của ban quản lý.</div>
+    <div class="sub">Vì sao đây là nền</div>
+    <div class="why"><p>Giá gốc là con số đầu tiên được khắc lên sổ cho một tài sản. Mọi thứ về sau đứng trên nó: khấu hao rải từ con số này, giá trị ghi sổ tụt dần từ nó, phép thử suy giảm so với nó. Đặt sai con số đầu, cả chuỗi sau lệch theo.</p></div>
+  </section>
+
+  <section class="problem">
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Vấn đề nó sinh ra để giải quyết</span><h2>Mua một giấy phép phần mềm — ghi số nào lên sổ?</h2></div>
+    </div>
+    <p class='lead'>Bạn mua một giấy phép phần mềm hết 900. Để cài đặt xong, bạn trả thêm 40 cho luật sư rà hợp đồng. Rồi bạn chi 25 chạy quảng cáo ra mắt. Hỏi: con số nào được ghi làm giá gốc của tài sản — 900, 940, hay 965?</p>
+
+<p>Nghe thì tưởng cứ cộng hết lại. Nhưng cộng hết là sai, mà chỉ lấy mỗi giá mua cũng sai. Có khoản thuộc về tài sản, có khoản không.</p>
+
+<p>Thiếu một quy tắc phân loại, mỗi người sẽ gói giá gốc một kiểu. Ta cần biết: đồng nào được tính vào, đồng nào bị loại ra. Đó là Bước 2.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Mô hình đơn giản · cách nó chạy</span><h2>Tính mọi đồng để tài sản sẵn sàng chạy, rồi tắt máy đo</h2></div>
+    </div>
+    <p>Quy tắc gọn: giá gốc là giá mua, cộng mọi đồng <em>trực tiếp cần</em> để tài sản sẵn sàng chạy. Không hơn.</p>
+
+<div class='sub'>Đồng nào được tính vào</div>
+<p>Giá mua, sau khi trừ chiết khấu, cộng thuế không đòi lại được. Cộng thêm các chi phí trực tiếp đưa tài sản vào dùng: phí chuyên môn để cài đặt, công chạy thử xem nó chạy đúng không.</p>
+
+<div class='sub'>Đồng nào bị loại ra</div>
+<p>Quảng cáo ra mắt, đào tạo nhân viên, chi phí quản lý chung, lỗ vận hành những ngày đầu. Những khoản này không phải để tài sản sẵn sàng chạy, nên không thuộc giá gốc. Chúng vào chi phí.</p>
+
+<div class='sub'>Khi nào tắt máy đo</div>
+<p>Có một cái mốc: khi tài sản đã sẵn sàng chạy theo cách ban quản lý muốn. Trước mốc đó, chi phí trực tiếp được gộp vào giá gốc. Sau mốc đó, mọi khoản chi đều là chi phí, dù tài sản chưa chạy hết công suất.</p>
+
+<div class='sub'>Trả chậm thì tách phần lãi</div>
+<p>Nếu bạn được trả chậm lâu hơn bình thường, giá gốc chỉ là <em>giá nếu trả ngay hôm nay</em>. Phần trả thêm do trả chậm là tiền lãi, không phải giá của tài sản.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví dụ cụ thể</span><h2>Quay lại giấy phép phần mềm 900</h2></div>
+    </div>
+    <div class="example-card"><span class="tag">Bài toán</span>
+<p>Giá mua 900. Phí luật sư cài đặt 40 — trực tiếp để đưa phần mềm vào dùng, nên tính vào. Quảng cáo ra mắt 25 — sau khi phần mềm đã sẵn sàng, nên loại ra.</p>
+<p>Vậy giá gốc là 900 cộng 40, thành <strong>940</strong>. Còn 25 quảng cáo ghi vào chi phí ngay.</p>
+<p>Đổi tình huống: giá nếu trả ngay là 900, nhưng bạn trả chậm hai năm, tổng phải trả 1.000. Giá gốc vẫn là 900. Phần 100 dôi ra là tiền lãi do trả chậm.</p>
+</div>
+<p>Mua tủ lạnh cũng vậy. Giá máy, cộng tiền ship và tiền lắp đặt — đó là “giá gốc” để cái tủ sẵn sàng chạy. Còn mâm tiệc mừng nhà mới hôm bê tủ về thì chẳng liên quan, không gói vào giá cái tủ được.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Khoản “giá nếu trả ngay” chính là <em>cash price equivalent</em> ở đoạn 32; phần chênh giữa nó và tổng tiền trả chậm được phân bổ thành <em>interest expense</em> qua kỳ tín dụng, trừ khi được vốn hóa theo IAS 23. Lưu ý: mua trong một <em>business combination</em> thì giá gốc không tính theo cách này — nó nhảy sang fair value, là trang kế tiếp.</p>
+  </section>
+
+  <section class="clarify">
+    <div class="step-head">
+      <div class="big-num">≠</div>
+      <div class="step-meta"><span class="lbl">Dễ nhầm · ranh giới</span><h2>Đừng nhầm giá gốc với giá thị trường hôm nay</h2></div>
+    </div>
+    <div class="mix-q"><span class="q">“Giá gốc là giá tài sản đáng giá bây giờ phải không?”</span><p>Không. Giá gốc bị khóa lại ở thời điểm mua — nó là chuyện quá khứ. Năm sau giá thị trường lên hay xuống, giá gốc trên sổ vẫn nguyên con số ngày mua. Cái thay đổi theo thời gian là giá trị ghi sổ, do khấu hao kéo xuống.</p></div>
+<div class="mix-q"><span class="q">“Mọi chi phí dính tới tài sản đều gói vào giá gốc chứ?”</span><p>Không. Chỉ những đồng <em>trực tiếp để tài sản sẵn sàng chạy</em> mới được tính. Quảng cáo, đào tạo, chi phí chung tuy có dính tới tài sản nhưng không phải để nó sẵn sàng, nên bị loại ra và ghi vào chi phí.</p></div>
+  </section>
+
+  <section class="bridge">
+    <div class="step-head">
+      <div class="big-num">→</div>
+      <div class="step-meta"><span class="lbl">Nối tiếp · nó dẫn tới đâu</span><h2>Giá gốc này bị thay bằng fair value khi mua qua thâu tóm</h2></div>
+    </div>
+    <div class="bridge-card"><p>Bạn vừa nắm cách tính giá gốc cho kiểu mua thẳng. Trang Feynman <strong>'Mua qua M&amp;A'</strong> cho thấy một cú lật. Khi tài sản vô hình về tay qua một thương vụ thâu tóm, giá gốc không còn là “giá mua cộng chi phí”. Nó nhảy sang <em>fair value</em> tại ngày mua.</p>
+<p>Muốn hiểu cú lật đó, cần nắm fair value và “cái chợ” phía sau nó — đúng là tab kế bên. Còn con số giá gốc bạn vừa tính chính là điểm xuất phát để tab 'Tuổi thọ &amp; khấu hao' rải dần.</p></div>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">✦</div>
+      <div class="step-meta"><span class="lbl">Kể lại trong một hơi</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Giá gốc không chỉ là giá mua. Nó là giá mua cộng mọi đồng trực tiếp để tài sản sẵn sàng chạy — phí cài đặt, chạy thử. Loại ra quảng cáo, đào tạo, chi phí chung. Tắt máy đo khi tài sản đã sẵn sàng. Trả chậm thì tách riêng phần lãi.</p>
+<p class="core">Một câu nhớ: <span>giá gốc là mọi đồng cần để tài sản sẵn sàng chạy — không hơn.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã nắm nền chưa?</h3>
+      <ol>
+        <li>Mua giấy phép 900, trả luật sư 40 để cài đặt, chi 25 quảng cáo ra mắt — giá gốc là bao nhiêu, và vì sao?</li>
+        <li>Cái mốc “tắt máy đo” giá gốc nằm ở đâu, và sau mốc đó các khoản chi đi về đâu?</li>
+        <li>Vì sao giá gốc khác với giá thị trường của tài sản ở hiện tại?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nền vững thì cái khó tự nhẹ đi. Hiểu từ gốc, không học vẹt.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-gia-tri-hop-ly-va-thi-truong" role="tabpanel" aria-labelledby="tab-3" tabindex="0"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Nền tảng · hiểu từ gốc</div>
+    <h1 class="rise" style="animation-delay:.08s">Giá trị hợp lý và “cái chợ” thật phía sau nó</h1>
+    <p class="core rise" style="animation-delay:.16s">Giá thị trường chỉ tin được, <span>khi có một cái chợ thật để soi vào.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Định vị · nó là gì &amp; vì sao học trước</span><h2>Nền đo lường: giá do thị trường nói, không do ta đoán</h2></div>
+    </div>
+    <div class="rule"><strong>Giá trị hợp lý</strong> (fair value) là cái giá mà các bên trên thị trường sẵn sàng trao đổi tài sản — một con số <em>thị trường nói ra</em>, không phải ta tự gán. IAS 38 dùng nó ở hai chỗ: giá gốc khi mua trong <em>business combination</em> là fair value tại ngày mua (đoạn 33), và <em>revaluation model</em> ghi tài sản theo fair value (đoạn 75). Nhưng đoạn 75 ràng: fair value đó phải soi vào một <em>active market</em> (thị trường hoạt động).</div>
+    <div class="sub">Vì sao đây là nền</div>
+    <div class="why"><p>Giá trị hợp lý là con đường thay thế cho giá gốc lịch sử. Hai chỗ lớn của chuẩn mực đứng trên nó: đo tài sản mua qua thâu tóm, và mô hình đánh giá lại. Và cả hai chỉ chạy được khi có “cái chợ” thật. Nắm ý này, bạn hiểu vì sao đánh giá lại nghe hấp dẫn mà thực tế hiếm khi làm được.</p></div>
+  </section>
+
+  <section class="problem">
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Vấn đề nó sinh ra để giải quyết</span><h2>Bằng sáng chế ghi sổ 100, ngoài kia bán 300 — nâng được không?</h2></div>
+    </div>
+    <p class='lead'>Trên sổ, bằng sáng chế của bạn đang ghi 100 theo giá gốc cũ. Nhưng mấy bằng tương tự ngoài kia vừa sang tay với giá 300. Câu hỏi rất cám dỗ: bạn có được nâng nó lên 300 trên sổ không?</p>
+
+<p>Nếu được tự nâng, ai cũng sẽ thổi tài sản của mình lên. Vấn đề nằm ở chỗ: lấy gì bảo đảm con số 300 là thật, và ai kiểm chứng được nó?</p>
+
+<p>Nên câu trả lời không thể là “bạn thấy đáng bao nhiêu thì ghi bấy nhiêu”. Phải có một kỷ luật cho con số thị trường. Đó là Bước 2.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Mô hình đơn giản · cách nó chạy</span><h2>Giá do chợ nói, và phải có chợ thật mới tin</h2></div>
+    </div>
+    <p>Mô hình có hai mảnh: một con số, và một điều kiện để tin con số đó.</p>
+
+<div class='sub'>Giá trị hợp lý là gì</div>
+<p>Là cái giá thị trường sẵn sàng trả hôm nay, không phải con số trong đầu bạn. Điểm cốt lõi: nó do bên ngoài định, nên kiểm chứng được, chứ không phải ý muốn của chủ tài sản.</p>
+
+<div class='sub'>Điều kiện: phải có “chợ thật”</div>
+<p>Để tin được con số đó, IAS 38 đòi một thị trường hoạt động. Hiểu nôm na là một cái chợ thật: hàng giống nhau hàng loạt, giá niêm yết công khai, lúc nào cũng có người mua kẻ bán. Soi vào chợ đó mới ra giá đáng tin.</p>
+
+<div class='sub'>Vì sao đa số tài sản vô hình không có chợ</div>
+<p>Phần lớn tài sản vô hình là hàng độc. Mỗi thương hiệu, mỗi bằng sáng chế một vẻ, không có hai cái giống hệt để so giá. Không có hàng giống nhau hàng loạt thì không thành chợ. Vì vậy đánh giá lại trên thực tế hiếm khi làm được.</p>
+
+<div class='sub'>Vài thứ thì có chợ</div>
+<p>Cũng có ngoại lệ: giấy phép taxi được tự do sang tay, hay hạn ngạch đánh bắt cá. Những thứ này mua bán đủ nhiều để thành chợ. Khi không có chợ, tài sản quay về ghi theo giá gốc.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví dụ cụ thể</span><h2>Giấy phép taxi và một thương hiệu độc nhất</h2></div>
+    </div>
+    <div class="example-card"><span class="tag">Bài toán</span>
+<p><strong>Giấy phép taxi:</strong> ở nơi nó được tự do sang tay, có cả trăm cái giống nhau, giá niêm yết rõ ràng. Đó là một cái chợ thật. Nên có thể lấy giá chợ làm fair value và đánh giá lại.</p>
+<p><strong>Thương hiệu riêng của bạn:</strong> độc nhất, không có cái thứ hai để so. Không có chợ. Nên dù bạn tin nó đáng 300, vẫn không được nâng — nó nằm yên ở giá gốc.</p>
+</div>
+<p>Như định giá nhà với định giá một bức tranh. Quanh nhà bạn vừa có chục căn tương tự bán xong, nên có ngay một giá tham chiếu kiểm chứng được. Còn một bức tranh vẽ tay độc bản thì chẳng có cái thứ hai để soi. “Giá thị trường” của nó rốt cuộc chỉ là một con số người ta đoán.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Một <em>active market</em> theo chuẩn cần ba nét: hàng hóa đồng nhất, luôn có người mua bán sẵn lòng, và giá công khai. Khái niệm <em>fair value</em> được định nghĩa kỹ ở một chuẩn riêng là IFRS 13, với một thang ưu tiên đầu vào — ưu tiên giá niêm yết của hàng giống hệt trên thị trường hoạt động.</p>
+  </section>
+
+  <section class="clarify">
+    <div class="step-head">
+      <div class="big-num">≠</div>
+      <div class="step-meta"><span class="lbl">Dễ nhầm · ranh giới</span><h2>Đừng nhầm giá trị hợp lý với “giá tôi nghĩ”</h2></div>
+    </div>
+    <div class="mix-q"><span class="q">“Tôi tin tài sản đáng 300 — vậy 300 là giá trị hợp lý chứ?”</span><p>Không. Giá trị hợp lý phải do thị trường nói ra và kiểm chứng được, không phải niềm tin của chủ tài sản. Không có chợ thật để soi thì con số 300 chỉ là phỏng đoán, và chuẩn mực không cho ghi sổ theo phỏng đoán.</p></div>
+<div class="mix-q"><span class="q">“Giá trị hợp lý với giá gốc khác nhau ra sao?”</span><p>Giá gốc là con số quá khứ, khóa ở ngày mua. Giá trị hợp lý là con số hôm nay, do thị trường định. Giá gốc luôn dùng được; còn giá trị hợp lý chỉ dùng được khi có chợ thật để soi vào.</p></div>
+  </section>
+
+  <section class="bridge">
+    <div class="step-head">
+      <div class="big-num">→</div>
+      <div class="step-meta"><span class="lbl">Nối tiếp · nó dẫn tới đâu</span><h2>Chính “cần có chợ” làm nên trang khó về đánh giá lại</h2></div>
+    </div>
+    <div class="bridge-card"><p>Giữ chắc điều kiện “phải có chợ thật”. Trang Feynman <strong>'Đánh giá lại cần chợ'</strong> dựng đúng trên nó. Muốn ghi tài sản theo giá thị trường, trước hết phải có một cái chợ. Mà đa số tài sản vô hình lại không có. Hiểu nền này thì cái rào đó hết bí ẩn.</p>
+<p>Giá trị hợp lý cũng là cú lật ở trang <strong>'Mua qua M&amp;A'</strong>: khi mua qua thâu tóm, giá gốc nhường chỗ cho fair value tại ngày mua. Hai trang khó đó đều đứng trên tab này.</p></div>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">✦</div>
+      <div class="step-meta"><span class="lbl">Kể lại trong một hơi</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Giá trị hợp lý là giá do thị trường nói, kiểm chứng được, không phải con số ta tự gán. Muốn tin nó, phải có một cái chợ thật: hàng giống nhau hàng loạt, giá công khai. Đa số tài sản vô hình là hàng độc, không có chợ, nên đành ghi theo giá gốc. Vài thứ như giấy phép taxi thì có chợ.</p>
+<p class="core">Một câu nhớ: <span>không có chợ thật thì không có giá trị hợp lý đáng tin — quay về giá gốc.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã nắm nền chưa?</h3>
+      <ol>
+        <li>Bằng sáng chế ghi sổ 100, loại tương tự ngoài kia bán 300 — vì sao bạn vẫn thường không được nâng nó lên 300?</li>
+        <li>Một “thị trường hoạt động” cần những nét gì, và vì sao đa số tài sản vô hình không có?</li>
+        <li>Giá trị hợp lý khác giá gốc ở chỗ nào, và khi nào buộc phải quay về giá gốc?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nền vững thì cái khó tự nhẹ đi. Hiểu từ gốc, không học vẹt.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-tuoi-tho-va-khau-hao" role="tabpanel" aria-labelledby="tab-4" tabindex="0"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Nền tảng · hiểu từ gốc</div>
+    <h1 class="rise" style="animation-delay:.08s">Tài sản sống bao lâu, và cách rải dần giá của nó</h1>
+    <p class="core rise" style="animation-delay:.16s">Tài sản có “tuổi thọ”, <span>nên giá của nó được rải đều suốt quãng đời đó.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Định vị · nó là gì &amp; vì sao học trước</span><h2>Nền đo lường theo thời gian: tuổi thọ và khấu hao</h2></div>
+    </div>
+    <div class="rule">Theo IAS 38 (đoạn 88), bước đầu là đánh giá <strong>thời gian hữu dụng</strong> (useful life) của tài sản là <em>hữu hạn</em> hay <em>vô thời hạn</em>. Nếu hữu hạn, đoạn 97 buộc <em>khấu hao</em> (amortise) — rải giá trị có thể khấu hao một cách có hệ thống suốt thời gian hữu dụng. Đoạn 100: <em>giá trị thanh lý</em> (residual value) mặc định bằng không. Nếu vô thời hạn, đoạn 107–108: không khấu hao, mà kiểm tra suy giảm hằng năm.</div>
+    <div class="sub">Vì sao đây là nền</div>
+    <div class="why"><p>Tuổi thọ và khấu hao là cỗ máy tạo ra con số hằng năm trên sổ. Giá trị ghi sổ tụt dần chính nhờ nó. Và việc chia hữu hạn hay vô thời hạn xẻ đôi cả chương đo lường sau ghi nhận. Chưa nắm máy này, các quy tắc cuối sách chỉ là công thức rời rạc.</p></div>
+  </section>
+
+  <section class="problem">
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Vấn đề nó sinh ra để giải quyết</span><h2>Bằng sáng chế ghi 600 — chẳng lẽ năm nào cũng ghi 600?</h2></div>
+    </div>
+    <p class='lead'>Bạn đưa một bằng sáng chế lên sổ với giá 600. Nó còn giá trị trong khoảng 10 năm. Câu hỏi: chẳng lẽ suốt 10 năm cứ ghi nguyên 600? Tới năm thứ mười nó gần hết thời, mà sổ vẫn nói 600 thì sai bét.</p>
+
+<p>Để nguyên một chỗ là dối lòng người đọc sổ. Nhưng xóa hết một lần ngay năm đầu cũng sai, vì nó còn giúp ta kiếm tiền nhiều năm nữa.</p>
+
+<p>Cần một lối làm cho con số già đi theo tài sản — đều đặn, có lý. Đó là khấu hao ở Bước 2.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Mô hình đơn giản · cách nó chạy</span><h2>Hỏi tuổi thọ trước, rồi rải đều giá qua quãng đời đó</h2></div>
+    </div>
+    <p>Máy chạy theo một thứ tự rõ ràng, mỗi năm lặp lại.</p>
+
+<div class='sub'>Hỏi trước: có điểm kết thúc không</div>
+<p>Tài sản có một mốc tàn dự đoán được (hữu hạn), hay không thấy mốc nào (vô thời hạn)? Câu trả lời chia ra hai ngả xử lý khác hẳn.</p>
+
+<div class='sub'>Ngả hữu hạn: rải đều giá</div>
+<p>Lấy giá của tài sản chia ra suốt quãng đời nó. Mỗi năm một lát cắt rời khỏi sổ và thành chi phí. Lát cắt đó gọi là khấu hao. Năm này qua năm khác, con số trên sổ tụt dần đều.</p>
+
+<div class='sub'>Hình mặc định: cắt đều mỗi năm</div>
+<p>Mặc định là cắt đều bằng nhau mỗi năm, gọi là đường thẳng. Chỉ khi chứng minh được lợi ích đến theo nhịp khác, ta mới cắt theo nhịp khác.</p>
+
+<div class='sub'>Cuối đời còn lại bao nhiêu</div>
+<p>Mặc định coi như còn số không — tới cuối đời tài sản đã dùng cạn. Trừ vài ngoại lệ: có người cam kết mua lại, hoặc có một cái chợ để bán phần còn lại.</p>
+
+<div class='sub'>Ngả vô thời hạn: không cắt</div>
+<p>Không thấy mốc tàn thì không rải. Thay vào đó, mỗi năm kiểm tra xem tài sản có mất giá không. Không khấu hao, mà soi suy giảm.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví dụ cụ thể</span><h2>Cắt đều bằng sáng chế 600</h2></div>
+    </div>
+    <div class="example-card"><span class="tag">Bài toán</span>
+<p>Bằng sáng chế giá 600, sống 10 năm, cắt đều, cuối đời còn số không. Mỗi năm khấu hao 60.</p>
+<p>Sau 3 năm, đã cắt đi 180, sổ còn ghi <strong>420</strong>. Con số già đi theo tài sản, đúng như ta muốn.</p>
+<p>Đổi giả định: nếu tuổi thọ thật chỉ là 6 năm chứ không phải 10, mỗi năm phải cắt 100. Tài sản càng chóng tàn, lát cắt mỗi năm càng dày.</p>
+</div>
+<p>So một cặp cho rõ. Một giấy phép phần mềm dùng 5 năm là loại có mốc tàn — cứ rải đều giá qua 5 năm. Còn một thương hiệu mà không nhìn ra điểm dừng nào thì thuộc loại vô thời hạn. Không cắt năm nào cả, chỉ canh chừng xem nó có mất giá hay không.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Cái đem rải gọi là <em>depreciable amount</em>, bằng giá gốc trừ giá trị thanh lý. Tuổi thọ và phương pháp phải rà lại mỗi năm (đoạn 104); nếu đổi, ta chỉ chỉnh từ kỳ này về sau, không sửa các năm đã qua — IAS 8 gọi đây là thay đổi ước tính, áp dụng phi hồi tố.</p>
+  </section>
+
+  <section class="clarify">
+    <div class="step-head">
+      <div class="big-num">≠</div>
+      <div class="step-meta"><span class="lbl">Dễ nhầm · ranh giới</span><h2>Đừng nhầm khấu hao với chi tiền, và vô thời hạn với vĩnh viễn</h2></div>
+    </div>
+    <div class="mix-q"><span class="q">“Khấu hao là mỗi năm tài sản ngốn thêm một khoản tiền mặt à?”</span><p>Không. Khấu hao không làm đồng tiền mặt nào chảy đi. Tiền đã chi từ lúc mua. Khấu hao chỉ là cách rải con số đã chi đó ra cho đúng những năm tài sản giúp ta kiếm tiền.</p></div>
+<div class="mix-q"><span class="q">“Vô thời hạn nghĩa là tài sản sống mãi mãi đúng không?”</span><p>Không. Vô thời hạn chỉ có nghĩa <em>chưa nhìn ra một mốc tàn nào</em>, chứ không phải sống mãi mãi. Vì chưa thấy mốc nên không rải đều được, đành kiểm tra mất giá mỗi năm. Đây là chỗ rất dễ nhầm, trang Feynman sẽ mổ kỹ.</p></div>
+  </section>
+
+  <section class="bridge">
+    <div class="step-head">
+      <div class="big-num">→</div>
+      <div class="step-meta"><span class="lbl">Nối tiếp · nó dẫn tới đâu</span><h2>Hai cú mặc định ở đây chính là hai trang khó</h2></div>
+    </div>
+    <div class="bridge-card"><p>Bạn vừa dựng cỗ máy rải giá. Hai mặc định trong đó là tâm điểm của hai trang Feynman. Trang Feynman về <strong>khấu hao và “giá trị thải bằng 0”</strong> mổ cú mặc định “cuối đời còn số không”. Nó hỏi: vì sao tài sản vô hình hữu hạn lại mặc định mòn sạch, không chừa giá trị thải?</p>
+<p>Trang <strong>'Vô thời hạn không phải vô hạn'</strong> mổ cú phân đôi tuổi thọ: “vô thời hạn” không phải “sống mãi”. Cỗ máy này là nền; hai trang đó lật mặt bất ngờ của nó.</p></div>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">✦</div>
+      <div class="step-meta"><span class="lbl">Kể lại trong một hơi</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Tài sản có tuổi thọ, nên giá của nó phải già đi theo. Hỏi trước: có mốc tàn không? Có thì rải đều giá qua quãng đời, mỗi năm cắt một lát thành chi phí — mặc định cắt đều, cuối đời còn số không. Không thấy mốc tàn thì không cắt, chỉ canh xem nó có mất giá hằng năm.</p>
+<p class="core">Một câu nhớ: <span>có mốc tàn thì rải đều, không có mốc thì canh mất giá.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã nắm nền chưa?</h3>
+      <ol>
+        <li>Bằng sáng chế ghi 600, sống 10 năm, cắt đều — sau 4 năm sổ còn ghi bao nhiêu?</li>
+        <li>Vì sao tài sản “vô thời hạn” lại không được khấu hao, và thay vào đó phải làm gì mỗi năm?</li>
+        <li>Khấu hao có làm tiền mặt chảy ra khỏi công ty mỗi năm không? Giải thích.</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nền vững thì cái khó tự nhẹ đi. Hiểu từ gốc, không học vẹt.</p>
+  </footer>
+
+</div></div>
+<script>
+  var bar=document.getElementById('progress');
+  function upd(){var h=document.documentElement;var s=h.scrollTop||document.body.scrollTop;
+    var max=(h.scrollHeight-h.clientHeight)||1;bar.style.width=(s/max*100)+'%';}
+  window.addEventListener('scroll',upd,{passive:true});upd();
+  var io=new IntersectionObserver(function(es){es.forEach(function(e){
+    if(e.isIntersecting){e.target.style.animation='rise .7s cubic-bezier(.2,.7,.3,1) forwards';io.unobserve(e.target);}});},{threshold:.12});
+  document.querySelectorAll('section').forEach(function(s){s.style.opacity='0';io.observe(s);});
+</script>
+
+<script>
+(function(){
+  var tabs=[].slice.call(document.querySelectorAll('.tabbar .tab'));
+  var panels=[].slice.call(document.querySelectorAll('.concept-panel'));
+  function show(i){
+    tabs.forEach(function(t,j){t.classList.toggle('active',j===i);});
+    panels.forEach(function(p,j){
+      var on=(j===i); p.classList.toggle('active',on);
+      if(on){p.querySelectorAll('section').forEach(function(s){s.style.opacity='';s.style.animation='';});}
+    });
+    try{history.replaceState(null,'','#'+panels[i].id);}catch(e){}
+    window.scrollTo(0,0); window.dispatchEvent(new Event('scroll'));
+  }
+  tabs.forEach(function(t){t.addEventListener('click',function(){show(+t.getAttribute('data-i'));});});
+  var start=0; panels.forEach(function(p,j){if('#'+p.id===location.hash)start=j;});
+  show(start);
+})();
+</script>
+
+
+<script>
+(function(){var t=[].slice.call(document.querySelectorAll('.tabbar .tab'));
+function sync(a){t.forEach(function(x){var on=x===a;x.setAttribute('aria-selected',on?'true':'false');x.tabIndex=on?0:-1;});}
+t.forEach(function(x){x.addEventListener('click',function(){sync(x);});
+x.addEventListener('keydown',function(e){var i=t.indexOf(x),n=t.length,j=null;
+if(e.key==='ArrowRight'||e.key==='ArrowDown')j=(i+1)%n;else if(e.key==='ArrowLeft'||e.key==='ArrowUp')j=(i-1+n)%n;
+else if(e.key==='Home')j=0;else if(e.key==='End')j=n-1;
+if(j!==null){e.preventDefault();t[j].click();t[j].focus();}});});})();
+</script>
+</body></html>

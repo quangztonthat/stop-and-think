@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="vi"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IFRS 10 Consolidated Financial Statements — Nền tảng, hiểu từ gốc</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,500&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  /* Design tokens shared with ebook-to-study-html + feynman-from-study (styles_v2.css) */
+  :root{
+    --bg:#fafaf7; --bg-elevated:#ffffff; --bg-soft:#f3f3ee;
+    --border:#e0e0d8; --border-soft:#ececea; --border-strong:#d2c8b6;
+    --ink:#1a1a1f; --ink-soft:#3f3f4a; --muted:#7a7a85;
+    --accent:#b8860b; --accent-2:#8b6508; --gold:#a07c1f; --bridge:#5a6b4f;
+    --serif:"Fraunces",Georgia,"Iowan Old Style",serif;
+    --sans:"Geist",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    --mono:"Geist Mono","JetBrains Mono",Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:var(--sans);
+    font-size:19px;line-height:1.72;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}
+  .progress{position:fixed;top:0;left:0;height:3px;width:0;z-index:50;
+    background:linear-gradient(90deg,var(--gold),var(--accent));transition:width .08s linear}
+  .wrap{max-width:920px;margin:0 auto;padding:0 36px}
+  .rise{opacity:0;transform:translateY(14px);animation:rise .7s cubic-bezier(.2,.7,.3,1) forwards}
+  @keyframes rise{to{opacity:1;transform:none}}
+
+  header{padding:104px 0 60px;border-bottom:1px solid var(--border)}
+  .kicker{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.18em;
+    text-transform:uppercase;color:var(--accent);margin-bottom:26px}
+  h1{font-family:var(--serif);font-weight:600;font-size:clamp(42px,7.6vw,72px);
+    line-height:1.0;letter-spacing:-.022em;margin-bottom:28px;font-optical-sizing:auto;color:var(--ink)}
+  h1 em{font-style:italic;color:var(--accent)}
+  .core{font-family:var(--serif);font-style:italic;font-weight:400;
+    font-size:clamp(21px,3.6vw,27px);line-height:1.44;color:var(--ink-soft)}
+  .core span{font-style:normal;font-weight:600;color:var(--accent-2);
+    box-shadow:inset 0 -.5em 0 rgba(184,134,11,.16)}
+
+  /* ---- BƯỚC 0: ĐỊNH VỊ (what it is + why it's the foundation) ---- */
+  .anchor .rule{font-family:var(--serif);font-size:19px;line-height:1.5;color:var(--ink);
+    background:var(--bg-soft);border-left:3px solid var(--accent);
+    padding:18px 24px;border-radius:0 4px 4px 0;margin:0}
+  .anchor .rule em{font-style:italic;color:var(--accent-2)}
+  .anchor .rule strong{color:var(--ink);font-weight:600}
+  .anchor .why{color:var(--ink-soft)}
+
+  section{padding:72px 0;border-bottom:1px solid var(--border);position:relative}
+  .step-head{display:flex;align-items:flex-start;gap:22px;margin-bottom:34px}
+  .big-num{font-family:var(--serif);font-weight:700;font-size:62px;line-height:.8;
+    color:var(--border-strong);flex:none;font-optical-sizing:auto;letter-spacing:-.03em}
+  .step-meta{padding-top:4px}
+  .lbl{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--accent);display:block;margin-bottom:10px}
+  h2{font-family:var(--serif);font-weight:600;font-size:clamp(27px,4.4vw,37px);
+    line-height:1.12;letter-spacing:-.012em;color:var(--ink)}
+  h2 em{font-style:italic;color:var(--accent)}
+  p{margin-bottom:21px}
+  p:last-child{margin-bottom:0}
+  strong{font-weight:600;color:var(--ink)}
+  em{font-style:italic;color:var(--accent-2)}
+  .gloss{color:var(--muted);font-style:italic}
+
+  .lead::first-letter{font-family:var(--serif);font-weight:700;float:left;
+    font-size:74px;line-height:.74;padding:8px 12px 0 0;color:var(--accent)}
+
+  .sub{font-family:var(--serif);font-weight:600;font-size:17px;letter-spacing:.01em;
+    color:var(--ink);margin:34px 0 14px;display:flex;align-items:center;gap:11px}
+  .sub::before{content:"";width:18px;height:2px;background:var(--accent);flex:none;border-radius:2px}
+
+  /* ---- BƯỚC 1: VẤN ĐỀ (why it exists) ---- */
+  .problem{background:var(--bg-soft)}
+  .problem .big-num{color:#e2d6b4}
+
+  /* ---- BƯỚC 3: VÍ DỤ (concrete worked example) ---- */
+  .example-card{border:1px solid #e8c876;border-radius:4px;padding:30px 32px;margin:8px 0 28px;
+    background:linear-gradient(135deg,#fef9ed 0%,#fdf3e0 100%)}
+  .example-card .tag{font-family:var(--mono);font-weight:600;font-size:11px;
+    letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin-bottom:16px;display:block}
+  .example-card p{color:#5a4810}
+  .example-card strong{color:var(--accent-2)}
+  .example-card p:last-child{margin-bottom:0}
+
+  /* ---- DỄ NHẦM (optional clarify / boundaries) ---- */
+  .clarify{background:var(--bg-soft)}
+  .clarify .big-num{color:#d8cdb2}
+  .mix-q{margin:0 0 30px;padding-left:24px;border-left:2px solid var(--border-strong)}
+  .mix-q:last-child{margin-bottom:0}
+  .mix-q .q{font-family:var(--serif);font-style:italic;font-weight:500;
+    font-size:22px;line-height:1.35;color:var(--accent-2);margin-bottom:12px;display:block}
+  .mix-q p:last-child{margin-bottom:0}
+
+  /* ---- NỐI TIẾP (bridge to the harder concepts) ---- */
+  .bridge .big-num{color:#bcc7b2}
+  .bridge .lbl{color:var(--bridge)}
+  .bridge-card{border-left:3px solid var(--bridge);background:#f4f6f1;
+    padding:22px 26px;border-radius:0 4px 4px 0;margin-top:6px}
+  .bridge-card p:last-child{margin-bottom:0}
+  .bridge-card strong{color:#42513a}
+
+  /* ---- KỂ LẠI GỌN (refined retell) ---- */
+  .retell{background:linear-gradient(180deg,var(--bg-soft) 0%,var(--bg) 100%);border-bottom:none}
+  .retell h2{color:var(--ink)}
+  .retell strong{color:var(--accent-2)}
+  .retell .core{margin-top:6px}
+  .testbox{border:1px solid var(--border);background:var(--bg-elevated);
+    border-radius:4px;padding:28px 32px;margin-top:40px;box-shadow:0 1px 2px rgba(0,0,0,.03)}
+  .testbox h3{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--accent);margin-bottom:20px}
+  .testbox ol{margin:0;padding-left:22px;counter-reset:t}
+  .testbox li{margin-bottom:16px;color:var(--ink-soft);padding-left:6px}
+  .testbox li:last-child{margin-bottom:0}
+
+  footer{text-align:center;padding:60px 0 88px}
+  footer .mark{font-family:var(--serif);font-weight:700;color:var(--accent);
+    font-size:26px;display:block;margin-bottom:14px}
+  footer p{font-family:var(--serif);font-style:italic;color:var(--muted);font-size:17px;max-width:400px;margin:0 auto}
+
+  @media(max-width:560px){
+    body{font-size:18px}
+    header{padding:70px 0 44px}
+    section{padding:52px 0}
+    .step-head{gap:16px}
+    .big-num{font-size:46px}
+    .lead::first-letter{font-size:60px}
+  }
+</style>
+<style>
+ .tabbar{position:fixed;top:0;left:0;right:0;width:100%;box-sizing:border-box;z-index:40;background:rgba(250,250,247,.93);
+   backdrop-filter:saturate(1.1) blur(8px);-webkit-backdrop-filter:saturate(1.1) blur(8px);
+   border-bottom:1px solid var(--border);display:flex;gap:6px;overflow-x:auto;
+   padding:10px max(36px,calc((100% - 992px)/2));scrollbar-width:thin}
+ .tabbar .tab{flex:0 0 auto;display:flex;align-items:baseline;gap:9px;cursor:pointer;
+   background:transparent;border:1px solid transparent;border-radius:999px;
+   padding:8px 17px;transition:.15s;white-space:nowrap;color:var(--muted)}
+ .tabbar .tab:hover{color:var(--ink);background:var(--bg-soft)}
+ .tabbar .tab.active{color:var(--accent-2);background:var(--bg-soft);border-color:var(--border-strong)}
+ .tabbar .tn{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.1em;color:var(--accent)}
+ .tabbar .tl{font-family:var(--serif);font-weight:500;font-size:16px}
+ body{padding-top:56px} .concept-panel{display:none}
+ .concept-panel.active{display:block}
+ .concept-panel header{padding-top:50px}
+ @media(max-width:560px){.tabbar .tl{max-width:48vw;overflow:hidden;text-overflow:ellipsis}}
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+<nav class="tabbar" role="tablist" aria-label="Các khái niệm nền"><button class="tab" data-i="0" role="tab" id="tab-0" aria-controls="c-hop-nhat-nhom-me-con" aria-selected="true" tabindex="0"><span class="tn">01</span><span class="tl">Hợp nhất &amp; nhóm</span></button><button class="tab" data-i="1" role="tab" id="tab-1" aria-controls="c-kiem-soat-ba-yeu-to" aria-selected="false" tabindex="-1"><span class="tn">02</span><span class="tl">Kiểm soát 3 yếu tố</span></button><button class="tab" data-i="2" role="tab" id="tab-2" aria-controls="c-quyen-luc-power" aria-selected="false" tabindex="-1"><span class="tn">03</span><span class="tl">Quyền lực (power)</span></button><button class="tab" data-i="3" role="tab" id="tab-3" aria-controls="c-loi-nhuan-bien-doi" aria-selected="false" tabindex="-1"><span class="tn">04</span><span class="tl">Lợi nhuận biến đổi</span></button><button class="tab" data-i="4" role="tab" id="tab-4" aria-controls="c-loi-ich-khong-kiem-soat-nci" aria-selected="false" tabindex="-1"><span class="tn">05</span><span class="tl">NCI (cổ đông ngoài)</span></button></nav>
+<div class="concept-panel" id="c-hop-nhat-nhom-me-con" role="tabpanel" aria-labelledby="tab-0" tabindex="0"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Nền tảng · hiểu từ gốc</div>
+    <h1 class="rise" style="animation-delay:.08s">Hợp nhất là gì: nhiều công ty, một báo cáo</h1>
+    <p class="core rise" style="animation-delay:.16s">Mẹ và các con là những công ty riêng, <span>nhưng báo cáo hợp nhất kể chúng như một.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Định vị · nó là gì &amp; vì sao học trước</span><h2>Nền tảng: gộp mẹ và các con thành một báo cáo</h2></div>
+    </div>
+    <div class="rule">IFRS 10 ra đời để đặt nguyên tắc lập <strong>consolidated financial statements</strong> (báo cáo tài chính hợp nhất) khi một <em>parent</em> (công ty mẹ) kiểm soát một hay nhiều đơn vị khác — các <em>subsidiary</em> (công ty con) — (đoạn 1-4). Báo cáo hợp nhất trình bày tài sản, nợ, vốn, thu nhập, chi phí và dòng tiền của mẹ và các con <strong>như thể một đơn vị kinh tế duy nhất</strong> (đoạn 19, B86).</div>
+    <div class="sub">Vì sao đây là nền</div>
+    <div class="why"><p>Đây là viên gạch dưới cùng của cả chuẩn mực. Ba bước thủ tục hợp nhất, lợi ích cổ đông ngoài, hay cách xử lý khi mất quyền — tất cả chỉ là chi tiết của một ý. Ý đó là: gộp mẹ và con thành một báo cáo. Chưa nắm “hợp nhất nghĩa là gì”, các phần sau chỉ là thủ tục học vẹt. Nắm rồi, chúng tự sáng ra.</p></div>
+  </section>
+
+  <section class="problem">
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Vấn đề nó sinh ra để giải quyết</span><h2>Sổ của riêng mẹ giấu mất nửa sự thật</h2></div>
+    </div>
+    <p class="lead">Công ty A của bạn bỏ tiền mua trọn một công ty B. Trên sổ riêng của A, cả công ty B chỉ hiện ra một dòng gọn lỏn: “khoản đầu tư vào B”. Nhưng thực tế A đang điều khiển cả nhà máy, kho hàng và các khoản nợ của B.</p>
+
+<p>Người đọc sổ riêng của A vì thế bị giấu mất nửa sự thật. Họ thấy một con số đầu tư, mà không thấy đống tài sản và nợ thật nằm sau nó.</p>
+
+<div class="sub">Vì sao một dòng là chưa đủ</div>
+<p>A chịu trách nhiệm về những gì B vay. A hưởng những gì B làm ra. Gói tất cả vào một dòng thì người đọc không đo nổi A thật sự lớn cỡ nào, hay đang gánh bao nhiêu nợ.</p>
+
+<p>Nên ta cần một báo cáo gộp cả hai lại, kể như một nhà. Cách gộp là nội dung Bước 2.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Mô hình đơn giản · cách nó chạy</span><h2>Gộp từng khoản, rồi bỏ những gì trùng</h2></div>
+    </div>
+    <p>Hợp nhất chỉ là một việc: đặt sổ của mẹ và sổ của con cạnh nhau, rồi <strong>cộng từng loại với nhau</strong>. Tài sản cộng tài sản, nợ cộng nợ, doanh thu cộng doanh thu.</p>
+
+<div class="sub">Bỏ “khoản đầu tư”, thay bằng đồ thật</div>
+<p>Dòng “khoản đầu tư vào B” trên sổ mẹ bị bỏ đi. Thế chỗ nó là tài sản và nợ thật của B. Một cái tên được thay bằng những thứ nó đại diện.</p>
+
+<div class="sub">Bỏ chuyện nội bộ trong nhà</div>
+<p>Nếu A bán hàng cho B, đó là tiền chạy từ túi này sang túi kia trong cùng một nhà. Nó không làm nhà giàu thêm, nên bị bỏ khi gộp. Chỉ giữ lại giao dịch với người ngoài.</p>
+
+<div class="sub">Đo theo kiểm soát, không theo sở hữu</div>
+<p>Gộp ai vào nhà là do <strong>kiểm soát</strong> quyết định, không phải do nắm bao nhiêu phần trăm. Có kiểm soát thì gộp trọn con, kể cả khi chỉ nắm một phần. Đó là cây cầu sang tab sau.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví dụ cụ thể</span><h2>Gộp một mẹ một con bằng số thật</h2></div>
+    </div>
+    <div class="example-card"><span class="tag">Bài toán</span>
+<p>A có tài sản 800. A bỏ 300 mua trọn B, và B có tài sản trị giá 300. Trên sổ riêng, A ghi: tài sản khác 500, cộng “khoản đầu tư vào B” 300.</p>
+<p>Khi hợp nhất, ta bỏ dòng đầu tư 300 và thay bằng tài sản thật 300 của B. Tài sản của cả nhà thành <strong>800</strong>: 500 của A cộng 300 của B. Người đọc giờ thấy đúng quy mô.</p>
+<p>Thử thêm chuyện nội bộ. Trong năm A bán cho B lô hàng 50. Khoản đó bị bỏ khi gộp, vì chỉ là tiền chuyển trong nhà, chưa bán ra ngoài.</p>
+</div>
+<p>Hình dung một gia đình. Bố cho con vay tiền tiêu vặt — trong nhà thì khoản đó không làm gia đình giàu hay nghèo thêm. Chỉ khi ai đó bán đồ cho hàng xóm, tài sản của cả nhà mới thật sự đổi.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Chuẩn mực (B86) gọi tên ba bước: <em>cộng gộp</em> các khoản mục tương tự; <em>loại trừ</em> giá trị khoản đầu tư của mẹ với phần vốn của mẹ trong con (chênh lệch ra <em>goodwill</em>, xử lý theo IFRS 3); và <em>loại trừ</em> mọi giao dịch nội bộ tập đoàn.</p>
+  </section>
+
+  <section class="clarify">
+    <div class="step-head">
+      <div class="big-num">≠</div>
+      <div class="step-meta"><span class="lbl">Dễ nhầm · ranh giới</span><h2>Dễ nhầm — ranh giới của khái niệm</h2></div>
+    </div>
+    <div class="mix-q"><span class="q">“Hợp nhất báo cáo và hợp nhất kinh doanh là một chứ gì?”</span><p>Hai chuyện khác nhau, hai chuẩn mực khác nhau. <em>Hợp nhất kinh doanh</em> (IFRS 3) lo việc <strong>đo</strong> tài sản và nợ của con lúc mua, và tính goodwill. <em>Hợp nhất báo cáo</em> (IFRS 10) lo việc <strong>gộp ai</strong> vào nhà. IFRS 10 quyết định gộp con nào, không đo tài sản lúc mua.</p></div>
+<div class="mix-q"><span class="q">“Vậy báo cáo hợp nhất thay luôn báo cáo riêng của mẹ?”</span><p>Không. Báo cáo riêng của mẹ vẫn tồn tại, ghi con theo một dòng đầu tư. Báo cáo hợp nhất là bản kể thứ hai, kể cả nhà như một đơn vị. Hai bản phục vụ hai mục đích, không cái nào xóa cái nào.</p></div>
+  </section>
+
+  <section class="bridge">
+    <div class="step-head">
+      <div class="big-num">→</div>
+      <div class="step-meta"><span class="lbl">Nối tiếp · nó dẫn tới đâu</span><h2>Nối tiếp: gộp trọn con khi chỉ nắm một phần</h2></div>
+    </div>
+    <div class="bridge-card"><p>Viên gạch này nói “gộp mẹ và con thành một”. Nhưng nếu mẹ chỉ nắm 80% con thì 20% còn lại là của ai? Tab <strong>“NCI — phần của người ngoài”</strong> trả lời đúng câu đó.</p>
+<p>Và khi mẹ bán bớt hay bán hết con, cả cỗ máy gộp này phải tháo ra. Đó là hai trang khó. Một: <strong>“Chuyển tiền từ túi trái sang túi phải”</strong> — bán bớt mà vẫn giữ quyền. Hai: <strong>“Bán nhà rồi mua lại một phòng”</strong> — mất quyền kiểm soát. Cả hai chỉ là cỗ máy hôm nay chạy ngược.</p></div>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">✦</div>
+      <div class="step-meta"><span class="lbl">Kể lại trong một hơi</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Mẹ và con là những công ty riêng trên giấy, nhưng mẹ điều khiển con. Nhìn riêng sổ mẹ thì con chỉ là một dòng đầu tư, giấu mất tài sản và nợ thật. Nên ta gộp: cộng từng loại, bỏ dòng đầu tư thay bằng đồ thật, bỏ chuyện nội bộ trong nhà. Gộp ai là do kiểm soát quyết định.</p>
+<p class="core">Mẹ và các con là những công ty riêng, <span>một nhà, một báo cáo — gộp theo kiểm soát, không theo sở hữu.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã nắm nền chưa?</h3>
+      <ol>
+        <li>Vì sao nhìn riêng sổ của mẹ lại <em>giấu mất</em> tài sản và nợ thật của công ty con?</li>
+        <li>Khi gộp, vì sao khoản A bán hàng cho B trong cùng tập đoàn lại bị <em>bỏ đi</em>?</li>
+        <li>“Gộp ai vào nhà” do điều gì quyết định — tỷ lệ sở hữu hay quyền kiểm soát?</li>
+        <li>Hợp nhất báo cáo (IFRS 10) khác hợp nhất kinh doanh (IFRS 3) ở chỗ nào?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nền vững thì cái khó tự nhẹ đi. Hiểu từ gốc, không học vẹt.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-kiem-soat-ba-yeu-to" role="tabpanel" aria-labelledby="tab-1" tabindex="0"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Nền tảng · hiểu từ gốc</div>
+    <h1 class="rise" style="animation-delay:.08s">Kiểm soát: cái cổng ba chốt quyết định gộp ai</h1>
+    <p class="core rise" style="animation-delay:.16s">Không phải cứ nắm hơn nửa cổ phần là kiểm soát — <span>phải đủ cả ba chốt mới gộp.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Định vị · nó là gì &amp; vì sao học trước</span><h2>Nền tảng: kiểm soát là một định nghĩa, không phải tỷ lệ</h2></div>
+    </div>
+    <div class="rule">Đoạn 6-7 đặt một định nghĩa <strong>kiểm soát</strong> (control) duy nhất, dùng cho mọi loại đơn vị. Một nhà đầu tư kiểm soát đơn vị nhận đầu tư khi và chỉ khi có <strong>cả ba</strong> yếu tố: <em>power</em> (quyền lực) đối với đơn vị; chịu rủi ro hoặc hưởng <em>variable returns</em> (lợi nhuận biến đổi) từ việc tham gia; và <em>link</em> (mối liên kết) — khả năng dùng quyền lực để tác động tới chính những lợi nhuận đó.</div>
+    <div class="sub">Vì sao đây là nền</div>
+    <div class="why"><p>Đây là trái tim của IFRS 10 và là cái cổng quyết định: công ty nào bước vào nhóm, công ty nào không. Mọi chương sau đều chỉ là cách trả lời một câu duy nhất: “ở đây có đủ ba chốt không?”. Quyền lực, lợi nhuận biến đổi, kiểm soát thực tế, đơn vị đầu tư — tất cả quy về câu đó. Nắm cái cổng này, cả cuốn có chỗ để bám.</p></div>
+  </section>
+
+  <section class="problem">
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Vấn đề nó sinh ra để giải quyết</span><h2>Đếm cổ phần thôi thì sai ở cả hai đầu</h2></div>
+    </div>
+    <p class="lead">Cách dễ nhất là đếm phiếu: nắm trên một nửa thì kiểm soát, dưới một nửa thì thôi. Nghe gọn, nhưng sai ở cả hai đầu. Có người nắm 40% vẫn nắm trọn quyền. Có người nắm 60% mà chẳng quyết được gì.</p>
+
+<p>Nếu chỉ đếm cổ phần, hai trường hợp đó đều bị xếp nhầm. Và những công ty không chạy bằng phiếu biểu quyết thì cách đếm này bó tay hoàn toàn.</p>
+
+<div class="sub">Cần một thước dùng được cho mọi nhà</div>
+<p>IFRS 10 vì thế không hỏi “nắm bao nhiêu phần”. Nó hỏi “có thật sự cầm quyền và ăn theo kết quả không”. Thước đó gồm ba chốt, dựng ở Bước 2.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Mô hình đơn giản · cách nó chạy</span><h2>Ba chốt, thiếu một là rớt</h2></div>
+    </div>
+    <p>Kiểm soát là một cái cổng có ba chốt. Phải mở được <strong>cả ba</strong> thì cổng mới mở. Mở hai chốt mà kẹt một, cổng vẫn đóng.</p>
+
+<div class="sub">Chốt 1 — quyền lực</div>
+<p>Bạn có quyền chỉ đạo những việc lái ra lợi nhuận của công ty kia. Nói gọn: bạn cầm tay lái.</p>
+
+<div class="sub">Chốt 2 — lợi nhuận biến đổi</div>
+<p>Bạn ăn theo kết quả của nó. Nó lời bạn được hưởng, nó lỗ bạn chịu phần. Bạn có phần da thịt đặt vào cuộc chơi.</p>
+
+<div class="sub">Chốt 3 — mối liên kết</div>
+<p>Bạn dùng được tay lái để lái phần thưởng <em>của chính mình</em>. Đây là chốt hay bị quên nhất, mà thiếu nó thì hai chốt kia thành vô nghĩa.</p>
+
+<div class="sub">Vì sao phải đủ cả ba</div>
+<p>Cầm lái mà không ăn theo thì bạn chỉ là người lái thuê. Ăn theo mà không cầm lái thì bạn chỉ là người ngồi ghế sau. Phải vừa lái vừa ăn cho chính mình mới là chủ.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví dụ cụ thể</span><h2>Một quỹ đủ hai chốt mà vẫn rớt</h2></div>
+    </div>
+    <div class="example-card"><span class="tag">Bài toán</span>
+<p>Một quỹ đứng ra quản một công ty. Quỹ có quyền chọn dự án, duyệt ngân sách — chốt 1 đạt. Quỹ lại được trả phí cao thấp theo kết quả công ty — chốt 2 cũng có.</p>
+<p>Nhưng quỹ đang quản <em>giùm</em> các nhà đầu tư khác, và họ đuổi quỹ bất cứ lúc nào. Quỹ lái, nhưng lái cho người khác hưởng. Chốt 3 hỏng. Vậy quỹ <strong>không</strong> kiểm soát, dù đã có hai chốt.</p>
+<p>Đổi một chi tiết: nếu quỹ tự bỏ phần lớn tiền túi vào và không ai đuổi được, phần thưởng giờ là của chính quỹ. Chốt 3 đạt, cổng mở.</p>
+</div>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Đoạn 7 gọi ba yếu tố là <em>cumulative</em> (tích lũy): thiếu một là không kiểm soát. Đoạn 8 thêm rằng kiểm soát phải <em>đánh giá lại</em> khi có dấu hiệu một trong ba yếu tố đổi — không phải xét một lần rồi quên.</p>
+  </section>
+
+  <section class="clarify">
+    <div class="step-head">
+      <div class="big-num">≠</div>
+      <div class="step-meta"><span class="lbl">Dễ nhầm · ranh giới</span><h2>Dễ nhầm — ranh giới của khái niệm</h2></div>
+    </div>
+    <div class="mix-q"><span class="q">“Kiểm soát chẳng phải là sở hữu phần lớn cổ phần sao?”</span><p>Sở hữu chỉ là một con đường, không phải bản thân kiểm soát. Cổ phần thường đi kèm phiếu biểu quyết, nên hay tạo ra quyền lực. Nhưng IFRS 10 hỏi về <strong>quyền và phần thưởng thực chất</strong>, không hỏi con số sở hữu. Nắm ít vẫn có thể kiểm soát, nắm nhiều vẫn có thể không.</p></div>
+<div class="mix-q"><span class="q">“Kiểm soát với ‘ảnh hưởng đáng kể’ thì khác gì?”</span><p>Khác mức độ. <em>Ảnh hưởng đáng kể</em> (associate, IAS 28) là có tiếng nói nhưng không tự quyết — thiếu chốt 1. Kiểm soát là tự quyết được việc lái lợi nhuận. Một bên góp ý, một bên cầm lái; chỉ bên cầm lái mới gộp công ty kia vào nhà.</p></div>
+  </section>
+
+  <section class="bridge">
+    <div class="step-head">
+      <div class="big-num">→</div>
+      <div class="step-meta"><span class="lbl">Nối tiếp · nó dẫn tới đâu</span><h2>Nối tiếp: mở từng chốt ra mà soi</h2></div>
+    </div>
+    <div class="bridge-card"><p>Cái cổng có ba chốt, và hai chốt đầu khó đến mức cần trang riêng. Tab <strong>“Quyền lực”</strong> mổ chốt 1; tab <strong>“Lợi nhuận biến đổi”</strong> mổ chốt 2.</p>
+<p>Còn chốt 3 — mối liên kết — chính là chỗ sinh ra các trang khó. Khi nắm 45% mà vẫn thắng, đó là trang <strong>“45% mà thắng, 49% lại có thể thua”</strong>. Khi cầm lái mà lái giùm người khác, đó là trang <strong>“Cầm vô-lăng mà xe không phải của mình”</strong>. Cả hai đều là câu chuyện về một chốt bị thiếu.</p></div>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">✦</div>
+      <div class="step-meta"><span class="lbl">Kể lại trong một hơi</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Đừng đếm cổ phần, vì đếm sai ở cả hai đầu. IFRS 10 hỏi ba chốt. Bạn có cầm tay lái việc kiếm tiền không? Bạn có ăn theo kết quả không? Và bạn có lái được phần thưởng cho chính mình không? Đủ cả ba mới là kiểm soát, mới gộp. Thiếu một chốt, dù hai chốt kia mạnh đến đâu, vẫn rớt.</p>
+<p class="core">Không phải cứ nắm hơn nửa cổ phần là kiểm soát — <span>quyền lực, ăn theo kết quả, và lái cho chính mình — đủ ba mới gộp.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã nắm nền chưa?</h3>
+      <ol>
+        <li>Vì sao “nắm trên 50% cổ phần” lại là thước <em>sai ở cả hai đầu</em>?</li>
+        <li>Một quỹ có quyền chỉ đạo và có ăn phí theo kết quả, vì sao vẫn có thể <em>không</em> kiểm soát?</li>
+        <li>Ba yếu tố “tích lũy” nghĩa là gì — và điều đó loại bỏ kiểu suy luận nào?</li>
+        <li>Kiểm soát khác “ảnh hưởng đáng kể” (associate) ở chốt nào?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nền vững thì cái khó tự nhẹ đi. Hiểu từ gốc, không học vẹt.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-quyen-luc-power" role="tabpanel" aria-labelledby="tab-2" tabindex="0"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Nền tảng · hiểu từ gốc</div>
+    <h1 class="rise" style="animation-delay:.08s">Quyền lực: ai cầm tay lái việc kiếm tiền</h1>
+    <p class="core rise" style="animation-delay:.16s">Quyền lực không phải là cổ phần, <span>mà là quyền chỉ đạo việc lái ra lợi nhuận.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Định vị · nó là gì &amp; vì sao học trước</span><h2>Nền tảng: power là quyền chỉ đạo hoạt động liên quan</h2></div>
+    </div>
+    <div class="rule">Đoạn 10 định nghĩa: một nhà đầu tư có <strong>power</strong> (quyền lực) khi nó có <em>existing rights</em> (quyền hiện hữu) cho nó <em>current ability</em> (khả năng hiện tại) để chỉ đạo các <em>relevant activities</em> (hoạt động liên quan) — tức những hoạt động ảnh hưởng đáng kể tới lợi nhuận của đơn vị nhận đầu tư (B11-B12).</div>
+    <div class="sub">Vì sao đây là nền</div>
+    <div class="why"><p>Power là chốt 1 của kiểm soát, và là chốt khó nhất. Mọi phán đoán tinh tế phía sau đều xoay quanh đúng một câu: <em>ai có power?</em>. Phiếu biểu quyết có đủ không; quyền nào thực chất, quyền nào chỉ để bảo vệ. Cả quyền chọn mua cổ phần có tính không — tất cả quy về câu đó. Dựng vững chốt này thì nửa sau của chuẩn mực bớt rối hẳn.</p></div>
+  </section>
+
+  <section class="problem">
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Vấn đề nó sinh ra để giải quyết</span><h2>Hai bên cùng có ‘quyền’, ai mới là người lái?</h2></div>
+    </div>
+    <p class="lead">Một công ty có hai bên dính vào. Bên này được duyệt ngân sách và chọn dự án. Bên kia có quyền phủ quyết, nhưng chỉ chặn được vài chuyện hệ trọng hiếm khi xảy ra. Cả hai đều cầm “một thứ quyền”. Ai mới thật sự lái công ty?</p>
+
+<p>Nếu không định nghĩa rõ “lái” nghĩa là gì, ta dễ trao quyền lực nhầm cho bên ồn ào hơn, chứ không phải bên thật sự cầm vô-lăng.</p>
+
+<div class="sub">Cần khoanh đúng ‘việc đáng lái’</div>
+<p>Một công ty làm trăm việc mỗi ngày. Nhưng chỉ vài việc thật sự lái ra lời lỗ. Quyền lực không phải là chen vào mọi việc, mà là nắm đúng mấy việc cốt tử đó. Bước 2 chỉ cách khoanh.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Mô hình đơn giản · cách nó chạy</span><h2>Ba mảnh ghép của ‘cầm tay lái’</h2></div>
+    </div>
+    <p>Power ráp từ ba mảnh. Thiếu một mảnh, cái gọi là quyền lực rơi mất.</p>
+
+<div class="sub">Mảnh 1 — quyền đã có sẵn</div>
+<p>Phải là quyền cầm trong tay <em>ngay bây giờ</em>. Một quyền chỉ phát sinh sang năm, hay phải chờ điều kiện chưa tới, thì chưa tính.</p>
+
+<div class="sub">Mảnh 2 — dùng được ngay khi cần</div>
+<p>Bạn chỉ cần <em>có thể</em> chỉ đạo khi đến lúc quyết, chứ không cần đã thật sự chỉ đạo. Cầm vô-lăng là đủ, không đợi đến lúc bạn bẻ lái mới tính.</p>
+
+<div class="sub">Mảnh 3 — trên đúng việc lái ra tiền</div>
+<p>Quyền phải đặt lên các <strong>việc đáng lái</strong>: bán mua hàng, chọn và bán tài sản, vay vốn, chọn người cầm đầu công ty. Quyền với mấy chuyện vặt thì không tạo ra power.</p>
+
+<div class="sub">Câu hỏi để tìm người lái</div>
+<p>Hỏi hai bước. Một: việc nào lái ra lời lỗ của công ty này? Hai: ai có quyền chỉ đạo việc đó ngay bây giờ? Người trả lời được câu hai chính là người có power.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví dụ cụ thể</span><h2>Cổ đông cả năm không họp vẫn có quyền lực</h2></div>
+    </div>
+    <div class="example-card"><span class="tag">Bài toán</span>
+<p>Một người nắm đa số phiếu biểu quyết của công ty. Cả năm qua, người đó chưa họp lần nào, chưa bỏ phiếu lần nào. Vậy người đó có quyền lực không?</p>
+<p>Có. Quyền lực đo bằng <strong>khả năng</strong>, không đo bằng việc đã ra tay hay chưa. Người đó muốn quyết lúc nào cũng được, nên vẫn đang cầm tay lái. Chưa bẻ lái không có nghĩa là không cầm.</p>
+<p>Đổi một chi tiết: nếu số phiếu đó chỉ có hiệu lực kể từ năm sau, thì hôm nay người đó <em>chưa</em> có power. Lý do: quyền chưa cầm được trong tay ngay bây giờ.</p>
+</div>
+<p>Như người có bằng lái và đang ngồi sau vô-lăng. Họ có quyền lái dù xe đang chạy thẳng và họ chưa cần đánh tay lái. Khả năng lái là có sẵn; chờ đến lúc họ bẻ lái mới công nhận thì đã trễ.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Chuẩn mực gọi mấy việc đáng lái là <em>relevant activities</em>, ví dụ ở B12: lập ngân sách hoạt động và đầu tư, bổ nhiệm và trả lương cho <em>key management</em>. Và đoạn 11-12 nhấn: power đến từ <em>quyền</em>, không từ ý định; có khả năng chỉ đạo là đã có power, chưa cần thực hiện.</p>
+  </section>
+
+  <section class="clarify">
+    <div class="step-head">
+      <div class="big-num">≠</div>
+      <div class="step-meta"><span class="lbl">Dễ nhầm · ranh giới</span><h2>Dễ nhầm — ranh giới của khái niệm</h2></div>
+    </div>
+    <div class="mix-q"><span class="q">“Chưa bao giờ dùng quyền thì làm sao gọi là có quyền lực?”</span><p>Đây là cái bẫy hay gặp nhất. Quyền lực là <strong>khả năng</strong> chỉ đạo, không phải <strong>việc</strong> đã chỉ đạo. Một cổ đông đa số chưa từng bỏ phiếu vẫn có power, vì muốn quyết là quyết được. Bằng chứng “đang chỉ đạo” giúp khẳng định, nhưng tự nó không phải điều kiện.</p></div>
+<div class="mix-q"><span class="q">“Có quyền lực là kiểm soát rồi chứ?”</span><p>Chưa. Power mới là chốt 1. Còn phải ăn theo kết quả (chốt 2) và lái được phần thưởng cho chính mình (chốt 3). Người lái thuê cũng có quyền lực, nhưng lái cho chủ hưởng — nên không kiểm soát.</p></div>
+  </section>
+
+  <section class="bridge">
+    <div class="step-head">
+      <div class="big-num">→</div>
+      <div class="step-meta"><span class="lbl">Nối tiếp · nó dẫn tới đâu</span><h2>Nối tiếp: khi quyền lực thành chuyện khó</h2></div>
+    </div>
+    <div class="bridge-card"><p>Khi đã nắm “power là quyền chỉ đạo việc đáng lái”, mấy trang khó mở ra tự nhiên. Cùng là quyền phủ quyết, có quyền là tất cả, có quyền chẳng là gì — đó là trang <strong>“Cùng là quyền phủ quyết, hai số phận”</strong>. Một quyền chọn mua cổ phần chưa thực hiện vẫn có thể cho power ngay — đó là trang <strong>“Chưa mua cổ phần đã có quyền”</strong>.</p>
+<p>Và khi nắm dưới nửa phiếu mà vẫn lái được cả công ty, đó là trang <strong>“45% mà thắng”</strong>. Cả ba đều là power soi dưới ánh sáng gắt hơn.</p></div>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">✦</div>
+      <div class="step-meta"><span class="lbl">Kể lại trong một hơi</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Quyền lực không phải là cổ phần, mà là quyền chỉ đạo mấy việc lái ra lời lỗ. Quyền phải có sẵn trong tay, dùng được ngay, và đặt đúng lên việc đáng lái. Đo bằng khả năng, không bằng việc đã ra tay. Muốn tìm người có power: hỏi việc nào lái ra tiền, rồi hỏi ai quyết được việc đó ngay bây giờ.</p>
+<p class="core">Quyền lực không phải là cổ phần, <span>ai quyết được việc lái ra tiền — ngay bây giờ — người đó cầm power.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã nắm nền chưa?</h3>
+      <ol>
+        <li>“Quyền hiện hữu” và “khả năng hiện tại” khác một quyền chỉ phát sinh sang năm ở chỗ nào?</li>
+        <li>Vì sao một cổ đông cả năm không bỏ phiếu vẫn được coi là có quyền lực?</li>
+        <li>“Hoạt động liên quan” là gì, và vì sao quyền với chuyện vặt không tạo ra power?</li>
+        <li>Có power đã đủ là kiểm soát chưa? Còn thiếu chốt nào?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nền vững thì cái khó tự nhẹ đi. Hiểu từ gốc, không học vẹt.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-loi-nhuan-bien-doi" role="tabpanel" aria-labelledby="tab-3" tabindex="0"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Nền tảng · hiểu từ gốc</div>
+    <h1 class="rise" style="animation-delay:.08s">Lợi nhuận biến đổi: phần thưởng lên xuống theo kết quả</h1>
+    <p class="core rise" style="animation-delay:.16s">Kiểm soát đòi bạn cùng chịu may rủi — <span>lời ăn lỗ chịu theo kết quả của công ty kia.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Định vị · nó là gì &amp; vì sao học trước</span><h2>Nền tảng: lợi nhuận phải dao động theo kết quả</h2></div>
+    </div>
+    <div class="rule">Đoạn 15 và B56: một nhà đầu tư hưởng <strong>variable returns</strong> (lợi nhuận biến đổi) khi phần lợi nhuận của nó từ việc tham gia có khả năng <strong>dao động theo kết quả</strong> của đơn vị nhận đầu tư. Xét theo bản chất thỏa thuận, bất kể hình thức pháp lý của khoản lợi nhuận đó.</div>
+    <div class="sub">Vì sao đây là nền</div>
+    <div class="why"><p>Đây là chốt 2 của kiểm soát, và nó là bản lề mở sang chốt 3. Phân biệt một người là chủ thật hay chỉ đang quản giùm (principal hay agent) dựa nhiều vào việc phần biến đổi này lớn hay nhỏ. Nắm rõ “biến đổi” nghĩa là gì, các trang khó về chính/đại diện và đơn vị đầu tư mới có nền để đứng.</p></div>
+  </section>
+
+  <section class="problem">
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Vấn đề nó sinh ra để giải quyết</span><h2>Cầm lái giỏi mà không ăn theo thì chưa phải chủ</h2></div>
+    </div>
+    <p class="lead">Hãy nhận là chốt 1 đã đủ: có một người cầm quyền chỉ đạo cả công ty. Nhưng người đó ăn lương cố định, công ty lời hay lỗ thì thu nhập của họ vẫn y nguyên. Họ có phải chủ không? Cảm giác là không — họ giống người làm thuê cao cấp.</p>
+
+<p>Vậy quyền chỉ đạo thôi chưa đủ để gọi là chủ. Còn thiếu một thứ: phần da thịt đặt vào cuộc chơi, cái khiến bạn thắng cùng và thua cùng.</p>
+
+<div class="sub">Cần một dấu hiệu ‘chung thuyền’</div>
+<p>Chốt 2 chính là dấu hiệu đó. Nó hỏi: phần thưởng của bạn có <strong>lên xuống theo kết quả</strong> công ty không? Có thì bạn chung thuyền. Không thì bạn chỉ đứng ngoài nhận công. Cách đo “biến đổi” nằm ở Bước 2.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Mô hình đơn giản · cách nó chạy</span><h2>Nhìn vào độ lên-xuống, không nhìn cái tên</h2></div>
+    </div>
+    <p>Lợi nhuận biến đổi là khoản <strong>không cố định</strong>: công ty kia làm ăn tốt thì nó tăng, kém thì nó giảm. Thước đo là độ lên-xuống, chứ không phải cái nhãn dán trên khoản tiền.</p>
+
+<div class="sub">Dương, âm, hay cả hai</div>
+<p>Biến đổi không có nghĩa là chỉ được lời. Chịu lỗ cũng là một chiều của biến đổi. Chung thuyền nghĩa là cùng chìm chứ không chỉ cùng nổi.</p>
+
+<div class="sub">Xét bản chất, đừng tin cái tên</div>
+<p>Một khoản ghi là “phí cố định” vẫn có thể là biến đổi, nếu thực chất nó hứng rủi ro lời lỗ của công ty. Ngược lại, một khoản gọi là “cổ tức” mà cố định cứng thì lại ít biến đổi. Đọc cái ruột, đừng đọc cái mác.</p>
+
+<div class="sub">Rộng hơn cổ tức nhiều</div>
+<p>Phần biến đổi gồm cả giá khoản đầu tư lên xuống, phí dịch vụ theo kết quả, thậm chí lợi ích nhờ chung nhà. Lợi ích đó có thể là: mua được nguồn hàng khan, tiết kiệm chi phí, cộng hưởng. Tất cả đều tính khi xét kiểm soát.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví dụ cụ thể</span><h2>Cổ đông và chủ nợ — ai chung thuyền?</h2></div>
+    </div>
+    <div class="example-card"><span class="tag">Bài toán</span>
+<p>A góp vốn mua cổ phần của B. A nhận cổ tức tùy B lời nhiều hay ít, và giá cổ phần của A lên xuống theo B. Phần thưởng của A <strong>biến đổi</strong> rõ — A chung thuyền với B.</p>
+<p>Bên cạnh đó, một ngân hàng cho B vay, mỗi năm nhận đúng khoản lãi cố định. B lời to hay lỗ nặng, ngân hàng vẫn nhận chừng đó. Phần của ngân hàng <strong>ít biến đổi</strong> — họ đứng ngoài thuyền.</p>
+<p>Đổi một chi tiết: giả sử khoản vay đó thành “lãi cao khi B lời, mất gốc khi B lỗ”. Khi đó ngân hàng bắt đầu chung thuyền — phần thưởng đã biến đổi theo B.</p>
+</div>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. B57 liệt kê các nhóm lợi nhuận: phân phối và thay đổi giá trị khoản đầu tư; phí và rủi ro từ dịch vụ, hỗ trợ tín dụng hay thanh khoản; và cả <em>synergies</em>, lợi thế quy mô, nguồn cung độc quyền. Đoạn 16 thêm: nhiều bên có thể cùng hưởng lợi nhuận biến đổi, nên riêng việc hưởng lợi không quyết định ai kiểm soát.</p>
+  </section>
+
+  <section class="clarify">
+    <div class="step-head">
+      <div class="big-num">≠</div>
+      <div class="step-meta"><span class="lbl">Dễ nhầm · ranh giới</span><h2>Dễ nhầm — ranh giới của khái niệm</h2></div>
+    </div>
+    <div class="mix-q"><span class="q">“Biến đổi nghĩa là phải có lời chứ gì?”</span><p>Không. Biến đổi là <strong>lên xuống theo kết quả</strong>, nên chịu lỗ cũng tính. Một bên chỉ gánh lỗ khi công ty thua vẫn đang hưởng lợi nhuận biến đổi — theo chiều âm. Chung thuyền là cùng chìm, không riêng cùng nổi.</p></div>
+<div class="mix-q"><span class="q">“Hưởng lợi nhuận biến đổi là kiểm soát rồi đúng không?”</span><p>Chưa. Nhiều bên cùng hưởng phần biến đổi của một công ty — ví dụ các cổ đông ngoài (NCI) — nhưng chỉ một bên kiểm soát. Hưởng phần biến đổi mới là chốt 2; còn phải có quyền lực và mối liên kết. Ăn theo thôi chưa đủ làm chủ.</p></div>
+  </section>
+
+  <section class="bridge">
+    <div class="step-head">
+      <div class="big-num">→</div>
+      <div class="step-meta"><span class="lbl">Nối tiếp · nó dẫn tới đâu</span><h2>Nối tiếp: ăn theo, mà ăn cho ai?</h2></div>
+    </div>
+    <div class="bridge-card"><p>Phần biến đổi là nguyên liệu cho câu hỏi sắc nhất của IFRS 10. Bạn cầm lái và ăn theo kết quả — nhưng ăn cho <em>chính mình</em> hay ăn <em>giùm người khác</em>? Đó đúng là trang khó <strong>“Cầm vô-lăng mà xe không phải của mình”</strong> — có quyền, có ăn chia, mà vẫn không kiểm soát vì đang làm đại diện.</p>
+<p>Và những bên cùng ăn phần biến đổi mà không cầm lái chính là cổ đông ngoài — dẫn thẳng sang tab <strong>“NCI”</strong>.</p></div>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">✦</div>
+      <div class="step-meta"><span class="lbl">Kể lại trong một hơi</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Cầm lái thôi chưa đủ làm chủ; còn phải ăn theo kết quả. Lợi nhuận biến đổi là phần thưởng lên xuống theo công ty kia: lời được hưởng, lỗ phải chịu. Nhìn độ lên-xuống chứ đừng nhìn cái tên, vì “phí cố định” có khi vẫn biến đổi. Và nó rộng hơn cổ tức nhiều. Nhưng ăn theo thôi vẫn chưa phải kiểm soát.</p>
+<p class="core">Kiểm soát đòi bạn cùng chịu may rủi — <span>lời ăn lỗ chịu theo công ty kia — đó là phần da thịt trong cuộc chơi.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã nắm nền chưa?</h3>
+      <ol>
+        <li>Vì sao một người cầm quyền chỉ đạo nhưng ăn lương cố định lại <em>chưa</em> giống một người chủ?</li>
+        <li>Vì sao một khoản ghi là “phí cố định” vẫn có thể là lợi nhuận biến đổi?</li>
+        <li>Lỗ có phải là một dạng lợi nhuận biến đổi không? Vì sao?</li>
+        <li>Nhiều bên cùng hưởng phần biến đổi của một công ty — điều đó nói gì về việc “ai kiểm soát”?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nền vững thì cái khó tự nhẹ đi. Hiểu từ gốc, không học vẹt.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-loi-ich-khong-kiem-soat-nci" role="tabpanel" aria-labelledby="tab-4" tabindex="0"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Nền tảng · hiểu từ gốc</div>
+    <h1 class="rise" style="animation-delay:.08s">NCI: phần của người ngoài trong công ty bạn gộp</h1>
+    <p class="core rise" style="animation-delay:.16s">Gộp trọn công ty con vào nhà mình, <span>nhưng phần người ngoài góp vẫn phải tách riêng.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Định vị · nó là gì &amp; vì sao học trước</span><h2>Nền tảng: NCI là phần con không thuộc về mẹ</h2></div>
+    </div>
+    <div class="rule">Đoạn 22 và B94-B95: <strong>NCI</strong> — <em>non-controlling interest</em> (lợi ích cổ đông không kiểm soát) — là phần vốn của công ty con <strong>không</strong> thuộc về công ty mẹ. Mẹ trình bày NCI trong phần <em>vốn chủ sở hữu</em> của báo cáo hợp nhất, tách riêng khỏi vốn của chủ sở hữu mẹ; và phân bổ lãi/lỗ cùng OCI cho cả mẹ và NCI.</div>
+    <div class="sub">Vì sao đây là nền</div>
+    <div class="why"><p>Đây là viên gạch để hiểu cơ chế kế toán hợp nhất. Vì ta gộp trọn công ty con dù chỉ nắm một phần, luôn có một phần thừa ra thuộc về người ngoài — và phải để nó đúng chỗ. Nắm NCI rồi, hai chuyện rắc rối nhất của chuẩn mực — đổi tỷ lệ sở hữu và mất quyền kiểm soát — mới có chỗ bấu víu.</p></div>
+  </section>
+
+  <section class="problem">
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Vấn đề nó sinh ra để giải quyết</span><h2>Gộp trọn con mà chỉ sở hữu một phần</h2></div>
+    </div>
+    <p class="lead">Mẹ A nắm 80% công ty con B. Vì A kiểm soát B, khi hợp nhất ta gộp <strong>trọn</strong> tài sản và nợ của B vào nhà — 100%, không phải 80%. Nhưng khoan: 20% của B là tiền người khác bỏ vào. Phần đó nằm ở đâu trong bảng của nhóm?</p>
+
+<p>Nếu lờ nó đi, bảng sẽ lệch: ta gộp đủ 100% tài sản, mà vốn lại chỉ ghi phần của mẹ. Hai bên không khớp.</p>
+
+<div class="sub">Cần một chỗ ghi ‘phần người ngoài’</div>
+<p>Vậy phải mở một dòng riêng, ghi đúng phần con không thuộc mẹ. Dòng đó là NCI. Cách đặt nó vào bảng là Bước 2.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Mô hình đơn giản · cách nó chạy</span><h2>Gộp đủ, rồi tách phần không phải của mẹ</h2></div>
+    </div>
+    <p>Quy tắc gồm hai nhịp. Nhịp một: gộp <strong>đủ 100%</strong> tài sản và nợ của con, vì mẹ kiểm soát cả con. Nhịp hai: tách phần con không thuộc mẹ ra một dòng riêng trong vốn, gọi là NCI.</p>
+
+<div class="sub">Lãi cũng chia hai</div>
+<p>Lãi của con trong kỳ cũng tách: một phần ghi cho mẹ, một phần ghi cho NCI, theo tỷ lệ nắm giữ. Cả lãi lẫn các khoản thu nhập khác đều chia như vậy.</p>
+
+<div class="sub">NCI nằm trong vốn, không phải nợ</div>
+<p>NCI là tiền của các chủ khác trong con, nên nó là <strong>vốn chủ</strong>, đặt cạnh vốn của mẹ. Nó không phải khoản nhóm đi vay, nên không nằm ở phần nợ.</p>
+
+<div class="sub">Lỗ nhiều thì NCI âm — vẫn chia tiếp</div>
+<p>Nếu con lỗ nặng, phần lỗ chia cho NCI có thể kéo nó xuống dưới 0. Khi đó vẫn ghi NCI âm, không dừng lại ở 0. Người ngoài chịu phần lỗ của mình đến cùng.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví dụ cụ thể</span><h2>Chia một công ty con bằng số thật</h2></div>
+    </div>
+    <div class="example-card"><span class="tag">Bài toán</span>
+<p>Mẹ A nắm 80% con B; còn 20% là của người ngoài. Vốn của B là 500, và năm nay B lãi 100.</p>
+<p>Khi gộp, vốn của B 500 tách làm hai: 400 thuộc mẹ, <strong>100 là NCI</strong>. Lãi 100 cũng tách: 80 cho mẹ, <strong>20 cho NCI</strong>. Tài sản của B thì gộp đủ 100% vào nhà.</p>
+<p>Đổi một chi tiết: giả sử năm sau B lỗ rất nặng, phần lỗ chia cho NCI vượt cả 100 đang có. NCI tụt xuống số âm — và ta vẫn ghi vậy, không chặn ở 0.</p>
+</div>
+<p>Như hai người chung tiền mua một căn nhà, một người góp 80% và cầm chìa khóa. Khi kê khai cả căn, bạn ghi trọn giá trị nhà, rồi ghi rõ 20% kia là phần của người bạn chung vốn. Bỏ sót phần đó là kê sai.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. B94 yêu cầu phân bổ lãi/lỗ và từng phần OCI cho mẹ và NCI <em>kể cả khi NCI âm</em>. B95: nếu con có cổ phiếu ưu đãi lũy kế do NCI nắm, mẹ tính phần lãi của mình sau khi trừ cổ tức ưu đãi đó, bất kể đã công bố hay chưa.</p>
+  </section>
+
+  <section class="clarify">
+    <div class="step-head">
+      <div class="big-num">≠</div>
+      <div class="step-meta"><span class="lbl">Dễ nhầm · ranh giới</span><h2>Dễ nhầm — ranh giới của khái niệm</h2></div>
+    </div>
+    <div class="mix-q"><span class="q">“NCI là một khoản nợ của tập đoàn à?”</span><p>Không. NCI là <strong>vốn chủ</strong> — phần sở hữu của các cổ đông khác trong công ty con. Nó đứng trong phần vốn, cạnh vốn của mẹ. Nợ là tiền nhóm phải trả cho chủ nợ; NCI là tiền của những người đồng sở hữu, không phải khoản phải trả.</p></div>
+<div class="mix-q"><span class="q">“Chỉ nắm 80% thì gộp 80% tài sản con thôi chứ?”</span><p>Không. Vì mẹ <strong>kiểm soát</strong> con, ta gộp đủ 100% tài sản và nợ của con. Con số 80% chỉ dùng để biết bao nhiêu phần vốn và lãi thuộc về mẹ, phần còn lại là NCI. Gộp full theo kiểm soát, chia phần theo sở hữu.</p></div>
+  </section>
+
+  <section class="bridge">
+    <div class="step-head">
+      <div class="big-num">→</div>
+      <div class="step-meta"><span class="lbl">Nối tiếp · nó dẫn tới đâu</span><h2>Nối tiếp: cái túi mà tiền chạy qua</h2></div>
+    </div>
+    <div class="bridge-card"><p>Một khi đã có dòng NCI, hai trang khó nhất của chuẩn mực mới hiểu được. Khi mẹ bán bớt vài phần trăm con mà <em>vẫn</em> giữ quyền, tiền chỉ chạy giữa mẹ và NCI, không ghi lãi. Đó là trang <strong>“Chuyển tiền từ túi trái sang túi phải”</strong>.</p>
+<p>Khi mẹ bán nhiều đến mức <em>mất</em> quyền kiểm soát, NCI cũ bị xóa khỏi bảng. Mọi thứ tính lại theo giá trị hợp lý — đó là trang <strong>“Bán nhà rồi mua lại một phòng”</strong>. NCI là cái túi mà tiền chạy qua trong cả hai.</p></div>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">✦</div>
+      <div class="step-meta"><span class="lbl">Kể lại trong một hơi</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Vì kiểm soát, ta gộp trọn công ty con vào nhà, kể cả khi chỉ nắm một phần. Phần con không thuộc mẹ phải tách ra một dòng riêng trong vốn: đó là NCI. Lãi của con cũng chia cho mẹ và NCI theo tỷ lệ. NCI là vốn chủ, không phải nợ; và lỗ nặng có thể kéo nó xuống âm mà vẫn chia tiếp.</p>
+<p class="core">Gộp trọn công ty con vào nhà mình, <span>gộp full theo kiểm soát, tách phần người ngoài theo sở hữu.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã nắm nền chưa?</h3>
+      <ol>
+        <li>Vì sao mẹ chỉ nắm 80% con mà khi hợp nhất lại gộp <em>đủ 100%</em> tài sản của con?</li>
+        <li>NCI nằm ở phần vốn chủ hay phần nợ của bảng — và vì sao?</li>
+        <li>Khi con lỗ nặng làm phần NCI xuống dưới 0, IFRS 10 yêu cầu xử lý thế nào?</li>
+        <li>“Gộp full theo kiểm soát, chia phần theo sở hữu” nghĩa là gì?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nền vững thì cái khó tự nhẹ đi. Hiểu từ gốc, không học vẹt.</p>
+  </footer>
+
+</div></div>
+<script>
+  var bar=document.getElementById('progress');
+  function upd(){var h=document.documentElement;var s=h.scrollTop||document.body.scrollTop;
+    var max=(h.scrollHeight-h.clientHeight)||1;bar.style.width=(s/max*100)+'%';}
+  window.addEventListener('scroll',upd,{passive:true});upd();
+  var io=new IntersectionObserver(function(es){es.forEach(function(e){
+    if(e.isIntersecting){e.target.style.animation='rise .7s cubic-bezier(.2,.7,.3,1) forwards';io.unobserve(e.target);}});},{threshold:.12});
+  document.querySelectorAll('section').forEach(function(s){s.style.opacity='0';io.observe(s);});
+</script>
+
+<script>
+(function(){
+  var tabs=[].slice.call(document.querySelectorAll('.tabbar .tab'));
+  var panels=[].slice.call(document.querySelectorAll('.concept-panel'));
+  function show(i){
+    tabs.forEach(function(t,j){t.classList.toggle('active',j===i);});
+    panels.forEach(function(p,j){
+      var on=(j===i); p.classList.toggle('active',on);
+      if(on){p.querySelectorAll('section').forEach(function(s){s.style.opacity='';s.style.animation='';});}
+    });
+    try{history.replaceState(null,'','#'+panels[i].id);}catch(e){}
+    window.scrollTo(0,0); window.dispatchEvent(new Event('scroll'));
+  }
+  tabs.forEach(function(t){t.addEventListener('click',function(){show(+t.getAttribute('data-i'));});});
+  var start=0; panels.forEach(function(p,j){if('#'+p.id===location.hash)start=j;});
+  show(start);
+})();
+</script>
+
+
+<script>
+(function(){var t=[].slice.call(document.querySelectorAll('.tabbar .tab'));
+function sync(a){t.forEach(function(x){var on=x===a;x.setAttribute('aria-selected',on?'true':'false');x.tabIndex=on?0:-1;});}
+t.forEach(function(x){x.addEventListener('click',function(){sync(x);});
+x.addEventListener('keydown',function(e){var i=t.indexOf(x),n=t.length,j=null;
+if(e.key==='ArrowRight'||e.key==='ArrowDown')j=(i+1)%n;else if(e.key==='ArrowLeft'||e.key==='ArrowUp')j=(i-1+n)%n;
+else if(e.key==='Home')j=0;else if(e.key==='End')j=n-1;
+if(j!==null){e.preventDefault();t[j].click();t[j].focus();}});});})();
+</script>
+</body></html>

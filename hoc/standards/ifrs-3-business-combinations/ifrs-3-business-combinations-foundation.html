@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html lang="vi"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IFRS 3 Business Combinations — Nền tảng, hiểu từ gốc</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,500&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  /* Design tokens shared with ebook-to-study-html + feynman-from-study (styles_v2.css) */
+  :root{
+    --bg:#fafaf7; --bg-elevated:#ffffff; --bg-soft:#f3f3ee;
+    --border:#e0e0d8; --border-soft:#ececea; --border-strong:#d2c8b6;
+    --ink:#1a1a1f; --ink-soft:#3f3f4a; --muted:#7a7a85;
+    --accent:#b8860b; --accent-2:#8b6508; --gold:#a07c1f; --bridge:#5a6b4f;
+    --serif:"Fraunces",Georgia,"Iowan Old Style",serif;
+    --sans:"Geist",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    --mono:"Geist Mono","JetBrains Mono",Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:var(--sans);
+    font-size:19px;line-height:1.72;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}
+  .progress{position:fixed;top:0;left:0;height:3px;width:0;z-index:50;
+    background:linear-gradient(90deg,var(--gold),var(--accent));transition:width .08s linear}
+  .wrap{max-width:920px;margin:0 auto;padding:0 36px}
+  .rise{opacity:0;transform:translateY(14px);animation:rise .7s cubic-bezier(.2,.7,.3,1) forwards}
+  @keyframes rise{to{opacity:1;transform:none}}
+
+  header{padding:104px 0 60px;border-bottom:1px solid var(--border)}
+  .kicker{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.18em;
+    text-transform:uppercase;color:var(--accent);margin-bottom:26px}
+  h1{font-family:var(--serif);font-weight:600;font-size:clamp(42px,7.6vw,72px);
+    line-height:1.0;letter-spacing:-.022em;margin-bottom:28px;font-optical-sizing:auto;color:var(--ink)}
+  h1 em{font-style:italic;color:var(--accent)}
+  .core{font-family:var(--serif);font-style:italic;font-weight:400;
+    font-size:clamp(21px,3.6vw,27px);line-height:1.44;color:var(--ink-soft)}
+  .core span{font-style:normal;font-weight:600;color:var(--accent-2);
+    box-shadow:inset 0 -.5em 0 rgba(184,134,11,.16)}
+
+  /* ---- BƯỚC 0: ĐỊNH VỊ (what it is + why it's the foundation) ---- */
+  .anchor .rule{font-family:var(--serif);font-size:19px;line-height:1.5;color:var(--ink);
+    background:var(--bg-soft);border-left:3px solid var(--accent);
+    padding:18px 24px;border-radius:0 4px 4px 0;margin:0}
+  .anchor .rule em{font-style:italic;color:var(--accent-2)}
+  .anchor .rule strong{color:var(--ink);font-weight:600}
+  .anchor .why{color:var(--ink-soft)}
+
+  section{padding:72px 0;border-bottom:1px solid var(--border);position:relative}
+  .step-head{display:flex;align-items:flex-start;gap:22px;margin-bottom:34px}
+  .big-num{font-family:var(--serif);font-weight:700;font-size:62px;line-height:.8;
+    color:var(--border-strong);flex:none;font-optical-sizing:auto;letter-spacing:-.03em}
+  .step-meta{padding-top:4px}
+  .lbl{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--accent);display:block;margin-bottom:10px}
+  h2{font-family:var(--serif);font-weight:600;font-size:clamp(27px,4.4vw,37px);
+    line-height:1.12;letter-spacing:-.012em;color:var(--ink)}
+  h2 em{font-style:italic;color:var(--accent)}
+  p{margin-bottom:21px}
+  p:last-child{margin-bottom:0}
+  strong{font-weight:600;color:var(--ink)}
+  em{font-style:italic;color:var(--accent-2)}
+  .gloss{color:var(--muted);font-style:italic}
+
+  .lead::first-letter{font-family:var(--serif);font-weight:700;float:left;
+    font-size:74px;line-height:.74;padding:8px 12px 0 0;color:var(--accent)}
+
+  .sub{font-family:var(--serif);font-weight:600;font-size:17px;letter-spacing:.01em;
+    color:var(--ink);margin:34px 0 14px;display:flex;align-items:center;gap:11px}
+  .sub::before{content:"";width:18px;height:2px;background:var(--accent);flex:none;border-radius:2px}
+
+  /* ---- BƯỚC 1: VẤN ĐỀ (why it exists) ---- */
+  .problem{background:var(--bg-soft)}
+  .problem .big-num{color:#e2d6b4}
+
+  /* ---- BƯỚC 3: VÍ DỤ (concrete worked example) ---- */
+  .example-card{border:1px solid #e8c876;border-radius:4px;padding:30px 32px;margin:8px 0 28px;
+    background:linear-gradient(135deg,#fef9ed 0%,#fdf3e0 100%)}
+  .example-card .tag{font-family:var(--mono);font-weight:600;font-size:11px;
+    letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin-bottom:16px;display:block}
+  .example-card p{color:#5a4810}
+  .example-card strong{color:var(--accent-2)}
+  .example-card p:last-child{margin-bottom:0}
+
+  /* ---- DỄ NHẦM (optional clarify / boundaries) ---- */
+  .clarify{background:var(--bg-soft)}
+  .clarify .big-num{color:#d8cdb2}
+  .mix-q{margin:0 0 30px;padding-left:24px;border-left:2px solid var(--border-strong)}
+  .mix-q:last-child{margin-bottom:0}
+  .mix-q .q{font-family:var(--serif);font-style:italic;font-weight:500;
+    font-size:22px;line-height:1.35;color:var(--accent-2);margin-bottom:12px;display:block}
+  .mix-q p:last-child{margin-bottom:0}
+
+  /* ---- NỐI TIẾP (bridge to the harder concepts) ---- */
+  .bridge .big-num{color:#bcc7b2}
+  .bridge .lbl{color:var(--bridge)}
+  .bridge-card{border-left:3px solid var(--bridge);background:#f4f6f1;
+    padding:22px 26px;border-radius:0 4px 4px 0;margin-top:6px}
+  .bridge-card p:last-child{margin-bottom:0}
+  .bridge-card strong{color:#42513a}
+
+  /* ---- KỂ LẠI GỌN (refined retell) ---- */
+  .retell{background:linear-gradient(180deg,var(--bg-soft) 0%,var(--bg) 100%);border-bottom:none}
+  .retell h2{color:var(--ink)}
+  .retell strong{color:var(--accent-2)}
+  .retell .core{margin-top:6px}
+  .testbox{border:1px solid var(--border);background:var(--bg-elevated);
+    border-radius:4px;padding:28px 32px;margin-top:40px;box-shadow:0 1px 2px rgba(0,0,0,.03)}
+  .testbox h3{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--accent);margin-bottom:20px}
+  .testbox ol{margin:0;padding-left:22px;counter-reset:t}
+  .testbox li{margin-bottom:16px;color:var(--ink-soft);padding-left:6px}
+  .testbox li:last-child{margin-bottom:0}
+
+  footer{text-align:center;padding:60px 0 88px}
+  footer .mark{font-family:var(--serif);font-weight:700;color:var(--accent);
+    font-size:26px;display:block;margin-bottom:14px}
+  footer p{font-family:var(--serif);font-style:italic;color:var(--muted);font-size:17px;max-width:400px;margin:0 auto}
+
+  @media(max-width:560px){
+    body{font-size:18px}
+    header{padding:70px 0 44px}
+    section{padding:52px 0}
+    .step-head{gap:16px}
+    .big-num{font-size:46px}
+    .lead::first-letter{font-size:60px}
+  }
+</style>
+<style>
+ .tabbar{position:fixed;top:0;left:0;right:0;width:100%;box-sizing:border-box;z-index:40;background:rgba(250,250,247,.93);
+   backdrop-filter:saturate(1.1) blur(8px);-webkit-backdrop-filter:saturate(1.1) blur(8px);
+   border-bottom:1px solid var(--border);display:flex;gap:6px;overflow-x:auto;
+   padding:10px max(36px,calc((100% - 992px)/2));scrollbar-width:thin}
+ .tabbar .tab{flex:0 0 auto;display:flex;align-items:baseline;gap:9px;cursor:pointer;
+   background:transparent;border:1px solid transparent;border-radius:999px;
+   padding:8px 17px;transition:.15s;white-space:nowrap;color:var(--muted)}
+ .tabbar .tab:hover{color:var(--ink);background:var(--bg-soft)}
+ .tabbar .tab.active{color:var(--accent-2);background:var(--bg-soft);border-color:var(--border-strong)}
+ .tabbar .tn{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.1em;color:var(--accent)}
+ .tabbar .tl{font-family:var(--serif);font-weight:500;font-size:16px}
+ body{padding-top:56px} .concept-panel{display:none}
+ .concept-panel.active{display:block}
+ .concept-panel header{padding-top:50px}
+ @media(max-width:560px){.tabbar .tl{max-width:48vw;overflow:hidden;text-overflow:ellipsis}}
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+<nav class="tabbar" role="tablist" aria-label="Các khái niệm nền"><button class="tab" data-i="0" role="tab" id="tab-0" aria-controls="c-hop-nhat-kinh-doanh" aria-selected="true" tabindex="0"><span class="tn">01</span><span class="tl">Hợp nhất là gì</span></button><button class="tab" data-i="1" role="tab" id="tab-1" aria-controls="c-phuong-phap-mua" aria-selected="false" tabindex="-1"><span class="tn">02</span><span class="tl">Phương pháp mua</span></button><button class="tab" data-i="2" role="tab" id="tab-2" aria-controls="c-gia-tri-hop-ly-ngay-mua" aria-selected="false" tabindex="-1"><span class="tn">03</span><span class="tl">Giá trị hợp lý ngày mua</span></button><button class="tab" data-i="3" role="tab" id="tab-3" aria-controls="c-tai-san-nhan-dien" aria-selected="false" tabindex="-1"><span class="tn">04</span><span class="tl">Bóc tách tài sản</span></button><button class="tab" data-i="4" role="tab" id="tab-4" aria-controls="c-goodwill-cong-thuc" aria-selected="false" tabindex="-1"><span class="tn">05</span><span class="tl">Goodwill</span></button><button class="tab" data-i="5" role="tab" id="tab-5" aria-controls="c-doi-gia-tiem-tang" aria-selected="false" tabindex="-1"><span class="tn">06</span><span class="tl">Đối giá tiềm tàng</span></button><button class="tab" data-i="6" role="tab" id="tab-6" aria-controls="c-thoi-ky-do-luong" aria-selected="false" tabindex="-1"><span class="tn">07</span><span class="tl">Thời kỳ đo lường</span></button></nav>
+<div class="concept-panel" id="c-hop-nhat-kinh-doanh" role="tabpanel" aria-labelledby="tab-0" tabindex="0"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Nền tảng · hiểu từ gốc</div>
+    <h1 class="rise" style="animation-delay:.08s">Hợp nhất kinh doanh là gì: giành quyền điều khiển một doanh nghiệp</h1>
+    <p class="core rise" style="animation-delay:.16s">Bỏ tiền gom một mớ tài sản chưa chắc là hợp nhất — <span>chỉ khi bạn giành quyền điều khiển một doanh nghiệp.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Định vị · nó là gì &amp; vì sao học trước</span><h2>Nền tảng: kiểm soát một doanh nghiệp</h2></div>
+    </div>
+    <div class="rule">Một <strong>business combination</strong> (hợp nhất kinh doanh) là một giao dịch trong đó <em>acquirer</em> (bên mua) giành được <strong>control</strong> (quyền kiểm soát) một hay nhiều <em>business</em> (hoạt động kinh doanh) — đoạn 3 và Phụ lục A. Nếu thứ mua được <strong>không</strong> phải một business, IFRS 3 không vào cuộc: đó là <em>asset acquisition</em> (mua tài sản), và <strong>không phát sinh goodwill</strong> (đoạn 2(b)).</div>
+    <div class="sub">Vì sao đây là nền</div>
+    <div class="why"><p>Đây là cánh cửa của cả chuẩn mực. Bên mua là ai, ngày mua là ngày nào, goodwill bao nhiêu — mọi câu hỏi sau chỉ có nghĩa khi bạn đã trả lời được câu này. Chưa nắm “hợp nhất kinh doanh nghĩa là gì”, các phần sau chỉ là luật học vẹt. Nắm rồi, chúng tự sáng ra.</p></div>
+  </section>
+
+  <section class="problem">
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Vấn đề nó sinh ra để giải quyết</span><h2>Cùng là chi tiền nhận tài sản, sao lại ghi khác nhau?</h2></div>
+    </div>
+    <p class="lead">Bạn chi một khoản lớn và nhận về một mớ tài sản. Vậy là mua xong, ghi sổ như mọi lần? IFRS 3 nói: khoan đã.</p>
+
+<p>Có hai vụ trông y hệt nhau. Một là mua trọn một chuỗi cà phê đang chạy. Hai là mua một kho máy pha cà phê.</p>
+
+<div class="sub">Vì sao không thể ghi giống nhau</div>
+<p>Chuỗi cà phê tự nó kiếm ra tiền: có nhân viên, công thức, khách quen. Kho máy chỉ là đồ vật nằm im. Chuẩn mực bắt ta tách hai loại này ra ngay từ đầu.</p>
+
+<p>Chưa có ranh giới đó, bạn sẽ ghi cả hai như nhau và sai ngay từ bước một. Nên ta cần một phép thử rõ ràng — đó là Bước 2.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Mô hình đơn giản · cách nó chạy</span><h2>Hai mảnh ghép: có kiểm soát, và là một doanh nghiệp</h2></div>
+    </div>
+    <p>Hợp nhất kinh doanh cần đủ <strong>hai</strong> thứ cùng lúc. Thiếu một trong hai là không phải.</p>
+
+<div class="sub">Mảnh một — bạn cầm được tay lái</div>
+<p>Kiểm soát nghĩa là bạn điều khiển được nó, không chỉ nắm một phần nhỏ. Có quyền quyết việc nó làm gì, tiền nó tiêu ra sao.</p>
+
+<div class="sub">Mảnh hai — nó là một bộ máy chạy được</div>
+<p>Một doanh nghiệp tự nó tạo ra đầu ra, chứ không chỉ là đống tài sản xếp cạnh nhau. Có người, có quy trình, có thứ để bán cho khách.</p>
+
+<div class="sub">Vì sao ranh giới này đáng giá</div>
+<p>Chỉ hợp nhất kinh doanh mới đẻ ra goodwill. Mua tài sản thì không: bạn chỉ chia giá đã trả cho từng món, theo giá trị của chúng. Một bên sinh goodwill, một bên thì không — nên phải phân loại đúng trước đã.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví dụ cụ thể</span><h2>Tiệm bánh đang chạy, hay chỉ là mấy cái lò?</h2></div>
+    </div>
+    <div class="example-card"><span class="tag">Ví dụ</span>
+<p>Bạn mua trọn một tiệm bánh: thợ làm bánh, công thức, lò nướng, danh sách khách quen. Mua xong nó vẫn nướng và bán bánh như cũ. Đây là một doanh nghiệp chạy được, nên là hợp nhất kinh doanh.</p>
+<p>Đổi lại, bạn chỉ mua <strong>mấy cái lò</strong> từ tiệm đó, không lấy người, không lấy khách. Lò nằm im, không tự ra bánh. Đây chỉ là mua tài sản — không có goodwill.</p>
+<p>Thử vặn một chút: bạn mua cả tiệm nhưng đuổi hết thợ và bỏ công thức, chỉ giữ lò để bán lại. Lúc đó cái “chạy được” đã mất, nên nó nghiêng về mua tài sản.</p>
+</div>
+<p>Nghĩ tới một xe bánh mì ngoài phố. Mua cả xe kèm người bán và mối khách thì bạn có một chỗ kiếm tiền. Mua mỗi cái tủ kính thì bạn chỉ có một món đồ.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Với mua tài sản, đoạn 2(b) buộc phân bổ giá đã trả cho từng tài sản theo <em>relative fair values</em> (giá trị hợp lý tương đối), và không có goodwill. Để nhận diện một <em>business</em>, đoạn B7–B12D đưa ra hướng dẫn — gồm cả một <em>concentration test</em> (phép thử tập trung) cho phép kết luận nhanh “không phải business” khi gần như toàn bộ giá trị dồn vào một tài sản duy nhất.</p>
+  </section>
+
+  <section class="clarify">
+    <div class="step-head">
+      <div class="big-num">≠</div>
+      <div class="step-meta"><span class="lbl">Dễ nhầm · ranh giới</span><h2>Dễ nhầm — ranh giới của khái niệm</h2></div>
+    </div>
+    <div class="mix-q"><span class="q">“Mua tài sản và hợp nhất kinh doanh thì khác gì nhau?”</span><p>Khác ở chỗ thứ bạn mua có <strong>chạy được như một doanh nghiệp</strong> không. Có thì là hợp nhất, theo IFRS 3, và có thể sinh goodwill. Không thì chỉ là mua tài sản: chia giá cho từng món, hết, không goodwill.</p></div>
+<div class="mix-q"><span class="q">“Nắm nhiều cổ phần nhất thì là kiểm soát chứ gì?”</span><p>Không hẳn. Kiểm soát là <strong>quyền điều khiển</strong>, không phải con số phần trăm to nhất. Có thể nắm phần lớn mà vẫn không kiểm soát, hoặc ngược lại. Ranh giới tinh tế này để dành cho trang sau.</p></div>
+  </section>
+
+  <section class="bridge">
+    <div class="step-head">
+      <div class="big-num">→</div>
+      <div class="step-meta"><span class="lbl">Nối tiếp · nó dẫn tới đâu</span><h2>Nối tiếp: ai mới là bên mua, và mua công ty hay mua đồ đạc</h2></div>
+    </div>
+    <div class="bridge-card"><p>Viên gạch này nói: phải có <strong>kiểm soát</strong> và phải là <strong>doanh nghiệp</strong>. Hai chữ đó chính là động cơ của hai trang khó kế tiếp.</p>
+<p>Trang <strong>“Mua một công ty, hay chỉ mua đống đồ đạc?”</strong> mổ kỹ chữ “doanh nghiệp”. Trang <strong>“Ai là bên mua? Không phải bên to hơn”</strong> mổ kỹ chữ “kiểm soát”. Bạn vừa dựng nền cho cả hai.</p></div>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">✦</div>
+      <div class="step-meta"><span class="lbl">Kể lại trong một hơi</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Chi tiền nhận tài sản chưa đủ để gọi là hợp nhất kinh doanh. Phải đủ hai mảnh: bạn cầm được tay lái, và thứ bạn cầm là một bộ máy tự chạy ra tiền. Thiếu một mảnh thì chỉ là mua tài sản — chia giá cho từng món, không có goodwill.</p>
+<p class="core">Bỏ tiền gom một mớ tài sản chưa chắc là hợp nhất — <span>có kiểm soát, có doanh nghiệp — mới là hợp nhất, mới có goodwill.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã nắm nền chưa?</h3>
+      <ol>
+        <li>Vì sao mua “một tiệm bánh đang chạy” lại ghi sổ khác với mua “mấy cái lò” của đúng tiệm đó?</li>
+        <li>Hai mảnh ghép nào phải có <em>cùng lúc</em> thì mới gọi là hợp nhất kinh doanh?</li>
+        <li>Một vụ là “mua tài sản” thì phần dôi ra so với giá trị từng món được xử lý thế nào — có thành goodwill không?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nền vững thì cái khó tự nhẹ đi. Hiểu từ gốc, không học vẹt.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-phuong-phap-mua" role="tabpanel" aria-labelledby="tab-1" tabindex="0"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Nền tảng · hiểu từ gốc</div>
+    <h1 class="rise" style="animation-delay:.08s">Phương pháp mua: bốn bước cho mọi vụ hợp nhất</h1>
+    <p class="core rise" style="animation-delay:.16s">Mọi vụ hợp nhất, dù lớn hay nhỏ, <span>đều đi qua đúng bốn bước — không có lối tắt.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Định vị · nó là gì &amp; vì sao học trước</span><h2>Nền tảng: một phương pháp, bốn bước</h2></div>
+    </div>
+    <div class="rule">Mọi hợp nhất kinh doanh phải hạch toán bằng <strong>acquisition method</strong> (phương pháp mua) — không có cách thay thế (đoạn 4). Áp dụng nó gồm bốn bước (đoạn 5): (a) xác định <em>acquirer</em> (bên mua); (b) xác định <em>acquisition date</em> (ngày mua); (c) ghi nhận và đo lường tài sản có thể xác định, nợ phải trả và <em>NCI</em> (lợi ích cổ đông không kiểm soát); (d) ghi nhận và đo lường <strong>goodwill</strong> hoặc lãi từ mua rẻ.</div>
+    <div class="sub">Vì sao đây là nền</div>
+    <div class="why"><p>Đây là tấm bản đồ của cả IFRS 3. Mọi quy tắc dày đặc phía sau đều rơi vào đúng một trong bốn bước này. Cầm bản đồ rồi, bạn luôn biết một luật lẻ đang nằm ở đâu và phục vụ bước nào. Không có bản đồ, từng đoạn đọc lên đều rời rạc như nhau.</p></div>
+  </section>
+
+  <section class="problem">
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Vấn đề nó sinh ra để giải quyết</span><h2>Sáu mươi tám đoạn luật, không có chỗ bám</h2></div>
+    </div>
+    <p class="lead">Mở chuẩn mực ra, bạn gặp hàng chục đoạn quy tắc nối nhau. Đoạn nào cũng quan trọng, và bạn không biết bám vào đâu trước.</p>
+
+<p>Học kiểu nhặt từng luật rời thì mau quên. Não cần một sợi dây để xâu các hạt lại.</p>
+
+<div class="sub">Cái thiếu là một thứ tự</div>
+<p>Thiếu thứ tự, bạn không biết luật về ngày mua với luật về goodwill cái nào tới trước. Có thứ tự, mỗi luật mới biết chỗ ngồi của nó.</p>
+
+<p>Nên ta cần một khung bốn ô cố định để treo mọi thứ lên. Khung đó là Bước 2.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Mô hình đơn giản · cách nó chạy</span><h2>Bốn câu hỏi, đi đúng thứ tự</h2></div>
+    </div>
+    <p>Phương pháp mua chỉ là bốn câu hỏi, hỏi lần lượt. Trả lời xong câu trước mới sang câu sau.</p>
+
+<div class="sub">Một — Ai mua?</div>
+<p>Tìm ra bên giành được quyền kiểm soát. Đó là bên mua, dù nó không phải bên to hơn.</p>
+
+<div class="sub">Hai — Khi nào?</div>
+<p>Chốt ngày bên mua thật sự cầm được quyền kiểm soát. Mọi phép đo sau đều neo vào ngày này.</p>
+
+<div class="sub">Ba — Mua được cái gì?</div>
+<p>Liệt kê và đo từng tài sản, từng khoản nợ nhận về, cộng phần của cổ đông ngoài. Đây là bước nặng nhất.</p>
+
+<div class="sub">Bốn — Phần dôi ra là goodwill</div>
+<p>Lấy cái bạn bỏ ra trừ đi cái gọi tên được ở bước ba. Phần còn lại là goodwill, hoặc một khoản lãi nếu mua được rẻ.</p>
+
+<div class="sub">Vì sao đúng thứ tự này</div>
+<p>Không biết ai mua thì chưa biết lấy ngày của ai. Chưa đo xong tài sản thì chưa thể tính phần dôi ra. Mỗi bước là nguyên liệu cho bước kế.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví dụ cụ thể</span><h2>Một vụ nhỏ chạy qua cả bốn ô</h2></div>
+    </div>
+    <div class="example-card"><span class="tag">Ví dụ</span>
+<p>Công ty A mua 80% công ty B và nhờ đó điều khiển được B. <strong>Bước một:</strong> A giành quyền kiểm soát, nên A là bên mua.</p>
+<p><strong>Bước hai:</strong> ngày A thật sự nắm quyền là ngày mua — thường trùng ngày đóng giao dịch. <strong>Bước ba:</strong> A đo từng tài sản và khoản nợ của B theo giá hôm đó, và cộng phần 20% của cổ đông ngoài.</p>
+<p><strong>Bước bốn:</strong> A lấy cái mình bỏ ra trừ đi giá trị thuần vừa đo. Phần dôi ra chính là goodwill. Bốn ô, đi một mạch.</p>
+</div>
+<p>Giống công thức nấu ăn: sơ chế, rồi nêm, rồi nấu, rồi bày đĩa. Bỏ qua bước hay đảo thứ tự là hỏng món. Bốn bước ở đây cũng vậy.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Đoạn 5 liệt kê đúng bốn bước: <em>identifying the acquirer</em>; <em>determining the acquisition date</em>; <em>recognising and measuring</em> tài sản có thể xác định, nợ phải trả và NCI; và <em>recognising and measuring goodwill or a gain from a bargain purchase</em>. Riêng bước ba và bước bốn lại là hai cỗ máy con đồ sộ — chính là nội dung các tab sau.</p>
+  </section>
+
+  <section class="clarify">
+    <div class="step-head">
+      <div class="big-num">≠</div>
+      <div class="step-meta"><span class="lbl">Dễ nhầm · ranh giới</span><h2>Dễ nhầm — ranh giới của khái niệm</h2></div>
+    </div>
+    <div class="mix-q"><span class="q">“Bên mua là bên bỏ tiền ra, đúng không?”</span><p>Không chắc. Bước một hỏi <strong>ai giành quyền kiểm soát</strong>, không hỏi ai trả tiền. Có vụ bên phát hành cổ phần lại là bên bị mua. Tiền và quyền không phải lúc nào cũng đi chung.</p></div>
+<div class="mix-q"><span class="q">“Có thể gộp sổ kiểu trộn đều hai bên cho nhanh không?”</span><p>Không. Đoạn 4 nói chỉ có <strong>một</strong> phương pháp: phương pháp mua. Luôn có một bên đóng vai bên mua, đo lại cái mình nhận. Không có kiểu trộn đều ngang hàng.</p></div>
+  </section>
+
+  <section class="bridge">
+    <div class="step-head">
+      <div class="big-num">→</div>
+      <div class="step-meta"><span class="lbl">Nối tiếp · nó dẫn tới đâu</span><h2>Nối tiếp: mỗi bước mở ra một trang khó</h2></div>
+    </div>
+    <div class="bridge-card"><p>Bốn ô này là mục lục dẫn sang các trang khó. Ô một mở trang <strong>“Ai là bên mua? Không phải bên to hơn”</strong>. Ô hai mở trang <strong>“Ngày mua: ngày cầm vô-lăng”</strong>.</p>
+<p>Ô ba là cỗ máy đo lường — dẫn sang hai nền kế tiếp về giá trị hợp lý và bóc tách tài sản. Ô bốn mở trang <strong>“Goodwill: phần dôi ra”</strong>. Giữ bản đồ này, bạn không lạc.</p></div>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">✦</div>
+      <div class="step-meta"><span class="lbl">Kể lại trong một hơi</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Mọi vụ hợp nhất chạy qua đúng một khung: ai mua, khi nào, mua được cái gì, và phần dôi ra là goodwill. Bốn câu hỏi đi đúng thứ tự, vì câu trước là nguyên liệu cho câu sau. Mọi luật lẻ của IFRS 3 đều ngồi vào một trong bốn ô này.</p>
+<p class="core">Mọi vụ hợp nhất, dù lớn hay nhỏ, <span>ai mua — khi nào — cái gì — còn lại là goodwill.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã nắm nền chưa?</h3>
+      <ol>
+        <li>Vì sao phải tìm “ai là bên mua” <em>trước</em> khi chốt ngày mua?</li>
+        <li>Bước nào tạo ra nguyên liệu để bước bốn tính được goodwill?</li>
+        <li>Nếu một luật lẻ nói về cách đo một khoản nợ nhận về, nó nằm ở ô nào trong bốn ô?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nền vững thì cái khó tự nhẹ đi. Hiểu từ gốc, không học vẹt.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-gia-tri-hop-ly-ngay-mua" role="tabpanel" aria-labelledby="tab-2" tabindex="0"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Nền tảng · hiểu từ gốc</div>
+    <h1 class="rise" style="animation-delay:.08s">Đo lại theo giá trị hợp lý tại ngày mua</h1>
+    <p class="core rise" style="animation-delay:.16s">Quên giá trị trên sổ cũ của bên bị mua đi — <span>IFRS 3 đo lại mọi thứ theo giá ngay ngày mua.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Định vị · nó là gì &amp; vì sao học trước</span><h2>Nền tảng: một thước đo chung, đặt tại ngày mua</h2></div>
+    </div>
+    <div class="rule">Bên mua phải đo các tài sản có thể xác định và nợ phải trả nhận về theo <strong>acquisition-date fair value</strong> (giá trị hợp lý tại ngày mua) — đoạn 18. <em>Fair value</em> là giá trao đổi hôm nay giữa các bên hiểu biết, không phải giá gốc cũ. Riêng <em>NCI</em> có thêm lựa chọn đo theo phần tỷ lệ tài sản thuần (đoạn 19), nhưng mốc thời gian vẫn là ngày mua.</div>
+    <div class="sub">Vì sao đây là nền</div>
+    <div class="why"><p>Mọi con số trong IFRS 3 đứng trên thước đo này. Goodwill, giá phí, phần của cổ đông ngoài — tất cả đều đo tại ngày mua, theo giá hôm đó. Nếu bạn bê nguyên giá trị sổ cũ của bên bị mua sang, mọi phép tính sau đều lệch. Nắm cái thước này trước, các phần sau mới khớp.</p></div>
+  </section>
+
+  <section class="problem">
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Vấn đề nó sinh ra để giải quyết</span><h2>Cái nhà máy ghi sổ 100, nhưng đáng 300</h2></div>
+    </div>
+    <p class="lead">Bạn mua công ty B. Trên sổ của B, cái nhà máy ghi 100 vì mua từ nhiều năm trước. Nhưng hôm nay nó đáng 300.</p>
+
+<p>Bạn nên ghi cái nhà máy đó là 100 hay 300? Nếu giữ 100, bạn đang nói dối về thứ mình thật sự nhận được.</p>
+
+<div class="sub">Vì sao con số cũ làm hỏng mọi thứ</div>
+<p>Bạn trả tiền theo giá hôm nay, chứ đâu trả theo giá nhiều năm trước. Đo cái nhận được bằng giá cũ thì phần dôi ra, tức goodwill, sẽ thành một con số vô nghĩa.</p>
+
+<p>Nên cần một thước đo chung cho cả vụ — đó là Bước 2.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Mô hình đơn giản · cách nó chạy</span><h2>Định lại giá mọi thứ, theo đúng ngày mua</h2></div>
+    </div>
+    <p>Quy tắc gọn một câu: định lại giá từng món theo giá trị hôm nay. Bỏ qua nó từng nằm sổ bao nhiêu.</p>
+
+<div class="sub">Vì sao lấy giá “hôm nay”</div>
+<p>Bạn đang trả giá hôm nay để có nó. Nên đo nó cũng bằng giá hôm nay thì mới cùng một thước.</p>
+
+<div class="sub">Vì sao đóng đinh vào “ngày mua”</div>
+<p>Ngày mua là lúc quyền kiểm soát chuyển sang bạn. Đó là khoảnh khắc chụp ảnh: chốt giá mọi thứ tại đúng ngày đó, không sớm không muộn.</p>
+
+<div class="sub">Áp cho cả thứ bên bị mua chưa từng ghi</div>
+<p>Thước này không chỉ định lại giá đồ đã có trên sổ. Nó còn đo cả những thứ B chưa từng ghi, như một thương hiệu tự xây. Đó là cây cầu sang tab sau.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví dụ cụ thể</span><h2>Một mảnh đất, hai con số</h2></div>
+    </div>
+    <div class="example-card"><span class="tag">Ví dụ</span>
+<p>Công ty B có một mảnh đất. Sổ của B ghi 100, vì mua đã lâu. Tại ngày bạn mua B, mảnh đất đáng 300.</p>
+<p>Bạn ghi mảnh đất theo <strong>300</strong>, không phải 100. Tài sản thuần bạn nhận được vì thế lớn hơn, và phần dôi ra so với giá đã trả nhỏ lại. Goodwill nhờ vậy mới đúng.</p>
+<p>Vặn ngược lại: nếu hôm mua mảnh đất chỉ còn đáng 80, bạn ghi 80, thấp hơn cả sổ cũ. Thước đo nhìn về hôm nay, không bênh con số cũ.</p>
+</div>
+<p>Như bán lại chiếc xe cũ. Giá bạn mua năm xưa không còn nghĩa lý. Người mua trả theo giá chiếc xe đáng <em>bây giờ</em>.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. <em>Fair value</em> được định nghĩa theo IFRS 13 là giá thoát ra (<em>exit price</em>) tại ngày đo. Với NCI, đoạn 19 cho hai cửa: đo theo <em>fair value</em>, hoặc theo phần tỷ lệ trong tài sản thuần có thể xác định. IFRS 3 cũng có vài ngoại lệ hẹp — ví dụ thuế hoãn lại và phúc lợi nhân viên đo theo chuẩn riêng của chúng, không theo giá trị hợp lý.</p>
+  </section>
+
+  <section class="clarify">
+    <div class="step-head">
+      <div class="big-num">≠</div>
+      <div class="step-meta"><span class="lbl">Dễ nhầm · ranh giới</span><h2>Dễ nhầm — ranh giới của khái niệm</h2></div>
+    </div>
+    <div class="mix-q"><span class="q">“Giá trị hợp lý chính là giá gốc trên sổ chứ gì?”</span><p>Ngược lại là khác. Giá gốc là giá nhiều năm trước. <strong>Giá trị hợp lý</strong> là giá hôm nay. IFRS 3 cố tình bỏ giá gốc cũ của bên bị mua, để đo lại tất cả theo cùng một mốc.</p></div>
+<div class="mix-q"><span class="q">“Giá trị hợp lý của tài sản với số tiền tôi trả là một à?”</span><p>Không. Số bạn trả là <strong>giá phí</strong> cho cả công ty. Giá trị hợp lý là giá của <strong>từng món</strong> bên trong. Hai con số khác nhau, và chính chỗ chênh giữa chúng mới nuôi ra goodwill.</p></div>
+  </section>
+
+  <section class="bridge">
+    <div class="step-head">
+      <div class="big-num">→</div>
+      <div class="step-meta"><span class="lbl">Nối tiếp · nó dẫn tới đâu</span><h2>Nối tiếp: ngày cầm vô-lăng, và món nợ chưa chắc xảy ra</h2></div>
+    </div>
+    <div class="bridge-card"><p>Thước đo này đóng đinh vào một mốc: ngày mua. Trang <strong>“Ngày mua: ngày cầm vô-lăng, không phải ngày ký”</strong> mổ kỹ vì sao chọn đúng mốc đó.</p>
+<p>Và vì thước này đo theo giá trị hợp lý, có khi một khoản nợ chưa chắc xảy ra vẫn lên sổ — miễn đo được giá. Đó là trang <strong>“Nợ tiềm tàng”</strong>. Bạn vừa dựng nền cho cả hai.</p></div>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">✦</div>
+      <div class="step-meta"><span class="lbl">Kể lại trong một hơi</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>IFRS 3 bỏ giá trị sổ cũ của bên bị mua và đo lại từng món theo giá trị hợp lý tại ngày mua. Lý do: bạn trả giá hôm nay, nên đo cái nhận cũng bằng giá hôm nay, tại đúng lúc quyền kiểm soát chuyển sang. Cùng một thước thì goodwill mới có nghĩa.</p>
+<p class="core">Quên giá trị trên sổ cũ của bên bị mua đi — <span>đo theo giá hôm nay, tại ngày mua — không bê giá sổ cũ.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã nắm nền chưa?</h3>
+      <ol>
+        <li>Vì sao ghi cái nhà máy theo giá trị sổ cũ (100) lại làm con số goodwill mất ý nghĩa?</li>
+        <li>Thước đo này đặt tại <em>thời điểm</em> nào, và vì sao lại chọn đúng thời điểm đó?</li>
+        <li>“Số tiền tôi trả cho cả công ty” và “giá trị hợp lý của từng tài sản bên trong” khác nhau ra sao?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nền vững thì cái khó tự nhẹ đi. Hiểu từ gốc, không học vẹt.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-tai-san-nhan-dien" role="tabpanel" aria-labelledby="tab-3" tabindex="0"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Nền tảng · hiểu từ gốc</div>
+    <h1 class="rise" style="animation-delay:.08s">Bóc tách tài sản nhận diện được, riêng khỏi goodwill</h1>
+    <p class="core rise" style="animation-delay:.16s">Trước khi gọi phần dôi ra là goodwill, <span>phải bóc và gọi tên hết những gì gọi tên được.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Định vị · nó là gì &amp; vì sao học trước</span><h2>Nền tảng: gọi tên trước, goodwill là phần còn lại</h2></div>
+    </div>
+    <div class="rule">Tại ngày mua, bên mua phải ghi nhận — <strong>riêng khỏi goodwill</strong> — các tài sản có thể xác định đã mua, nợ phải trả đã gánh và <em>NCI</em> (đoạn 10). “Có thể xác định” (<em>identifiable</em>) nghĩa là tách bán được, hoặc sinh ra từ quyền hợp đồng hay pháp lý. Bên mua có thể ghi nhận cả tài sản mà bên bị mua <strong>chưa từng</strong> ghi sổ — như thương hiệu, bằng sáng chế, quan hệ khách hàng tự xây (đoạn 13).</div>
+    <div class="sub">Vì sao đây là nền</div>
+    <div class="why"><p>Goodwill là phần còn lại <em>sau khi</em> bạn đã gọi tên hết mọi thứ khác. Nên “cái gì gọi tên được” chính là cái điều khiển goodwill. Gọi tên được càng nhiều, goodwill càng nhỏ. Chưa nắm bước bóc tách này, con số goodwill ở tab sau chỉ là một hộp đen.</p></div>
+  </section>
+
+  <section class="problem">
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Vấn đề nó sinh ra để giải quyết</span><h2>Trả 1.000, nhưng sổ của họ chỉ có 600</h2></div>
+    </div>
+    <p class="lead">Bạn trả 1.000 để mua công ty B. Mở sổ của B ra, tài sản ghi nhận chỉ có 600. Vậy 400 còn lại bạn mua cái gì?</p>
+
+<p>Dễ buông tay: gom hết 400 đó vào một cục gọi là goodwill. Nhưng làm vậy là giấu mất nhiều thứ thật.</p>
+
+<div class="sub">Có những thứ thật mà sổ không ghi</div>
+<p>B có một thương hiệu khách rất tin, và một danh sách khách quen. B không ghi sổ chúng, vì tự xây và đã tính hết vào chi phí. Nhưng chúng có thật, và bạn vừa trả tiền cho chúng.</p>
+
+<p>Nên cần bóc từng thứ gọi tên được ra ánh sáng trước. Cách bóc là Bước 2.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Mô hình đơn giản · cách nó chạy</span><h2>Gọi tên và đo từng món, phần ế lại mới là goodwill</h2></div>
+    </div>
+    <p>Động tác cốt lõi chỉ có một. Liệt kê mọi tài sản và khoản nợ bạn <strong>gọi được tên</strong>, rồi đo từng cái theo giá trị hợp lý ngày mua.</p>
+
+<div class="sub">Thế nào là “gọi tên được”</div>
+<p>Một thứ gọi tên được khi bạn có thể tách nó ra bán riêng, hoặc nó sinh từ một hợp đồng hay quyền pháp lý. Thương hiệu, bằng sáng chế, danh sách khách đều lọt vào nhóm này.</p>
+
+<div class="sub">Vì sao phải bóc cho hết</div>
+<p>Thứ nào bạn không gọi tên được sẽ rơi vào goodwill — cái thùng chứa phần còn lại. Bỏ sót một tài sản nghĩa là thổi phồng goodwill lên đúng bằng đó.</p>
+
+<div class="sub">Bóc cả thứ bên bị mua chưa ghi</div>
+<p>Bạn được ghi nhận cả những tài sản B chưa từng có trên sổ. Quan trọng là nó có gọi tên được không, chứ không phải nó đã nằm sổ chưa.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví dụ cụ thể</span><h2>Bóc một vụ mua 1.000 thành từng món</h2></div>
+    </div>
+    <div class="example-card"><span class="tag">Ví dụ</span>
+<p>Bạn mua B với giá 1.000. Bạn bắt đầu gọi tên: nhà xưởng đáng 600, hàng tồn 100. Mới được 700.</p>
+<p>Nhìn kỹ hơn, bạn bóc thêm hai thứ B chưa ghi sổ: một thương hiệu đáng 200, và quan hệ khách quen đáng 150. Giờ phần gọi tên được đã lên 1.050 trước khi trừ vài khoản nợ.</p>
+<p>Vặn thử: nếu bạn lười, không bóc thương hiệu 200, thì phần gọi tên được tụt xuống và goodwill phình lên đúng 200. Bóc càng kỹ, goodwill càng teo.</p>
+</div>
+<p>Như mua một giỏ đồ cũ với giá trọn gói. Bạn lật từng món ra định giá: cái này đáng bao nhiêu, cái kia bao nhiêu. Phần không gắn được vào món nào mới là “tiền trả cho cái không tên”.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Để được ghi nhận, đoạn 11–12 đòi tài sản và nợ phải thỏa định nghĩa trong <em>Conceptual Framework</em> tại ngày mua, và phải là phần của trao đổi để lấy bên bị mua — không phải một giao dịch riêng. Đoạn B31–B40 hướng dẫn riêng cách nhận diện <em>intangible assets</em> (tài sản vô hình): tách bán được, hoặc sinh từ quyền hợp đồng/pháp lý.</p>
+  </section>
+
+  <section class="clarify">
+    <div class="step-head">
+      <div class="big-num">≠</div>
+      <div class="step-meta"><span class="lbl">Dễ nhầm · ranh giới</span><h2>Dễ nhầm — ranh giới của khái niệm</h2></div>
+    </div>
+    <div class="mix-q"><span class="q">“Chỉ ghi nhận thứ đã nằm trên sổ của bên bị mua thôi chứ?”</span><p>Không. Phép thử là <strong>gọi tên được</strong>, không phải <strong>đã ghi sổ</strong>. Một thương hiệu B tự xây và chưa ghi sổ vẫn được bạn ghi nhận, nếu bạn tách và đo được nó.</p></div>
+<div class="mix-q"><span class="q">“Tài sản nhận diện được với goodwill cũng na ná nhau mà?”</span><p>Khác hẳn. Tài sản nhận diện được là thứ bạn <strong>gọi được tên và đo riêng</strong>. Goodwill chỉ là phần ế lại sau khi đã gọi tên hết. Một cái có hình hài, một cái là số dư.</p></div>
+  </section>
+
+  <section class="bridge">
+    <div class="step-head">
+      <div class="big-num">→</div>
+      <div class="step-meta"><span class="lbl">Nối tiếp · nó dẫn tới đâu</span><h2>Nối tiếp: bóc tách tài sản vô hình, rồi mới tới goodwill</h2></div>
+    </div>
+    <div class="bridge-card"><p>Viên gạch này nói: gọi tên hết trước, goodwill là phần còn lại. Phần khó nhất khi gọi tên là các tài sản vô hình.</p>
+<p>Trang <strong>“Bóc tách tài sản vô hình: gọi tên trước khi còn lại là goodwill”</strong> mổ đúng chỗ đó. Và khi đã bóc xong, bạn bước thẳng sang tab <strong>“Goodwill: phần dôi ra”</strong> — nơi tính phần ế lại.</p></div>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">✦</div>
+      <div class="step-meta"><span class="lbl">Kể lại trong một hơi</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Trước khi gọi phần dôi ra là goodwill, bạn phải liệt kê và đo mọi tài sản, khoản nợ gọi tên được. Kể cả thứ bên bị mua chưa từng ghi sổ, như thương hiệu tự xây. Thứ nào không gọi tên được mới rơi vào goodwill. Bóc càng kỹ, goodwill càng nhỏ.</p>
+<p class="core">Trước khi gọi phần dôi ra là goodwill, <span>gọi tên được thì bóc riêng; goodwill chỉ là phần còn ế.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã nắm nền chưa?</h3>
+      <ol>
+        <li>Vì sao một thương hiệu mà bên bị mua <em>chưa từng ghi sổ</em> vẫn có thể được bạn ghi nhận riêng?</li>
+        <li>Nếu bạn bỏ sót, không bóc một tài sản đáng 200, điều gì xảy ra với con số goodwill?</li>
+        <li>Khác biệt cốt lõi giữa “tài sản nhận diện được” và “goodwill” là gì?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nền vững thì cái khó tự nhẹ đi. Hiểu từ gốc, không học vẹt.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-goodwill-cong-thuc" role="tabpanel" aria-labelledby="tab-4" tabindex="0"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Nền tảng · hiểu từ gốc</div>
+    <h1 class="rise" style="animation-delay:.08s">Goodwill: phần dôi ra, không ai đo thẳng</h1>
+    <p class="core rise" style="animation-delay:.16s">Goodwill không được đo trực tiếp — <span>nó là phần bạn trả dôi ra so với cái gọi tên được.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Định vị · nó là gì &amp; vì sao học trước</span><h2>Nền tảng: goodwill là một số dư</h2></div>
+    </div>
+    <div class="rule">Tại ngày mua, goodwill là phần vượt của (a) so với (b) — đoạn 32. Vế (a) gồm: <em>consideration transferred</em> (giá phí chuyển giao), cộng giá trị <em>NCI</em>, cộng giá trị hợp lý ngày mua của phần vốn bên mua đã nắm trước đó (nếu mua theo giai đoạn). Vế (b) là giá trị thuần ngày mua của tài sản có thể xác định và nợ phải trả. Nếu (b) lớn hơn (a), đó là <em>bargain purchase</em> (mua rẻ) — ghi một khoản lãi (đoạn 34).</div>
+    <div class="sub">Vì sao đây là nền</div>
+    <div class="why"><p>Đây là viên đá đỉnh vòm mà cả chuẩn mực hướng tới. Nó buộc bốn nền trước lại với nhau: định nghĩa hợp nhất, phương pháp mua, giá trị hợp lý ngày mua, và bóc tách tài sản. Hiểu goodwill là một số dư — chứ không phải một thứ đo thẳng — thì mọi quy tắc về nó sau này mới chịu nghe lời.</p></div>
+  </section>
+
+  <section class="problem">
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Vấn đề nó sinh ra để giải quyết</span><h2>Trả 1.240, nhưng đồ gọi tên được chỉ đáng 1.100</h2></div>
+    </div>
+    <p class="lead">Bạn bỏ ra 1.240 để nắm công ty B. Cộng hết tài sản thuần gọi tên được, chỉ ra 1.100. Vậy 140 chênh kia là tiền mua cái gì?</p>
+
+<p>Một trăm bốn mươi đó không phải con số rơi từ trời. Bạn trả khoản đó có chủ đích.</p>
+
+<div class="sub">Cái không xếp được lên một dòng riêng</div>
+<p>Đó là tiếng tăm của B, đội ngũ ăn ý, và phần lợi khi ghép B vào nhà bạn. Những thứ này có giá trị, nhưng không tách ra bán riêng được, nên không lên một dòng tài sản nào.</p>
+
+<p>Nên cần một chỗ để chứa phần “trả thêm” đó. Chỗ đó là goodwill — và cách tính nó là Bước 2.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Mô hình đơn giản · cách nó chạy</span><h2>Lấy cái bạn bỏ ra, trừ cái gọi tên được</h2></div>
+    </div>
+    <p>Goodwill không có cách đo riêng. Bạn tính nó bằng một phép trừ, và phần còn lại chính là nó.</p>
+
+<div class="sub">Vế bỏ ra — gồm ba phần</div>
+<p>Một là cái bạn trả, gọi là giá phí. Hai là phần cổ đông ngoài vẫn giữ. Ba là phần vốn bạn đã nắm trong B từ trước, nếu có. Cộng ba phần lại.</p>
+
+<div class="sub">Vế gọi tên được — trừ đi</div>
+<p>Đó là giá trị thuần của mọi tài sản và khoản nợ bạn đã bóc ở tab trước. Lấy vế bỏ ra trừ đi vế này.</p>
+
+<div class="sub">Phần còn lại là goodwill</div>
+<p>Số dư sau phép trừ chính là goodwill. Không ai đo nó thẳng; nó luôn là cái rớt lại sau cùng.</p>
+
+<div class="sub">Khi phép trừ ra số âm</div>
+<p>Đôi khi cái gọi tên được lại lớn hơn cái bạn bỏ ra. Đó là mua rẻ: thay vì goodwill, bạn ghi một khoản lãi — nhưng phải soát lại thật kỹ trước đã.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví dụ cụ thể</span><h2>Tính goodwill cho vụ A mua 80% B</h2></div>
+    </div>
+    <div class="example-card"><span class="tag">Ví dụ</span>
+<p>A mua 80% B. A trả tiền mặt 1.000. Phần 20% của cổ đông ngoài đo được 240. A không nắm phần nào trong B từ trước.</p>
+<p>Cộng vế bỏ ra: 1.000 cộng 240, thành 1.240. Tài sản gọi tên được của B là 1.500, nợ phải trả 400, nên giá trị thuần còn 1.100.</p>
+<p>Lấy 1.240 trừ 1.100, còn lại <strong>140</strong>. Đó là goodwill — không ai đo thẳng nó, nó chỉ là phần rớt lại.</p>
+</div>
+<p>Vặn thử một cái: giả sử bạn chịu khó bóc thêm 140 tài sản vô hình nữa. Vế gọi tên được lên 1.240, bằng đúng vế bỏ ra, và goodwill biến mất. Bóc kỹ tới đâu, goodwill teo tới đó.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Đoạn 32 viết goodwill là phần vượt của (a) trên (b). Vế (a) gồm consideration transferred + NCI + giá trị hợp lý của phần vốn nắm trước. Phần vốn nắm trước đó không giữ giá gốc: đoạn 42 buộc đo lại nó về giá trị hợp lý ngày mua, lãi/lỗ ghi vào P/L — chi tiết ở trang khó “Mua thêm để nắm quyền”. Đoạn 37 nói consideration transferred đo theo giá trị hợp lý ngày mua: tổng của tài sản bên mua chuyển giao, nợ gánh với chủ cũ, và công cụ vốn phát hành. Khi (b) vượt (a) thì có lãi mua rẻ; đoạn 36 buộc soát lại đã nhận diện và đo đúng mọi khoản chưa, rồi đoạn 34 mới cho ghi khoản lãi vào lãi/lỗ tại ngày mua.</p>
+  </section>
+
+  <section class="clarify">
+    <div class="step-head">
+      <div class="big-num">≠</div>
+      <div class="step-meta"><span class="lbl">Dễ nhầm · ranh giới</span><h2>Dễ nhầm — ranh giới của khái niệm</h2></div>
+    </div>
+    <div class="mix-q"><span class="q">“Goodwill là một tài sản người ta đi đo rồi điền vào, đúng không?”</span><p>Không. Không ai đo goodwill trực tiếp. Nó là <strong>số dư</strong> rớt lại sau phép trừ. Đo sai một vế bất kỳ thì goodwill lệch theo, vì nó hứng trọn mọi sai số.</p></div>
+<div class="mix-q"><span class="q">“Trả nhiều hơn tài sản thuần thì tức là mua hớ, lỗ chứ gì?”</span><p>Chưa chắc. Phần trả thêm thường là tiếng tăm, đội ngũ, phần lợi khi ghép vào nhà bạn. Nó lên sổ thành goodwill, không phải khoản lỗ. Lỗ chỉ tính sau, nếu goodwill bị giảm giá trị.</p></div>
+<div class="mix-q"><span class="q">“Phí tư vấn, due diligence để làm thương vụ thì gộp vào giá mua chứ?”</span><p>Không. Đoạn 53 bắt các phí đó — tư vấn, môi giới, thẩm định — ghi thẳng vào chi phí trong kỳ. Chúng không vào giá phí, nên không làm goodwill phình lên. Riêng phí phát hành nợ hay cổ phần thì theo chuẩn khác.</p></div>
+  </section>
+
+  <section class="bridge">
+    <div class="step-head">
+      <div class="big-num">→</div>
+      <div class="step-meta"><span class="lbl">Nối tiếp · nó dẫn tới đâu</span><h2>Nối tiếp: vì sao goodwill không bao giờ đảo, và mặt trái mua rẻ</h2></div>
+    </div>
+    <div class="bridge-card"><p>Bạn vừa dựng đúng cỗ máy mà trang khó sẽ mổ. Trang <strong>“Goodwill: phần dôi ra, không ai đo trực tiếp”</strong> đẩy ý này xa hơn: vì là số dư, goodwill hứng mọi sai số và không bao giờ đảo ngược.</p>
+<p>Còn khi phép trừ ra số âm, bạn lật sang trang <strong>“Mua rẻ: lãi trời cho, nhưng đáng nghi”</strong>. Cùng một phép tính, hai số phận.</p></div>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">✦</div>
+      <div class="step-meta"><span class="lbl">Kể lại trong một hơi</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Goodwill không có cách đo riêng. Bạn cộng cái bỏ ra — giá phí, phần cổ đông ngoài, phần vốn nắm trước — rồi trừ đi tài sản thuần gọi tên được. Phần rớt lại là goodwill. Nếu cái gọi tên được lớn hơn cái bỏ ra, đó là mua rẻ, ghi lãi sau khi soát kỹ.</p>
+<p class="core">Goodwill không được đo trực tiếp — <span>goodwill là số dư — cái bỏ ra trừ cái gọi tên được.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã nắm nền chưa?</h3>
+      <ol>
+        <li>Vì sao nói goodwill “không được đo trực tiếp” mà chỉ là một số dư?</li>
+        <li>Nếu bạn bóc thêm được tài sản vô hình, con số goodwill nhúc nhích theo hướng nào — và vì sao?</li>
+        <li>Khi vế “gọi tên được” lớn hơn vế “bỏ ra”, bạn ghi nhận điều gì, và phải làm gì trước khi ghi?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nền vững thì cái khó tự nhẹ đi. Hiểu từ gốc, không học vẹt.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-doi-gia-tiem-tang" role="tabpanel" aria-labelledby="tab-5" tabindex="0"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Nền tảng · hiểu từ gốc</div>
+    <h1 class="rise" style="animation-delay:.08s">Đối giá tiềm tàng: phần giá phụ thuộc tương lai</h1>
+    <p class="core rise" style="animation-delay:.16s">Giá phí không phải lúc nào cũng là con số chốt sẵn — <span>một phần có thể là lời hứa “trả thêm nếu...”.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Định vị · nó là gì &amp; vì sao học trước</span><h2>Nền tảng: phần giá hứa trả thêm sau</h2></div>
+    </div>
+    <div class="rule">Trong nhiều thương vụ, một phần giá phụ thuộc kết quả tương lai — gọi là <strong>contingent consideration</strong> (đối giá tiềm tàng), kiểu “trả thêm nếu đạt mốc”. Theo đoạn 39, giá trị hợp lý ngày mua của khoản hứa này là một phần của <em>consideration transferred</em> (giá phí chuyển giao) — tính vào vế (a) ngay. Theo đoạn 40, nghĩa vụ trả được phân loại là <em>financial liability</em> (nợ tài chính) hoặc <em>equity</em> (vốn), theo IAS 32; đoạn 58 lo phần đo lường về sau.</div>
+    <div class="sub">Vì sao đây là nền</div>
+    <div class="why"><p>Tab Goodwill coi “vế bỏ ra” như một con số chốt sẵn. Đời thật ít khi vậy. Rất nhiều vụ mua kèm một khoản treo: trả thêm nếu công ty đạt mục tiêu. Khoản treo đó vẫn phải định giá ngay hôm mua, và đã nằm trong goodwill. Nắm nó, bạn mới đọc đúng con số goodwill ở các vụ có earn-out.</p></div>
+  </section>
+
+  <section class="problem">
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Vấn đề nó sinh ra để giải quyết</span><h2>Trả 1.000 ngay, cộng “200 nữa nếu năm sau đạt mốc”</h2></div>
+    </div>
+    <p class="lead">Bạn mua B, trả ngay 1.000 tiền mặt. Kèm theo một lời hứa: nếu sang năm B đạt doanh thu mục tiêu, bạn trả thêm 200.</p>
+
+<p>Khoản 200 đó chưa chắc xảy ra. Vậy hôm nay bạn ghi nó là bao nhiêu — số không, hay 200, hay đâu đó ở giữa?</p>
+
+<div class="sub">Chờ tới năm sau là sai</div>
+<p>Nếu bạn lờ khoản treo đi và chờ, goodwill hôm nay thiếu mất một mảnh giá. Người đọc sổ tưởng bạn trả ít hơn thực tế.</p>
+
+<p>Nên phải định giá lời hứa đó ngay hôm nay. Cách làm là Bước 2.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Mô hình đơn giản · cách nó chạy</span><h2>Định giá lời hứa hôm nay, rồi nhìn nó được xếp loại gì</h2></div>
+    </div>
+    <p>Lời hứa treo cũng có giá hôm nay. Bạn đo nó, cộng vào vế bỏ ra, và nó đã nằm trong goodwill từ đầu.</p>
+
+<div class="sub">Đo bằng giá trị hợp lý hôm nay</div>
+<p>Cân nhắc khả năng xảy ra và số tiền sẽ trả, rồi quy về một con số hôm nay. Đó là phần “trả thêm” tính ngay vào giá phí.</p>
+
+<div class="sub">Xếp loại: nợ hay vốn</div>
+<p>Nếu sẽ trả bằng tiền hay tài sản, khoản hứa là một món nợ. Nếu sẽ trả bằng một số cổ phần cố định, nó là vốn. Hai loại, hai số phận.</p>
+
+<div class="sub">Số phận về sau khác hẳn nhau</div>
+<p>Là vốn thì đóng băng: không đo lại, dù sau này trả nhiều hay ít. Là nợ thì đo lại theo giá hôm nay mỗi kỳ, phần chênh chạy vào lãi/lỗ.</p>
+
+<div class="sub">Phần chênh đó không sửa goodwill</div>
+<p>Đây là chỗ dễ vấp. Khoản treo nhảy giá vì chuyện xảy ra sau ngày mua, nên nó vào lãi/lỗ, không đụng lại goodwill.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví dụ cụ thể</span><h2>Một earn-out 200, đo còn 120 hôm nay</h2></div>
+    </div>
+    <div class="example-card"><span class="tag">Ví dụ</span>
+<p>Bạn trả 1.000 tiền mặt, kèm hứa trả thêm 200 nếu B đạt mốc. Cân khả năng xảy ra, lời hứa đó đo được 120 hôm nay.</p>
+<p>Vế bỏ ra cộng thêm 120, nên 120 đã nằm trong goodwill ngay từ ngày mua. Khoản hứa này trả bằng tiền, nên xếp là nợ.</p>
+<p>Sang năm, khả năng đạt mốc cao lên, lời hứa đo lại thành 180. Phần chênh 60 ghi vào chi phí kỳ đó. Goodwill vẫn y nguyên.</p>
+</div>
+<p>Giống mua nhà kèm hẹn “thưởng thêm nếu giá khu này lên”. Khoản thưởng có giá kỳ vọng ngay hôm nay, dù chưa chắc. Bạn đâu thể coi nó bằng không.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Đoạn 39 đưa giá trị hợp lý ngày mua của contingent consideration vào consideration transferred. Đoạn 40 phân loại nghĩa vụ trả là financial liability hay equity theo IAS 32 đoạn 11. Đoạn 58 chốt phần sau: loại equity không đo lại; loại nợ trong phạm vi IFRS 9 đo theo giá trị hợp lý mỗi kỳ, chênh lệch ghi vào lãi/lỗ.</p>
+  </section>
+
+  <section class="clarify">
+    <div class="step-head">
+      <div class="big-num">≠</div>
+      <div class="step-meta"><span class="lbl">Dễ nhầm · ranh giới</span><h2>Dễ nhầm — ranh giới của khái niệm</h2></div>
+    </div>
+    <div class="mix-q"><span class="q">“Chưa chắc xảy ra thì cứ để đó, khi nào trả hãy ghi?”</span><p>Không. Đoạn 39 buộc đo <strong>giá trị hợp lý ngày mua</strong> của lời hứa và tính vào giá phí ngay. Chờ tới lúc trả thì goodwill ngày mua đã sai. Chưa chắc không có nghĩa là bằng không.</p></div>
+<div class="mix-q"><span class="q">“Earn-out nhảy giá thì sửa lại goodwill chứ?”</span><p>Không, nếu nó nhảy vì chuyện xảy ra <strong>sau</strong> ngày mua. Khi đó phần chênh vào lãi/lỗ, goodwill giữ nguyên. Goodwill chỉ động trong kỳ đo lường, vì lý do khác — xem tab kế.</p></div>
+  </section>
+
+  <section class="bridge">
+    <div class="step-head">
+      <div class="big-num">→</div>
+      <div class="step-meta"><span class="lbl">Nối tiếp · nó dẫn tới đâu</span><h2>Nối tiếp: cùng một lời hứa, hai số phận</h2></div>
+    </div>
+    <div class="bridge-card"><p>Bạn vừa dựng đúng cái bẫy mà trang khó mổ kỹ. Cùng một lời hứa “trả thêm nếu...”, nếu là vốn thì đóng băng, nếu là nợ thì nhảy theo lãi/lỗ mỗi kỳ.</p>
+<p>Trang <strong>“Cùng lời hứa ‘trả thêm nếu...’, hai số phận”</strong> đẩy sự bất đối xứng đó tới cùng. Còn vì sao goodwill động trong 12 tháng đầu lại là chuyện của tab kế.</p></div>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">✦</div>
+      <div class="step-meta"><span class="lbl">Kể lại trong một hơi</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Giá phí không phải lúc nào cũng chốt sẵn. Phần “trả thêm nếu...” vẫn được đo theo giá trị hợp lý ngày mua, và đã nằm trong goodwill. Về sau, nếu xếp là vốn thì đóng băng; nếu là nợ thì đo lại mỗi kỳ, phần chênh vào lãi/lỗ chứ không sửa goodwill.</p>
+<p class="core">Giá phí không phải lúc nào cũng là con số chốt sẵn — <span>khoản hứa đo ngay hôm mua; là nợ thì nhảy theo lãi/lỗ, là vốn thì đứng yên.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã nắm nền chưa?</h3>
+      <ol>
+        <li>Vì sao phải đo lời hứa “trả thêm nếu...” ngay tại ngày mua, thay vì chờ điều kiện xảy ra?</li>
+        <li>Cùng một earn-out, vì sao xếp là <em>nợ</em> và xếp là <em>vốn</em> lại dẫn tới hai số phận khác nhau về sau?</li>
+        <li>Khi earn-out nhảy giá vì B đạt mốc <em>sau</em> ngày mua, phần chênh đi vào đâu — goodwill hay lãi/lỗ?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nền vững thì cái khó tự nhẹ đi. Hiểu từ gốc, không học vẹt.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-thoi-ky-do-luong" role="tabpanel" aria-labelledby="tab-6" tabindex="0"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Nền tảng · hiểu từ gốc</div>
+    <h1 class="rise" style="animation-delay:.08s">Thời kỳ đo lường: cửa sổ 12 tháng để chốt sổ</h1>
+    <p class="core rise" style="animation-delay:.16s">Đóng xong giao dịch mà chưa định giá xong — <span>IFRS 3 cho tối đa 12 tháng để chốt sổ.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Định vị · nó là gì &amp; vì sao học trước</span><h2>Nền tảng: cửa sổ 12 tháng để hoàn thiện</h2></div>
+    </div>
+    <div class="rule">Nếu hạch toán ban đầu chưa xong tại ngày mua, bên mua ghi số <strong>tạm tính</strong> (provisional). Trong <strong>measurement period</strong> (thời kỳ đo lường), bên mua điều chỉnh <em>hồi tố</em> các số tạm này để phản ánh thông tin mới về sự việc đã <strong>tồn tại vào ngày mua</strong> (đoạn 45). Kỳ này kết thúc khi có đủ thông tin, nhưng <strong>không quá một năm</strong> kể từ ngày mua. Điều chỉnh được bù qua goodwill (đoạn 49).</div>
+    <div class="sub">Vì sao đây là nền</div>
+    <div class="why"><p>Các tab trước giả định bạn đo xong mọi thứ ngay ngày mua. Thực tế, thẩm định một nhà máy hay một thương hiệu mất nhiều tháng. Nền này trả lời một câu hay gây hoang mang: vì sao goodwill đổi sau ngày mua mà <em>không</em> phải là lỗi. Hiểu cửa sổ này, bạn không nhầm một điều chỉnh hợp lệ với một sai sót.</p></div>
+  </section>
+
+  <section class="problem">
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Vấn đề nó sinh ra để giải quyết</span><h2>Đóng deal hôm nay, nhưng thẩm định giá còn vài tháng nữa</h2></div>
+    </div>
+    <p class="lead">Bạn đóng xong giao dịch mua B hôm nay. Nhưng định giá nhà máy và thương hiệu của B thì phải vài tháng nữa mới có.</p>
+
+<p>Vậy bạn khóa sổ ngay với những con số chưa chắc, hay được phép chờ cho xong? Khóa cứng vội thì goodwill chỉ là số đoán.</p>
+
+<div class="sub">Cần một quãng để hoàn thiện</div>
+<p>Chuẩn mực không bắt bạn đoán bừa rồi chốt. Nó cho một quãng có giới hạn để lấy đủ thông tin và sửa lại số tạm.</p>
+
+<p>Quãng đó vận hành ra sao là Bước 2.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Mô hình đơn giản · cách nó chạy</span><h2>Ghi tạm, rồi sửa hồi tố trong vòng một năm</h2></div>
+    </div>
+    <p>Cơ chế gồm ba nhịp: ghi tạm, sửa lại khi có tin, và khóa khi hết hạn.</p>
+
+<div class="sub">Ghi số tạm cho phần chưa xong</div>
+<p>Phần nào chưa đo xong, bạn ghi một con số tạm tính tại ngày mua. Sổ vẫn lên, nhưng có gắn nhãn tạm.</p>
+
+<div class="sub">Có tin mới thì sửa, và sửa hồi tố</div>
+<p>Khi biết thêm về điều đã có sẵn tại ngày mua, bạn sửa số tạm. Sửa hồi tố, tức ghi như thể đã đúng từ ngày mua.</p>
+
+<div class="sub">Sửa thì bù qua goodwill</div>
+<p>Tăng một tài sản thì goodwill giảm đúng bằng đó, và ngược lại. Phần điều chỉnh này không chạy qua lãi/lỗ.</p>
+
+<div class="sub">Chỉ cho “lúc đó đã vậy”, và tối đa một năm</div>
+<p>Chỉ sửa cho điều đã tồn tại vào ngày mua, không phải chuyện mới xảy ra sau. Hết một năm là khóa; sau đó sai mới sửa, theo IAS 8.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví dụ cụ thể</span><h2>Nhà máy ghi tạm 300, năm tháng sau chốt 350</h2></div>
+    </div>
+    <div class="example-card"><span class="tag">Ví dụ</span>
+<p>Bạn mua B, nhà máy chưa thẩm định xong nên ghi tạm 300. Goodwill ngày mua tính theo số tạm này.</p>
+<p>Năm tháng sau, thẩm định xong: nhà máy đáng 350 tại đúng ngày mua. Bạn sửa nhà máy lên 350, và goodwill giảm 50. Vì đây là tin về điều đã có sẵn lúc mua.</p>
+<p>Vặn ngược: nếu nhà máy lên giá vì thị trường nóng lên <strong>sau</strong> ngày mua, bạn không sửa goodwill. Đó là chuyện của kỳ sau.</p>
+</div>
+<p>Như mua nhà rồi mới mời thợ đo lại diện tích thật. Phát hiện nhà rộng hơn giấy tờ thì bạn chỉnh lại hồ sơ gốc. Nhưng nhà tự lên giá sau đó thì là chuyện khác.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Đoạn 45 cho ghi provisional rồi điều chỉnh hồi tố cho thông tin về sự việc tồn tại vào ngày mua; kỳ không quá một năm. Đoạn 46 gọi đây là quãng thời gian hợp lý để thu thập thông tin. Đoạn 49 yêu cầu ghi điều chỉnh như thể hạch toán đã hoàn tất ngay tại ngày mua. Sau khi kỳ đo lường đóng, chỉ được sửa sai sót theo IAS 8.</p>
+  </section>
+
+  <section class="clarify">
+    <div class="step-head">
+      <div class="big-num">≠</div>
+      <div class="step-meta"><span class="lbl">Dễ nhầm · ranh giới</span><h2>Dễ nhầm — ranh giới của khái niệm</h2></div>
+    </div>
+    <div class="mix-q"><span class="q">“Goodwill đổi sau ngày mua thì chắc là kế toán làm sai?”</span><p>Chưa chắc. Trong vòng một năm đầu, sửa số tạm là <strong>hợp lệ</strong>, không phải lỗi. Nó bù qua goodwill, không qua lãi/lỗ. Chỉ sau khi kỳ đo lường đóng, sửa mới là sửa sai sót.</p></div>
+<div class="mix-q"><span class="q">“Tin mới nào cũng được dùng để sửa số tạm à?”</span><p>Không. Chỉ tin về điều đã <strong>tồn tại vào ngày mua</strong>. Chuyện mới phát sinh sau đó — như thị trường đổi, mốc đạt được — không được kéo ngược về sửa goodwill.</p></div>
+  </section>
+
+  <section class="bridge">
+    <div class="step-head">
+      <div class="big-num">→</div>
+      <div class="step-meta"><span class="lbl">Nối tiếp · nó dẫn tới đâu</span><h2>Nối tiếp: được tua lại quá khứ, nhưng chỉ một loại</h2></div>
+    </div>
+    <div class="bridge-card"><p>Viên gạch này nói: được sửa số tạm trong một năm, bù qua goodwill. Nhưng chỉ một <em>loại</em> thay đổi được phép tua ngược.</p>
+<p>Trang <strong>“Kỳ đo lường: được tua lại quá khứ, nhưng chỉ một loại”</strong> mổ đúng ranh giới đó. Tin về “lúc đó đã vậy” thì sửa goodwill; chuyện mới xảy ra thì chạy qua lãi/lỗ.</p></div>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">✦</div>
+      <div class="step-meta"><span class="lbl">Kể lại trong một hơi</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Đóng deal mà chưa đo xong, bạn ghi số tạm và có tối đa một năm để hoàn thiện. Khi biết thêm về điều đã có sẵn tại ngày mua, bạn sửa hồi tố và bù qua goodwill. Hết một năm là khóa; chuyện mới xảy ra sau ngày mua thì không kéo về sửa goodwill.</p>
+<p class="core">Đóng xong giao dịch mà chưa định giá xong — <span>ghi tạm, sửa trong một năm cho điều đã có sẵn — bù qua goodwill, không phải lỗi.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã nắm nền chưa?</h3>
+      <ol>
+        <li>Vì sao điều chỉnh goodwill trong vòng một năm đầu <em>không</em> bị coi là sửa sai sót?</li>
+        <li>Tin mới phải nói về <em>thời điểm</em> nào thì mới được dùng để sửa số tạm?</li>
+        <li>Nhà máy lên giá vì thị trường nóng lên sau ngày mua — khoản này có được kéo về sửa goodwill không, vì sao?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nền vững thì cái khó tự nhẹ đi. Hiểu từ gốc, không học vẹt.</p>
+  </footer>
+
+</div></div>
+<script>
+  var bar=document.getElementById('progress');
+  function upd(){var h=document.documentElement;var s=h.scrollTop||document.body.scrollTop;
+    var max=(h.scrollHeight-h.clientHeight)||1;bar.style.width=(s/max*100)+'%';}
+  window.addEventListener('scroll',upd,{passive:true});upd();
+  var io=new IntersectionObserver(function(es){es.forEach(function(e){
+    if(e.isIntersecting){e.target.style.animation='rise .7s cubic-bezier(.2,.7,.3,1) forwards';io.unobserve(e.target);}});},{threshold:.12});
+  document.querySelectorAll('section').forEach(function(s){s.style.opacity='0';io.observe(s);});
+</script>
+
+<script>
+(function(){
+  var tabs=[].slice.call(document.querySelectorAll('.tabbar .tab'));
+  var panels=[].slice.call(document.querySelectorAll('.concept-panel'));
+  function show(i){
+    tabs.forEach(function(t,j){t.classList.toggle('active',j===i);});
+    panels.forEach(function(p,j){
+      var on=(j===i); p.classList.toggle('active',on);
+      if(on){p.querySelectorAll('section').forEach(function(s){s.style.opacity='';s.style.animation='';});}
+    });
+    try{history.replaceState(null,'','#'+panels[i].id);}catch(e){}
+    window.scrollTo(0,0); window.dispatchEvent(new Event('scroll'));
+  }
+  tabs.forEach(function(t){t.addEventListener('click',function(){show(+t.getAttribute('data-i'));});});
+  var start=0; panels.forEach(function(p,j){if('#'+p.id===location.hash)start=j;});
+  show(start);
+})();
+</script>
+
+
+<script>
+(function(){var t=[].slice.call(document.querySelectorAll('.tabbar .tab'));
+function sync(a){t.forEach(function(x){var on=x===a;x.setAttribute('aria-selected',on?'true':'false');x.tabIndex=on?0:-1;});}
+t.forEach(function(x){x.addEventListener('click',function(){sync(x);});
+x.addEventListener('keydown',function(e){var i=t.indexOf(x),n=t.length,j=null;
+if(e.key==='ArrowRight'||e.key==='ArrowDown')j=(i+1)%n;else if(e.key==='ArrowLeft'||e.key==='ArrowUp')j=(i-1+n)%n;
+else if(e.key==='Home')j=0;else if(e.key==='End')j=n-1;
+if(j!==null){e.preventDefault();t[j].click();t[j].focus();}});});})();
+</script>
+</body></html>

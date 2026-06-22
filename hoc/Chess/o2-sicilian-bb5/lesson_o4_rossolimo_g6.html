@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bài 1 (Ch2-Open) — Rossolimo 3…g6</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/chessboard-js/1.0.0/chessboard-1.0.0.min.css">
+<style>
+* { box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; max-width: 980px; margin: 0 auto; padding: 24px; color: #1a1a1a; line-height: 1.6; background: #fafafa; }
+h1 { color: #1a3a52; font-size: 26px; margin: 0 0 8px; }
+h2 { color: #2c5282; font-size: 20px; margin: 32px 0 12px; padding-bottom: 6px; border-bottom: 2px solid #e1e8ed; }
+.source { color: #888; font-size: 13px; margin-bottom: 24px; }
+.nav-link { font-size: 13px; color: #2c5282; text-decoration: none; }
+.stage { background: white; border-radius: 8px; padding: 20px 24px; margin: 16px 0; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
+.stage-label { display: inline-block; background: #2c5282; color: white; font-size: 12px; font-weight: 600; padding: 3px 10px; border-radius: 12px; margin-bottom: 8px; }
+.hook-question { font-size: 17px; color: #1a3a52; background: #fff8e1; border-left: 4px solid #faad14; padding: 14px 18px; border-radius: 0 6px 6px 0; margin: 12px 0; }
+.reveal-btn { background: #faad14; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-size: 14px; }
+.hidden { display: none; }
+.board-layout { display: grid; grid-template-columns: 440px 1fr; gap: 24px; align-items: start; margin-top: 16px; }
+@media (max-width: 820px) { .board-layout { grid-template-columns: 1fr; } }
+#board { width: 420px; max-width: 100%; }
+.mini-board { width: 300px; max-width: 100%; margin: 14px auto; }
+.controls { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; justify-content: center; }
+.controls button { padding: 7px 12px; background: #2c5282; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 13px; }
+.info-panel { background: #f8f9fb; padding: 16px; border-radius: 6px; border: 1px solid #e1e8ed; min-height: 380px; }
+.move-display { font-family: monospace; font-size: 16px; color: #2c5282; font-weight: 600; margin-bottom: 8px; }
+.commentary { font-size: 14px; color: #444; margin-bottom: 12px; }
+.info-box { background: white; padding: 10px; border-radius: 4px; border: 1px solid #e1e8ed; margin: 12px 0; font-size: 13px; text-align: center; }
+.info-box.win { background: #f6ffed; border-color: #b7eb8f; color: #389e0d; font-weight: 600; }
+.hl { background: rgba(255, 215, 0, 0.45) !important; box-shadow: inset 0 0 0 2px #faad14 !important; }
+.self-test { background: #fff8e1; border: 2px dashed #faad14; border-radius: 6px; padding: 16px; margin-top: 16px; }
+.feedback { margin-top: 10px; padding: 10px 14px; border-radius: 4px; font-size: 14px; }
+.feedback.correct { background: #f6ffed; color: #389e0d; border-left: 4px solid #52c41a; }
+.feedback.wrong { background: #fff1f0; color: #cf1322; border-left: 4px solid #ff4d4f; }
+.quiz { background: #f0f7ff; border-left: 4px solid #2c5282; border-radius: 0 6px 6px 0; padding: 14px 18px; margin: 12px 0; }
+.quiz-q { font-weight: 600; margin-bottom: 10px; color: #1a3a52; }
+.quiz-options { display: flex; flex-direction: column; gap: 6px; }
+.quiz-option { padding: 8px 12px; background: white; border: 1px solid #c9d6e2; border-radius: 4px; cursor: pointer; text-align: left; font-size: 14px; }
+.quiz-option.correct { background: #f6ffed; border-color: #52c41a; color: #389e0d; }
+.quiz-option.wrong { background: #fff1f0; border-color: #ff4d4f; color: #cf1322; }
+.quiz-explain { margin-top: 8px; font-size: 13px; color: #555; font-style: italic; }
+.summary-card { background: linear-gradient(135deg, #1a3a52, #2c5282); color: white; padding: 20px 24px; border-radius: 8px; margin-top: 24px; }
+.summary-card h2 { color: white; border: none; margin-top: 0; }
+.summary-card ul { padding-left: 20px; }
+code { background: #f1f3f5; padding: 1px 6px; border-radius: 3px; font-family: monospace; font-size: 0.9em; }
+.summary-card code { background: rgba(255,255,255,0.2); color: white; }
+.progress-bar { height: 4px; background: #e1e8ed; border-radius: 2px; overflow: hidden; margin: 8px 0 16px; }
+.progress-fill { height: 100%; background: #52c41a; transition: width 0.3s; width: 0%; }
+.tag { display:inline-block; background:#fde9c8; color:#874d00; font-size:11px; font-weight:600; padding:2px 8px; border-radius:10px; margin-left:6px; }
+.movelist { font-family: monospace; font-size: 13px; background:#fff8e1; border-radius:6px; padding:8px 12px; margin-top:10px; color:#874d00; line-height:1.7; }
+</style>
+</head>
+<body>
+
+<h1>Bài 1 — Rossolimo: 3…g6 <span class="tag">Trắng vs Sicilian</span></h1>
+<div class="source">
+  Chương 2 (Khai cuộc) — Keep It Simple 1.e4 · Trung cấp<br>
+  <a class="nav-link" href="../index-opening.html">← Trang chủ Khai cuộc</a> ·
+  <a class="nav-link" href="chapter_o2_bb5.html">← Chương 2</a>
+</div>
+
+<div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+
+<div class="stage">
+  <span class="stage-label">STAGE 1 · HOOK</span>
+  <h2 style="margin-top:8px">Né "rừng Sicilian" bằng 3.Bb5</h2>
+  <p>Chống Sicilian (1…c5), thay vì Open Sicilian đầy lý thuyết (Najdorf, Dragon…), KIS chơi <strong>Rossolimo: 3.Bb5</strong>.</p>
+  <div id="hookBoard" class="mini-board"></div>
+  <div class="movelist">1.e4 c5 2.Nf3 Nc6 3.Bb5 g6</div>
+  <div class="hook-question">
+    🤔 <strong>Đen chuẩn bị fianchetto (…Bg7).</strong> Trắng nên xử lý tượng b5 thế nào để tạo điểm yếu lâu dài cho Đen?
+  </div>
+  <button class="reveal-btn" onclick="document.getElementById('hookAnswer').classList.remove('hidden'); markStage(1);">Hiển thị đáp án</button>
+  <div id="hookAnswer" class="hidden" style="margin-top:14px">
+    <p><strong>4.Bxc6! dxc6 5.d3</strong> — đổi tượng lấy mã, tặng Đen <em>tốt đôi c6/c7</em> (cấu trúc hỏng) đổi lấy việc Đen có cặp tượng. Trắng dựng khung chắc <code>d3, h3, Nc3, Be3</code>, ít lý thuyết, nhắm khai thác cấu trúc tốt lành mạnh hơn về sau.</p>
+  </div>
+</div>
+
+<div class="stage">
+  <span class="stage-label">STAGE 2 · CONCEPT</span>
+  <h2 style="margin-top:8px">Đổi cấu trúc lấy đơn giản</h2>
+  <ul>
+    <li><strong>3.Bb5 (Rossolimo)</strong>: tránh hoàn toàn lý thuyết Open Sicilian. Bạn học ÍT, đối thủ Sicilian "mất vũ khí".</li>
+    <li><strong>4.Bxc6 dxc6</strong>: Đen nhận tốt đôi c (yếu lâu dài) nhưng được cặp tượng + cột d nửa mở. Đây là cuộc đổi chác "cấu trúc ↔ cặp tượng".</li>
+    <li><strong>Kế hoạch Trắng</strong>: <code>d3 + h3 + Nc3 + Be3</code>, giữ thế chắc; về sau nhắm cấu trúc tốt hơn (có thể e5, hoặc cô lập/khóa tốt c của Đen).</li>
+  </ul>
+</div>
+
+<div class="stage">
+  <span class="stage-label">STAGE 3 · WALKTHROUGH</span>
+  <div class="board-layout">
+    <div>
+      <div id="board"></div>
+      <div class="controls">
+        <button onclick="resetBoard()">⟨⟨ Đầu</button>
+        <button onclick="prevMove()">⟨ Lùi</button>
+        <button onclick="nextMove()">Tiến ⟩</button>
+      </div>
+    </div>
+    <div class="info-panel">
+      <div class="move-display" id="moveDisplay">Vị trí xuất phát</div>
+      <div class="commentary" id="commentary">Bấm "Tiến ⟩" để xem cách Rossolimo xử lý 3…g6.</div>
+      <div class="info-box" id="infoBox">Đến lượt: <strong>Trắng</strong></div>
+    </div>
+  </div>
+</div>
+
+<div class="stage">
+  <span class="stage-label">STAGE 4 · SELF-TEST</span>
+  <h2 style="margin-top:8px">Vì sao Trắng chơi 4.Bxc6 (chịu mất cặp tượng)?</h2>
+  <div class="self-test">
+    <div class="quiz-options" id="selfTestOptions">
+      <button class="quiz-option" onclick="checkSelfTest(this, true, 'Đúng! Đổi để tặng Đen tốt đôi c6/c7 — một điểm yếu cấu trúc lâu dài. Đổi lại Đen có cặp tượng, nhưng Trắng chơi chắc với ít lý thuyết và nhắm cấu trúc tốt hơn.')">Tạo tốt đôi (điểm yếu cấu trúc) cho Đen</button>
+      <button class="quiz-option" onclick="checkSelfTest(this, false, 'Sai. Không thắng quân — đây là đổi quân ngang giá để đổi lấy ưu thế cấu trúc.')">Để thắng quân ngay</button>
+      <button class="quiz-option" onclick="checkSelfTest(this, false, 'Sai. Mục tiêu là cấu trúc, không phải tấn công vua trực tiếp.')">Mở đường tấn công vua đen</button>
+    </div>
+    <div class="feedback hidden" id="selfTestFeedback"></div>
+  </div>
+</div>
+
+<div class="stage">
+  <span class="stage-label">STAGE 5 · MINI-QUIZ</span>
+  <div class="quiz">
+    <div class="quiz-q">Q1. Lợi ích lớn nhất của Rossolimo (3.Bb5) cho người mới?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" onclick="quizCheck(this, true)">Tránh toàn bộ lý thuyết Open Sicilian — học ít, đối thủ mất "vũ khí"</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Luôn thắng tốt sau 5 nước</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Ép Đen phải hòa</button>
+    </div>
+    <div class="quiz-explain hidden">Sicilian Mở là biển lý thuyết. 3.Bb5 đưa cờ về dòng ít lý thuyết, dựa trên kế hoạch &amp; cấu trúc.</div>
+  </div>
+  <div class="quiz">
+    <div class="quiz-q">Q2. Sau 4.Bxc6 dxc6, đổi chác là gì?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" onclick="quizCheck(this, false)">Trắng được thêm tốt</button>
+      <button class="quiz-option" onclick="quizCheck(this, true)">Đen nhận tốt đôi c (cấu trúc yếu lâu dài) ↔ Đen được cặp tượng</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Hai bên đều hỏng cấu trúc</button>
+    </div>
+    <div class="quiz-explain hidden">Cốt lõi của Rossolimo: chấp nhận cho địch cặp tượng để đổi lấy một điểm yếu cấu trúc trường tồn.</div>
+  </div>
+  <div class="quiz">
+    <div class="quiz-q">Q3. Khung phát triển tiêu chuẩn của Trắng?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" onclick="quizCheck(this, true)">d3, h3, Nc3, Be3 — chắc chắn, linh hoạt, chuẩn bị Qd2/e5</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Bão tốt f4-g4-h4 ngay lập tức</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Đẩy hết tốt cánh hậu</button>
+    </div>
+    <div class="quiz-explain hidden">Trắng không cần vội: dựng khung d3 vững, kiểm soát trung tâm, rồi khai thác cấu trúc tốt hơn về tàn cuộc.</div>
+  </div>
+</div>
+
+<div class="summary-card">
+  <h2>📌 Tóm tắt</h2>
+  <ul>
+    <li><strong>Line</strong>: <code>1.e4 c5 2.Nf3 Nc6 3.Bb5 g6 4.Bxc6 dxc6 5.d3 Bg7 6.h3 Nf6 7.Nc3 O-O 8.Be3</code>.</li>
+    <li><strong>3.Bb5 (Rossolimo)</strong>: né lý thuyết Open Sicilian.</li>
+    <li><strong>4.Bxc6 dxc6</strong>: đổi cặp tượng lấy tốt đôi c (điểm yếu lâu dài của Đen).</li>
+    <li><strong>Kế hoạch</strong>: khung chắc d3/h3/Nc3/Be3, chơi bằng cấu trúc — không cần thắng nhanh.</li>
+  </ul>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chessboard-js/1.0.0/chessboard-1.0.0.min.js"></script>
+<script>
+const START_FEN = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
+const MOVES = ['e4','c5','Nf3','Nc6','Bb5','g6','Bxc6','dxc6','d3','Bg7','h3','Nf6','Nc3','O-O','Be3'];
+const COMMENTARY = {
+  0: { move: 'Vị trí xuất phát', text: 'Đi tới Rossolimo nhánh 3…g6.' },
+  1: { move: '1. e4', text: 'Chiếm trung tâm, mở đường tượng f1 và Hậu.' },
+  2: { move: '1… c5', text: 'Phòng thủ Sicilian — Đen tranh trung tâm bất đối xứng.' },
+  3: { move: '2. Nf3', text: 'Phát triển, chuẩn bị d4 (nhưng KIS sẽ không mở Open Sicilian).' },
+  4: { move: '2… Nc6', text: '…Nc6 phát triển mã, kiểm soát d4/e5.' },
+  5: { move: '3. Bb5 !', text: 'ROSSOLIMO — né hoàn toàn Open Sicilian. Tượng nhắm mã c6.' },
+  6: { move: '3… g6', text: 'Đen chuẩn bị fianchetto …Bg7 (nhánh phổ biến nhất).' },
+  7: { move: '4. Bxc6 !', text: 'Đổi tượng lấy mã — cố ý phá cấu trúc tốt Đen.' },
+  8: { move: '4… dxc6', text: 'Đen nhận tốt đôi c6/c7 (yếu lâu dài) nhưng mở tượng c8 + có cặp tượng.' },
+  9: { move: '5. d3', text: 'Khung chắc: kiểm soát e4, chuẩn bị Nbd2/Nc3, Be3.' },
+  10: { move: '5… Bg7', text: 'Đen hoàn tất fianchetto.' },
+  11: { move: '6. h3', text: 'Ngăn …Bg4 / …Ng4, giữ cấu trúc gọn.' },
+  12: { move: '6… Nf6', text: 'Phát triển, nhắm e4.' },
+  13: { move: '7. Nc3', text: 'Phát triển, giữ d5/e4.' },
+  14: { move: '7… O-O', text: '…O-O nhập thành — vua an toàn; Đen dựa vào cặp tượng và cột b nửa-mở để phản công.' },
+  15: { move: '8. Be3', text: 'Phát triển, chuẩn bị Qd2. Trắng có cấu trúc lành mạnh hơn → ưu thế nhỏ, dễ chơi, ít lý thuyết.' }
+};
+let board, game, currentMove = 0, stagesCompleted = new Set();
+function initBoard() {
+  game = new Chess(START_FEN);
+  board = Chessboard('board', { position: 'start', draggable: true,
+    pieceTheme: 'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png',
+    onDrop: (s,t) => { const m = game.move({from:s,to:t,promotion:'q'}); if(!m) return 'snapback'; setTimeout(updateOverlays,100); },
+    onSnapEnd: () => { board.position(game.fen()); updateOverlays(); }});
+  updateDisplay();
+}
+function nextMove() { if(currentMove>=MOVES.length) return; game.move(MOVES[currentMove]); board.position(game.fen()); currentMove++; setTimeout(()=>{updateDisplay();updateOverlays();},50); if(currentMove>=MOVES.length) markStage(3); }
+function prevMove() { if(currentMove<=0) return; game.undo(); currentMove--; board.position(game.fen()); setTimeout(()=>{updateDisplay();updateOverlays();},50); }
+function resetBoard() { game = new Chess(START_FEN); board.position('start'); currentMove = 0; setTimeout(()=>{updateDisplay();updateOverlays();},50); }
+function updateDisplay() {
+  const cm = COMMENTARY[currentMove] || COMMENTARY[0];
+  document.getElementById('moveDisplay').textContent = cm.move;
+  document.getElementById('commentary').innerHTML = cm.text;
+  const box = document.getElementById('infoBox');
+  if (currentMove >= MOVES.length) { box.className = 'info-box win'; box.innerHTML = '★ Trắng cấu trúc lành mạnh hơn — dễ chơi'; }
+  else { box.className = 'info-box'; box.innerHTML = 'Đến lượt: <strong>' + (game.turn()==='w'?'Trắng':'Đen') + '</strong>'; }
+  updateProgress();
+}
+function updateOverlays() { $('#board .square-55d63').removeClass('hl'); ['b5','c6','d3'].forEach(sq => $('#board .square-' + sq).addClass('hl')); }
+function checkSelfTest(btn, ok, exp) {
+  document.querySelectorAll('#selfTestOptions .quiz-option').forEach(el=>el.disabled=true);
+  btn.classList.add(ok?'correct':'wrong');
+  const fb = document.getElementById('selfTestFeedback');
+  fb.classList.remove('hidden'); fb.className = 'feedback ' + (ok?'correct':'wrong');
+  fb.textContent = (ok?'✓ ':'✗ ') + exp; markStage(4);
+}
+function quizCheck(btn, ok) {
+  const q = btn.closest('.quiz');
+  q.querySelectorAll('.quiz-option').forEach(el=>el.disabled=true);
+  btn.classList.add(ok?'correct':'wrong');
+  if (!ok) q.querySelectorAll('.quiz-option').forEach(el => { if (el.getAttribute('onclick').includes('true')) el.classList.add('correct'); });
+  q.querySelector('.quiz-explain').classList.remove('hidden'); markStage(5);
+}
+function markStage(n) { stagesCompleted.add(n); updateProgress(); }
+function updateProgress() { document.getElementById('progressFill').style.width = (stagesCompleted.size/5*100) + '%'; }
+function initMiniBoards() { Chessboard('hookBoard', { position: 'r1bqkbnr/pp1ppp1p/2n3p1/1Bp5/4P3/5N2/PPPP1PPP/RNBQK2R', draggable: false, pieceTheme: 'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png' }); }
+$(document).ready(() => { initBoard(); initMiniBoards(); setTimeout(()=>markStage(2),500); });
+</script>
+
+</body>
+</html>
