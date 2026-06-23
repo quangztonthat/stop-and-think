@@ -192,23 +192,62 @@
   </div>
 </div>
 
+<!-- ────────── STAGE 3B: CHALLENGE (solve-first) ────────── -->
+<div class="stage">
+  <span class="stage-label">GIAI ĐOẠN 3B · THỬ THÁCH — TỰ TÍNH TRƯỚC</span>
+  <h2 style="margin-top:8px">Đổi vai: giờ ĐEN sắp thắng — hay không?</h2>
+  <p>Thế MỚI, khó hơn: Trắng Vua <code>h1</code> (vẫn kẹt góc). Đen Vua <code>f3</code> + tốt
+     <code>g3</code> (tốt cạnh Mã, chỉ còn 1 hàng nữa là phong cấp). <strong>Đen đi trước.</strong>
+     Vua đen đã áp sát sát sạt, khống chế cả <code>g2</code>.</p>
+  <div id="challengeBoard" class="mini-board"></div>
+  <div class="hook-question">
+    🧠 <strong>Tự tính trước khi mở đáp án:</strong> Đen đang vây Trắng vào góc và sắp đẩy tốt.
+    <strong>Đen có ÉP THẮNG được không?</strong> Hãy tính 2–3 nước: nếu Đen đẩy <code>g2</code> thì
+    Trắng đáp gì? Nếu Đen tiến Vua tới <code>f2</code> để dọn đường thì chuyện gì xảy ra?
+    Cẩn thận — có một cái bẫy chết người.
+  </div>
+  <button class="reveal-btn" onclick="document.getElementById('challengeAnswer').classList.remove('hidden'); markStage(3);">
+    Tôi đã tự tính → Hiển thị lời giải
+  </button>
+  <div id="challengeAnswer" class="hidden" style="margin-top:14px">
+    <p><strong>Vẫn HÒA!</strong> Dù Vua đen đã ép sát, Trắng vẫn trú được trong góc. Đây vẫn là
+       thế tốt cạnh Mã — Vua trắng luôn nắm hoặc đường vào ô phong cấp <code>g1</code>, hoặc đường
+       thoát ra <code>g2</code> để áp con tốt. Đen KHÔNG còn cách phá.</p>
+    <ul>
+      <li><strong>Nếu <code>1...g2+</code>:</strong> Trắng đáp <code>2.Kg1!</code> — chiếm ngay ô phong cấp.
+          Quay về đúng thế phòng thủ ở Giai đoạn 1–3 (tốt g2 bị Vua trắng chặn g1) → <strong>hòa</strong>.</li>
+      <li>⚠️ <strong>BẪY PAT chết người:</strong> nếu Đen tham lam tiến <code>1...Kf2??</code> để "dọn
+          đường cho tốt", thì Vua trắng h1 <strong>HẾT SẠCH nước đi mà KHÔNG bị chiếu</strong> →
+          <strong>PAT</strong>! Đen vứt luôn nửa điểm vào tay Trắng. (Đã kiểm chứng bằng máy: sau
+          <code>1...Kf2</code> Trắng không còn nước hợp lệ nào.)</li>
+      <li><strong>Vì sao Đen không thắng:</strong> với tốt cạnh Mã, dù Vua đen áp sát đến đâu, mỗi
+          khi tốt định xuống <code>g2</code> thì ô phong cấp <code>g1</code> luôn nằm trong tầm Vua
+          trắng (kề ngay góc h1). Đó là bản chất thế trú ẩn trong góc.</li>
+    </ul>
+    <p style="font-size:13px;color:#666">Tablebase (Syzygy) xác nhận thế này: <strong>draw</strong> —
+       mọi nước của Đen đều dẫn tới hòa.</p>
+  </div>
+</div>
+
 <!-- ────────── STAGE 4: SELF-TEST ────────── -->
 <div class="stage">
   <span class="stage-label">GIAI ĐOẠN 4 · TỰ KIỂM TRA</span>
-  <h2 style="margin-top:8px">Tại sao 1.Kg1 là nước DUY NHẤT của Trắng?</h2>
-  <p>Trắng Vua h1, đến lượt Trắng. Hãy phân tích các nước có thể.</p>
+  <h2 style="margin-top:8px">Chốt đáp án thế thử thách</h2>
+  <p>Cùng thế ở Giai đoạn 3B: Trắng <code>Kh1</code>, Đen <code>Kf3 + Pg3</code>,
+     <strong>Đen đi trước</strong>. Chọn nhận định ĐÚNG — 3 cái còn lại đều là bẫy quen thuộc:</p>
   <div id="selfTestBoard" class="mini-board"></div>
   <div class="self-test">
-    <div class="self-test-question">Nước nào KHÔNG hợp lệ cho Trắng? (chọn nước phạm luật)</div>
+    <div class="self-test-question">Đen nên chơi thế nào, và kết quả là gì?</div>
     <div class="quiz-options" id="selfTestOptions">
-      <button class="quiz-option" onclick="checkSelfTest(this, false, 'Kg1 hoàn toàn HỢP LỆ — vua trắng vào ô phong cấp. Đây là nước cứu Trắng.')">1.Kg1 (vào ô phong cấp)</button>
-      <button class="quiz-option" onclick="checkSelfTest(this, true, 'Đúng! Kxg2? Bắt tốt nhưng đứng sát Kg3 (cách 1 cột 1 hàng) nên phạm luật vì hai Vua không được đứng sát nhau.')">1.Kxg2 (bắt tốt)</button>
-      <button class="quiz-option" onclick="checkSelfTest(this, false, 'Kh2 PHẠM LUẬT (vì Kg3 đứng sát khống chế h2). Nhưng câu hỏi yêu cầu 1 đáp án, và Kxg2 cũng phạm luật. Cả 2 đều phạm luật — nhưng Kxg2 thường được kiểm tra trước vì là nước ăn quân.')">1.Kh2 (lùi xuống)</button>
+      <button class="quiz-option" onclick="checkSelfTest(this, false, 'BẪY PAT — đây là cái bẫy chính! Sau 1...Kf2?? Vua trắng h1 hết sạch nước đi mà KHÔNG bị chiếu → PAT → HÒA. Đen tự tay vứt cơ hội. Đã kiểm chứng: thế sau Kf2 không còn nước hợp lệ cho Trắng.')">1...Kf2 dọn đường cho tốt, rồi g2-g1=Q → Đen thắng</button>
+      <button class="quiz-option" onclick="checkSelfTest(this, true, 'Chuẩn! Thế này là HÒA bất kể Đen chơi gì. 1...g2+ thì 2.Kg1! chặn ô phong cấp (về đúng thế phòng thủ đã học). Và phải tránh 1...Kf2?? vì nước đó PAT Vua trắng. Tablebase: draw.')">Thế này HÒA; nếu 1...g2+ thì 2.Kg1!, và phải TRÁNH 1...Kf2 vì pat</button>
+      <button class="quiz-option" onclick="checkSelfTest(this, false, 'Sai. Vua đen f3 áp sát thật, nhưng tốt cạnh Mã + Vua trắng kề góc h1 luôn giữ được ô phong cấp g1. Tablebase xác nhận draw — Đen KHÔNG ép thắng được.')">Đen thắng dễ vì Vua đã áp sát và khống chế g2</button>
+      <button class="quiz-option" onclick="checkSelfTest(this, false, 'Sai chiều. Trắng KHÔNG thắng được (Trắng không có quân tấn công) — kết quả đúng là HÒA. Trắng chỉ cần thủ đúng để giữ nửa điểm, không thể hơn.')">Trắng thắng vì sắp pat được Đen</button>
     </div>
     <div class="feedback hidden" id="selfTestFeedback"></div>
     <p style="font-size:13px;color:#666;margin-top:10px">
-      Thực tế CẢ HAI Kxg2 và Kh2 đều phạm luật. Trắng CHỈ có Kg1. Đó là tại sao thế cờ này
-      ép Trắng vào nước duy nhất cứu ván cờ.
+      Bài học: bên TẤN CÔNG (Đen) phải coi chừng tự pat khi dồn Vua đối thủ vào góc. Bên PHÒNG THỦ
+      (Trắng) tận dụng đúng cái pat đó + ô phong cấp để hòa.
     </p>
   </div>
 </div>
@@ -216,7 +255,7 @@
 <!-- ────────── STAGE 5: MINI-QUIZ ────────── -->
 <div class="stage">
   <span class="stage-label">GIAI ĐOẠN 5 · TRẮC NGHIỆM NHANH</span>
-  <h2 style="margin-top:8px">3 câu hỏi củng cố</h2>
+  <h2 style="margin-top:8px">5 câu hỏi củng cố</h2>
 
   <div class="quiz">
     <div class="quiz-q">Câu 1. Sau 2.Kh2 g1=Q+, Hậu có được vua đen bảo vệ không?</div>
@@ -260,6 +299,43 @@
       so sánh hàng của tốt với khoảng cách của vua bên phòng thủ để biết có hòa được không.
     </div>
   </div>
+
+  <div class="quiz">
+    <div class="quiz-q">Câu 4 (tính toán). Trắng Vua <code>h1</code>, Đen Vua <code>f2</code> + tốt <code>g3</code>.
+       <strong>ĐẾN LƯỢT TRẮNG.</strong> Kết quả là gì?</div>
+    <div id="q4Board" class="mini-board" style="width:240px"></div>
+    <div class="quiz-options">
+      <button class="quiz-option" onclick="quizCheck(this, false)">Đen thắng — Trắng buộc lùi rồi tốt g3-g2-g1=Q</button>
+      <button class="quiz-option" onclick="quizCheck(this, true)">HÒA do PAT — Trắng không còn nước hợp lệ nào và không bị chiếu</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Trắng thắng — Trắng ăn được tốt g3 bằng Kg1-g2</button>
+    </div>
+    <div class="quiz-explain hidden">
+      Hãy soi 3 ô quanh Vua trắng h1: <code>g1</code> và <code>g2</code> đều kề Vua đen <code>f2</code>
+      nên bị Vua đen khống chế; ô <code>h2</code> bị tốt <code>g3</code> khống chế (tốt đen ăn chéo
+      xuống f2 và h2). Vậy Vua trắng KHÔNG còn ô nào hợp lệ, mà lại KHÔNG bị chiếu → <strong>PAT →
+      HÒA</strong>. Đây chính là cái bẫy pat: Đen đã ép Vua trắng vào <code>f2</code> quá sớm.
+      (Đã kiểm chứng bằng máy: White legal moves = [], stalemate = True.)
+    </div>
+  </div>
+
+  <div class="quiz">
+    <div class="quiz-q">Câu 5 (tính toán). Cùng motif tốt cạnh Mã, nhưng Vua trắng ở <strong>góc xa</strong>:
+       Trắng Vua <code>a1</code>, Đen Vua <code>g3</code> + tốt <code>g2</code>. <strong>ĐẾN LƯỢT TRẮNG.</strong>
+       Vì sao lần này Trắng KHÔNG hòa?</div>
+    <div id="q5Board" class="mini-board" style="width:240px"></div>
+    <div class="quiz-options">
+      <button class="quiz-option" onclick="quizCheck(this, false)">Vì tốt ở cột g luôn thắng, bất kể vị trí Vua</button>
+      <button class="quiz-option" onclick="quizCheck(this, true)">Vì Vua trắng ở a1 quá xa, không kịp về ô phong cấp g1 — Đen chỉ việc đẩy g1=Q</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Vì khi Đen đi trước thì luôn thắng</button>
+    </div>
+    <div class="quiz-explain hidden">
+      Kỹ thuật trú ẩn trong góc CHỈ cứu được khi Vua phòng thủ kịp chiếm ô phong cấp <code>g1</code>
+      (hoặc đã ở góc h1 sát bên). Ở đây Vua trắng a1 cách g1 tới 6 cột — đi bao nhiêu nước cũng không
+      về kịp. Đen cứ <code>1...g1=Q+</code> (sau nước bất kỳ của Trắng) là có Hậu → thắng.
+      <strong>So sánh:</strong> đúng thế này nhưng Vua trắng ở <code>h1</code> (kề g1) thì lại HÒA.
+      Vị trí Vua phòng thủ quyết định tất cả. (Tablebase: thế Ka1 = thua cho Trắng; thế Kh1 = hòa.)
+    </div>
+  </div>
 </div>
 
 <div class="summary-card">
@@ -284,7 +360,7 @@ const COMMENTARY = {
   0: { move: 'Thế cờ khởi đầu', text: 'Trắng Kh1, Đen Kg3 + tốt g2. Tốt cách 1 nước phong cấp. Trắng có 1 nước hợp lệ duy nhất.' },
   1: { move: '1. Kg1 !', text: 'Vua trắng vào ngay ô phong cấp g1. Đây là nước CỨU ván cờ! Tốt g2 không thể tiến lên g1 (đã có vua trắng). Tốt cũng không thể ăn quân vì f1 và h1 đều trống.' },
   2: { move: '1... Kf3', text: 'Vua đen tiến gần để cố đẩy Trắng ra. Kf3 khống chế g2 (tốt nhà được bảo vệ) và bao vây. Nhưng Trắng vẫn còn cách.' },
-  3: { move: '2. Kh2', text: 'Vua trắng phải nhường g1 (vì Kf3 khống chế g1, ở lại sẽ phạm luật sau khi Đen đi Kf3). Kh2 hợp lệ — không bị tốt g2 hay vua đen khống chế.' },
+  3: { move: '2. Kh2', text: 'Đến lượt Trắng phải đi, nhưng Vua g1 hết chỗ an toàn: f1 và h1 bị TỐT g2 khống chế (tốt ăn chéo), f2 bị Vua đen f3 khống chế. Chỉ còn Kh2 hợp lệ — và đó cũng là ô duy nhất không bị ai khống chế. (Đã kiểm chứng: nước hợp lệ duy nhất của Trắng = Kh2.)' },
   4: { move: '2... g1=Q+', text: 'Tốt phong cấp thành Hậu! Nhưng có chiếu Kh2 (Hậu ở g1 khống chế chéo đến h2). Có vẻ Đen thắng nhưng...' },
   5: { move: '3. Kxg1  ½-½', text: 'Trắng BẮT Hậu! Kh2 → g1 hợp lệ vì Hậu ở g1 không được bảo vệ (Kf3 cách 1 cột 2 hàng = ngoài tầm). Sau khi bắt: Vua đấu Vua = HÒA do không đủ lực chiếu hết. Trắng đã cứu được nửa điểm từ thế thua tưởng chừng không thể.' }
 };
@@ -446,12 +522,31 @@ function initMiniBoards() {
     $('#conceptBoard .square-h1').addClass('highlight-pawn-attack');
   }, 200);
 
-  Chessboard('selfTestBoard', { position: START_FEN, draggable: false,
+  // Stage 3B challenge + Stage 4 self-test: cùng thế Trắng Kh1, Đen Kf3 + Pg3 (Đen đi)
+  const CHALLENGE_FEN = '8/8/8/8/8/5kp1/8/7K b - - 0 1';
+  Chessboard('challengeBoard', { position: CHALLENGE_FEN, draggable: false,
     pieceTheme: 'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png' });
+  Chessboard('selfTestBoard', { position: CHALLENGE_FEN, draggable: false,
+    pieceTheme: 'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png' });
+  // Đánh dấu g1 (ô phong cấp tranh chấp, vàng) + h1 (Vua trắng trú góc, viền xanh)
+  setTimeout(() => {
+    $('#challengeBoard .square-g1').addClass('highlight-corner');
+    $('#challengeBoard .square-h1').addClass('highlight-king-blue');
+  }, 200);
 
   // Q1: position after 2.Kh2 g1=Q+ (white K at h2, black Q at g1, black K at f3)
   Chessboard('q1Board', {
     position: '8/8/8/8/8/5k2/7K/6q1 w - - 0 3', draggable: false,
+    pieceTheme: 'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png' });
+
+  // Q4 (calc): thế bẫy PAT — Trắng Kh1, Đen Kf2 + Pg3 (Trắng đi) = PAT
+  Chessboard('q4Board', {
+    position: '8/8/8/8/8/6p1/5k2/7K w - - 0 1', draggable: false,
+    pieceTheme: 'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png' });
+
+  // Q5 (calc): Vua trắng XA góc — Trắng Ka1, Đen Kg3 + Pg2 (Trắng đi) = Đen thắng
+  Chessboard('q5Board', {
+    position: '8/8/8/8/8/6k1/6p1/K7 w - - 0 1', draggable: false,
     pieceTheme: 'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png' });
 }
 
