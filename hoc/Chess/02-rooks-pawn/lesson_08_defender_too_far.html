@@ -120,16 +120,49 @@ code { background: #f1f3f5; padding: 1px 6px; border-radius: 3px; font-family: m
 </div>
 
 <div class="stage">
+  <span class="stage-label">GIAI ĐOẠN 3B · THỬ THÁCH — TỰ TÍNH TRƯỚC</span>
+  <h2 style="margin-top:8px">Vua đen ở góc XA — kịp bắt tốt không?</h2>
+  <p>Thế MỚI: Trắng tốt <code>a5</code>, Vua trắng <code>h1</code> (ở XA, không hỗ trợ),
+     Đen Vua <code>h8</code>. <strong>ĐEN đi trước.</strong></p>
+  <div id="tr8Board" class="mini-board"></div>
+  <div class="hook-question">
+    🧠 <strong>Tự tính trước khi mở đáp án:</strong> Đen đi trước — có kịp chạy về bắt con tốt không?
+    Đếm thử: Vua đen h8 → a8 mất mấy nước? Tốt a5 → a8 mất mấy nước?
+  </div>
+  <button class="reveal-btn" onclick="document.getElementById('tr8Answer').classList.remove('hidden'); markStage(3);">
+    Tôi đã tự tính → Hiển thị lời giải
+  </button>
+  <div id="tr8Answer" class="hidden" style="margin-top:14px">
+    <p><strong>KHÔNG kịp → Trắng THẮNG.</strong> Dù Đen được đi trước, Vua h8 vẫn quá xa.</p>
+    <ul>
+      <li>Vua đen <code>h8 → a8</code>: khoảng cách Chebyshev = max(7 cột, 0 hàng) = <strong>7 nước</strong>.</li>
+      <li>Tốt <code>a5 → a8</code>: chỉ <strong>3 nước</strong> đẩy. Đen chậm hơn rất nhiều.</li>
+    </ul>
+    <p style="font-size:13px;color:#666">Đường thắng: 1...Kg7 2.a6 Kf7 3.a7 Ke7 4.a8=Q. Stockfish xác nhận Trắng thắng.</p>
+
+    <h3 style="color:#2c5282;font-size:15px;margin:18px 0 6px">Nuance: ngoài "hình vuông" mà vẫn HOÀ</h3>
+    <p>Đổi Vua đen sang <code>e6</code> (tốt a5, Vua trắng vẫn ở xa h1, <strong>ĐEN đi trước</strong>).
+       Hình vuông của tốt a5 là cột <code>a–d</code> → <code>e6</code> nằm NGOÀI ô. Vậy Trắng thắng?</p>
+    <div id="tr8cBoard" class="mini-board"></div>
+    <p><strong>KHÔNG — vẫn HOÀ.</strong> Mấu chốt: <strong>bên phòng thủ đi trước</strong> thì Vua chỉ cần
+       cách ô đúng 1 cột là bước VÀO kịp — coi như hình vuông rộng thêm 1 cột về phía Đen.
+       <code>1...Kd5</code> bước vào ô, rồi đuổi kịp tốt → HOÀ. Tương phản với <code>h8</code>:
+       h8 cách những 3 cột so với mép ô (cột d) nên quá xa, không cứu nổi. (Stockfish: Ke6 = hoà, Kh8 = Trắng thắng.)</p>
+  </div>
+</div>
+
+<div class="stage">
   <span class="stage-label">GIAI ĐOẠN 4 · TỰ KIỂM TRA</span>
-  <h2 style="margin-top:8px">Vua đen ở đâu thì HÒA được?</h2>
-  <p>Cùng tốt Trắng a5 + Vua trắng đâu đó. Vua đen ở vị trí nào để bên phòng thủ vẫn HÒA?</p>
+  <h2 style="margin-top:8px">Vua đen ở đâu thì TRẮNG THẮNG?</h2>
+  <p>Tốt Trắng <code>a5</code>, Vua trắng ở XA (<code>h1</code>, không hỗ trợ), <strong>ĐEN đi trước</strong>.
+     Vua đen ở ô nào thì Đen KHÔNG kịp về → Trắng thắng?</p>
+  <div id="selfTestBoard" class="mini-board"></div>
   <div class="self-test">
-    <div class="self-test-question">Chọn vị trí vua đen mà cứu được hòa:</div>
+    <div class="self-test-question">Chọn vị trí Vua đen mà TRẮNG THẮNG:</div>
     <div class="quiz-options" id="selfTestOptions">
-      <button class="quiz-option" onclick="checkSelfTest(this, false, 'Kh1 quá xa — 7 nước đến a8. Tốt chỉ cần 3 nước → Trắng thắng dễ.')">Vua đen ở h1</button>
-      <button class="quiz-option" onclick="checkSelfTest(this, false, 'Kh8 cùng hàng với ô phong cấp nhưng cách 7 cột — 7 nước. Quá chậm.')">Vua đen ở h8</button>
-      <button class="quiz-option" onclick="checkSelfTest(this, true, 'Kc6 cách a8 = 2 nước (b7 → a8 hoặc Kb6 → a7 → phong tỏa). Bên phòng thủ kịp về góc → HÒA.')">Vua đen ở c6</button>
-      <button class="quiz-option" onclick="checkSelfTest(this, false, 'Kd5 cách a8 = 3 nước. Tốt cũng cần 3 nước Trắng (sau lợi thế 1 nhịp). Cuộc đua rất sát — thường thua nửa nước.')">Vua đen ở d5</button>
+      <button class="quiz-option" onclick="checkSelfTest(this, true, 'Chuẩn! h8 → a8 = 7 nước (Chebyshev), tốt chỉ cần 3 nước. Dù Đen đi trước cũng quá xa → Trắng thắng.')">h8 — góc xa (7 nước), quá xa</button>
+      <button class="quiz-option" onclick="checkSelfTest(this, false, 'Bẫy! e6 ở NGOÀI hình vuông (cột a–d) nghe như thua, NHƯNG Đen ĐI TRƯỚC — Vua chỉ cần cách ô 1 cột là bước vào kịp (1...Kd5). e6 sát mép ô → vào kịp → HOÀ, không phải Trắng thắng.')">e6 — ngoài hình vuông a–d nên thua</button>
+      <button class="quiz-option" onclick="checkSelfTest(this, false, 'c7 nằm TRONG hình vuông (cột a–d, hàng 5–8) → Vua đen đuổi kịp tốt dễ dàng → HOÀ, không phải Trắng thắng.')">c7 — trong hình vuông → HOÀ</button>
     </div>
     <div class="feedback hidden" id="selfTestFeedback"></div>
   </div>
@@ -171,6 +204,22 @@ code { background: #f1f3f5; padding: 1px 6px; border-radius: 3px; font-family: m
       Bài 1: vua đen ở a8, Trắng phong cấp nhưng Đen ăn Hậu → hòa.
       Bài 2: vua đen ở a8, Trắng đẩy a7 làm hết nước (pat) → hòa.
       Bài 3: vua đen ở g7 quá xa → Trắng thắng.
+    </div>
+  </div>
+  <div class="quiz">
+    <div class="quiz-q">Câu 4 (tính toán). Tốt <code>a5</code>, Vua đen <code>a1</code> (đáy bàn, CÙNG cột với tốt),
+       Vua trắng <code>h1</code> ở xa, <strong>TRẮNG đi trước</strong>. Vua đen cùng cột tốt — có chặn kịp không?</div>
+    <div id="q8dBoard" class="mini-board" style="width:240px"></div>
+    <div class="quiz-options">
+      <button class="quiz-option" onclick="quizCheck(this, true)">Không — a1→a8 = 7 nước, quá xa dù cùng cột → Trắng thắng</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Có, vì cùng cột với tốt</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Hoà do pat</button>
+    </div>
+    <div class="quiz-explain hidden">
+      Cùng cột KHÔNG giúp gì — điều quan trọng là số nước. Vua đen <code>a1 → a8</code> = 7 nước; tốt
+      <code>a5 → a8</code> chỉ 3 nước. Trắng lại đi trước nên còn thong thả hơn. Đường thắng:
+      1.a6 Ka2 2.a7 Ka3 3.a8=Q. Không có pat ở đây (Vua đen ở giữa rìa bàn vẫn còn nhiều ô trống) →
+      <strong>Trắng thắng</strong>.
     </div>
   </div>
 </div>
@@ -268,6 +317,14 @@ function initMiniBoards() {
   Chessboard('hookBoard', { position: START_FEN, draggable: false, pieceTheme: 'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png' });
   Chessboard('conceptBoard', { position: START_FEN, draggable: false, pieceTheme: 'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png' });
   setTimeout(() => { ['a5','a6','a7','a8'].forEach(sq => $('#conceptBoard .square-' + sq).addClass('highlight-square')); }, 200);
+  // Stage 3B: Pa5, Vua trắng h1 ở xa, Vua đen h8, ĐEN đi → Trắng thắng (quá xa)
+  Chessboard('tr8Board', { position: '7k/8/8/P7/8/8/8/7K b - - 0 1', draggable: false, pieceTheme: 'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png' });
+  // Stage 3B nuance: Vua đen e6 (ngoài ô a-d) nhưng Đen đi trước → HOÀ
+  Chessboard('tr8cBoard', { position: '8/8/4k3/P7/8/8/8/7K b - - 0 1', draggable: false, pieceTheme: 'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png' });
+  // Self-test: thế đáp đúng — Vua đen h8 (Trắng thắng)
+  Chessboard('selfTestBoard', { position: '7k/8/8/P7/8/8/8/7K b - - 0 1', draggable: false, pieceTheme: 'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png' });
+  // Q4 calc: Pa5, Vua đen a1 cùng cột, Vua trắng h1, Trắng đi → Trắng thắng
+  Chessboard('q8dBoard', { position: '8/8/8/P7/8/8/8/k6K w - - 0 1', draggable: false, pieceTheme: 'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png' });
 }
 
 $(document).ready(() => { initBoard(); initMiniBoards(); setTimeout(()=>markStage(2),500); });

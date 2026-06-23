@@ -117,16 +117,50 @@ code { background: #f1f3f5; padding: 1px 6px; border-radius: 3px; font-family: m
 </div>
 
 <div class="stage">
+  <span class="stage-label">GIAI ĐOẠN 3B · THỬ THÁCH — TỰ TÍNH TRƯỚC</span>
+  <h2 style="margin-top:8px">Lật sang tốt h: vẫn vậy?</h2>
+  <p>Thế MỚI (đối xứng sang cột h): Trắng Vua <code>h6</code> + tốt <code>h7</code>, Đen Vua <code>h8</code>.
+     <strong>Trắng đi trước.</strong> Tốt chỉ còn 1 nước nữa là phong cấp.</p>
+  <div id="tr6Board" class="mini-board"></div>
+  <div class="hook-question">
+    🧠 <strong>Tự tính trước khi mở đáp án:</strong> Trắng <strong>thắng hay hoà</strong>?
+    Cẩn thận cái bẫy "tốt h sát đích tưởng thắng".
+  </div>
+  <button class="reveal-btn" onclick="document.getElementById('tr6Answer').classList.remove('hidden'); markStage(3);">
+    Tôi đã tự tính → Hiển thị lời giải
+  </button>
+  <div id="tr6Answer" class="hidden" style="margin-top:14px">
+    <p><strong>HOÀ</strong> — đối xứng y hệt tốt biên cột a. Trắng không có nước nào thắng.</p>
+    <ul>
+      <li><code>1.Kg6</code> (đi ra để tốt phong cấp) làm Vua đen ở <code>h8</code> <strong>hết nước</strong>:
+          g8 và g7 bị Vua g6 khống chế, h7 đã có tốt → <strong>hết nước (pat) = HOÀ</strong>.</li>
+      <li>Còn nếu đứng yên giữ tốt thì không bao giờ phong được — tốt h7 không thể lên h8 vì có Vua đen.</li>
+    </ul>
+    <p style="font-size:13px;color:#666">Đây chính là ngoại lệ tốt biên, chỉ lật từ cột a sang cột h. Stockfish xác nhận hoà.</p>
+
+    <h3 style="color:#2c5282;font-size:15px;margin:18px 0 6px">Thế khó thêm: tốt lùi về a5, dư nhịp</h3>
+    <p>Thế: Trắng Vua <code>b6</code> + tốt <code>a5</code>, Đen Vua <code>a8</code>. <strong>Trắng đi trước.</strong>
+       Tốt mới ở hàng 5 — Trắng có thừa nhịp để xoay xở. Có thắng được không?</p>
+    <div id="tr6cBoard" class="mini-board"></div>
+    <p><strong>Vẫn HOÀ.</strong> Dù tốt lùi xa hơn và Trắng có thêm nước đi để chờ, Vua đen chỉ cần
+       bám góc <code>a8</code> ↔ <code>b8</code>. Mỗi lần Trắng định đẩy tốt tới đích đều rơi vào đúng
+       bẫy hết nước (pat) hoặc mất tốt — y như thế hàng 7. Thêm nhịp không phá được góc.</p>
+  </div>
+</div>
+
+<div class="stage">
   <span class="stage-label">GIAI ĐOẠN 4 · TỰ KIỂM TRA</span>
-  <h2 style="margin-top:8px">Trắng nên đi nước nào?</h2>
+  <h2 style="margin-top:8px">Chốt: thế chính tốt a — kết quả & lý do</h2>
+  <p>Quay lại thế gốc: Trắng <code>Ka6 + Pa7</code>, Đen <code>Ka8</code>, <strong>Trắng đi trước</strong>.
+     Chọn nhận định ĐÚNG — 3 cái còn lại đều là bẫy quen thuộc:</p>
   <div id="selfTestBoard" class="mini-board"></div>
   <div class="self-test">
-    <div class="self-test-question">Chọn nước Trắng:</div>
+    <div class="self-test-question">Kết quả + lý do đúng là gì?</div>
     <div class="quiz-options" id="selfTestOptions">
-      <button class="quiz-option" onclick="checkSelfTest(this, false, 'Kb6 làm Đen hết nước (pat) ngay! Vua đen ở a8 không còn nước hợp lệ — Ka7 phạm luật (vào ô tốt đang bảo vệ), Kb7 phạm luật (Kb6 khống chế), Kb8 phạm luật (tốt a7 khống chế). Hết nước (pat) = hòa.')">Kb6 (đẩy vua đen)</button>
-      <button class="quiz-option" onclick="checkSelfTest(this, false, 'Kb7 phạm luật — hai vua kề nhau (Ka8 + Kb7).')">Kb7 (gần vua đen)</button>
-      <button class="quiz-option" onclick="checkSelfTest(this, true, 'Đúng — đây là cố gắng tốt nhất. Nhưng sau Ka5, vua đen sẽ chạy Kb7 đến tốt a, Trắng buộc phải phong cấp, Đen ăn Hậu → HÒA.')">Ka5 (tránh hết nước)</button>
-      <button class="quiz-option" onclick="checkSelfTest(this, false, 'a8=Q? Tốt a7 không thể tới a8 — chỗ đó có vua đen. Tốt không ăn theo hướng đi thẳng.')">a8=Q (phong cấp ngay)</button>
+      <button class="quiz-option" onclick="checkSelfTest(this, true, 'Chuẩn! Tốt biên (cột a) + Vua đen thủ góc a8: mọi cố gắng của Trắng đều dẫn tới hết nước (pat) hoặc mất tốt. Đây là ngoại lệ kinh điển — hơn quân vẫn HOÀ.')">HOÀ — tốt biên, Vua đen thủ góc a8; mọi cố gắng đều pat hoặc mất tốt</button>
+      <button class="quiz-option" onclick="checkSelfTest(this, false, 'Bẫy hơn-quân! Có tốt a7 + Vua a6 hỗ trợ nghe như thắng, nhưng tốt BIÊN là ngoại lệ: không có cột bên ngoài để Vua trắng đứng đẩy Vua đen ra → chỉ HOÀ.')">Trắng thắng — đã có tốt a7 + Vua a6 hỗ trợ</button>
+      <button class="quiz-option" onclick="checkSelfTest(this, false, 'Không phong được! Ô a8 đang có Vua ĐEN đứng. Tốt đi thẳng không ăn được, nên a8=Q là nước phạm luật.')">Trắng thắng sau 1.a8=Q</button>
+      <button class="quiz-option" onclick="checkSelfTest(this, false, 'Kết quả HOÀ là đúng, nhưng LÝ DO sai. Trắng dư sức chiếu hết bằng Vua+Hậu NẾU phong được tốt; vấn đề là KHÔNG phong nổi (góc + pat), chứ không phải "thiếu lực".')">Hoà vì hai bên đều thiếu lực chiếu hết</button>
     </div>
     <div class="feedback hidden" id="selfTestFeedback"></div>
   </div>
@@ -166,6 +200,22 @@ code { background: #f1f3f5; padding: 1px 6px; border-radius: 3px; font-family: m
     </div>
     <div class="quiz-explain hidden">
       Tốt h là đối xứng của tốt a. Mọi thế cờ và ngoại lệ đều áp dụng (chỉ lật bên). Cả 2 cùng gọi là "tốt biên".
+    </div>
+  </div>
+  <div class="quiz">
+    <div class="quiz-q">Câu 4 (tính toán). Sau <code>1.Kg6</code> ở Giai đoạn 3B: Đen Vua <code>h8</code>, tốt <code>h7</code>,
+       Vua trắng <code>g6</code>, <strong>ĐEN đi</strong>. Vua đen còn nước đi hợp lệ nào không?</div>
+    <div id="q6dBoard" class="mini-board" style="width:240px"></div>
+    <div class="quiz-options">
+      <button class="quiz-option" onclick="quizCheck(this, true)">Không — hết nước (pat) → HOÀ</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Có, Kg8</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Có, Kh7</button>
+    </div>
+    <div class="quiz-explain hidden">
+      Vua đen ở h8 chỉ có 3 ô lân cận: <code>g8</code>, <code>g7</code>, <code>h7</code>.
+      Cả g8 và g7 đều bị Vua trắng <code>g6</code> khống chế (kề bên) → phạm luật.
+      Ô <code>h7</code> đã có tốt trắng → không đi vào được. Vua đen KHÔNG bị chiếu nhưng hết nước
+      → <strong>hết nước (pat) → HOÀ</strong>. Chính nước "tự nhiên" 1.Kg6 lại vứt mất con tốt h.
     </div>
   </div>
 </div>
@@ -254,6 +304,12 @@ function initMiniBoards() {
   Chessboard('conceptBoard', { position: 'k7/P7/8/8/8/8/8/8 w - - 0 1', draggable: false, pieceTheme: 'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png' });
   setTimeout(() => { $('#conceptBoard .square-a8').addClass('highlight-corner'); $('#conceptBoard .square-b8').addClass('highlight-corner'); }, 200);
   Chessboard('selfTestBoard', { position: START_FEN, draggable: false, pieceTheme: 'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png' });
+  // Stage 3B: tốt h đối xứng (Kh6 + Ph7 vs Kh8, Trắng đi) → HOÀ
+  Chessboard('tr6Board', { position: '7k/7P/7K/8/8/8/8/8 w - - 0 1', draggable: false, pieceTheme: 'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png' });
+  // Stage 3B thế khó: tốt lùi a5, Kb6 vs Ka8, Trắng đi → vẫn HOÀ
+  Chessboard('tr6cBoard', { position: 'k7/8/1K6/P7/8/8/8/8 w - - 0 1', draggable: false, pieceTheme: 'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png' });
+  // Q4 calc: sau 1.Kg6 (Kh8, Ph7, Kg6, Đen đi) → pat
+  Chessboard('q6dBoard', { position: '7k/7P/6K1/8/8/8/8/8 b - - 0 1', draggable: false, pieceTheme: 'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png' });
 }
 
 $(document).ready(() => { initBoard(); initMiniBoards(); setTimeout(()=>markStage(2),500); });

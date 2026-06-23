@@ -64,19 +64,23 @@ code { background: #f1f3f5; padding: 1px 6px; border-radius: 3px; font-family: m
 
 <div class="stage">
   <span class="stage-label">GIAI ĐOẠN 1 · DẪN NHẬP</span>
-  <h2 style="margin-top:8px">Đẩy tốt QUÁ NHANH = hết nước (pat)</h2>
+  <h2 style="margin-top:8px">Tốt biên + Vua đen thủ góc = HOÀ chết</h2>
   <p>Thế cờ: Trắng Vua b6 + tốt a6, Đen Vua a8. Trắng đến lượt — tốt chỉ cần 2 nước nữa là phong cấp.</p>
   <div id="hookBoard" class="mini-board"></div>
   <div class="hook-question">
-    🤔 <strong>Trắng nên đi gì?</strong> Trông tự nhiên là 1.a7 đẩy tốt lên hàng 7.
-    Nhưng nước này thực ra... <em>vứt bỏ thế thắng</em>. Tại sao?
+    🤔 <strong>Trông như Trắng thắng:</strong> hơn hẳn 1 tốt, Vua áp sát. Nhưng đây là <em>tốt biên</em> (cột a)
+    và Vua đen đang thủ góc <code>a8</code>. Thế này thật ra <strong>HOÀ</strong> — không nước nào thắng.
+    Hãy thử nước "tự nhiên" <code>1.a7</code> xem chuyện gì xảy ra.
   </div>
   <button class="reveal-btn" onclick="document.getElementById('hookAnswer').classList.remove('hidden'); markStage(1);">Hiển thị đáp án</button>
   <div id="hookAnswer" class="hidden" style="margin-top:14px">
-    <p><strong>1.a7 = HẾT NƯỚC (PAT) → HÒA!</strong> Sau 1.a7, vua đen ở a8 không còn nước hợp lệ:
+    <p><strong>HOÀ tuyệt đối</strong> — Stockfish xác nhận thế này KHÔNG có nước nào thắng cho Trắng.
+       Tốt biên + Vua đen thủ góc <code>a8</code> là ngoại lệ kinh điển: hơn quân vẫn không thắng nổi.</p>
+    <p><strong>Và <code>1.a7??</code> cho thấy ngay lý do:</strong> sau 1.a7, vua đen ở a8 không còn nước hợp lệ —
        Ka7 phạm luật (ăn tốt đang được Kb6 bảo vệ), Kb7 phạm luật (Kb6 khống chế), Kb8 phạm luật (tốt a7 khống chế b8).
-       Vua đen không bị chiếu nhưng không di chuyển được → HẾT NƯỚC (PAT) → HÒA.</p>
-    <p>Đây là bẫy phổ biến: bên mạnh hơn quá vội đẩy tốt, vô tình làm đối thủ hết nước (pat).</p>
+       Vua đen không bị chiếu nhưng hết nước → <strong>HẾT NƯỚC (PAT) → HOÀ</strong>.</p>
+    <p>Stalemate (hết nước) ở đây không phải "vứt thế thắng" — thế vốn đã hoà. Nó là <em>tài nguyên thủ hoà</em>
+       của bên yếu: chính cái góc bị nhốt lại biến thành cái bẫy pat.</p>
   </div>
 </div>
 
@@ -118,17 +122,46 @@ code { background: #f1f3f5; padding: 1px 6px; border-radius: 3px; font-family: m
 </div>
 
 <div class="stage">
+  <span class="stage-label">GIAI ĐOẠN 3B · THỬ THÁCH — TỰ TÍNH TRƯỚC</span>
+  <h2 style="margin-top:8px">Vua trắng áp sát, Vua đen chưa vào góc</h2>
+  <p>Thế MỚI: Trắng Vua <code>b5</code> + tốt <code>a5</code>, Đen Vua <code>b7</code>. <strong>Trắng đi trước.</strong>
+     Trắng hơn 1 tốt và Vua đang hỗ trợ ngay cạnh tốt.</p>
+  <div id="tr7Board" class="mini-board"></div>
+  <div class="hook-question">
+    🧠 <strong>Tự tính trước khi mở đáp án:</strong> Hơn quân + Vua hỗ trợ như vậy — Trắng
+    <strong>thắng được không</strong>?
+  </div>
+  <button class="reveal-btn" onclick="document.getElementById('tr7Answer').classList.remove('hidden'); markStage(3);">
+    Tôi đã tự tính → Hiển thị lời giải
+  </button>
+  <div id="tr7Answer" class="hidden" style="margin-top:14px">
+    <p><strong>HOÀ.</strong> Vẫn là tốt biên: Vua đen <code>b7</code> kịp lùi về giữ góc <code>a8</code> ↔ <code>b8</code>.
+       Khi Trắng đẩy tốt tới đích, Vua đen lại bám góc và mọi nỗ lực rơi vào bẫy pat hoặc mất tốt — y hệt thế ở Giai đoạn 1.</p>
+    <p style="font-size:13px;color:#666">Tốt biên không có cột bên ngoài để Vua trắng đứng đẩy Vua đen ra khỏi góc. Stockfish xác nhận hoà.</p>
+
+    <h3 style="color:#2c5282;font-size:15px;margin:18px 0 6px">Thế khó thêm: Vua trắng đứng TRƯỚC tốt</h3>
+    <p>Thế: Trắng Vua <code>a6</code> + tốt <code>a5</code> (Vua đứng ngay trước con tốt của mình),
+       Đen Vua <code>a8</code>. <strong>Trắng đi trước.</strong> Có thắng được không?</p>
+    <div id="tr7cBoard" class="mini-board"></div>
+    <p><strong>Vẫn HOÀ.</strong> Kể cả khi Vua trắng đi trước tốt, nó cũng đang CẢN đường con tốt của chính mình:
+       muốn đẩy tốt thì Vua phải nhường cột a, mà rời cột a thì Vua đen <code>a8</code> lại thoát hoặc tạo pat.
+       Tốt biên + Vua đen thủ góc = không có cách thắng.</p>
+  </div>
+</div>
+
+<div class="stage">
   <span class="stage-label">GIAI ĐOẠN 4 · TỰ KIỂM TRA</span>
-  <h2 style="margin-top:8px">Nước nào TRÁNH thế hết nước (pat)?</h2>
-  <p>Cùng thế cờ, Trắng nên chọn nước nào để KHÔNG bị hết nước (pat)?</p>
+  <h2 style="margin-top:8px">Chốt: thế chính — kết quả là gì?</h2>
+  <p>Quay lại thế gốc: Trắng <code>Kb6 + Pa6</code>, Đen <code>Ka8</code>, <strong>Trắng đi trước</strong>.
+     Chọn nhận định ĐÚNG:</p>
   <div id="selfTestBoard" class="mini-board"></div>
   <div class="self-test">
-    <div class="self-test-question">Chọn nước Trắng:</div>
+    <div class="self-test-question">Kết quả đúng là gì?</div>
     <div class="quiz-options" id="selfTestOptions">
-      <button class="quiz-option" onclick="checkSelfTest(this, false, '1.a7 làm hết nước (pat) (hòa). Sai!')">1.a7 (đẩy tốt)</button>
-      <button class="quiz-option" onclick="checkSelfTest(this, true, 'Đúng — Kc6 lùi vua, không hết nước (pat). Bây giờ vua đen có Kb8 để đi (tốt a6 không khống chế b8). Tuy không thắng nhưng không thua.')">1.Kc6 (lùi vua)</button>
-      <button class="quiz-option" onclick="checkSelfTest(this, false, 'Kb7 phạm luật — hai vua kề nhau (Ka8 + Kb7). Vua không thể di chuyển vào ô kề bên vua đối thủ.')">1.Kb7 (gần vua đen)</button>
-      <button class="quiz-option" onclick="checkSelfTest(this, false, 'Kc7 hợp lệ nhưng dẫn đến một thế hòa khác. Cũng được nhưng không phải nước duy nhất tránh hết nước (pat).')">1.Kc7 (chéo lên)</button>
+      <button class="quiz-option" onclick="checkSelfTest(this, true, 'Chuẩn! Tốt biên cột a + Vua đen thủ góc a8 = HOÀ. Không có cột bên ngoài để Vua trắng đẩy Vua đen ra; mọi cố gắng đều dẫn tới pat hoặc mất tốt.')">HOÀ — tốt biên a, Vua đen thủ góc a8</button>
+      <button class="quiz-option" onclick="checkSelfTest(this, false, 'Bẫy hơn-quân! Hơn 1 tốt và Vua b6 áp sát nghe như thắng, nhưng tốt BIÊN là ngoại lệ — Vua đen thủ góc a8 thì Trắng không thắng được. HOÀ.')">Trắng thắng — hơn 1 tốt, Vua b6 áp sát</button>
+      <button class="quiz-option" onclick="checkSelfTest(this, false, '1.a7 KHÔNG phong cấp được gì — nó làm Vua đen ở a8 HẾT NƯỚC (pat) ngay lập tức = HOÀ. Phong cấp đòi tới a8, nhưng a8 còn 2 nước nữa và mỗi nước đều vướng góc.')">Trắng thắng bằng 1.a7 rồi phong cấp</button>
+      <button class="quiz-option" onclick="checkSelfTest(this, false, 'Sai chiều — Trắng đang HƠN quân, không thể thua. Kết quả là HOÀ, không phải Đen thắng.')">Đen thắng</button>
     </div>
     <div class="feedback hidden" id="selfTestFeedback"></div>
   </div>
@@ -170,15 +203,31 @@ code { background: #f1f3f5; padding: 1px 6px; border-radius: 3px; font-family: m
       Khi gần kết thúc, chú ý mỗi nước có thể làm đối thủ hết nước (pat). Kiểm tra: liệt kê 8 ô lân cận vua đối thủ, xem có ô nào hợp lệ không. Nếu không, đừng đi nước đó.
     </div>
   </div>
+  <div class="quiz">
+    <div class="quiz-q">Câu 4 (tính toán). Sau <code>1.a7</code> ở thế gốc: Đen Vua <code>a8</code>, tốt <code>a7</code>,
+       Vua trắng <code>b6</code>, <strong>ĐEN đi</strong>. Đây là pat hay chiếu hết?</div>
+    <div id="q7dBoard" class="mini-board" style="width:240px"></div>
+    <div class="quiz-options">
+      <button class="quiz-option" onclick="quizCheck(this, true)">Pat (Vua đen KHÔNG bị chiếu + không còn nước) → HOÀ</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Chiếu hết → Trắng thắng</button>
+      <button class="quiz-option" onclick="quizCheck(this, false)">Vua đen còn nước Kb8</button>
+    </div>
+    <div class="quiz-explain hidden">
+      Vua đen ở a8 KHÔNG bị quân nào chiếu. Ba ô lân cận đều bị chặn: <code>a7</code> có tốt trắng
+      (được Kb6 bảo vệ nên không ăn được), <code>b7</code> bị Vua trắng b6 khống chế, <code>b8</code> bị
+      tốt a7 khống chế theo đường chéo. Không bị chiếu + không có nước hợp lệ = <strong>pat → HOÀ</strong>
+      (không phải chiếu hết). Kb8 là nước phạm luật vì tốt a7 đang khống chế b8.
+    </div>
+  </div>
 </div>
 
 <div class="summary-card">
   <h2>📌 Tóm tắt</h2>
   <ul>
-    <li><strong>Bẫy hết nước (pat)</strong>: Đẩy tốt quá vội, vô tình khóa hết nước đi của vua đối thủ.</li>
-    <li><strong>Trong tàn cuộc tốt biên</strong>: 1.a7 với bên phòng thủ ở a8 + vua trắng b6 = hết nước (pat) ngay.</li>
-    <li><strong>Quy tắc kiểm tra</strong>: Trước khi đẩy tốt nước cuối, đếm số ô hợp lệ cho vua đối thủ. Nếu = 0 → DỪNG, đi nước khác.</li>
-    <li><strong>Liên hệ Bài 1 Ch2</strong>: Cả 2 bài cùng minh hoạ "đặc thù của tốt biên" — đây là góc nhìn cụ thể (cách thua) bên cạnh trú ẩn trong góc (cách hòa).</li>
+    <li><strong>Thế này vốn HOÀ</strong>: tốt biên cột a + Vua đen thủ góc a8 — Trắng hơn quân vẫn không thắng được.</li>
+    <li><strong>Hết nước (pat) = tài nguyên thủ hoà</strong>: với bên YẾU, góc bị nhốt biến thành bẫy pat. <code>1.a7</code> chỉ lộ ngay lý do thế đã hoà, không phải "vứt thế thắng".</li>
+    <li><strong>Quy tắc kiểm tra (bên mạnh)</strong>: ở những thế CÓ thể thắng, trước khi đẩy tốt nước cuối hãy đếm số ô hợp lệ cho vua đối thủ — nếu = 0 thì đó là pat (hoà), DỪNG, đi nước khác.</li>
+    <li><strong>Liên hệ Bài 1 Ch2</strong>: cùng minh hoạ "đặc thù tốt biên" — cùng một thế hoà, nhìn từ cơ chế hết nước (pat).</li>
   </ul>
 </div>
 
@@ -246,6 +295,12 @@ function initMiniBoards() {
   Chessboard('conceptBoard', { position: 'k7/P7/1K6/8/8/8/8/8 w - - 0 1', draggable: false, pieceTheme: 'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png' });
   setTimeout(() => { ['a7', 'b7', 'b8'].forEach(sq => $('#conceptBoard .square-' + sq).addClass('highlight-attack')); $('#conceptBoard .square-a8').addClass('highlight-corner'); }, 200);
   Chessboard('selfTestBoard', { position: START_FEN, draggable: false, pieceTheme: 'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png' });
+  // Stage 3B: Kb5 + Pa5 vs Kb7, Trắng đi → HOÀ
+  Chessboard('tr7Board', { position: '8/1k6/8/PK6/8/8/8/8 w - - 0 1', draggable: false, pieceTheme: 'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png' });
+  // Stage 3B thế khó: Vua trắng đứng TRƯỚC tốt (Ka6 + Pa5 vs Ka8, Trắng đi) → HOÀ
+  Chessboard('tr7cBoard', { position: 'k7/8/K7/P7/8/8/8/8 w - - 0 1', draggable: false, pieceTheme: 'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png' });
+  // Q4 calc: sau 1.a7 (Ka8, Pa7, Kb6, Đen đi) → pat
+  Chessboard('q7dBoard', { position: 'k7/P7/1K6/8/8/8/8/8 b - - 0 1', draggable: false, pieceTheme: 'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png' });
 }
 
 $(document).ready(() => { initBoard(); initMiniBoards(); setTimeout(()=>markStage(2),500); });
