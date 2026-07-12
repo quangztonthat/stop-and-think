@@ -325,12 +325,7 @@ window.STOP_AND_THINK_BOOKS = [
     summary: '8 CEO huyền thoại — không charisma, không nổi tiếng. Họ giàu sụ vì biết phân bổ vốn tốt nhất thời đại.',
     keywords: ['thorndike', 'ceo', 'capital allocation', 'buffett', 'singleton', 'malone', 'graham', 'unconventional'],
     related: ['psychology-of-money', 'fooled-by-randomness', 'thinking-in-bets']
-  }  
-  
-  
-  
-  
-  
+  }
   
   
   

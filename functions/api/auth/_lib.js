@@ -1,9 +1,14 @@
 // Shared auth helpers — runs on Cloudflare Workers runtime (no Node libs).
 // Used by signup/login/logout/me + Google OAuth.
 
-// ─── Crypto / password hashing (PBKDF2-SHA256, 210k iters per OWASP 2023) ───
+// ─── Crypto / password hashing (PBKDF2-SHA256) ───
+// 50k iters — phù hợp Cloudflare Workers Free tier CPU limit (10ms/request).
+// Bảo mật: 50k vẫn cao hơn NIST 2017 minimum 10k. Web Crypto deriveBits native nên fast.
+// OWASP 2023 yêu cầu 600k, nhưng kết hợp rate limit + email verify đủ cho hobby site.
+// Nếu upgrade Workers Paid (50ms CPU) → có thể tăng lên 210k.
+// verifyPassword đọc iters từ stored hash → upgrade không break user cũ.
 
-const PBKDF2_ITERS = 210_000;
+const PBKDF2_ITERS = 50_000;
 const PBKDF2_KEYLEN = 32; // 256 bits
 
 export async function hashPassword(password) {
