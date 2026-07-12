@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Kéo giãn cơ — hướng dẫn từng bước, có đồng hồ giữ</title>
+<script>try{document.documentElement.dataset.theme=localStorage.getItem('game:theme')||'dark'}catch(e){document.documentElement.dataset.theme='dark'}</script>
 <style>
 :root{
   --bg:#0b101c; --panel:#1a2233; --panel2:#141b2b; --text:#e8edf7; --dim:#8a94ad;
@@ -123,9 +124,17 @@ button,.ex-item,.tab{touch-action:manipulation}
   .ex-list{max-height:250px}
   button{min-height:44px}
 }
+
+/* ---------- dark/light mode (nút đổi theme — persist chung key game:theme cho cả bộ) ---------- */
+.theme-btn{position:fixed;top:calc(10px + env(safe-area-inset-top));right:calc(12px + env(safe-area-inset-right));z-index:80;border:1px solid var(--line);background:var(--panel2);color:var(--text);width:38px;height:38px;min-width:0;border-radius:999px;cursor:pointer;font-size:16px;font-family:inherit;line-height:1;padding:0;flex:none}
+html[data-theme="light"]{--bg:#eef1f8; --panel:#ffffff; --panel2:#e9edf7; --text:#1a2233; --dim:#5b6579; --line:#cfd8e8;}
+html[data-theme="light"] body{background:radial-gradient(1100px 700px at 85% -10%, rgba(56,189,248,.12), transparent 60%),radial-gradient(900px 650px at -10% 110%, rgba(74,222,128,.10), transparent 60%),var(--bg)}
+html[data-theme="light"] .card{background:#ffffff;box-shadow:0 8px 26px rgba(23,32,56,.10)}
+html[data-theme="light"] .step-pill{background:#ffffff}
 </style>
 </head>
 <body>
+<button class="theme-btn" id="themeBtn" title="Đổi giao diện sáng/tối">☀️</button>
 <h1>🧘 Kéo giãn cơ</h1>
 <div class="steps-strip">
   <span class="step-pill"><b>1</b> Chọn nhóm cơ &amp; bài giãn</span>
@@ -197,7 +206,7 @@ button,.ex-item,.tab{touch-action:manipulation}
   </aside>
 </div>
 
-<footer>keo-gian · Build v5 · 2026-07-12 · 40 bài giãn / 6 nhóm cơ · 5 chuỗi + chuỗi tự ghép, chỉnh được từng chuỗi · hướng dẫn đọc-theo thay camera · không thay thế tư vấn y tế</footer>
+<footer>keo-gian · Build v6 · 2026-07-12 · 40 bài giãn / 6 nhóm cơ · 5 chuỗi + chuỗi tự ghép, chỉnh được từng chuỗi · hướng dẫn đọc-theo thay camera · không thay thế tư vấn y tế</footer>
 
 <script id="pure-logic">
 'use strict';
@@ -528,10 +537,26 @@ if (typeof module !== 'undefined' && module.exports)
   // ---- giọng đọc (en mặc định — đọc số rõ; vi cho người có giọng Việt xịn) ----
   let voiceMode = (() => { try { return localStorage.getItem('keo-gian:voice') || 'en'; } catch { return 'en'; } })();
   if (!['en', 'vi', 'off'].includes(voiceMode)) voiceMode = 'en';
-  function pickVoice(pref) {
-    try { return (speechSynthesis.getVoices() || []).find(v => v.lang && v.lang.toLowerCase().startsWith(pref)) || null; }
-    catch { return null; }
+  // Chấm điểm giọng: KHÔNG lấy giọng đầu tiên (thường là giọng robot đời cũ) — ưu tiên giọng neural/xịn của máy.
+  function rankVoice(v, pref) {
+    if (!v || !v.lang || !v.lang.toLowerCase().startsWith(pref)) return -1;
+    const n = (v.name || '').toLowerCase();
+    let s = 0;
+    if (/natural|neural/.test(n)) s += 8;   // Microsoft ... Natural (Windows/Edge)
+    if (/enhanced|premium/.test(n)) s += 7; // giọng nâng cao iOS (nếu máy đã tải)
+    if (/siri/.test(n)) s += 6;
+    if (/google/.test(n)) s += 5;           // giọng Google trên Chrome/Android
+    if (v.localService) s += 1;             // đỡ trễ khi mất mạng
+    return s;
   }
+  function pickVoice(pref) {
+    try {
+      let best = null, bs = -1;
+      for (const v of speechSynthesis.getVoices() || []) { const s = rankVoice(v, pref); if (s > bs) { bs = s; best = v; } }
+      return best;
+    } catch { return null; }
+  }
+  try { speechSynthesis.getVoices(); } catch {}   // kích danh sách giọng nạp sớm (getVoices nạp bất đồng bộ)
   function speak(text) {
     if (voiceMode === 'off' || !window.speechSynthesis) return;
     try {
@@ -540,7 +565,7 @@ if (typeof module !== 'undefined' && module.exports)
       u.lang = voiceMode === 'vi' ? 'vi-VN' : 'en-US';
       const v = pickVoice(voiceMode === 'vi' ? 'vi' : 'en');
       if (v) u.voice = v;
-      u.rate = 1.1;
+      u.rate = 1; u.pitch = 1;                    // 1.1 nghe gấp + máy móc, 1.0 tự nhiên hơn
       speechSynthesis.speak(u);
     } catch {}
   }
@@ -558,14 +583,32 @@ if (typeof module !== 'undefined' && module.exports)
   });
 
   // ---- âm thanh ----
-  let audioCtx = null;
+  // Envelope attack/release BẮT BUỘC: oscillator bật/tắt thẳng đứng sẽ "bụp/tách" (tiếng vỡ Quang báo);
+  // compressor cuối chuỗi chống clip khi tick đè lên giọng đọc.
+  let audioCtx = null, audioOut = null;
+  function audioDest() {
+    audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+    if (!audioOut) {
+      try {
+        audioOut = audioCtx.createDynamicsCompressor();
+        audioOut.threshold.value = -18; audioOut.knee.value = 24; audioOut.ratio.value = 6;
+        audioOut.connect(audioCtx.destination);
+      } catch { audioOut = audioCtx.destination; }
+    }
+    if (audioCtx.state === 'suspended') { try { audioCtx.resume(); } catch {} }
+    return audioOut;
+  }
   function tone(freq, dur = 0.09, gain = 0.1) {
     try {
-      audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+      const out = audioDest(), t = audioCtx.currentTime;
       const o = audioCtx.createOscillator(), g = audioCtx.createGain();
-      o.frequency.value = freq; g.gain.value = gain;
-      o.connect(g); g.connect(audioCtx.destination);
-      o.start(); o.stop(audioCtx.currentTime + dur);
+      o.type = 'sine'; o.frequency.value = freq;
+      const end = t + Math.max(dur, 0.06);
+      g.gain.setValueAtTime(0.0001, t);
+      g.gain.exponentialRampToValueAtTime(gain, t + 0.018);
+      g.gain.exponentialRampToValueAtTime(0.0001, end);
+      o.connect(g); g.connect(out);
+      o.start(t); o.stop(end + 0.03);
     } catch {}
   }
   const PHASE_TONE = { prep: 520, hold: 660, switch: 590 };
@@ -870,6 +913,27 @@ if (typeof module !== 'undefined' && module.exports)
     im.addEventListener('error', () => { im.closest('figure').style.display = 'none'; });
 
   renderGroups(); renderList(); renderStretch(); renderHold(); renderVoice(); renderDayLog(); renderRoutines(); renderPos(); renderRoutineEdit();
+})();
+</script>
+<script>
+(function () {
+  var KEY = 'game:theme', root = document.documentElement;
+  function icon() {
+    var b = document.getElementById('themeBtn');
+    if (b) b.textContent = root.dataset.theme === 'light' ? '🌙' : '☀️';
+  }
+  var b = document.getElementById('themeBtn');
+  if (b) {
+    icon();
+    b.addEventListener('click', function () {
+      var t = root.dataset.theme === 'light' ? 'dark' : 'light';
+      root.dataset.theme = t;
+      try { localStorage.setItem(KEY, t); } catch (e) {}
+      var m = document.querySelector('meta[name="theme-color"]');
+      if (m) m.content = t === 'light' ? '#eef1f8' : '#0b1020';
+      icon();
+    });
+  }
 })();
 </script>
 </body>

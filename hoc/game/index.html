@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
 <meta name="theme-color" content="#0b1020"/>
 <title>Phòng gym trí não — bộ game rèn kỹ năng</title>
+<script>try{document.documentElement.dataset.theme=localStorage.getItem('game:theme')||'dark'}catch(e){document.documentElement.dataset.theme='dark'}</script>
 <style>
 :root{
   --bg:#0b1020; --card:#151d33; --card-2:#1a2340; --inset:#0f1628;
@@ -102,6 +103,28 @@ html{-webkit-text-size-adjust:100%}
   .g-go{padding:8px 16px;font-size:13.5px}
   .note{padding:14px 16px;font-size:13.5px;margin-top:22px}
 }
+
+/* ---------- dark/light mode (nút đổi theme — persist chung key game:theme cho cả bộ) ---------- */
+.theme-btn{border:1px solid var(--line);background:var(--card);color:var(--ink);width:38px;height:38px;border-radius:999px;cursor:pointer;font-size:16px;font-family:inherit;flex:none;line-height:1;padding:0}
+html[data-theme="light"]{
+  --bg:#edf0f8; --card:#ffffff; --card-2:#f3f5fb; --inset:#e7ebf5;
+  --ink:#1a2233; --ink-soft:#4e5a74; --ink-dim:#7b869e;
+  --line:#cfd8e8; --line-soft:#dfe5f1;
+  --shadow:0 1px 2px rgba(23,32,56,.06),0 12px 32px rgba(23,32,56,.10);
+}
+html[data-theme="light"] body{
+  background:
+    radial-gradient(1100px 560px at 88% -12%, rgba(96,165,250,.16), transparent 60%),
+    radial-gradient(900px 620px at -12% 26%, rgba(244,63,94,.09), transparent 55%),
+    linear-gradient(180deg,#f7f9fe 0%, #edf0f8 100%);
+  background-attachment:fixed;
+}
+html[data-theme="light"] header{background:rgba(247,249,254,.85)}
+@media (max-width:480px){
+  .theme-btn{width:32px;height:32px;font-size:14px}
+  .logo{min-width:0;overflow:hidden}
+  .logo > span:last-child{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+}
 </style>
 </head>
 <body>
@@ -109,6 +132,8 @@ html{-webkit-text-size-adjust:100%}
 <header>
   <div class="hd-in">
     <div class="logo"><span class="logo-ic">🎮</span><span>Phòng gym trí não<small>8 game · luyện mỗi ngày 3–5 phút</small></span></div>
+    <span style="flex:1"></span>
+    <button class="theme-btn" id="themeBtn" title="Đổi giao diện sáng/tối">☀️</button>
   </div>
 </header>
 
@@ -208,7 +233,28 @@ html{-webkit-text-size-adjust:100%}
   </div>
 </main>
 
-<footer>Phòng gym trí não · 8 game rèn kỹ năng · Build v7 · 2026-07-12 · toàn bộ dữ liệu lưu trong trình duyệt của bạn</footer>
+<footer>Phòng gym trí não · 8 game rèn kỹ năng · Build v8 · 2026-07-12 · toàn bộ dữ liệu lưu trong trình duyệt của bạn</footer>
 
+<script>
+(function () {
+  var KEY = 'game:theme', root = document.documentElement;
+  function icon() {
+    var b = document.getElementById('themeBtn');
+    if (b) b.textContent = root.dataset.theme === 'light' ? '🌙' : '☀️';
+  }
+  var b = document.getElementById('themeBtn');
+  if (b) {
+    icon();
+    b.addEventListener('click', function () {
+      var t = root.dataset.theme === 'light' ? 'dark' : 'light';
+      root.dataset.theme = t;
+      try { localStorage.setItem(KEY, t); } catch (e) {}
+      var m = document.querySelector('meta[name="theme-color"]');
+      if (m) m.content = t === 'light' ? '#eef1f8' : '#0b1020';
+      icon();
+    });
+  }
+})();
+</script>
 </body>
 </html>
