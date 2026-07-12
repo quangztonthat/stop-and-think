@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hít thở có nhịp — box, 4-7-8, HRV…</title>
+<style>
+:root{
+  --bg:#0b101c; --panel:#1a2233; --panel2:#141b2b; --text:#e8edf7; --dim:#8a94ad;
+  --accent:#4ade80; --accent2:#38bdf8; --warn:#fbbf24; --bad:#f87171; --line:#2a3550;
+  --in:#4ade80; --hold:#fbbf24; --out:#38bdf8;
+}
+*{box-sizing:border-box; margin:0; padding:0;}
+button, input, select{font-family:inherit;}  /* button KHÔNG tự kế thừa font trang — không có dòng này chữ nút rơi về Arial, dấu tiếng Việt xấu */
+body{
+  background:
+    radial-gradient(1100px 700px at 85% -10%, rgba(56,189,248,.13), transparent 60%),
+    radial-gradient(900px 650px at -10% 110%, rgba(74,222,128,.10), transparent 60%),
+    var(--bg);
+  color:var(--text); font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif; min-height:100vh;
+  display:flex; flex-direction:column; align-items:center; padding:18px 16px;
+}
+h1{font-size:1.45rem; margin-bottom:6px; background:linear-gradient(90deg,#4ade80,#38bdf8); -webkit-background-clip:text; background-clip:text; color:transparent;}
+.sub{color:var(--dim); font-size:.85rem; margin-bottom:14px; text-align:center; max-width:640px;}
+.wrap{display:flex; gap:16px; flex-wrap:wrap; justify-content:center; align-items:flex-start; width:100%; max-width:1200px;}
+.col{display:flex; flex-direction:column; gap:12px; width:320px; max-width:100%;}
+.card{background:linear-gradient(180deg, rgba(30,40,62,.85), rgba(20,27,43,.85)); border:1px solid var(--line); border-radius:18px; padding:14px 16px; box-shadow:0 8px 26px rgba(0,0,0,.35);}
+.g-head{font-weight:800; font-size:.95rem; margin-bottom:10px; color:var(--accent2);}
+.mode{display:flex; align-items:center; gap:10px; padding:8px; background:var(--panel2); border:1.5px solid var(--line); border-radius:12px; cursor:pointer; color:var(--text); font:inherit; text-align:left; width:100%; transition:border-color .15s, box-shadow .15s;}
+.mode + .mode{margin-top:7px;}
+.mode:hover{border-color:var(--accent2);}
+.mode.active{border-color:var(--accent); box-shadow:0 0 14px rgba(74,222,128,.25);}
+.mode .mi{font-size:1.5rem; flex:none;}
+.mode .mb{flex:1; min-width:0;}
+.mode .mn{font-weight:800; font-size:.86rem;}
+.mode.active .mn{color:var(--accent);}
+.mode .md{font-size:.72rem; color:var(--dim); line-height:1.35; margin-top:2px;}
+.mode .mp{flex:none; font-size:.68rem; font-weight:800; color:var(--warn); background:rgba(251,191,36,.1); border:1px solid rgba(251,191,36,.3); border-radius:7px; padding:2px 6px;}
+.stage{width:520px; max-width:100%; display:flex; flex-direction:column; gap:12px;}
+.circle-box{position:relative; aspect-ratio:1; max-height:440px; display:flex; align-items:center; justify-content:center;}
+#ring{position:absolute; inset:6%; border-radius:50%; border:1.5px dashed rgba(42,53,80,.9);}
+#ball{
+  width:64%; aspect-ratio:1; border-radius:50%;
+  background:radial-gradient(circle at 34% 30%, rgba(232,237,247,.28), transparent 46%), linear-gradient(145deg, var(--pc,#4ade80), rgba(20,27,43,.9) 82%);
+  box-shadow:0 0 60px var(--pg, rgba(74,222,128,.35));
+  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px;
+  transform:scale(.55); will-change:transform;
+}
+#phaseLbl{font-size:1.35rem; font-weight:800; letter-spacing:.06em; text-shadow:0 2px 8px rgba(0,0,0,.5);}
+#secCount{font-size:3.6rem; font-weight:800; line-height:1; text-shadow:0 2px 10px rgba(0,0,0,.5);}
+#breathNo{font-size:.85rem; font-weight:700; color:rgba(232,237,247,.85); min-height:1.2em;}
+.meter{display:flex; justify-content:space-between; align-items:baseline; font-size:.85rem; color:var(--dim);}
+.meter b{color:var(--text); font-size:1.05rem;}
+.bar-wrap{height:10px; background:var(--panel2); border-radius:999px; overflow:hidden; margin-top:6px;}
+#timeBar{height:100%; width:0%; background:linear-gradient(90deg,var(--accent2),var(--accent)); border-radius:999px;}
+.seg{display:flex; border:1px solid var(--line); border-radius:11px; overflow:hidden; background:var(--panel2); margin-bottom:10px;}
+.seg button{flex:1; padding:9px 4px; border:none; background:transparent; color:var(--dim); font-weight:700; font-size:.88rem; cursor:pointer;}
+.seg button:not(:last-child){border-right:1px solid var(--line);}
+.seg button.active{background:linear-gradient(135deg,#fbbf24,#f59e0b); color:#3a2a00;}
+.seg button:disabled{opacity:.4; cursor:default;}
+#ball.tap{cursor:pointer; outline:3px dashed rgba(251,191,36,.6); outline-offset:8px;}
+button.big:disabled{opacity:.45; cursor:default;}
+.btns{display:flex; gap:8px;}
+button.big{flex:1; padding:12px 10px; border:none; border-radius:11px; font-size:1rem; font-weight:800; cursor:pointer; color:var(--text); background:var(--panel2); border:1px solid var(--line); transition:filter .15s;}
+button.big:not(:disabled):hover{filter:brightness(1.15);}
+button.big.primary{background:linear-gradient(135deg,#4ade80,#22c55e); color:#0b2513; border:none;}
+button.big.warn{background:linear-gradient(135deg,#fbbf24,#f59e0b); color:#3a2a00; border:none;}
+label.chk{display:flex; align-items:center; gap:6px; font-size:.85rem; color:var(--dim); cursor:pointer; margin-top:8px;}
+.ph-adj{display:flex; align-items:center; gap:8px; padding:5px 0; border-bottom:1px dashed rgba(42,53,80,.5); font-size:.84rem;}
+.ph-adj .pl{flex:1; color:var(--dim); font-weight:700;}
+.ph-adj button{width:30px; height:30px; border-radius:8px; border:1px solid var(--line); background:var(--panel2); color:var(--text); font-size:1rem; font-weight:800; cursor:pointer; line-height:1;}
+.ph-adj button:hover:not(:disabled){border-color:var(--accent2);}
+.ph-adj button:disabled{opacity:.35; cursor:default;}
+.ph-adj b{width:26px; text-align:center; color:var(--accent); font-size:1rem;}
+#phaseReset{margin-top:8px; width:100%; padding:7px; font-size:.8rem; border-radius:9px; border:1px dashed var(--line); background:transparent; color:var(--dim); cursor:pointer;}
+#phaseReset:hover{border-color:var(--warn); color:var(--warn);}
+.day-row{display:flex; align-items:baseline; gap:10px; padding:6px 2px; border-bottom:1px dashed rgba(42,53,80,.6); font-size:.88rem;}
+.day-row:last-child{border-bottom:none;}
+.d-name{flex:1; min-width:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+.d-sets{color:var(--dim); font-size:.8rem;}
+.d-total{font-weight:800; color:var(--accent); white-space:nowrap;}
+#exportOut{width:100%; margin-top:8px; background:var(--panel2); color:var(--accent); border:1px solid var(--line); border-radius:10px; padding:8px; font-family:Consolas,monospace; font-size:.78rem; display:none; white-space:pre-wrap; word-break:break-all;}
+#exportOut.show{display:block;}
+.hint{color:var(--dim); font-size:.78rem; margin-top:6px; line-height:1.45;}
+#status{font-size:.84rem; color:var(--dim); text-align:center; min-height:1.2em; margin-top:4px;}
+footer{margin-top:16px; color:var(--dim); font-size:.72rem; text-align:center;}
+</style>
+</head>
+<body>
+<h1>🫁 Hít thở có nhịp</h1>
+<div class="sub">Chọn kiểu thở → chọn thời lượng → thở theo vòng tròn, có đếm giây từng nhịp bằng tick + giọng nói. Chóng mặt thì dừng lại thở bình thường; kiểu 4-7-8 người mới nên bắt đầu 2 phút.</div>
+
+<div class="wrap">
+  <aside class="col">
+    <div class="card">
+      <div class="g-head">🗂️ Kiểu thở</div>
+      <div id="modeList"></div>
+    </div>
+  </aside>
+
+  <div class="stage">
+    <div class="card">
+      <div class="circle-box">
+        <div id="ring"></div>
+        <div id="ball">
+          <div id="phaseLbl">SẴN SÀNG</div>
+          <div id="secCount">–</div>
+          <div id="breathNo"></div>
+        </div>
+      </div>
+      <div class="meter"><span>Còn lại: <b id="timeLeft">–</b></span><span>Chu kỳ: <b id="cycleCount">0</b></span></div>
+      <div class="bar-wrap"><div id="timeBar"></div></div>
+      <div id="status"></div>
+    </div>
+  </div>
+
+  <aside class="col">
+    <div class="card">
+      <div class="g-head">⏱️ Thời lượng</div>
+      <div class="seg" id="durRow"></div>
+      <div style="font-size:.8rem;color:var(--dim);margin:2px 0 6px">🎚️ Nhịp từng pha (giây) — ví dụ đổi Box 4-4-4-4 thành 5-5-5-5</div>
+      <div id="phaseRow"></div>
+      <div id="safeBox" style="display:none; margin-top:10px; border:1px solid rgba(248,113,113,.5); background:rgba(248,113,113,.08); border-radius:11px; padding:10px 12px; font-size:.8rem; line-height:1.5">
+        <b style="color:var(--bad)">⚠️ An toàn Wim Hof:</b> chỉ tập khi <b>NGỒI hoặc NẰM</b>; tuyệt đối không trong/gần nước, không lái xe; chóng mặt nhiều thì dừng, thở bình thường. Không dành cho người bệnh tim mạch, huyết áp cao, động kinh, đang mang thai.
+        <label class="chk" style="margin-top:6px"><input type="checkbox" id="chkSafe"> Tôi đã đọc và đang ngồi/nằm an toàn</label>
+      </div>
+      <div class="btns" style="margin-top:10px">
+        <button class="big primary" id="btnStart">▶ Bắt đầu</button>
+        <button class="big" id="btnReset">Làm lại</button>
+      </div>
+      <div style="font-size:.8rem;color:var(--dim);margin:10px 0 5px">🗣️ Giọng đọc pha/số <span style="opacity:.75">(giọng Việt trên Windows hay lỗi — English đọc số rõ hơn)</span></div>
+      <div class="seg" id="voiceRow" style="margin-bottom:0"></div>
+      <label class="chk"><input type="checkbox" id="chkTick" checked> Tick mỗi giây</label>
+    </div>
+    <div class="card">
+      <div class="g-head">📒 Nhật ký hôm nay <span id="dayBadge" style="color:var(--dim);font-weight:400;font-size:.78rem"></span></div>
+      <div id="dayLog"></div>
+      <div class="btns" style="margin-top:10px">
+        <button class="big" id="btnExport" style="background:linear-gradient(135deg,#38bdf8,#0ea5e9);color:#062334;border:none;font-size:.88rem">Copy JSON fitness-log</button>
+        <button class="big" id="btnCopyText" style="font-size:.88rem">Copy dạng chữ</button>
+      </div>
+      <div id="exportOut"></div>
+      <div class="hint">Phiên hoàn thành (hoặc dừng giữa chừng ≥1 phút) tự cộng vào nhật ký. Cuối ngày copy MỘT lần dán cho Claude.</div>
+    </div>
+  </aside>
+</div>
+
+<footer>hit-tho · Build v5 · 2026-07-12 · 7 kiểu thở (có Wim Hof 3 hiệp) · chạy offline hoàn toàn, không cần mạng · giọng đọc EN/VI · nhịp tuỳ chỉnh từng pha · không thay thế tư vấn y tế</footer>
+
+<script id="pure-logic">
+'use strict';
+// ==== Logic thuần (unit-test bằng node, không đụng DOM) ====
+
+// kind: 'in' (hít, vòng phồng) | 'hold' (giữ) | 'out' (thở, vòng xẹp)
+const PATTERNS = [
+  { id: 'box',      name: 'Box 4-4-4-4',            emoji: '🟦', pat: '4-4-4-4', activity: 'Thở box',
+    desc: 'Hít – giữ – thở – giữ đều 4s. Tập trung, hạ căng thẳng nhanh (Navy SEAL dùng trước nhiệm vụ).',
+    phases: [ { label: 'HÍT VÀO', en: 'Breathe in', kind: 'in', sec: 4 }, { label: 'GIỮ', en: 'Hold', kind: 'hold', sec: 4 }, { label: 'THỞ RA', en: 'Breathe out', kind: 'out', sec: 4 }, { label: 'GIỮ', en: 'Hold', kind: 'hold', sec: 4 } ] },
+  { id: '478',      name: '4-7-8 dễ ngủ',            emoji: '😴', pat: '4-7-8', activity: 'Thở 4-7-8',
+    desc: 'Hít 4s – giữ 7s – thở 8s (BS Andrew Weil). Thư giãn sâu, dùng trước khi ngủ.',
+    phases: [ { label: 'HÍT VÀO', en: 'Breathe in', kind: 'in', sec: 4 }, { label: 'GIỮ', en: 'Hold', kind: 'hold', sec: 7 }, { label: 'THỞ RA', en: 'Breathe out', kind: 'out', sec: 8 } ] },
+  { id: 'coherent', name: 'Nhịp 5-5 (HRV)',          emoji: '💓', pat: '5-5', activity: 'Thở nhịp 5-5',
+    desc: '6 nhịp/phút — nhịp cộng hưởng tim-phổi, bài tập HRV kinh điển. Hợp tập hằng ngày.',
+    phases: [ { label: 'HÍT VÀO', en: 'Breathe in', kind: 'in', sec: 5 }, { label: 'THỞ RA', en: 'Breathe out', kind: 'out', sec: 5 } ] },
+  { id: 'relax',    name: 'Thư giãn 4-6',            emoji: '🍃', pat: '4-6', activity: 'Thở thư giãn 4-6',
+    desc: 'Thở ra DÀI hơn hít vào — kích hoạt hệ phó giao cảm, hạ nhịp tim. Hợp sau buổi tập.',
+    phases: [ { label: 'HÍT VÀO', en: 'Breathe in', kind: 'in', sec: 4 }, { label: 'THỞ RA', en: 'Breathe out', kind: 'out', sec: 6 } ] },
+  { id: 'sigh',     name: 'Thở dài sinh lý 2-1-6',   emoji: '🌬️', pat: '2-1-6', activity: 'Thở dài sinh lý',
+    desc: 'Hít 2s + hít BỒI 1s cho căng phổi, rồi thở dài 6s — cách hạ căng thẳng nhanh nhất (Stanford).',
+    phases: [ { label: 'HÍT VÀO', en: 'Breathe in', kind: 'in', sec: 2 }, { label: 'HÍT BỒI', en: 'Sip in', kind: 'in', sec: 1 }, { label: 'THỞ DÀI', en: 'Long exhale', kind: 'out', sec: 6 } ] },
+  { id: 'counting', name: 'Đếm hơi thở 1→10',        emoji: '🔢', pat: '4-6 ×10', activity: 'Thiền đếm hơi thở', count10: true,
+    desc: 'Thiền đếm hơi: mỗi lần thở ra đếm 1 hơi, đủ 10 quay về 1. Lạc số = biết tâm đang lang thang.',
+    phases: [ { label: 'HÍT VÀO', en: 'Breathe in', kind: 'in', sec: 4 }, { label: 'THỞ RA', en: 'Breathe out', kind: 'out', sec: 6 } ] },
+  // Wim Hof: pha thở dẫn bằng phases (chỉnh được bằng steppers), còn NÍN TỰ DO + hồi 15s
+  // do bộ điều khiển riêng trong app (special) — nhịp theo video guided chính chủ (~4s/nhịp).
+  { id: 'wimhof',   name: 'Wim Hof (3 hiệp)',        emoji: '🔥', pat: '30 nhịp + nín', activity: 'Thở Wim Hof', special: 'wimhof', danger: true,
+    breaths: 30, recoverSec: 15, rounds: 3,
+    desc: '30 nhịp thở sâu → thở hết ra NÍN tự do (bấm khi cần thở) → hít sâu giữ 15s. 3 hiệp. Năng lượng — CHỈ tập khi ngồi/nằm.',
+    phases: [ { label: 'HÍT SÂU', en: 'Fully in', kind: 'in', sec: 2 }, { label: 'THẢ RA', en: 'Let go', kind: 'out', sec: 2 } ] },
+];
+const PATTERN_BY_ID = Object.fromEntries(PATTERNS.map(p => [p.id, p]));
+
+const DURATIONS = [2, 5, 10, 15]; // phút
+
+// Trạng thái nhịp thở tại thời điểm ms (từ đầu phiên).
+class BreathEngine {
+  constructor(pattern) {
+    this.pattern = pattern;
+    this.cycleSec = pattern.phases.reduce((a, p) => a + p.sec, 0);
+  }
+  at(ms) {
+    if (!isFinite(ms) || ms < 0) ms = 0;
+    const cycleMs = this.cycleSec * 1000;
+    const cycle = Math.floor(ms / cycleMs);
+    let t = (ms % cycleMs) / 1000;
+    for (let i = 0; i < this.pattern.phases.length; i++) {
+      const p = this.pattern.phases[i];
+      if (t < p.sec) return { phase: i, label: p.label, kind: p.kind, sec: Math.floor(t) + 1, phaseSec: p.sec, frac: t / p.sec, cycle };
+      t -= p.sec;
+    }
+    const last = this.pattern.phases.length - 1;
+    const lp = this.pattern.phases[last];
+    return { phase: last, label: lp.label, kind: lp.kind, sec: lp.sec, phaseSec: lp.sec, frac: 1, cycle };
+  }
+}
+
+// Tỉ lệ phóng to vòng tròn 0.55..1 — pha giữ đứng yên theo pha TRƯỚC nó.
+function scaleAt(pattern, res) {
+  const MIN = 0.55, MAX = 1;
+  if (res.kind === 'in') return MIN + (MAX - MIN) * res.frac;
+  if (res.kind === 'out') return MAX - (MAX - MIN) * res.frac;
+  const phases = pattern.phases;
+  for (let i = 1; i <= phases.length; i++) {
+    const prev = phases[(res.phase - i + phases.length * i) % phases.length];
+    if (prev.kind === 'in') return MAX;
+    if (prev.kind === 'out') return MIN;
+  }
+  return MIN;
+}
+
+// Số hơi thở 1..10 cho chế độ đếm hơi.
+function breathNumber(cycle) { return (cycle % 10) + 1; }
+
+// Giới hạn giây mỗi pha khi tuỳ chỉnh.
+const SEC_MIN = 1, SEC_MAX = 15;
+
+// Áp giây tuỳ chỉnh vào pattern (KHÔNG đổi pattern gốc).
+// secs không hợp lệ (sai độ dài, không phải số nguyên 1..15) -> trả pattern gốc.
+function applyCustomSecs(pattern, secs) {
+  if (!Array.isArray(secs) || secs.length !== pattern.phases.length) return pattern;
+  if (!secs.every(s => Number.isInteger(s) && s >= SEC_MIN && s <= SEC_MAX)) return pattern;
+  return { ...pattern, phases: pattern.phases.map((p, i) => ({ ...p, sec: secs[i] })) };
+}
+
+// Chuỗi nhịp hiển thị/ghi log: mặc định = pat, có tuỳ chỉnh = giây thật + dấu ✎.
+function patLabel(pattern, secs) {
+  const eff = applyCustomSecs(pattern, secs);
+  if (eff === pattern) return pattern.pat;
+  return eff.phases.map(p => p.sec).join('-') + (pattern.count10 ? ' ×10' : '') + ' ✎';
+}
+
+// Ghi chú thời gian nín Wim Hof: [65, 78, 92] -> "nín 65/78/92s".
+function whNote(retentions) {
+  return Array.isArray(retentions) && retentions.length
+    ? `nín ${retentions.map(r => Math.round(r)).join('/')}s` : '';
+}
+
+// Một phiên trong nhật ký = số phút HOẶC {min, note} (Wim Hof kèm thời gian nín).
+function sessionMin(s) { return Number(s && typeof s === 'object' ? s.min : s); }
+
+// Export fitness-log: mỗi phiên 1 entry duration_min. custom = {patternId: [secs...]}.
+function buildBreathEntries(dayRecord, dateStr, custom = {}) {
+  const out = [];
+  if (!dayRecord || typeof dayRecord !== 'object') return out;
+  for (const p of PATTERNS) {
+    const sessions = Array.isArray(dayRecord[p.id]) ? dayRecord[p.id] : [];
+    const nhip = patLabel(p, custom && custom[p.id]).replace(' ✎', ' tuỳ chỉnh');
+    for (const s of sessions) {
+      const min = sessionMin(s);
+      if (!Number.isFinite(min) || min <= 0) continue;
+      const extra = s && typeof s === 'object' && s.note ? `, ${s.note}` : '';
+      out.push({ activity: p.activity, duration_min: min, date: dateStr, category: 'other', note: `${nhip}${extra}, hit-tho` });
+    }
+  }
+  return out;
+}
+function buildBreathText(dayRecord) {
+  const parts = [];
+  if (!dayRecord || typeof dayRecord !== 'object') return '';
+  for (const p of PATTERNS) {
+    const nums = (Array.isArray(dayRecord[p.id]) ? dayRecord[p.id] : []).map(sessionMin).filter(n => Number.isFinite(n) && n > 0);
+    if (nums.length) parts.push(`${p.activity} ${nums.join('+')} phút`);
+  }
+  return parts.join(' · ');
+}
+
+if (typeof module !== 'undefined' && module.exports)
+  module.exports = { PATTERNS, PATTERN_BY_ID, DURATIONS, SEC_MIN, SEC_MAX, BreathEngine, scaleAt, breathNumber, applyCustomSecs, patLabel, whNote, sessionMin, buildBreathEntries, buildBreathText };
+</script>
+
+<script id="app">
+'use strict';
+(() => {
+  const LS_KEY = 'hit-tho:v1';
+  const $ = id => document.getElementById(id);
+  const els = {
+    modeList: $('modeList'), ball: $('ball'), phaseLbl: $('phaseLbl'), secCount: $('secCount'),
+    breathNo: $('breathNo'), timeLeft: $('timeLeft'), cycleCount: $('cycleCount'), timeBar: $('timeBar'),
+    durRow: $('durRow'), phaseRow: $('phaseRow'), btnStart: $('btnStart'), btnReset: $('btnReset'),
+    safeBox: $('safeBox'), chkSafe: $('chkSafe'),
+    voiceRow: $('voiceRow'), chkTick: $('chkTick'), status: $('status'),
+    dayLog: $('dayLog'), dayBadge: $('dayBadge'), btnExport: $('btnExport'), btnCopyText: $('btnCopyText'), exportOut: $('exportOut'),
+  };
+  const PHASE_COLOR = { in: ['#4ade80', 'rgba(74,222,128,.4)'], hold: ['#fbbf24', 'rgba(251,191,36,.4)'], out: ['#38bdf8', 'rgba(56,189,248,.4)'] };
+
+  let mode = PATTERNS[0];
+  let engine = new BreathEngine(mode);
+  let durMin = 10;
+  const ses = { running: false, startedAt: 0, base: 0 };   // base = ms đã tích trước lần pause
+  let lastKey = null, lastSec = null, timerId = null, rafId = null;
+
+  // ---- store ----
+  const todayStr = () => {
+    const d = new Date();
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+  };
+  function loadStore() {
+    try {
+      const s = JSON.parse(localStorage.getItem(LS_KEY));
+      if (s && typeof s === 'object' && s.history) {
+        s.custom = s.custom && typeof s.custom === 'object' ? s.custom : {};
+        return s;
+      }
+    } catch {}
+    return { history: {}, custom: {} };
+  }
+  let store = loadStore();
+  const saveStore = () => { try { localStorage.setItem(LS_KEY, JSON.stringify(store)); } catch {} };
+  const todayRec = () => store.history[todayStr()] || (store.history[todayStr()] = {});
+
+  // ---- nhịp tuỳ chỉnh ----
+  const customSecs = () => (store.custom && store.custom[mode.id]) || null;
+  const effPattern = () => applyCustomSecs(mode, customSecs());
+  function rebuildEngine() { engine = new BreathEngine(effPattern()); lastKey = null; lastSec = null; }
+
+  // ---- Wim Hof (special): thở dẫn -> nín tự do -> hồi 15s, lặp N hiệp ----
+  // ?whfast=1 = cấu hình rút gọn để smoke test flow (3 nhịp, hồi 2s, 2 hiệp)
+  const WH_FAST = new URLSearchParams(location.search).get('whfast') === '1';
+  const whCfg = () => WH_FAST ? { ...mode, breaths: 3, recoverSec: 2, rounds: 2 } : mode;
+  const wh = { stage: 'idle', round: 0, stageStart: 0, retentions: [] };
+  function whReset() { wh.stage = 'idle'; wh.round = 0; wh.stageStart = 0; wh.retentions = []; els.ball.classList.remove('tap'); }
+  function updateStartGate() { els.btnStart.disabled = !!(mode.danger && !els.chkSafe.checked && !ses.running); }
+  function applySafety() { els.safeBox.style.display = mode.danger ? '' : 'none'; updateStartGate(); }
+
+  // ---- âm thanh ----
+  let audioCtx = null;
+  function tone(freq, dur = 0.09, gain = 0.1) {
+    try {
+      audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+      const o = audioCtx.createOscillator(), g = audioCtx.createGain();
+      o.frequency.value = freq; g.gain.value = gain;
+      o.connect(g); g.connect(audioCtx.destination);
+      o.start(); o.stop(audioCtx.currentTime + dur);
+    } catch {}
+  }
+  const PHASE_TONE = { in: 660, hold: 520, out: 415 };
+  // ---- giọng đọc: en (mặc định, đọc số rõ) | vi | off ----
+  let voiceMode = (() => { try { return localStorage.getItem('hit-tho:voice') || 'en'; } catch { return 'en'; } })();
+  if (!['en', 'vi', 'off'].includes(voiceMode)) voiceMode = 'en';
+  function pickVoice(pref) {
+    try {
+      const vs = speechSynthesis.getVoices();
+      return vs.find(v => v.lang && v.lang.toLowerCase().startsWith(pref)) || null;
+    } catch { return null; }
+  }
+  function speak(text) {
+    if (voiceMode === 'off' || !window.speechSynthesis) return;
+    try {
+      speechSynthesis.cancel();
+      const u = new SpeechSynthesisUtterance(String(text));
+      u.lang = voiceMode === 'vi' ? 'vi-VN' : 'en-US';
+      const v = pickVoice(voiceMode === 'vi' ? 'vi' : 'en');
+      if (v) u.voice = v;
+      u.rate = 1.1;
+      speechSynthesis.speak(u);
+    } catch {}
+  }
+  const bi = (viText, enText) => voiceMode === 'vi' ? viText : enText;
+  function renderVoice() {
+    els.voiceRow.innerHTML = [['off', '🔇 Tắt'], ['en', '🇬🇧 English'], ['vi', '🇻🇳 Việt']]
+      .map(([id, name]) => `<button class="${voiceMode === id ? 'active' : ''}" data-voice="${id}">${name}</button>`).join('');
+  }
+  els.voiceRow.addEventListener('click', e => {
+    const b = e.target.closest('[data-voice]');
+    if (!b) return;
+    voiceMode = b.dataset.voice;
+    try { localStorage.setItem('hit-tho:voice', voiceMode); } catch {}
+    renderVoice();
+    if (voiceMode !== 'off') speak(bi('Đã chọn giọng Việt', 'English voice selected'));
+  });
+
+  // ---- UI render ----
+  function renderModes() {
+    els.modeList.innerHTML = PATTERNS.map(p =>
+      `<button class="mode${p.id === mode.id ? ' active' : ''}" data-mode="${p.id}">` +
+      `<span class="mi">${p.emoji}</span><span class="mb"><span class="mn">${p.name}</span><span class="md">${p.desc}</span></span>` +
+      `<span class="mp">${patLabel(p, store.custom && store.custom[p.id])}</span></button>`).join('');
+  }
+  function renderPhaseAdj() {
+    const eff = effPattern();
+    els.phaseRow.innerHTML = eff.phases.map((p, i) =>
+      `<div class="ph-adj"><span class="pl">${p.label}</span>` +
+      `<button data-adj="${i}|-1"${p.sec <= SEC_MIN ? ' disabled' : ''}>−</button><b>${p.sec}</b>` +
+      `<button data-adj="${i}|1"${p.sec >= SEC_MAX ? ' disabled' : ''}>+</button></div>`).join('') +
+      (customSecs() ? `<button id="phaseReset">↺ Về nhịp gốc ${mode.pat}</button>` : '');
+  }
+  function renderDur() {
+    // Wim Hof chạy theo hiệp, không theo thời lượng -> khoá hàng chọn phút
+    els.durRow.innerHTML = DURATIONS.map(m =>
+      `<button class="${m === durMin && !mode.special ? 'active' : ''}" data-dur="${m}"${mode.special ? ' disabled' : ''}>${m}′</button>`).join('');
+  }
+  function renderDayLog() {
+    const rec = todayRec();
+    const rows = [];
+    for (const p of PATTERNS) {
+      const nums = (rec[p.id] || []).map(Number).filter(n => n > 0);
+      if (!nums.length) continue;
+      rows.push(`<div class="day-row"><span class="d-name">${p.emoji} ${p.name}</span><span class="d-sets">${nums.join(' + ')}</span><span class="d-total">${nums.reduce((a, b) => a + b, 0)} phút</span></div>`);
+    }
+    els.dayLog.innerHTML = rows.length ? rows.join('') : '<div class="hint">Chưa có phiên nào hôm nay — chọn kiểu thở rồi bắt đầu 🌬️</div>';
+    els.dayBadge.textContent = rows.length ? `· ${rows.length} kiểu` : '';
+  }
+  const fmt = s => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
+  function setStatus(m) { els.status.textContent = m; }
+
+  // ---- phiên ----
+  const elapsed = () => ses.base + (ses.running ? performance.now() - ses.startedAt : 0);
+  function logSession() {
+    const min = Math.floor(elapsed() / 60000);
+    if (min >= 1) {
+      (todayRec()[mode.id] = todayRec()[mode.id] || []).push(min);
+      saveStore(); renderDayLog();
+      return min;
+    }
+    return 0;
+  }
+  function finish() {
+    ses.running = false; ses.base = durMin * 60000;
+    clearInterval(timerId); timerId = null;
+    tone(880, .5, .14); setTimeout(() => tone(1175, .6, .14), 350);
+    const min = logSession();
+    els.btnStart.textContent = '▶ Bắt đầu';
+    els.phaseLbl.textContent = 'HOÀN THÀNH'; els.secCount.textContent = '🎉';
+    speak(bi(`Hoàn thành ${min} phút. Làm tốt lắm.`, `Done. ${min} minutes. Well done.`));
+    setStatus(`Xong ${min} phút ${mode.name} — đã ghi vào nhật ký. Copy cuối ngày gửi fitness-log.`);
+    ses.base = 0; lastKey = null; lastSec = null;
+  }
+  // ---- vòng lặp Wim Hof ----
+  function frameWh() {
+    const cfg = whCfg();
+    const ms = elapsed();
+    const local = ms - wh.stageStart;
+    els.timeLeft.textContent = fmt(ms / 1000);
+    els.cycleCount.textContent = `${Math.min(wh.round + 1, cfg.rounds)}/${cfg.rounds}`;
+    els.timeBar.style.width = (wh.round / cfg.rounds * 100) + '%';
+    if (wh.stage === 'breathe') {
+      const res = engine.at(local);
+      if (res.cycle >= cfg.breaths) { whToRetain(ms); return; }
+      const n = res.cycle + 1;
+      const key = res.cycle * 100 + res.phase;
+      if (key !== lastKey) {
+        lastKey = key;
+        const [pc, pg] = PHASE_COLOR[res.kind];
+        els.ball.style.setProperty('--pc', pc);
+        els.ball.style.setProperty('--pg', pg);
+        els.phaseLbl.textContent = res.label;
+        if (els.chkTick.checked) tone(PHASE_TONE[res.kind], .12, .1);
+        if (res.kind === 'in' && n % 10 === 0) speak(n);   // đọc mốc 10/20/30
+      }
+      els.secCount.textContent = n;
+      els.breathNo.textContent = `nhịp ${n}/${cfg.breaths}`;
+    } else if (wh.stage === 'retain') {
+      const sec = Math.floor(local / 1000);
+      if (sec !== lastSec) {
+        lastSec = sec;
+        els.secCount.textContent = sec;
+        if (els.chkTick.checked && sec > 0 && sec % 15 === 0) tone(520, .06, .05);
+      }
+      els.phaseLbl.textContent = 'NÍN';
+      els.breathNo.textContent = 'bấm vào vòng tròn (hoặc Space) khi cần thở';
+    } else if (wh.stage === 'recover') {
+      const left = Math.max(0, cfg.recoverSec - local / 1000);
+      els.phaseLbl.textContent = 'HÍT SÂU — GIỮ';
+      els.secCount.textContent = Math.ceil(left);
+      els.breathNo.textContent = `hồi phục ${cfg.recoverSec}s`;
+      if (left <= 0) whNextRound(ms);
+    }
+  }
+  function whToRetain(ms) {
+    wh.stage = 'retain'; wh.stageStart = ms; lastSec = null; lastKey = null;
+    els.ball.style.setProperty('--pc', '#fbbf24');
+    els.ball.style.setProperty('--pg', 'rgba(251,191,36,.4)');
+    els.ball.classList.add('tap');
+    tone(520, .3, .12);
+    speak(bi('Thở hết ra và nín', 'Fully exhale and hold'));
+  }
+  function whTap() {
+    if (!(ses.running && mode.special === 'wimhof' && wh.stage === 'retain')) return;
+    const ms = elapsed();
+    wh.retentions.push((ms - wh.stageStart) / 1000);
+    wh.stage = 'recover'; wh.stageStart = ms; lastSec = null;
+    els.ball.classList.remove('tap');
+    els.ball.style.setProperty('--pc', '#4ade80');
+    els.ball.style.setProperty('--pg', 'rgba(74,222,128,.4)');
+    tone(880, .2, .12);
+    speak(bi('Hít sâu, giữ', 'Deep breath in, hold'));
+  }
+  function whNextRound(ms) {
+    wh.round++;
+    const cfg = whCfg();
+    if (wh.round >= cfg.rounds) return finishWh();
+    wh.stage = 'breathe'; wh.stageStart = ms; lastKey = null; lastSec = null;
+    tone(660, .2, .12);
+    speak(bi(`Hiệp ${wh.round + 1}. ${cfg.breaths} nhịp.`, `Round ${wh.round + 1}.`));
+  }
+  function finishWh() {
+    ses.running = false;
+    clearInterval(timerId); timerId = null;
+    tone(880, .5, .14); setTimeout(() => tone(1175, .6, .14), 350);
+    const min = Math.floor(elapsed() / 60000);
+    const times = wh.retentions.map(r => Math.round(r)).join('/');
+    if (min >= 1) {
+      (todayRec()[mode.id] = todayRec()[mode.id] || []).push({ min, note: whNote(wh.retentions) });
+      saveStore(); renderDayLog();
+    }
+    els.btnStart.textContent = '▶ Bắt đầu';
+    els.phaseLbl.textContent = 'HOÀN THÀNH'; els.secCount.textContent = '🎉';
+    els.breathNo.textContent = `nín: ${times}s`;
+    speak(bi(`Xong. Nín ${times} giây. Làm tốt lắm.`, `Done. Retentions ${times} seconds. Well done.`));
+    setStatus(`Xong Wim Hof — nín ${times}s${min >= 1 ? ' — đã ghi nhật ký' : ''}.`);
+    ses.base = 0; whReset(); updateStartGate();
+  }
+
+  function frame() {
+    if (mode.special === 'wimhof') return frameWh();
+    const ms = elapsed();
+    if (ms >= durMin * 60000) { if (ses.running) finish(); return; }
+    const res = engine.at(ms);
+    const key = res.cycle * 100 + res.phase;
+    if (key !== lastKey) {                       // đổi pha
+      lastKey = key;
+      const [pc, pg] = PHASE_COLOR[res.kind];
+      els.ball.style.setProperty('--pc', pc);
+      els.ball.style.setProperty('--pg', pg);
+      els.phaseLbl.textContent = res.label;
+      if (els.chkTick.checked) tone(PHASE_TONE[res.kind], .14, .12);
+      if (mode.count10 && res.kind === 'out') {
+        const n = breathNumber(res.cycle);
+        els.breathNo.textContent = `hơi thứ ${n}/10`;
+        speak(n);
+      } else if (!mode.count10) {
+        const ph = mode.phases[res.phase];
+        speak(bi(ph.label.charAt(0) + ph.label.slice(1).toLowerCase(), ph.en));
+      }
+    }
+    if (res.sec !== lastSec) {                   // đếm giây trong pha
+      lastSec = res.sec;
+      els.secCount.textContent = res.sec;
+      if (els.chkTick.checked && res.sec > 1) tone(980, .04, .05);
+    }
+    els.cycleCount.textContent = res.cycle + (res.phase > 0 || res.frac > 0 ? 1 : 0);
+    els.timeLeft.textContent = fmt(durMin * 60 - ms / 1000);
+    els.timeBar.style.width = (ms / (durMin * 60000) * 100) + '%';
+  }
+  function anim() {
+    if (ses.running) {
+      if (mode.special === 'wimhof') {
+        if (wh.stage === 'breathe') {
+          const res = engine.at(elapsed() - wh.stageStart);
+          els.ball.style.transform = `scale(${scaleAt(effPattern(), res).toFixed(4)})`;
+        } else if (wh.stage === 'retain') els.ball.style.transform = 'scale(.55)';
+        else if (wh.stage === 'recover') els.ball.style.transform = 'scale(1)';
+      } else {
+        const ms = elapsed();
+        if (ms < durMin * 60000) {
+          const res = engine.at(ms);
+          els.ball.style.transform = `scale(${scaleAt(mode, res).toFixed(4)})`;
+        }
+      }
+    }
+    rafId = requestAnimationFrame(anim);
+  }
+
+  function start() {
+    ses.running = true; ses.startedAt = performance.now();
+    els.btnStart.textContent = '⏸ Tạm dừng';
+    if (mode.special === 'wimhof') {
+      if (wh.stage === 'idle') {
+        whReset(); wh.stage = 'breathe'; wh.stageStart = 0; lastKey = null; lastSec = null;
+        speak(bi(`Bắt đầu. ${whCfg().breaths} nhịp thở sâu.`, `Start. ${whCfg().breaths} deep breaths.`));
+      }
+      setStatus(`Wim Hof · ${whCfg().rounds} hiệp — thở theo vòng tròn, nín thì bấm vào vòng.`);
+    } else {
+      setStatus(`${mode.name} · ${durMin} phút — thở theo vòng tròn.`);
+    }
+    if (!timerId) timerId = setInterval(frame, 100);
+    frame();
+  }
+  function pause() {
+    ses.base = elapsed(); ses.running = false;
+    clearInterval(timerId); timerId = null;
+    els.btnStart.textContent = '▶ Tiếp tục';
+    setStatus('Tạm dừng — bấm Tiếp tục, hoặc Làm lại để chốt phiên.');
+  }
+  function reset(silent) {
+    const wasMs = elapsed();
+    ses.running = false; clearInterval(timerId); timerId = null;
+    if (mode.special === 'wimhof') {
+      const min = Math.floor(wasMs / 60000);
+      if (min >= 1 && wh.retentions.length) {
+        (todayRec()[mode.id] = todayRec()[mode.id] || []).push({ min, note: whNote(wh.retentions) });
+        saveStore(); renderDayLog();
+        if (!silent) setStatus(`Đã chốt ${min} phút Wim Hof (${whNote(wh.retentions)}).`);
+      } else if (!silent && wasMs > 0) setStatus('Phiên Wim Hof chưa đủ 1 phút + 1 lượt nín — không ghi.');
+      whReset(); updateStartGate();
+    } else if (wasMs >= 60000) {
+      const min = logSession();
+      if (!silent) setStatus(`Đã chốt ${min} phút vào nhật ký.`);
+    } else if (!silent && wasMs > 0) setStatus('Phiên dưới 1 phút — không ghi.');
+    ses.base = 0; lastKey = null; lastSec = null;
+    els.btnStart.textContent = '▶ Bắt đầu';
+    els.phaseLbl.textContent = 'SẴN SÀNG'; els.secCount.textContent = '–'; els.breathNo.textContent = '';
+    els.timeLeft.textContent = fmt(durMin * 60); els.timeBar.style.width = '0%'; els.cycleCount.textContent = '0';
+    els.ball.style.transform = 'scale(.55)';
+  }
+
+  // ---- events ----
+  els.modeList.addEventListener('click', e => {
+    const b = e.target.closest('[data-mode]');
+    if (!b || b.dataset.mode === mode.id) return;
+    reset(true);
+    mode = PATTERN_BY_ID[b.dataset.mode];
+    rebuildEngine(); whReset();
+    els.chkSafe.checked = false;              // an toàn: mỗi lần chọn lại Wim Hof phải xác nhận lại
+    renderModes(); renderPhaseAdj(); renderDur(); applySafety();
+    els.timeLeft.textContent = mode.special ? '0:00' : fmt(durMin * 60);
+    setStatus(mode.desc);
+  });
+  els.chkSafe.addEventListener('change', updateStartGate);
+  els.ball.addEventListener('click', whTap);
+  document.addEventListener('keydown', e => {
+    if (e.code === 'Space' && ses.running && mode.special === 'wimhof' && wh.stage === 'retain') {
+      e.preventDefault(); whTap();
+    }
+  });
+  els.phaseRow.addEventListener('click', e => {
+    if (e.target.id === 'phaseReset') {
+      delete store.custom[mode.id];
+      saveStore(); rebuildEngine(); renderPhaseAdj(); renderModes();
+      setStatus(`Đã về nhịp gốc ${mode.pat}.`);
+      return;
+    }
+    const b = e.target.closest('[data-adj]');
+    if (!b || b.disabled) return;
+    const [i, d] = b.dataset.adj.split('|').map(Number);
+    const secs = effPattern().phases.map(p => p.sec);
+    secs[i] = Math.min(SEC_MAX, Math.max(SEC_MIN, secs[i] + d));
+    if (secs.join() === mode.phases.map(p => p.sec).join()) delete store.custom[mode.id];
+    else store.custom[mode.id] = secs;
+    saveStore(); rebuildEngine(); renderPhaseAdj(); renderModes();
+    setStatus(`Nhịp ${mode.name}: ${secs.join('-')} — áp dụng ngay.`);
+  });
+  els.durRow.addEventListener('click', e => {
+    const b = e.target.closest('[data-dur]');
+    if (!b) return;
+    durMin = +b.dataset.dur;
+    renderDur();
+    if (!ses.running) els.timeLeft.textContent = fmt(durMin * 60);
+  });
+  els.btnStart.addEventListener('click', () => ses.running ? pause() : start());
+  els.btnReset.addEventListener('click', () => reset(false));
+
+  els.btnExport.addEventListener('click', async () => {
+    const entries = buildBreathEntries(todayRec(), todayStr(), store.custom);
+    if (!entries.length) { setStatus('Chưa có phiên nào để xuất.'); return; }
+    const json = JSON.stringify(entries);
+    els.exportOut.textContent = json; els.exportOut.classList.add('show');
+    try { await navigator.clipboard.writeText(json); setStatus('Đã copy JSON — dán cho Claude (fitness-log) là xong.'); }
+    catch { setStatus('Không copy tự động được — bôi đen JSON rồi copy tay.'); }
+  });
+  els.btnCopyText.addEventListener('click', async () => {
+    const txt = buildBreathText(todayRec());
+    if (!txt) { setStatus('Chưa có gì để copy.'); return; }
+    els.exportOut.textContent = txt; els.exportOut.classList.add('show');
+    try { await navigator.clipboard.writeText(txt); setStatus('Đã copy dạng chữ — dán vào chat là Claude hiểu.'); }
+    catch { setStatus('Không copy tự động được — bôi đen dòng chữ rồi copy tay.'); }
+  });
+
+  renderModes(); renderDur(); renderDayLog(); renderVoice(); renderPhaseAdj(); rebuildEngine(); applySafety();
+  els.timeLeft.textContent = fmt(durMin * 60);
+  setStatus(mode.desc);
+  anim();
+})();
+</script>
+</body>
+</html>
