@@ -33,7 +33,9 @@ h1{font-size:1.45rem; margin-bottom:8px; background:linear-gradient(90deg,#4ade8
 .d-sets i{color:var(--accent2); font-style:normal;}
 .d-total{font-weight:800; color:var(--accent); white-space:nowrap;}
 #dayTotalBadge{color:var(--dim); font-weight:400; font-size:.78rem;}
-.tab-row{display:flex; gap:6px; flex-wrap:wrap; margin-bottom:10px;}
+.tab-row{display:grid; grid-template-columns:1fr 1fr; gap:7px; margin-bottom:10px;}
+.tab-row > .tab{display:flex; align-items:center; justify-content:space-between; text-align:left; padding:9px 13px; border-radius:11px;}
+.tab-row > .tab:last-child:nth-child(odd){grid-column:span 2;}
 .tab{display:inline-flex; align-items:center; gap:6px; padding:5px 11px; border-radius:999px; border:1px solid var(--line); background:var(--panel2); color:var(--dim); font-size:.76rem; font-weight:700; cursor:pointer; transition:border-color .15s, color .15s;}
 .tab:hover{border-color:var(--accent2); color:var(--text);}
 .tab i{font-style:normal; font-size:.66rem; font-weight:800; background:rgba(232,237,247,.13); border-radius:999px; padding:1px 7px; line-height:1.5;}
@@ -158,7 +160,7 @@ html[data-theme="light"] .step{background:#ffffff}
 <div class="wrap">
   <aside class="guide">
     <div class="card">
-      <div class="g-head">🗂️ Chọn bài tập</div>
+      <div class="g-head">Chọn bài tập</div>
       <div class="tab-row" id="groupRow"></div>
       <div class="seg" id="equipRow"></div>
       <div class="ex-list" id="exRow"></div>
@@ -221,7 +223,7 @@ html[data-theme="light"] .step{background:#ffffff}
   </div>
 </div>
 
-<footer>dem-squat · Build v15 · 2026-07-12 · MoveNet Lightning (TensorFlow.js) — 30 bài / 6 nhóm cơ · giọng đọc EN/VI · ảnh người thật (Free Exercise DB, public domain) · nhật ký ngày gửi 1 lần</footer>
+<footer>dem-squat · Build v16 · 2026-07-13 · MoveNet Lightning (TensorFlow.js) — 30 bài / 6 nhóm cơ · giọng đọc EN/VI · ảnh người thật (Free Exercise DB, public domain) · nhật ký ngày gửi 1 lần</footer>
 
 <script id="pure-logic">
 'use strict';
@@ -766,10 +768,11 @@ if (typeof module !== 'undefined' && module.exports)
   function renderFilters() {
     const gTabs = [{ id: 'all', name: 'Tất cả', emoji: '📋' }, ...GROUPS].map(g => {
       const n = g.id === 'all' ? EXERCISES.length : EXERCISES.filter(e => e.group === g.id).length;
-      return `<button class="tab${curGroup === g.id ? ' active' : ''}" data-group="${g.id}">${g.emoji} ${g.name}<i>${n}</i></button>`;
+      return `<button class="tab${curGroup === g.id ? ' active' : ''}" data-group="${g.id}"><span>${g.name}</span><i>${n}</i></button>`;
     }).join('');
     els.groupRow.innerHTML = gTabs;
-    els.equipRow.innerHTML = [['all', 'Tất cả'], ['none', EQUIP_NAME.none], ['db', EQUIP_NAME.db]]
+    // nhãn TAB tĩnh không emoji (EQUIP_NAME gốc giữ nguyên cho meta/export)
+    els.equipRow.innerHTML = [['all', 'Tất cả'], ['none', 'Không tạ'], ['db', 'Tạ đơn']]
       .map(([id, name]) => `<button class="tab${curEquip === id ? ' active' : ''}" data-equip="${id}">${name}</button>`).join('');
   }
   function filteredExercises() {
