@@ -149,6 +149,9 @@ button,.mode{touch-action:manipulation}
       <div style="font-size:.8rem;color:var(--dim);margin:10px 0 5px">🗣️ Giọng đọc pha/số <span style="opacity:.75">(giọng Việt trên Windows hay lỗi — English đọc số rõ hơn)</span></div>
       <div class="seg" id="voiceRow" style="margin-bottom:0"></div>
       <label class="chk"><input type="checkbox" id="chkTick" checked> Tick mỗi giây</label>
+      <label class="chk" style="margin-top:6px"><input type="checkbox" id="chkBg"> 🔒 Chạy tiếp khi khoá máy <span style="opacity:.7">(âm dẫn thay giọng — beta)</span></label>
+      <div class="hint" id="bgHint" style="display:none">Khi khoá màn hình: <b>tone đi lên</b> = hít vào · <b>tick</b> = giữ · <b>tone đi xuống</b> = thở ra · chuông = xong. iOS chặn giọng đọc lúc khoá máy nên track âm dẫn thay giọng; màn hình bật thì giọng vẫn đọc bình thường. Không dùng được với Wim Hof (cần bấm màn hình).</div>
+      <audio id="bgTrack" playsinline preload="auto" src="data:audio/wav;base64,UklGRnQAAABXQVZFZm10IBAAAAABAAEAQB8AAIA+AAACABAAZGF0YVAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=="></audio>
     </div>
     <div class="card">
       <div class="g-head">📒 Nhật ký hôm nay <span id="dayBadge" style="color:var(--dim);font-weight:400;font-size:.78rem"></span></div>
@@ -163,7 +166,7 @@ button,.mode{touch-action:manipulation}
   </aside>
 </div>
 
-<footer>hit-tho · Build v6 · 2026-07-12 · 7 kiểu thở (có Wim Hof 3 hiệp) · chạy offline hoàn toàn, không cần mạng · giọng đọc EN/VI · nhịp tuỳ chỉnh từng pha · không thay thế tư vấn y tế</footer>
+<footer>hit-tho · Build v7 · 2026-07-12 · 7 kiểu thở (có Wim Hof 3 hiệp) · chạy offline hoàn toàn, không cần mạng · giọng đọc EN/VI · nhịp tuỳ chỉnh từng pha · không thay thế tư vấn y tế</footer>
 
 <script id="pure-logic">
 'use strict';
@@ -292,8 +295,24 @@ function buildBreathText(dayRecord) {
   return parts.join(' · ');
 }
 
+// Lịch âm dẫn cho chế độ 🔒 chạy-khi-khoá-máy: cắt phiên durSec giây thành các đoạn pha nối tiếp
+// (iOS treo JS/speechSynthesis khi khoá màn hình — cả phiên phải render sẵn thành 1 track audio).
+// Trả về [{t0, sec, kind}] — t0 = giây bắt đầu, sec = độ dài thật (đoạn cuối có thể bị cắt ngắn).
+function bgSegments(phases, durSec) {
+  const out = [];
+  let t = 0, i = 0;
+  if (!Array.isArray(phases) || !phases.length || !(durSec > 0)) return out;
+  while (t < durSec) {
+    const p = phases[i % phases.length];
+    const sec = Math.min(p.sec, durSec - t);
+    out.push({ t0: t, sec, kind: p.kind });
+    t += sec; i++;
+  }
+  return out;
+}
+
 if (typeof module !== 'undefined' && module.exports)
-  module.exports = { PATTERNS, PATTERN_BY_ID, DURATIONS, SEC_MIN, SEC_MAX, BreathEngine, scaleAt, breathNumber, applyCustomSecs, patLabel, whNote, sessionMin, buildBreathEntries, buildBreathText };
+  module.exports = { PATTERNS, PATTERN_BY_ID, DURATIONS, SEC_MIN, SEC_MAX, BreathEngine, scaleAt, breathNumber, applyCustomSecs, patLabel, whNote, sessionMin, buildBreathEntries, buildBreathText, bgSegments };
 </script>
 
 <script id="app">
@@ -306,7 +325,7 @@ if (typeof module !== 'undefined' && module.exports)
     breathNo: $('breathNo'), timeLeft: $('timeLeft'), cycleCount: $('cycleCount'), timeBar: $('timeBar'),
     durRow: $('durRow'), phaseRow: $('phaseRow'), btnStart: $('btnStart'), btnReset: $('btnReset'),
     safeBox: $('safeBox'), chkSafe: $('chkSafe'),
-    voiceRow: $('voiceRow'), chkTick: $('chkTick'), status: $('status'),
+    voiceRow: $('voiceRow'), chkTick: $('chkTick'), chkBg: $('chkBg'), bgHint: $('bgHint'), bgTrack: $('bgTrack'), status: $('status'),
     dayLog: $('dayLog'), dayBadge: $('dayBadge'), btnExport: $('btnExport'), btnCopyText: $('btnCopyText'), exportOut: $('exportOut'),
   };
   const PHASE_COLOR = { in: ['#4ade80', 'rgba(74,222,128,.4)'], hold: ['#fbbf24', 'rgba(251,191,36,.4)'], out: ['#38bdf8', 'rgba(56,189,248,.4)'] };
@@ -348,7 +367,11 @@ if (typeof module !== 'undefined' && module.exports)
   const wh = { stage: 'idle', round: 0, stageStart: 0, retentions: [] };
   function whReset() { wh.stage = 'idle'; wh.round = 0; wh.stageStart = 0; wh.retentions = []; els.ball.classList.remove('tap'); }
   function updateStartGate() { els.btnStart.disabled = !!(mode.danger && !els.chkSafe.checked && !ses.running); }
-  function applySafety() { els.safeBox.style.display = mode.danger ? '' : 'none'; updateStartGate(); }
+  function applySafety() {
+    els.safeBox.style.display = mode.danger ? '' : 'none';
+    if (els.chkBg) els.chkBg.disabled = !!mode.special;   // Wim Hof cần bấm màn hình — không chạy nền được
+    updateStartGate();
+  }
 
   // ---- âm thanh ----
   let audioCtx = null;
@@ -362,6 +385,93 @@ if (typeof module !== 'undefined' && module.exports)
     } catch {}
   }
   const PHASE_TONE = { in: 660, hold: 520, out: 415 };
+
+  // ---- 🔒 chế độ chạy khi khoá máy ----
+  // iOS treo speechSynthesis + WebAudio realtime khi khoá màn hình; thứ duy nhất sống tiếp là
+  // thẻ <audio> đang phát media (như web nghe nhạc/podcast). Nên: render TOÀN BỘ phiên thành
+  // 1 track WAV (OfflineAudioContext) rồi phát qua <audio> + MediaSession; engine đọc thời gian
+  // từ audio.currentTime — mở màn hình lại là vòng tròn tự khớp nhịp với track.
+  const bg = { playing: false, url: null, key: '' };
+  const bgSupported = () => typeof OfflineAudioContext !== 'undefined';
+  const bgOn = () => els.chkBg && els.chkBg.checked && !mode.special && bgSupported();
+  function wavFromBuffer(buf) {
+    const n = buf.length, sr = buf.sampleRate, data = buf.getChannelData(0);
+    const bytes = new ArrayBuffer(44 + n * 2), v = new DataView(bytes);
+    const ws = (o, s) => { for (let i = 0; i < s.length; i++) v.setUint8(o + i, s.charCodeAt(i)); };
+    ws(0, 'RIFF'); v.setUint32(4, 36 + n * 2, true); ws(8, 'WAVE'); ws(12, 'fmt ');
+    v.setUint32(16, 16, true); v.setUint16(20, 1, true); v.setUint16(22, 1, true);
+    v.setUint32(24, sr, true); v.setUint32(28, sr * 2, true); v.setUint16(32, 2, true); v.setUint16(34, 16, true);
+    ws(36, 'data'); v.setUint32(40, n * 2, true);
+    for (let i = 0; i < n; i++) { const s = Math.max(-1, Math.min(1, data[i])); v.setInt16(44 + i * 2, s < 0 ? s * 0x8000 : s * 0x7fff, true); }
+    return new Blob([bytes], { type: 'audio/wav' });
+  }
+  async function bgRender(phases, durSec) {
+    const SR = 22050, TAIL = 1.8;
+    const ctx = new OfflineAudioContext(1, Math.ceil((durSec + TAIL) * SR), SR);
+    const blip = (t, freq, dur, g0) => {
+      const o = ctx.createOscillator(), g = ctx.createGain();
+      o.type = 'sine'; o.frequency.value = freq;
+      g.gain.setValueAtTime(0, t);
+      g.gain.linearRampToValueAtTime(g0, t + 0.015);
+      g.gain.linearRampToValueAtTime(0, t + dur);
+      o.connect(g); g.connect(ctx.destination); o.start(t); o.stop(t + dur + 0.02);
+    };
+    for (const s of bgSegments(phases, durSec)) {
+      blip(s.t0, PHASE_TONE[s.kind] || 520, 0.14, 0.12);        // mốc đổi pha — cùng bảng tần số với tick JS
+      if (s.kind === 'in' || s.kind === 'out') {                 // sweep dẫn hơi: nghe là biết đang ở đâu trong pha
+        const o = ctx.createOscillator(), g = ctx.createGain();
+        o.type = 'sine';
+        o.frequency.setValueAtTime(s.kind === 'in' ? 420 : 780, s.t0);
+        o.frequency.linearRampToValueAtTime(s.kind === 'in' ? 780 : 420, s.t0 + s.sec);
+        const edge = Math.min(0.3, s.sec / 4);
+        g.gain.setValueAtTime(0, s.t0);
+        g.gain.linearRampToValueAtTime(0.05, s.t0 + edge);
+        g.gain.setValueAtTime(0.05, s.t0 + s.sec - edge);
+        g.gain.linearRampToValueAtTime(0, s.t0 + s.sec);
+        o.connect(g); g.connect(ctx.destination); o.start(s.t0); o.stop(s.t0 + s.sec);
+      } else {
+        for (let k = 1; k < s.sec; k++) blip(s.t0 + k, 1040, 0.05, 0.05);  // giữ: tick mỗi giây
+      }
+    }
+    blip(durSec + 0.1, 880, 0.5, 0.13); blip(durSec + 0.55, 1175, 0.6, 0.13); // chuông kết thúc như finish()
+    return wavFromBuffer(await ctx.startRendering());
+  }
+  async function bgPrepare() {
+    const eff = effPattern(), durSec = durMin * 60;
+    const key = mode.id + '|' + eff.phases.map(p => p.sec).join('-') + '|' + durSec;
+    if (bg.key === key && bg.url) return;
+    const blob = await bgRender(eff.phases, durSec);
+    if (bg.url) URL.revokeObjectURL(bg.url);
+    bg.url = URL.createObjectURL(blob); bg.key = key;
+    els.bgTrack.src = bg.url; els.bgTrack.load();
+  }
+  function bgMediaSession() {
+    if (!('mediaSession' in navigator)) return;
+    try {
+      navigator.mediaSession.metadata = new MediaMetadata({ title: `${mode.emoji} ${mode.name} · ${durMin}′`, artist: 'Hít thở có nhịp' });
+      navigator.mediaSession.setActionHandler('play', () => { if (!ses.running) start(); });
+      navigator.mediaSession.setActionHandler('pause', () => { if (ses.running) pause(); });
+    } catch {}
+  }
+  function bgStop() {
+    if (!bg.playing) return;
+    bg.playing = false;
+    try { els.bgTrack.pause(); els.bgTrack.currentTime = 0; } catch {}
+  }
+  // ---- Wake Lock: giữ màn hình sáng trong lúc tập (buông khi dừng/xong) ----
+  let wakeLock = null;
+  async function wakeAcquire() {
+    try {
+      if (navigator.wakeLock && !wakeLock) {
+        wakeLock = await navigator.wakeLock.request('screen');
+        wakeLock.addEventListener('release', () => { wakeLock = null; });
+      }
+    } catch {}
+  }
+  function wakeRelease() { try { if (wakeLock) { wakeLock.release(); wakeLock = null; } } catch {} }
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible' && ses.running) wakeAcquire();
+  });
   // ---- giọng đọc: en (mặc định, đọc số rõ) | vi | off ----
   let voiceMode = (() => { try { return localStorage.getItem('hit-tho:voice') || 'en'; } catch { return 'en'; } })();
   if (!['en', 'vi', 'off'].includes(voiceMode)) voiceMode = 'en';
@@ -432,7 +542,8 @@ if (typeof module !== 'undefined' && module.exports)
   function setStatus(m) { els.status.textContent = m; }
 
   // ---- phiên ----
-  const elapsed = () => ses.base + (ses.running ? performance.now() - ses.startedAt : 0);
+  // bg đang phát: audio.currentTime là NGUỒN SỰ THẬT thời gian (JS bị iOS treo khi khoá máy, track thì không)
+  const elapsed = () => bg.playing ? els.bgTrack.currentTime * 1000 : ses.base + (ses.running ? performance.now() - ses.startedAt : 0);
   function logSession() {
     const min = Math.floor(elapsed() / 60000);
     if (min >= 1) {
@@ -445,12 +556,13 @@ if (typeof module !== 'undefined' && module.exports)
   function finish() {
     ses.running = false; ses.base = durMin * 60000;
     clearInterval(timerId); timerId = null;
-    tone(880, .5, .14); setTimeout(() => tone(1175, .6, .14), 350);
+    if (!bg.playing) { tone(880, .5, .14); setTimeout(() => tone(1175, .6, .14), 350); }  // track nền đã có chuông riêng
     const min = logSession();
     els.btnStart.textContent = '▶ Bắt đầu';
     els.phaseLbl.textContent = 'HOÀN THÀNH'; els.secCount.textContent = '🎉';
     speak(bi(`Hoàn thành ${min} phút. Làm tốt lắm.`, `Done. ${min} minutes. Well done.`));
     setStatus(`Xong ${min} phút ${mode.name} — đã ghi vào nhật ký. Copy cuối ngày gửi fitness-log.`);
+    bgStop(); wakeRelease();
     ses.base = 0; lastKey = null; lastSec = null;
   }
   // ---- vòng lặp Wim Hof ----
@@ -551,7 +663,7 @@ if (typeof module !== 'undefined' && module.exports)
       els.ball.style.setProperty('--pc', pc);
       els.ball.style.setProperty('--pg', pg);
       els.phaseLbl.textContent = res.label;
-      if (els.chkTick.checked) tone(PHASE_TONE[res.kind], .14, .12);
+      if (els.chkTick.checked && !bg.playing) tone(PHASE_TONE[res.kind], .14, .12);  // track nền tự có mốc pha
       if (mode.count10 && res.kind === 'out') {
         const n = breathNumber(res.cycle);
         els.breathNo.textContent = `hơi thứ ${n}/10`;
@@ -592,6 +704,18 @@ if (typeof module !== 'undefined' && module.exports)
   function start() {
     ses.running = true; ses.startedAt = performance.now();
     els.btnStart.textContent = '⏸ Tạm dừng';
+    wakeAcquire();
+    if (bgOn()) {
+      // bless thẻ audio NGAY trong cú bấm (iOS chỉ cho play() từ gesture) — src hiện là wav im lặng
+      if (!bg.playing) { try { els.bgTrack.play().catch(() => {}); } catch {} }
+      try { if (navigator.audioSession) navigator.audioSession.type = 'playback'; } catch {}
+      const resumeMs = ses.base;
+      bgPrepare().then(() => {
+        try { els.bgTrack.currentTime = resumeMs / 1000; } catch {}
+        return els.bgTrack.play();
+      }).then(() => { bg.playing = true; bgMediaSession(); })
+        .catch(() => { bg.playing = false; setStatus(`${mode.name} · ${durMin} phút — track nền không phát được, chạy chế độ thường.`); });
+    }
     // điện thoại: nút Bắt đầu nằm dưới vòng tròn — cuộn vòng tròn vào giữa màn cho thấy nhịp dẫn
     if (window.innerWidth <= 640) {
       const cb = document.querySelector('.circle-box');
@@ -610,7 +734,9 @@ if (typeof module !== 'undefined' && module.exports)
     frame();
   }
   function pause() {
-    ses.base = elapsed(); ses.running = false;
+    ses.base = elapsed(); ses.running = false;      // đọc elapsed TRƯỚC khi dừng track
+    if (bg.playing) { try { els.bgTrack.pause(); } catch {} }
+    wakeRelease();
     clearInterval(timerId); timerId = null;
     els.btnStart.textContent = '▶ Tiếp tục';
     setStatus('Tạm dừng — bấm Tiếp tục, hoặc Làm lại để chốt phiên.');
@@ -630,6 +756,7 @@ if (typeof module !== 'undefined' && module.exports)
       const min = logSession();
       if (!silent) setStatus(`Đã chốt ${min} phút vào nhật ký.`);
     } else if (!silent && wasMs > 0) setStatus('Phiên dưới 1 phút — không ghi.');
+    bgStop(); wakeRelease();
     ses.base = 0; lastKey = null; lastSec = null;
     els.btnStart.textContent = '▶ Bắt đầu';
     els.phaseLbl.textContent = 'SẴN SÀNG'; els.secCount.textContent = '–'; els.breathNo.textContent = '';
@@ -682,6 +809,15 @@ if (typeof module !== 'undefined' && module.exports)
   });
   els.btnStart.addEventListener('click', () => ses.running ? pause() : start());
   els.btnReset.addEventListener('click', () => reset(false));
+  // track nền chạy hết (kể cả lúc đang khoá máy) -> chốt phiên khi quay lại
+  els.bgTrack.addEventListener('ended', () => { if (ses.running && bg.playing && !mode.special) finish(); });
+  els.chkBg.checked = !!store.bg;
+  els.bgHint.style.display = els.chkBg.checked ? '' : 'none';
+  els.chkBg.addEventListener('change', () => {
+    store.bg = els.chkBg.checked; saveStore();
+    els.bgHint.style.display = els.chkBg.checked ? '' : 'none';
+    if (els.chkBg.checked && !bgSupported()) setStatus('Trình duyệt này không render được track nền — chế độ khoá máy sẽ không hoạt động.');
+  });
 
   els.btnExport.addEventListener('click', async () => {
     const entries = buildBreathEntries(todayRec(), todayStr(), store.custom);
