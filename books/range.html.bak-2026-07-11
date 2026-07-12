@@ -1,0 +1,1217 @@
+<!DOCTYPE html>
+
+<html lang="vi">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title data-content-id="range-misc-15" data-content-type="page-title">Range — Sách tương tác</title><script id="dark-mode-init">(function(){try{var t=localStorage.getItem('st-theme');if(!t){t=window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';}document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+<meta content="Phân tích Range của David Epstein — tại sao generalist (đi rộng, thử nhiều) thắng specialist trong thế giới phức tạp. Bởi Quang Ton." name="description"/>
+<link href="../favicon.svg" rel="icon" type="image/svg+xml"/>
+<link href="../apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180"/>
+<link href="https://flamindi.com/range" rel="canonical"/>
+<link href="https://flamindi.com/range" hreflang="vi" rel="alternate"/>
+<link href="https://flamindi.com/en/range" hreflang="en" rel="alternate"/>
+<link href="https://flamindi.com/range" hreflang="x-default" rel="alternate"/>
+<meta content="article" property="og:type"/>
+<meta content="Stop &amp; Think" property="og:site_name"/>
+<meta content="vi_VN" property="og:locale"/>
+<meta content="Range — Sách tương tác | Stop &amp; Think" property="og:title"/>
+<meta content="Roger vs Tiger. Thử nhiều thắng tập trung sớm. Khi nào specialist thắng — và khi nào generalist phá đảo." property="og:description"/>
+<meta content="https://flamindi.com/range" property="og:url"/>
+<meta content="https://flamindi.com/og-image.png" property="og:image"/>
+<meta content="summary_large_image" name="twitter:card"/>
+<link as="font" crossorigin="" href="/assets/fonts/inter-vietnamese-400-normal.woff2" rel="preload" type="font/woff2"/>
+<link as="font" crossorigin="" href="/assets/fonts/fraunces-vietnamese-700-normal.woff2" rel="preload" type="font/woff2"/>
+<link href="/assets/fonts.v1.css" rel="stylesheet"/>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Book",
+  "name": "Range",
+  "author": {"@type": "Person", "name": "David Epstein"},
+  "datePublished": "2019",
+  "url": "https://flamindi.com/range",
+  "image": "https://flamindi.com/og-image.png",
+  "review": {
+    "@type": "Review",
+    "author": {"@type": "Person", "name": "Quang Ton"},
+    "publisher": {"@type": "Organization", "name": "Stop & Think"},
+    "url": "https://flamindi.com/range"
+  }
+}
+</script>
+<style>
+:root {
+  --ink: #1a1410;
+  --paper: #ffffff;
+  --paper-dark: #f7f7f7;
+  --accent: #8b3a2b;
+  --accent-deep: #5e2418;
+  --accent-2: #8b3a2b;
+  --navy: #2d4a5c;
+  --gold: #c4923c;
+  --muted: #3d3d3d;
+  --line: #5e2418;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+h1, h2, h3, h4, h5, .nav-brand, .footer-brand, .brand, .cover-brand, .cat-title, .book-cover-title, .book-title, .book-card-title, .cover-title, .chap-title, .chapter-title, .fw-name, .compare-name, .law-name, .principle h3 { font-family: 'Fraunces', Georgia, serif; }
+
+em { font-style: normal; }
+html { scroll-behavior: smooth; }
+body { background: var(--paper); color: var(--ink); font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; font-size: 19px; line-height: 1.65; overflow-x: hidden; }
+
+.nav-bar { position: fixed; top: 0; left: 0; right: 0; background: rgba(255, 255, 255, 0.92); backdrop-filter: blur(16px); border-bottom: 1px solid rgba(26, 20, 16, 0.1); z-index: 100; padding: 14px 32px; display: flex; justify-content: space-between; align-items: center; }
+.nav-logo { font-size: 18px; font-weight: 600; letter-spacing: -0.02em; text-decoration: none; color: var(--ink); }
+.nav-logo span { color: var(--accent-2); }
+.nav-logo em { font-style: normal; color: var(--accent); font-weight: 400; font-size: 22px; vertical-align: -2px; }
+.nav-links { display: flex; gap: 28px; font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; }
+.nav-links a { color: var(--muted); text-decoration: none; cursor: pointer; transition: color 0.2s; }
+.nav-links a:hover { color: var(--accent-2); }
+.lang-switch { display: inline-flex; gap: 6px; align-items: center; font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.1em; margin-left: 16px; }
+.lang-switch a { color: var(--muted); padding: 4px 6px; text-decoration: none; transition: color 0.2s; }
+.lang-switch a.active { color: var(--ink); font-weight: 600; }
+.lang-switch a:hover { color: var(--rust); }
+.lang-switch .sep { opacity: 0.4; }
+
+.nav-links a.active { color: var(--accent-2); font-weight: 600; }
+
+.hero { min-height: 80vh; padding: 140px 8% 80px; display: grid; grid-template-columns: 1.2fr 1fr; gap: 80px; align-items: center; border-bottom: 2px solid var(--ink); }
+.hero-meta { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); margin-bottom: 24px; display: flex; gap: 16px; align-items: center; }
+.hero-meta::before { content: ''; width: 40px; height: 1px; background: var(--accent); }
+.hero h1 { font-size: clamp(56px, 9vw, 132px); font-weight: 500; line-height: 0.95; letter-spacing: -0.04em; margin-bottom: 32px; }
+.hero h1 em { font-style: normal; color: var(--accent-2); font-weight: 700; }
+.hero-tagline { font-size: 22px; font-weight: 400; color: var(--muted); max-width: 560px; line-height: 1.5; }
+.hero-tagline strong { color: var(--accent-2); font-weight: 500; }
+
+.hero-visual { position: relative; min-height: 460px; display: flex; align-items: center; justify-content: center; }
+.hero-svg-wrap { position: relative; width: 100%; max-width: 420px; aspect-ratio: 1; }
+.hero-svg-wrap svg { width: 100%; height: 100%; }
+
+.section { padding: 100px 8%; border-bottom: 1px solid rgba(26, 20, 16, 0.15); }
+.section-label { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent-2); margin-bottom: 24px; display: flex; align-items: center; gap: 12px; }
+.section-label::before { content: '◆'; }
+.section-title { font-size: clamp(38px, 5.5vw, 64px); font-weight: 700; line-height: 1.1; letter-spacing: -0.025em; margin-bottom: 32px; max-width: 1000px; }
+.section-title em { font-style: normal; color: var(--accent-2); }
+/* Thesis section — magazine spread layout */
+.thesis-spread { padding-top: 72px; padding-bottom: 72px; }
+.thesis-spread-header { text-align: center; max-width: 1100px; margin: 0 auto 48px; }
+.thesis-spread-header .section-label { margin-bottom: 16px; }
+.thesis-title-spread {
+  font-family: 'Fraunces', Georgia, serif;
+  font-size: clamp(22px, 2.8vw, 34px);
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: -0.015em;
+  margin: 0;
+  color: var(--ink);
+}
+.thesis-spread-viz {
+  width: 100%;
+  max-width: 960px;
+  margin: 0 auto 64px;
+  aspect-ratio: 16 / 9;
+}
+.thesis-spread-viz svg { width: 100%; height: 100%; display: block; overflow: visible; }
+.thesis-spread-body {
+  columns: 2;
+  column-gap: 64px;
+  column-fill: balance;
+  max-width: 880px;
+  margin: 0 auto;
+}
+.thesis-spread-body .section-intro:first-child { margin-top: 0; }
+.thesis-spread-body .section-intro {
+  break-inside: avoid;
+  margin-bottom: 24px;
+}
+.thesis-spread-body .section-intro:last-child { margin-bottom: 0; }
+.thesis-spread-body .section-intro {
+  font-size: 19px;
+  line-height: 1.75;
+  color: var(--muted, #4a3f33);
+  margin: 0;
+  max-width: none;
+}
+@media (max-width: 800px) {
+  .thesis-spread-body { columns: 1; }
+  .thesis-spread-viz { margin-bottom: 36px; }
+  .thesis-spread-header { margin-bottom: 28px; }
+}
+
+.section-intro { font-size: 20px; color: var(--muted); line-height: 1.55; font-weight: 400; max-width: 760px; margin-bottom: 40px; }
+.section-intro strong { color: var(--accent-2); font-weight: 500; }
+
+.thesis-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; max-width: 1300px; }
+.thesis-title-small { font-size: clamp(28px, 3.5vw, 42px); font-weight: 700; letter-spacing: -0.02em; line-height: 1.2; margin-bottom: 24px; }
+.thesis-title-small em { font-style: normal; color: var(--accent-2); }
+.thesis-viz { position: relative; width: 100%; max-width: 480px; aspect-ratio: 1; margin: 0 auto; }
+.thesis-viz svg { width: 100%; height: 100%; overflow: visible; }
+
+.thesis-quote { background: var(--ink); color: var(--paper); padding: 48px 8%; position: relative; }
+.thesis-mark { font-size: 56px; line-height: 0.8; color: var(--accent); margin-bottom: 10px; }
+.thesis-text { font-size: clamp(22px, 2.5vw, 30px); font-weight: 400; line-height: 1.4; max-width: 880px; }
+.thesis-text em { font-style: normal; color: var(--accent); font-weight: 500; }
+.thesis-author { font-family: 'JetBrains Mono', monospace; font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); margin-top: 24px; }
+
+/* Framework cards */
+.fw-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 28px; margin: 48px 0; }
+.fw-card { padding: 36px 32px; border: 2px solid var(--ink); background: var(--paper-dark); position: relative; }
+.fw-num { font-size: 64px; font-weight: 400; line-height: 0.9; color: var(--accent); margin-bottom: 12px; }
+.fw-name { font-size: 24px; font-weight: 700; line-height: 1.2; margin-bottom: 16px; }
+.fw-name em { font-style: normal; color: var(--accent-2); }
+.fw-tag { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--accent-2); margin-bottom: 16px; }
+.fw-desc { font-size: 16px; line-height: 1.6; margin-bottom: 16px; }
+.fw-extra { padding: 12px 14px; background: var(--paper); border-left: 3px solid var(--accent); font-size: 14px; line-height: 1.55; }
+.fw-extra strong { color: var(--accent-2); }
+
+/* Compare cards */
+.compare-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; margin: 48px 0; }
+.compare-card { padding: 36px 32px; }
+.compare-card.a { background: var(--accent-2); color: var(--paper); border: 2px solid var(--line); }
+.compare-card.b { background: var(--navy); color: var(--paper); border: 2px solid var(--ink); }
+.compare-label { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; opacity: 0.7; margin-bottom: 12px; }
+.compare-name { font-size: 22px; font-weight: 700; line-height: 1.2; margin-bottom: 16px; }
+.compare-desc { font-size: 16px; line-height: 1.6; margin-bottom: 16px; }
+.compare-quote { padding: 16px; background: rgba(0,0,0,0.06); font-size: 14px; line-height: 1.55; }
+.compare-card.b .compare-quote { background: rgba(255,255,255,0.08); }
+
+/* Chapter map */
+.chap-list { display: grid; gap: 16px; max-width: 880px; margin: 40px 0; }
+.chap-row { display: grid; grid-template-columns: 100px 1fr; gap: 24px; padding: 22px 28px; background: var(--paper-dark); border-left: 3px solid var(--accent); align-items: start; }
+.chapter-tabs { display: flex; gap: 8px; margin-bottom: 32px; flex-wrap: wrap; justify-content: center; }
+.chapter-tab-btn { padding: 10px 16px; background: transparent; border: 1.5px solid var(--ink); font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer; transition: all 0.2s; color: var(--ink); }
+.chapter-tab-btn.active, .chapter-tab-btn:hover { background: var(--ink); color: var(--paper); }
+.chapter-grid {
+  display: flex;
+  gap: 16px;
+  overflow-x: auto;
+  padding: 4px 8% 24px 0;
+  scroll-snap-type: x mandatory;
+  margin-left: -4px;
+}
+.chapter-grid::-webkit-scrollbar { height: 8px; }
+.chapter-grid::-webkit-scrollbar-track { background: rgba(26, 20, 16, 0.05); border-radius: 4px; }
+.chapter-grid::-webkit-scrollbar-thumb { background: var(--accent, var(--rust, #8b3a2b)); border-radius: 4px; }
+.chapter-grid::-webkit-scrollbar-thumb:hover { background: var(--ink); }
+.chapter-card {
+  flex: 0 0 320px;
+  scroll-snap-align: start;
+  display: flex;
+  flex-direction: column; padding: 24px; background: rgba(196, 146, 60, 0.04); border: 1px solid rgba(26, 20, 16, 0.08); transition: all 0.2s; }
+
+/* Visual grouping for chapter-cards in horizontal scroll */
+.chapter-card { border-top: 4px solid var(--ink); }
+.chapter-card:nth-child(1) { border-top-color: var(--rust, #8b3a2b); }
+.chapter-card:nth-child(2) { border-top-color: var(--rust, #8b3a2b); }
+.chapter-card:nth-child(3) { border-top-color: var(--rust, #8b3a2b); }
+.chapter-card:nth-child(4) { border-top-color: var(--rust, #8b3a2b); }
+.chapter-card:nth-child(5) { border-top-color: var(--rust, #8b3a2b); }
+.chapter-card:nth-child(6) { border-top-color: var(--copper, #c4923c); }
+.chapter-card:nth-child(7) { border-top-color: var(--copper, #c4923c); }
+.chapter-card:nth-child(8) { border-top-color: var(--copper, #c4923c); }
+.chapter-card:nth-child(9) { border-top-color: var(--navy, #2d4a5c); }
+.chapter-card:nth-child(10) { border-top-color: var(--navy, #2d4a5c); }
+.chapter-card:nth-child(11) { border-top-color: var(--navy, #2d4a5c); }
+.chapter-card:nth-child(12) { border-top-color: var(--navy, #2d4a5c); }
+.chapter-card .chapter-group-label {
+  display: inline-block;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 2px;
+  margin-bottom: 10px;
+  font-weight: 600;
+  color: var(--paper);
+  background: var(--ink);
+}
+
+.chapter-card:hover { background: rgba(196, 146, 60, 0.08); border-color: rgba(26, 20, 16, 0.18); }
+.chapter-num { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.15em; color: var(--accent-2); margin-bottom: 8px; }
+.chapter-title { font-size: 19px; font-weight: 600; line-height: 1.3; margin-bottom: 8px; }
+.chapter-desc { font-size: 14px; line-height: 1.55; color: var(--muted); }
+.chapter-pager { display: flex; justify-content: center; align-items: center; gap: 16px; margin-top: 28px; font-family: 'JetBrains Mono', monospace; font-size: 13px; }
+.chapter-pager-btn { width: 40px; height: 40px; background: transparent; border: 1.5px solid var(--ink); color: var(--ink); cursor: pointer; font-size: 18px; line-height: 1; transition: all 0.2s; display: inline-flex; align-items: center; justify-content: center; }
+.chapter-pager-btn:hover:not(:disabled) { background: var(--ink); color: var(--paper); }
+.chapter-pager-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+.chapter-pager-info { font-weight: 600; letter-spacing: 0.05em; }
+.chapter-pager-total { color: var(--ink-light, #6b5d4f); font-weight: 400; margin-left: 6px; }
+.chap-row, .chap-num, .chap-title, .chap-desc { display: none !important; }
+
+/* Flashcards */
+.flashcards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; margin: 32px 0; }
+.flashcard { background: var(--paper-dark); border: 1.5px solid var(--ink); padding: 24px; cursor: pointer; transition: all 0.3s; min-height: 160px; display: flex; flex-direction: column; justify-content: space-between; }
+.flashcard:hover { transform: translate(-3px, -3px); box-shadow: 6px 6px 0 var(--accent-2); }
+.flashcard-num { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.2em; color: var(--accent-2); margin-bottom: 12px; }
+.flashcard-front { font-size: 17px; font-weight: 600; line-height: 1.3; }
+.flashcard-back { font-size: 14px; line-height: 1.55; color: var(--muted); margin-top: 14px; padding-top: 14px; border-top: 1px dashed rgba(26, 20, 16, 0.2); }
+
+/* Journal */
+.journal-section { background: var(--ink); color: var(--paper); padding: 80px 8%; }
+.journal-section .section-label { color: var(--accent); }
+.journal-section .section-title { color: var(--paper); }
+.journal-section .section-intro { color: rgba(255, 255, 255, 0.8); }
+.journal-prompts { display: grid; gap: 24px; max-width: 880px; margin: 32px 0; }
+.journal-prompt { padding: 24px 28px; background: rgba(255, 255, 255, 0.06); border-left: 3px solid var(--accent); }
+.journal-prompt-num { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.2em; color: var(--accent); margin-bottom: 8px; }
+.journal-prompt-text { font-size: 18px; font-weight: 400; line-height: 1.4; }
+.journal-prompt-hint { font-size: 13px; line-height: 1.55; color: rgba(255, 255, 255, 0.6); margin-top: 8px; }
+.journal-prompts-nav { display: flex; gap: 8px; margin-bottom: 24px; justify-content: center; flex-wrap: wrap; }
+.journal-dot { width: 36px; height: 36px; border: 1.5px solid var(--paper, #f5ede0); display: flex; align-items: center; justify-content: center; font-family: 'JetBrains Mono', monospace; font-size: 13px; cursor: pointer; transition: all 0.2s; color: var(--paper, #f5ede0); }
+.journal-dot.active, .journal-dot:hover { background: var(--paper, #f5ede0); color: var(--ink, #1a1410); }
+.journal-prompt-q { font-family: 'Fraunces', Georgia, serif; font-size: 22px; line-height: 1.4; font-weight: 500; margin-bottom: 12px; color: var(--paper, #f5ede0); }
+.journal-prompt-help { font-size: 14px; line-height: 1.55; color: rgba(255, 255, 255, 0.7); margin: 8px 0 16px; }
+.journal-textarea { width: 100%; min-height: 140px; padding: 14px 16px; background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.2); color: var(--paper, #f5ede0); font-family: 'Fraunces', Georgia, serif; font-size: 15px; line-height: 1.55; resize: vertical; }
+.journal-textarea:focus { outline: none; border-color: var(--accent); background: rgba(255, 255, 255, 0.12); }
+.journal-actions { display: flex; gap: 12px; align-items: center; margin-top: 12px; }
+.journal-saved { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.18em; color: var(--accent); opacity: 0; transition: opacity 0.3s; }
+.journal-saved.show { opacity: 1; }
+.journal-container { max-width: 720px; margin: 0 auto; }
+.journal-prompt h3 { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.18em; color: var(--accent); margin-bottom: 8px; font-weight: 500; }
+
+
+/* Comment form */
+.comment-form-wrap { max-width: 760px; margin-bottom: 48px; }
+.comment-form { background: var(--paper); border: 2px solid var(--ink); padding: 28px; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+.comment-form input[type="text"], .comment-form input[type="email"], .comment-form textarea { width: 100%; padding: 12px 14px; border: 1.5px solid var(--ink); background: var(--paper-dark); font-size: 16px; line-height: 1.5; color: var(--ink); resize: vertical; }
+.comment-form input:focus, .comment-form textarea:focus { outline: none; border-color: var(--accent-2); background: var(--paper); }
+.form-bottom { display: flex; justify-content: space-between; align-items: center; gap: 16px; margin-top: 16px; }
+.form-hint { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.1em; color: var(--muted); }
+.form-submit { padding: 12px 24px; background: var(--ink); color: var(--paper); border: none; font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; transition: all 0.2s; }
+.form-submit:hover { background: var(--accent-2); }
+.form-submit:disabled { opacity: 0.5; cursor: not-allowed; }
+.form-message { margin-top: 16px; padding: 14px 18px; font-size: 15px; line-height: 1.5; display: none; }
+.form-message.show { display: block; }
+.form-message.success { background: var(--paper-dark); border-left: 3px solid var(--accent); color: var(--ink); }
+.form-message.error { background: var(--paper-dark); border-left: 3px solid var(--accent-2); color: var(--accent-2); }
+.comments-list { max-width: 760px; }
+.comments-loading { color: var(--muted); padding: 14px 0; }
+.comment-item { padding: 20px 24px; border-left: 2px solid var(--ink); background: var(--paper); margin-bottom: 14px; transition: border-color 0.2s; }
+.comment-item:hover { border-left-color: var(--accent-2); }
+.comment-item.is-reply { margin-left: 36px; border-left-color: var(--accent); background: var(--paper-dark); }
+.comment-head { display: flex; gap: 12px; align-items: baseline; margin-bottom: 8px; flex-wrap: wrap; }
+.comment-name { font-weight: 600; font-size: 16px; }
+.comment-time { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.1em; color: var(--muted); }
+.comment-body { font-size: 15px; line-height: 1.6; white-space: pre-wrap; }
+.comment-actions { margin-top: 8px; }
+.comment-reply-btn { background: none; border: none; cursor: pointer; font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--accent-2); padding: 0; }
+.comment-reply-btn:hover { text-decoration: underline; }
+.reply-indicator { display: inline-block; padding: 4px 10px; background: var(--paper-dark); border: 1px solid var(--ink); font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 8px; }
+.reply-indicator button { background: none; border: none; cursor: pointer; color: var(--accent-2); margin-left: 8px; font-weight: 700; }
+
+.footer { padding: 60px 8% 40px; background: var(--ink); color: var(--paper); text-align: center; }
+.footer-quote { font-size: clamp(20px, 2.2vw, 28px); font-weight: 400; line-height: 1.4; max-width: 720px; margin: 0 auto 32px; color: var(--accent); }
+.footer-brand { font-size: 28px; font-weight: 500; margin-bottom: 12px; }
+.footer-brand .amp { color: var(--accent); font-style: normal; }
+.footer p { opacity: 0.7; font-size: 16px; }
+.footer-bottom { margin-top: 32px; padding-top: 24px; border-top: 1px solid rgba(255, 255, 255, 0.2); font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.1em; opacity: 0.5; }
+
+@media (max-width: 1024px) {
+  .hero { grid-template-columns: 1fr; gap: 48px; padding: 120px 6% 60px; }
+  .thesis-grid { grid-template-columns: 1fr; gap: 48px; }
+  .fw-grid, .compare-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 640px) {
+  .nav-bar { padding: 12px 18px; }
+  .nav-links { display: none; }
+  .section { padding: 64px 6%; }
+  .form-row { grid-template-columns: 1fr; }
+  .comment-item.is-reply { margin-left: 16px; }
+  .chap-row { grid-template-columns: 1fr; }
+}
+
+/* ============ FLASHCARDS ============ */
+.flashcard-container { perspective: 1500px; margin: 40px auto; max-width: 900px; }
+.flashcard-controls { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; font-family: 'JetBrains Mono', monospace; font-size: 13px; }
+.flashcard-counter { letter-spacing: 0.1em; }
+.flashcard-counter strong { color: var(--accent); font-size: 18px; }
+.flashcard { width: 100%; height: 360px; position: relative; transform-style: preserve-3d; transition: transform 0.7s cubic-bezier(0.4, 0.0, 0.2, 1); cursor: pointer; }
+.flashcard.flipped { transform: rotateY(180deg); }
+.flashcard-face { position: absolute; inset: 0; backface-visibility: hidden; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 50px; text-align: center; border: 2px solid var(--ink); }
+.flashcard-front { background: var(--paper-dark); }
+.flashcard-back { background: var(--ink); color: var(--paper); transform: rotateY(180deg); }
+.flashcard-tag { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 24px; opacity: 0.6; }
+.flashcard-question { font-size: 28px; font-weight: 500; line-height: 1.3; letter-spacing: -0.02em; max-width: 700px; }
+.flashcard-answer { font-size: 20px; line-height: 1.5; max-width: 700px; font-weight: 400; }
+.flashcard-hint { position: absolute; bottom: 20px; font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; opacity: 0.5; }
+.flashcard-nav { display: flex; gap: 12px; margin-top: 24px; justify-content: center; flex-wrap: wrap; }
+.fcq-btn { padding: 14px 28px; background: var(--ink); color: var(--paper); border: 2px solid var(--ink); font-family: 'JetBrains Mono', monospace; font-size: 12px; letter-spacing: 0.15em; text-transform: uppercase; cursor: pointer; transition: all 0.2s; font-weight: 500; }
+.fcq-btn:hover { background: var(--paper); color: var(--ink); }
+.fcq-btn.outline { background: var(--paper); color: var(--ink); }
+.fcq-btn.outline:hover { background: var(--ink); color: var(--paper); }
+.fcq-btn.accent { background: var(--accent); border-color: var(--accent); }
+.fcq-btn.accent:hover { background: var(--paper); color: var(--accent); }
+
+/* ============ QUIZ ============ */
+.quiz-container { background: var(--paper-dark); padding: 50px; border: 2px solid var(--ink); max-width: 900px; margin: 0 auto; }
+.quiz-progress { display: flex; justify-content: space-between; margin-bottom: 32px; font-family: 'JetBrains Mono', monospace; font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; }
+.quiz-bar { height: 4px; background: var(--paper); margin-bottom: 32px; position: relative; }
+.quiz-bar-fill { position: absolute; inset: 0 auto 0 0; background: var(--accent); transition: width 0.4s; }
+.quiz-question { font-size: 24px; font-weight: 500; line-height: 1.3; margin-bottom: 32px; }
+.quiz-options { display: flex; flex-direction: column; gap: 12px; }
+.quiz-option { padding: 18px 24px; background: var(--paper); border: 2px solid var(--ink); font-size: 16px; text-align: left; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 16px; }
+.quiz-option:hover { background: var(--ink); color: var(--paper); }
+.quiz-option-letter { width: 32px; height: 32px; border: 2px solid currentColor; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 700; flex-shrink: 0; }
+.quiz-option.correct { background: var(--accent-2); color: var(--paper); border-color: var(--accent-2); pointer-events: none; }
+.quiz-option.wrong { background: var(--accent); color: var(--paper); border-color: var(--accent); pointer-events: none; }
+.quiz-option.disabled { pointer-events: none; opacity: 0.5; }
+.quiz-feedback { margin-top: 24px; padding: 20px; background: var(--ink); color: var(--paper); font-size: 15px; display: none; border-left: 4px solid var(--gold); }
+.quiz-feedback.show { display: block; }
+.quiz-result { text-align: center; padding: 40px 0; }
+.quiz-score { font-size: 100px; font-weight: 700; letter-spacing: -0.05em; line-height: 1; color: var(--accent); }
+.quiz-score-label { font-family: 'JetBrains Mono', monospace; font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase; margin-top: 12px; }
+
+@media (max-width: 700px) {
+  .quiz-container { padding: 28px; }
+  .quiz-question { font-size: 20px; }
+  .flashcard-question { font-size: 22px; }
+  .flashcard-answer { font-size: 17px; }
+  .flashcard { height: 320px; }
+  .flashcard-face { padding: 28px; }
+}
+</style>
+<link href="/assets/dark.v5.css" rel="stylesheet"/>
+<script defer="" src="/assets/theme.v5.js"></script>
+<link href="/assets/vn-lens.v1.css" rel="stylesheet"/>
+<script defer="" src="/assets/nav-menu.v1.js"></script>
+<script defer="" src="/assets/auth.v1.js"></script>
+</head>
+<body>
+<nav class="nav-bar">
+<a class="nav-logo" href="../index.html" title="Về trang chủ"><span>Range</span><em>.</em></a>
+<button class="snst-search-bar" type="button">
+<svg fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<circle cx="11" cy="11" r="8"></circle><line x1="21" x2="16.65" y1="21" y2="16.65"></line>
+</svg>
+<span class="snst-search-bar-text">Tìm sách...</span>
+<kbd>Ctrl K</kbd>
+</button>
+<div class="nav-actions">
+<span class="lang-switch"><a class="active" href="#">VI</a><span class="sep">·</span><a href="/en/range">EN</a></span>
+<button aria-label="Đổi giao diện" class="theme-toggle" onclick="window.STTheme &amp;&amp; window.STTheme.toggle()" type="button">
+<svg aria-hidden="true" class="icon-moon" fill="none" height="18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="18"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+<svg aria-hidden="true" class="icon-sun" fill="none" height="18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="18"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"></path></svg>
+</button>
+<button aria-expanded="false" aria-label="Mở menu" class="nav-menu-btn" onclick="toggleNavMenu(event)" type="button">
+<svg fill="none" height="18" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24" width="18"><line x1="3" x2="21" y1="6" y2="6"></line><line x1="3" x2="21" y1="12" y2="12"></line><line x1="3" x2="21" y1="18" y2="18"></line></svg>
+<span>Menu</span>
+</button>
+</div>
+<div aria-hidden="true" class="nav-dropdown" id="navDropdown" role="menu">
+<a onclick="scrollTo2('thesis'); closeNavMenu()">Luận điểm</a>
+<a onclick="scrollTo2('framework'); closeNavMenu()">Framework</a>
+<a onclick="scrollTo2('chapters'); closeNavMenu()">Chương sách</a>
+<a onclick="scrollTo2('flashcards'); closeNavMenu()">Flashcard</a>
+<a onclick="scrollTo2('quiz'); closeNavMenu()">Quiz</a>
+<a onclick="scrollTo2('journal'); closeNavMenu()">Nhật ký</a>
+</div>
+</nav>
+<!-- HERO -->
+<section class="hero">
+<div>
+<div class="hero-meta" data-content-id="range-misc-13" data-content-type="meta">Vol. 15 · 2019 · ~14 phút đọc · Sự nghiệp</div>
+<h1><em>Range</em>.</h1>
+<p class="hero-tagline" data-content-id="range-misc-01" data-content-type="hero-tagline">Tiger Woods cầm gậy golf lúc bảy tháng tuổi. Roger Federer thì bỏ tennis vài lần, chơi đủ mọi môn thể thao khác và mãi đến tuổi thiếu niên mới chọn gắn bó với quần vợt. Cả hai đều vươn lên số một thế giới. Nhưng hành trình của Roger mới là quy luật chung, còn Tiger chỉ là một ngoại lệ hiếm hoi. Cuốn sách này chứng minh một sự thật: Trong một thế giới phức tạp, kẻ đi rộng sẽ đè bẹp kẻ đào sâu từ quá sớm.</p>
+</div>
+<div class="hero-visual">
+<div class="hero-svg-wrap">
+<svg viewbox="0 0 420 420" xmlns="http://www.w3.org/2000/svg">
+<rect fill="#f7f7f7" height="420" width="420" x="0" y="0"></rect>
+<!-- Two paths: narrow vs wide -->
+<line stroke="#5e2418" stroke-dasharray="6 4" stroke-width="3" x1="210" x2="210" y1="40" y2="380"></line>
+<text fill="#5e2418" font-family="Fraunces,serif" font-size="14" font-weight="700" x="220" y="60">CHUYÊN GIA</text>
+<text fill="#4a3f33" font-family="JetBrains Mono,monospace" font-size="9" x="220" y="78">đào sớm, sâu</text>
+<path d="M 100 380 Q 60 280 90 200 Q 130 140 200 120 Q 280 100 320 60" fill="none" stroke="#8b3a2b" stroke-width="3"></path>
+<circle cx="100" cy="380" fill="#8b3a2b" r="6"></circle>
+<circle cx="90" cy="200" fill="#8b3a2b" r="6"></circle>
+<circle cx="200" cy="120" fill="#8b3a2b" r="6"></circle>
+<circle cx="320" cy="60" fill="#8b3a2b" r="6"></circle>
+<text fill="#8b3a2b" font-family="Fraunces,serif" font-size="13" font-weight="700" x="40" y="395">NGƯỜI ĐA NĂNG</text>
+<text fill="#4a3f33" font-family="JetBrains Mono,monospace" font-size="8" x="40" y="412">thử nhiều, sample</text>
+</svg>
+</div>
+</div>
+</section>
+<!-- THESIS -->
+<section class="section thesis-spread" id="thesis">
+<div class="thesis-spread-header">
+<div class="section-label">Luận điểm trung tâm</div>
+<h2 class="thesis-title-spread">Trong một thế giới phức tạp, đi rộng tạo ra sức mạnh liên kết. Đào quá hẹp chỉ tạo ra sự mù lòa.</h2>
+</div>
+<div class="thesis-spread-viz">
+<svg aria-label="T-shape generalist beats I-shape specialist long term" viewbox="0 0 960 540" xmlns="http://www.w3.org/2000/svg">
+<text fill="var(--ink)" font-family="JetBrains Mono, monospace" font-size="12" font-weight="500" letter-spacing="0.22em" opacity="0.7" text-anchor="middle" x="480" y="36">CHUYÊN GIA (I) vs NGƯỜI ĐA NĂNG (T)</text>
+<text fill="var(--accent-2, #2d4a5c)" font-family="Fraunces, serif" font-size="26" font-weight="700" text-anchor="middle" x="240" y="80">CHUYÊN GIA</text>
+<text fill="var(--ink)" font-family="JetBrains Mono, monospace" font-size="11" font-weight="500" letter-spacing="0.15em" opacity="0.7" text-anchor="middle" x="240" y="104">"I-SHAPE"</text>
+<line opacity="0.3" stroke="var(--ink)" stroke-dasharray="4 4" stroke-width="0.8" x1="60" x2="420" y1="160" y2="160"></line>
+<rect fill="var(--accent-2, #2d4a5c)" height="280" stroke="var(--ink)" stroke-width="2" width="40" x="220" y="160"></rect>
+<g fill="var(--paper)" font-family="JetBrains Mono, monospace" font-size="10" font-weight="500" text-anchor="middle"><text x="240" y="200">DEEP</text><text x="240" y="260">DEEP</text><text x="240" y="320">DEEP</text><text x="240" y="380">DEEP</text><text x="240" y="430">DEEP</text></g>
+<text fill="var(--accent-2, #2d4a5c)" font-family="Fraunces, serif" font-size="13" font-style="italic" text-anchor="middle" x="240" y="470">Tiger Woods archetype</text>
+<text fill="var(--ink)" font-family="JetBrains Mono, monospace" font-size="11" letter-spacing="0.1em" opacity="0.7" text-anchor="middle" x="240" y="490">early start · narrow · kind world</text>
+<text fill="var(--accent)" font-family="Fraunces, serif" font-size="26" font-weight="700" text-anchor="middle" x="720" y="80">NGƯỜI ĐA NĂNG</text>
+<text fill="var(--ink)" font-family="JetBrains Mono, monospace" font-size="11" font-weight="500" letter-spacing="0.15em" opacity="0.7" text-anchor="middle" x="720" y="104">"T-SHAPE"</text>
+<line opacity="0.6" stroke="var(--accent)" stroke-dasharray="4 4" stroke-width="0.8" x1="540" x2="900" y1="160" y2="160"></line>
+<rect fill="var(--accent)" height="50" opacity="0.3" stroke="var(--accent)" stroke-width="1.5" width="360" x="540" y="160"></rect>
+<g fill="var(--ink)" font-family="JetBrains Mono, monospace" font-size="9" font-weight="500" text-anchor="middle"><text x="585" y="190">music</text><text x="650" y="190">art</text><text x="720" y="190">science</text><text x="790" y="190">lit</text><text x="855" y="190">sport</text></g>
+<rect fill="var(--accent)" height="230" stroke="var(--ink)" stroke-width="2" width="40" x="700" y="210"></rect>
+<g fill="var(--paper)" font-family="JetBrains Mono, monospace" font-size="10" font-weight="500" text-anchor="middle"><text x="720" y="245">DEEP</text><text x="720" y="305">DEEP</text><text x="720" y="365">DEEP</text><text x="720" y="425">DEEP</text></g>
+<text fill="var(--accent)" font-family="Fraunces, serif" font-size="13" font-style="italic" text-anchor="middle" x="720" y="470">Roger Federer archetype</text>
+<text fill="var(--ink)" font-family="JetBrains Mono, monospace" font-size="11" letter-spacing="0.1em" opacity="0.7" text-anchor="middle" x="720" y="490">late sample · wide · wicked world</text>
+<text fill="var(--ink)" font-family="Fraunces, serif" font-size="17" font-style="italic" font-weight="500" text-anchor="middle" x="480" y="525">"Match quality &gt; head start." — David Epstein</text>
+</svg>
+</div>
+<div class="thesis-spread-body">
+<p class="section-intro">Epstein chia thế giới làm hai loại: môi trường dễ đoán như cờ vua hay golf, nơi luật chơi rõ ràng, phản hồi tức thì và các mô thức lặp đi lặp lại. Nhưng phần lớn cuộc đời chúng ta lại thuộc về môi trường hiểm độc, nơi luật chơi mờ mịt, phản hồi chậm chạp và không có bất kỳ mô thức nào. Trong môi trường dễ đoán, Tiger sẽ thắng vì việc chuyên môn hóa cực độ từ sớm là tối ưu. Nhưng trong môi trường hiểm độc, Roger sẽ làm chủ cuộc chơi. Anh trải nghiệm nhiều, biết khi nào nên từ bỏ và hiểu rằng việc chuyên môn hóa muộn sẽ đánh bại những kẻ vội vàng. Bi kịch là chúng ta đang đào tạo những đứa trẻ cho một thế giới dễ đoán, trong khi cuộc đời thực tế lại đầy rẫy hiểm độc.</p>
+<p class="section-intro">Tôi từng tin sái cổ rằng tập trung cao độ là chìa khóa duy nhất để chiến thắng. Đã có lúc tôi định vứt bỏ thiết kế, ngừng viết lách và dẹp luôn những cuốn sách triết học vì nghĩ chúng chẳng liên quan gì đến nghề nghiệp chính. Nhưng đọc Range xong, tôi lật ngược toàn bộ. Ba quyết định lớn nhất tôi đưa ra trong năm qua đều khởi nguồn từ những lĩnh vực ngoài lề. Một ý tưởng xuất thần đến từ mô thức thiết kế. Một thương vụ thành công đến từ kỹ năng đàm phán học được qua một cuốn sách triết. Đi rộng không phải là món trang sức điểm tô thêm. Đi rộng chính là con hào kinh tế vững chãi nhất bảo vệ bạn.</p>
+<p class="section-intro"><span data-content-id="range-thesis-1">Chúng ta bị ép phải chuyên môn hóa quá sớm. Lên cấp hai thì thi trường chuyên, vào đại học thì khóa chặt ngành nghề, ra trường lại tự dán lên trán một cái mác công việc cố định. Epstein phản biện gai góc: để giải một bài toán mới, bạn cần một góc nhìn bao quát, chứ không phải một kỹ năng chật hẹp. Không bao giờ là quá muộn nếu ở tuổi ba mươi bạn mới bắt đầu viết những dòng code đầu tiên.</span></p>
+</div>
+</section>
+<!-- THESIS QUOTE -->
+<div class="thesis-quote">
+<div class="thesis-mark">"</div>
+<div class="thesis-text" data-content-id="range-misc-09" data-content-type="thesis">Người đi đường dài thường không biết đích xác con đường họ đang đi. Đó từng bị coi là điểm yếu, nhưng thực chất lại là vũ khí tối thượng của họ.</div>
+<div class="thesis-author" data-content-id="range-misc-10" data-content-type="thesis">David Epstein, Range, hai nghìn không trăm mười chín</div>
+</div>
+<!-- FRAMEWORK -->
+<section class="section" id="framework">
+<div class="section-label" data-content-id="range-framework-19" data-content-type="label">Khung chính / 4 nguyên tắc</div>
+<h2 class="section-title" data-content-id="range-framework-01" data-content-type="heading">Bốn nguyên tắc của kẻ đi rộng</h2>
+<p class="section-intro" data-content-id="range-framework-02" data-content-type="section-intro">Đi rộng không có nghĩa là thử nghiệm vô tội vạ rồi phó mặc cho may rủi. Epstein đã vạch ra bốn nguyên tắc vô cùng chặt chẽ. Nó đi ngược hoàn toàn với lời khuyên một vạn giờ luyện tập từ thuở lên mười mà chúng ta vẫn bị nhồi sọ.</p>
+<div class="fw-grid">
+<div class="fw-card">
+<div class="fw-num">01</div>
+<div class="fw-name" data-content-id="range-framework-03" data-content-type="framework">Giai đoạn nếm thử</div>
+<div class="fw-tag" data-content-id="range-framework-15" data-content-type="framework">Tuổi trẻ là lúc để thử sai, không phải để tối ưu hóa</div>
+<p class="fw-desc" data-content-id="range-framework-11" data-content-type="framework">Federer đã chơi quần vợt, bóng đá, cầu lông và bóng rổ cho đến tận tuổi thiếu niên. Cha mẹ anh chưa bao giờ o ép. Khi quyết định gắn bó với quần vợt, anh đã tích lũy được một nền tảng thể chất khổng lồ. Điều tương tự cũng xảy ra với đại đa số các vận động viên Olympic, các nhà khoa học hàng đầu và những nhà sáng lập kiệt xuất. Họ đều trải qua một giai đoạn nếm thử kéo dài. Những kẻ gò ép bản thân đi quá sớm thường chạm đỉnh rất nhanh nhưng cũng lụi tàn đầy chua xót.</p>
+<div class="fw-extra" data-content-id="range-framework-07" data-content-type="framework">Nếu bạn đang ở tuổi đôi mươi, đừng vội vã chôn vùi bản thân vào nghề nghiệp đầu tiên mà bạn thử. Hãy trải nghiệm từ hai đến ba lĩnh vực khác nhau. Lãng phí năm năm để thử nghiệm thường sẽ giúp bạn đi tắt đón đầu suốt hai mươi năm tiếp theo.</div>
+</div>
+<div class="fw-card">
+<div class="fw-num">02</div>
+<div class="fw-name" data-content-id="range-framework-04" data-content-type="framework">Mức độ ăn khớp</div>
+<div class="fw-tag" data-content-id="range-framework-16" data-content-type="framework">Sự phù hợp giữa người và việc quan trọng hơn việc xuất phát sớm</div>
+<p class="fw-desc" data-content-id="range-framework-12" data-content-type="framework">Van Gogh chạm mốc hai mươi bảy tuổi mà chưa từng cầm cọ. Ông đã vứt bỏ sáu nghề nghiệp trước đó. Nhưng khi bắt đầu vẽ, mức độ ăn khớp của ông vượt xa những kẻ học vẽ từ năm tuổi nhưng không hề có tình yêu với hội họa. Nghiên cứu của giáo sư Ofer Malamud cũng chỉ ra một sự thật phũ phàng: Những học sinh bị ép chọn nghề sớm ở Anh lại có thu nhập trọn đời thấp hơn những học sinh được tự do trải nghiệm ở Scotland.</p>
+<div class="fw-extra" data-content-id="range-framework-08" data-content-type="framework">Việc đổi nghề một hoặc hai lần ở tuổi ba mươi không phải là sự thất bại. Đó là hành trình đi tìm sự ăn khớp. Một kẻ ngồi sai ghế suốt ba mươi năm sẽ luôn thua cuộc trước người tìm đúng bến đỗ ở tuổi ba mươi năm.</div>
+</div>
+<div class="fw-card">
+<div class="fw-num">03</div>
+<div class="fw-name" data-content-id="range-framework-05" data-content-type="framework">Tư duy đa chiều</div>
+<div class="fw-tag" data-content-id="range-framework-17" data-content-type="framework">Liên kết chéo các lĩnh vực là cội nguồn của sự đổi mới</div>
+<p class="fw-desc" data-content-id="range-framework-13" data-content-type="framework">Máy chơi game Nintendo Game Boy được thiết kế bởi Gunpei Yokoi, một người chuyên làm đồ chơi rẻ tiền. Trong khi Sony và Sega lao vào cuộc đua công nghệ tối tân, Yokoi lại dùng những linh kiện đã lỗi thời từ mười năm trước và giành chiến thắng rực rỡ. Bí quyết của ông là tư duy đa chiều với những công nghệ tàn tạ. Hầu hết những bước đột phá vĩ đại trong khoa học và kinh doanh đều đến từ những người biết đánh cắp ý tưởng từ lĩnh vực này mang sang lĩnh vực khác.</p>
+<div class="fw-extra" data-content-id="range-framework-09" data-content-type="framework">Hãy đọc một cuốn sách ngoài ngành mỗi tháng. Khi đối mặt với một vấn đề hóc búa, hãy tự hỏi: Lĩnh vực nào khác đã từng giải quyết bài toán tương tự?</div>
+</div>
+<div class="fw-card">
+<div class="fw-num">04</div>
+<div class="fw-name" data-content-id="range-framework-06" data-content-type="framework">Từ bỏ có chiến lược</div>
+<div class="fw-tag" data-content-id="range-framework-18" data-content-type="framework">Bỏ cuộc đúng lúc là một nghệ thuật, không phải là sự hèn nhát</div>
+<p class="fw-desc" data-content-id="range-framework-14" data-content-type="framework">Xã hội luôn nhồi nhét vào đầu chúng ta câu thần chú: Đừng bao giờ bỏ cuộc. Epstein phản bác gắt gao: Đôi khi từ bỏ mới là lựa chọn tối ưu. Steve Jobs bỏ học đại học Reed chỉ sau sáu tháng. Vera Wang từ bỏ trượt băng nghệ thuật ở tuổi mười chín để chuyển sang thời trang khi đã bước sang tuổi bốn mươi. Từ bỏ sớm chính là chiến lược giúp bạn tìm ra mảnh đất phù hợp hơn. Kiên trì là tốt, nhưng kiên trì nhầm chỗ thì chỉ là sự lãng phí sinh mạng.</p>
+<div class="fw-extra" data-content-id="range-framework-10" data-content-type="framework">Hãy tự hỏi: Nếu ngày mai mình mới bắt đầu công việc này, với tất cả những gì mình đang biết, liệu mình có chọn lại nó không? Nếu câu trả lời là không, đó là một tín hiệu cảnh báo, chứ không phải là một lời bao biện.</div>
+</div>
+</div>
+</section>
+<!-- COMPARE -->
+<section class="section">
+<div class="section-label" data-content-id="range-misc-14" data-content-type="label">So sánh / 2 mặt</div>
+<h2 class="section-title" data-content-id="range-misc-02" data-content-type="heading">Thế giới của Tiger và thế giới của Roger</h2>
+<p class="section-intro" data-content-id="range-misc-03" data-content-type="section-intro">Cả hai đều chạm đến đỉnh cao, nhưng trong những môi trường hoàn toàn xa lạ. Cuốn sách này nhấn mạnh tầm quan trọng của việc bạn phải biết mình đang đứng ở đâu.</p>
+<div class="compare-grid">
+<div class="compare-card a">
+<div class="compare-label">Môi trường Kind</div>
+<div class="compare-name" data-content-id="range-misc-05" data-content-type="compare">Môi trường dễ đoán</div>
+<p class="compare-desc" data-content-id="range-misc-11" data-content-type="compare">Đó là nơi luật chơi rõ ràng, phản hồi tức thì và các mô thức lặp đi lặp lại. Cờ vua, golf, nhạc cổ điển hay những ca phẫu thuật cố định là những ví dụ điển hình. Ở sân chơi này, việc chuyên môn hóa cực độ từ sớm là giải pháp tối ưu. Quy tắc một vạn giờ hoàn toàn phát huy tác dụng.</p>
+<div class="compare-quote" data-content-id="range-misc-07" data-content-type="compare">Tiger Woods cầm gậy từ lúc bảy tháng tuổi. Trong môn golf, cách tiếp cận này là chìa khóa chiến thắng.</div>
+</div>
+<div class="compare-card b">
+<div class="compare-label">Môi trường Wicked</div>
+<div class="compare-name" data-content-id="range-misc-06" data-content-type="compare">Môi trường hiểm độc</div>
+<p class="compare-desc" data-content-id="range-misc-12" data-content-type="compare">Ở đây luật chơi mờ mịt, phản hồi chậm trễ và chẳng có mô thức nào lặp lại. Phần lớn cuộc sống thực tế, từ kinh doanh, lãnh đạo đến công việc sáng tạo, đều thuộc về thế giới này. Trong môi trường hiểm độc, kẻ đi rộng sẽ chiến thắng. Những người chuyên môn hóa muộn sẽ luôn đè bẹp những kẻ vội vàng gò mình vào một kỹ năng duy nhất.</p>
+<div class="compare-quote" data-content-id="range-misc-08" data-content-type="compare">Federer chơi đủ mọi môn thể thao cho đến tuổi thiếu niên. Trong quần vợt hiện đại, cách làm này mới là chân lý.</div>
+</div>
+</div>
+<p class="section-intro" data-content-id="range-misc-04" data-content-type="section-intro" style="margin-top: 32px;">Hãy tự hỏi: Nghề nghiệp của bạn là môi trường dễ đoán hay hiểm độc? Hầu hết các công việc trí óc hiện nay đang trượt dần về vùng hiểm độc vì trí tuệ nhân tạo đã nuốt gọn những phần dễ đoán. Phần việc hiểm độc đòi hỏi khả năng phán đoán, sự liên kết và đọc vị tình huống. Đó là lãnh địa mà con người vẫn đang làm chủ. Và việc đi rộng sẽ mài giũa bạn cho những cuộc chiến đó.</p>
+</section>
+<!-- ROGER vs TIGER TIMELINE -->
+<section class="section" id="timeline">
+<div class="section-label" data-content-id="range-timeline-18" data-content-type="label">2 con đường / Tiger vs Roger</div>
+<h2 class="section-title" data-content-id="range-timeline-01" data-content-type="heading">Cùng chạm đỉnh cao, nhưng hai con đường hoàn toàn trái ngược</h2>
+<p class="section-intro" data-content-id="range-timeline-02" data-content-type="section-intro">Tiger bị ép rèn luyện golf từ bảy tháng tuổi. Roger trải nghiệm qua sáu môn thể thao và đến mười bốn tuổi mới chốt hạ với quần vợt. Cả hai đều ngồi trên đỉnh thế giới, nhưng hành trình của Roger mới là quy luật chung. Trục thời gian dưới đây sẽ bóc trần sự thật đó.</p>
+<style>
+    .timeline-grid { display: grid; grid-template-columns: 1fr 80px 1fr; gap: 0; max-width: 1100px; margin: 48px auto; align-items: stretch; }
+    .timeline-col.tiger { background: var(--accent-2); color: var(--paper); padding: 24px; text-align: right; display: flex; flex-direction: column; }
+    .timeline-col.roger { background: var(--navy); color: var(--paper); padding: 24px; display: flex; flex-direction: column; }
+    .timeline-axis { display: flex; flex-direction: column; align-items: center; padding: 12px 8px; background: var(--ink); color: var(--paper); }
+    .axis-label { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.1em; padding: 12px 0; flex: 1; display: flex; align-items: center; justify-content: center; }
+    .timeline-step { padding: 12px 0; border-bottom: 1px solid rgba(255, 255, 255,0.15); flex: 1; display: flex; align-items: center; font-size: 14px; line-height: 1.4; }
+    .timeline-step.tiger { justify-content: flex-end; }
+    .timeline-head { font-size: 22px; font-weight: 700; padding: 16px 0; border-bottom: 2px solid rgba(255, 255, 255,0.3); margin-bottom: 8px; }
+    @media (max-width: 800px) { .timeline-grid { grid-template-columns: 1fr; } .timeline-axis { flex-direction: row; } }
+  </style>
+<div class="timeline-grid">
+<div class="timeline-col tiger">
+<div class="timeline-head">Tiger Woods</div>
+<div class="timeline-step tiger" data-content-id="range-timeline-04" data-content-type="framework">Bảy tháng tuổi: Cha đưa cho cây gậy</div>
+<div class="timeline-step tiger" data-content-id="range-timeline-05" data-content-type="framework">Hai tuổi: Lên sóng truyền hình đánh golf</div>
+<div class="timeline-step tiger" data-content-id="range-timeline-06" data-content-type="framework">Ba tuổi: Có huấn luyện viên chuyên nghiệp</div>
+<div class="timeline-step tiger" data-content-id="range-timeline-07" data-content-type="framework">Tám tuổi: Vô địch giải đấu dưới mười tuổi</div>
+<div class="timeline-step tiger" data-content-id="range-timeline-08" data-content-type="framework">Mười lăm tuổi: Vô địch giải trẻ nước Mỹ</div>
+<div class="timeline-step tiger" data-content-id="range-timeline-09" data-content-type="framework">Hai mươi mốt tuổi: Nhà vô địch Masters trẻ nhất lịch sử</div>
+<div class="timeline-step tiger" data-content-id="range-timeline-10" data-content-type="framework">Chuyên môn hóa cực độ từ vạch xuất phát</div>
+</div>
+<div class="timeline-axis">
+<div class="axis-label">7m</div>
+<div class="axis-label">2y</div>
+<div class="axis-label">5y</div>
+<div class="axis-label">10y</div>
+<div class="axis-label">15y</div>
+<div class="axis-label">21y</div>
+<div class="axis-label">PEAK</div>
+</div>
+<div class="timeline-col roger">
+<div class="timeline-head">Roger Federer</div>
+<div class="timeline-step" data-content-id="range-timeline-11" data-content-type="framework">Thở nhỏ: Chơi mọi môn thể thao liên quan đến bóng</div>
+<div class="timeline-step" data-content-id="range-timeline-12" data-content-type="framework">Chơi bóng đá, cầu lông, bóng rổ</div>
+<div class="timeline-step" data-content-id="range-timeline-13" data-content-type="framework">Mẹ là huấn luyện viên quần vợt nhưng tuyệt đối không ép buộc</div>
+<div class="timeline-step" data-content-id="range-timeline-14" data-content-type="framework">Mười tuổi: Vẫn không chịu chọn cố định một môn</div>
+<div class="timeline-step" data-content-id="range-timeline-15" data-content-type="framework">Mười bốn tuổi: Mới quyết định theo đuổi quần vợt</div>
+<div class="timeline-step" data-content-id="range-timeline-16" data-content-type="framework">Hai mươi mốt tuổi: Vô địch Wimbledon lần đầu tiên</div>
+<div class="timeline-step" data-content-id="range-timeline-17" data-content-type="framework">Giai đoạn nếm thử kéo dài, chuyên môn hóa rất muộn</div>
+</div>
+</div>
+<p class="section-intro" data-content-id="range-timeline-03" data-content-type="section-intro" style="margin-top: 32px; max-width: 1000px;">Nghiên cứu của Epstein chỉ ra rằng, đại đa số các vận động viên đỉnh cao đều trải qua một giai đoạn nếm thử kéo dài giống như Roger. Tiger chỉ là một sự ngoại lệ, không phải là quy luật. Trong những môi trường hiểm độc như kinh doanh hay sáng tạo, mô hình của Roger càng thể hiện sức tàn phá khủng khiếp hơn.</p>
+</section>
+<!-- LATERAL THINKING — 5 case study -->
+<section class="section" id="lateral">
+<div class="section-label" data-content-id="range-lateral-03" data-content-type="label">Áp dụng / Tư duy chéo lĩnh vực</div>
+<h2 class="section-title" data-content-id="range-lateral-01" data-content-type="heading">Năm câu chuyện về tư duy đa chiều</h2>
+<p class="section-intro" data-content-id="range-lateral-02" data-content-type="section-intro">Mỗi bước đột phá vĩ đại thường được tạo ra bởi những người dám đánh cắp ý tưởng từ lĩnh vực này mang sang lĩnh vực khác. Họ không phải là chuyên gia đào sâu nhất, nhưng họ là những kẻ kết nối rộng nhất.</p>
+<style>
+    .lat-table { width: 100%; max-width: 1100px; margin: 40px auto; border-collapse: collapse; }
+    .lat-table th { background: var(--ink); color: var(--paper); padding: 14px 18px; font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; text-align: left; }
+    .lat-table td { padding: 18px; border-bottom: 1px solid rgba(26,20,16,0.1); font-size: 15px; line-height: 1.5; vertical-align: top; }
+    .lat-table .who { font-weight: 700; font-size: 17px; color: var(--accent-2); }
+    .lat-table .from { color: var(--muted); }
+    .lat-table .to { color: var(--navy); font-weight: 500; }
+    .lat-table tr:hover { background: var(--paper-dark); }
+  </style>
+<table class="lat-table">
+<thead>
+<tr><th>Người</th><th>Từ field</th><th>Sang field</th><th>Insight chéo</th></tr>
+</thead>
+<tbody>
+<tr>
+<td class="who">Gunpei Yokoi</td>
+<td class="from">Toy mechanic (đồ chơi rẻ)</td>
+<td class="to">Nintendo Game Boy</td>
+<td>Dùng tech "đã chín" (LCD cũ) thay latest tech → Game Boy bán 118M chiếc, đánh bại Sega/Sony.</td>
+</tr>
+<tr>
+<td class="who">Don Swanson</td>
+<td class="from">Library science</td>
+<td class="to">Medical research</td>
+<td>Cross-search 2 specialty databases không bao giờ chéo → tìm ra magnesium trị migraine. AHS xác nhận sau 35 năm.</td>
+</tr>
+<tr>
+<td class="who">Steve Jobs</td>
+<td class="from">Calligraphy class</td>
+<td class="to">Computer typography</td>
+<td>Lớp calligraphy "vô dụng" → Mac có typography đẹp đầu tiên. "Connecting dots looking backwards."</td>
+</tr>
+<tr>
+<td class="who">Vera Wang</td>
+<td class="from">Figure skating (đến 19 tuổi)</td>
+<td class="to">Fashion design (40 tuổi)</td>
+<td>Hiểu cơ thể chuyển động → váy cưới có cấu trúc khác. Late specializer trong fashion.</td>
+</tr>
+<tr>
+<td class="who">Charles Darwin</td>
+<td class="from">Geology, economics, breeding</td>
+<td class="to">Biology / Evolution</td>
+<td>Đọc Malthus (kinh tế) → ý "natural selection". Không phải biologist thuần.</td>
+</tr>
+</tbody>
+</table>
+<div style="background: var(--paper-dark); border-left: 3px solid var(--accent); padding: 24px 32px; max-width: 1000px; margin: 32px auto;">
+<strong style="color: var(--accent-2);">Áp dụng:</strong> chọn 1 cuốn sách <em style="font-style:normal; color:var(--accent-2);">ngoài</em> ngành mình mỗi tháng. Khi gặp vấn đề khó trong nghề — hỏi: "Field nào đã giải vấn đề tương tự?" Đa số breakthrough đến từ câu hỏi đó.
+  </div>
+</section>
+<!-- CHAPTERS -->
+<section class="section" id="chapters">
+<div class="section-label" data-content-id="range-chapters-27" data-content-type="label">Bản đồ nội dung / Chương sách</div>
+<h2 class="section-title" data-content-id="range-chapters-01" data-content-type="heading">Bản đồ chi tiết của cuốn sách</h2>
+<p class="section-intro" data-content-id="range-chapters-02" data-content-type="section-intro">Mười hai chương sách là những lát cắt từ thể thao đến khoa học. Hãy lật tìm những chương phản chiếu rõ nhất hoàn cảnh hiện tại của bạn.</p>
+<div class="scroll-hint" style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:var(--accent,#8b3a2b);margin-bottom:14px;text-align:center">← Trượt ngang để xem →</div>
+<div class="chapter-grid">
+<div class="chapter-card"><div class="chapter-group-label">Phần 1 · Phản đề</div>
+<div class="chapter-num">CHƯƠNG INTRO</div>
+<div class="chapter-title" data-content-id="range-chapters-03" data-content-type="chapter-desc">Thế giới của Roger và thế giới của Tiger</div>
+<div class="chapter-desc" data-content-id="range-chapters-15" data-content-type="chapter-desc">Khởi nguồn của mọi cuộc tranh luận. Liệu giai đoạn nếm thử có thực sự quan trọng hay không?</div>
+</div>
+<div class="chapter-card"><div class="chapter-group-label">Phần 1 · Phản đề</div>
+<div class="chapter-num">CHƯƠNG 01</div>
+<div class="chapter-title" data-content-id="range-chapters-04" data-content-type="chapter-desc">Giáo phái của việc xuất phát sớm</div>
+<div class="chapter-desc" data-content-id="range-chapters-16" data-content-type="chapter-desc">Xã hội tôn sùng những kẻ chạy trước. Nhưng dữ liệu thực tế lại tát thẳng vào niềm tin đó.</div>
+</div>
+<div class="chapter-card"><div class="chapter-group-label">Phần 1 · Phản đề</div>
+<div class="chapter-num">CHƯƠNG 02</div>
+<div class="chapter-title" data-content-id="range-chapters-05" data-content-type="chapter-desc">Sự hình thành của thế giới hiểm độc</div>
+<div class="chapter-desc" data-content-id="range-chapters-17" data-content-type="chapter-desc">Hai thái cực môi trường: Dễ đoán và hiểm độc. Và sự thật là phần lớn cuộc đời chúng ta nằm ở vùng hiểm độc.</div>
+</div>
+<div class="chapter-card"><div class="chapter-group-label">Phần 1 · Phản đề</div>
+<div class="chapter-num">CHƯƠNG 03</div>
+<div class="chapter-title" data-content-id="range-chapters-06" data-content-type="chapter-desc">Khi ít hơn lại là nhiều hơn</div>
+<div class="chapter-desc" data-content-id="range-chapters-18" data-content-type="chapter-desc">Những kẻ học chậm chạp thường khắc sâu kiến thức lâu hơn những người tưởng chừng học nhanh.</div>
+</div>
+<div class="chapter-card"><div class="chapter-group-label">Phần 1 · Phản đề</div>
+<div class="chapter-num">CHƯƠNG 04</div>
+<div class="chapter-title" data-content-id="range-chapters-07" data-content-type="chapter-desc">Học tập nhanh và chậm</div>
+<div class="chapter-desc" data-content-id="range-chapters-19" data-content-type="chapter-desc">Lợi ích của sự khó khăn. Học càng vất vả, nhớ càng dai.</div>
+</div>
+<div class="chapter-card"><div class="chapter-group-label">Phần 2 · Lấy mẫu rộng</div>
+<div class="chapter-num">CHƯƠNG 06</div>
+<div class="chapter-title" data-content-id="range-chapters-08" data-content-type="chapter-desc">Rắc rối của việc quá kiên gan</div>
+<div class="chapter-desc" data-content-id="range-chapters-20" data-content-type="chapter-desc">Kiên trì đặt sai chỗ chỉ là một sự lãng phí sinh mạng. Từ bỏ có chiến lược mới là kỹ năng sinh tồn.</div>
+</div>
+<div class="chapter-card"><div class="chapter-group-label">Phần 2 · Lấy mẫu rộng</div>
+<div class="chapter-num">CHƯƠNG 07</div>
+<div class="chapter-title" data-content-id="range-chapters-09" data-content-type="chapter-desc">Tán tỉnh những phiên bản tiềm năng của bản thân</div>
+<div class="chapter-desc" data-content-id="range-chapters-21" data-content-type="chapter-desc">Tâm lý thử nghiệm nhiều bản ngã trước khi chốt hạ. Câu chuyện của nhà thiết kế Vera Wang.</div>
+</div>
+<div class="chapter-card"><div class="chapter-group-label">Phần 2 · Lấy mẫu rộng</div>
+<div class="chapter-num">CHƯƠNG 08</div>
+<div class="chapter-title" data-content-id="range-chapters-10" data-content-type="chapter-desc">Lợi thế của kẻ ngoại đạo</div>
+<div class="chapter-desc" data-content-id="range-chapters-22" data-content-type="chapter-desc">Nền tảng Innogest. Những kẻ ngoài cuộc thường dễ dàng giải quyết các vấn đề mà dân trong nghề phải bó tay.</div>
+</div>
+<div class="chapter-card"><div class="chapter-group-label">Phần 3 · Công cụ</div>
+<div class="chapter-num">CHƯƠNG 09</div>
+<div class="chapter-title" data-content-id="range-chapters-11" data-content-type="chapter-desc">Tư duy đa chiều bằng công nghệ tàn tạ</div>
+<div class="chapter-desc" data-content-id="range-chapters-23" data-content-type="chapter-desc">Câu chuyện của Yokoi và hãng Nintendo. Ông dùng những công nghệ cũ rích để tạo ra sự khác biệt nhờ tư duy đa chiều.</div>
+</div>
+<div class="chapter-card"><div class="chapter-group-label">Phần 3 · Công cụ</div>
+<div class="chapter-num">CHƯƠNG 10</div>
+<div class="chapter-title" data-content-id="range-chapters-12" data-content-type="chapter-desc">Bị chuyên môn đánh lừa</div>
+<div class="chapter-desc" data-content-id="range-chapters-24" data-content-type="chapter-desc">Hình tượng cáo và nhím. Tại sao các chuyên gia thường dự báo trật lất. Liên hệ với nghiên cứu của Tetlock.</div>
+</div>
+<div class="chapter-card"><div class="chapter-group-label">Phần 3 · Công cụ</div>
+<div class="chapter-num">CHƯƠNG 11</div>
+<div class="chapter-title" data-content-id="range-chapters-13" data-content-type="chapter-desc">Buông bỏ những công cụ quen thuộc</div>
+<div class="chapter-desc" data-content-id="range-chapters-25" data-content-type="chapter-desc">Nhiều lính cứu hỏa rừng đã thiệt mạng chỉ vì không chịu vứt bỏ những công cụ quen thuộc khi cần chạy trốn.</div>
+</div>
+<div class="chapter-card"><div class="chapter-group-label">Phần 3 · Công cụ</div>
+<div class="chapter-num">CHƯƠNG 12</div>
+<div class="chapter-title" data-content-id="range-chapters-14" data-content-type="chapter-desc">Những tay mơ có chủ đích</div>
+<div class="chapter-desc" data-content-id="range-chapters-26" data-content-type="chapter-desc">Những người không bị bó buộc bởi các quy trình đào tạo bài bản thường nhìn thấu những điều mà giới chuyên gia luôn bỏ sót.</div>
+</div>
+</div>
+<p class="section-intro" style="margin-top: 48px; max-width: 1000px; margin-left: auto; margin-right: auto;"><span data-content-id="range-survivorship-1">Góc nhìn của Epstein chứa đựng một lỗ hổng chí mạng: thiên kiến kẻ sống sót. Ông lấy Federer làm ngọn cờ đầu. Nhưng thực tế cay đắng là có hàng vạn kẻ đi rộng cứ nhảy việc liên tục, bơi từ mảng bán hàng sang thiết kế, để rồi chết chìm với mức lương bèo bọt. Triết lý đi rộng chỉ thực sự phát huy tác dụng khi bạn đã cứng cáp ở một nghề và muốn mở rộng biên giới của mình. Nó là liều thuốc độc đối với những sinh viên mới ra trường còn rỗng tuếch kinh nghiệm.</span></p>
+</section>
+<!-- FLASHCARDS -->
+<section class="section" id="flashcards">
+<div class="section-label" data-content-id="range-flashcards-03" data-content-type="label">Flashcards / 10 khái niệm cốt lõi</div>
+<h2 class="section-title" data-content-id="range-flashcards-01" data-content-type="heading">Mười thẻ ghi nhớ cốt lõi</h2>
+<p class="section-intro" data-content-id="range-flashcards-02" data-content-type="section-intro">Mười ý tưởng đầy uy lực từ cuốn sách. Hãy lật thẻ để xem đáp án. Đánh dấu để tự theo dõi tiến độ của mình.</p>
+<div class="flashcard-container">
+<div class="flashcard-controls">
+<div class="flashcard-counter">Thẻ <strong id="cardCurrent">1</strong> / <span id="cardTotal">10</span></div>
+<div class="flashcard-counter">Đã thuộc: <strong id="cardKnown">0</strong></div>
+</div>
+<div class="flashcard" id="flashcard" onclick="flipCard()">
+<div class="flashcard-face flashcard-front">
+<div class="flashcard-tag">Câu hỏi</div>
+<div class="flashcard-question" id="cardQuestion"></div>
+<div class="flashcard-hint">Click để xem đáp án</div>
+</div>
+<div class="flashcard-face flashcard-back">
+<div class="flashcard-tag">Đáp án</div>
+<div class="flashcard-answer" id="cardAnswer"></div>
+<div class="flashcard-hint">Click để xem câu hỏi</div>
+</div>
+</div>
+<div class="flashcard-nav">
+<button class="fcq-btn outline" onclick="prevCard()">← Trước</button>
+<button class="fcq-btn" onclick="markUnknown()">Cần học lại</button>
+<button class="fcq-btn accent" onclick="markKnown()">Tôi nhớ ✓</button>
+<button class="fcq-btn outline" onclick="nextCard()">Sau →</button>
+</div>
+</div>
+</section>
+<!-- QUIZ -->
+<section class="section" id="quiz">
+<div class="section-label" data-content-id="range-quiz-03" data-content-type="label">Quiz / 10 câu test hiểu biết</div>
+<h2 class="section-title" data-content-id="range-quiz-01" data-content-type="heading">Bạn đã <em>thực sự hiểu</em>?</h2>
+<p class="section-intro" data-content-id="range-quiz-02" data-content-type="section-intro">10 câu — không kiểm tra trí nhớ, kiểm tra hiểu. Sai 3+ câu = đọc lại 4 nguyên tắc. Sai 5+ = đọc lại toàn bộ.</p>
+<div class="quiz-container" id="quizContainer">
+<div class="quiz-progress">
+<span>Câu hỏi <span id="quizCurrent">1</span> / <span id="quizTotal">10</span></span>
+<span>Điểm: <span id="quizScore">0</span></span>
+</div>
+<div class="quiz-bar"><div class="quiz-bar-fill" id="quizBarFill" style="width: 10%"></div></div>
+<div class="quiz-question" id="quizQuestion"></div>
+<div class="quiz-options" id="quizOptions"></div>
+<div class="quiz-feedback" id="quizFeedback"></div>
+<div style="display: flex; justify-content: flex-end; margin-top: 24px;">
+<button class="fcq-btn accent" id="quizNext" onclick="nextQuestion()" style="display: none;">Câu tiếp →</button>
+</div>
+</div>
+</section>
+<script>
+function scrollTo2(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  const top = el.getBoundingClientRect().top + window.pageYOffset - 60;
+  window.scrollTo({top, behavior: 'smooth'});
+}
+
+const flashcards = [
+  {
+    q: "Kind world vs Wicked world khác nhau ở điểm nào?",
+    a: "Kind: luật rõ, phản hồi ngay, quy luật lặp (cờ vua, golf, phẫu thuật cụ thể) — người chuyên môn hóa sớm thắng. Wicked: luật mơ hồ, phản hồi chậm, không quy luật (đa số đời thật) — người chuyên môn hóa muộn + range thắng."
+  },
+  {
+    q: "Vì sao Tiger Woods không phải mô hình chuẩn cho mọi người?",
+    a: "Tiger thắng trong thế giới KIND (golf — luật rõ). Đa số nghề ngày nay WICKED (kinh doanh, lãnh đạo, sáng tạo). Trong wicked — Roger Federer (thử 6 môn đến 14 tuổi) là mô hình. Quy luật chung: người chuyên môn hóa muộn thắng người sớm."
+  },
+  {
+    q: "Effort Counts Twice — công thức gì?",
+    a: "Tài năng × Nỗ lực = Kỹ năng. Kỹ năng × Nỗ lực = Thành tựu. Nỗ lực xuất hiện 2 lần — quan trọng gấp đôi tài năng theo nghĩa toán học."
+  },
+  {
+    q: "Giai đoạn nếm thử là gì? Vì sao quan trọng?",
+    a: "Tuổi trẻ là thời gian thử — không phải tối ưu. Federer chơi 6 môn đến tuổi thiếu niên, Van Gogh đến 27 chưa cầm cọ. Nghiên cứu Ofer Malamud: học sinh được nếm thử (Scotland) thu nhập cao hơn học sinh ép chọn nghề sớm (UK)."
+  },
+  {
+    q: "Độ phù hợp nghề > khởi đầu sớm nghĩa là gì?",
+    a: "Tìm đúng nghề năm 35 thắng làm sai nghề từ năm 20. Đổi nghề 1-2 lần ở tuổi 30 không phải 'thất bại' — đó là tìm chỗ phù hợp. Người ở sai nghề 30 năm thua người tìm đúng nghề năm 35."
+  },
+  {
+    q: "Tư duy liên ngành — vì sao là nguồn gốc đổi mới?",
+    a: "Mang ý từ lĩnh vực A sang lĩnh vực B. Gunpei Yokoi thiết kế Game Boy bằng công nghệ 10 năm cũ — thắng Sony, Sega dùng công nghệ mới nhất. Đa số đột phá đến từ người ngoài ngành mang ý lạ vào."
+  },
+  {
+    q: "Quit strategically khác Grit thế nào?",
+    a: "Grit ở đúng chỗ = thắng. Grit ở sai chỗ = lãng phí đời. Steve Jobs bỏ Reed College sau 6 tháng. Vera Wang bỏ trượt băng nghệ thuật tuổi 19, chuyển thời trang tuổi 40. Bỏ sớm có chiến lược cho phép tìm chỗ phù hợp tốt hơn."
+  },
+  {
+    q: "Hedgehog vs Fox — ai dự đoán giỏi hơn?",
+    a: "Hedgehog: 1 ý lớn, áp dụng mọi nơi. Fox: kéo từ nhiều mô hình, cẩn trọng. Trong nghiên cứu Tetlock, Fox dự đoán đúng nhiều hơn — vì thế giới wicked, không có 'one big idea' giải thích mọi thứ."
+  },
+  {
+    q: "Drop Your Familiar Tools — bài học gì?",
+    a: "Khi bối cảnh thay đổi, công cụ cũ có thể giết bạn. Lính cứu hỏa rừng chết vì không buông rìu khi cần chạy nhanh. Áp dụng: kỹ năng làm bạn thành công ở giai đoạn 1 có thể là rào cản giai đoạn 2. Sẵn sàng bỏ công cụ cũ."
+  },
+  {
+    q: "Việt Nam có vấn đề Range gì?",
+    a: "Hệ thống giáo dục VN ép chọn ngành A/B/C/D ở cấp 3 → đại học chuyên sâu 1 nghề. Đào tạo cho 'thế giới kind' khi đời thực ngày càng 'wicked'. Range chỉ áp dụng được nếu có 'tấm đệm' (gia đình lo, không kẹt thu nhập). Người nuôi gia đình từ 22 — chọn 1 nghề đủ tốt trước, range sau."
+  }
+];
+
+const quizQuestions = [
+  {
+    q: "Theo Epstein, sự khác biệt CỐT LÕI giữa 'kind world' và 'wicked world' là gì?",
+    options: [
+      "Kind dễ hơn wicked",
+      "Kind có luật rõ + phản hồi ngay + quy luật lặp; wicked thì không",
+      "Kind là cho trẻ con, wicked cho người lớn",
+      "Cả hai cần specialization"
+    ],
+    correct: 1,
+    explain: "Môi trường Kind (cờ vua, golf): luật rõ, phản hồi ngay, quy luật lặp → người chuyên môn hóa sớm + 10.000 giờ luyện. Wicked (đa số đời thật): luật mơ hồ, phản hồi chậm, không quy luật → range + người chuyên môn hóa muộn thắng."
+  },
+  {
+    q: "Tiger Woods bắt đầu golf lúc 7 tháng tuổi. Federer chơi 6 môn đến tuổi thiếu niên. Theo Range, ai là mô hình chuẩn cho ĐA SỐ nghề ngày nay?",
+    options: [
+      "Tiger — tập trung sớm",
+      "Federer — nếm thử lâu",
+      "Cả hai như nhau",
+      "Phụ thuộc IQ"
+    ],
+    correct: 1,
+    explain: "Đa số nghề ngày nay (kinh doanh, lãnh đạo, sáng tạo, khoa học) là WICKED. Trong wicked — quy luật chung là người chuyên môn hóa muộn thắng người sớm. Tiger chỉ thắng trong thế giới KIND (golf). Federer là quy luật chuẩn."
+  },
+  {
+    q: "Nghiên cứu Ofer Malamud so sánh học sinh UK (chọn ngành sớm) vs Scotland (sample). Kết quả?",
+    options: [
+      "UK thu nhập cao hơn vì chuyên sâu",
+      "Scotland thu nhập cao hơn — độ phù hợp nghề tốt hơn",
+      "Bằng nhau",
+      "Phụ thuộc ngành"
+    ],
+    correct: 1,
+    explain: "Học sinh Scotland được nếm thử 2-3 năm trước khi chọn nghề → độ phù hợp nghề cao hơn → thu nhập SUỐT ĐỜI cao hơn. Bị ép chọn sớm = nguy cơ kẹt nghề không hợp."
+  },
+  {
+    q: "Theo Range, 'tư duy liên ngành' tạo ra đổi mới thế nào?",
+    options: [
+      "Nghĩ sâu hơn trong 1 lĩnh vực",
+      "Mang ý từ lĩnh vực A sang lĩnh vực B — lợi thế người ngoài ngành",
+      "Tìm thông tin trên internet nhanh",
+      "Hợp tác với nhiều người"
+    ],
+    correct: 1,
+    explain: "Gunpei Yokoi thiết kế Game Boy bằng công nghệ 10 năm cũ rẻ — thắng Sony/Sega dùng công nghệ mới nhất. 'Tư duy liên ngành với công nghệ đã cũ'. Đa số đột phá đến từ người ngoài ngành mang ý lạ vào lĩnh vực."
+  },
+  {
+    q: "Theo Range, 'Quit strategically' khác 'Grit ở sai chỗ' thế nào?",
+    options: [
+      "Không khác — đều là bỏ cuộc",
+      "Bỏ có chiến lược cho phép tìm chỗ phù hợp tốt hơn; Grit sai chỗ là lãng phí đời",
+      "Quit cho người yếu, Grit cho người mạnh",
+      "Phụ thuộc tuổi"
+    ],
+    correct: 1,
+    explain: "Grit ở đúng chỗ = thắng. Grit ở sai chỗ = bẫy chi phí chìm. Steve Jobs bỏ Reed College, Vera Wang bỏ trượt băng tuổi 19. Câu thử: 'Mai bắt đầu lại — vẫn chọn?' Nếu KHÔNG → tín hiệu, không phải cái cớ."
+  },
+  {
+    q: "Hedgehog vs Fox — theo nghiên cứu Philip Tetlock, ai dự đoán tương lai chính xác hơn?",
+    options: [
+      "Hedgehog — vì có lý thuyết lớn",
+      "Fox — vì kéo từ nhiều mô hình",
+      "Bằng nhau",
+      "Phụ thuộc ngành"
+    ],
+    correct: 1,
+    explain: "Hedgehog có 1 ý lớn áp dụng mọi nơi → dự đoán cực đoan, sai nhiều. Fox kéo từ nhiều mô hình, dự đoán cẩn trọng → đúng nhiều hơn. Lý do: thế giới wicked, không có 'one big idea' giải thích mọi thứ."
+  },
+  {
+    q: "Wildland firefighters đôi khi chết — không phải vì lửa, mà vì:",
+    options: [
+      "Thiếu kinh nghiệm",
+      "Không buông familiar tools (rìu) khi cần chạy nhanh",
+      "Trang bị kém",
+      "Lệnh sai từ chỉ huy"
+    ],
+    correct: 1,
+    explain: "Họ được huấn luyện xài rìu — rìu thành 'công cụ quen tay'. Khi cần chạy thoát, rìu nặng → không buông được vì bản sắc gắn với công cụ. Bài học: kỹ năng tạo thành công giai đoạn 1 có thể giết ở giai đoạn 2. Sẵn sàng bỏ công cụ cũ."
+  },
+  {
+    q: "Theo Effort Counts Twice (Duckworth, Range cite): nỗ lực quan trọng gấp đôi tài năng — nghĩa là gì?",
+    options: [
+      "Nỗ lực x2 = thành công",
+      "Nỗ lực xuất hiện 2 lần trong công thức: Tài năng × Nỗ lực = Kỹ năng; Kỹ năng × Nỗ lực = Thành tựu",
+      "Phải nỗ lực gấp đôi người khác",
+      "Không phải tài năng quan trọng"
+    ],
+    correct: 1,
+    explain: "Phương trình 1: Tài năng × Nỗ lực = Kỹ năng. Phương trình 2: Kỹ năng × Nỗ lực = Thành tựu. Nỗ lực xuất hiện 2 lần → quan trọng gấp đôi tài năng theo nghĩa toán học."
+  },
+  {
+    q: "Việt Nam có vấn đề Range gì đặc biệt?",
+    options: [
+      "Học sinh VN ngại đổi nghề",
+      "Hệ thống giáo dục ép chọn A/B/C/D ở cấp 3 + đại học chuyên sâu 1 nghề",
+      "Phụ huynh không hỗ trợ",
+      "Trường đại học thiếu ngành"
+    ],
+    correct: 1,
+    explain: "VN đào tạo cho 'thế giới kind' — chọn ngành sớm, chuyên sâu 1 nghề. Đời thực ngày càng wicked. Hệ quả: kỹ sư giỏi 1 khung, đổi nghề là sống lại từ 0. Range cảnh báo cái này 5 năm trước AI bùng nổ."
+  },
+  {
+    q: "Range hợp với ai NHẤT (theo phản biện trong cuốn này)?",
+    options: [
+      "Mọi người",
+      "Người có 'tấm đệm' — gia đình lo, không kẹt thu nhập, có thời gian nếm thử",
+      "Sinh viên đại học",
+      "Người đã 30 tuổi"
+    ],
+    correct: 1,
+    explain: "Range dựng luận điểm qua các tình huống (Federer, Van Gogh, Vera Wang) — thiên kiến sống sót. Có hàng triệu người nếm thử nhiều, nhảy nghề, không bao giờ tìm được chỗ phù hợp. Range hợp với người có nền. Người phải nuôi gia đình từ 22 — chọn 1 nghề đủ tốt trước, range sau."
+  }
+];
+
+let currentCard = 0;
+let knownCards = new Set();
+let currentQuiz = 0;
+let quizScore = 0;
+let quizAnswered = false;
+
+function renderCard() {
+  document.getElementById('cardQuestion').textContent = flashcards[currentCard].q;
+  document.getElementById('cardAnswer').textContent = flashcards[currentCard].a;
+  document.getElementById('cardCurrent').textContent = currentCard + 1;
+  document.getElementById('cardTotal').textContent = flashcards.length;
+  document.getElementById('cardKnown').textContent = knownCards.size;
+  document.getElementById('flashcard').classList.remove('flipped');
+}
+function flipCard() { document.getElementById('flashcard').classList.toggle('flipped'); }
+function nextCard() { currentCard = (currentCard + 1) % flashcards.length; renderCard(); }
+function prevCard() { currentCard = (currentCard - 1 + flashcards.length) % flashcards.length; renderCard(); }
+function markKnown() { knownCards.add(currentCard); document.getElementById('cardKnown').textContent = knownCards.size; setTimeout(nextCard, 300); }
+function markUnknown() { knownCards.delete(currentCard); document.getElementById('cardKnown').textContent = knownCards.size; setTimeout(nextCard, 300); }
+
+function renderQuiz() {
+  if (currentQuiz >= quizQuestions.length) { showQuizResult(); return; }
+  const q = quizQuestions[currentQuiz];
+  document.getElementById('quizQuestion').textContent = q.q;
+  document.getElementById('quizCurrent').textContent = currentQuiz + 1;
+  document.getElementById('quizTotal').textContent = quizQuestions.length;
+  document.getElementById('quizScore').textContent = quizScore;
+  document.getElementById('quizBarFill').style.width = ((currentQuiz + 1) / quizQuestions.length * 100) + '%';
+  const optionsEl = document.getElementById('quizOptions');
+  optionsEl.innerHTML = '';
+  const letters = ['A', 'B', 'C', 'D'];
+  q.options.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'quiz-option';
+    btn.innerHTML = '<span class="quiz-option-letter">' + letters[i] + '</span><span>' + opt + '</span>';
+    btn.onclick = () => answerQuiz(i);
+    optionsEl.appendChild(btn);
+  });
+  document.getElementById('quizFeedback').classList.remove('show');
+  document.getElementById('quizNext').style.display = 'none';
+  quizAnswered = false;
+}
+function answerQuiz(idx) {
+  if (quizAnswered) return;
+  quizAnswered = true;
+  const q = quizQuestions[currentQuiz];
+  const options = document.querySelectorAll('.quiz-option');
+  options.forEach((opt, i) => {
+    opt.classList.add('disabled');
+    if (i === q.correct) opt.classList.add('correct');
+    if (i === idx && i !== q.correct) opt.classList.add('wrong');
+  });
+  if (idx === q.correct) quizScore++;
+  document.getElementById('quizScore').textContent = quizScore;
+  const fb = document.getElementById('quizFeedback');
+  fb.textContent = q.explain;
+  fb.classList.add('show');
+  document.getElementById('quizNext').style.display = 'inline-block';
+  if (currentQuiz === quizQuestions.length - 1) document.getElementById('quizNext').textContent = 'Xem kết quả →';
+}
+function nextQuestion() { currentQuiz++; renderQuiz(); }
+function showQuizResult() {
+  const total = quizQuestions.length;
+  const pct = Math.round(quizScore / total * 100);
+  let label, msg;
+  if (pct >= 90) { label = 'Master generalist'; msg = 'Tuyệt vời! Bạn thấm Range. Giờ áp dụng: rà 3 nghề bạn từng thử, hỏi mỗi cái cho gì lại.'; }
+  else if (pct >= 70) { label = 'Hiểu khá tốt'; msg = 'Khá. Quay lại 4 nguyên tắc + Tiger vs Roger. Ôn thẻ ghi nhớ.'; }
+  else if (pct >= 50) { label = 'Đang trên đường'; msg = 'Khung sườn đã có. Đọc lại Nhím vs Cáo + Tư duy liên ngành.'; }
+  else { label = 'Cần ôn lại'; msg = 'Đọc lại Khung + Kind vs Wicked. Đặc biệt: chuyên môn hóa muộn không phải lười — là chiến lược.'; }
+  document.getElementById('quizContainer').innerHTML = '<div class="quiz-result"><div class="quiz-score">' + quizScore + '/' + total + '</div><div class="quiz-score-label">' + label + '</div><p style="margin: 32px auto; max-width: 500px; font-size: 17px; line-height: 1.5;">' + msg + '</p><button class="fcq-btn accent" onclick="resetQuiz()">Làm lại quiz</button></div>';
+}
+function resetQuiz() {
+  currentQuiz = 0; quizScore = 0;
+  document.getElementById('quizContainer').innerHTML = '<div class="quiz-progress"><span>Câu hỏi <span id="quizCurrent">1</span> / <span id="quizTotal">10</span></span><span>Điểm: <span id="quizScore">0</span></span></div><div class="quiz-bar"><div class="quiz-bar-fill" id="quizBarFill" style="width: 10%"></div></div><div class="quiz-question" id="quizQuestion"></div><div class="quiz-options" id="quizOptions"></div><div class="quiz-feedback" id="quizFeedback"></div><div style="display: flex; justify-content: flex-end; margin-top: 24px;"><button class="fcq-btn accent" id="quizNext" onclick="nextQuestion()" style="display: none;">Câu tiếp →</button></div>';
+  renderQuiz();
+}
+
+renderCard();
+renderQuiz();
+
+const CHAPTERS_PER_PAGE = 6;
+let chaptersCurrentPage = 1;
+
+function renderChaptersPage() {
+  const cards = Array.from(document.querySelectorAll('.chapter-card'));
+  const N = cards.length;
+  const totalPages = Math.max(1, Math.ceil(N / CHAPTERS_PER_PAGE));
+  if (chaptersCurrentPage > totalPages) chaptersCurrentPage = 1;
+  const start = (chaptersCurrentPage - 1) * CHAPTERS_PER_PAGE;
+  cards.forEach((c, i) => {
+    c.style.display = (i >= start && i < start + CHAPTERS_PER_PAGE) ? '' : 'none';
+  });
+  let pager = document.getElementById('chaptersPager');
+  if (!pager) {
+    pager = document.createElement('div');
+    pager.id = 'chaptersPager';
+    pager.className = 'chapter-pager';
+    const grid = document.querySelector('.chapter-grid');
+    if (grid) grid.parentNode.insertBefore(pager, grid.nextSibling);
+  }
+  if (totalPages <= 1) { pager.innerHTML = ''; pager.style.display = 'none'; return; }
+  pager.style.display = '';
+  pager.innerHTML = '<button class="chapter-pager-btn" ' + (chaptersCurrentPage===1?'disabled':'') + ' onclick="changeChapterPage(-1)">&larr;</button><span class="chapter-pager-info">' + chaptersCurrentPage + ' / ' + totalPages + ' <span class="chapter-pager-total">(' + N + ' chương)</span></span><button class="chapter-pager-btn" ' + (chaptersCurrentPage===totalPages?'disabled':'') + ' onclick="changeChapterPage(1)">&rarr;</button>';
+}
+
+function changeChapterPage(delta) {
+  chaptersCurrentPage += delta;
+  renderChaptersPage();
+}
+
+document.addEventListener('DOMContentLoaded', renderChaptersPage);
+
+
+/* ============ JOURNAL DATA ============ */
+const journalPrompts = [
+  {
+    q: 'Nghề bạn đang làm — là kind environment hay wicked? Tại sao?'
+  },
+  {
+    q: 'Lần cuối bạn áp dụng ý từ ngoài nghề vào nghề — kết quả thế nào?'
+  },
+  {
+    q: 'Có project nào bạn đang "grit through" mà thật ra nên quit?'
+  },
+  {
+    q: '3 lĩnh vực ngoài nghề bạn từng quan tâm — gần đây có touch không?'
+  },
+  {
+    q: 'Bạn 50 tuổi sẽ tự hào vì depth nghề chính, hay vì range giúp pivot 2 lần?'
+  }
+];
+// Render journal prompt — full UI (textarea + export button + saved indicator)
+function switchPrompt(idx, dot) {
+  if (typeof journalPrompts === 'undefined' || !journalPrompts[idx]) return;
+  var p = journalPrompts[idx];
+  var c = document.getElementById('promptsContainer');
+  if (!c) return;
+  document.querySelectorAll('.journal-dot').forEach(function(d) { d.classList.remove('active'); });
+  if (dot) dot.classList.add('active');
+  var isEN = /^\/en\//.test(window.location.pathname);
+  var L = isEN
+    ? { num: 'Prompt', placeholder: 'Write your thoughts here... (auto-saved)', exportBtn: 'Export journal', saved: 'Saved ✓', noEntry: '(not yet written)' }
+    : { num: 'Câu hỏi', placeholder: 'Viết suy nghĩ của bạn ở đây... (tự động lưu)', exportBtn: 'Xuất nhật ký', saved: 'Đã lưu ✓', noEntry: '(chưa viết)' };
+  function esc(s) { return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  var num = String(idx + 1).padStart(2, '0');
+  c.innerHTML =
+    '<div class="journal-container">' +
+      '<div class="journal-prompt">' +
+        '<h3>' + L.num + ' <span id="promptNum">' + num + '</span></h3>' +
+        '<div class="journal-prompt-q" id="promptQ">' + esc(p.q) + '</div>' +
+        (p.help ? '<p class="journal-prompt-help" id="promptHelp">' + esc(p.help) + '</p>' : '') +
+      '</div>' +
+      '<div class="journal-area">' +
+        '<textarea class="journal-textarea" id="journalText" placeholder="' + L.placeholder + '"></textarea>' +
+        '<div class="journal-actions">' +
+          '<button class="btn btn-outline fcq-btn" type="button" id="journalExportBtn">' + L.exportBtn + '</button>' +
+          '<span class="journal-saved" id="journalSaved">' + L.saved + '</span>' +
+        '</div>' +
+      '</div>' +
+    '</div>';
+  try {
+    var key = 'journal_' + window.location.pathname + '_' + idx;
+    var ta = c.querySelector('textarea');
+    var savedTxt = localStorage.getItem(key);
+    if (savedTxt) ta.value = savedTxt;
+    var savedEl = document.getElementById('journalSaved');
+    var savedTimer;
+    ta.addEventListener('input', function(e) {
+      try { localStorage.setItem(key, e.target.value); } catch(_) {}
+      if (savedEl) {
+        savedEl.classList.add('show');
+        clearTimeout(savedTimer);
+        savedTimer = setTimeout(function() { savedEl.classList.remove('show'); }, 1500);
+      }
+    });
+  } catch(_) {}
+  var exportBtn = document.getElementById('journalExportBtn');
+  if (exportBtn) {
+    exportBtn.addEventListener('click', function() {
+      var slug = (window.location.pathname.match(/\/books\/([^./]+)/) || [])[1] || 'journal';
+      var lines = [(isEN ? 'JOURNAL' : 'NHẬT KÝ') + ' — ' + slug.toUpperCase(), '='.repeat(60), ''];
+      journalPrompts.forEach(function(pp, i) {
+        var k = 'journal_' + window.location.pathname + '_' + i;
+        var v = '';
+        try { v = localStorage.getItem(k) || ''; } catch(_) {}
+        lines.push('─'.repeat(60));
+        lines.push((isEN ? 'PROMPT ' : 'CÂU HỊI ') + (i + 1) + ':');
+        lines.push(pp.q);
+        lines.push('─'.repeat(60));
+        lines.push('');
+        lines.push(v || L.noEntry);
+        lines.push('');
+      });
+      var blob = new Blob([lines.join('\n')], { type: 'text/plain;charset=utf-8' });
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement('a');
+      a.href = url; a.download = slug + '-journal.txt';
+      document.body.appendChild(a); a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    });
+  }
+}
+document.addEventListener('DOMContentLoaded', function() {
+  var firstDot = document.querySelector('.journal-dot');
+  if (firstDot && typeof switchPrompt === 'function') switchPrompt(0, firstDot);
+});
+
+</script>
+<!-- JOURNAL -->
+<section class="journal-section" id="journal">
+<div class="section-label">Nhật ký riêng / Viết để hiểu thêm</div>
+<h2 class="section-title">5 câu hỏi cho người đang <em>nghi</em> nghề</h2>
+<p class="section-intro">Range không nói "bỏ nghề ngay". Nó nói "biết khi nào range, khi nào depth". 5 câu này giúp bạn vẽ map.</p>
+<div class="journal-prompts-nav">
+<div class="journal-dot active" onclick="switchPrompt(0, this)">1</div>
+<div class="journal-dot" onclick="switchPrompt(1, this)">2</div>
+<div class="journal-dot" onclick="switchPrompt(2, this)">3</div>
+<div class="journal-dot" onclick="switchPrompt(3, this)">4</div>
+<div class="journal-dot" onclick="switchPrompt(4, this)">5</div>
+</div>
+<div id="promptsContainer"></div>
+</section>
+<!-- COMMENTS -->
+<section class="section" id="comments">
+<div class="section-label" data-content-id="range-comments-03" data-content-type="label">Để lại nhận xét / Bình luận</div>
+<h2 class="section-title" data-content-id="range-comments-01" data-content-type="heading">Bạn đã đọc — chia sẻ điều gì ?</h2>
+<p class="section-intro" data-content-id="range-comments-02" data-content-type="section-intro">Cuốn nào trong sách này đập trúng bạn nhất? Có chỗ nào bạn không đồng ý với tác giả? Mình đọc tất cả bình luận.</p>
+<div class="comment-form-wrap">
+<form class="comment-form" id="commentForm" onsubmit="return false;">
+<div class="form-row">
+<input id="commentName" placeholder="Tên (sẽ hiện công khai)" required="" type="text"/>
+<input id="commentEmail" placeholder="Email (không hiện)" required="" type="email"/>
+</div>
+<input autocomplete="off" id="cfWebsite" name="cf-website" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0" tabindex="-1" type="text"/>
+<textarea id="commentBody" placeholder="Suy nghĩ của bạn..." required="" rows="5"></textarea>
+<div class="form-bottom">
+<span class="form-hint">Verify qua email · Comment xuất hiện sau khi confirm</span>
+<button class="form-submit" id="submitBtn" onclick="window.STOP_AND_THINK_LIB &amp;&amp; window.STOP_AND_THINK_LIB.submitComment('range')" type="button">Gửi</button>
+</div>
+<div class="form-message" id="formMessage"></div>
+</form>
+</div>
+<div class="comments-list" id="commentsList">
+<div class="comments-loading">Đang tải comment...</div>
+</div>
+</section>
+<footer class="footer">
+<div class="footer-quote">"Người đi đường dài thường không biết đường họ đang đi. Đó là điểm mạnh nhất của họ."</div>
+<div class="footer-brand">Stop <span class="amp">&amp;</span> Think</div>
+<p>Đọc cùng một người đọc khác · By Quang Ton</p>
+<div class="footer-bottom">© 2026 · Stop &amp; Think · By Quang Ton</div>
+</footer>
+<script defer="" src="/assets/books-data.js"></script>
+<script defer="" src="/assets/library.v4.js"></script>
+<script defer="" src="/assets/nav-spy.js"></script>
+<script data-cf-beacon='{"token":"a1b2c3d4e5f6789"}' defer="" src="https://static.cloudflareinsights.com/beacon.min.js"></script>
+<script defer="" src="/edit-mode.js"></script>
+<script>
+// Auto-hide scroll-hint when content doesn't overflow horizontally
+(function(){
+  function updateScrollHints() {
+    document.querySelectorAll('.scroll-hint').forEach(function(hint){
+      var nxt = hint.nextElementSibling;
+      while (nxt && !(nxt.classList.contains('chapter-grid') || nxt.classList.contains('laws-grid'))) {
+        nxt = nxt.nextElementSibling;
+      }
+      if (!nxt) return;
+      // Skip if container is currently hidden (display:none from tab filter)
+      var grid = nxt;
+      var visible = grid.offsetParent !== null;
+      if (!visible) {
+        hint.style.display = '';
+        return;
+      }
+      var overflows = grid.scrollWidth > grid.clientWidth + 2;
+      hint.style.display = overflows ? '' : 'none';
+    });
+  }
+  window.addEventListener('load', updateScrollHints);
+  window.addEventListener('resize', updateScrollHints);
+  // Hook into chapter tab clicks — recheck after filter
+  document.addEventListener('click', function(e){
+    if (e.target && e.target.classList && e.target.classList.contains('chapter-tab-btn')) {
+      setTimeout(updateScrollHints, 60);
+    }
+  });
+  // Initial check
+  if (document.readyState === 'complete') {
+    updateScrollHints();
+  } else {
+    document.addEventListener('DOMContentLoaded', updateScrollHints);
+  }
+})();
+</script>
+</body>
+</html>
