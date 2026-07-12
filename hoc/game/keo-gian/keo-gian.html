@@ -194,11 +194,9 @@ html[data-theme="light"] .step-pill{background:#ffffff}
       <div class="g-head">📒 Nhật ký hôm nay <span id="dayBadge" style="color:var(--dim);font-weight:400;font-size:.78rem"></span></div>
       <div id="dayLog"></div>
       <div class="btns" style="margin-top:10px">
-        <button class="big blue" id="btnExport" style="font-size:.88rem">Copy JSON fitness-log</button>
-        <button class="big" id="btnCopyText" style="font-size:.88rem">Copy dạng chữ</button>
+        <button class="big blue" id="btnSync" style="font-size:.92rem">🔄 Sync vào Nhật ký chung</button>
       </div>
-      <div id="exportOut"></div>
-      <div class="hint">Mỗi bài giãn xong tự cộng vào nhật ký (tính giây GIỮ thật). Cuối ngày <b>copy MỘT lần</b> dán cho Claude.</div>
+      <div class="hint">Mỗi bài giãn xong tự cộng vào nhật ký (tính giây GIỮ thật). Tập xong bấm Sync — dữ liệu dồn về <b>⌂ Bộ game › Nhật ký tập hôm nay</b>, copy MỘT chỗ ở đó. Bấm Sync lại thoải mái, không bị trùng.</div>
     </div>
     <div class="card">
       <div class="hint" style="margin:0">📸 Ảnh mẫu: Free Exercise DB (public domain), lưu sẵn trong máy — chạy offline 100%.</div>
@@ -206,7 +204,7 @@ html[data-theme="light"] .step-pill{background:#ffffff}
   </aside>
 </div>
 
-<footer>keo-gian · Build v6 · 2026-07-12 · 40 bài giãn / 6 nhóm cơ · 5 chuỗi + chuỗi tự ghép, chỉnh được từng chuỗi · hướng dẫn đọc-theo thay camera · không thay thế tư vấn y tế</footer>
+<footer>keo-gian · Build v7 · 2026-07-12 · 40 bài giãn / 6 nhóm cơ · 5 chuỗi + chuỗi tự ghép, chỉnh được từng chuỗi · hướng dẫn đọc-theo thay camera · không thay thế tư vấn y tế</footer>
 
 <script id="pure-logic">
 'use strict';
@@ -496,7 +494,7 @@ if (typeof module !== 'undefined' && module.exports)
     phaseLbl: $('phaseLbl'), countdown: $('countdown'), seqBar: $('seqBar'), status: $('status'),
     holdRow: $('holdRow'), btnStart: $('btnStart'), btnReset: $('btnReset'), btnNext: $('btnNext'),
     voiceRow: $('voiceRow'), chkTick: $('chkTick'),
-    dayLog: $('dayLog'), dayBadge: $('dayBadge'), btnExport: $('btnExport'), btnCopyText: $('btnCopyText'), exportOut: $('exportOut'),
+    dayLog: $('dayLog'), dayBadge: $('dayBadge'), btnSync: $('btnSync'),
   };
 
   // ---- store ----
@@ -892,20 +890,18 @@ if (typeof module !== 'undefined' && module.exports)
     start();                                   // chuỗi giãn liền mạch: bấm 1 nút là chạy bài kế
   });
 
-  els.btnExport.addEventListener('click', async () => {
+  // Sync vào Nhật ký chung (fitness-hub:v1, hiển thị + copy ở trang Bộ game).
+  // UPSERT theo app+ngày: ghi ĐÈ slot 'keo-gian' của hôm nay bằng toàn bộ nhật ký hiện tại — bấm bao nhiêu lần cũng không trùng.
+  els.btnSync.addEventListener('click', () => {
     const entries = buildStretchEntries(todayRec(), todayStr());
-    if (!entries.length) { setStatus('Chưa có bài nào để xuất.'); return; }
-    const json = JSON.stringify(entries);
-    els.exportOut.textContent = json; els.exportOut.classList.add('show');
-    try { await navigator.clipboard.writeText(json); setStatus('Đã copy JSON — dán cho Claude (fitness-log) là xong.'); }
-    catch { setStatus('Không copy tự động được — bôi đen JSON rồi copy tay.'); }
-  });
-  els.btnCopyText.addEventListener('click', async () => {
-    const txt = buildStretchText(todayRec());
-    if (!txt) { setStatus('Chưa có gì để copy.'); return; }
-    els.exportOut.textContent = txt; els.exportOut.classList.add('show');
-    try { await navigator.clipboard.writeText(txt); setStatus('Đã copy dạng chữ — dán vào chat là Claude hiểu.'); }
-    catch { setStatus('Không copy tự động được — bôi đen dòng chữ rồi copy tay.'); }
+    if (!entries.length) { setStatus('Chưa có bài nào hôm nay để sync.'); return; }
+    try {
+      let hub; try { hub = JSON.parse(localStorage.getItem('fitness-hub:v1')); } catch { hub = null; }
+      if (!hub || typeof hub !== 'object' || !hub.days) hub = { v: 1, days: {} };
+      (hub.days[todayStr()] = hub.days[todayStr()] || {})['keo-gian'] = entries;
+      localStorage.setItem('fitness-hub:v1', JSON.stringify(hub));
+      setStatus(`Đã sync ${entries.length} mục hôm nay vào Nhật ký chung (⌂ Bộ game). Bấm lại không trùng.`);
+    } catch { setStatus('Không ghi được Nhật ký chung — localStorage bị chặn?'); }
   });
 
   // ảnh hỏng -> ẩn hình, vẫn dùng được bằng hướng dẫn chữ

@@ -212,18 +212,16 @@ html[data-theme="light"] .step{background:#ffffff}
       <div class="g-head">📒 Nhật ký hôm nay <span id="dayTotalBadge"></span></div>
       <div id="dayLog"></div>
       <div class="btns" style="margin-top:10px">
-        <button id="btnExport" class="blue">Copy JSON fitness-log</button>
-        <button id="btnCopyText">Copy dạng chữ</button>
+        <button id="btnSync" class="blue">🔄 Sync vào Nhật ký chung</button>
       </div>
-      <div id="exportOut"></div>
-      <div class="hint">Số liệu tự cộng dồn cả ngày (đóng/mở lại trang không mất). Tập xong hết các bài, <b>copy MỘT lần</b> rồi dán cho Claude là đủ.</div>
+      <div class="hint">Số liệu tự cộng dồn cả ngày (đóng/mở lại trang không mất). Tập xong bấm Sync — dữ liệu dồn về <b>⌂ Bộ game › Nhật ký tập hôm nay</b>, copy MỘT chỗ ở đó. Bấm Sync lại thoải mái, không bị trùng.</div>
     </div>
 
     <div id="status"></div>
   </div>
 </div>
 
-<footer>dem-squat · Build v14 · 2026-07-12 · MoveNet Lightning (TensorFlow.js) — 30 bài / 6 nhóm cơ · giọng đọc EN/VI · ảnh người thật (Free Exercise DB, public domain) · nhật ký ngày gửi 1 lần</footer>
+<footer>dem-squat · Build v15 · 2026-07-12 · MoveNet Lightning (TensorFlow.js) — 30 bài / 6 nhóm cơ · giọng đọc EN/VI · ảnh người thật (Free Exercise DB, public domain) · nhật ký ngày gửi 1 lần</footer>
 
 <script id="pure-logic">
 'use strict';
@@ -695,9 +693,9 @@ if (typeof module !== 'undefined' && module.exports)
     state: $('stateTag'), extra: $('minAngle'), extraLbl: $('extraLbl'),
     today: $('todayTotal'), depth: $('depthBar'), sets: $('setsRow'), status: $('status'),
     overlay: $('overlayMsg'), overlayText: $('overlayText'), tip: $('tipLine'),
-    btnCam: $('btnCam'), btnSet: $('btnSet'), btnReset: $('btnReset'), btnExport: $('btnExport'),
-    exportOut: $('exportOut'), voiceRow: $('voiceRow'), exRow: $('exRow'),
-    dayLog: $('dayLog'), dayTotalBadge: $('dayTotalBadge'), btnCopyText: $('btnCopyText'),
+    btnCam: $('btnCam'), btnSet: $('btnSet'), btnReset: $('btnReset'), btnSync: $('btnSync'),
+    voiceRow: $('voiceRow'), exRow: $('exRow'),
+    dayLog: $('dayLog'), dayTotalBadge: $('dayTotalBadge'),
     demoSmall: $('demoSmall'), demoLbl: $('demoLbl'), demoFallback: $('demoFallback'),
     photoWrap: $('photoWrap'), fig0: $('fig0'), fig1: $('fig1'), photo0: $('photo0'), photo1: $('photo1'),
     cap0: $('cap0'), cap1: $('cap1'), photoCredit: $('photoCredit'),
@@ -1238,7 +1236,6 @@ if (typeof module !== 'undefined' && module.exports)
       store.history[todayStr()] = {};
       saveStore();
       els.rep.textContent = '0'; els.extra.textContent = '–';
-      els.exportOut.classList.remove('show');
       renderSets();
       els.btnReset.textContent = 'Reset'; els.btnReset.classList.remove('armed');
       resetArmed = 0;
@@ -1252,23 +1249,18 @@ if (typeof module !== 'undefined' && module.exports)
     }
   });
 
-  els.btnExport.addEventListener('click', async () => {
+  // Sync vào Nhật ký chung (fitness-hub:v1, hiển thị + copy ở trang Bộ game).
+  // UPSERT theo app+ngày: ghi ĐÈ slot 'dem-squat' của hôm nay bằng toàn bộ nhật ký hiện tại — bấm bao nhiêu lần cũng không trùng.
+  els.btnSync.addEventListener('click', () => {
     const entries = buildExportEntries(recWithPending(), todayStr());
-    if (!entries.length) { setStatus('Chưa có rep nào để xuất.'); return; }
-    const json = JSON.stringify(entries);
-    els.exportOut.textContent = json;
-    els.exportOut.classList.add('show');
-    try { await navigator.clipboard.writeText(json); setStatus('Đã copy JSON cả ngày — dán cho Claude (fitness-log) MỘT lần là đủ.'); }
-    catch { setStatus('Không copy tự động được — bôi đen JSON ở trên rồi copy tay.'); }
-  });
-
-  els.btnCopyText.addEventListener('click', async () => {
-    const txt = buildDayText(recWithPending());
-    if (!txt) { setStatus('Chưa có gì để copy.'); return; }
-    els.exportOut.textContent = txt;
-    els.exportOut.classList.add('show');
-    try { await navigator.clipboard.writeText(txt); setStatus('Đã copy tóm tắt dạng chữ — dán vào chat là Claude tự hiểu.'); }
-    catch { setStatus('Không copy tự động được — bôi đen dòng chữ ở trên rồi copy tay.'); }
+    if (!entries.length) { setStatus('Chưa có rep nào hôm nay để sync.'); return; }
+    try {
+      let hub; try { hub = JSON.parse(localStorage.getItem('fitness-hub:v1')); } catch { hub = null; }
+      if (!hub || typeof hub !== 'object' || !hub.days) hub = { v: 1, days: {} };
+      (hub.days[todayStr()] = hub.days[todayStr()] || {})['dem-squat'] = entries;
+      localStorage.setItem('fitness-hub:v1', JSON.stringify(hub));
+      setStatus(`Đã sync ${entries.length} mục hôm nay vào Nhật ký chung (⌂ Bộ game). Bấm lại không trùng.`);
+    } catch { setStatus('Không ghi được Nhật ký chung — localStorage bị chặn?'); }
   });
 
   // ảnh hỏng/thiếu -> rơi về hình người-que, không vỡ layout

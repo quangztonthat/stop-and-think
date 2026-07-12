@@ -165,16 +165,14 @@ html[data-theme="light"] .card{background:#ffffff;box-shadow:0 8px 26px rgba(23,
       <div class="g-head">📒 Nhật ký hôm nay <span id="dayBadge" style="color:var(--dim);font-weight:400;font-size:.78rem"></span></div>
       <div id="dayLog"></div>
       <div class="btns" style="margin-top:10px">
-        <button class="big" id="btnExport" style="background:linear-gradient(135deg,#38bdf8,#0ea5e9);color:#062334;border:none;font-size:.88rem">Copy JSON fitness-log</button>
-        <button class="big" id="btnCopyText" style="font-size:.88rem">Copy dạng chữ</button>
+        <button class="big blue" id="btnSync" style="background:linear-gradient(135deg,#38bdf8,#0ea5e9);color:#062334;border:none;font-size:.92rem">🔄 Sync vào Nhật ký chung</button>
       </div>
-      <div id="exportOut"></div>
-      <div class="hint">Phiên hoàn thành (hoặc dừng giữa chừng ≥1 phút) tự cộng vào nhật ký. Cuối ngày copy MỘT lần dán cho Claude.</div>
+      <div class="hint">Phiên ≥1 phút tự cộng vào nhật ký. Tập xong bấm Sync — dữ liệu dồn về <b>⌂ Bộ game › Nhật ký tập hôm nay</b>, copy MỘT chỗ ở đó. Bấm Sync lại thoải mái, không bị trùng.</div>
     </div>
   </aside>
 </div>
 
-<footer>hit-tho · Build v8 · 2026-07-12 · 7 kiểu thở (có Wim Hof 3 hiệp) · chạy offline hoàn toàn, không cần mạng · giọng đọc EN/VI · nhịp tuỳ chỉnh từng pha · không thay thế tư vấn y tế</footer>
+<footer>hit-tho · Build v9 · 2026-07-12 · 7 kiểu thở (có Wim Hof 3 hiệp) · chạy offline hoàn toàn, không cần mạng · giọng đọc EN/VI · nhịp tuỳ chỉnh từng pha · không thay thế tư vấn y tế</footer>
 
 <script id="pure-logic">
 'use strict';
@@ -334,7 +332,7 @@ if (typeof module !== 'undefined' && module.exports)
     durRow: $('durRow'), phaseRow: $('phaseRow'), btnStart: $('btnStart'), btnReset: $('btnReset'),
     safeBox: $('safeBox'), chkSafe: $('chkSafe'),
     voiceRow: $('voiceRow'), chkTick: $('chkTick'), chkBg: $('chkBg'), bgHint: $('bgHint'), bgTrack: $('bgTrack'), status: $('status'),
-    dayLog: $('dayLog'), dayBadge: $('dayBadge'), btnExport: $('btnExport'), btnCopyText: $('btnCopyText'), exportOut: $('exportOut'),
+    dayLog: $('dayLog'), dayBadge: $('dayBadge'), btnSync: $('btnSync'),
   };
   const PHASE_COLOR = { in: ['#4ade80', 'rgba(74,222,128,.4)'], hold: ['#fbbf24', 'rgba(251,191,36,.4)'], out: ['#38bdf8', 'rgba(56,189,248,.4)'] };
 
@@ -444,17 +442,13 @@ if (typeof module !== 'undefined' && module.exports)
     };
     for (const s of bgSegments(phases, durSec)) {
       blip(s.t0, PHASE_TONE[s.kind] || 520, 0.14, 0.12);        // mốc đổi pha — cùng bảng tần số với tick JS
-      if (s.kind === 'in' || s.kind === 'out') {                 // sweep dẫn hơi: nghe là biết đang ở đâu trong pha
-        const o = ctx.createOscillator(), g = ctx.createGain();
-        o.type = 'sine';
-        o.frequency.setValueAtTime(s.kind === 'in' ? 420 : 780, s.t0);
-        o.frequency.linearRampToValueAtTime(s.kind === 'in' ? 780 : 420, s.t0 + s.sec);
-        const edge = Math.min(0.3, s.sec / 4);
-        g.gain.setValueAtTime(0, s.t0);
-        g.gain.linearRampToValueAtTime(0.05, s.t0 + edge);
-        g.gain.setValueAtTime(0.05, s.t0 + s.sec - edge);
-        g.gain.linearRampToValueAtTime(0, s.t0 + s.sec);
-        o.connect(g); g.connect(ctx.destination); o.start(s.t0); o.stop(s.t0 + s.sec);
+      if (s.kind === 'in' || s.kind === 'out') {
+        // dẫn hơi bằng TICK RỜI cao dần (hít) / thấp dần (thở) — sweep liên tục bị Quang chê "tiếng hú"
+        for (let k = 1; k < s.sec; k++) {
+          const p = k / s.sec;
+          const f = s.kind === 'in' ? 480 + (760 - 480) * p : 760 - (760 - 480) * p;
+          blip(s.t0 + k, f, 0.07, 0.045);
+        }
       } else {
         for (let k = 1; k < s.sec; k++) blip(s.t0 + k, 1040, 0.05, 0.05);  // giữ: tick mỗi giây
       }
@@ -859,20 +853,18 @@ if (typeof module !== 'undefined' && module.exports)
     if (els.chkBg.checked && !bgSupported()) setStatus('Trình duyệt này không render được track nền — chế độ khoá máy sẽ không hoạt động.');
   });
 
-  els.btnExport.addEventListener('click', async () => {
+  // Sync vào Nhật ký chung (fitness-hub:v1, hiển thị + copy ở trang Bộ game).
+  // UPSERT theo app+ngày: ghi ĐÈ slot 'hit-tho' của hôm nay bằng toàn bộ nhật ký hiện tại — bấm bao nhiêu lần cũng không trùng.
+  els.btnSync.addEventListener('click', () => {
     const entries = buildBreathEntries(todayRec(), todayStr(), store.custom);
-    if (!entries.length) { setStatus('Chưa có phiên nào để xuất.'); return; }
-    const json = JSON.stringify(entries);
-    els.exportOut.textContent = json; els.exportOut.classList.add('show');
-    try { await navigator.clipboard.writeText(json); setStatus('Đã copy JSON — dán cho Claude (fitness-log) là xong.'); }
-    catch { setStatus('Không copy tự động được — bôi đen JSON rồi copy tay.'); }
-  });
-  els.btnCopyText.addEventListener('click', async () => {
-    const txt = buildBreathText(todayRec());
-    if (!txt) { setStatus('Chưa có gì để copy.'); return; }
-    els.exportOut.textContent = txt; els.exportOut.classList.add('show');
-    try { await navigator.clipboard.writeText(txt); setStatus('Đã copy dạng chữ — dán vào chat là Claude hiểu.'); }
-    catch { setStatus('Không copy tự động được — bôi đen dòng chữ rồi copy tay.'); }
+    if (!entries.length) { setStatus('Chưa có phiên nào hôm nay để sync.'); return; }
+    try {
+      let hub; try { hub = JSON.parse(localStorage.getItem('fitness-hub:v1')); } catch { hub = null; }
+      if (!hub || typeof hub !== 'object' || !hub.days) hub = { v: 1, days: {} };
+      (hub.days[todayStr()] = hub.days[todayStr()] || {})['hit-tho'] = entries;
+      localStorage.setItem('fitness-hub:v1', JSON.stringify(hub));
+      setStatus(`Đã sync ${entries.length} mục hôm nay vào Nhật ký chung (⌂ Bộ game). Bấm lại không trùng.`);
+    } catch { setStatus('Không ghi được Nhật ký chung — localStorage bị chặn?'); }
   });
 
   renderModes(); renderDur(); renderDayLog(); renderVoice(); renderPhaseAdj(); rebuildEngine(); applySafety();
