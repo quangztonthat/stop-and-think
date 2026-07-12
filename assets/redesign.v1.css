@@ -1,0 +1,119 @@
+/* ═══════════════════════════════════════════════════════════════
+   REDESIGN LAYER v1 — Stop & Think (2026-07-12)
+   Phủ lên template sách (sau dark.v5.css) để ruột trang sách cùng
+   ngôn ngữ thiết kế với trang chủ/thư viện: card tối bo góc, tiêu đề
+   gradient, callout nền-sáng cũ chuyển thành card tối viền accent.
+   Accent per-book giữ nguyên qua var(--accent).
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── Tiêu đề section: gradient ink→accent như h1 trang chủ ── */
+html[data-theme="dark"] .section-title {
+  /* accent sáng hoá — accent gốc (navy/rust đậm) thiết kế cho nền trắng, để thô sẽ chìm cuối gradient */
+  background: linear-gradient(92deg, var(--ink) 35%, color-mix(in srgb, var(--accent, #60a5fa) 55%, #cdd9f0) 95%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+html[data-theme="dark"] .section-title em { color: transparent; }
+
+/* ── Callout nền-ink (thiết kế cũ: khối sáng nghịch đảo) → card tối viền accent.
+      Kỹ thuật: đổi BIẾN cục bộ để chữ con (dùng var(--cream)/var(--paper)) tự sáng lại. ── */
+html[data-theme="dark"] .thesis-quote,
+html[data-theme="dark"] .journal-section,
+html[data-theme="dark"] .rule-header,
+html[data-theme="dark"] .survivor-illustration,
+html[data-theme="dark"] .prospect-viz,
+html[data-theme="dark"] .framework-grid {
+  background: linear-gradient(160deg, #151d33, #1a2340) !important;
+  border: 1px solid var(--line) !important;
+  border-left: 4px solid var(--accent, var(--rust)) !important;
+  border-radius: 18px;
+  color: var(--ink);
+  --cream: #e9eef9;
+  --cream-soft: #b9c4dc;
+  --paper: #e9eef9;
+  --paper-dark: #1a2340; /* card con dùng làm BG -> phải tối */
+}
+
+/* ── Bảng: header hàng đầu từng dùng bg ink sáng → tối + chữ rõ ── */
+html[data-theme="dark"] .praise-table th,
+html[data-theme="dark"] .comp-table th,
+html[data-theme="dark"] .lat-table th,
+html[data-theme="dark"] .fic-table th {
+  background: #1a2340 !important;
+  color: var(--ink) !important;
+}
+
+/* ── Card tương tác (đã tối từ dark.v5) → bo góc + viền như card game ── */
+html[data-theme="dark"] .quiz-container,
+html[data-theme="dark"] .flashcard-face,
+html[data-theme="dark"] .journal-container,
+html[data-theme="dark"] .chapter-card,
+html[data-theme="dark"] .chap-card,
+html[data-theme="dark"] .action-card,
+html[data-theme="dark"] .fw-card,
+html[data-theme="dark"] .compare-card,
+html[data-theme="dark"] .law-card,
+html[data-theme="dark"] .myth-card,
+html[data-theme="dark"] .identity-card,
+html[data-theme="dark"] .reframe-card,
+html[data-theme="dark"] .stat-card,
+html[data-theme="dark"] .principle {
+  border-radius: 16px;
+  border: 1px solid var(--line);
+  box-shadow: 0 1px 2px rgba(0,0,0,.35), 0 10px 28px rgba(0,0,0,.28);
+}
+
+/* ── Nút: bo góc + accent như nút game (giữ hành vi/màu CTA sáng hiện có) ── */
+html[data-theme="dark"] .form-submit,
+html[data-theme="dark"] .fcq-btn,
+html[data-theme="dark"] .btn,
+html[data-theme="dark"] .btn-primary,
+html[data-theme="dark"] .btn-secondary {
+  border-radius: 12px;
+}
+html[data-theme="dark"] .form-submit:hover { filter: brightness(1.08); }
+
+/* ── Quiz option: bo góc nhẹ ── */
+html[data-theme="dark"] .quiz-option { border-radius: 12px; }
+html[data-theme="dark"] .journal-textarea { border-radius: 12px; }
+
+/* ── Vá sau contrast-scan ── */
+/* card con trong framework-grid: nền tối, chữ con (var cream local) tự sáng */
+html[data-theme="dark"] .framework-card {
+  border: 1px solid var(--line);
+  border-radius: 14px;
+}
+/* chỉ báo đã lưu journal: navy đậm chìm trên card tối -> xanh lá */
+html[data-theme="dark"] .journal-saved { color: #34d399 !important; }
+
+/* ── Nút bên trong flip-group: chữ dùng var(--paper) bị flip thành sáng-trên-sáng → ép CTA sáng chữ tối ── */
+html[data-theme="dark"] .thesis-quote .btn,
+html[data-theme="dark"] .thesis-quote .fcq-btn,
+html[data-theme="dark"] .thesis-quote .form-submit,
+html[data-theme="dark"] .journal-section .btn,
+html[data-theme="dark"] .journal-section .fcq-btn,
+html[data-theme="dark"] .journal-section .form-submit,
+html[data-theme="dark"] .rule-header .btn,
+html[data-theme="dark"] .framework-grid .btn,
+html[data-theme="dark"] .framework-grid .fcq-btn,
+html[data-theme="dark"] .survivor-illustration .btn,
+html[data-theme="dark"] .prospect-viz .btn {
+  background: #e9eef9 !important;
+  color: #0b1020 !important;
+  border-color: transparent !important;
+}
+
+/* ── Đè block "ISSUE A" của dark.v5 (ép chữ tối khi journal-section còn SÁNG) — redesign đã flip khối này thành TỐI.
+      Không sửa dark.v5 vì bản EN chưa load redesign layer vẫn cần logic cũ. ── */
+html[data-theme="dark"] .journal-section .section-intro { color: var(--muted) !important; }
+html[data-theme="dark"] .journal-section .section-title { color: transparent !important; }
+html[data-theme="dark"] .journal-section .journal-prompt { background: #1a2340 !important; border-left-color: var(--accent, var(--rust)) !important; }
+html[data-theme="dark"] .journal-section .journal-prompt p,
+html[data-theme="dark"] .journal-section .journal-prompt-hint { color: var(--muted) !important; }
+
+/* ── Flashcard: chữ hardcode màu tối cũ trên card tối (dính atomic-habits, deep-work) ── */
+html[data-theme="dark"] .flashcard-face .flashcard-tag { color: var(--accent, var(--rust)) !important; }
+html[data-theme="dark"] .flashcard-face .flashcard-question,
+html[data-theme="dark"] .flashcard-face .flashcard-answer { color: var(--ink) !important; }
+html[data-theme="dark"] .flashcard-face .flashcard-hint { color: var(--muted) !important; }
