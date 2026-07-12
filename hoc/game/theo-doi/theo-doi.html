@@ -2,7 +2,7 @@
 <html lang="vi">
 <head>
 <meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"/>
 <meta name="theme-color" content="#0b1020"/>
 <title>Theo dõi vật thể — bám mục tiêu giữa đám chấm giống hệt</title>
 <style>
@@ -105,7 +105,45 @@ svg{display:block;width:100%;height:auto}
 .res-actions{display:flex;gap:10px;justify-content:center;margin-top:26px}
 #toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(80px);background:#232e50;border:1px solid var(--line);color:#fff;font-size:15px;font-weight:700;padding:12px 20px;border-radius:999px;transition:transform .25s ease;z-index:50;pointer-events:none;box-shadow:var(--shadow)}
 #toast.show{transform:translateX(-50%) translateY(0)}
-footer{border-top:1px solid var(--line-soft);padding:16px 20px;text-align:center;font-size:12px;color:var(--ink-dim)}
+footer{border-top:1px solid var(--line-soft);padding:16px 20px calc(16px + env(safe-area-inset-bottom));text-align:center;font-size:12px;color:var(--ink-dim)}
+/* ---------- mobile (iPhone) ---------- */
+html{-webkit-text-size-adjust:100%}
+button{touch-action:manipulation}
+#board{touch-action:manipulation}
+@media (max-width:480px){
+  main{padding:0 8px 28px;padding-left:max(8px,env(safe-area-inset-left));padding-right:max(8px,env(safe-area-inset-right))}
+  .hd-in{padding:7px 10px;gap:6px}
+  .logo{font-size:14px;gap:7px}
+  .logo-ic{width:32px;height:32px;font-size:16px;border-radius:9px}
+  .logo small{display:none}
+  .nav-btn{padding:7px 10px;font-size:12.5px;white-space:nowrap}
+  .hero{padding:16px 0 6px}
+  .hero p{font-size:14.5px;margin-top:6px}
+  .stat-row{gap:8px;margin-top:14px}
+  .stat-card{padding:10px 12px;min-width:calc(50% - 4px);flex:1}
+  .stat-card b{font-size:22px}
+  .start-row{margin-top:18px;gap:10px}
+  .btn.primary{width:100%;padding:14px 20px}
+  .howto{padding:14px 16px;font-size:14px;margin-top:20px}
+  .play-hud{gap:7px;padding:10px 0 6px}
+  .hud-item{font-size:12.5px}
+  .hud-item b{font-size:16px}
+  .board-wrap{padding:4px;border-radius:14px}
+  .play-hint{font-size:12.5px;margin-top:8px}
+  .play-hint::after{content:" · Xoay ngang điện thoại để sân to hơn"}
+  .res-grid{gap:8px}
+}
+/* điện thoại xoay ngang: dẹp chrome để sân chiếm tối đa */
+@media (orientation:landscape) and (max-height:500px){
+  header{display:none}
+  main{padding:0 max(10px,env(safe-area-inset-left)) 10px max(10px,env(safe-area-inset-right))}
+  .play-hud{padding:6px 0 4px;gap:8px}
+  .timebox{margin-bottom:6px}
+  .board-wrap{padding:4px;border-radius:12px}
+  #board{max-height:calc(100dvh - 92px);width:auto;max-width:100%;margin:0 auto}
+  .play-hint{display:none}
+  footer{display:none}
+}
 </style>
 </head>
 <body>
@@ -181,7 +219,7 @@ footer{border-top:1px solid var(--line-soft);padding:16px 20px;text-align:center
 </main>
 
 <div id="toast"></div>
-<footer>Theo dõi vật thể (Multiple-Object Tracking) · chú ý thị giác · Build v3 · 2026-07-11 · dữ liệu lưu trong trình duyệt của bạn</footer>
+<footer>Theo dõi vật thể (Multiple-Object Tracking) · chú ý thị giác · Build v4 · 2026-07-12 · dữ liệu lưu trong trình duyệt của bạn</footer>
 
 <script>
 "use strict";
@@ -458,6 +496,20 @@ if (typeof document !== "undefined") (function () {
     $("res-lv").textContent = g.lvStart === store.lv ? "Lv " + store.lv : "Lv " + g.lvStart + " → " + store.lv;
     show("result");
   }
+
+  // Fallback kiểu Lumosity (§F): bấm hụt chấm (nhất là trên màn cảm ứng) -> chọn chấm GẦN NHẤT trong bán kính rộng
+  $("board").addEventListener("click", (e) => {
+    if (!game || game.over || game.phase !== "pick") return;
+    if (e.target.classList && e.target.classList.contains("dot")) return; // đã xử lý ở chấm
+    const pt = new DOMPoint(e.clientX, e.clientY).matrixTransform($("board").getScreenCTM().inverse());
+    let best = -1, bd = (window.matchMedia && matchMedia("(pointer:coarse)").matches) ? 48 : 30;
+    game.dots.forEach((d, i) => {
+      if (game.picked.has(i)) return;
+      const dist = Math.hypot(d.x - pt.x, d.y - pt.y);
+      if (dist < bd) { bd = dist; best = i; }
+    });
+    if (best >= 0) pickDot(best);
+  });
 
   $("btn-start").addEventListener("click", startRound);
   $("btn-again").addEventListener("click", startRound);

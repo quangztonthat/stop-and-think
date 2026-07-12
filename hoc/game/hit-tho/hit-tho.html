@@ -2,7 +2,7 @@
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Hít thở có nhịp — box, 4-7-8, HRV…</title>
 <style>
 :root{
@@ -84,6 +84,24 @@ label.chk{display:flex; align-items:center; gap:6px; font-size:.85rem; color:var
 .hint{color:var(--dim); font-size:.78rem; margin-top:6px; line-height:1.45;}
 #status{font-size:.84rem; color:var(--dim); text-align:center; min-height:1.2em; margin-top:4px;}
 footer{margin-top:16px; color:var(--dim); font-size:.72rem; text-align:center;}
+/* ---------- mobile (iPhone): vòng tròn dẫn nhịp lên đầu, chọn kiểu thở gọn 2 cột ---------- */
+html{-webkit-text-size-adjust:100%}
+button,.mode{touch-action:manipulation}
+@media (max-width:640px){
+  body{padding:12px 10px calc(14px + env(safe-area-inset-bottom));padding-left:max(10px,env(safe-area-inset-left));padding-right:max(10px,env(safe-area-inset-right))}
+  h1{font-size:1.15rem}
+  .sub{font-size:.78rem;margin-bottom:10px}
+  .wrap{gap:10px}
+  .stage{order:1;width:100%}
+  .col:last-of-type{order:2;width:100%}
+  .col:first-of-type{order:3;width:100%}
+  #modeList{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+  .mode + .mode{margin-top:0}
+  .mode{flex-direction:column;align-items:flex-start;gap:5px;padding:8px 9px}
+  .mode .md{display:none}
+  .circle-box{max-height:min(78vw,380px)}
+  button{min-height:44px}
+}
 </style>
 </head>
 <body>
@@ -145,7 +163,7 @@ footer{margin-top:16px; color:var(--dim); font-size:.72rem; text-align:center;}
   </aside>
 </div>
 
-<footer>hit-tho · Build v5 · 2026-07-12 · 7 kiểu thở (có Wim Hof 3 hiệp) · chạy offline hoàn toàn, không cần mạng · giọng đọc EN/VI · nhịp tuỳ chỉnh từng pha · không thay thế tư vấn y tế</footer>
+<footer>hit-tho · Build v6 · 2026-07-12 · 7 kiểu thở (có Wim Hof 3 hiệp) · chạy offline hoàn toàn, không cần mạng · giọng đọc EN/VI · nhịp tuỳ chỉnh từng pha · không thay thế tư vấn y tế</footer>
 
 <script id="pure-logic">
 'use strict';
@@ -574,6 +592,11 @@ if (typeof module !== 'undefined' && module.exports)
   function start() {
     ses.running = true; ses.startedAt = performance.now();
     els.btnStart.textContent = '⏸ Tạm dừng';
+    // điện thoại: nút Bắt đầu nằm dưới vòng tròn — cuộn vòng tròn vào giữa màn cho thấy nhịp dẫn
+    if (window.innerWidth <= 640) {
+      const cb = document.querySelector('.circle-box');
+      if (cb && cb.scrollIntoView) cb.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
     if (mode.special === 'wimhof') {
       if (wh.stage === 'idle') {
         whReset(); wh.stage = 'breathe'; wh.stageStart = 0; lastKey = null; lastSec = null;

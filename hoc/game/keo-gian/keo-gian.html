@@ -2,7 +2,7 @@
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Kéo giãn cơ — hướng dẫn từng bước, có đồng hồ giữ</title>
 <style>
 :root{
@@ -106,6 +106,23 @@ label.chk{display:flex; align-items:center; gap:6px; font-size:.85rem; color:var
 #exportOut.show{display:block;}
 .hint{color:var(--dim); font-size:.78rem; margin-top:6px; line-height:1.45;}
 footer{margin-top:16px; color:var(--dim); font-size:.72rem; text-align:center;}
+/* ---------- mobile (iPhone): khối bài tập (ảnh + đồng hồ) lên đầu, picker xuống dưới ---------- */
+html{-webkit-text-size-adjust:100%}
+button,.ex-item,.tab{touch-action:manipulation}
+@media (max-width:640px){
+  body{padding:12px 10px calc(14px + env(safe-area-inset-bottom));padding-left:max(10px,env(safe-area-inset-left));padding-right:max(10px,env(safe-area-inset-right))}
+  h1{font-size:1.15rem}
+  .steps-strip{gap:6px;margin-bottom:10px}
+  .step-pill{font-size:.72rem;padding:4px 10px 4px 4px}
+  .s-badge{display:none}
+  .wrap{gap:10px}
+  .stage{order:1;width:100%}
+  .col.right{order:2;width:100%}
+  .col:not(.right){order:3;width:100%}
+  #photoWrap{gap:8px}
+  .ex-list{max-height:250px}
+  button{min-height:44px}
+}
 </style>
 </head>
 <body>
@@ -180,7 +197,7 @@ footer{margin-top:16px; color:var(--dim); font-size:.72rem; text-align:center;}
   </aside>
 </div>
 
-<footer>keo-gian · Build v4 · 2026-07-12 · 40 bài giãn / 6 nhóm cơ · 5 chuỗi + chuỗi tự ghép, chỉnh được từng chuỗi · hướng dẫn đọc-theo thay camera · không thay thế tư vấn y tế</footer>
+<footer>keo-gian · Build v5 · 2026-07-12 · 40 bài giãn / 6 nhóm cơ · 5 chuỗi + chuỗi tự ghép, chỉnh được từng chuỗi · hướng dẫn đọc-theo thay camera · không thay thế tư vấn y tế</footer>
 
 <script id="pure-logic">
 'use strict';
@@ -721,6 +738,11 @@ if (typeof module !== 'undefined' && module.exports)
     els.btnStart.textContent = '⏸ Tạm dừng';
     els.btnNext.style.display = 'none';
     setStatus(`${st.name} — làm theo các bước bên trên.`);
+    // điện thoại: nút Bắt đầu nằm dưới ảnh/đồng hồ — cuộn khối bài tập vào màn cho thấy ảnh + đồng hồ giữ
+    if (window.innerWidth <= 640) {
+      const sg = document.querySelector('.stage');
+      if (sg && sg.scrollIntoView) sg.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
     if (!timerId) timerId = setInterval(frame, 150);
     frame();
   }
