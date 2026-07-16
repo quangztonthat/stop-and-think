@@ -535,3 +535,128 @@ html[data-theme="light"] .trap-card.t2 *,
 html[data-theme="light"] .trap-card.t3 * { color: #1a2233 !important; }
 /* SVG hero art: dịu bão hoà trong khi chờ vẽ lại theo hệ màu mới */
 .hero-visual { filter: saturate(0.72); opacity: 0.94; }
+
+/* ═══════════════════════════════════════════════════════════════
+   LAYER NORMALIZE BOX (2026-07-16 — Quang: "màu sắc các box, thiết kế,
+   spacing không đẹp"): MỘT HỆ CARD DUY NHẤT cho 19 trang sách.
+   - Card lớn  = nền card + viền 1px line + bo 16 (hết viền ink/trắng đậm, hết bo vuông)
+   - Khối con  = nền sunken bo 12 (hết khối "thủng" màu nền trang, hết khối nghịch đảo)
+   - Quote lồng = tint mờ + viền trái line, bo 10
+   - Hết mono label (MẪU 03, → CHƯƠNG...) → font hệ thống
+   - Gap card–card thống nhất 20/24
+   ═══════════════════════════════════════════════════════════════ */
+html[data-theme="dark"] {
+  --nc-card: #151d33; --nc-sunken: #1a2340; --nc-line: #27314f;
+  --nc-quote: rgba(233, 238, 249, .05); --nc-text: #e9eef9; --nc-muted: #98a3bb;
+}
+html[data-theme="light"] {
+  --nc-card: #ffffff; --nc-sunken: #eef1f9; --nc-line: #cfd8e8;
+  --nc-quote: #f2f5fb; --nc-text: #1a2233; --nc-muted: #4e5a74;
+}
+
+/* ── G1: CARD CHUẨN ── */
+.fw-card, .vn-card, .flashcard, .quiz-container, .comment-form, .sched-card,
+.formula-card, .asset-card, .tool-card, .school-card, .paradox-card,
+.mindset-card, .flow-node, .routine-card, .command-card, .obstacle-card,
+.journal-area, .bias-card, .bet-card, .identity-col, .percent-box, .scale-box,
+.dilemma-box, .bs-box, .brier-box, .legend-block, .financial-test, .source-card,
+.arc-row, .comment-item, .qw-card, .law-card, .chapter-card, .flashcard-face,
+.action-card, .snst-related-card, .matrix-cell, .framework-cell {
+  background: var(--nc-card) !important;
+  border: 1px solid var(--nc-line) !important;
+  border-radius: 16px;
+}
+/* flashcard là WRAPPER của flashcard-face ở đa số cuốn → trong suốt, khỏi 2 lớp viền */
+.flashcard:has(.flashcard-face) { background: transparent !important; border: 0 !important; }
+/* khối có điểm nhấn: giữ viền trái accent */
+.percent-box, .law-card { border-left: 4px solid var(--accent, #2f6fed) !important; }
+/* input & option: viền mảnh, bo 12 */
+.quiz-option { border-color: var(--nc-line); border-width: 1px; border-radius: 12px; }
+.journal-textarea { border: 1px solid var(--nc-line) !important; border-radius: 12px; }
+
+/* ── G2: KHỐI CON CHÌM (sunken) ── */
+.fw-extra, .sched-best-for, .obstacle-defense, .fixed-h, .growth-h,
+.gl-quote, .legend-quote, .asym-stats, .prospect-side {
+  background: var(--nc-sunken) !important;
+  border: 0 !important;
+  border-radius: 12px;
+  color: var(--nc-text);
+}
+.journal-prompt { border-radius: 12px; }
+/* khối nghịch đảo cũ (nền ink chữ sáng giữa trang sáng) → sunken, chữ thường */
+.law-tactic, .asset-tactic, .trap-rule, .brier-formula, .action-progress {
+  background: var(--nc-sunken) !important;
+  border: 0 !important;
+  border-radius: 12px;
+  color: var(--nc-text) !important;
+}
+.law-tactic *, .asset-tactic *, .trap-rule *, .brier-formula * { color: var(--nc-text) !important; }
+
+/* ── G3: QUOTE LỒNG TRONG CARD ── */
+.compare-quote, .paradox-quote, .critical-quote, .bet-quote {
+  background: var(--nc-quote) !important;
+  border: 0 !important;
+  border-left: 3px solid var(--nc-line) !important;
+  border-radius: 10px;
+}
+
+/* ── G4: NGỮ NGHĨA + VIỀN SÓT MÀU CŨ ── */
+/* "điều KHÔNG nên làm": giữ ngữ nghĩa đỏ nhưng tint nhẹ hiện đại */
+.law-inverse {
+  background: rgba(224, 82, 82, .09) !important;
+  border: 0 !important;
+  border-left: 3px solid #e05252 !important;
+  border-radius: 12px;
+}
+.snst-related { border: 1px solid var(--nc-line) !important; border-radius: 18px; }
+.snst-related-meta { border-top: 1px solid var(--nc-line) !important; }
+.rule-section { border-top-color: var(--nc-line) !important; }
+.footer-meta { border-top: 1px solid var(--nc-line) !important; }
+.framework-grid-2x2, .matrix-2x2 { border: 1px solid var(--nc-line) !important; border-radius: 16px; overflow: hidden; }
+.timeline-grid { gap: 16px !important; }
+
+/* ── G5: HẾT MONO — label/meta/số về font hệ thống (quét 19 cuốn) ── */
+.action-cat-btn, .action-progress-text, .actions-pager, .actions-pager-info,
+.actions-pager-total, .amount, .arc-num, .asset-num, .asset-stage, .asset-tactic,
+.asym-label, .asym-stats, .axis-label, .bet-label, .bias-name-en, .breadcrumb-bar,
+.brier-formula, .btn, .cell-label, .chapter-group-label, .chapter-key,
+.chapter-pager, .chapter-pager-info, .chapter-pager-total, .chapter-subtitle,
+.compare-tag, .context, .critical-label, .current, .fic-believer, .fic-when,
+.footer-author, .footer-meta, .formula-label, .framework-axis-label,
+.framework-num, .gl-meta, .hero-tag, .identity-label, .journal-dot,
+.journal-saved, .journal-textarea, .label, .law-num, .law-stage, .law-tactic,
+.legend-term, .loop-node-stage, .matrix-axis-h, .matrix-axis-v,
+.matrix-cell-label, .mindset-label, .obstacle-when, .paradox-label,
+.part-header, .pod-num, .quiz-option-letter, .quiz-progress, .qw-context,
+.routine-duration, .routine-time, .rpv-flex, .sched-day-label, .sched-tag,
+.school-author, .school-num, .scroll-hint, .snst-close, .snst-related-arrow,
+.snst-related-cover-author, .snst-related-cover-num, .snst-related-label,
+.snst-related-tag, .source-greek, .source-num, .survivor-caption, .system-num,
+.trap-num, .trap-rule, .vn-link, .vn-num, .year {
+  font-family: inherit !important;
+}
+
+/* ── G6: GAP THỐNG NHẤT ── */
+.identity-grid, .actions-grid, .rpv-grid, .traps-grid, .tools-grid,
+.commands-grid, .arc-list, .flow-diagram, .vn-grid, .biases-grid,
+.glossary-list, .snst-related-grid { gap: 20px !important; }
+.fw-grid, .compare-grid, .sched-grid, .asymmetry-grid, .formula-row,
+.assets-grid, .qw-grid, .schools-grid, .sources-grid, .paradox-grid,
+.mindset-grid, .trap-grid, .routine-grid, .obstacles-grid, .critical-grid,
+.systems-grid, .prospect-row, .bet-grid, .gl-row { gap: 24px !important; }
+
+/* ── Vá sau verify 19×2 (2026-07-16): radius thắng specificity template;
+      input bo góc; SVG minh hoạ hết mono ── */
+.fw-card, .vn-card, .quiz-container, .comment-form, .sched-card,
+.formula-card, .asset-card, .tool-card, .school-card, .paradox-card,
+.mindset-card, .flow-node, .routine-card, .command-card, .obstacle-card,
+.journal-area, .bias-card, .bet-card, .identity-col, .percent-box, .scale-box,
+.dilemma-box, .bs-box, .brier-box, .legend-block, .financial-test, .source-card,
+.arc-row, .comment-item, .qw-card, .law-card, .chapter-card, .flashcard-face,
+.action-card, .matrix-cell, .framework-cell { border-radius: 16px !important; }
+.snst-related-card { border-radius: 16px !important; overflow: hidden; }
+.comment-form input, .comment-form textarea, .comment-form select,
+input[type="text"], input[type="email"], input[type="password"] {
+  border-radius: 10px; border-color: var(--nc-line);
+}
+svg text, svg tspan { font-family: Inter, system-ui, -apple-system, sans-serif !important; }
