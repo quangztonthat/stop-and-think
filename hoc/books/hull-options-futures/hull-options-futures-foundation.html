@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="vi"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Options, Futures, and Other Derivatives — Hull — Nền tảng, hiểu từ gốc</title>
+<style>
+  /* Design tokens shared with ebook-to-study-html + feynman-from-study (styles_v2.css) */
+  :root{
+    --bg:#fafaf7; --bg-elevated:#ffffff; --bg-soft:#f3f3ee;
+    --border:#e0e0d8; --border-soft:#ececea; --border-strong:#d2c8b6;
+    --ink:#1a1a1f; --ink-soft:#3f3f4a; --muted:#7a7a85;
+    --accent:#2f6fed; --accent-2:#2258c8; --gold:#0fb6d4; --bridge:#5a6b4f;
+    --serif:"Fraunces",Georgia,"Iowan Old Style",serif;
+    --sans:"Geist",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    --mono:"Geist Mono","JetBrains Mono",Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:var(--sans);
+    font-size:19px;line-height:1.72;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}
+  .progress{position:fixed;top:0;left:0;height:3px;width:0;z-index:50;
+    background:linear-gradient(90deg,var(--gold),var(--accent));transition:width .08s linear}
+  .wrap{max-width:920px;margin:0 auto;padding:0 36px}
+  .rise{opacity:0;transform:translateY(14px);animation:rise .7s cubic-bezier(.2,.7,.3,1) forwards}
+  @keyframes rise{to{opacity:1;transform:none}}
+
+  header{padding:104px 0 60px;border-bottom:1px solid var(--border)}
+  .kicker{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.18em;
+    text-transform:uppercase;color:var(--accent);margin-bottom:26px}
+  h1{font-family:var(--serif);font-weight:600;font-size:clamp(42px,7.6vw,72px);
+    line-height:1.0;letter-spacing:-.022em;margin-bottom:28px;font-optical-sizing:auto;color:var(--ink)}
+  h1 em{font-style:italic;color:var(--accent)}
+  .core{font-family:var(--serif);font-style:italic;font-weight:400;
+    font-size:clamp(21px,3.6vw,27px);line-height:1.44;color:var(--ink-soft)}
+  .core span{font-style:normal;font-weight:600;color:var(--accent-2);
+    box-shadow:inset 0 -.5em 0 rgba(47,111,237,.16)}
+
+  /* ---- BƯỚC 0: ĐỊNH VỊ (what it is + why it's the foundation) ---- */
+  .anchor .rule{font-family:var(--serif);font-size:19px;line-height:1.5;color:var(--ink);
+    background:var(--bg-soft);border-left:3px solid var(--accent);
+    padding:18px 24px;border-radius:0 4px 4px 0;margin:0}
+  .anchor .rule em{font-style:italic;color:var(--accent-2)}
+  .anchor .rule strong{color:var(--ink);font-weight:600}
+  .anchor .why{color:var(--ink-soft)}
+
+  section{padding:72px 0;border-bottom:1px solid var(--border);position:relative}
+  .step-head{display:flex;align-items:flex-start;gap:22px;margin-bottom:34px}
+  .big-num{font-family:var(--serif);font-weight:700;font-size:62px;line-height:.8;
+    color:var(--border-strong);flex:none;font-optical-sizing:auto;letter-spacing:-.03em}
+  .step-meta{padding-top:4px}
+  .lbl{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--accent);display:block;margin-bottom:10px}
+  h2{font-family:var(--serif);font-weight:600;font-size:clamp(27px,4.4vw,37px);
+    line-height:1.12;letter-spacing:-.012em;color:var(--ink)}
+  h2 em{font-style:italic;color:var(--accent)}
+  p{margin-bottom:21px}
+  p:last-child{margin-bottom:0}
+  strong{font-weight:600;color:var(--ink)}
+  em{font-style:italic;color:var(--accent-2)}
+  .gloss{color:var(--muted);font-style:italic}
+
+  .lead::first-letter{font-family:var(--serif);font-weight:700;float:left;
+    font-size:74px;line-height:.74;padding:8px 12px 0 0;color:var(--accent)}
+
+  .sub{font-family:var(--serif);font-weight:600;font-size:17px;letter-spacing:.01em;
+    color:var(--ink);margin:34px 0 14px;display:flex;align-items:center;gap:11px}
+  .sub::before{content:"";width:18px;height:2px;background:var(--accent);flex:none;border-radius:2px}
+
+  /* ---- BƯỚC 1: VẤN ĐỀ (why it exists) ---- */
+  .problem{background:var(--bg-soft)}
+  .problem .big-num{color:#e2d6b4}
+
+  /* ---- BƯỚC 3: VÍ DỤ (concrete worked example) ---- */
+  .example-card{border:1px solid #e8c876;border-radius:4px;padding:30px 32px;margin:8px 0 28px;
+    background:linear-gradient(135deg,#fef9ed 0%,#fdf3e0 100%)}
+  .example-card .tag{font-family:var(--mono);font-weight:600;font-size:11px;
+    letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin-bottom:16px;display:block}
+  .example-card p{color:#5a4810}
+  .example-card strong{color:var(--accent-2)}
+  .example-card p:last-child{margin-bottom:0}
+
+  /* ---- DỄ NHẦM (optional clarify / boundaries) ---- */
+  .clarify{background:var(--bg-soft)}
+  .clarify .big-num{color:#d8cdb2}
+  .mix-q{margin:0 0 30px;padding-left:24px;border-left:2px solid var(--border-strong)}
+  .mix-q:last-child{margin-bottom:0}
+  .mix-q .q{font-family:var(--serif);font-style:italic;font-weight:500;
+    font-size:22px;line-height:1.35;color:var(--accent-2);margin-bottom:12px;display:block}
+  .mix-q p:last-child{margin-bottom:0}
+
+  /* ---- NỐI TIẾP (bridge to the harder concepts) ---- */
+  .bridge .big-num{color:#bcc7b2}
+  .bridge .lbl{color:var(--bridge)}
+  .bridge-card{border-left:3px solid var(--bridge);background:#f4f6f1;
+    padding:22px 26px;border-radius:0 4px 4px 0;margin-top:6px}
+  .bridge-card p:last-child{margin-bottom:0}
+  .bridge-card strong{color:#42513a}
+
+  /* ---- KỂ LẠI GỌN (refined retell) ---- */
+  .retell{background:linear-gradient(180deg,var(--bg-soft) 0%,var(--bg) 100%);border-bottom:none}
+  .retell h2{color:var(--ink)}
+  .retell strong{color:var(--accent-2)}
+  .retell .core{margin-top:6px}
+  .testbox{border:1px solid var(--border);background:var(--bg-elevated);
+    border-radius:4px;padding:28px 32px;margin-top:40px;box-shadow:0 1px 2px rgba(0,0,0,.03)}
+  .testbox h3{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--accent);margin-bottom:20px}
+  .testbox ol{margin:0;padding-left:22px;counter-reset:t}
+  .testbox li{margin-bottom:16px;color:var(--ink-soft);padding-left:6px}
+  .testbox li:last-child{margin-bottom:0}
+
+  footer{text-align:center;padding:60px 0 88px}
+  footer .mark{font-family:var(--serif);font-weight:700;color:var(--accent);
+    font-size:26px;display:block;margin-bottom:14px}
+  footer p{font-family:var(--serif);font-style:italic;color:var(--muted);font-size:17px;max-width:400px;margin:0 auto}
+
+  @media(max-width:560px){
+    body{font-size:18px}
+    header{padding:70px 0 44px}
+    section{padding:52px 0}
+    .step-head{gap:16px}
+    .big-num{font-size:46px}
+    .lead::first-letter{font-size:60px}
+  }
+
+/* ===== FLAMINDI THEME OVERRIDE (dong bo trang chu flamindi.com) ===== */
+:root{
+  --accent:#2f6fed;--accent-2:#2258c8;--accent2:#2258c8;--gold:#0fb6d4;--cyan:#0fb6d4;--blue:#2f6fed;
+  --bg:#f7f9fe;--bg-elevated:#ffffff;--bg-card:#ffffff;--card:#ffffff;--bg-soft:#eef2fb;--soft:#eef2fb;
+  --border:#e4e9f2;--border-soft:#eef1f7;--border-strong:#cfd8e8;
+  --text:#1a2233;--text-soft:#4e5a74;--text-dim:#6b7691;
+  --ink:#1a2233;--ink-soft:#4e5a74;--muted:#6b7691;--soft-t:#4e5a74;--dim:#6b7691;
+  --serif:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+  --mono:ui-monospace,Menlo,Consolas,monospace;
+}
+body{background:radial-gradient(1200px 600px at 85% -10%,rgba(47,111,237,.14),transparent 60%),radial-gradient(1000px 640px at -10% 30%,rgba(15,182,212,.09),transparent 55%),linear-gradient(#f7f9fe,#edf0f8) fixed !important;}
+</style>
+<style>
+ .tabbar{position:fixed;top:0;left:0;right:0;width:100%;box-sizing:border-box;z-index:40;background:rgba(250,250,247,.93);
+   backdrop-filter:saturate(1.1) blur(8px);-webkit-backdrop-filter:saturate(1.1) blur(8px);
+   border-bottom:1px solid var(--border);display:flex;gap:6px;overflow-x:auto;
+   padding:10px max(36px,calc((100% - 992px)/2));scrollbar-width:thin}
+ .tabbar .tab{flex:0 0 auto;display:flex;align-items:baseline;gap:9px;cursor:pointer;
+   background:transparent;border:1px solid transparent;border-radius:999px;
+   padding:8px 17px;transition:.15s;white-space:nowrap;color:var(--muted)}
+ .tabbar .tab:hover{color:var(--ink);background:var(--bg-soft)}
+ .tabbar .tab.active{color:var(--accent-2);background:var(--bg-soft);border-color:var(--border-strong)}
+ .tabbar .tn{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.1em;color:var(--accent)}
+ .tabbar .tl{font-family:var(--serif);font-weight:500;font-size:16px}
+ body{padding-top:56px} .concept-panel{display:none}
+ .concept-panel.active{display:block}
+ .concept-panel header{padding-top:50px}
+ @media(max-width:560px){.tabbar .tl{max-width:48vw;overflow:hidden;text-overflow:ellipsis}}
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+<nav class="tabbar" aria-label="Các khái niệm nền"><button class="tab" data-i="0"><span class="tn">01</span><span class="tl">Quyền hay nghĩa vụ</span></button><button class="tab" data-i="1"><span class="tn">02</span><span class="tl">Tiền theo thời gian</span></button><button class="tab" data-i="2"><span class="tn">03</span><span class="tl">Phòng hộ long/short</span></button><button class="tab" data-i="3"><span class="tn">04</span><span class="tl">Không bữa trưa miễn phí</span></button></nav>
+<div class="concept-panel" id="c-phai-sinh-quyen-vs-nghia-vu"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Nền tảng · hiểu từ gốc</div>
+    <h1 class="rise" style="animation-delay:.08s">Phái sinh: một tờ cam kết ăn theo giá — nhưng có hai kiểu khác hẳn nhau</h1>
+    <p class="core rise" style="animation-delay:.16s">Một hợp đồng phái sinh <span>hoặc trói bạn vào một nghĩa vụ, hoặc trao bạn một quyền — hai thứ rất khác nhau.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Định vị · nó là gì &amp; vì sao học trước</span><h2>Phái sinh và bốn hợp đồng gốc</h2></div>
+    </div>
+    <div class="rule">Một <em>derivative</em> (phái sinh) là công cụ có giá trị <strong>phụ thuộc vào</strong> giá của một tài sản cơ sở (<em>underlying</em>) — cổ phiếu, vàng, lãi suất… (Hull, ch.1). Có bốn hợp đồng gốc chia làm hai nhóm: <em>forward/futures</em> — cả hai bên <strong>bắt buộc</strong> mua/bán ở tương lai với giá đã chốt; và <em>option</em> (call/put) — trao người mua một <strong>quyền, không phải nghĩa vụ</strong>, đổi lấy một khoản phí (<em>premium</em>).</div>
+    <div class="sub">Vì sao đây là nền</div>
+    <div class="why"><p>Đây là viên gạch dưới cùng của cả cuốn sách. Mọi công thức định giá, mọi chiến lược phòng hộ về sau đều mọc ra từ một câu hỏi: tờ hợp đồng này là một nghĩa vụ, hay một quyền? Trả lời sai câu này thì phần còn lại rối tung. Nắm được nó, bạn đọc tiếp như đọc hệ quả.</p></div>
+  </section>
+
+  <section class="problem">
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Vấn đề nó sinh ra để giải quyết</span><h2>Cùng một lời hẹn mua, hai kiểu ràng buộc rất khác nhau</h2></div>
+    </div>
+    <p class="lead">Hôm nay bạn hẹn ba tháng nữa sẽ mua một món đồ với giá đã chốt trước. Nghe thì giống nhau, nhưng có hai kiểu hẹn. Kiểu một: đến hẹn bạn <em>buộc phải</em> mua, dù giá lúc đó cao hay thấp. Kiểu hai: đến hẹn bạn <em>được chọn</em> mua hay bỏ.</p>
+
+<p>Hai kiểu này khác nhau một trời một vực, mà nhìn qua rất dễ lẫn. Kiểu buộc phải mua thì không tốn gì lúc ký, nhưng lời lỗ hai chiều. Kiểu được chọn thì phải trả một khoản phí trước, đổi lại bạn không bao giờ bị ép lỗ nặng.</p>
+
+<div class="sub">Vì sao phải tách bạch ngay từ đầu</div>
+<p>Nếu không phân biệt, bạn sẽ định giá sai và phòng hộ sai. Một bên trả tiền trước để mua sự an tâm; một bên không trả gì nhưng gánh rủi ro hai đầu. Nên trước hết, phải gọi tên hai kiểu cho rõ. Bước 2 lo phần đó.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Mô hình đơn giản · cách nó chạy</span><h2>Hai nhóm, chia theo một câu: bạn bị buộc, hay được chọn?</h2></div>
+    </div>
+    <p>Xếp bốn hợp đồng gốc vào hai nhóm, theo đúng một câu hỏi: đến hẹn bạn bị buộc, hay được chọn?</p>
+
+<div class="sub">Nhóm nghĩa vụ — forward và futures</div>
+<p>Cả hai bên đều bị trói. Đến hẹn, người này phải giao, người kia phải nhận, đúng giá đã chốt. Vào lệnh không mất phí. Nhưng lời lỗ hai chiều: giá lên bạn lời, giá xuống bạn lỗ, không có phanh.</p>
+
+<div class="sub">Nhóm quyền — call và put</div>
+<p>Người mua quyền trả trước một khoản phí. Đổi lại họ được chọn: có lợi thì dùng, bất lợi thì bỏ. <em>Call</em> là quyền mua, <em>put</em> là quyền bán. Người bán quyền nhận phí và gánh nghĩa vụ nếu bên kia đòi thực hiện.</p>
+
+<div class="sub">Chỗ khác nhau cốt lõi: hình dạng lời lỗ</div>
+<p>Nghĩa vụ cho một hình lời lỗ cân đối, hai chiều. Quyền cho một hình lệch: mất nhiều nhất đúng bằng khoản phí đã trả, còn phần lời thì bỏ ngỏ. Chính hình lệch này là lý do quyền chọn đáng cả một nửa cuốn sách.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví dụ cụ thể</span><h2>Đặt cọc mua nhà: thấy rõ quyền khác nghĩa vụ chỗ nào</h2></div>
+    </div>
+    <div class="example-card"><span class="tag">Ví dụ</span>
+<p>Bạn thích một căn nhà giá 2 tỷ, nhưng ba tháng nữa mới có tiền.</p>
+<p><strong>Kiểu nghĩa vụ</strong>: bạn ký cam kết chắc chắn mua đúng 2 tỷ sau ba tháng. Nếu lúc đó nhà rớt còn 1,7 tỷ, bạn vẫn phải trả 2 tỷ — lỗ 300 triệu. Nhà lên 2,3 tỷ thì bạn lời 300 triệu. Hai chiều.</p>
+<p><strong>Kiểu quyền</strong>: bạn trả 50 triệu tiền cọc để giữ quyền mua ở giá 2 tỷ. Nhà lên 2,3 tỷ, bạn mua và lời (trừ cọc). Nhà rớt còn 1,7 tỷ, bạn bỏ cọc, chỉ mất 50 triệu. Mất nhiều nhất là khoản cọc đó.</p>
+<p>Đổi một chút cho rõ: nhà càng rớt sâu, người ký nghĩa vụ càng lỗ nặng, còn người giữ quyền vẫn chỉ mất đúng 50 triệu. Đó là cái phanh mà khoản phí mua được.</p>
+</div>
+<p>Chuyện đời thường: mua vé xem phim đặt trước là một dạng nghĩa vụ nhẹ — trả tiền rồi thì đi hay không cũng mất. Còn giữ chỗ được hoàn nếu đổi ý thì giống một quyền: bạn trả thêm chút phí để được đổi ý.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Phái sinh giao dịch ở hai nơi: sàn tập trung (<em>exchange-traded</em>, chuẩn hoá, có <em>clearing house</em> gần như xoá rủi ro đối tác) và thị trường phi tập trung (<em>OTC</em>, song phương, may đo được nhưng gánh <em>credit risk</em> của bên kia). Giá trị một forward long đang giữ với giá chốt K là f = (F₀ − K)·e^(−rT); lúc mới ký K = F₀ nên f = 0.</p>
+  </section>
+
+  <section class="clarify">
+    <div class="step-head">
+      <div class="big-num">≠</div>
+      <div class="step-meta"><span class="lbl">Dễ nhầm · ranh giới</span><h2>Dễ nhầm — ranh giới của quyền và nghĩa vụ</h2></div>
+    </div>
+    <div class="mix-q"><span class="q">"Người mua quyền và người bán quyền — chẳng phải đối xứng như hai bên forward sao?"</span><p>Không. Ở forward, hai bên đối xứng, cùng bị trói. Ở option thì lệch hẳn. Người mua trả phí, được chọn, mất tối đa là phí. Người bán nhận phí, bị động chờ bên kia quyết, và có thể lỗ lớn. Một bên cầm phanh, một bên không.</p></div>
+<div class="mix-q"><span class="q">"Futures với forward có phải là một không?"</span><p>Cùng nhóm nghĩa vụ, nhưng khác cách vận hành. Forward là hợp đồng riêng, phi tập trung, thanh toán một lần cuối kỳ. Futures là bản chuẩn hoá trên sàn, tính lời lỗ mỗi ngày, và sàn đứng giữa nên gần như hết rủi ro đối tác. Cùng ý tưởng, khác bộ máy.</p></div>
+  </section>
+
+  <section class="bridge">
+    <div class="step-head">
+      <div class="big-num">→</div>
+      <div class="step-meta"><span class="lbl">Nối tiếp · nó dẫn tới đâu</span><h2>Từ hình lời lỗ lệch, mở ra hai trang khó</h2></div>
+    </div>
+    <div class="bridge-card"><p>Cái hình lời lỗ <em>lệch</em> của quyền chọn — mất thì có phanh, được thì bỏ ngỏ — chính là hạt giống cho một câu hỏi ngược đời. Vì sao chỉ cần giá dao động mạnh hơn, quyền chọn đã đắt lên, dù ta chưa biết giá sẽ lên hay xuống? Đó là trang <strong>'Biến động làm đắt'</strong> (Hiểu sâu).</p>
+<p>Rồi bạn sẽ thấy call và put luôn dính lấy nhau qua giá cổ phiếu. Lúc đó bạn đã sẵn sàng cho trang <strong>'Put–call parity'</strong>: hai danh mục trông khác nhau mà bắt buộc cùng giá.</p></div>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">✦</div>
+      <div class="step-meta"><span class="lbl">Kể lại trong một hơi</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Phái sinh là tờ cam kết ăn theo giá một tài sản khác. Có hai kiểu. Nghĩa vụ (forward, futures): cả hai bên bị trói, không mất phí, lời lỗ hai chiều. Quyền (call, put): người mua trả phí để được chọn, mất tối đa là phí, phần lời bỏ ngỏ. Hỏi 'bị buộc hay được chọn' là biết mình đang cầm loại nào.</p>
+<p class="core">Một hợp đồng phái sinh <span>bị buộc thì lời lỗ hai chiều; được chọn thì mất có phanh, được bỏ ngỏ.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã nắm nền chưa?</h3>
+      <ol>
+        <li>Cùng một lời hẹn mua ở giá chốt, forward và call option khác nhau ở điểm cốt lõi nào?</li>
+        <li>Vì sao người mua quyền và người bán quyền không đối xứng như hai bên của một forward?</li>
+        <li>Khi giá tài sản rớt sâu, người giữ quyền mua và người ký nghĩa vụ mua chịu hậu quả khác nhau ra sao?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nền vững thì cái khó tự nhẹ đi. Hiểu từ gốc, không học vẹt.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-tien-theo-thoi-gian"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Nền tảng · hiểu từ gốc</div>
+    <h1 class="rise" style="animation-delay:.08s">Một đồng hôm nay đáng hơn một đồng năm sau — và cách kéo tương lai về hiện tại</h1>
+    <p class="core rise" style="animation-delay:.16s">Muốn so hai khoản tiền ở hai thời điểm, <span>trước hết phải kéo khoản tương lai về hôm nay.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Định vị · nó là gì &amp; vì sao học trước</span><h2>Hiện giá và chiết khấu liên tục</h2></div>
+    </div>
+    <div class="rule">Khi định giá phái sinh, Hull hầu như luôn dùng <strong>gộp lãi liên tục</strong> (<em>continuous compounding</em>): giá trị tương lai của 1 đồng sau T năm ở lãi r là e^(rT); ngược lại, <em>hiện giá</em> (<em>present value</em>) của 1 đồng nhận sau T năm là 1·e^(−rT) (Hull, ch.4). Nhân với e^(−rT) gọi là <em>chiết khấu</em> (<em>discounting</em>) — quy một khoản tương lai về giá trị hôm nay.</div>
+    <div class="sub">Vì sao đây là nền</div>
+    <div class="why"><p>Gần như mọi công thức trong sách kết thúc bằng một bước: nhân payoff tương lai với e^(−rT). Định giá forward, định giá option, định giá swap — tất cả đều là 'tính khoản tương lai, rồi kéo về hôm nay'. Không nắm bước kéo-về này, mọi công thức chỉ là ký hiệu. Nắm rồi, chúng thành một câu quen thuộc.</p></div>
+  </section>
+
+  <section class="problem">
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Vấn đề nó sinh ra để giải quyết</span><h2>Cầm 100 nghìn bây giờ, hay 100 nghìn sang năm?</h2></div>
+    </div>
+    <p class="lead">Có người cho bạn chọn: cầm 100 nghìn ngay bây giờ, hay chờ đúng một năm rồi nhận 100 nghìn. Gần như ai cũng chọn cầm ngay. Nhưng vì sao? Cùng một con số cơ mà.</p>
+
+<p>Vì tiền cầm sớm còn làm được việc: gửi tiết kiệm cho nó đẻ lãi, hoặc tiêu ngay khỏi lo. Một khoản y hệt nhưng nhận muộn thì <em>nhẹ giá</em> hơn. Càng nhận muộn, càng nhẹ.</p>
+
+<div class="sub">Chỗ này làm ta bí khi so sánh</div>
+<p>Giờ khó hơn: 100 nghìn hôm nay so với 110 nghìn sang năm, chọn cái nào? Không thể đặt hai con số cạnh nhau rồi so thẳng, vì chúng ở hai mốc thời gian khác. Ta cần một lối quy về cùng một mốc. Bước 2 lo phần đó.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Mô hình đơn giản · cách nó chạy</span><h2>Kéo mọi khoản về cùng một mốc: hôm nay</h2></div>
+    </div>
+    <p>Muốn so tiền ở các thời điểm khác nhau, quy tắc chỉ có một: kéo tất cả về cùng một mốc, thường là hôm nay.</p>
+
+<div class="sub">Động tác cốt lõi: co nhỏ khoản tương lai</div>
+<p>Một khoản nhận trong tương lai được <em>co nhỏ</em> lại để thành giá trị hôm nay. Nhận càng xa thì co càng nhiều. Lãi càng cao thì cũng co càng mạnh. Con số sau khi co gọi là <em>hiện giá</em>.</p>
+
+<div class="sub">Vì sao lại co, chứ không cộng thẳng</div>
+<p>Vì nếu để nguyên tiền hôm nay, nó tự lớn lên nhờ lãi. Nên một khoản tương lai chỉ tương đương một khoản nhỏ hơn hôm nay — cái khoản mà nếu đem gửi, sẽ lớn đúng bằng nó. Kéo về hôm nay là làm ngược lại của để tiền đẻ lãi.</p>
+
+<div class="sub">Cái gì điều khiển mức co</div>
+<p>Hai thứ: thời gian chờ và lãi suất. Chờ lâu hơn, co nhiều hơn. Lãi cao hơn, co nhiều hơn. Khi cả hai đều nhỏ, khoản tương lai gần như giữ nguyên giá.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví dụ cụ thể</span><h2>110 nghìn sang năm đáng bao nhiêu hôm nay?</h2></div>
+    </div>
+    <div class="example-card"><span class="tag">Ví dụ</span>
+<p>Giả sử gửi tiết kiệm được lãi 10% một năm. Bạn sắp nhận 110 nghìn sau đúng một năm. Nó đáng bao nhiêu hôm nay?</p>
+<p>Hỏi ngược: cần gửi bao nhiêu hôm nay để sang năm có 110 nghìn? Gửi 100 nghìn, thêm 10% lãi, thành 110 nghìn. Vậy 110 nghìn sang năm <strong>đáng đúng 100 nghìn hôm nay</strong>. Ta đã co 110 về 100.</p>
+<p>Giờ đổi lãi lên 20%. Cần gửi bao nhiêu để sang năm có 110? Chỉ khoảng 92 nghìn. Lãi cao hơn, khoản tương lai co mạnh hơn, nên hôm nay nó đáng ít hơn. Cùng 110 nghìn tương lai, mà hiện giá tụt từ 100 xuống 92.</p>
+</div>
+<p>Chuyện quen thuộc: trúng số 'một tỷ' trả góp trong hai mươi năm không đáng một tỷ hôm nay. Từng khoản nhận ở các năm sau đều phải co về, cộng lại chỉ còn một phần. Nhận càng rải xa, tổng hiện giá càng teo.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Cùng một lãi suất, gộp năm một lần khác gộp quý một lần — như đo bằng mile hay kilomet. Định giá phái sinh dùng gộp liên tục: hiện giá của một đồng sau T năm là e^(−rT). Ghép nhiều dòng tiền lại và bạn có <em>zero rate</em>, <em>forward rate</em>, <em>duration</em> (độ nhạy giá trái phiếu với lãi: ΔB = −B·D·Δy) — cả bộ ngôn ngữ lãi suất của chương 4.</p>
+  </section>
+
+  <section class="clarify">
+    <div class="step-head">
+      <div class="big-num">≠</div>
+      <div class="step-meta"><span class="lbl">Dễ nhầm · ranh giới</span><h2>Dễ nhầm — ranh giới của 'tiền theo thời gian'</h2></div>
+    </div>
+    <div class="mix-q"><span class="q">"Tiền nhẹ giá theo thời gian — có phải chỉ vì lạm phát không?"</span><p>Không chỉ vậy. Kể cả không có lạm phát, tiền cầm sớm vẫn đáng hơn, vì nó gửi được để đẻ lãi hoặc dùng ngay. Lạm phát làm khoản tương lai nhẹ thêm nữa, nhưng gốc rễ là 'tiền sớm làm được việc'. Đừng gộp hai thứ làm một.</p></div>
+<div class="mix-q"><span class="q">"Kéo về hôm nay và trừ đi một khoản — có giống nhau không?"</span><p>Khác. Kéo về là <em>co theo tỷ lệ</em>, không phải trừ một cục cố định. Chờ gấp đôi thời gian thì co gấp bội, không phải trừ gấp đôi. Chính vì co theo tỷ lệ nên khoản nhận rất xa gần như teo hẳn, dù mỗi năm chỉ co một ít.</p></div>
+  </section>
+
+  <section class="bridge">
+    <div class="step-head">
+      <div class="big-num">→</div>
+      <div class="step-meta"><span class="lbl">Nối tiếp · nó dẫn tới đâu</span><h2>Bước kéo-về này là động cơ của định giá</h2></div>
+    </div>
+    <div class="bridge-card"><p>Kéo khoản tương lai về hôm nay chính là nửa sau của mọi công thức định giá option. Trang khó <strong>'Trung hoà rủi ro'</strong> (Hiểu sâu) làm đúng hai việc. Nó đoán payoff kỳ vọng của option ở tương lai, rồi <em>kéo về hôm nay</em> bằng đúng động tác bạn vừa làm.</p>
+<p>Điều bất ngờ ở trang đó là dùng lãi suất nào để kéo về, và vì sao được phép giả vờ mọi người bàng quan rủi ro. Nhưng bước kéo-về thì y hệt ở đây. Nắm chắc nó trước, trang kia đỡ rối hẳn.</p></div>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">✦</div>
+      <div class="step-meta"><span class="lbl">Kể lại trong một hơi</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Tiền nhận muộn nhẹ giá hơn tiền cầm sớm, vì tiền sớm còn đẻ lãi được. Muốn so hai khoản ở hai thời điểm, kéo cả hai về cùng một mốc là hôm nay: co khoản tương lai lại thành hiện giá. Chờ càng lâu, lãi càng cao thì co càng mạnh.</p>
+<p class="core">Muốn so hai khoản tiền ở hai thời điểm, <span>kéo khoản tương lai về hôm nay rồi mới đặt cạnh nhau mà so.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã nắm nền chưa?</h3>
+      <ol>
+        <li>Vì sao 100 nghìn nhận sau một năm lại đáng ít hơn 100 nghìn cầm ngay, kể cả khi không có lạm phát?</li>
+        <li>Cùng một khoản tương lai, vì sao lãi suất cao hơn làm hiện giá của nó nhỏ đi?</li>
+        <li>Vì sao 'kéo về hôm nay' là co theo tỷ lệ chứ không phải trừ đi một cục cố định?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nền vững thì cái khó tự nhẹ đi. Hiểu từ gốc, không học vẹt.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-phong-ho-long-short"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Nền tảng · hiểu từ gốc</div>
+    <h1 class="rise" style="animation-delay:.08s">Long, short và phòng hộ: lấy một vị thế ngược để dập bớt rủi ro giá</h1>
+    <p class="core rise" style="animation-delay:.16s">Đang lo giá đổi chiều bất lợi, <span>bạn lấy một vị thế ngược để phần lời bên này bù phần lỗ bên kia.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Định vị · nó là gì &amp; vì sao học trước</span><h2>Long, short và hedger</h2></div>
+    </div>
+    <div class="rule"><em>Long</em> nghĩa là đang ở thế <strong>lời khi giá lên</strong> (đang giữ hoặc sẽ mua tài sản); <em>short</em> là thế <strong>lời khi giá xuống</strong> (đã bán hoặc sẽ bán). Một <em>hedger</em> (người phòng hộ) dùng phái sinh để <strong>giảm rủi ro giá đang có sẵn</strong>, khác với <em>speculator</em> (đầu cơ, đặt cược chiều giá) và <em>arbitrageur</em> (khoá lời phi rủi ro) (Hull, ch.1, ch.3).</div>
+    <div class="sub">Vì sao đây là nền</div>
+    <div class="why"><p>Cả cuốn sách trả lời một câu: dùng phái sinh để làm gì? Câu trả lời gốc là phòng hộ — dập bớt rủi ro giá. Muốn hiểu vì sao có bốn hợp đồng, vì sao có tỷ lệ phòng hộ, vì sao có phòng hộ động, bạn phải nắm một cái lõi trước. Cái lõi đó là: lấy một vị thế ngược để bù trừ rủi ro.</p></div>
+  </section>
+
+  <section class="problem">
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Vấn đề nó sinh ra để giải quyết</span><h2>Bác nông dân và giá cà phê ba tháng nữa</h2></div>
+    </div>
+    <p class="lead">Một bác trồng cà phê, ba tháng nữa mới thu hoạch để bán. Bác không sợ mất mùa, bác sợ một thứ khác: giá cà phê ba tháng nữa rớt. Nếu rớt mạnh, cả vụ công sức thành lỗ.</p>
+
+<p>Bác đang mắc kẹt vào giá mà không kiểm soát được. Giá lên thì mừng, giá xuống thì khổ. Rủi ro này có sẵn trong nghề, không phải bác tự chuốc. Vậy có cách nào chốt trước cái giá bán, khỏi phấp phỏng?</p>
+
+<div class="sub">Cái ta cần: một thứ đi ngược để bù</div>
+<p>Nếu có một vị thế mà khi giá cà phê rớt thì nó <em>lời</em>, thì phần lời đó vá đúng phần bác mất. Giá cà phê là con dao hai lưỡi; ta cần một lưỡi ngược lại để chúng triệt tiêu nhau. Bước 2 sẽ dựng lưỡi ngược đó.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Mô hình đơn giản · cách nó chạy</span><h2>Ghép một vị thế ngược lên rủi ro đang có</h2></div>
+    </div>
+    <p>Ý tưởng phòng hộ chỉ có một: bạn đã mắc kẹt một chiều, hãy ghép thêm một vị thế đi <strong>ngược chiều</strong> để hai bên bù nhau.</p>
+
+<div class="sub">Sắp bán thì phòng hộ kiểu short</div>
+<p>Bạn đang giữ hàng, hoặc sẽ có hàng để bán, và sợ giá giảm. Hãy lấy vị thế short (lời khi giá xuống). Giá xuống thật: bác lỗ ở cà phê, nhưng lời ở vị thế short, hai cái bù nhau. Đây gọi là <em>short hedge</em>.</p>
+
+<div class="sub">Sắp mua thì phòng hộ kiểu long</div>
+<p>Ngược lại, bạn sẽ phải mua hàng trong tương lai và sợ giá tăng. Hãy lấy vị thế long (lời khi giá lên). Giá tăng thật: bạn mua đắt hơn, nhưng lời ở vị thế long bù lại. Đây gọi là <em>long hedge</em>.</p>
+
+<div class="sub">Phòng hộ là bỏ bớt cả hai đầu</div>
+<p>Điểm dễ quên: phòng hộ không phải để lời. Nó khoá lại cả phần lỗ lẫn phần lời do giá. Giá xuống bạn khỏi khổ, nhưng giá lên bạn cũng khỏi mừng. Bạn đổi sự bấp bênh lấy sự chắc chắn — đó mới là mục tiêu.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví dụ cụ thể</span><h2>Chốt giá cà phê bằng một vị thế short</h2></div>
+    </div>
+    <div class="example-card"><span class="tag">Ví dụ</span>
+<p>Bác nông dân sẽ có 10 tấn cà phê để bán sau ba tháng. Giá hôm nay khoảng 50 triệu một tấn. Bác sợ rớt giá, nên lấy một vị thế short khoá mức 50 triệu cho 10 tấn.</p>
+<p><strong>Giá rớt còn 44 triệu</strong>: bán cà phê thật, bác thu ít hơn 6 triệu mỗi tấn. Nhưng vị thế short lời đúng 6 triệu mỗi tấn. Cộng lại, bác vẫn về đúng mức 50 triệu như đã khoá.</p>
+<p><strong>Giá lên 56 triệu</strong>: bán cà phê được nhiều hơn 6 triệu mỗi tấn, nhưng vị thế short lỗ đúng 6 triệu. Lại về 50 triệu. Dù giá chạy đâu, bác đã chốt được mức bán — hết phấp phỏng.</p>
+</div>
+<p>Một hãng bay là ví dụ chiều ngược: họ sẽ phải mua dầu, sợ dầu tăng giá. Họ lấy vị thế long trên dầu. Dầu tăng thật, tiền mua nhiên liệu đội lên, nhưng vị thế long lời bù vào. Chi phí bay được giữ ổn định.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Phòng hộ thực tế hiếm khi hoàn hảo, vì <em>basis</em> = giá spot của tài sản trừ giá futures dùng để hedge, và basis dao động — gọi là <em>basis risk</em>. Tỷ lệ phòng hộ tối ưu không phải lúc nào cũng 1: h* = ρ·(σ_S/σ_F), chính là độ dốc hồi quy của thay đổi giá spot theo thay đổi giá futures. Với danh mục cổ phiếu, số hợp đồng dùng hệ số β để hedge rủi ro hệ thống.</p>
+  </section>
+
+  <section class="clarify">
+    <div class="step-head">
+      <div class="big-num">≠</div>
+      <div class="step-meta"><span class="lbl">Dễ nhầm · ranh giới</span><h2>Dễ nhầm — ranh giới của phòng hộ</h2></div>
+    </div>
+    <div class="mix-q"><span class="q">"Phòng hộ và đầu cơ khác nhau chỗ nào, khi cả hai đều lấy vị thế phái sinh?"</span><p>Khác ở chỗ bạn đã có rủi ro hay chưa. Hedger đã mắc kẹt một rủi ro giá, lấy vị thế ngược để dập nó. Speculator không có sẵn rủi ro nào, tự tạo một vị thế để đặt cược chiều giá. Cùng một công cụ, một người giảm rủi ro, một người tăng.</p></div>
+<div class="mix-q"><span class="q">"Phòng hộ nghĩa là chắc chắn có lời hơn phải không?"</span><p>Không. Phòng hộ khoá cả hai đầu, nên nhiều khi 'giá như đừng hedge' lại lời hơn. Nó không hứa lời nhiều, nó hứa <em>ít bấp bênh</em>. Mục tiêu là ngủ ngon, không phải trúng đậm. Ai muốn trúng đậm là đang đầu cơ, không phải phòng hộ.</p></div>
+  </section>
+
+  <section class="bridge">
+    <div class="step-head">
+      <div class="big-num">→</div>
+      <div class="step-meta"><span class="lbl">Nối tiếp · nó dẫn tới đâu</span><h2>Từ phòng hộ đứng yên tới phòng hộ động</h2></div>
+    </div>
+    <div class="bridge-card"><p>Ở đây bác nông dân khoá một vị thế rồi để yên tới thu hoạch — phòng hộ tĩnh. Nhưng bọc rủi ro một quyền chọn đã bán thì khó hơn nhiều. Độ nhạy của nó với giá thay đổi liên tục, nên phải chỉnh vị thế đi chỉnh lại mãi.</p>
+<p>Đó là trang khó <strong>'Phòng hộ động'</strong> (Hiểu sâu). Vì sao để dập rủi ro một option, người ta không đứng yên mà phải liên tục mua thêm bán bớt cổ phiếu? Cái lõi 'lấy vị thế ngược' thì vẫn y như bác nông dân ở đây.</p></div>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">✦</div>
+      <div class="step-meta"><span class="lbl">Kể lại trong một hơi</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Khi bạn mắc kẹt một chiều với giá, phòng hộ là ghép thêm một vị thế ngược để hai bên bù nhau. Sắp bán sợ giá giảm thì lấy vị thế short; sắp mua sợ giá tăng thì lấy vị thế long. Nó khoá cả lỗ lẫn lời, đổi bấp bênh lấy chắc chắn — chứ không hứa lời to.</p>
+<p class="core">Đang lo giá đổi chiều bất lợi, <span>lấy vị thế ngược để phần này bù phần kia, đổi bấp bênh lấy chắc chắn.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã nắm nền chưa?</h3>
+      <ol>
+        <li>Một người sắp bán hàng và sợ giá giảm nên dùng phòng hộ kiểu nào, và vì sao nó bù được rủi ro?</li>
+        <li>Vì sao nói phòng hộ 'khoá cả hai đầu' chứ không phải đảm bảo có lời?</li>
+        <li>Cùng lấy một vị thế futures, điều gì phân biệt một hedger với một speculator?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nền vững thì cái khó tự nhẹ đi. Hiểu từ gốc, không học vẹt.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-khong-co-bua-trua-mien-phi"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Nền tảng · hiểu từ gốc</div>
+    <h1 class="rise" style="animation-delay:.08s">Không có bữa trưa miễn phí: vì sao chính thị trường tự ép giá vào đúng chỗ</h1>
+    <p class="core rise" style="animation-delay:.16s">Nếu có cách kiếm lời chắc chắn mà không bỏ vốn, không chịu rủi ro, <span>thì cả thị trường lao vào cho tới khi cơ hội đó biến mất.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Định vị · nó là gì &amp; vì sao học trước</span><h2>No-arbitrage: xương sống định giá</h2></div>
+    </div>
+    <div class="rule"><em>Arbitrage</em> (kinh doanh chênh lệch) là khoá được một khoản lời <strong>chắc chắn, không cần bỏ vốn ròng và không chịu rủi ro</strong>. Lập luận <em>no-arbitrage</em> nói: những cơ hội như thế không thể tồn tại lâu, nên giá buộc phải nằm ở mức không cho ai làm vậy. Ví dụ, giá forward của tài sản không sinh thu nhập phải đúng bằng F₀ = S₀·e^(rT) (Hull, ch.5).</div>
+    <div class="sub">Vì sao đây là nền</div>
+    <div class="why"><p>Đây là cái khuôn đúc ra gần như mọi công thức định giá trong sách. Giá forward, cận giá option, put–call parity, cả cây nhị thức — không cái nào cần đoán tương lai. Chúng chỉ cần một câu: nếu giá lệch khỏi mức này, sẽ có người kiếm lời chắc chắn, nên giá không thể lệch. Nắm câu đó là nắm nửa cuốn sách.</p></div>
+  </section>
+
+  <section class="problem">
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Vấn đề nó sinh ra để giải quyết</span><h2>Cùng một món, hai nơi hai giá — bạn làm gì?</h2></div>
+    </div>
+    <p class="lead">Cùng một chỉ vàng y hệt, tiệm A bán 7 triệu, tiệm B mua vào 7,2 triệu, ngay cạnh nhau. Bạn thấy gì? Một khoản lời chắc chắn: mua ở A, bước sang bán ở B, bỏ túi 200 nghìn, không rủi ro gì.</p>
+
+<p>Nhưng khoan — nếu bạn thấy, thì trăm người khác cũng thấy. Ai cũng lao vào mua ở A, đẩy giá A lên; ai cũng bán ở B, dìm giá B xuống. Chỉ một loáng, hai giá gặp nhau, khoản lời tan biến.</p>
+
+<div class="sub">Từ mẹo kiếm lời thành công cụ định giá</div>
+<p>Đây là điều hay ho. Chính vì ai cũng chộp cơ hội, nên ở trạng thái bình thường <em>không còn</em> cơ hội nào. Ta lật ngược lại: nếu tin thị trường không cho lời chùa, thì giá <em>buộc phải</em> nằm ở một mức nhất định. Mức đó là gì, để Bước 2 nói.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Mô hình đơn giản · cách nó chạy</span><h2>Suy giá bằng cách chặn mọi lời chùa</h2></div>
+    </div>
+    <p>Cách định giá kiểu này không đoán tương lai. Nó hỏi: giá phải bằng bao nhiêu để không ai kiếm được lời chùa? Rồi lấy đúng mức đó.</p>
+
+<div class="sub">So hai con đường tới cùng một đích</div>
+<p>Thường có hai cách đạt cùng một kết quả trong tương lai. Nếu hai cách mà tốn phí khác nhau hôm nay, cách rẻ hơn cho phép khoá lời chùa. Muốn chặn điều đó, hai cách phải tốn <strong>bằng nhau</strong>. Đẳng thức 'bằng nhau' ấy chính là công thức giá.</p>
+
+<div class="sub">Ví dụ khuôn: giá của một lời hẹn mua</div>
+<p>Muốn có vàng sau một năm, có hai đường. Đường một: ký hợp đồng mua kỳ hạn hôm nay. Đường hai: vay tiền mua vàng ngay rồi cất, cuối năm trả cả gốc lẫn lãi. Hai đường cùng cho bạn một chỉ vàng sau một năm, nên giá kỳ hạn phải bằng giá mua ngay cộng phần lãi vay.</p>
+
+<div class="sub">Áp lực nào giữ giá đúng chỗ</div>
+<p>Nếu giá kỳ hạn cao hơn mức đó, người ta bán kỳ hạn và tự cất vàng để lời chùa. Nếu thấp hơn, họ làm ngược lại. Chính hai lực đẩy này ép giá kỳ hạn về đúng một điểm. Không cần biết vàng sẽ lên hay xuống.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví dụ cụ thể</span><h2>Giá vàng kỳ hạn một năm phải bằng bao nhiêu</h2></div>
+    </div>
+    <div class="example-card"><span class="tag">Ví dụ</span>
+<p>Vàng hôm nay 50 triệu một lượng. Vay tiền chịu lãi 8% một năm. Cất vàng coi như không tốn phí. Hỏi: hợp đồng mua vàng sau một năm phải chốt giá nào?</p>
+<p>Đi đường 'vay mua cất': vay 50 triệu mua một lượng, cuối năm trả cả gốc lẫn lãi là 54 triệu. Vậy bạn có một lượng vàng sau một năm với chi phí 54 triệu. Giá kỳ hạn <strong>phải là 54 triệu</strong>.</p>
+<p>Giả sử ai đó chào bán kỳ hạn ở 57 triệu. Bạn vay mua cất ngay (tốn 54), đồng thời bán kỳ hạn ở 57. Sau một năm giao vàng, thu 57, trả nợ 54, đút túi 3 triệu chắc chắn. Ai cũng làm thế, giá kỳ hạn bị dìm về đúng 54.</p>
+</div>
+<p>Chuyện quen: một chiếc điện thoại y hệt, nếu một cửa hàng để rẻ hơn hẳn chỗ khác, dân buôn sẽ gom sạch bán lại kiếm chênh. Chỗ rẻ vì thế buộc phải nâng giá. Giá san bằng không phải do ai tử tế, mà do ai cũng chộp phần chênh.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Tổng quát, giá forward tài sản không thu nhập là F₀ = S₀·e^(rT); có thu nhập hiện giá I thì (S₀ − I)·e^(rT); có lợi suất q thì S₀·e^((r−q)T). Cách nhìn thống nhất là <em>cost of carry</em>: chi phí lưu kho cộng lãi trừ thu nhập. Với tài sản tiêu dùng như dầu, chỉ suy được cận trên, phần hở lấp bằng <em>convenience yield</em>.</p>
+  </section>
+
+  <section class="clarify">
+    <div class="step-head">
+      <div class="big-num">≠</div>
+      <div class="step-meta"><span class="lbl">Dễ nhầm · ranh giới</span><h2>Dễ nhầm — ranh giới của no-arbitrage</h2></div>
+    </div>
+    <div class="mix-q"><span class="q">"Giá kỳ hạn 54 triệu — có phải là dự đoán vàng sẽ lên 54 triệu không?"</span><p>Không, và đây là chỗ hay nhầm. Giá kỳ hạn <em>không</em> phải dự báo giá tương lai. Nó chỉ là mức chặn lời chùa, suy từ giá hôm nay và lãi vay. Vàng năm sau có thể 45 hay 60 triệu, chẳng liên quan. Đừng đọc giá forward như một lời tiên tri.</p></div>
+<div class="mix-q"><span class="q">"Không có bữa trưa miễn phí — vậy chẳng ai kiếm được đồng nào à?"</span><p>Có chứ, nhưng phải bỏ vốn hoặc chịu rủi ro để đổi lấy. Cái bị cấm là lời <em>vừa chắc chắn vừa không tốn gì</em>. Đầu cơ có thể lời to nhưng gánh rủi ro. Arbitrage thật thì hiếm và tan rất nhanh. 'Miễn phí' ở đây nghĩa là không vốn, không rủi ro.</p></div>
+  </section>
+
+  <section class="bridge">
+    <div class="step-head">
+      <div class="big-num">→</div>
+      <div class="step-meta"><span class="lbl">Nối tiếp · nó dẫn tới đâu</span><h2>Cùng một khuôn, mở ra hai trang khó</h2></div>
+    </div>
+    <div class="bridge-card"><p>Chính lối 'chặn lời chùa' này đẻ ra một quan hệ đẹp giữa call và put. Ghép quyền chọn với tiền mặt và cổ phiếu theo hai cách khác nhau mà ra cùng một kết quả, thì hai cách phải cùng giá. Đó là trang <strong>'Put–call parity'</strong> (Hiểu sâu).</p>
+<p>Đẩy xa hơn, khuôn này dẫn tới một mẹo định giá kỳ lạ: <strong>'Trung hoà rủi ro'</strong> (Hiểu sâu). Vì giá bị khoá bởi no-arbitrage, ta được phép giả vờ mọi người bàng quan rủi ro để tính cho gọn — mà vẫn ra đúng giá.</p></div>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">✦</div>
+      <div class="step-meta"><span class="lbl">Kể lại trong một hơi</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Arbitrage là khoá lời chắc chắn mà không bỏ vốn, không chịu rủi ro. Vì ai cũng chộp, cơ hội đó tan ngay, nên bình thường giá phải nằm ở mức không cho ai làm vậy. Ta định giá bằng cách hỏi 'giá nào chặn hết lời chùa', chứ không đoán tương lai. Đó là xương sống của cả cuốn sách.</p>
+<p class="core">Nếu có cách kiếm lời chắc chắn mà không bỏ vốn, không chịu rủi ro, <span>giá phải nằm đúng chỗ không ai kiếm được lời vừa chắc vừa chùa.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã nắm nền chưa?</h3>
+      <ol>
+        <li>Vì sao một cơ hội kiếm lời chắc chắn, không vốn, không rủi ro lại không thể tồn tại lâu trên thị trường?</li>
+        <li>Ta suy ra giá forward của vàng bằng cách nào, mà không cần đoán giá vàng tương lai?</li>
+        <li>Vì sao giá kỳ hạn không phải là dự đoán về giá tài sản trong tương lai?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nền vững thì cái khó tự nhẹ đi. Hiểu từ gốc, không học vẹt.</p>
+  </footer>
+
+</div></div>
+<script>
+  var bar=document.getElementById('progress');
+  function upd(){var h=document.documentElement;var s=h.scrollTop||document.body.scrollTop;
+    var max=(h.scrollHeight-h.clientHeight)||1;bar.style.width=(s/max*100)+'%';}
+  window.addEventListener('scroll',upd,{passive:true});upd();
+  var io=new IntersectionObserver(function(es){es.forEach(function(e){
+    if(e.isIntersecting){e.target.style.animation='rise .7s cubic-bezier(.2,.7,.3,1) forwards';io.unobserve(e.target);}});},{threshold:.12});
+  document.querySelectorAll('section').forEach(function(s){s.style.opacity='0';io.observe(s);});
+</script>
+
+<script>
+(function(){
+  var tabs=[].slice.call(document.querySelectorAll('.tabbar .tab'));
+  var panels=[].slice.call(document.querySelectorAll('.concept-panel'));
+  function show(i){
+    tabs.forEach(function(t,j){t.classList.toggle('active',j===i);});
+    panels.forEach(function(p,j){
+      var on=(j===i); p.classList.toggle('active',on);
+      if(on){p.querySelectorAll('section').forEach(function(s){s.style.opacity='';s.style.animation='';});}
+    });
+    try{history.replaceState(null,'','#'+panels[i].id);}catch(e){}
+    window.scrollTo(0,0); window.dispatchEvent(new Event('scroll'));
+  }
+  tabs.forEach(function(t){t.addEventListener('click',function(){show(+t.getAttribute('data-i'));});});
+  var start=0; panels.forEach(function(p,j){if('#'+p.id===location.hash)start=j;});
+  show(start);
+})();
+</script>
+
+</body></html>

@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="vi"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IAS 37 — Provisions, Contingent Liabilities and Contingent Assets — Nền tảng, hiểu từ gốc</title>
+<style>
+  /* Design tokens shared with ebook-to-study-html + feynman-from-study (styles_v2.css) */
+  :root{
+    --bg:#fafaf7; --bg-elevated:#ffffff; --bg-soft:#f3f3ee;
+    --border:#e0e0d8; --border-soft:#ececea; --border-strong:#d2c8b6;
+    --ink:#1a1a1f; --ink-soft:#3f3f4a; --muted:#7a7a85;
+    --accent:#2f6fed; --accent-2:#2258c8; --gold:#0fb6d4; --bridge:#5a6b4f;
+    --serif:"Fraunces",Georgia,"Iowan Old Style",serif;
+    --sans:"Geist",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    --mono:"Geist Mono","JetBrains Mono",Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:var(--sans);
+    font-size:19px;line-height:1.72;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}
+  .progress{position:fixed;top:0;left:0;height:3px;width:0;z-index:50;
+    background:linear-gradient(90deg,var(--gold),var(--accent));transition:width .08s linear}
+  .wrap{max-width:920px;margin:0 auto;padding:0 36px}
+  .rise{opacity:0;transform:translateY(14px);animation:rise .7s cubic-bezier(.2,.7,.3,1) forwards}
+  @keyframes rise{to{opacity:1;transform:none}}
+
+  header{padding:104px 0 60px;border-bottom:1px solid var(--border)}
+  .kicker{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.18em;
+    text-transform:uppercase;color:var(--accent);margin-bottom:26px}
+  h1{font-family:var(--serif);font-weight:600;font-size:clamp(42px,7.6vw,72px);
+    line-height:1.0;letter-spacing:-.022em;margin-bottom:28px;font-optical-sizing:auto;color:var(--ink)}
+  h1 em{font-style:italic;color:var(--accent)}
+  .core{font-family:var(--serif);font-style:italic;font-weight:400;
+    font-size:clamp(21px,3.6vw,27px);line-height:1.44;color:var(--ink-soft)}
+  .core span{font-style:normal;font-weight:600;color:var(--accent-2);
+    box-shadow:inset 0 -.5em 0 rgba(47,111,237,.16)}
+
+  /* ---- BƯỚC 0: ĐỊNH VỊ (what it is + why it's the foundation) ---- */
+  .anchor .rule{font-family:var(--serif);font-size:19px;line-height:1.5;color:var(--ink);
+    background:var(--bg-soft);border-left:3px solid var(--accent);
+    padding:18px 24px;border-radius:0 4px 4px 0;margin:0}
+  .anchor .rule em{font-style:italic;color:var(--accent-2)}
+  .anchor .rule strong{color:var(--ink);font-weight:600}
+  .anchor .why{color:var(--ink-soft)}
+
+  section{padding:72px 0;border-bottom:1px solid var(--border);position:relative}
+  .step-head{display:flex;align-items:flex-start;gap:22px;margin-bottom:34px}
+  .big-num{font-family:var(--serif);font-weight:700;font-size:62px;line-height:.8;
+    color:var(--border-strong);flex:none;font-optical-sizing:auto;letter-spacing:-.03em}
+  .step-meta{padding-top:4px}
+  .lbl{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--accent);display:block;margin-bottom:10px}
+  h2{font-family:var(--serif);font-weight:600;font-size:clamp(27px,4.4vw,37px);
+    line-height:1.12;letter-spacing:-.012em;color:var(--ink)}
+  h2 em{font-style:italic;color:var(--accent)}
+  p{margin-bottom:21px}
+  p:last-child{margin-bottom:0}
+  strong{font-weight:600;color:var(--ink)}
+  em{font-style:italic;color:var(--accent-2)}
+  .gloss{color:var(--muted);font-style:italic}
+
+  .lead::first-letter{font-family:var(--serif);font-weight:700;float:left;
+    font-size:74px;line-height:.74;padding:8px 12px 0 0;color:var(--accent)}
+
+  .sub{font-family:var(--serif);font-weight:600;font-size:17px;letter-spacing:.01em;
+    color:var(--ink);margin:34px 0 14px;display:flex;align-items:center;gap:11px}
+  .sub::before{content:"";width:18px;height:2px;background:var(--accent);flex:none;border-radius:2px}
+
+  /* ---- BƯỚC 1: VẤN ĐỀ (why it exists) ---- */
+  .problem{background:var(--bg-soft)}
+  .problem .big-num{color:#e2d6b4}
+
+  /* ---- BƯỚC 3: VÍ DỤ (concrete worked example) ---- */
+  .example-card{border:1px solid #e8c876;border-radius:4px;padding:30px 32px;margin:8px 0 28px;
+    background:linear-gradient(135deg,#fef9ed 0%,#fdf3e0 100%)}
+  .example-card .tag{font-family:var(--mono);font-weight:600;font-size:11px;
+    letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin-bottom:16px;display:block}
+  .example-card p{color:#5a4810}
+  .example-card strong{color:var(--accent-2)}
+  .example-card p:last-child{margin-bottom:0}
+
+  /* ---- DỄ NHẦM (optional clarify / boundaries) ---- */
+  .clarify{background:var(--bg-soft)}
+  .clarify .big-num{color:#d8cdb2}
+  .mix-q{margin:0 0 30px;padding-left:24px;border-left:2px solid var(--border-strong)}
+  .mix-q:last-child{margin-bottom:0}
+  .mix-q .q{font-family:var(--serif);font-style:italic;font-weight:500;
+    font-size:22px;line-height:1.35;color:var(--accent-2);margin-bottom:12px;display:block}
+  .mix-q p:last-child{margin-bottom:0}
+
+  /* ---- NỐI TIẾP (bridge to the harder concepts) ---- */
+  .bridge .big-num{color:#bcc7b2}
+  .bridge .lbl{color:var(--bridge)}
+  .bridge-card{border-left:3px solid var(--bridge);background:#f4f6f1;
+    padding:22px 26px;border-radius:0 4px 4px 0;margin-top:6px}
+  .bridge-card p:last-child{margin-bottom:0}
+  .bridge-card strong{color:#42513a}
+
+  /* ---- KỂ LẠI GỌN (refined retell) ---- */
+  .retell{background:linear-gradient(180deg,var(--bg-soft) 0%,var(--bg) 100%);border-bottom:none}
+  .retell h2{color:var(--ink)}
+  .retell strong{color:var(--accent-2)}
+  .retell .core{margin-top:6px}
+  .testbox{border:1px solid var(--border);background:var(--bg-elevated);
+    border-radius:4px;padding:28px 32px;margin-top:40px;box-shadow:0 1px 2px rgba(0,0,0,.03)}
+  .testbox h3{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--accent);margin-bottom:20px}
+  .testbox ol{margin:0;padding-left:22px;counter-reset:t}
+  .testbox li{margin-bottom:16px;color:var(--ink-soft);padding-left:6px}
+  .testbox li:last-child{margin-bottom:0}
+
+  footer{text-align:center;padding:60px 0 88px}
+  footer .mark{font-family:var(--serif);font-weight:700;color:var(--accent);
+    font-size:26px;display:block;margin-bottom:14px}
+  footer p{font-family:var(--serif);font-style:italic;color:var(--muted);font-size:17px;max-width:400px;margin:0 auto}
+
+  @media(max-width:560px){
+    body{font-size:18px}
+    header{padding:70px 0 44px}
+    section{padding:52px 0}
+    .step-head{gap:16px}
+    .big-num{font-size:46px}
+    .lead::first-letter{font-size:60px}
+  }
+
+/* ===== FLAMINDI THEME OVERRIDE (dong bo trang chu flamindi.com) ===== */
+:root{
+  --accent:#2f6fed;--accent-2:#2258c8;--accent2:#2258c8;--gold:#0fb6d4;--cyan:#0fb6d4;--blue:#2f6fed;
+  --bg:#f7f9fe;--bg-elevated:#ffffff;--bg-card:#ffffff;--card:#ffffff;--bg-soft:#eef2fb;--soft:#eef2fb;
+  --border:#e4e9f2;--border-soft:#eef1f7;--border-strong:#cfd8e8;
+  --text:#1a2233;--text-soft:#4e5a74;--text-dim:#6b7691;
+  --ink:#1a2233;--ink-soft:#4e5a74;--muted:#6b7691;--soft-t:#4e5a74;--dim:#6b7691;
+  --serif:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+  --mono:ui-monospace,Menlo,Consolas,monospace;
+}
+body{background:radial-gradient(1200px 600px at 85% -10%,rgba(47,111,237,.14),transparent 60%),radial-gradient(1000px 640px at -10% 30%,rgba(15,182,212,.09),transparent 55%),linear-gradient(#f7f9fe,#edf0f8) fixed !important;}
+</style>
+<style>
+ .tabbar{position:fixed;top:0;left:0;right:0;width:100%;box-sizing:border-box;z-index:40;background:rgba(250,250,247,.93);
+   backdrop-filter:saturate(1.1) blur(8px);-webkit-backdrop-filter:saturate(1.1) blur(8px);
+   border-bottom:1px solid var(--border);display:flex;gap:6px;overflow-x:auto;
+   padding:10px max(36px,calc((100% - 992px)/2));scrollbar-width:thin}
+ .tabbar .tab{flex:0 0 auto;display:flex;align-items:baseline;gap:9px;cursor:pointer;
+   background:transparent;border:1px solid transparent;border-radius:999px;
+   padding:8px 17px;transition:.15s;white-space:nowrap;color:var(--muted)}
+ .tabbar .tab:hover{color:var(--ink);background:var(--bg-soft)}
+ .tabbar .tab.active{color:var(--accent-2);background:var(--bg-soft);border-color:var(--border-strong)}
+ .tabbar .tn{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.1em;color:var(--accent)}
+ .tabbar .tl{font-family:var(--serif);font-weight:500;font-size:16px}
+ body{padding-top:56px} .concept-panel{display:none}
+ .concept-panel.active{display:block}
+ .concept-panel header{padding-top:50px}
+ @media(max-width:560px){.tabbar .tl{max-width:48vw;overflow:hidden;text-overflow:ellipsis}}
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+<nav class="tabbar" aria-label="Các khái niệm nền"><button class="tab" data-i="0"><span class="tn">01</span><span class="tl">Dự phòng là gì</span></button><button class="tab" data-i="1"><span class="tn">02</span><span class="tl">Ai buộc mình phải trả</span></button><button class="tab" data-i="2"><span class="tn">03</span><span class="tl">Ghi sổ bao nhiêu</span></button><button class="tab" data-i="3"><span class="tn">04</span><span class="tl">Tiềm tàng là gì</span></button></nav>
+<div class="concept-panel" id="c-du-phong-la-gi"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Nền tảng · hiểu từ gốc</div>
+    <h1 class="rise" style="animation-delay:.08s">Dự phòng là gì: món nợ chưa chắc, và ba điều kiện để ghi vào sổ</h1>
+    <p class="core rise" style="animation-delay:.16s">Một khoản nợ chưa chắc về thời điểm và số tiền — <span>chỉ ghi vào sổ khi đủ cả ba điều kiện.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Định vị · nó là gì &amp; vì sao học trước</span><h2>Provision — a liability of uncertain timing or amount</h2></div>
+    </div>
+    <div class="rule">IAS 37 (¶10) định nghĩa <strong>provision</strong> (dự phòng) là <em>a liability of uncertain timing or amount</em> — một khoản nợ phải trả <strong>không chắc chắn về thời điểm hoặc giá trị</strong>. Đây vẫn là một <em>liability</em> (nợ phải trả): nghĩa vụ hiện tại từ sự kiện quá khứ, mà thanh toán làm phát sinh dòng ra lợi ích kinh tế. ¶14 nêu rõ chỉ được ghi nhận khi <strong>đồng thời</strong> có: (a) nghĩa vụ hiện tại từ sự kiện quá khứ; (b) dòng ra <em>probable</em>; (c) <em>reliable estimate</em> (ước tính đáng tin cậy) về giá trị.</div>
+    <div class="sub">Vì sao đây là nền</div>
+    <div class="why"><p>Đây là viên gạch đầu tiên của cả chuẩn mực. Mọi phần sau đều xoay quanh một câu hỏi: khoản này có phải dự phòng không, hay chỉ là thứ lấp ló chưa đủ chắc?</p>
+<p>Nắm được ba điều kiện, bạn có sẵn bộ lọc cho mọi tình huống. Chưa nắm, bạn sẽ lẫn dự phòng với nhiều thứ khác trông giống nó.</p></div>
+  </section>
+
+  <section class="problem">
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Vấn đề nó sinh ra để giải quyết</span><h2>Bán hàng có bảo hành: một món nợ chưa hiện hình</h2></div>
+    </div>
+    <p class="lead">Bạn bán một nghìn cái máy, mỗi cái kèm lời hứa sửa miễn phí nếu hỏng. Bán xong là có tiền. Nhưng bạn biết chắc: vài cái sẽ hỏng và bạn phải bỏ tiền ra sửa. Chỉ là chưa biết cái nào, khi nào, hết bao nhiêu.</p>
+
+<p>Vậy khoản 'sẽ phải sửa' đó tính sao? Bỏ qua thì lời năm nay bị thổi phồng, vì bạn giấu một món nợ thật. Ghi đại một số thì lại thành bịa.</p>
+
+<div class="sub">Vì sao cần một luật chặt</div>
+<p>Loại nợ này mờ hơn nợ thường: không có hoá đơn, không có ngày trả rõ ràng. Nếu để tự do, người ta dễ ghi lúc nhiều lúc ít để làm đẹp lời lãi. Nên phải có một phép thử rạch ròi. Bước 2 lo chuyện đó.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Mô hình đơn giản · cách nó chạy</span><h2>Ba câu hỏi phải cùng gật đầu</h2></div>
+    </div>
+    <p>Một món nợ chưa chắc chỉ được ghi vào sổ khi ba câu hỏi cùng trả lời 'có'.</p>
+
+<div class="sub">Câu 1 — Mình đang thật sự mắc nợ chưa?</div>
+<p>Phải có một nghĩa vụ đang tồn tại, sinh ra từ một chuyện đã xảy ra rồi. Chuyện đã xảy ra là 'đã bán máy kèm bảo hành'. Nghĩa vụ là 'phải sửa khi hỏng'. Nếu chưa có chuyện gì buộc mình, thì chưa có nợ.</p>
+
+<div class="sub">Câu 2 — Nhiều khả năng phải chi tiền không?</div>
+<p>Khả năng phải bỏ tiền ra phải cao hơn khả năng không. Tức là hơn một nửa. Nếu chỉ 'lỡ đâu' thì chưa đủ.</p>
+
+<div class="sub">Câu 3 — Có đoán được số tiền đáng tin không?</div>
+<p>Không cần chính xác từng đồng. Chỉ cần dựng được một khoảng hợp lý rồi chọn con số tin được. Gần như lúc nào cũng làm được điều này.</p>
+
+<div class="sub">Thiếu một là không ghi</div>
+<p>Đây là phép thử 'và', không phải 'hoặc'. Rớt một câu thôi là không được ghi thành dự phòng. Khi đó khoản này rơi xuống nhóm khác, chỉ ghi chú bên lề.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví dụ cụ thể</span><h2>Một nghìn cái máy, tính ra một con số</h2></div>
+    </div>
+    <div class="example-card"><span class="tag">Ví dụ</span>
+<p>Quay lại lô một nghìn máy có bảo hành. Xét theo cả lô, không xét từng cái.</p>
+<p>Kinh nghiệm cho biết: khoảng 75 phần trăm máy chạy tốt, 20 phần trăm lỗi nhẹ, 5 phần trăm lỗi nặng. Sửa một lỗi nhẹ tốn 1 triệu, lỗi nặng tốn 4 triệu.</p>
+<p>Đủ ba câu: đã bán rồi nên đang mắc nợ; xét cả lô thì chắc chắn có máy hỏng, nên nhiều khả năng phải chi; và tính được số tiền. Ghi dự phòng.</p>
+<p>Con số: lấy mỗi khả năng nhân với tiền của nó rồi cộng lại. Ra khoảng 400 nghìn cho cả lô. Cách tính này ở trang 'Ghi sổ bao nhiêu'.</p>
+</div>
+<p>Đổi một chi tiết cho rõ. Nếu bạn bán đúng một cái máy, khó nói cái đó có hỏng không. Nhưng bán cả nghìn cái, gần như chắc một phần sẽ hỏng — nên xét cả nhóm thì mới đủ điều kiện ghi.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Điều kiện 2 dùng thuật ngữ <em>probable</em>, mà IAS 37 (¶23) định nghĩa là <em>more likely than not</em> — xác suất trên 50%. Với một nhóm nghĩa vụ tương tự (bảo hành), xác suất dòng ra được xét cho <em>class as a whole</em> (cả nhóm) chứ không từng món (¶24). Cách nhân xác suất với chi phí rồi cộng gọi là <em>expected value</em> (¶39).</p>
+  </section>
+
+  <section class="clarify">
+    <div class="step-head">
+      <div class="big-num">≠</div>
+      <div class="step-meta"><span class="lbl">Dễ nhầm · ranh giới</span><h2>Dễ nhầm — ranh giới của dự phòng</h2></div>
+    </div>
+    <div class="mix-q"><span class="q">"Khấu hao, nợ khó đòi cũng gọi là 'provision' — cùng một thứ à?"</span><p>Không. Ở nhiều nơi người ta gọi khấu hao hay nợ khó đòi là 'provision'. Nhưng những khoản đó chỉ <em>hạ giá trị một tài sản</em> đang có trên sổ. Dự phòng của IAS 37 là một khoản <em>nợ phải trả</em> cho bên khác. Hai thứ khác hẳn, và IAS 37 chỉ nói về loại sau (¶7).</p></div>
+<div class="mix-q"><span class="q">"Cứ có rủi ro trong tương lai là ghi dự phòng?"</span><p>Không. Phải có nghĩa vụ <em>đang tồn tại</em> vì chuyện đã xảy ra. Chỉ lo xa cho chuyện chưa xảy ra thì chưa phải nợ. Ranh giới này là cả một trang riêng: 'Lỗ mai sau, không trích'.</p></div>
+  </section>
+
+  <section class="bridge">
+    <div class="step-head">
+      <div class="big-num">→</div>
+      <div class="step-meta"><span class="lbl">Nối tiếp · nó dẫn tới đâu</span><h2>Từ đây rẽ sang mấy chỗ khó</h2></div>
+    </div>
+    <div class="bridge-card"><p>Ba điều kiện này là cái cân. Đặt một khoản lên cân, nó có thể chưa đủ nặng để ghi sổ — chỉ đủ để ghi chú. Ranh giới 'ghi sổ hay chỉ ghi chú' chính là trang khó <strong>'Ghi sổ hay chỉ ghi chú?'</strong>.</p>
+<p>Còn khi một hợp đồng đã ký bỗng cầm chắc lỗ, điều kiện 1 (nghĩa vụ hiện tại) được thoả theo cách bất ngờ. Đó là trang <strong>'Hợp đồng cầm chắc lỗ'</strong>. Nắm ba điều kiện trước, hai trang đó hết rối.</p></div>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">✦</div>
+      <div class="step-meta"><span class="lbl">Kể lại trong một hơi</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Dự phòng là một khoản nợ có thật nhưng chưa chắc về thời điểm và số tiền. Chỉ ghi vào sổ khi ba câu cùng gật: đang mắc nợ vì chuyện đã xảy ra; nhiều khả năng phải chi tiền; đoán được số tiền đáng tin. Thiếu một là không ghi.</p>
+<p class="core">Một khoản nợ chưa chắc về thời điểm và số tiền — <span>nợ chưa chắc, chỉ ghi khi đủ cả ba: có nghĩa vụ, chắc phải chi, đoán được số.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã nắm nền chưa?</h3>
+      <ol>
+        <li>Ba điều kiện để ghi nhận một dự phòng là gì, và vì sao phải đủ cả ba?</li>
+        <li>Vì sao bán một nghìn máy có bảo hành thì đủ điều kiện ghi, mà bán một cái thì khó?</li>
+        <li>Khấu hao và nợ khó đòi khác dự phòng của IAS 37 ở điểm nào?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nền vững thì cái khó tự nhẹ đi. Hiểu từ gốc, không học vẹt.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-ai-buoc-minh-phai-tra"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Nền tảng · hiểu từ gốc</div>
+    <h1 class="rise" style="animation-delay:.08s">Ai buộc mình phải trả: luật ép, hay lời hứa của chính mình</h1>
+    <p class="core rise" style="animation-delay:.16s">Chỉ có nghĩa vụ khi mình <span>không còn lựa chọn thực tế nào khác ngoài việc trả.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Định vị · nó là gì &amp; vì sao học trước</span><h2>Legal obligation & constructive obligation</h2></div>
+    </div>
+    <div class="rule">IAS 37 (¶10) nói một nghĩa vụ có thể là <strong>legal obligation</strong> (nghĩa vụ pháp lý) — sinh từ hợp đồng hoặc pháp luật — hoặc <strong>constructive obligation</strong> (nghĩa vụ liên đới) — sinh từ hành động của đơn vị: qua thông lệ đã thành nếp hoặc tuyên bố đủ cụ thể, đơn vị đã <em>tạo ra kỳ vọng hợp lý</em> ở bên khác rằng nó sẽ gánh trách nhiệm. Sự kiện quá khứ tạo nghĩa vụ gọi là <strong>obligating event</strong>: đơn vị <em>không còn lựa chọn thực tế nào khác ngoài việc thanh toán</em> (¶17).</div>
+    <div class="sub">Vì sao đây là nền</div>
+    <div class="why"><p>Điều kiện đầu tiên để ghi dự phòng là 'có nghĩa vụ hiện tại'. Nhưng nghĩa vụ do đâu mà có? Trang này trả lời đúng câu đó.</p>
+<p>Nếu không biết cái gì tạo ra nghĩa vụ, bạn sẽ ghi nhầm chỗ chưa có nợ, hoặc bỏ sót chỗ đã có nợ. Đây là bản lề của cả chuẩn mực.</p></div>
+  </section>
+
+  <section class="problem">
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Vấn đề nó sinh ra để giải quyết</span><h2>Hai cửa cùng dẫn tới một món nợ</h2></div>
+    </div>
+    <p class="lead">Một cửa hàng dán bảng: 'Trả lại hàng trong 30 ngày, hoàn tiền, không cần lý do' — dù luật không bắt. Khách quen đã tin điều đó. Một cửa hàng khác thì ký hợp đồng bảo hành có công chứng. Cả hai đều đang mắc một món nợ. Nhưng lý do khác nhau.</p>
+
+<p>Cửa hàng thứ hai bị <em>luật và hợp đồng</em> ép trả. Cửa hàng thứ nhất thì không ai ép bằng luật — nhưng nó đã hứa công khai, khách trông cậy vào đó. Nếu nuốt lời, nó mất uy tín và khách. Trên thực tế, nó cũng không thoát được.</p>
+
+<div class="sub">Câu hỏi gốc</div>
+<p>Vậy cái gì thật sự biến một chuyện thành 'món nợ phải ghi'? Không phải cứ có giấy tờ. Mà là: mình còn đường thoát thật sự không? Hết đường thoát thì đã có nghĩa vụ.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Mô hình đơn giản · cách nó chạy</span><h2>Hai cửa vào nghĩa vụ, một điều kiện chung</h2></div>
+    </div>
+    <p>Có hai cửa dẫn vào một nghĩa vụ, nhưng cùng đòi một điều kiện.</p>
+
+<div class="sub">Cửa 1 — Luật ép</div>
+<p>Một hợp đồng hoặc một điều luật buộc bạn phải trả. Không làm thì bị cưỡng chế. Đây là loại dễ thấy nhất.</p>
+
+<div class="sub">Cửa 2 — Lời hứa của chính mình</div>
+<p>Không luật nào ép, nhưng qua thói quen lâu nay hoặc lời tuyên bố rõ ràng, bạn đã làm cho người khác tin chắc bạn sẽ gánh việc đó. Họ trông cậy vào bạn. Giờ nuốt lời thì không xong.</p>
+
+<div class="sub">Điều kiện chung: hết đường thoát</div>
+<p>Cả hai cửa chỉ tính là nghĩa vụ khi bạn <em>không còn lựa chọn thực tế nào khác ngoài việc trả</em>. Còn né được thật sự thì chưa có nghĩa vụ.</p>
+
+<div class="sub">Một cái bẫy: quyết định trong phòng họp</div>
+<p>Hội đồng họp và quyết một việc — bấy nhiêu chưa tạo nghĩa vụ. Chỉ khi quyết định đó được <em>báo ra ngoài</em> cho người bị ảnh hưởng, đủ cụ thể để họ tin chắc, thì mới thành nghĩa vụ (¶20).</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví dụ cụ thể</span><h2>Bộ lọc khói: có luật vẫn chưa chắc có nợ</h2></div>
+    </div>
+    <div class="example-card"><span class="tag">Ví dụ</span>
+<p>Một nhà máy làm bẩn môi trường trái luật, gây hư hại thật. Nó phải dọn và nộp phạt cho phần đã gây ra. Chuyện đã xảy ra, hết đường thoát. Có nghĩa vụ, ghi dự phòng (¶19).</p>
+<p>Giờ đổi tình huống. Có luật mới bắt nhà máy lắp bộ lọc khói để chạy sạch hơn <em>trong tương lai</em>. Nhà máy chưa lắp. Nó có mắc nợ khoản lắp đó chưa?</p>
+<p>Chưa. Vì nó vẫn còn một đường thoát thật: đổi cách sản xuất, hoặc đóng bớt dây chuyền, để khỏi phải lắp. Còn né được thì chưa có nghĩa vụ hiện tại (¶19).</p>
+</div>
+<p>So hai cửa hàng lúc nãy cho gọn. Cửa hàng có hợp đồng: cửa 1, luật ép. Cửa hàng dán bảng hoàn tiền: cửa 2, tự hứa rồi tạo lòng tin. Cả hai đều hết đường thoát, nên cả hai đều có nghĩa vụ.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Cửa 2 là <em>constructive obligation</em>: ràng buộc không vì luật mà vì đơn vị đã tạo <em>valid expectation</em> ở bên thứ ba (¶10). Nguyên tắc 'né được thì chưa có nợ' nằm ở ¶19: chỉ ghi nhận nghĩa vụ <em>tồn tại độc lập với hành động tương lai</em> của đơn vị. Với một luật mới đang dự thảo, nghĩa vụ chỉ phát sinh khi luật <em>virtually certain to be enacted</em> (¶22).</p>
+  </section>
+
+  <section class="clarify">
+    <div class="step-head">
+      <div class="big-num">≠</div>
+      <div class="step-meta"><span class="lbl">Dễ nhầm · ranh giới</span><h2>Dễ nhầm — ranh giới của nghĩa vụ</h2></div>
+    </div>
+    <div class="mix-q"><span class="q">"Không có hợp đồng, không có luật — thì làm gì có nợ?"</span><p>Vẫn có thể có. Nếu bạn hứa công khai đủ chắc và người ta tin cậy vào đó, bạn đã tự tạo nghĩa vụ. Uy tín và lòng tin ràng buộc bạn không kém gì một tờ giấy. Đó chính là cửa 2.</p></div>
+<div class="mix-q"><span class="q">"Ban giám đốc đã quyết rồi thì coi như đã có nghĩa vụ chứ?"</span><p>Chưa. Quyết trong phòng họp mà chưa báo ra ngoài thì bạn vẫn đổi ý được. Chỉ khi bạn công bố cho người bị ảnh hưởng, đủ để họ tin chắc, thì mới hết đường lùi. Lúc đó nghĩa vụ mới thành hình (¶20).</p></div>
+  </section>
+
+  <section class="bridge">
+    <div class="step-head">
+      <div class="big-num">→</div>
+      <div class="step-meta"><span class="lbl">Nối tiếp · nó dẫn tới đâu</span><h2>Nghĩa vụ dẫn tới hai trang khó</h2></div>
+    </div>
+    <div class="bridge-card"><p>Hiểu 'còn né được thì chưa có nợ' là bạn đã cầm chìa khoá cho trang <strong>'Lỗ mai sau, không trích'</strong>. Lỗ vận hành năm sau không ai buộc bạn gánh — bạn còn thay đổi được — nên chưa phải nghĩa vụ.</p>
+<p>Ngược lại, khi bạn đã ký một hợp đồng cầm chắc lỗ, bạn hết đường thoát: cửa 1 đóng lại sau lưng. Đó là trang <strong>'Hợp đồng cầm chắc lỗ'</strong>.</p></div>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">✦</div>
+      <div class="step-meta"><span class="lbl">Kể lại trong một hơi</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Bạn chỉ mắc nợ khi hết đường thoát thật sự. Có hai cửa dẫn tới đó: luật hoặc hợp đồng ép bạn, hoặc chính bạn đã hứa khiến người ta tin cậy. Quyết định trong phòng họp chưa tính, phải báo ra ngoài mới thành nghĩa vụ.</p>
+<p class="core">Chỉ có nghĩa vụ khi mình <span>hết đường thoát mới là nợ — do luật ép, hay do chính mình đã hứa.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã nắm nền chưa?</h3>
+      <ol>
+        <li>Hai cửa dẫn tới một nghĩa vụ là gì, và điều kiện chung của cả hai?</li>
+        <li>Vì sao lắp bộ lọc khói theo luật mới chưa chắc là nghĩa vụ hiện tại?</li>
+        <li>Vì sao một quyết định của hội đồng chưa đủ để tạo nghĩa vụ vào cuối kỳ?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nền vững thì cái khó tự nhẹ đi. Hiểu từ gốc, không học vẹt.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-ghi-so-bao-nhieu"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Nền tảng · hiểu từ gốc</div>
+    <h1 class="rise" style="animation-delay:.08s">Ghi sổ bao nhiêu: ước tính tốt nhất, và vì sao tiền trả muộn nhẹ hơn</h1>
+    <p class="core rise" style="animation-delay:.16s">Con số ghi vào sổ là <span>số hợp lý nhất để trả cho xong nghĩa vụ ngay bây giờ.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Định vị · nó là gì &amp; vì sao học trước</span><h2>Best estimate — expected value / most likely — present value</h2></div>
+    </div>
+    <div class="rule">IAS 37 (¶36) yêu cầu đo dự phòng bằng <strong>best estimate</strong> (ước tính tốt nhất) về khoản chi cần để thanh toán nghĩa vụ vào cuối kỳ. Với <em>một tập lớn các khoản mục</em>, dùng <strong>expected value</strong> — trọng số mọi kết quả theo xác suất (¶39). Với <em>một nghĩa vụ đơn lẻ</em>, dùng <strong>most likely outcome</strong>, có điều chỉnh (¶40). Khi giá trị thời gian của tiền là trọng yếu, giá trị dự phòng phải là <strong>present value</strong> (hiện giá) của các khoản chi (¶45), chiết khấu bằng một <em>pre-tax rate</em> (¶47).</div>
+    <div class="sub">Vì sao đây là nền</div>
+    <div class="why"><p>Bạn đã quyết ghi khoản này thành dự phòng. Nhưng ghi bao nhiêu? Con số sai thì cả báo cáo sai theo.</p>
+<p>Trang này cho bạn cách chọn con số, và một ý dễ bị bỏ quên: một đồng trả năm sau không nặng bằng một đồng trả hôm nay.</p></div>
+  </section>
+
+  <section class="problem">
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Vấn đề nó sinh ra để giải quyết</span><h2>Đúng khoản nợ rồi, nhưng điền số nào?</h2></div>
+    </div>
+    <p class="lead">Bạn biết mình phải lập dự phòng cho lô máy bảo hành. Giờ tới phần khó: điền con số nào vào sổ? Ghi cao quá thì bịa ra một khoản lỗ không có. Ghi thấp quá thì giấu bớt nợ. Cả hai đều làm méo bức tranh.</p>
+
+<p>Rắc rối là chẳng ai biết trước chính xác sẽ tốn bao nhiêu. Nhiều máy hay ít máy hỏng, lỗi nhẹ hay nặng — đều chưa rõ. Vậy làm sao chốt một con số mà không phải đoán mò?</p>
+
+<div class="sub">Còn một chuyện nữa: thời gian</div>
+<p>Có khi tiền phải chi trong nhiều năm nữa, không phải ngay. Một đồng trả sau mười năm rõ ràng nhẹ hơn một đồng trả hôm nay. Con số ghi sổ phải tính cả điều đó. Cách làm ở Bước 2.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Mô hình đơn giản · cách nó chạy</span><h2>Chọn con số, rồi kéo về hôm nay</h2></div>
+    </div>
+    <p>Con số ghi sổ là số tiền hợp lý nhất để trả xong nghĩa vụ ngay bây giờ. Có hai cách tìm nó, tuỳ tình huống.</p>
+
+<div class="sub">Cách 1 — Nhiều món giống nhau: cân theo xác suất</div>
+<p>Khi có cả đống nghĩa vụ na ná nhau, như bảo hành nghìn máy, bạn liệt kê các kết quả có thể. Mỗi kết quả nhân với khả năng xảy ra của nó, rồi cộng hết lại. Ra một con số 'trung bình có cân'.</p>
+
+<div class="sub">Cách 2 — Một việc đơn lẻ: lấy kết quả dễ xảy ra nhất</div>
+<p>Khi chỉ có một việc, bạn lấy kết quả nhiều khả năng nhất làm mốc. Nhưng vẫn liếc các kết quả khác. Nếu phần lớn chúng cao hơn mốc, bạn nhích con số lên cho hợp.</p>
+
+<div class="sub">Kéo tiền tương lai về hôm nay</div>
+<p>Nếu tiền phải chi còn xa, bạn không ghi thẳng số tương lai. Bạn 'kéo nó về' giá trị hôm nay, vì trả muộn thì nhẹ hơn. Chỉ làm bước này khi khoảng cách thời gian đủ lớn để đáng kể.</p>
+
+<div class="sub">Đừng cộng rủi ro hai lần</div>
+<p>Bạn có thể nhích số lên một chút cho phần rủi ro. Nhưng đã tính rủi ro ở con số rồi thì đừng tính lại lần nữa lúc kéo về. Tính hai lần là thổi phồng dự phòng.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví dụ cụ thể</span><h2>Bảo hành nghìn máy, ra 400 nghìn</h2></div>
+    </div>
+    <div class="example-card"><span class="tag">Ví dụ</span>
+<p>Lấy lô nghìn máy. Kinh nghiệm: 75 phần trăm không lỗi, 20 phần trăm lỗi nhẹ (sửa hết 1 triệu), 5 phần trăm lỗi nặng (sửa hết 4 triệu). Đây là 'nhiều món giống nhau', dùng cách 1.</p>
+<p>Nhân rồi cộng: 75 phần trăm nhân 0, cộng 20 phần trăm nhân 1 triệu, cộng 5 phần trăm nhân 4 triệu. Ra 400 nghìn. Đó là con số ghi sổ.</p>
+<p>Giờ đổi sang một việc đơn lẻ: sửa một lỗi lớn ở nhà máy. Kết quả dễ xảy ra nhất là sửa xong ngay, tốn 1.000. Nhưng có khả năng đáng kể phải sửa thêm. Vậy bạn ghi một số nhỉnh hơn 1.000.</p>
+</div>
+<p>Thấy khác biệt chưa? Nghìn máy thì cân trung bình cả đống. Một lần sửa thì bám lấy kết quả dễ xảy ra nhất, rồi chỉnh theo các khả năng còn lại. Cùng một mục tiêu: con số hợp lý nhất để trả cho xong.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Cách 1 là <em>expected value</em> (¶39); cách 2 là <em>most likely outcome</em> có điều chỉnh (¶40). 'Kéo về hôm nay' là <em>discounting</em> để ra <em>present value</em> (¶45); <em>discount rate</em> là một <em>pre-tax rate</em> phản ánh giá trị thời gian của tiền và rủi ro riêng của khoản nợ (¶47). Mỗi kỳ, giá trị tăng dần do thời gian trôi — phần tăng đó ghi là <em>borrowing cost</em> (¶60). Dự phòng đo <em>trước thuế</em> (¶41).</p>
+  </section>
+
+  <section class="clarify">
+    <div class="step-head">
+      <div class="big-num">≠</div>
+      <div class="step-meta"><span class="lbl">Dễ nhầm · ranh giới</span><h2>Dễ nhầm — hiểu đúng con số</h2></div>
+    </div>
+    <div class="mix-q"><span class="q">"Vậy mỗi cái máy sẽ tốn đúng 400 nghìn à?"</span><p>Không. 400 nghìn là con số cho cả lô, không cái máy nào tốn đúng vậy. Cách cân theo xác suất cho ra số hợp lý cho cả nhóm, chứ không tả từng cái. Có máy tốn 0, có máy tốn 4 triệu.</p></div>
+<div class="mix-q"><span class="q">"Khoản nợ nào cũng phải 'kéo về hôm nay' à?"</span><p>Không. Chỉ kéo về khi tiền còn phải chi xa tới mức đáng kể. Nếu trả trong ít tháng tới, khỏi kéo, vì chênh lệch quá nhỏ. Chỉ khi khoảng cách thời gian đủ lớn, bước này mới đáng làm.</p></div>
+  </section>
+
+  <section class="bridge">
+    <div class="step-head">
+      <div class="big-num">→</div>
+      <div class="step-meta"><span class="lbl">Nối tiếp · nó dẫn tới đâu</span><h2>Từ đo lường sang một khoản lỗ phải trích</h2></div>
+    </div>
+    <div class="bridge-card"><p>Cách chọn con số này áp cho mọi dự phòng — kể cả loại đặc biệt. Khi một hợp đồng đã ký cầm chắc lỗ, khoản lỗ đó cũng được ghi nhận và <em>đo như một dự phòng</em>, đúng bằng cách bạn vừa học.</p>
+<p>Vậy con số đưa vào là bao nhiêu, và vì sao phải trích ngay khi lỗ chưa xảy ra? Câu trả lời ở trang khó <strong>'Hợp đồng cầm chắc lỗ'</strong>.</p></div>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">✦</div>
+      <div class="step-meta"><span class="lbl">Kể lại trong một hơi</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Con số ghi sổ là số hợp lý nhất để trả xong ngay bây giờ. Nhiều món giống nhau thì cân mọi kết quả theo xác suất. Một việc đơn lẻ thì lấy kết quả dễ xảy ra nhất, rồi chỉnh. Tiền trả xa thì kéo về hôm nay, và đừng tính rủi ro hai lần.</p>
+<p class="core">Con số ghi vào sổ là <span>chọn số hợp lý nhất để trả xong hôm nay — và tiền trả muộn thì kéo về cho nhẹ.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã nắm nền chưa?</h3>
+      <ol>
+        <li>Khi nào dùng cách 'cân theo xác suất', khi nào dùng 'kết quả dễ xảy ra nhất'?</li>
+        <li>Vì sao một đồng phải trả sau nhiều năm lại được ghi nhẹ hơn một đồng trả hôm nay?</li>
+        <li>Vì sao không được cộng phần rủi ro vào con số hai lần?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nền vững thì cái khó tự nhẹ đi. Hiểu từ gốc, không học vẹt.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-tiem-tang-la-gi"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Nền tảng · hiểu từ gốc</div>
+    <h1 class="rise" style="animation-delay:.08s">Tiềm tàng là gì: những khoản lấp ló chưa đủ chắc để lên sổ</h1>
+    <p class="core rise" style="animation-delay:.16s">Nợ hoặc lãi còn lấp ló, chưa đủ chắc — <span>không lên bảng cân đối, nhiều lắm chỉ ghi chú bên lề.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Định vị · nó là gì &amp; vì sao học trước</span><h2>Contingent liability & contingent asset</h2></div>
+    </div>
+    <div class="rule">IAS 37 (¶10) định nghĩa <strong>contingent liability</strong> (nợ tiềm tàng) theo hai nhánh: (a) một <em>possible obligation</em> (nghĩa vụ có thể có) mà sự tồn tại chỉ được xác nhận bởi sự kiện tương lai ngoài tầm kiểm soát; hoặc (b) một nghĩa vụ hiện tại <em>không được ghi nhận</em> vì dòng ra không probable hoặc không đo lường tin cậy được. <strong>Contingent asset</strong> (tài sản tiềm tàng) là một <em>possible asset</em> tương tự. Cả hai <em>đều không được ghi nhận</em> (¶27, ¶31) — nhiều lắm chỉ thuyết minh.</div>
+    <div class="sub">Vì sao đây là nền</div>
+    <div class="why"><p>Không phải cái gì chưa chắc cũng lên sổ. Có một nhóm nằm ngoài cửa: chưa đủ chắc để ghi, nhưng chưa nhỏ tới mức lờ đi hẳn.</p>
+<p>Biết nhóm này giúp bạn khỏi hai lỗi: ghi nhầm thứ chưa đủ chắc, hoặc giấu mất thứ đáng lẽ phải nói. Nó là mặt còn lại của dự phòng.</p></div>
+  </section>
+
+  <section class="problem">
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Vấn đề nó sinh ra để giải quyết</span><h2>Vụ kiện chưa ngã ngũ: ghi hay không?</h2></div>
+    </div>
+    <p class="lead">Công ty bạn đang bị kiện. Nếu thua thì phải bồi thường, nếu thắng thì không mất gì. Toà chưa xử. Vậy trên sổ sách cuối năm, bạn ghi khoản bồi thường đó không?</p>
+
+<p>Ghi thẳng vào sổ thì hoá ra khẳng định mình sẽ thua — quá sớm và có thể sai. Nhưng lờ đi hoàn toàn cũng không đúng: người đọc báo cáo có quyền biết công ty đang có một rủi ro treo lơ lửng.</p>
+
+<div class="sub">Cần một ngăn thứ ba</div>
+<p>Giữa 'ghi hẳn vào sổ' và 'im lặng hoàn toàn' phải có một ngăn nữa. Ngăn đó dành cho những khoản còn lấp ló: chưa đủ chắc để lên bảng cân đối, nhưng đủ đáng kể để nói ra. Bước 2 mô tả ngăn này.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Mô hình đơn giản · cách nó chạy</span><h2>Ngăn ở giữa: chỉ ghi chú, không lên sổ</h2></div>
+    </div>
+    <p>Có một ngăn riêng cho những khoản chưa đủ chắc. Gọi chung là 'tiềm tàng'. Có hai loại: nợ lấp ló và lãi lấp ló.</p>
+
+<div class="sub">Nợ lấp ló</div>
+<p>Là khoản có thể phải trả, nhưng chưa tới mức 'nhiều khả năng'. Hoặc là một nghĩa vụ có thật mà số tiền không đoán nổi. Không ghi vào sổ. Chỉ viết một dòng ghi chú bên lề.</p>
+
+<div class="sub">Lãi lấp ló</div>
+<p>Là khoản có thể thu được, như tiền thắng kiện chưa chắc. Cũng không ghi vào sổ. Bên lãi này còn khắt khe hơn, sẽ nói ở trang khó riêng.</p>
+
+<div class="sub">Khi nào được im lặng hẳn</div>
+<p>Nếu khả năng phải chi tiền là <em>rất thấp</em>, thấp tới mức gần như không, thì khỏi cần ghi chú. Đây là ngưỡng duy nhất cho phép im lặng hoàn toàn về một khoản nợ lấp ló (¶28).</p>
+
+<div class="sub">Nó có thể 'lên đời'</div>
+<p>Khoản lấp ló không đứng yên. Nếu về sau nó trở nên nhiều khả năng và đoán được số, nó rời ngăn giữa, thành dự phòng thật, lên sổ (¶30).</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví dụ cụ thể</span><h2>Cùng một vụ kiện, ba số phận</h2></div>
+    </div>
+    <div class="example-card"><span class="tag">Ví dụ</span>
+<p>Vẫn vụ kiện đó. Luật sư đánh giá khả năng thua, và cách ghi thay đổi theo đó.</p>
+<p><strong>Nhiều khả năng thua</strong> (hơn một nửa) và đoán được số: đây là dự phòng thật. Ghi vào sổ.</p>
+<p><strong>Có thể thua nhưng chưa tới mức đó</strong>: khoản nợ lấp ló. Không ghi vào sổ, chỉ viết ghi chú.</p>
+<p><strong>Gần như chắc chắn thắng</strong>: khả năng phải chi rất thấp. Khỏi cần ghi chú luôn.</p>
+</div>
+<p>Đổi vế sang tiền có thể thu. Nếu công ty là bên đi kiện và nhiều khả năng thắng, khoản tiền sắp thu vẫn chưa được ghi thành tài sản — nhiều lắm chỉ ghi chú. Vì sao khắt khe vậy? Đó là trang 'Nợ nhanh, lãi chậm'.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. 'Rất thấp' là ngưỡng <em>remote</em>: dưới ngưỡng này, contingent liability không cần thuyết minh (¶28). Thang xác suất: <em>remote</em> (im lặng), <em>possible</em> (thuyết minh nợ), <em>probable</em> (ghi provision). Bên tài sản, ngưỡng thuyết minh là <em>probable</em> (¶34) và ngưỡng ghi nhận là <em>virtually certain</em> (¶35) — cao hơn hẳn bên nợ. Khoản 'lên đời' từ contingent liability thành provision khi dòng ra trở nên probable (¶30).</p>
+  </section>
+
+  <section class="clarify">
+    <div class="step-head">
+      <div class="big-num">≠</div>
+      <div class="step-meta"><span class="lbl">Dễ nhầm · ranh giới</span><h2>Dễ nhầm — ranh giới giữa các ngăn</h2></div>
+    </div>
+    <div class="mix-q"><span class="q">"Dự phòng cũng chưa chắc, tiềm tàng cũng chưa chắc — khác gì nhau?"</span><p>Khác ở mức chắc. Dự phòng đã đủ chắc để lên sổ: nhiều khả năng phải chi và đoán được số. Tiềm tàng thì chưa đủ, nên chỉ nằm ở ghi chú. Cùng là 'chưa chắc', nhưng một cái vượt vạch, một cái chưa (¶12).</p></div>
+<div class="mix-q"><span class="q">"Chỉ ghi chú thôi thì có gì quan trọng?"</span><p>Quan trọng chứ. Ghi chú cho người đọc biết công ty đang gánh rủi ro gì, dù chưa lên bảng cân đối. Giấu nó đi là giấu một phần sự thật. Ranh giới 'lên sổ hay chỉ ghi chú' là cả một trang riêng.</p></div>
+  </section>
+
+  <section class="bridge">
+    <div class="step-head">
+      <div class="big-num">→</div>
+      <div class="step-meta"><span class="lbl">Nối tiếp · nó dẫn tới đâu</span><h2>Ngăn giữa mở ra hai trang khó</h2></div>
+    </div>
+    <div class="bridge-card"><p>Vạch chia 'lên sổ' với 'chỉ ghi chú' nằm đúng ở chỗ 'nhiều khả năng'. Vì sao vạch lại nằm đó, và vì sao một bên ghi sổ một bên chỉ ghi chú? Đó là trang khó <strong>'Ghi sổ hay chỉ ghi chú?'</strong>.</p>
+<p>Còn vì sao bên nợ được ghi chú sớm mà bên lãi phải chờ gần như chắc chắn mới được đụng tới? Sự thiên lệch có chủ đích đó ở trang <strong>'Nợ nhanh, lãi chậm'</strong>.</p></div>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">✦</div>
+      <div class="step-meta"><span class="lbl">Kể lại trong một hơi</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Có một ngăn giữa cho những khoản chưa đủ chắc để lên sổ. Nợ lấp ló và lãi lấp ló đều nằm đó, chỉ ghi chú chứ không vào bảng cân đối. Khả năng rất thấp thì im lặng hẳn. Khi khoản đó trở nên chắc hơn, nó lên đời thành dự phòng thật.</p>
+<p class="core">Nợ hoặc lãi còn lấp ló, chưa đủ chắc — <span>chưa đủ chắc thì nằm ở ghi chú, không lên sổ — đủ chắc mới lên đời thành dự phòng.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã nắm nền chưa?</h3>
+      <ol>
+        <li>Dự phòng và khoản tiềm tàng đều 'chưa chắc' — ranh giới giữa chúng nằm ở đâu?</li>
+        <li>Khi nào một khoản nợ lấp ló được phép im lặng hoàn toàn, không cần ghi chú?</li>
+        <li>Một khoản tiềm tàng 'lên đời' thành dự phòng khi nào?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nền vững thì cái khó tự nhẹ đi. Hiểu từ gốc, không học vẹt.</p>
+  </footer>
+
+</div></div>
+<script>
+  var bar=document.getElementById('progress');
+  function upd(){var h=document.documentElement;var s=h.scrollTop||document.body.scrollTop;
+    var max=(h.scrollHeight-h.clientHeight)||1;bar.style.width=(s/max*100)+'%';}
+  window.addEventListener('scroll',upd,{passive:true});upd();
+  var io=new IntersectionObserver(function(es){es.forEach(function(e){
+    if(e.isIntersecting){e.target.style.animation='rise .7s cubic-bezier(.2,.7,.3,1) forwards';io.unobserve(e.target);}});},{threshold:.12});
+  document.querySelectorAll('section').forEach(function(s){s.style.opacity='0';io.observe(s);});
+</script>
+
+<script>
+(function(){
+  var tabs=[].slice.call(document.querySelectorAll('.tabbar .tab'));
+  var panels=[].slice.call(document.querySelectorAll('.concept-panel'));
+  function show(i){
+    tabs.forEach(function(t,j){t.classList.toggle('active',j===i);});
+    panels.forEach(function(p,j){
+      var on=(j===i); p.classList.toggle('active',on);
+      if(on){p.querySelectorAll('section').forEach(function(s){s.style.opacity='';s.style.animation='';});}
+    });
+    try{history.replaceState(null,'','#'+panels[i].id);}catch(e){}
+    window.scrollTo(0,0); window.dispatchEvent(new Event('scroll'));
+  }
+  tabs.forEach(function(t){t.addEventListener('click',function(){show(+t.getAttribute('data-i'));});});
+  var start=0; panels.forEach(function(p,j){if('#'+p.id===location.hash)start=j;});
+  show(start);
+})();
+</script>
+
+</body></html>

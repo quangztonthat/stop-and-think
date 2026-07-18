@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="vi"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Valuation — Đo lường và Quản trị Giá trị Doanh nghiệp (McKinsey) — Hiểu sâu theo Feynman</title>
+<style>
+  /* Design tokens shared with ebook-to-study-html (styles_v2.css) */
+  :root{
+    --bg:#fafaf7; --bg-elevated:#ffffff; --bg-soft:#f3f3ee;
+    --border:#e0e0d8; --border-soft:#ececea; --border-strong:#d2c8b6;
+    --ink:#1a1a1f; --ink-soft:#3f3f4a; --muted:#7a7a85;
+    --accent:#2f6fed; --accent-2:#2258c8; --gold:#0fb6d4; --gap:#2258c8;
+    --serif:"Fraunces",Georgia,"Iowan Old Style",serif;
+    --sans:"Geist",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    --mono:"Geist Mono","JetBrains Mono",Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:var(--sans);
+    font-size:19px;line-height:1.72;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}
+  .progress{position:fixed;top:0;left:0;height:3px;width:0;z-index:50;
+    background:linear-gradient(90deg,var(--gold),var(--accent));transition:width .08s linear}
+  .wrap{max-width:920px;margin:0 auto;padding:0 36px}
+  .rise{opacity:0;transform:translateY(14px);animation:rise .7s cubic-bezier(.2,.7,.3,1) forwards}
+  @keyframes rise{to{opacity:1;transform:none}}
+
+  header{padding:104px 0 60px;border-bottom:1px solid var(--border)}
+  .kicker{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.18em;
+    text-transform:uppercase;color:var(--accent);margin-bottom:26px}
+  h1{font-family:var(--serif);font-weight:600;font-size:clamp(42px,7.6vw,72px);
+    line-height:1.0;letter-spacing:-.022em;margin-bottom:28px;font-optical-sizing:auto;color:var(--ink)}
+  h1 em{font-style:italic;color:var(--accent)}
+  .core{font-family:var(--serif);font-style:italic;font-weight:400;
+    font-size:clamp(21px,3.6vw,27px);line-height:1.44;color:var(--ink-soft)}
+  .core span{font-style:normal;font-weight:600;color:var(--accent-2);
+    box-shadow:inset 0 -.5em 0 rgba(47,111,237,.16)}
+
+  /* ---- BƯỚC 0: ANCHOR (state the rule + plan before explaining) ---- */
+  .anchor .rule{font-family:var(--serif);font-size:19px;line-height:1.5;color:var(--ink);
+    background:var(--bg-soft);border-left:3px solid var(--accent);
+    padding:18px 24px;border-radius:0 4px 4px 0;margin:0}
+  .anchor .rule em{font-style:italic;color:var(--accent-2)}
+  .anchor .rule strong{color:var(--ink);font-weight:600}
+  .anchor .approach{color:var(--ink-soft)}
+
+  section{padding:72px 0;border-bottom:1px solid var(--border);position:relative}
+  .step-head{display:flex;align-items:flex-start;gap:22px;margin-bottom:34px}
+  .big-num{font-family:var(--serif);font-weight:700;font-size:62px;line-height:.8;
+    color:var(--border-strong);flex:none;font-optical-sizing:auto;letter-spacing:-.03em}
+  .step-meta{padding-top:4px}
+  .lbl{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--accent);display:block;margin-bottom:10px}
+  h2{font-family:var(--serif);font-weight:600;font-size:clamp(27px,4.4vw,37px);
+    line-height:1.12;letter-spacing:-.012em;color:var(--ink)}
+  h2 em{font-style:italic;color:var(--accent)}
+  p{margin-bottom:21px}
+  p:last-child{margin-bottom:0}
+  strong{font-weight:600;color:var(--ink)}
+  em{font-style:italic;color:var(--accent-2)}
+  .gloss{color:var(--muted);font-style:italic}
+
+  .lead::first-letter{font-family:var(--serif);font-weight:700;float:left;
+    font-size:74px;line-height:.74;padding:8px 12px 0 0;color:var(--accent)}
+
+  .sub{font-family:var(--serif);font-weight:600;font-size:17px;letter-spacing:.01em;
+    color:var(--ink);margin:34px 0 14px;display:flex;align-items:center;gap:11px}
+  .sub::before{content:"";width:18px;height:2px;background:var(--accent);flex:none;border-radius:2px}
+
+  .gaps{background:var(--bg-soft)}
+  .gaps .big-num{color:#e2d6b4}
+  .gaps .lbl{color:var(--gap)}
+  .gap-q{margin:0 0 30px;padding-left:24px;border-left:2px solid var(--border-strong)}
+  .gap-q:last-child{margin-bottom:0}
+  .gap-q .q{font-family:var(--serif);font-style:italic;font-weight:500;
+    font-size:22px;line-height:1.35;color:var(--gap);margin-bottom:12px;display:block}
+  .gap-q p:last-child{margin-bottom:0}
+
+  .analogy-card{border:1px solid #e8c876;border-radius:4px;padding:30px 32px;margin:8px 0 28px;
+    background:linear-gradient(135deg,#fef9ed 0%,#fdf3e0 100%)}
+  .analogy-card .tag{font-family:var(--mono);font-weight:600;font-size:11px;
+    letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin-bottom:16px;display:block}
+  .analogy-card p{color:#5a4810}
+  .analogy-card strong{color:var(--accent-2)}
+  .limit{font-size:17px;line-height:1.6;color:#5a4810;
+    border-top:1px solid #e8c876;padding-top:20px;margin-top:22px}
+  .limit b{color:var(--accent-2);font-weight:600;font-family:var(--serif)}
+
+  .retell{background:linear-gradient(180deg,var(--bg-soft) 0%,var(--bg) 100%);border-bottom:none}
+  .retell h2{color:var(--ink)}
+  .retell strong{color:var(--accent-2)}
+  .retell .core{margin-top:6px}
+  .testbox{border:1px solid var(--border);background:var(--bg-elevated);
+    border-radius:4px;padding:28px 32px;margin-top:40px;box-shadow:0 1px 2px rgba(0,0,0,.03)}
+  .testbox h3{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--accent);margin-bottom:20px}
+  .testbox ol{margin:0;padding-left:22px;counter-reset:t}
+  .testbox li{margin-bottom:16px;color:var(--ink-soft);padding-left:6px}
+  .testbox li:last-child{margin-bottom:0}
+
+  footer{text-align:center;padding:60px 0 88px}
+  footer .mark{font-family:var(--serif);font-weight:700;color:var(--accent);
+    font-size:26px;display:block;margin-bottom:14px}
+  footer p{font-family:var(--serif);font-style:italic;color:var(--muted);font-size:17px;max-width:380px;margin:0 auto}
+
+  @media(max-width:560px){
+    body{font-size:18px}
+    header{padding:70px 0 44px}
+    section{padding:52px 0}
+    .step-head{gap:16px}
+    .big-num{font-size:46px}
+    .lead::first-letter{font-size:60px}
+  }
+
+/* ===== FLAMINDI THEME OVERRIDE (dong bo trang chu flamindi.com) ===== */
+:root{
+  --accent:#2f6fed;--accent-2:#2258c8;--accent2:#2258c8;--gold:#0fb6d4;--cyan:#0fb6d4;--blue:#2f6fed;
+  --bg:#f7f9fe;--bg-elevated:#ffffff;--bg-card:#ffffff;--card:#ffffff;--bg-soft:#eef2fb;--soft:#eef2fb;
+  --border:#e4e9f2;--border-soft:#eef1f7;--border-strong:#cfd8e8;
+  --text:#1a2233;--text-soft:#4e5a74;--text-dim:#6b7691;
+  --ink:#1a2233;--ink-soft:#4e5a74;--muted:#6b7691;--soft-t:#4e5a74;--dim:#6b7691;
+  --serif:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+  --mono:ui-monospace,Menlo,Consolas,monospace;
+}
+body{background:radial-gradient(1200px 600px at 85% -10%,rgba(47,111,237,.14),transparent 60%),radial-gradient(1000px 640px at -10% 30%,rgba(15,182,212,.09),transparent 55%),linear-gradient(#f7f9fe,#edf0f8) fixed !important;}
+</style>
+<style>
+ .tabbar{position:fixed;top:0;left:0;right:0;width:100%;box-sizing:border-box;z-index:40;background:rgba(250,250,247,.93);
+   backdrop-filter:saturate(1.1) blur(8px);-webkit-backdrop-filter:saturate(1.1) blur(8px);
+   border-bottom:1px solid var(--border);display:flex;gap:6px;overflow-x:auto;
+   padding:10px max(36px,calc((100% - 992px)/2));scrollbar-width:thin}
+ .tabbar .tab{flex:0 0 auto;display:flex;align-items:baseline;gap:9px;cursor:pointer;
+   background:transparent;border:1px solid transparent;border-radius:999px;
+   padding:8px 17px;transition:.15s;white-space:nowrap;color:var(--muted)}
+ .tabbar .tab:hover{color:var(--ink);background:var(--bg-soft)}
+ .tabbar .tab.active{color:var(--accent-2);background:var(--bg-soft);border-color:var(--border-strong)}
+ .tabbar .tn{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.1em;color:var(--accent)}
+ .tabbar .tl{font-family:var(--serif);font-weight:500;font-size:16px}
+ body{padding-top:56px} .concept-panel{display:none}
+ .concept-panel.active{display:block}
+ .concept-panel header{padding-top:50px}
+ @media(max-width:560px){.tabbar .tl{max-width:48vw;overflow:hidden;text-overflow:ellipsis}}
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+<nav class="tabbar" aria-label="Các khái niệm"><button class="tab" data-i="0"><span class="tn">01</span><span class="tl">Bảo toàn giá trị</span></button><button class="tab" data-i="1"><span class="tn">02</span><span class="tl">Tăng trưởng phá giá trị</span></button><button class="tab" data-i="2"><span class="tn">03</span><span class="tl">EPS tăng, giá trị đứng</span></button><button class="tab" data-i="3"><span class="tn">04</span><span class="tl">Tốt mà cổ phiếu vẫn tệ</span></button></nav>
+<div class="concept-panel" id="c-bao-toan-gia-tri"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Giải thích theo phương pháp Feynman</div>
+    <h1 class="rise" style="animation-delay:.08s">Vì sao đổi cách vay nợ hay mua lại cổ phiếu không tự tạo ra giá trị</h1>
+    <p class="core rise" style="animation-delay:.16s">Chỉ một thứ tạo giá trị: <span>dòng tiền thật nhiều lên, không phải cách chia nó.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Điều cần hiểu &amp; cách tiếp cận</span><h2>Nguyên tắc bảo toàn giá trị (conservation of value)</h2></div>
+    </div>
+    <div class="rule">Cuốn sách nêu một nguyên tắc sắt (mục 1.3, ch.31): giá trị chỉ được tạo ra khi <strong>dòng tiền thật tăng lên</strong> — tức khi ROIC hoặc tăng trưởng tốt hơn. Bất kỳ hành động nào <em>không làm đổi dòng tiền thật</em> đều <strong>không tạo giá trị</strong>: đổi cấu trúc vốn, chia cổ tức, mua lại cổ phiếu, hay đổi cách hạch toán kế toán. Bằng chứng: khi FASB bỏ khấu hao goodwill năm 2002, giá cổ phiếu <em>không đổi</em> — thị trường thấy dòng tiền y nguyên.</div>
+    <div class="sub">Cách giải thích</div>
+    <div class="approach"><p>Chỗ vấp: vay nợ rẻ hơn vốn chủ, nên vay nhiều hơn phải làm công ty đáng giá hơn chứ? Nghe rất xuôi. Cách làm ở đây: hình dung giá trị như một cái bánh pizza, rồi hỏi việc cắt lại các miếng có làm bánh to thêm không. Rồi chỉ ra chỗ nào phép cắt-bánh này còn hở.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Giải thích đơn giản</span><h2>Cắt lại cái bánh không làm bánh to thêm</h2></div>
+    </div>
+    <p class="lead">Hình dung giá trị của một công ty là một cái bánh pizza. Người cho vay được hứa vài miếng trước (đó là nợ). Phần còn lại chia cho người góp vốn (đó là vốn chủ). Câu hỏi: đổi cách chia — hứa cho chủ nợ nhiều miếng hơn hay ít hơn — có làm cái bánh to thêm không?</p>
+
+<div class="sub">Không. Bánh vẫn thế</div>
+<p>Bánh to hay nhỏ là do công ty bán hàng, kiếm tiền thật giỏi cỡ nào. Ai được chia trước, ai chia sau, không thêm một miếng bánh nào. Đổi cách chia chỉ dời miếng qua lại giữa những người ăn.</p>
+
+<div class="sub">Vì sao vay 'rẻ' không thắng</div>
+<p>Vay nợ đúng là đòi lãi thấp. Nhưng vay càng nhiều, người góp vốn càng gánh rủi ro, nên họ đòi lời cao hơn để bù. Cái lợi từ nợ rẻ bị cái đắt lên của vốn chủ nuốt mất. Con số giá vốn chung gần như đứng yên.</p>
+
+<div class="sub">Cùng khuôn với mua lại cổ phiếu</div>
+<p>Công ty dùng tiền mặt mua lại cổ phiếu của chính mình. Nghe như 'thưởng' cho cổ đông. Nhưng công ty vừa mất đúng số tiền mặt đó. Đổi tiền lấy cổ phiếu là đổi ngang giá — không đẻ ra giá trị mới, chỉ đổi hình dạng tài sản.</p>
+  </section>
+
+  <section class="gaps">
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Chỗ vấp · Lỗ hổng</span><h2>Mấy chỗ nghe xuôi mà nghĩ kỹ chưa thông</h2></div>
+    </div>
+    <div class="gap-q"><span class="q">"Vay nợ được trừ thuế mà — chẳng phải đó là lợi thật sao?"</span><p>Đúng, và đây là chỗ tinh tế. Phần lãi vay được khấu trừ thuế là một khoản tiền thật tiết kiệm được, nên nó <em>có</em> tạo chút giá trị. Nhưng đó là vì dòng tiền thật đổi (nộp thuế ít đi), không phải vì 'nợ rẻ hơn vốn chủ'. Và lợi đó có trần: vay quá tay thì rủi ro phá sản ăn ngược lại.</p></div>
+<div class="gap-q"><span class="q">"Mua lại cổ phiếu làm lãi mỗi cổ phiếu tăng — cổ đông giàu hơn còn gì?"</span><p>Lãi mỗi cổ phiếu tăng vì chia cho ít cổ phiếu hơn, không phải vì công ty kiếm nhiều tiền hơn. Cái bánh không lớn thêm, chỉ ít người chia. Giá trị mỗi cổ phiếu về cơ bản không đổi. Chuyện 'con số đẹp mà giá trị đứng yên' này có hẳn một trang riêng.</p></div>
+<div class="gap-q"><span class="q">"Vậy chẳng lẽ mọi quyết định tài chính đều vô nghĩa?"</span><p>Không vô nghĩa — chỉ là không tự đẻ giá trị. Cấu trúc vốn kém vẫn có thể <em>phá</em> giá trị: vay quá nhiều thì khách bỏ đi, nhân viên lo, nhà cung cấp đòi trả trước. Quản tài chính tốt là để tránh phá, không phải để tạo. Tạo giá trị vẫn phải nhờ kinh doanh.</p></div>
+<div class="gap-q"><span class="q">"Nếu chỉ dời miếng bánh, sao thị trường đôi khi vẫn phản ứng với các tin này?"</span><p>Vì các nước cờ này thường mang <em>tin ngầm</em>. Tăng cổ tức báo hiệu ban lãnh đạo tự tin về dòng tiền; cắt cổ tức báo động có vấn đề. Thị trường phản ứng với cái tin đó, không phải với bản thân việc chia lại. Cái thật sự đổi vẫn là kỳ vọng về dòng tiền tương lai.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví von &amp; ví dụ đời thường</span><h2>Neo vào thứ bạn đã biết</h2></div>
+    </div>
+    <div class="analogy-card"><span class="tag">Ví dụ trung tâm</span>
+<p>Nghĩ về việc <strong>cắt một cái bánh pizza</strong>. Bạn có thể cắt thành 8 miếng hay 12 miếng, hứa cho người này ăn trước người kia ăn sau, đổi ai cầm dao. Làm gì thì làm, tổng lượng bánh đúng bằng lúc mới ra lò. Muốn có nhiều bánh hơn, chỉ một cách: nướng thêm bánh. Với công ty, 'nướng thêm bánh' là bán hàng giỏi hơn, kiếm tiền thật nhiều hơn.</p>
+<p class="limit"><b>Chỗ ví von này hỏng:</b> cái bánh pizza thì cắt kiểu gì tổng cũng y hệt. Còn tài chính có một khe hở thật: vay nợ được khấu trừ thuế nên tiết kiệm được ít tiền thật, làm bánh <em>to lên một chút</em>. Ngược lại, vay quá tay khiến bánh <em>teo</em> vì rủi ro phá sản. Nên phép cắt bánh không hoàn toàn trung tính — nó chỉ đúng ở lõi: cách chia không phải nguồn chính của giá trị.</p>
+</div>
+<p>Cùng khuôn với đổi cách hạch toán. Khi FASB năm 2002 bỏ việc khấu hao goodwill, lợi nhuận kế toán của nhiều công ty bỗng đẹp hơn trên giấy. Giá cổ phiếu gần như không nhúc nhích. Vì không một đồng tiền thật nào đổi tay — chỉ có con số trên báo cáo đổi nhãn.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Đây chính là định lý <em>Modigliani–Miller</em>: trong thị trường không có thuế và chi phí kiệt quệ, giá trị doanh nghiệp độc lập với cấu trúc vốn. Cái tinh chỉnh 'nợ tạo lá chắn thuế' là <em>tax shield</em>; cái kéo ngược là <em>costs of financial distress</em>. Cân bằng hai lực này ra một mức nợ tối ưu, nhưng nó là thứ yếu so với ROIC và tăng trưởng.</p>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">4</div>
+      <div class="step-meta"><span class="lbl">Kể lại gọn gàng</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Giá trị công ty như cái bánh: cắt lại các miếng không làm bánh to thêm. Đổi cấu trúc vốn, chia cổ tức, mua lại cổ phiếu, đổi cách hạch toán — nếu không đổi dòng tiền thật thì không tạo giá trị. Muốn bánh to hơn, phải kinh doanh giỏi hơn. Lá chắn thuế là ngoại lệ nhỏ; quản tài chính chủ yếu để tránh phá, không phải để tạo.</p>
+<p class="core">Chỉ một thứ tạo giá trị: <span>cách chia cái bánh không làm cái bánh to thêm.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã hiểu chưa?</h3>
+      <ol>
+        <li>Vì sao vay nợ nhiều hơn để 'dùng vốn rẻ' thường không làm công ty đáng giá hơn?</li>
+        <li>Khi FASB bỏ khấu hao goodwill năm 2002, vì sao giá cổ phiếu không đổi?</li>
+        <li>Lá chắn thuế của nợ có tạo giá trị không, và vì sao đó không mâu thuẫn với nguyên tắc bảo toàn?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nếu giải thích được cho bà ngoại hiểu, bạn mới thật sự hiểu.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-tang-truong-pha-gia-tri"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Giải thích theo phương pháp Feynman</div>
+    <h1 class="rise" style="animation-delay:.08s">Vì sao lớn nhanh hơn đôi khi lại làm công ty mất giá trị</h1>
+    <p class="core rise" style="animation-delay:.16s">Tăng trưởng không phải lúc nào cũng tốt — <span>lớn thêm mà lời không đủ thì càng lớn càng lỗ.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Điều cần hiểu &amp; cách tiếp cận</span><h2>Tăng trưởng chỉ tạo giá trị khi lời trên vốn vượt giá vốn</h2></div>
+    </div>
+    <div class="rule">Cuốn sách bác một trực giác phổ biến (mục 1.2): tăng trưởng <strong>không</strong> tự động tạo giá trị. Nó chỉ tạo giá trị khi <em>ROIC vượt cost of capital</em>. Nếu ROIC <em>dưới</em> chi phí vốn, mỗi đồng đổ vào để lớn thêm lại <strong>phá</strong> giá trị — lớn càng nhanh, mất càng nhiều. Trong công thức value driver, tăng trưởng g nằm ở cả tử và mẫu, nên dấu của nó tuỳ thuộc khoảng cách giữa ROIC và WACC.</div>
+    <div class="sub">Cách giải thích</div>
+    <div class="approach"><p>Chỗ vấp: 'lớn hơn, doanh thu cao hơn' nghe luôn là tin mừng — sao lại có thể xấu? Cách làm ở đây: lấy một ví dụ vay tiền lãi cao để gửi tiết kiệm lãi thấp, ai cũng thấy càng làm to càng lỗ. Rồi soi vì sao 'lớn thêm' của một doanh nghiệp lời kém cũng đúng như vậy.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Giải thích đơn giản</span><h2>Vay 10% để gửi 6% — càng làm to càng lỗ</h2></div>
+    </div>
+    <p class="lead">Tưởng tượng bạn vay tiền phải trả lãi 10% một năm, rồi đem gửi vào chỗ chỉ sinh 6%. Mỗi đồng đưa qua vòng này, bạn mất 4%. Giờ có người khen: 'làm to lên đi, vay thật nhiều mà gửi!'. Bạn thấy ngay lời khen đó là tai hoạ — càng to càng mất.</p>
+
+<div class="sub">Doanh nghiệp cũng y hệt</div>
+<p>Một công ty muốn lớn thì phải đổ vốn vào: mở thêm cửa hàng, sắm máy, ứng hàng. Vốn đó có cái giá — mức lời tối thiểu phải đạt. Nếu đồng vốn mới chỉ sinh lời <em>thấp hơn</em> cái giá đó, thì mỗi bước lớn thêm là một vòng 'vay 10% gửi 6%'.</p>
+
+<div class="sub">Dòng tiền nói rõ điều này</div>
+<p>Muốn lớn phải bỏ tiền ra <em>trước</em>, thu về <em>sau</em>. Nếu phần thu về quá mỏng so với vốn bỏ ra, kéo về hôm nay nó còn nhẹ hơn cả số vốn đã đổ. Cộng lại, giá trị <em>tụt</em> chứ không tăng.</p>
+
+<div class="sub">Vậy khi nào lớn thêm là tốt?</div>
+<p>Khi đồng vốn mới sinh lời <em>vượt</em> cái giá vốn. Lúc đó mỗi bước lớn là 'vay 6% để kiếm 10%' — càng to càng lời. Cùng một hành động 'lớn thêm', dấu cộng hay trừ tuỳ mức lời trên vốn.</p>
+  </section>
+
+  <section class="gaps">
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Chỗ vấp · Lỗ hổng</span><h2>Mấy chỗ nghe xuôi mà nghĩ kỹ chưa thông</h2></div>
+    </div>
+    <div class="gap-q"><span class="q">"Doanh thu tăng thì luôn là tin tốt chứ, sao lại xấu được?"</span><p>Doanh thu tăng chỉ tốt nếu mỗi đồng bán thêm để lại lời vượt giá vốn. Bán thật nhiều mà bán lỗ thì càng bán càng chết. Thị trường không thưởng cho doanh thu; nó thưởng cho dòng tiền thật mà tăng trưởng đó mang lại. Đừng nhìn con số to, hãy nhìn lời trên vốn của phần lớn thêm.</p></div>
+<div class="gap-q"><span class="q">"Vậy cần gạt nào quan trọng hơn — lời trên vốn hay tăng trưởng?"</span><p>Tuỳ công ty đang ở đâu. Nếu lời trên vốn đã cao, thêm một điểm tăng trưởng tạo giá trị nhiều hơn thêm một điểm lời trên vốn. Nếu lời trên vốn còn thấp (gần hoặc dưới giá vốn), thì nâng lời trên vốn đáng hơn nhiều — tăng trưởng lúc này ít giá trị, thậm chí âm.</p></div>
+<div class="gap-q"><span class="q">"Công ty lời kém thì nên ngừng lớn hẳn à?"</span><p>Không hẳn ngừng, mà <em>sửa</em> trước. Vấn đề gốc là lời trên vốn dưới giá vốn. Cứ lớn thêm trên nền đó chỉ phá nhanh hơn. Việc đúng là kéo lời trên vốn lên trên giá vốn — bằng giá tốt hơn, chi phí thấp hơn — rồi mới đẩy tăng trưởng. Sửa cần gạt hỏng trước, đạp ga sau.</p></div>
+<div class="gap-q"><span class="q">"Nếu tăng trưởng có thể âm giá trị, sao nhà đầu tư vẫn mê cổ phiếu tăng trưởng?"</span><p>Vì họ ngầm giả định lời trên vốn cao đi kèm. Với công ty lời trên vốn cao thật, tăng trưởng là cỗ máy in giá trị. Cái bẫy là gán sự mê đó cho <em>mọi</em> tăng trưởng, kể cả của công ty lời kém. Chính chỗ lẫn lộn này khiến nhiều thương vụ 'lớn cho hoành tráng' phá giá trị.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví von &amp; ví dụ đời thường</span><h2>Neo vào thứ bạn đã biết</h2></div>
+    </div>
+    <div class="analogy-card"><span class="tag">Ví dụ trung tâm</span>
+<p>Nghĩ về một <strong>máy đổi tiền lệch giá</strong>. Bạn bỏ 10 đồng vào, máy nhả ra 9 đồng. Mỗi lần chạy máy, bạn mất 1 đồng. Nếu ai bảo 'chạy máy nhiều lên, mở rộng quy mô!', bạn hiểu ngay đó là con đường xuống hố — quy mô chỉ nhân cái lỗ lên. Doanh nghiệp có lời trên vốn dưới giá vốn chính là cái máy này: mỗi đồng vốn mới đổ vào để lớn lại nhả về ít hơn.</p>
+<p class="limit"><b>Chỗ ví von này hỏng:</b> cái máy đổi tiền có tỷ lệ lỗ cố định, chạy bao nhiêu cũng 10 ăn 9. Doanh nghiệp thật thì lời trên vốn <em>thay đổi</em> theo quy mô: lớn hơn có thể mua rẻ hơn, chạy máy hiệu quả hơn, nên lời trên vốn cải thiện. Nên đừng kết luận 'công ty lời kém thì lớn thêm luôn xấu'. Phải hỏi lời trên vốn của <em>đồng vốn mới</em> sẽ ra sao, không phải của quá khứ.</p>
+</div>
+<p>Rõ nhất là các thương vụ thâu tóm lớn. Công ty mua một công ty khác thật to để 'lớn nhanh', trả giá cao, nhưng phần lời thu về không đủ bù cái giá đã trả. Doanh thu hợp nhất phình lên trông oai, còn giá trị cho cổ đông bên mua thì tụt. Lớn mà lời không theo kịp là lớn phá giá trị.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Trong công thức <em>Giá trị = NOPAT × (1 − g/ROIC) / (WACC − g)</em>, tăng trưởng g xuất hiện hai chỗ. Nếu ROIC > WACC, tăng g làm giá trị tăng. Nếu ROIC = WACC, g biến mất khỏi kết quả — tăng trưởng vô thưởng vô phạt. Nếu ROIC < WACC, tăng g làm giá trị <em>giảm</em>. Đây là lý do sách xếp hạng các kiểu tăng trưởng: tạo thị trường mới đáng giá nhất, còn thâu tóm lớn thường đáng giá thấp nhất.</p>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">4</div>
+      <div class="step-meta"><span class="lbl">Kể lại gọn gàng</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Tăng trưởng không tự tạo giá trị. Nó chỉ tạo giá trị khi đồng vốn mới sinh lời vượt giá vốn. Dưới ngưỡng đó, lớn thêm giống vay 10% để gửi 6% — càng to càng mất. Với công ty lời trên vốn thấp, hãy sửa lời trên vốn trước, đừng đạp ga tăng trưởng. Nhìn lời trên vốn của phần lớn thêm, đừng nhìn con số doanh thu.</p>
+<p class="core">Tăng trưởng không phải lúc nào cũng tốt — <span>lớn thêm chỉ tốt khi lời trên vốn vượt giá vốn.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã hiểu chưa?</h3>
+      <ol>
+        <li>Vì sao 'vay 10% để gửi 6%' lại là hình ảnh của tăng trưởng phá giá trị?</li>
+        <li>Cùng một hành động 'lớn thêm', điều gì quyết định nó tạo hay phá giá trị?</li>
+        <li>Với một công ty lời trên vốn còn thấp, nên sửa gì trước khi đẩy tăng trưởng?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nếu giải thích được cho bà ngoại hiểu, bạn mới thật sự hiểu.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-eps-tang-gia-tri-dung"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Giải thích theo phương pháp Feynman</div>
+    <h1 class="rise" style="animation-delay:.08s">Vì sao lãi mỗi cổ phiếu tăng chưa chắc cổ đông giàu thêm</h1>
+    <p class="core rise" style="animation-delay:.16s">Một con số đẹp lên <span>chưa chắc là giá trị lớn lên.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Điều cần hiểu &amp; cách tiếp cận</span><h2>Thị trường nhìn xuyên qua kế toán không tạo dòng tiền</h2></div>
+    </div>
+    <div class="rule">Cuốn sách bác một niềm tin phổ biến (mục 1.1, 1.7): <em>EPS</em> (earnings per share — lãi mỗi cổ phiếu) tăng <strong>không</strong> đồng nghĩa giá trị tăng. Không có bằng chứng thực nghiệm nào cho thấy EPS tăng từ M&A hay mua lại cổ phiếu tạo giá trị. Thị trường <em>nhìn xuyên</em> các thao tác kế toán không đổi dòng tiền: mua lại cổ phiếu đẩy EPS lên nhưng <em>P/E</em> tụt tương ứng, giá trị nội tại đứng yên. Trong M&A, thị trường không phân biệt thương vụ làm tăng hay pha loãng EPS.</div>
+    <div class="sub">Cách giải thích</div>
+    <div class="approach"><p>Chỗ vấp: EPS là 'lãi trên mỗi cổ phiếu' — nó lên thì cổ đông lời hơn chứ, sao lại không? Cách làm ở đây: hình dung một cái bánh chia cho ít người hơn, mỗi phần to ra mà bánh không lớn thêm. Rồi chỉ ra chỗ ví von này còn hở — khi nào mua lại cổ phiếu <em>thật sự</em> có lợi.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Giải thích đơn giản</span><h2>Chia bánh cho ít người hơn, bánh không to thêm</h2></div>
+    </div>
+    <p class="lead">Một cái bánh chia đều cho 10 người, mỗi người một phần. Giờ mời 2 người ra khỏi bàn, chia lại cho 8. Mỗi phần bỗng to hơn. Nhưng cái bánh có lớn thêm miếng nào không? Không. Vẫn đúng bằng cái bánh cũ.</p>
+
+<div class="sub">Mua lại cổ phiếu là vậy</div>
+<p>Lãi mỗi cổ phiếu là 'tổng lãi chia cho số cổ phiếu'. Công ty mua lại bớt cổ phiếu của chính mình, số cổ phiếu giảm, nên lãi mỗi cổ phiếu tăng. Con số đẹp lên. Nhưng tổng lãi công ty kiếm được — cái bánh — không nhích lên chút nào.</p>
+
+<div class="sub">Và công ty đã trả tiền để làm việc đó</div>
+<p>Để mời 2 người rời bàn, công ty phải bỏ tiền mặt ra mua lại cổ phiếu. Nó mất đúng khoản tiền đó. Đổi tiền mặt lấy cổ phiếu là đổi ngang giá. Cổ đông còn lại nắm phần to hơn của một công ty vừa vơi tiền — bù trừ lại, họ không giàu thêm.</p>
+
+<div class="sub">Thị trường không bị con số đánh lừa</div>
+<p>Người định giá kỹ nhìn vào dòng tiền thật, không nhìn cái nhãn 'lãi mỗi cổ phiếu'. Nên khi EPS tăng nhờ mẹo này, họ hạ mức giá sẵn trả cho mỗi đồng lãi xuống tương ứng. Kết quả: giá cổ phiếu về cơ bản đứng yên.</p>
+  </section>
+
+  <section class="gaps">
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Chỗ vấp · Lỗ hổng</span><h2>Mấy chỗ nghe xuôi mà nghĩ kỹ chưa thông</h2></div>
+    </div>
+    <div class="gap-q"><span class="q">"Lãi mỗi cổ phiếu cao hơn thì đúng là mỗi cổ phiếu đáng hơn còn gì?"</span><p>Chỉ đúng nếu cái lãi cao hơn đến từ kinh doanh giỏi hơn. Nếu nó chỉ đến từ việc bớt số cổ phiếu, thì mỗi cổ phiếu nắm phần to hơn của một công ty đã bỏ tiền ra mua lại. Giá trị nội tại mỗi cổ phiếu không đổi. Con số đẹp không phải giá trị.</p></div>
+<div class="gap-q"><span class="q">"Vậy mua lại cổ phiếu luôn vô ích à?"</span><p>Không. Nó có lợi thật khi công ty mua lại cổ phiếu ở giá <em>thấp hơn</em> giá trị thật. Lúc đó cổ đông ở lại được lợi vì mua rẻ giúp bớt người chia bánh với giá hời. Cái tạo lợi là <em>mua rẻ</em>, không phải bản thân việc EPS tăng. Nếu mua ở giá cao, cổ đông ở lại còn thiệt.</p></div>
+<div class="gap-q"><span class="q">"Trong M&A, một thương vụ làm tăng EPS chẳng phải là thương vụ tốt sao?"</span><p>Không có mối liên hệ đó. Sách chỉ rõ: thị trường không phân biệt thương vụ làm tăng hay pha loãng EPS — nó chỉ phản ứng với giá trị thật. Một thương vụ tăng EPS vẫn có thể phá giá trị nếu trả giá quá cao. Dùng 'EPS tăng' làm cớ đi mua là ngụy biện.</p></div>
+<div class="gap-q"><span class="q">"Nếu con số EPS vô nghĩa vậy, sao ai cũng chăm chăm nhìn nó?"</span><p>Vì nó dễ tính và có sẵn mỗi quý. Nhưng dễ nhìn không có nghĩa là đúng. Chính vì bị ám ảnh bởi EPS quý mà nhiều lãnh đạo cắt nghiên cứu, hoãn dự án tốt để 'đạt con số'. Đó là cái hại thật khi thờ một chỉ số không đo được giá trị.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví von &amp; ví dụ đời thường</span><h2>Neo vào thứ bạn đã biết</h2></div>
+    </div>
+    <div class="analogy-card"><span class="tag">Ví dụ trung tâm</span>
+<p>Nghĩ về một <strong>hũ tiền tiết kiệm chung của mấy anh em</strong>. Trong hũ có 800 nghìn, chia cho 8 người, mỗi người 100 nghìn. Hai người nói 'tôi rút phần của tôi'. Giờ hũ còn 600 nghìn chia cho 6 người — mỗi người vẫn đúng 100 nghìn. 'Phần mỗi người' nghe thì có thể tính lại cho gọn, nhưng chẳng ai giàu thêm: hũ đã vơi đúng bằng phần rút ra.</p>
+<p class="limit"><b>Chỗ ví von này hỏng:</b> hũ tiền là con số cố định, ai rút cũng đúng giá. Mua lại cổ phiếu ngoài đời thì giá cổ phiếu có thể <em>lệch</em> khỏi giá trị thật. Nếu công ty mua lại lúc cổ phiếu đang rẻ hơn giá trị, người ở lại thật sự lời — khác với hũ tiền chia đều. Nên điểm mấu chốt không phải 'EPS tăng' mà là 'mua ở giá nào so với giá trị thật'.</p>
+</div>
+<p>Cùng khuôn với đổi cách hạch toán. Một công ty đổi phương pháp kế toán khiến lợi nhuận trên báo cáo đẹp hơn, EPS tăng. Không một đồng tiền thật nào chảy thêm vào. Người định giá kỹ trừ ngay cái đẹp giả đó ra và định giá y như cũ. Trang điểm sổ sách không lừa được thị trường dài hạn.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Mua lại cổ phiếu bằng tiền mặt làm giảm số cổ phiếu (mẫu số EPS) nhưng cũng bỏ đi lợi tức từ tiền mặt đó (làm giảm tử số). Nếu tiền mặt sinh lời thấp, EPS tăng; nhưng <em>P/E</em> giảm đúng mức để giữ giá không đổi. Đây là hệ quả trực tiếp của nguyên tắc bảo toàn giá trị: chỉ dòng tiền thật mới đổi được giá trị, còn số cổ phiếu chỉ là cách chia.</p>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">4</div>
+      <div class="step-meta"><span class="lbl">Kể lại gọn gàng</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Lãi mỗi cổ phiếu tăng chưa chắc giá trị tăng. Mua lại cổ phiếu chia cái bánh cho ít người hơn, mỗi phần to ra nhưng bánh không lớn thêm, mà công ty còn mất tiền mặt để làm. Thị trường nhìn xuyên qua và hạ mức giá trả cho mỗi đồng lãi. EPS chỉ đáng kể khi cái lãi đến từ kinh doanh giỏi hơn, hoặc khi mua lại ở giá rẻ hơn giá trị thật.</p>
+<p class="core">Một con số đẹp lên <span>chia bánh cho ít người không làm bánh to thêm.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã hiểu chưa?</h3>
+      <ol>
+        <li>Vì sao mua lại cổ phiếu đẩy lãi mỗi cổ phiếu lên nhưng giá trị nội tại không đổi?</li>
+        <li>Khi nào mua lại cổ phiếu thật sự có lợi cho cổ đông ở lại?</li>
+        <li>Vì sao một thương vụ M&A làm tăng EPS vẫn có thể phá giá trị?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nếu giải thích được cho bà ngoại hiểu, bạn mới thật sự hiểu.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-tot-ma-co-phieu-van-te"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Giải thích theo phương pháp Feynman</div>
+    <h1 class="rise" style="animation-delay:.08s">Vì sao một công ty xuất sắc vẫn có thể là cổ phiếu tồi</h1>
+    <p class="core rise" style="animation-delay:.16s">Cổ phiếu lời hay lỗ không đo bằng công ty tốt cỡ nào — <span>mà đo bằng việc nó vượt được kỳ vọng đã cài sẵn hay không.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Điều cần hiểu &amp; cách tiếp cận</span><h2>Vòng xoáy kỳ vọng (expectations treadmill)</h2></div>
+    </div>
+    <div class="rule">Cuốn sách tách hai thứ hay bị gộp (mục 1.7, 1.9): <strong>công ty tốt</strong> và <strong>cổ phiếu tốt</strong> không phải một. Lợi nhuận cho cổ đông (<em>TSR</em>) phụ thuộc hiệu quả <em>so với kỳ vọng đã nằm trong giá</em>, không phải mức tốt tuyệt đối. Một công ty xuất sắc đã bị định giá cho sự xuất sắc phải <strong>vượt cái bar cao</strong> đó mới cho lời trên trung bình. Đây là <em>expectations treadmill</em>: càng giỏi, bar càng bị nâng lên cho lần sau.</div>
+    <div class="sub">Cách giải thích</div>
+    <div class="approach"><p>Chỗ vấp: mua cổ phiếu của công ty tốt nhất thì phải lời nhất chứ? Cách làm ở đây: hình dung một học sinh giỏi luôn bị kỳ vọng đứng nhất, chỉ cần đứng nhì đã bị chê. Rồi chỉ ra chỗ ví von này hở — vì kỳ vọng trên thị trường là một cái giá, nó tự điều chỉnh mỗi lần.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Giải thích đơn giản</span><h2>Học sinh giỏi bị kỳ vọng luôn đứng nhất</h2></div>
+    </div>
+    <p class="lead">Trong lớp có một bạn học rất giỏi, kỳ nào cũng nhất. Cả lớp mặc định bạn ấy sẽ nhất. Kỳ này bạn ấy đứng nhì — vẫn giỏi hơn gần hết lớp. Nhưng mọi người lại 'thất vọng', vì đã trót kỳ vọng nhất. Bạn ấy giỏi thật, mà vẫn bị coi là 'sa sút'.</p>
+
+<div class="sub">Giá cổ phiếu chứa sẵn kỳ vọng</div>
+<p>Khi ai cũng biết một công ty xuất sắc, giá cổ phiếu đã bị đẩy cao để <em>phản ánh trước</em> sự xuất sắc đó. Mua ở giá cao ấy, bạn chỉ lời thêm nếu công ty làm <em>tốt hơn cả cái đã được kỳ vọng</em>. Làm đúng như kỳ vọng thì cổ phiếu chỉ đi ngang.</p>
+
+<div class="sub">Vì sao công ty 'thường thường' có khi lời hơn</div>
+<p>Một công ty bị xem là tầm thường thì giá cổ phiếu bị dìm thấp, kỳ vọng đặt vào nó rất nhẹ. Nó chỉ cần làm khá hơn cái kỳ vọng thấp đó một chút là cổ phiếu bật lên. Vượt một cái bar thấp dễ hơn nhiều so với vượt một cái bar cao chót vót.</p>
+
+<div class="sub">Cái vòng xoáy</div>
+<p>Mỗi lần công ty vượt kỳ vọng, giá tăng và kỳ vọng lần sau bị nâng lên cao hơn. Lần tới nó phải giỏi hơn nữa chỉ để giữ cổ phiếu đứng yên. Càng xuất sắc, cái bar càng bị đẩy lên — như chạy trên một băng chuyền cứ tăng tốc.</p>
+  </section>
+
+  <section class="gaps">
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Chỗ vấp · Lỗ hổng</span><h2>Mấy chỗ nghe xuôi mà nghĩ kỹ chưa thông</h2></div>
+    </div>
+    <div class="gap-q"><span class="q">"Vậy cứ mua công ty tốt nhất là chắc ăn nhất chứ?"</span><p>Không, vì cái tốt đó thường đã nằm trong giá. Bạn không được trả công cho cái thị trường đã biết. Bạn chỉ được trả công khi công ty vượt qua cái đã được kỳ vọng. Câu hỏi đúng không phải 'công ty này có tốt không' mà 'nó có tốt hơn mức giá đang đòi hỏi không'.</p></div>
+<div class="gap-q"><span class="q">"Làm sao một công ty kém hơn lại cho cổ phiếu lời hơn được?"</span><p>Sách có ví dụ Tyson Foods so với J&J Snack: Tyson lời trên vốn và tăng trưởng thấp hơn, nhưng cho lợi nhuận cổ phiếu cao gần gấp đôi. Vì kỳ vọng đặt vào Tyson thấp, nó chỉ cần làm khá hơn dự đoán là giá bật. Bar thấp mà vượt qua thắng bar cao mà chỉ đạt.</p></div>
+<div class="gap-q"><span class="q">"Chẳng phải Home Depot làm ăn cực tốt sao — sao cổ phiếu vẫn thua?"</span><p>Cuối 1999 giá Home Depot ngầm đòi tăng trưởng doanh thu 26% mỗi năm suốt 15 năm. Thực tế công ty đạt 13% — ấn tượng về tuyệt đối. Nhưng vẫn thấp xa cái kỳ vọng phi lý đã cài trong giá, nên cổ phiếu thua chỉ số tới 8% mỗi năm. Làm tốt vẫn thua nếu giá đòi hỏi điều bất khả.</p></div>
+<div class="gap-q"><span class="q">"Nếu giỏi cỡ nào cũng bị nâng bar, thì cố gắng để làm gì?"</span><p>Vẫn đáng, nhưng phải hiểu cho đúng thước đo. Ban lãnh đạo nên tập trung tăng giá trị nội tại dài hạn, đừng chạy theo việc 'đánh bại kỳ vọng' từng quý. Vòng xoáy kỳ vọng cho thấy vì sao lấy giá cổ phiếu ngắn hạn làm thước đo hiệu quả là sai. Nó đo cả kỳ vọng, không chỉ đo việc bạn làm.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví von &amp; ví dụ đời thường</span><h2>Neo vào thứ bạn đã biết</h2></div>
+    </div>
+    <div class="analogy-card"><span class="tag">Ví dụ trung tâm</span>
+<p>Nghĩ về <strong>hai học sinh và điểm kỳ vọng của thầy cô</strong>. Bạn A luôn được 10, cả trường tin chắc bạn ấy tuyệt đối. Bạn B thường được 6. Kỳ này A được 9, B được 7. A giỏi hơn hẳn về điểm số, nhưng A bị coi là 'tụt', còn B được khen 'tiến bộ vượt bậc'. Cái được khen không phải điểm cao, mà là <em>vượt qua cái người ta chờ đợi</em> ở bạn.</p>
+<p class="limit"><b>Chỗ ví von này hỏng:</b> kỳ vọng của thầy cô là cảm tính, mơ hồ và đứng yên khá lâu. Kỳ vọng của thị trường thì là một <em>cái giá cụ thể</em>, cập nhật liên tục và tự nâng lên ngay khi công ty vượt qua. Nó là băng chuyền tăng tốc, không phải ấn tượng cố định. Nên vượt kỳ vọng thị trường một lần không đủ — nó lập tức dựng một bar mới cao hơn cho lần sau.</p>
+</div>
+<p>So Tyson Foods với J&J Snack trong sách. Tyson chỉ tăng trưởng 3%, lời trên vốn 19%, nhưng cho lợi nhuận cổ phiếu 27% mỗi năm. J&J Snack tăng trưởng 6%, lời trên vốn 24% — 'công ty' nhỉnh hơn — nhưng cổ phiếu chỉ cho 14%. Khác biệt không nằm ở công ty nào tốt hơn, mà ở kỳ vọng cài trong giá lúc mua.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. <em>TSR</em> (total shareholder return) có thể tách thành nhiều phần: tăng trưởng, đổi biên lợi nhuận, và phần <em>đổi kỳ vọng</em> (thay đổi bội số định giá). Chính phần cuối này gây ra vòng xoáy: khi kỳ vọng đã cao, phần lớn TSR 'dễ' đã bị rút cạn. Đây là lý do sách khuyên đo hiệu quả ban lãnh đạo bằng tăng trưởng giá trị nội tại, không bằng TSR ngắn hạn — vốn lẫn cả kỳ vọng thị trường.</p>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">4</div>
+      <div class="step-meta"><span class="lbl">Kể lại gọn gàng</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Công ty tốt và cổ phiếu tốt không phải một. Giá cổ phiếu đã chứa sẵn kỳ vọng, nên bạn chỉ lời thêm khi công ty vượt cái kỳ vọng đó. Công ty xuất sắc bị định giá cho sự xuất sắc phải vượt một cái bar rất cao; công ty tầm thường có bar thấp, dễ vượt hơn. Mỗi lần vượt, bar lại bị nâng lên — như chạy trên băng chuyền tăng tốc.</p>
+<p class="core">Cổ phiếu lời hay lỗ không đo bằng công ty tốt cỡ nào — <span>cổ phiếu lời khi công ty vượt kỳ vọng, không phải khi công ty giỏi.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã hiểu chưa?</h3>
+      <ol>
+        <li>Vì sao mua cổ phiếu của công ty tốt nhất chưa chắc cho lợi nhuận tốt nhất?</li>
+        <li>Home Depot đạt tăng trưởng 13% rất ấn tượng, vì sao cổ phiếu vẫn thua chỉ số?</li>
+        <li>'Vòng xoáy kỳ vọng' nghĩa là gì, và vì sao nó khiến giá cổ phiếu ngắn hạn là thước đo hiệu quả sai?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nếu giải thích được cho bà ngoại hiểu, bạn mới thật sự hiểu.</p>
+  </footer>
+
+</div></div>
+<script>
+  var bar=document.getElementById('progress');
+  function upd(){var h=document.documentElement;var s=h.scrollTop||document.body.scrollTop;
+    var max=(h.scrollHeight-h.clientHeight)||1;bar.style.width=(s/max*100)+'%';}
+  window.addEventListener('scroll',upd,{passive:true});upd();
+  var io=new IntersectionObserver(function(es){es.forEach(function(e){
+    if(e.isIntersecting){e.target.style.animation='rise .7s cubic-bezier(.2,.7,.3,1) forwards';io.unobserve(e.target);}});},{threshold:.12});
+  document.querySelectorAll('section').forEach(function(s){s.style.opacity='0';io.observe(s);});
+</script>
+
+<script>
+(function(){
+  var tabs=[].slice.call(document.querySelectorAll('.tabbar .tab'));
+  var panels=[].slice.call(document.querySelectorAll('.concept-panel'));
+  function show(i){
+    tabs.forEach(function(t,j){t.classList.toggle('active',j===i);});
+    panels.forEach(function(p,j){
+      var on=(j===i); p.classList.toggle('active',on);
+      if(on){p.querySelectorAll('section').forEach(function(s){s.style.opacity='';s.style.animation='';});}
+    });
+    try{history.replaceState(null,'','#'+panels[i].id);}catch(e){}
+    window.scrollTo(0,0); window.dispatchEvent(new Event('scroll'));
+  }
+  tabs.forEach(function(t){t.addEventListener('click',function(){show(+t.getAttribute('data-i'));});});
+  var start=0; panels.forEach(function(p,j){if('#'+p.id===location.hash)start=j;});
+  show(start);
+})();
+</script>
+
+</body></html>

@@ -3,347 +3,379 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Chess Coach — Endgame Foundation</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,400&family=Geist:wght@300;400;500;600;700;800&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<title>Chess Coach — Mục lục</title>
 <style>
-*,*::before,*::after { box-sizing: border-box; margin: 0; padding: 0; }
-:root {
-  --bg: #fafaf7; --bg-elevated: #ffffff; --bg-card: #ffffff; --bg-soft: #f3f3ee;
-  --border: #e0e0d8; --border-soft: #ececea;
-  --text: #1a1a1f; --text-soft: #3f3f4a; --text-dim: #7a7a85;
-  --accent: #b8860b; --accent-2: #8b6508;
-  --serif: 'Fraunces', Georgia, serif; --sans: 'Geist', -apple-system, sans-serif; --mono: 'Geist Mono', monospace;
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ink:#1a2233;--muted:#4e5a74;--muted-2:#6b7691;
+  --line:#e4e9f2;--line-soft:#eef1f7;
+  --blue:#2f6fed;--blue-2:#2258c8;--cyan:#0fb6d4;
+  --chip:rgba(47,111,237,.08);--chip-bd:rgba(47,111,237,.20);
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+  --mono:ui-monospace,Menlo,Consolas,monospace;
+  --radius:18px;--shadow:0 1px 2px rgba(23,32,56,.06),0 12px 32px rgba(23,32,56,.10);
 }
-html { scroll-behavior: smooth; }
-body {
-  font-family: var(--sans); background: var(--bg); color: var(--text); line-height: 1.7;
-  font-size: 16px; min-height: 100vh;
-  background-image:
-    radial-gradient(ellipse 1200px 800px at 20% 0%, rgba(184,134,11,0.08), transparent),
-    radial-gradient(ellipse 800px 600px at 90% 50%, rgba(108,63,191,0.05), transparent),
-    radial-gradient(ellipse 1000px 700px at 50% 100%, rgba(13,128,116,0.05), transparent);
-}
-.hero {
-  padding: 80px 32px 56px; text-align: center; border-bottom: 1px solid var(--border);
-  position: relative; overflow: hidden;
-}
-.hero::before {
-  content: ''; position: absolute; inset: 0;
-  background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(184,134,11,0.03) 2px, rgba(184,134,11,0.03) 4px);
-  pointer-events: none;
-}
-.hero-eyebrow {
-  font-family: var(--mono); font-size: 12px; letter-spacing: 0.3em;
-  text-transform: uppercase; color: var(--accent); margin-bottom: 18px;
-}
-.hero h1 {
-  font-family: var(--serif); font-weight: 400;
-  font-size: clamp(40px, 7vw, 72px); line-height: 1.05;
-  letter-spacing: -0.03em; margin-bottom: 16px;
-}
-.hero h1 em { font-style: italic; color: var(--accent); font-weight: 300; }
-.hero-sub {
-  font-family: var(--serif); font-style: italic;
-  font-size: clamp(17px, 2vw, 21px); color: var(--text-soft);
-  max-width: 720px; margin: 0 auto;
-}
-.content { max-width: 980px; margin: 0 auto; padding: 56px 24px 80px; }
-.section-eyebrow {
-  font-family: var(--mono); font-size: 11px; letter-spacing: 0.3em;
-  text-transform: uppercase; color: var(--accent); margin-bottom: 8px;
-}
-.section-h2 {
-  font-family: var(--serif); font-size: clamp(28px, 4vw, 38px); font-weight: 400;
-  letter-spacing: -0.01em; line-height: 1.2; margin-bottom: 32px;
-}
-.section-h2 em { font-style: italic; color: var(--accent); font-weight: 300; }
-
-/* Chapter cards */
-.chapter-card {
-  display: block; text-decoration: none; color: inherit;
-  background: var(--bg-card); border: 1px solid var(--border); border-left: 4px solid var(--accent);
-  border-radius: 8px; padding: 28px 32px; margin-bottom: 18px;
-  transition: all 0.2s ease;
-}
-.chapter-card:hover {
-  transform: translateY(-2px); box-shadow: 0 8px 24px rgba(184,134,11,0.12);
-  border-color: var(--accent);
-}
-.chapter-card.coming-soon {
-  background: var(--bg-soft); border-style: dashed; border-color: var(--border);
-  cursor: default; opacity: 0.6;
-}
-.chapter-card.coming-soon:hover { transform: none; box-shadow: none; }
-.chapter-num {
-  font-family: var(--mono); font-size: 11px; letter-spacing: 0.3em;
-  text-transform: uppercase; color: var(--accent); font-weight: 600;
-  margin-bottom: 8px; display: block;
-}
-.coming-soon .chapter-num { color: var(--text-dim); }
-.chapter-title {
-  font-family: var(--serif); font-size: 26px; font-weight: 500;
-  color: var(--text); margin-bottom: 6px; line-height: 1.25;
-  letter-spacing: -0.01em;
-}
-.chapter-title em { font-style: italic; color: var(--accent); font-weight: 400; }
-.chapter-meta {
-  font-family: var(--mono); font-size: 12px; color: var(--text-dim);
-  margin-bottom: 12px; letter-spacing: 0.05em;
-}
-.chapter-desc {
-  font-family: var(--serif); font-style: italic; font-size: 16px;
-  color: var(--text-soft); line-height: 1.6;
-}
-.lessons-list {
-  margin-top: 16px; padding-top: 14px;
-  border-top: 1px solid var(--border-soft);
-  display: flex; flex-wrap: wrap; gap: 8px;
-}
-.lesson-pill {
-  display: inline-block; padding: 5px 12px;
-  background: rgba(184,134,11,0.08); color: var(--accent);
-  border: 1px solid rgba(184,134,11,0.2);
-  border-radius: 14px; font-size: 12px; font-weight: 500;
-  font-family: var(--sans); letter-spacing: 0.02em;
-}
-
-/* Resources box */
-.resources {
-  margin-top: 56px; padding: 24px 28px;
-  background: linear-gradient(135deg, rgba(184,134,11,0.08), rgba(139,101,8,0.04));
-  border: 1px solid rgba(184,134,11,0.25);
-  border-radius: 8px;
-}
-.resources-label {
-  font-family: var(--mono); font-size: 11px; letter-spacing: 0.25em;
-  color: var(--accent); text-transform: uppercase; margin-bottom: 12px; font-weight: 600;
-}
-.resources-title {
-  font-family: var(--serif); font-size: 19px; font-weight: 500;
-  color: var(--text); margin-bottom: 10px;
-}
-.resources p { color: var(--text-soft); margin-bottom: 8px; font-size: 14px; }
-.resources a { color: var(--accent); text-decoration: none; font-weight: 500; }
-.resources a:hover { color: var(--accent-2); text-decoration: underline; }
-.resources code {
-  background: var(--bg-elevated); padding: 2px 8px; border-radius: 3px;
-  font-family: var(--mono); font-size: 12px; color: var(--accent);
-  border: 1px solid var(--border);
-}
+html{scroll-behavior:smooth}
+body{font-family:var(--sans);color:var(--ink);line-height:1.65;font-size:16px;min-height:100vh;
+  background:radial-gradient(1200px 600px at 85% -10%,rgba(47,111,237,.14),transparent 60%),radial-gradient(1000px 640px at -10% 30%,rgba(15,182,212,.09),transparent 55%),linear-gradient(#f7f9fe,#edf0f8) fixed;}
+.topbar{max-width:1000px;margin:0 auto;padding:18px 24px 0;display:flex;gap:20px;font-size:13px;font-weight:600;flex-wrap:wrap}
+.topbar a{color:var(--muted);text-decoration:none;padding-bottom:5px;border-bottom:2px solid transparent;transition:.15s;cursor:pointer}
+.topbar a:hover{color:var(--blue)}
+.topbar a.active{color:var(--blue);border-bottom-color:var(--blue)}
+.hero{padding:56px 32px 44px;text-align:center;position:relative}
+.hero-eyebrow{font-size:12px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--blue);margin-bottom:16px}
+.hero h1{font-weight:800;font-size:clamp(38px,6.5vw,60px);line-height:1.05;letter-spacing:-.035em;color:var(--ink)}
+.hero h1 em{font-style:normal;color:inherit}
+.hero-sub{font-size:clamp(16px,2vw,19px);color:var(--muted);max-width:660px;margin:16px auto 0;line-height:1.6}
+.hero-sub em{font-style:italic;color:inherit}
+.content{max-width:1000px;margin:0 auto;padding:34px 24px 90px}
+.section-eyebrow{font-size:12px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--blue);margin-bottom:8px}
+.section-h2{font-weight:800;font-size:clamp(24px,4vw,32px);letter-spacing:-.025em;color:var(--ink);margin-bottom:26px}
+.section-h2 em{font-style:normal;color:inherit}
+.part-label{font-size:12px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--blue);margin:28px 0 16px;padding-bottom:9px;border-bottom:1px solid var(--line)}
+.part-label:first-of-type{margin-top:0}
+.chapter-card{display:block;text-decoration:none;color:inherit;background:linear-gradient(160deg,#fff,#f3f5fb);border:1px solid var(--line);border-left:4px solid var(--blue);border-radius:16px;padding:24px 28px;margin-bottom:16px;box-shadow:0 1px 2px rgba(23,32,56,.05);transition:transform .16s,box-shadow .16s,border-color .16s}
+.chapter-card:hover{transform:translateY(-3px);box-shadow:var(--shadow);border-left-color:var(--cyan)}
+.chapter-num{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--blue);font-weight:600;margin-bottom:8px;display:block}
+.chapter-title{font-weight:800;font-size:22px;color:var(--ink);margin-bottom:6px;line-height:1.25;letter-spacing:-.02em}
+.chapter-title em{font-style:normal;color:inherit}
+.chapter-meta{font-family:var(--mono);font-size:12px;color:var(--muted-2);margin-bottom:12px;letter-spacing:.02em}
+.chapter-desc{font-size:15.5px;color:var(--muted);line-height:1.6}
+.lessons-list{margin-top:16px;padding-top:14px;border-top:1px solid var(--line-soft);display:flex;flex-wrap:wrap;gap:8px}
+.lesson-pill{display:inline-block;padding:5px 12px;background:var(--chip);color:var(--blue);border:1px solid var(--chip-bd);border-radius:999px;font-size:12px;font-weight:600}
+.resources{margin-top:44px;padding:24px 28px;background:linear-gradient(160deg,#fff,#f3f5fb);border:1px solid var(--line);border-radius:16px;box-shadow:0 1px 2px rgba(23,32,56,.05)}
+.resources-label{font-size:11px;font-weight:700;letter-spacing:.16em;color:var(--blue);text-transform:uppercase;margin-bottom:10px}
+.resources-title{font-weight:700;font-size:18px;color:var(--ink);margin-bottom:10px}
+.resources p{color:var(--muted);margin-bottom:8px;font-size:14px}
+.resources a{color:var(--blue);text-decoration:none;font-weight:600}
+.resources a:hover{text-decoration:underline}
+.resources code{background:#eef2fb;padding:2px 8px;border-radius:5px;font-family:var(--mono);font-size:12px;color:var(--blue-2);border:1px solid var(--line)}
+.panel{display:none;animation:fade .25s ease}
+.panel.active{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.tuduy-card{display:flex;gap:20px;align-items:center;text-decoration:none;color:inherit;background:linear-gradient(160deg,#fff,#eef2fb);border:1px solid var(--chip-bd);border-radius:16px;padding:22px 28px;margin-top:16px;box-shadow:0 1px 2px rgba(23,32,56,.05);transition:transform .16s,box-shadow .16s}
+.tuduy-card:hover{transform:translateY(-3px);box-shadow:var(--shadow)}
+.tuduy-card .ic{font-size:34px}
+.tuduy-card h4{font-weight:800;font-size:19px;margin-bottom:4px;letter-spacing:-.02em}
+.tuduy-card p{color:var(--muted);font-size:15px}
 </style>
 </head>
 <body>
 
-<div style="max-width:980px;margin:0 auto;padding:16px 24px 0;display:flex;gap:18px;font-family:'Geist Mono',monospace;font-size:12px;letter-spacing:0.1em;">
-  <a href="index.html" style="color:#b8860b;text-decoration:none;padding-bottom:4px;border-bottom:2px solid #b8860b;">♔ ENDGAME</a>
-  <a href="index-middle.html" style="color:#7a7a85;text-decoration:none;padding-bottom:4px;border-bottom:2px solid transparent;">♞ MIDDLEGAME</a>
-  <a href="index-opening.html" style="color:#7a7a85;text-decoration:none;padding-bottom:4px;border-bottom:2px solid transparent;">♙ OPENING</a>
+<div class="topbar" id="topbar">
+  <a data-tab="endgame">♔ ENDGAME</a>
+  <a data-tab="middle">♞ MIDDLEGAME</a>
+  <a data-tab="opening">♙ OPENING</a>
+  <a href="tu-duy.html">🧠 TƯ DUY</a>
+  <a href="ky-thu.html">♟ KỲ THỦ</a>
 </div>
 
 <header class="hero">
-  <div class="hero-eyebrow">Chess Coach · Endgame Foundation</div>
+  <div class="hero-eyebrow">Chess Coach</div>
   <h1>Học cờ vua <em>tới nơi tới chốn</em></h1>
-  <p class="hero-sub">15 chương · 48 bài · bàn cờ tương tác — viết lại từ <em>100 Endgames You Must Know</em></p>
+  <p class="hero-sub" id="heroSub"></p>
 </header>
 
-<div class="content">
+<main class="content">
 
-  <div class="section-eyebrow">📘 Endgame</div>
-  <h2 class="section-h2">Chọn <em>chương</em> để bắt đầu</h2>
+  <!-- ===================== ENDGAME ===================== -->
+  <section class="panel" id="endgame">
+    <div class="section-eyebrow">📘 Endgame · 15 chương · 48 bài</div>
+    <h2 class="section-h2">Chọn <em>chương</em> để bắt đầu</h2>
 
-  <a class="chapter-card" href="01-king-pawn-vs-king/chapter_01_king_pawn_vs_king.html">
-    <span class="chapter-num">CHƯƠNG 01</span>
-    <div class="chapter-title">King + Pawn <em>vs</em> King</div>
-    <div class="chapter-meta">5 BÀI · FOUNDATION</div>
-    <div class="chapter-desc">Nguyên lý cơ bản nhất của endgame. Học cách 1 pawn quyết định ván cờ — rule of square, opposition, blocking, triangulation, và knight's pawn exception.</div>
-    <div class="lessons-list">
-      <span class="lesson-pill">01 · Rule of the Square</span>
-      <span class="lesson-pill">02 · Opposition</span>
-      <span class="lesson-pill">03 · Blocking the Way</span>
-      <span class="lesson-pill">04 · Losing Opposition</span>
-      <span class="lesson-pill">05 · Knight's Pawn</span>
+    <a class="chapter-card" href="01-king-pawn-vs-king/chapter_01_king_pawn_vs_king.html">
+      <span class="chapter-num">CHƯƠNG 01</span>
+      <div class="chapter-title">King + Pawn <em>vs</em> King</div>
+      <div class="chapter-meta">5 BÀI · FOUNDATION</div>
+      <div class="chapter-desc">Nguyên lý cơ bản nhất của endgame. Học cách 1 pawn quyết định ván cờ — rule of square, opposition, blocking, triangulation, và knight's pawn exception.</div>
+      <div class="lessons-list"><span class="lesson-pill">01 · Rule of the Square</span><span class="lesson-pill">02 · Opposition</span><span class="lesson-pill">03 · Blocking the Way</span><span class="lesson-pill">04 · Losing Opposition</span><span class="lesson-pill">05 · Knight's Pawn</span></div>
+    </a>
+    <a class="chapter-card" href="02-rooks-pawn/chapter_02_rooks_pawn.html">
+      <span class="chapter-num">CHƯƠNG 02</span>
+      <div class="chapter-title">Rook's Pawn <em>Exception</em></div>
+      <div class="chapter-meta">3 BÀI · FOUNDATION</div>
+      <div class="chapter-desc">Pawn cột a, h là exception lớn nhất trong K+P vs K. Khi defender ở góc thường hòa được. Tìm hiểu corner refuge, stalemate trap, và khi defender quá xa thì vẫn thua.</div>
+      <div class="lessons-list"><span class="lesson-pill">01 · Corner Refuge</span><span class="lesson-pill">02 · Stalemate Trap</span><span class="lesson-pill">03 · Defender Too Far</span></div>
+    </a>
+    <a class="chapter-card" href="03-pawn-patterns/chapter_03_pawn_patterns.html">
+      <span class="chapter-num">CHƯƠNG 03</span>
+      <div class="chapter-title">Pawn Endgame <em>Patterns</em></div>
+      <div class="chapter-meta">3 BÀI · INTERMEDIATE</div>
+      <div class="chapter-desc">Concepts mở rộng: distant opposition (đối vua qua khoảng cách), pawn race (cả 2 bên đua promote), outside passed pawn (decoy strategy với pawn cột biên).</div>
+      <div class="lessons-list"><span class="lesson-pill">01 · Distant Opposition</span><span class="lesson-pill">02 · Pawn Race</span><span class="lesson-pill">03 · Outside Passer</span></div>
+    </a>
+    <a class="chapter-card" href="04-rook-endgames/chapter_04_rook_endgames.html">
+      <span class="chapter-num">CHƯƠNG 04</span>
+      <div class="chapter-title">Rook <em>Endgames</em></div>
+      <div class="chapter-meta">3 BÀI · INTERMEDIATE → ADVANCED</div>
+      <div class="chapter-desc">Endgame phổ biến nhất trong cờ vua thực tế. Học 3 kỹ thuật cổ điển: Lucena (cây cầu thắng), Philidor (rank 6 hòa), và Tarrasch rule (rook sau passed pawn).</div>
+      <div class="lessons-list"><span class="lesson-pill">01 · Lucena Position</span><span class="lesson-pill">02 · Philidor Defense</span><span class="lesson-pill">03 · Rook Behind Pawn</span></div>
+    </a>
+    <a class="chapter-card" href="05-minor-pieces/chapter_05_minor_pieces.html">
+      <span class="chapter-num">CHƯƠNG 05</span>
+      <div class="chapter-title">Minor Piece <em>Endgames</em></div>
+      <div class="chapter-meta">3 BÀI · INTERMEDIATE</div>
+      <div class="chapter-desc">Bishop và Knight trong endgame. Màu bishop quyết định win vs draw với rook's pawn. Knight có thể stop pawn bằng cách chiếm promotion square trước.</div>
+      <div class="lessons-list"><span class="lesson-pill">01 · Wrong-Color Bishop</span><span class="lesson-pill">02 · Right-Color Bishop</span><span class="lesson-pill">03 · Knight Stops Pawn</span></div>
+    </a>
+    <a class="chapter-card" href="06-queen-endgames/chapter_06_queen_endgames.html">
+      <span class="chapter-num">CHƯƠNG 06</span>
+      <div class="chapter-title">Queen <em>Endgames</em></div>
+      <div class="chapter-meta">3 BÀI · ADVANCED</div>
+      <div class="chapter-desc">Hậu trong endgame: Q vs P (capture an toàn cần vua hỗ trợ), Karstedt's drawn case (Q vs rook's pawn drawn nếu vua xa), và K+Q vs K basic mate.</div>
+      <div class="lessons-list"><span class="lesson-pill">01 · Queen vs Pawn</span><span class="lesson-pill">02 · Karstedt's Drawn</span><span class="lesson-pill">03 · K+Q vs K Mate</span></div>
+    </a>
+    <a class="chapter-card" href="07-tactics/chapter_07_tactics.html">
+      <span class="chapter-num">CHƯƠNG 07</span>
+      <div class="chapter-title">Endgame <em>Tactics</em></div>
+      <div class="chapter-meta">3 BÀI · INTERMEDIATE</div>
+      <div class="chapter-desc">Tactical patterns trong endgame: Skewer (xiên 2 quân), Reti's diagonal king walk (1921 famous study), và Knight Fork (royal fork).</div>
+      <div class="lessons-list"><span class="lesson-pill">01 · Skewer</span><span class="lesson-pill">02 · Reti's Study</span><span class="lesson-pill">03 · Knight Fork</span></div>
+    </a>
+    <a class="chapter-card" href="08-more-tactics/chapter_08_more_tactics.html">
+      <span class="chapter-num">CHƯƠNG 08</span>
+      <div class="chapter-title">More Endgame <em>Tactics</em></div>
+      <div class="chapter-meta">3 BÀI · ADVANCED</div>
+      <div class="chapter-desc">Tactics nâng cao: Saavedra Position 1895 (under-promote rook), Discovered Check (2 quân tấn công), và Knight Underpromotion Fork (royal fork qua promotion).</div>
+      <div class="lessons-list"><span class="lesson-pill">01 · Saavedra Position</span><span class="lesson-pill">02 · Discovered Check</span><span class="lesson-pill">03 · Knight Underpromote</span></div>
+    </a>
+    <a class="chapter-card" href="09-endgame-strategy/chapter_09_endgame_strategy.html">
+      <span class="chapter-num">CHƯƠNG 09</span>
+      <div class="chapter-title">Endgame <em>Strategy</em></div>
+      <div class="chapter-meta">3 BÀI · INTERMEDIATE</div>
+      <div class="chapter-desc">Chiến lược endgame: Active King (vua hoạt động), King Escort Pawn (vua đi cùng pawn), và Connected Passers (2 pawn liên kết bằng rook).</div>
+      <div class="lessons-list"><span class="lesson-pill">01 · Active King</span><span class="lesson-pill">02 · King Escort Pawn</span><span class="lesson-pill">03 · Connected Passers</span></div>
+    </a>
+    <a class="chapter-card" href="10-drawing/chapter_10_drawing.html">
+      <span class="chapter-num">CHƯƠNG 10</span>
+      <div class="chapter-title">Drawing <em>Techniques</em></div>
+      <div class="chapter-meta">3 BÀI · ADVANCED</div>
+      <div class="chapter-desc">Kỹ thuật hòa: K+2N vs K (theoretical drawn), Wrong Bishop + h-Pawn (h-corner), và Insufficient Material rule (auto-drawn theo FIDE).</div>
+      <div class="lessons-list"><span class="lesson-pill">01 · K + 2N vs K Drawn</span><span class="lesson-pill">02 · Wrong Bishop + h-Pawn</span><span class="lesson-pill">03 · Insufficient Material</span></div>
+    </a>
+    <a class="chapter-card" href="11-combinations/chapter_11_combinations.html">
+      <span class="chapter-num">CHƯƠNG 11</span>
+      <div class="chapter-title">Combinations <em>&amp; Sacrifices</em></div>
+      <div class="chapter-meta">3 BÀI · INTERMEDIATE</div>
+      <div class="chapter-desc">Combinations cuối: Pawn Breakthrough (3v3 sacrifice), Discovered Attack on Q (B sac + R wins Q), và Back-Rank Mate (mate hàng cuối phổ biến nhất).</div>
+      <div class="lessons-list"><span class="lesson-pill">01 · Pawn Breakthrough</span><span class="lesson-pill">02 · Discovered Attack</span><span class="lesson-pill">03 · Back-Rank Mate</span></div>
+    </a>
+    <a class="chapter-card" href="12-mating-patterns/chapter_12_mating_patterns.html">
+      <span class="chapter-num">CHƯƠNG 12</span>
+      <div class="chapter-title">Mating <em>Patterns</em></div>
+      <div class="chapter-meta">3 BÀI · INTERMEDIATE</div>
+      <div class="chapter-desc">3 mate cổ điển: Smothered Mate (Philidor's Legacy), Anastasia's Mate (Knight + Rook duo), và Arabian Mate (pattern thế kỷ 9 từ shatranj Ả Rập).</div>
+      <div class="lessons-list"><span class="lesson-pill">01 · Smothered Mate</span><span class="lesson-pill">02 · Anastasia's Mate</span><span class="lesson-pill">03 · Arabian Mate</span></div>
+    </a>
+    <a class="chapter-card" href="13-defensive/chapter_13_defensive.html">
+      <span class="chapter-num">CHƯƠNG 13</span>
+      <div class="chapter-title">Defensive <em>Resources</em></div>
+      <div class="chapter-meta">3 BÀI · INTERMEDIATE</div>
+      <div class="chapter-desc">3 lá chắn cứu hòa: Perpetual Check (chiếu mãi), Threefold Repetition (lặp 3 lần), và Active King Defense (Steinitz: vua là chiến binh trong endgame).</div>
+      <div class="lessons-list"><span class="lesson-pill">01 · Perpetual Check</span><span class="lesson-pill">02 · Threefold Repetition</span><span class="lesson-pill">03 · Active King Defense</span></div>
+    </a>
+    <a class="chapter-card" href="14-more-combinations/chapter_14_more_combinations.html">
+      <span class="chapter-num">CHƯƠNG 14</span>
+      <div class="chapter-title">More <em>Combinations</em></div>
+      <div class="chapter-meta">3 BÀI · INTERMEDIATE</div>
+      <div class="chapter-desc">3 tactic combination: Removing the Defender (Q sac to expose mate), Trapping a Knight (knight on rim is dim), và Pin Tactic (pile on pinned piece).</div>
+      <div class="lessons-list"><span class="lesson-pill">01 · Remove Defender</span><span class="lesson-pill">02 · Trap Knight</span><span class="lesson-pill">03 · Pin Tactic</span></div>
+    </a>
+    <a class="chapter-card" href="15-sacrifices/chapter_15_sacrifices.html">
+      <span class="chapter-num">CHƯƠNG 15</span>
+      <div class="chapter-title">The Art of <em>Sacrifice</em></div>
+      <div class="chapter-meta">4 BÀI · INTERMEDIATE → ADVANCED</div>
+      <div class="chapter-desc">Nghệ thuật hy sinh: Greek Gift (Bxh7+ mở pháo đài vua), Queen Sac → Smothered Mate (Philidor's Legacy), Pawn Breakthrough (thí tốt tạo tốt thông), và Deflection &amp; Decoy (đánh lạc / dụ quân). Mọi thế cờ đã verify bằng engine.</div>
+      <div class="lessons-list"><span class="lesson-pill">01 · Greek Gift</span><span class="lesson-pill">02 · Smothered Mate</span><span class="lesson-pill">03 · Breakthrough</span><span class="lesson-pill">04 · Deflection &amp; Decoy</span></div>
+    </a>
+
+    <div class="resources">
+      <div class="resources-label">📖 Tài liệu tham khảo</div>
+      <div class="resources-title">README.md — pattern recognition cheat sheet</div>
+      <p><a href="README.md">Mở README.md</a> để xem tổng hợp 44 bài với pattern cheat sheet (offline-friendly, không cần browser).</p>
+      <p style="margin-top:14px"><strong style="color:var(--text)">Cách dùng</strong>: Bấm vào card chương để mở. Trong chương: tab điều hướng các bài, phím tắt <code>Alt + ←/→</code>.</p>
+    </div>
+  </section>
+
+  <!-- ===================== MIDDLEGAME ===================== -->
+  <section class="panel" id="middle">
+    <div class="section-eyebrow">♞ Middlegame · 5 chủ đề</div>
+    <h2 class="section-h2">Chọn <em>chương</em> để bắt đầu</h2>
+
+    <a class="chapter-card" href="m01-elements/chapter_m01_elements.html">
+      <span class="chapter-num">CHƯƠNG 01</span>
+      <div class="chapter-title">Ba yếu tố — <em>Lực · Không gian · Thời gian</em></div>
+      <div class="chapter-meta">3 BÀI · NỀN TẢNG → INTERMEDIATE</div>
+      <div class="chapter-desc">Xương sống tư duy Znosko-Borovsky: mọi thế cờ được cân–đo bằng ba yếu tố. Lực (đòn đôi thắng quân), Thời gian (dẫn trước phát triển → bẫy Légal), và Không gian (phá vỡ trung tâm).</div>
+      <div class="lessons-list"><span class="lesson-pill">01 · Lực — Đòn đôi (Royal Fork)</span><span class="lesson-pill">02 · Thời gian — Légal's Mate</span><span class="lesson-pill">03 · Không gian — Phá trung tâm d5</span></div>
+    </a>
+    <a class="chapter-card" href="m02-king-attack/chapter_m02_king_attack.html">
+      <span class="chapter-num">CHƯƠNG 02</span>
+      <div class="chapter-title">Tấn công Vua — <em>Hy sinh chiếu hết</em></div>
+      <div class="chapter-meta">3 BÀI · ADVANCED · ván cờ lịch sử</div>
+      <div class="chapter-desc">Ba đòn hy sinh chiếu hết kinh điển CÓ THẬT: Boden's Mate (hai tượng chéo cắt), Réti–Tartakower 1910 (thí Hậu + chiếu đôi), và Lasker–Thomas 1912 (săn vua h7→g1). Mọi nước verify bằng engine.</div>
+      <div class="lessons-list"><span class="lesson-pill">01 · Boden's Mate</span><span class="lesson-pill">02 · Réti–Tartakower</span><span class="lesson-pill">03 · Lasker — Săn vua</span></div>
+    </a>
+    <a class="chapter-card" href="m03-open-files/chapter_m03_open_files.html">
+      <span class="chapter-num">CHƯƠNG 03</span>
+      <div class="chapter-title">Cột mở &amp; <em>Quân mạnh</em></div>
+      <div class="chapter-meta">3 BÀI · INTERMEDIATE → ADVANCED</div>
+      <div class="chapter-desc">Sức mạnh quân trên đường mở &amp; ô mạnh: nhân đôi xe đột nhập hàng cuối (chiếu hết), bồi đòn lên con bị ghim, và mã tiền đồn tung đòn mở thắng Hậu. Mọi nước verify bằng engine.</div>
+      <div class="lessons-list"><span class="lesson-pill">01 · Cột mở → hàng cuối</span><span class="lesson-pill">02 · Bồi đòn ghim</span><span class="lesson-pill">03 · Mã tiền đồn (đòn mở)</span></div>
+    </a>
+    <a class="chapter-card" href="m04-tactics/chapter_m04_tactics.html">
+      <span class="chapter-num">CHƯƠNG 04</span>
+      <div class="chapter-title">Đòn phối hợp <em>trung cuộc</em></div>
+      <div class="chapter-meta">3 BÀI · INTERMEDIATE → ADVANCED</div>
+      <div class="chapter-desc">Ba mũi nhọn chiến thuật: vồ quân trung tâm bằng nước xen (Zwischenzug), đánh lạc hướng → chiếu hết hàng cuối, và đòn mở của xe kèm chiếu + nĩa mã. Mọi nước verify bằng engine.</div>
+      <div class="lessons-list"><span class="lesson-pill">01 · Vồ quân trung tâm</span><span class="lesson-pill">02 · Đánh lạc hướng hàng cuối</span><span class="lesson-pill">03 · Đòn mở + nĩa</span></div>
+    </a>
+    <a class="chapter-card" href="m05-finishing/chapter_m05_finishing.html">
+      <span class="chapter-num">CHƯƠNG 05</span>
+      <div class="chapter-title">Phản công &amp; <em>Đòn kết liễu</em></div>
+      <div class="chapter-meta">3 BÀI · INTERMEDIATE → ADVANCED</div>
+      <div class="chapter-desc">Ba đòn quyết định khép ván: thí Hậu chiếu hết hàng cuối, nĩa hoàng gia phản công thắng Hậu, và khai thác quân quá tải. Mọi nước verify bằng engine.</div>
+      <div class="lessons-list"><span class="lesson-pill">01 · Thí Hậu chiếu hết</span><span class="lesson-pill">02 · Nĩa hoàng gia</span><span class="lesson-pill">03 · Quân quá tải</span></div>
+    </a>
+
+    <div class="resources">
+      <div class="resources-label">📖 Nguồn &amp; cách dùng</div>
+      <div class="resources-title">Chắt lọc từ hai cuốn trong <code>_src/library/</code></div>
+      <p>Nội dung dựa trên <em>The Middle Game in Chess</em> (Eugene Znosko-Borovsky) và <em>Techniques of the Middle Game in Chess</em>. Mọi thế cờ &amp; nước đi đều được kiểm tra bằng engine (Stockfish) trước khi đưa vào.</p>
+      <p style="margin-top:14px"><strong style="color:var(--text)">Cách dùng</strong>: Bấm card chương để mở. Trong chương: tab điều hướng các bài, mỗi bài có bàn cờ tương tác (Tiến/Lùi/Reset) + 5 chặng học.</p>
+    </div>
+  </section>
+
+  <!-- ===================== OPENING ===================== -->
+  <section class="panel" id="opening">
+    <div class="section-eyebrow">♙ Opening · repertoire trọn gói</div>
+    <h2 class="section-h2">Bộ <em>khai cuộc</em> — bước main line + hiểu kế hoạch</h2>
+
+    <div class="part-label">Phần Trắng · 1.e4 — "Keep It Simple"</div>
+    <a class="chapter-card" href="o1-e5-scotch/chapter_o1_scotch.html">
+      <span class="chapter-num">CHƯƠNG 01 · TRẮNG</span>
+      <div class="chapter-title">vs 1…e5 — <em>Scotch Four Knights</em></div>
+      <div class="chapter-meta">3 BÀI · NỀN TẢNG → Trung cấp</div>
+      <div class="chapter-desc">Vũ khí chính của KIS chống 1…e5: 2.Nf3 Nc6 3.Nc3 Nf6 4.d4! — cấu trúc rõ ràng, dễ chơi. Cùng cách xử lý Petroff.</div>
+      <div class="lessons-list"><span class="lesson-pill">01 · Main 5…Bb4 (tabiya 10.h3)</span><span class="lesson-pill">02 · 5…Bc5</span><span class="lesson-pill">03 · Petroff 2…Nf6</span></div>
+    </a>
+    <a class="chapter-card" href="o2-sicilian-bb5/chapter_o2_bb5.html">
+      <span class="chapter-num">CHƯƠNG 02 · TRẮNG</span>
+      <div class="chapter-title">vs Sicilian — <em>Rossolimo &amp; Moscow</em></div>
+      <div class="chapter-meta">3 BÀI · Trung cấp</div>
+      <div class="chapter-desc">Tránh "rừng lý thuyết" Sicilian Mở bằng 3.Bb5: Rossolimo (2.Nf3 Nc6 3.Bb5) và Moscow (2.Nf3 d6 3.Bb5+). Cấu trúc &amp; kế hoạch đơn giản.</div>
+      <div class="lessons-list"><span class="lesson-pill">01 · Rossolimo 3…g6</span><span class="lesson-pill">02 · Rossolimo 3…e6</span><span class="lesson-pill">03 · Moscow → Maroczy</span></div>
+    </a>
+    <a class="chapter-card" href="o3-caro-french/chapter_o3_caro_french.html">
+      <span class="chapter-num">CHƯƠNG 03 · TRẮNG</span>
+      <div class="chapter-title">vs Caro-Kann &amp; French — <em>Two Knights &amp; Exchange</em></div>
+      <div class="chapter-meta">3 BÀI · Trung cấp</div>
+      <div class="chapter-desc">Caro-Kann: 2.Nc3 + 3.Nf3 (Two Knights). French: Exchange 2.d4 d5 3.exd5. Cộng cách bắt nạt Scandinavian 1…d5.</div>
+      <div class="lessons-list"><span class="lesson-pill">01 · Caro Two Knights</span><span class="lesson-pill">02 · French Exchange</span><span class="lesson-pill">03 · Scandinavian</span></div>
+    </a>
+
+    <div class="part-label">Phần Đen · Repertoire "Explained"</div>
+    <a class="chapter-card" href="o4-acc-dragon/chapter_o4_dragon.html">
+      <span class="chapter-num">CHƯƠNG 04 · ĐEN</span>
+      <div class="chapter-title">vs 1.e4 — <em>Accelerated Dragon</em></div>
+      <div class="chapter-meta">3 BÀI · Trung cấp → Nâng cao</div>
+      <div class="chapter-desc">1…c5 2.Nf3 Nc6 3.d4 cxd4 4.Nxd4 g6 — linh hoạt, ít lý thuyết "bắt buộc", nhắm đòn …d5. Xử lý Maroczy Bind &amp; Anti-Sicilian.</div>
+      <div class="lessons-list"><span class="lesson-pill">01 · Main line + đòn …d5</span><span class="lesson-pill">02 · Maroczy Bind</span><span class="lesson-pill">03 · Anti-Sicilian</span></div>
+    </a>
+    <a class="chapter-card" href="o5-nimzo-bogo/chapter_o5_nimzo.html">
+      <span class="chapter-num">CHƯƠNG 05 · ĐEN</span>
+      <div class="chapter-title">vs 1.d4 — <em>Nimzo &amp; Bogo-Indian</em></div>
+      <div class="chapter-meta">3 BÀI · Trung cấp → Nâng cao</div>
+      <div class="chapter-desc">1…Nf6 2.c4 e6: 3.Nc3 Bb4 (Nimzo-Indian) ghim mã &amp; phá cấu trúc tốt; 3.Nf3 Bb4+ (Bogo-Indian). Kèm ý đồ chống London/Torre.</div>
+      <div class="lessons-list"><span class="lesson-pill">01 · Nimzo 4.e3</span><span class="lesson-pill">02 · Nimzo 4.Qc2</span><span class="lesson-pill">03 · Bogo-Indian</span></div>
+    </a>
+
+    <div class="part-label">Khai cuộc kinh điển · Hiểu ý tưởng — "The complete 1.e4"</div>
+    <a class="chapter-card" href="o6-classic-e5/chapter_o6_classic.html">
+      <span class="chapter-num">CHƯƠNG 06 · Ý TƯỞNG</span>
+      <div class="chapter-title">Kinh điển <em>1.e4 e5</em></div>
+      <div class="chapter-meta">4 BÀI · Trung cấp → Nâng cao</div>
+      <div class="chapter-desc">Bốn khai cuộc 1.e4 e5 nổi tiếng nhất mà repertoire bỏ qua — hiểu ý tưởng cho cả hai bên: Ruy Lopez, Ván Ý, King&#39;s Gambit, Evans Gambit.</div>
+      <div class="lessons-list"><span class="lesson-pill">01 · Ruy Lopez</span><span class="lesson-pill">02 · Ván Ý (Giuoco)</span><span class="lesson-pill">03 · King&#39;s Gambit</span><span class="lesson-pill">04 · Evans Gambit</span></div>
+    </a>
+    <a class="chapter-card" href="o7-sicilian-survey/chapter_o7_survey.html">
+      <span class="chapter-num">CHƯƠNG 07 · Ý TƯỞNG</span>
+      <div class="chapter-title">Toàn cảnh <em>Sicilian</em></div>
+      <div class="chapter-meta">4 BÀI · Nâng cao</div>
+      <div class="chapter-desc">Bốn Sicilian lớn repertoire né bằng Rossolimo/Moscow — hiểu ý tưởng: Najdorf (linh hoạt), Dragon (Yugoslav Attack), Sveshnikov, Taimanov.</div>
+      <div class="lessons-list"><span class="lesson-pill">01 · Najdorf</span><span class="lesson-pill">02 · Dragon</span><span class="lesson-pill">03 · Sveshnikov</span><span class="lesson-pill">04 · Taimanov</span></div>
+    </a>
+    <a class="chapter-card" href="o8-semiopen-survey/chapter_o8_survey.html">
+      <span class="chapter-num">CHƯƠNG 08 · Ý TƯỞNG</span>
+      <div class="chapter-title">Toàn cảnh <em>nửa-mở</em></div>
+      <div class="chapter-meta">4 BÀI · Trung cấp → Nâng cao</div>
+      <div class="chapter-desc">Bốn phòng thủ nửa-mở chính chống 1.e4 — hiểu ý tưởng: French Winawer (sắc bén), Caro-Kann Cổ điển (vững), Pirc/Modern &amp; Alekhine (siêu hiện đại).</div>
+      <div class="lessons-list"><span class="lesson-pill">01 · French Winawer</span><span class="lesson-pill">02 · Caro-Kann Cổ điển</span><span class="lesson-pill">03 · Pirc / Modern</span><span class="lesson-pill">04 · Alekhine</span></div>
+    </a>
+
+    <div class="part-label">Khai cuộc 1.d4 &amp; cánh · Hiểu ý tưởng — lý thuyết kinh điển</div>
+    <a class="chapter-card" href="o9-closed-d4/chapter_o9_closed.html">
+      <span class="chapter-num">CHƯƠNG 09 · Ý TƯỞNG</span>
+      <div class="chapter-title">1.d4 d5 — <em>Khai cuộc đóng</em></div>
+      <div class="chapter-meta">4 BÀI · Trung cấp → Nâng cao</div>
+      <div class="chapter-desc">Bốn cách chơi 1.d4 d5 — hiểu ý tưởng: Gambit Hậu từ chối (QGD), Gambit Hậu nhận (QGA), Slav, Catalan.</div>
+      <div class="lessons-list"><span class="lesson-pill">01 · QGD (từ chối)</span><span class="lesson-pill">02 · QGA (nhận)</span><span class="lesson-pill">03 · Slav</span><span class="lesson-pill">04 · Catalan</span></div>
+    </a>
+    <a class="chapter-card" href="o10-indian/chapter_o10_indian.html">
+      <span class="chapter-num">CHƯƠNG 10 · Ý TƯỞNG</span>
+      <div class="chapter-title">Phòng thủ <em>Ấn Độ</em></div>
+      <div class="chapter-meta">4 BÀI · Nâng cao</div>
+      <div class="chapter-desc">Bốn phòng thủ Ấn Độ chống 1.d4 — hiểu ý tưởng: King&#39;s Indian (đôi công), Grünfeld (công phá tâm), Queen&#39;s Indian, Benoni hiện đại.</div>
+      <div class="lessons-list"><span class="lesson-pill">01 · King&#39;s Indian</span><span class="lesson-pill">02 · Grünfeld</span><span class="lesson-pill">03 · Queen&#39;s Indian</span><span class="lesson-pill">04 · Benoni</span></div>
+    </a>
+    <a class="chapter-card" href="o11-flank/chapter_o11_flank.html">
+      <span class="chapter-num">CHƯƠNG 11 · Ý TƯỞNG</span>
+      <div class="chapter-title">Cánh <em>&amp; hệ thống</em></div>
+      <div class="chapter-meta">4 BÀI · Cơ bản → Nâng cao</div>
+      <div class="chapter-desc">Bốn khai cuộc cánh/hệ thống ngoài 1.e4/1.d4 d5 — hiểu ý tưởng: Anh (1.c4), Réti (1.Nf3), Hà Lan (1…f5), London.</div>
+      <div class="lessons-list"><span class="lesson-pill">01 · Khai cuộc Anh</span><span class="lesson-pill">02 · Réti</span><span class="lesson-pill">03 · Hà Lan (Dutch)</span><span class="lesson-pill">04 · London</span></div>
+    </a>
+
+    <div class="resources">
+      <div class="resources-label">📖 Nguồn &amp; cách dùng</div>
+      <div class="resources-title">Ba cuốn trong <code>_src/library/</code></div>
+      <p>Trắng: <em>Keep It Simple: 1.e4</em> — Christof Sielecki. Đen: <em>Chess Openings for Black, Explained</em> — Alburt, Dzindzichashvili &amp; Perelshteyn. Hiểu ý tưởng: <em>Chess Opening Essentials — The complete 1.e4</em> — Djurić, Komarov &amp; Pantaleoni. Mỗi bài bước qua main line trên bàn cờ tương tác (Tiến/Lùi) kèm giải thích ý đồ. Mọi nước đã kiểm tra hợp lệ bằng engine.</p>
+    </div>
+  </section>
+
+  <!-- Tư duy promo (hiện ở mọi tab) -->
+  <a class="tuduy-card" href="tu-duy.html">
+    <span class="ic">🧠</span>
+    <div>
+      <h4>Tư duy — nghĩ gì trước mỗi nước</h4>
+      <p>Khung ra quyết định + luyện phản xạ. Không dạy nước cụ thể — luyện quy trình chạy trong đầu mỗi lượt.</p>
     </div>
   </a>
 
-  <a class="chapter-card" href="02-rooks-pawn/chapter_02_rooks_pawn.html">
-    <span class="chapter-num">CHƯƠNG 02</span>
-    <div class="chapter-title">Rook's Pawn <em>Exception</em></div>
-    <div class="chapter-meta">3 BÀI · FOUNDATION</div>
-    <div class="chapter-desc">Pawn cột a, h là exception lớn nhất trong K+P vs K. Khi defender ở góc thường hòa được. Tìm hiểu corner refuge, stalemate trap, và khi defender quá xa thì vẫn thua.</div>
-    <div class="lessons-list">
-      <span class="lesson-pill">01 · Corner Refuge</span>
-      <span class="lesson-pill">02 · Stalemate Trap</span>
-      <span class="lesson-pill">03 · Defender Too Far</span>
-    </div>
-  </a>
+</main>
 
-  <a class="chapter-card" href="03-pawn-patterns/chapter_03_pawn_patterns.html">
-    <span class="chapter-num">CHƯƠNG 03</span>
-    <div class="chapter-title">Pawn Endgame <em>Patterns</em></div>
-    <div class="chapter-meta">3 BÀI · INTERMEDIATE</div>
-    <div class="chapter-desc">Concepts mở rộng: distant opposition (đối vua qua khoảng cách), pawn race (cả 2 bên đua promote), outside passed pawn (decoy strategy với pawn cột biên).</div>
-    <div class="lessons-list">
-      <span class="lesson-pill">01 · Distant Opposition</span>
-      <span class="lesson-pill">02 · Pawn Race</span>
-      <span class="lesson-pill">03 · Outside Passer</span>
-    </div>
-  </a>
-
-  <a class="chapter-card" href="04-rook-endgames/chapter_04_rook_endgames.html">
-    <span class="chapter-num">CHƯƠNG 04</span>
-    <div class="chapter-title">Rook <em>Endgames</em></div>
-    <div class="chapter-meta">3 BÀI · INTERMEDIATE → ADVANCED</div>
-    <div class="chapter-desc">Endgame phổ biến nhất trong cờ vua thực tế. Học 3 kỹ thuật cổ điển: Lucena (cây cầu thắng), Philidor (rank 6 hòa), và Tarrasch rule (rook sau passed pawn).</div>
-    <div class="lessons-list">
-      <span class="lesson-pill">01 · Lucena Position</span>
-      <span class="lesson-pill">02 · Philidor Defense</span>
-      <span class="lesson-pill">03 · Rook Behind Pawn</span>
-    </div>
-  </a>
-
-  <a class="chapter-card" href="05-minor-pieces/chapter_05_minor_pieces.html">
-    <span class="chapter-num">CHƯƠNG 05</span>
-    <div class="chapter-title">Minor Piece <em>Endgames</em></div>
-    <div class="chapter-meta">3 BÀI · INTERMEDIATE</div>
-    <div class="chapter-desc">Bishop và Knight trong endgame. Màu bishop quyết định win vs draw với rook's pawn. Knight có thể stop pawn bằng cách chiếm promotion square trước.</div>
-    <div class="lessons-list">
-      <span class="lesson-pill">01 · Wrong-Color Bishop</span>
-      <span class="lesson-pill">02 · Right-Color Bishop</span>
-      <span class="lesson-pill">03 · Knight Stops Pawn</span>
-    </div>
-  </a>
-
-  <a class="chapter-card" href="06-queen-endgames/chapter_06_queen_endgames.html">
-    <span class="chapter-num">CHƯƠNG 06</span>
-    <div class="chapter-title">Queen <em>Endgames</em></div>
-    <div class="chapter-meta">3 BÀI · ADVANCED</div>
-    <div class="chapter-desc">Hậu trong endgame: Q vs P (capture an toàn cần vua hỗ trợ), Karstedt's drawn case (Q vs rook's pawn drawn nếu vua xa), và K+Q vs K basic mate.</div>
-    <div class="lessons-list">
-      <span class="lesson-pill">01 · Queen vs Pawn</span>
-      <span class="lesson-pill">02 · Karstedt's Drawn</span>
-      <span class="lesson-pill">03 · K+Q vs K Mate</span>
-    </div>
-  </a>
-
-  <a class="chapter-card" href="07-tactics/chapter_07_tactics.html">
-    <span class="chapter-num">CHƯƠNG 07</span>
-    <div class="chapter-title">Endgame <em>Tactics</em></div>
-    <div class="chapter-meta">3 BÀI · INTERMEDIATE</div>
-    <div class="chapter-desc">Tactical patterns trong endgame: Skewer (xiên 2 quân), Reti's diagonal king walk (1921 famous study), và Knight Fork (royal fork).</div>
-    <div class="lessons-list">
-      <span class="lesson-pill">01 · Skewer</span>
-      <span class="lesson-pill">02 · Reti's Study</span>
-      <span class="lesson-pill">03 · Knight Fork</span>
-    </div>
-  </a>
-
-  <a class="chapter-card" href="08-more-tactics/chapter_08_more_tactics.html">
-    <span class="chapter-num">CHƯƠNG 08</span>
-    <div class="chapter-title">More Endgame <em>Tactics</em></div>
-    <div class="chapter-meta">3 BÀI · ADVANCED</div>
-    <div class="chapter-desc">Tactics nâng cao: Saavedra Position 1895 (under-promote rook), Discovered Check (2 quân tấn công), và Knight Underpromotion Fork (royal fork qua promotion).</div>
-    <div class="lessons-list">
-      <span class="lesson-pill">01 · Saavedra Position</span>
-      <span class="lesson-pill">02 · Discovered Check</span>
-      <span class="lesson-pill">03 · Knight Underpromote</span>
-    </div>
-  </a>
-
-  <a class="chapter-card" href="09-endgame-strategy/chapter_09_endgame_strategy.html">
-    <span class="chapter-num">CHƯƠNG 09</span>
-    <div class="chapter-title">Endgame <em>Strategy</em></div>
-    <div class="chapter-meta">3 BÀI · INTERMEDIATE</div>
-    <div class="chapter-desc">Chiến lược endgame: Active King (vua hoạt động), King Escort Pawn (vua đi cùng pawn), và Connected Passers (2 pawn liên kết bằng rook).</div>
-    <div class="lessons-list">
-      <span class="lesson-pill">01 · Active King</span>
-      <span class="lesson-pill">02 · King Escort Pawn</span>
-      <span class="lesson-pill">03 · Connected Passers</span>
-    </div>
-  </a>
-
-  <a class="chapter-card" href="10-drawing/chapter_10_drawing.html">
-    <span class="chapter-num">CHƯƠNG 10</span>
-    <div class="chapter-title">Drawing <em>Techniques</em></div>
-    <div class="chapter-meta">3 BÀI · ADVANCED</div>
-    <div class="chapter-desc">Kỹ thuật hòa: K+2N vs K (theoretical drawn), Wrong Bishop + h-Pawn (h-corner), và Insufficient Material rule (auto-drawn theo FIDE).</div>
-    <div class="lessons-list">
-      <span class="lesson-pill">01 · K + 2N vs K Drawn</span>
-      <span class="lesson-pill">02 · Wrong Bishop + h-Pawn</span>
-      <span class="lesson-pill">03 · Insufficient Material</span>
-    </div>
-  </a>
-
-  <a class="chapter-card" href="11-combinations/chapter_11_combinations.html">
-    <span class="chapter-num">CHƯƠNG 11</span>
-    <div class="chapter-title">Combinations <em>&amp; Sacrifices</em></div>
-    <div class="chapter-meta">3 BÀI · INTERMEDIATE</div>
-    <div class="chapter-desc">Combinations cuối: Pawn Breakthrough (3v3 sacrifice), Discovered Attack on Q (B sac + R wins Q), và Back-Rank Mate (mate hàng cuối phổ biến nhất).</div>
-    <div class="lessons-list">
-      <span class="lesson-pill">01 · Pawn Breakthrough</span>
-      <span class="lesson-pill">02 · Discovered Attack</span>
-      <span class="lesson-pill">03 · Back-Rank Mate</span>
-    </div>
-  </a>
-
-  <a class="chapter-card" href="12-mating-patterns/chapter_12_mating_patterns.html">
-    <span class="chapter-num">CHƯƠNG 12</span>
-    <div class="chapter-title">Mating <em>Patterns</em></div>
-    <div class="chapter-meta">3 BÀI · INTERMEDIATE</div>
-    <div class="chapter-desc">3 mate cổ điển: Smothered Mate (Philidor's Legacy), Anastasia's Mate (Knight + Rook duo), và Arabian Mate (pattern thế kỷ 9 từ shatranj Ả Rập).</div>
-    <div class="lessons-list">
-      <span class="lesson-pill">01 · Smothered Mate</span>
-      <span class="lesson-pill">02 · Anastasia's Mate</span>
-      <span class="lesson-pill">03 · Arabian Mate</span>
-    </div>
-  </a>
-
-  <a class="chapter-card" href="13-defensive/chapter_13_defensive.html">
-    <span class="chapter-num">CHƯƠNG 13</span>
-    <div class="chapter-title">Defensive <em>Resources</em></div>
-    <div class="chapter-meta">3 BÀI · INTERMEDIATE</div>
-    <div class="chapter-desc">3 lá chắn cứu hòa: Perpetual Check (chiếu mãi), Threefold Repetition (lặp 3 lần), và Active King Defense (Steinitz: vua là chiến binh trong endgame).</div>
-    <div class="lessons-list">
-      <span class="lesson-pill">01 · Perpetual Check</span>
-      <span class="lesson-pill">02 · Threefold Repetition</span>
-      <span class="lesson-pill">03 · Active King Defense</span>
-    </div>
-  </a>
-
-  <a class="chapter-card" href="14-more-combinations/chapter_14_more_combinations.html">
-    <span class="chapter-num">CHƯƠNG 14</span>
-    <div class="chapter-title">More <em>Combinations</em></div>
-    <div class="chapter-meta">3 BÀI · INTERMEDIATE</div>
-    <div class="chapter-desc">3 tactic combination: Removing the Defender (Q sac to expose mate), Trapping a Knight (knight on rim is dim), và Pin Tactic (pile on pinned piece).</div>
-    <div class="lessons-list">
-      <span class="lesson-pill">01 · Remove Defender</span>
-      <span class="lesson-pill">02 · Trap Knight</span>
-      <span class="lesson-pill">03 · Pin Tactic</span>
-    </div>
-  </a>
-
-  <a class="chapter-card" href="15-sacrifices/chapter_15_sacrifices.html">
-    <span class="chapter-num">CHƯƠNG 15</span>
-    <div class="chapter-title">The Art of <em>Sacrifice</em></div>
-    <div class="chapter-meta">4 BÀI · INTERMEDIATE → ADVANCED</div>
-    <div class="chapter-desc">Nghệ thuật hy sinh: Greek Gift (Bxh7+ mở pháo đài vua), Queen Sac → Smothered Mate (Philidor's Legacy), Pawn Breakthrough (thí tốt tạo tốt thông), và Deflection &amp; Decoy (đánh lạc / dụ quân). Mọi thế cờ đã verify bằng engine.</div>
-    <div class="lessons-list">
-      <span class="lesson-pill">01 · Greek Gift</span>
-      <span class="lesson-pill">02 · Smothered Mate</span>
-      <span class="lesson-pill">03 · Breakthrough</span>
-      <span class="lesson-pill">04 · Deflection &amp; Decoy</span>
-    </div>
-  </a>
-
-  <div class="resources">
-    <div class="resources-label">📖 Tài liệu tham khảo</div>
-    <div class="resources-title">README.md — pattern recognition cheat sheet</div>
-    <p><a href="README.md">Mở README.md</a> để xem tổng hợp 44 bài với pattern cheat sheet (offline-friendly, không cần browser).</p>
-    <p style="margin-top:14px"><strong style="color:var(--text)">Cách dùng</strong>: Bấm vào card chương để mở. Trong chương: tab điều hướng các bài, phím tắt <code>Alt + ←/→</code>.</p>
-  </div>
-
-</div>
+<script>
+var SUBS = {
+  endgame: '15 chương · 48 bài · bàn cờ tương tác — viết lại từ <em>100 Endgames You Must Know</em>',
+  middle:  '5 chủ đề trung cuộc · bàn cờ tương tác — chắt lọc từ <em>The Middle Game in Chess</em> (Znosko-Borovsky)',
+  opening: 'Trắng theo <em>Keep It Simple 1.e4</em> · Đen theo <em>Openings for Black, Explained</em> · cộng phần <em>Hiểu ý tưởng</em> toàn cảnh 1.e4 / 1.d4 / cánh'
+};
+var TABS = ['endgame','middle','opening'];
+if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+function show(tab, writeHash){
+  if (TABS.indexOf(tab) < 0) tab = 'endgame';
+  document.querySelectorAll('.panel').forEach(function(p){ p.classList.toggle('active', p.id === tab); });
+  document.querySelectorAll('#topbar a[data-tab]').forEach(function(a){ a.classList.toggle('active', a.dataset.tab === tab); });
+  document.getElementById('heroSub').innerHTML = SUBS[tab];
+  if (writeHash){ if (('#'+tab) !== location.hash) history.replaceState(null, '', '#'+tab); window.scrollTo({ top: 0, behavior: 'auto' }); }
+}
+document.querySelectorAll('#topbar a[data-tab]').forEach(function(a){
+  a.addEventListener('click', function(e){ e.preventDefault(); show(a.dataset.tab, true); });
+});
+window.addEventListener('hashchange', function(){ show((location.hash || '#endgame').slice(1), true); });
+show((location.hash || '#endgame').slice(1), false);
+window.addEventListener('load', function(){ setTimeout(function(){ window.scrollTo(0, 0); }, 0); });
+</script>
 
 </body>
 </html>

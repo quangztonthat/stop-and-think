@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="vi"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Most Important Thing — Uncommon Sense for the Thoughtful Investor — Hiểu sâu theo Feynman</title>
+<style>
+  /* Design tokens shared with ebook-to-study-html (styles_v2.css) */
+  :root{
+    --bg:#fafaf7; --bg-elevated:#ffffff; --bg-soft:#f3f3ee;
+    --border:#e0e0d8; --border-soft:#ececea; --border-strong:#d2c8b6;
+    --ink:#1a1a1f; --ink-soft:#3f3f4a; --muted:#7a7a85;
+    --accent:#2f6fed; --accent-2:#2258c8; --gold:#0fb6d4; --gap:#2258c8;
+    --serif:"Fraunces",Georgia,"Iowan Old Style",serif;
+    --sans:"Geist",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    --mono:"Geist Mono","JetBrains Mono",Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:var(--sans);
+    font-size:19px;line-height:1.72;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}
+  .progress{position:fixed;top:0;left:0;height:3px;width:0;z-index:50;
+    background:linear-gradient(90deg,var(--gold),var(--accent));transition:width .08s linear}
+  .wrap{max-width:920px;margin:0 auto;padding:0 36px}
+  .rise{opacity:0;transform:translateY(14px);animation:rise .7s cubic-bezier(.2,.7,.3,1) forwards}
+  @keyframes rise{to{opacity:1;transform:none}}
+
+  header{padding:104px 0 60px;border-bottom:1px solid var(--border)}
+  .kicker{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.18em;
+    text-transform:uppercase;color:var(--accent);margin-bottom:26px}
+  h1{font-family:var(--serif);font-weight:600;font-size:clamp(42px,7.6vw,72px);
+    line-height:1.0;letter-spacing:-.022em;margin-bottom:28px;font-optical-sizing:auto;color:var(--ink)}
+  h1 em{font-style:italic;color:var(--accent)}
+  .core{font-family:var(--serif);font-style:italic;font-weight:400;
+    font-size:clamp(21px,3.6vw,27px);line-height:1.44;color:var(--ink-soft)}
+  .core span{font-style:normal;font-weight:600;color:var(--accent-2);
+    box-shadow:inset 0 -.5em 0 rgba(47,111,237,.16)}
+
+  /* ---- BƯỚC 0: ANCHOR (state the rule + plan before explaining) ---- */
+  .anchor .rule{font-family:var(--serif);font-size:19px;line-height:1.5;color:var(--ink);
+    background:var(--bg-soft);border-left:3px solid var(--accent);
+    padding:18px 24px;border-radius:0 4px 4px 0;margin:0}
+  .anchor .rule em{font-style:italic;color:var(--accent-2)}
+  .anchor .rule strong{color:var(--ink);font-weight:600}
+  .anchor .approach{color:var(--ink-soft)}
+
+  section{padding:72px 0;border-bottom:1px solid var(--border);position:relative}
+  .step-head{display:flex;align-items:flex-start;gap:22px;margin-bottom:34px}
+  .big-num{font-family:var(--serif);font-weight:700;font-size:62px;line-height:.8;
+    color:var(--border-strong);flex:none;font-optical-sizing:auto;letter-spacing:-.03em}
+  .step-meta{padding-top:4px}
+  .lbl{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--accent);display:block;margin-bottom:10px}
+  h2{font-family:var(--serif);font-weight:600;font-size:clamp(27px,4.4vw,37px);
+    line-height:1.12;letter-spacing:-.012em;color:var(--ink)}
+  h2 em{font-style:italic;color:var(--accent)}
+  p{margin-bottom:21px}
+  p:last-child{margin-bottom:0}
+  strong{font-weight:600;color:var(--ink)}
+  em{font-style:italic;color:var(--accent-2)}
+  .gloss{color:var(--muted);font-style:italic}
+
+  .lead::first-letter{font-family:var(--serif);font-weight:700;float:left;
+    font-size:74px;line-height:.74;padding:8px 12px 0 0;color:var(--accent)}
+
+  .sub{font-family:var(--serif);font-weight:600;font-size:17px;letter-spacing:.01em;
+    color:var(--ink);margin:34px 0 14px;display:flex;align-items:center;gap:11px}
+  .sub::before{content:"";width:18px;height:2px;background:var(--accent);flex:none;border-radius:2px}
+
+  .gaps{background:var(--bg-soft)}
+  .gaps .big-num{color:#e2d6b4}
+  .gaps .lbl{color:var(--gap)}
+  .gap-q{margin:0 0 30px;padding-left:24px;border-left:2px solid var(--border-strong)}
+  .gap-q:last-child{margin-bottom:0}
+  .gap-q .q{font-family:var(--serif);font-style:italic;font-weight:500;
+    font-size:22px;line-height:1.35;color:var(--gap);margin-bottom:12px;display:block}
+  .gap-q p:last-child{margin-bottom:0}
+
+  .analogy-card{border:1px solid #e8c876;border-radius:4px;padding:30px 32px;margin:8px 0 28px;
+    background:linear-gradient(135deg,#fef9ed 0%,#fdf3e0 100%)}
+  .analogy-card .tag{font-family:var(--mono);font-weight:600;font-size:11px;
+    letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin-bottom:16px;display:block}
+  .analogy-card p{color:#5a4810}
+  .analogy-card strong{color:var(--accent-2)}
+  .limit{font-size:17px;line-height:1.6;color:#5a4810;
+    border-top:1px solid #e8c876;padding-top:20px;margin-top:22px}
+  .limit b{color:var(--accent-2);font-weight:600;font-family:var(--serif)}
+
+  .retell{background:linear-gradient(180deg,var(--bg-soft) 0%,var(--bg) 100%);border-bottom:none}
+  .retell h2{color:var(--ink)}
+  .retell strong{color:var(--accent-2)}
+  .retell .core{margin-top:6px}
+  .testbox{border:1px solid var(--border);background:var(--bg-elevated);
+    border-radius:4px;padding:28px 32px;margin-top:40px;box-shadow:0 1px 2px rgba(0,0,0,.03)}
+  .testbox h3{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--accent);margin-bottom:20px}
+  .testbox ol{margin:0;padding-left:22px;counter-reset:t}
+  .testbox li{margin-bottom:16px;color:var(--ink-soft);padding-left:6px}
+  .testbox li:last-child{margin-bottom:0}
+
+  footer{text-align:center;padding:60px 0 88px}
+  footer .mark{font-family:var(--serif);font-weight:700;color:var(--accent);
+    font-size:26px;display:block;margin-bottom:14px}
+  footer p{font-family:var(--serif);font-style:italic;color:var(--muted);font-size:17px;max-width:380px;margin:0 auto}
+
+  @media(max-width:560px){
+    body{font-size:18px}
+    header{padding:70px 0 44px}
+    section{padding:52px 0}
+    .step-head{gap:16px}
+    .big-num{font-size:46px}
+    .lead::first-letter{font-size:60px}
+  }
+
+/* ===== FLAMINDI THEME OVERRIDE (dong bo trang chu flamindi.com) ===== */
+:root{
+  --accent:#2f6fed;--accent-2:#2258c8;--accent2:#2258c8;--gold:#0fb6d4;--cyan:#0fb6d4;--blue:#2f6fed;
+  --bg:#f7f9fe;--bg-elevated:#ffffff;--bg-card:#ffffff;--card:#ffffff;--bg-soft:#eef2fb;--soft:#eef2fb;
+  --border:#e4e9f2;--border-soft:#eef1f7;--border-strong:#cfd8e8;
+  --text:#1a2233;--text-soft:#4e5a74;--text-dim:#6b7691;
+  --ink:#1a2233;--ink-soft:#4e5a74;--muted:#6b7691;--soft-t:#4e5a74;--dim:#6b7691;
+  --serif:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+  --mono:ui-monospace,Menlo,Consolas,monospace;
+}
+body{background:radial-gradient(1200px 600px at 85% -10%,rgba(47,111,237,.14),transparent 60%),radial-gradient(1000px 640px at -10% 30%,rgba(15,182,212,.09),transparent 55%),linear-gradient(#f7f9fe,#edf0f8) fixed !important;}
+</style>
+<style>
+ .tabbar{position:fixed;top:0;left:0;right:0;width:100%;box-sizing:border-box;z-index:40;background:rgba(250,250,247,.93);
+   backdrop-filter:saturate(1.1) blur(8px);-webkit-backdrop-filter:saturate(1.1) blur(8px);
+   border-bottom:1px solid var(--border);display:flex;gap:6px;overflow-x:auto;
+   padding:10px max(36px,calc((100% - 992px)/2));scrollbar-width:thin}
+ .tabbar .tab{flex:0 0 auto;display:flex;align-items:baseline;gap:9px;cursor:pointer;
+   background:transparent;border:1px solid transparent;border-radius:999px;
+   padding:8px 17px;transition:.15s;white-space:nowrap;color:var(--muted)}
+ .tabbar .tab:hover{color:var(--ink);background:var(--bg-soft)}
+ .tabbar .tab.active{color:var(--accent-2);background:var(--bg-soft);border-color:var(--border-strong)}
+ .tabbar .tn{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.1em;color:var(--accent)}
+ .tabbar .tl{font-family:var(--serif);font-weight:500;font-size:16px}
+ body{padding-top:56px} .concept-panel{display:none}
+ .concept-panel.active{display:block}
+ .concept-panel header{padding-top:50px}
+ @media(max-width:560px){.tabbar .tl{max-width:48vw;overflow:hidden;text-overflow:ellipsis}}
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+<nav class="tabbar" aria-label="Các khái niệm"><button class="tab" data-i="0"><span class="tn">01</span><span class="tl">Rủi ro không phải biến động</span></button><button class="tab" data-i="1"><span class="tn">02</span><span class="tl">Ai cũng biết rồi</span></button><button class="tab" data-i="2"><span class="tn">03</span><span class="tl">Nghịch đám đông</span></button><button class="tab" data-i="3"><span class="tn">04</span><span class="tl">Mượt mà nên đáng ngờ</span></button></nav>
+<div class="concept-panel" id="c-rui-ro-khong-phai-bien-dong"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Giải thích theo phương pháp Feynman</div>
+    <h1 class="rise" style="animation-delay:.08s">Rủi ro không phải giá nhảy múa — mà là khả năng mất tiền</h1>
+    <p class="core rise" style="animation-delay:.16s">Cái đáng sợ không phải giá lên xuống, <span>mà là khả năng mất vốn không lấy lại được.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Điều cần hiểu &amp; cách tiếp cận</span><h2>Quy tắc: rủi ro là khả năng mất tiền, không phải volatility</h2></div>
+    </div>
+    <div class="rule">Tài chính hàn lâm định nghĩa rủi ro là <strong>volatility</strong> (biến động — độ lệch chuẩn của giá). Marks (ch.5) bác bỏ: <em>risk is — first and foremost — the likelihood of losing money</em>. Rủi ro thật là <em>loss of capital</em> (mất vốn), đặc biệt là mất vĩnh viễn. Ông nói giới hàn lâm chọn volatility không vì nó đúng, mà vì nó tiện: đo được, có sẵn số.</div>
+    <div class="sub">Cách giải thích</div>
+    <div class="approach"><p>Chỗ vấp là chữ <strong>'biến động'</strong>. Nghe qua thì hợp lý: giá nhảy dữ thì đáng sợ, giá êm thì an toàn. Nhưng hai thứ đó khác nhau. Cách làm ở đây: tách bạch 'giá lên xuống' với 'mất tiền', bằng vài ví dụ cho thấy chúng không đi cùng nhau. Rồi chỉ ra vì sao người ta lẫn hai thứ.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Giải thích đơn giản</span><h2>'Giá nhảy múa' và 'mất tiền' là hai chuyện khác nhau</h2></div>
+    </div>
+    <p class="lead">Hỏi thẳng: bạn sợ điều gì khi đầu tư? Gần như không ai đáp 'tôi sợ giá của nó dao động mạnh'. Cái người ta thật sự sợ là <em>mất tiền</em> — bỏ vào 100 đồng, lấy ra 60. Đó mới là rủi ro. Còn giá nhảy lên nhảy xuống chỉ là giá nhảy.</p>
+
+<div class="sub">Vì sao hai thứ này bị lẫn</div>
+<p>Người ta trộn chúng vì một thứ đo được, một thứ thì không. Giá dao động bao nhiêu, máy tính đếm ra ngay từ lịch sử. Còn 'khả năng mất tiền' thì vô hình, không có con số sẵn. Nên giới hàn lâm chọn cái đo được, rồi gọi nó là rủi ro.</p>
+
+<div class="sub">Marks không mua lý lẽ đó</div>
+<p>Ông nói chưa từng nghe ai từ chối mua vì sợ 'giá sẽ dao động mạnh'. Người ta từ chối vì sợ mất vốn, hoặc sợ lời quá ít. Nếu không ai thật sự sợ dao động, thì dao động không phải thứ rủi ro mà nhà đầu tư lo.</p>
+
+<div class="sub">Rủi ro tệ nhất là loại vô hình</div>
+<p>Nguy hiểm nhất là rủi ro trông không giống rủi ro. Một khoản đầu tư có thể êm đềm nhiều năm rồi dính một cú hiếm mà mất sạch. Marks gọi đó là <em>improbable disaster</em>: tai họa hiếm nhưng đủ sức xóa vốn. Nó trông an toàn hơn thực tế rất nhiều.</p>
+  </section>
+
+  <section class="gaps">
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Chỗ vấp · Lỗ hổng</span><h2>Mấy chỗ nghe xuôi mà nghĩ kỹ chưa thông</h2></div>
+    </div>
+    <div class="gap-q"><span class="q">"Giá dao động mạnh thì cũng dễ mất tiền hơn chứ, sao lại tách ra?"</span><p>Không nhất thiết đi cùng nhau. Một cổ phiếu giá nhảy dữ nhưng bạn mua đủ rẻ, giữ được tới lúc nó về giá trị, thì chẳng mất đồng nào. Ngược lại, một tài sản êm ru vẫn có thể mất sạch nếu bạn trả quá đắt hoặc nó dính cú hiếm. Dao động và mất vốn là hai trục khác nhau.</p></div>
+<div class="gap-q"><span class="q">"Nếu rủi ro không đo bằng dao động, thì đo bằng gì?"</span><p>Đây là chỗ thành thật khó chịu: rủi ro thật gần như <em>không đo trực tiếp được</em>. Nó là khả năng mất tiền trong những tương lai đã có thể xảy ra nhưng chưa xảy ra. Không có máy đếm nào cho việc đó. Vì thế Marks nói chỉ người từng trải, nghĩ ở tầng hai, mới phán đoán nổi — chứ không phải một con số.</p></div>
+<div class="gap-q"><span class="q">"Vậy con số volatility hoàn toàn vô dụng à?"</span><p>Không hẳn. Với chứng khoán giao dịch thường xuyên, giá của tài sản rủi ro có xu hướng dao động nhiều hơn. Nên các thước đo như <em>Sharpe ratio</em> vẫn là 'thứ tốt nhất ta có'. Nhưng nó không nói gì trực tiếp về khả năng mất vốn. Dùng nó như một gợi ý thô, đừng coi nó là định nghĩa của rủi ro.</p></div>
+<div class="gap-q"><span class="q">"Sao lại có chuyện rủi ro cao nhất đúng lúc mọi người thấy an toàn nhất?"</span><p>Vì cảm giác an toàn tự nó đẩy rủi ro lên. Khi ai cũng tin 'thứ này không có rủi ro', họ trả giá cao và không đòi phần bù. Giá bị đẩy tới mức bất kỳ vết nứt nào cũng gây lỗ. Marks nói: 'ít thứ nguy hiểm bằng niềm tin rộng khắp rằng không có rủi ro'.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví von &amp; ví dụ đời thường</span><h2>Neo vào thứ bạn đã biết</h2></div>
+    </div>
+    <div class="analogy-card"><span class="tag">Ví dụ trung tâm</span>
+<p>Nghĩ về <strong>hai con đường về nhà</strong>. Đường A gập ghềnh, xóc liên tục, cảm giác bất an — nhưng rào chắn chắc, chưa ai lao xuống vực bao giờ. Đường B phẳng lì, êm ru, chạy sướng — nhưng một đoạn không lan can, sảy tay một lần là rơi thẳng xuống vực.</p>
+<p>Đường nào 'rủi ro' hơn? Nếu bạn gọi xóc nảy là rủi ro, bạn chọn B cho êm. Nhưng cái giết người không phải xóc — mà là vực. Đường êm ru mới là đường có thể lấy mạng bạn. Giá nhảy múa là xóc; mất vốn vĩnh viễn là rơi xuống vực.</p>
+<p class="limit"><b>Chỗ ví von này hỏng:</b> trên đường thật, vực nằm một chỗ cố định, nhìn là thấy. Trong đầu tư, cái 'vực' — khả năng mất sạch — thường vô hình, và nó dịch chỗ theo cái giá bạn trả. Trả càng đắt, vực càng lan rộng tới sát chân bạn. Nên ở đây không có tấm biển 'coi chừng vực'; bạn phải tự ước lượng nó nằm đâu.</p>
+</div>
+<p>Gần đời hơn: chiếc xe SUV to đùng khiến tài xế thấy an toàn nên chạy ẩu hơn, và thống kê cho thấy tỷ lệ tử vong lại cao. Christopher Davis tóm: cảm giác an toàn có xu hướng làm tăng rủi ro, còn ý thức về rủi ro lại làm nó giảm. Cái êm ái đánh lừa; cái khiến bạn dè chừng mới bảo vệ bạn.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Elroy Dimson gói cả ý vào một câu: <em>risk means more things can happen than will happen</em> — nhiều điều <em>có thể</em> xảy ra hơn số điều <em>thực sự</em> xảy ra. Tương lai là một <em>probability distribution</em> (phân phối xác suất), và rủi ro sống ở cái đuôi xấu. Kết quả tốt một lần không chứng minh rủi ro thấp: có thể bạn đã đi qua vực mà chỉ là may không rơi.</p>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">4</div>
+      <div class="step-meta"><span class="lbl">Kể lại gọn gàng</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Giá nhảy múa không phải rủi ro; mất vốn mới là. Người ta lẫn hai thứ vì một cái đo được, một cái thì không. Cái nguy hiểm nhất là rủi ro vô hình: êm đềm nhiều năm rồi một cú hiếm xóa sạch. Và cảm giác an toàn tự nó đẩy rủi ro lên, vì nó khiến người ta trả giá cao mà không đòi phần bù.</p>
+<p class="core">Cái đáng sợ không phải giá lên xuống, <span>rủi ro là khả năng mất tiền, không phải giá lên xuống.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã hiểu chưa?</h3>
+      <ol>
+        <li>Vì sao một tài sản có giá 'nhảy múa' vẫn có thể ít rủi ro hơn một tài sản giá êm ru?</li>
+        <li>Nếu rủi ro thật không đo bằng độ dao động, thì nó là gì và vì sao khó đo?</li>
+        <li>Vì sao rủi ro thường cao nhất đúng lúc mọi người cảm thấy an toàn nhất?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nếu giải thích được cho bà ngoại hiểu, bạn mới thật sự hiểu.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-ai-cung-biet-roi"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Giải thích theo phương pháp Feynman</div>
+    <h1 class="rise" style="animation-delay:.08s">Vì sao 'ai cũng biết' thì đã nằm trong giá</h1>
+    <p class="core rise" style="animation-delay:.16s">Một tin ai cũng biết <span>đã bị trả vào giá — nên hết là lợi thế.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Điều cần hiểu &amp; cách tiếp cận</span><h2>Quy tắc: 'hiệu quả' nghĩa là nhanh, không phải đúng</h2></div>
+    </div>
+    <div class="rule">Marks (ch.2) định nghĩa lại <strong>market efficiency</strong>: 'hiệu quả' nghĩa là giá thẩm thấu thông tin <em>nhanh</em>, không phải giá luôn <em>đúng</em>. Hệ quả: mọi thông tin công khai đã nằm trong giá gần như tức thì. Bộ lọc của Andrew Marks gói lại điều này bằng một câu hỏi: <em>And who doesn't know that?</em> — thế còn ai <em>không</em> biết điều đó?</div>
+    <div class="sub">Cách giải thích</div>
+    <div class="approach"><p>Chỗ vấp: bạn đọc một tin tốt về công ty, thấy rõ ràng và thuyết phục, nên tưởng nó là cơ hội. Nhưng nếu tin đó rõ với bạn, nó cũng rõ với hàng triệu người khác. Cách làm ở đây: đi theo một mẩu tin từ lúc nó xuất hiện đến lúc nó chạm vào giá, xem nó còn lại gì cho bạn.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Giải thích đơn giản</span><h2>Tin tốt mà ai cũng biết thì đã được trả vào giá</h2></div>
+    </div>
+    <p class="lead">Bạn đọc được tin một công ty sắp ra sản phẩm ăn khách. Nghe như cơ hội trời cho. Nhưng khoan hỏi một câu: bạn đọc tin này ở đâu? Nếu là trên báo, trên tivi, thì hàng triệu người cũng vừa đọc y hệt. Vậy tin đó còn là lợi thế của riêng bạn không?</p>
+
+<div class="sub">Giá là nơi mọi người đổ kỳ vọng vào</div>
+<p>Giá cổ phiếu không phải con số ngẫu nhiên. Nó là chỗ cả đám đông gom hết những gì họ biết và họ mong. Khi một tin tốt lan ra, ai cũng muốn mua, và họ đẩy giá lên ngay. Đến lúc bạn định mua, giá đã cõng sẵn tin đó rồi.</p>
+
+<div class="sub">Bộ lọc một câu</div>
+<p>Con trai Marks có thói quen hay: mỗi khi thấy một lý do để mua, cậu tự hỏi 'thế còn ai không biết điều này?'. Nếu đáp án là 'ai cũng biết', thì tin đó vô dụng cho việc thắng. Nó đã nằm trong giá.</p>
+
+<div class="sub">Muốn thắng phải thấy thứ người khác chưa thấy</div>
+<p>Lợi nhuận vượt trội không đến từ tin ai cũng có. Nó đến từ việc bạn hiểu một điều đám đông đang bỏ sót hoặc hiểu sai. Không có điểm lệch đó, mua theo tin tốt chỉ là trả giá đắt cho thứ ai cũng thích.</p>
+  </section>
+
+  <section class="gaps">
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Chỗ vấp · Lỗ hổng</span><h2>Mấy chỗ nghe xuôi mà nghĩ kỹ chưa thông</h2></div>
+    </div>
+    <div class="gap-q"><span class="q">"Marks bảo thị trường có thể sai — vậy tin tốt vẫn có thể chưa vào hết giá chứ?"</span><p>Đúng là giá có thể sai, đôi khi sai lớn. Nhưng 'giá sai' không tự động thành tiền cho bạn. Câu hỏi là: bạn có nhận ra chỗ sai đó rõ hơn số đông không? Nếu chỗ sai ai cũng thấy, nó đã được sửa vào giá. Chỉ chỗ sai mà bạn thấy còn họ chưa mới là cơ hội.</p></div>
+<div class="gap-q"><span class="q">"Vậy đọc tin, nghiên cứu chăm chỉ là vô ích à?"</span><p>Không. Nghiên cứu vẫn cần, nhưng mục tiêu đổi. Không phải để biết cùng thứ ai cũng biết nhanh hơn vài phút. Mà để hiểu <em>khác</em> và đúng hơn: nhìn ra một hệ quả, một rủi ro, một giá trị mà đám đông chưa gộp vào giá. Chăm chỉ để nghĩ tầng hai, không phải để gom tin tầng một.</p></div>
+<div class="gap-q"><span class="q">"Giá đã gồm mọi thứ — nghe như không ai thắng nổi thị trường?"</span><p>Đây là chỗ tinh tế. Giá gồm <em>đồng thuận</em> của đám đông, mà đồng thuận thì con người, nên có thể lệch vì tham và sợ. Marks không nói không thắng được; ông nói không thắng được bằng <em>tin ai cũng có</em>. Cửa thắng nằm ở nơi đám đông hiểu sai — hiếm, khó, nhưng có thật.</p></div>
+<div class="gap-q"><span class="q">"Nếu tôi biết một tin trước khi nó lên báo thì sao?"</span><p>Nếu là tin nội bộ chưa công khai thì đó là chuyện khác — và thường là phạm luật, không bàn ở đây. Trong phạm vi thông tin công khai, gần như mọi thứ bạn đọc được thì người khác cũng đọc được. Lợi thế thật không nằm ở việc <em>có</em> tin sớm hơn, mà ở việc <em>diễn giải</em> tin đúng hơn.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví von &amp; ví dụ đời thường</span><h2>Neo vào thứ bạn đã biết</h2></div>
+    </div>
+    <div class="analogy-card"><span class="tag">Ví dụ trung tâm</span>
+<p>Nghĩ về <strong>cá độ đua ngựa</strong>. Có một con ngựa rõ ràng chạy nhanh nhất, ai cũng biết. Bạn cược nó có thắng được nhiều không? Không. Vì ai cũng biết nó mạnh, nên tiền dồn vào nó, và tỷ lệ trả thưởng bị kéo xuống thấp tẹo. Bạn đoán trúng con ngựa mà vẫn chẳng lời bao nhiêu.</p>
+<p>Cái 'ai cũng biết nó mạnh' đã nằm sẵn trong tỷ lệ cược. Muốn ăn đậm, bạn phải thấy một điều người khác chưa thấy: con ngựa ít ai để ý nhưng thật ra đang sung. Cổ phiếu y hệt: tin tốt ai cũng biết đã nằm trong giá, như phong độ con ngựa đã nằm trong tỷ lệ cược.</p>
+<p class="limit"><b>Chỗ ví von này hỏng:</b> tỷ lệ cược đua ngựa được chốt cứng ngay trước giờ đua. Còn giá cổ phiếu thì chạy liên tục, và tâm lý đám đông có thể đẩy nó lệch xa giá trị rất lâu. Ở đua ngựa, đồng thuận khá sát thực lực; ở thị trường, đồng thuận có thể sai to vì tham và sợ. Nên khác đường đua, thị trường thỉnh thoảng mở ra khe hở lớn cho ai nhìn đúng.</p>
+</div>
+<p>Cũng như xếp hàng đổi làn xe lúc kẹt. Khi bạn thấy làn bên trống và tấp sang, mười người khác cũng thấy y vậy và tấp theo — thế là làn đó lại tắc. Cái 'ai cũng thấy' tự nó xóa mất lợi thế. Muốn nhanh hơn đám đông, phải thấy thứ họ chưa thấy, không phải thấy thứ họ vừa thấy.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Marks học ngay thời <em>Efficient Market Hypothesis</em> ra đời ở Chicago. Ông không bác bỏ hẳn mà dùng nó như một <em>rebuttable presumption</em> (suy đoán có thể bác bỏ): mặc định giả thị trường hiệu quả, trừ khi có lý do tốt để tin ngược lại trong một trường hợp cụ thể. Khe nứt lớn nhất của lý thuyết là giả định con người khách quan — trong khi thật ra họ bị <em>greed, fear, envy</em> chi phối.</p>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">4</div>
+      <div class="step-meta"><span class="lbl">Kể lại gọn gàng</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Giá là nơi đám đông đổ hết những gì họ biết vào. Nên một tin ai cũng biết đã bị trả vào giá, hết là lợi thế. Cứ tự hỏi 'còn ai không biết điều này?'; nếu đáp án là 'ai cũng biết', tin đó vô dụng cho việc thắng. Cửa thắng nằm ở chỗ bạn hiểu một điều đám đông đang bỏ sót hoặc hiểu sai.</p>
+<p class="core">Một tin ai cũng biết <span>muốn thắng, phải thấy thứ người khác chưa thấy — và thấy đúng.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã hiểu chưa?</h3>
+      <ol>
+        <li>Vì sao một tin tốt bạn đọc trên báo lại hầu như không còn là lợi thế khi mua?</li>
+        <li>Câu hỏi 'còn ai không biết điều này?' giúp bạn tránh sai lầm nào?</li>
+        <li>Nếu giá đã gồm đồng thuận của đám đông, cửa thắng của nhà đầu tư nằm ở đâu?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nếu giải thích được cho bà ngoại hiểu, bạn mới thật sự hiểu.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-nghich-dam-dong"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Giải thích theo phương pháp Feynman</div>
+    <h1 class="rise" style="animation-delay:.08s">Nghịch đám đông: vì sao ở thái cực, số đông luôn sai</h1>
+    <p class="core rise" style="animation-delay:.16s">Ở đỉnh và ở đáy, <span>đám đông sai — vì chính họ tạo ra thái cực đó.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Điều cần hiểu &amp; cách tiếp cận</span><h2>Quy tắc: mua khi người ta bán tháo, bán khi người ta tranh mua</h2></div>
+    </div>
+    <div class="rule">Templeton: <em>mua khi người khác tuyệt vọng bán, bán khi người khác hân hoan mua — cần can đảm nhất, nhưng cho lợi nhuận lớn nhất</em>. Marks (ch.11) thêm điều kiện cứng: chỉ <em>contrarianism</em> (nghịch đám đông) <strong>dựa trên phân tích</strong> mới đáng theo. Làm ngược chỉ để làm ngược — <em>bare contrarianism</em> — là dại như đứng chắn trước xe tải.</div>
+    <div class="sub">Cách giải thích</div>
+    <div class="approach"><p>Chỗ vấp: 'đám đông sai nên làm ngược là thắng' nghe vừa liều vừa kiêu. Đám đông đâu phải lúc nào cũng sai. Cách làm ở đây: chỉ ra bằng một lập luận gần như toán học. Vì sao ở <em>thái cực</em> — chứ không phải mọi lúc — đám đông buộc phải sai. Rồi nói rõ vì sao 'làm ngược' vẫn chưa đủ.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Giải thích đơn giản</span><h2>Ở đỉnh, người mua cuối cùng đã mua xong</h2></div>
+    </div>
+    <p class="lead">Hình dung một cơn sốt giá đang lên tới đỉnh. Ai còn muốn mua thì gần như đã mua hết rồi. Vậy còn ai để đẩy giá lên cao hơn nữa? Không còn ai. Chỉ cần một người đổi ý, chuyển từ mua sang bán, giá bắt đầu tuột.</p>
+
+<div class="sub">Vì sao thái cực là lúc đám đông sai</div>
+<p>Đỉnh hình thành đúng khi <em>người mua cuối cùng</em> đã nhảy vào. Lúc đó mọi người lạc quan đều đã ở phe mua, không còn ai để chuyển sang phe mua nữa. Cùng logic ở đáy: đáy hình thành khi người bán cuối cùng đã bán tháo xong. Chính đám đông tạo ra thái cực, nên ở thái cực họ sai.</p>
+
+<div class="sub">Nên chìa khóa nằm ở chiều ngược lại</div>
+<p>Nếu ở đỉnh mọi người đều mua và họ sai, thì đúng là phải bán. Nếu ở đáy mọi người đều bán và họ sai, thì đúng là phải mua. Món hời lớn nhất nằm ở thứ ai cũng ghét; thứ nguy hiểm nhất nằm ở thứ ai cũng mê.</p>
+
+<div class="sub">Nhưng làm ngược thôi thì chưa đủ</div>
+<p>Đây là chỗ nhiều người hiểu lầm. Đi ngược đám đông không phải vì đám đông đang làm gì đó, mà vì bạn <em>biết họ sai ở chỗ nào</em>. Không có lý do phân tích, 'làm ngược' chỉ là một kiểu liều khác. Phần lớn thời gian còn chẳng có thái cực nào để mà cược ngược.</p>
+  </section>
+
+  <section class="gaps">
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Chỗ vấp · Lỗ hổng</span><h2>Mấy chỗ nghe xuôi mà nghĩ kỹ chưa thông</h2></div>
+    </div>
+    <div class="gap-q"><span class="q">"Đám đông sai ở thái cực — vậy cứ thấy đông là làm ngược chứ gì?"</span><p>Không. Đám đông chỉ sai ở <em>thái cực</em>, không phải mọi lúc. Phần lớn thời gian thị trường không ở đỉnh cũng chẳng ở đáy, và làm ngược lúc đó chỉ tổ thua. Greenblatt ví: 'không ai lao ra chắn trước xe tải đang phóng, không có nghĩa bạn nên làm thế!'. Làm ngược mù quáng là dại, không phải khôn.</p></div>
+<div class="gap-q"><span class="q">"Biết đang ở đỉnh thì bán ngay, sao phải chờ phân tích?"</span><p>Vì 'quá đắt' rất khác 'sẽ giảm ngày mai'. Thị trường có thể quá đắt và đắt thêm nữa suốt nhiều năm trước khi vỡ. Nếu bạn cược ngược mà không có neo giá trị, bạn sẽ bị nghiền trong lúc chờ mình đúng. Phân tích cho bạn lý do để giữ vững khi vị thế tạm trông như sai.</p></div>
+<div class="gap-q"><span class="q">"Mua khi mọi người bán tháo — nghe như bắt dao rơi, quá nguy hiểm?"</span><p>Đúng là nguy hiểm, và hầu hết người ta né: 'đợi dao ngừng rơi, bụi lắng đã'. Nhưng đến khi dao ngừng và bụi lắng, món hời lớn cũng biến mất — vì lúc mua đã 'thoải mái' thì giá không còn đủ rẻ. Marks nói nhiệm vụ của người nghịch đám đông chính là bắt dao rơi — nhưng bằng cẩn trọng và kỹ năng, với neo giá trị trong tay.</p></div>
+<div class="gap-q"><span class="q">"Nếu ai cũng cố làm người nghịch đám đông thì sao?"</span><p>Đây là cái bẫy thành thật của khái niệm này. Có lúc cảm giác như 'mọi người' đều đã thành người nghịch đám đông — và khi đó, chính nghịch đám đông lại biến thành hành vi bầy đàn. Không có công thức thoát sạch. Thứ duy nhất giữ bạn đứng vững vẫn là một ước lượng giá trị nội tại đủ chắc, chứ không phải bản thân việc đi ngược.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví von &amp; ví dụ đời thường</span><h2>Neo vào thứ bạn đã biết</h2></div>
+    </div>
+    <div class="analogy-card"><span class="tag">Ví dụ trung tâm</span>
+<p>Nghĩ về một <strong>bập bênh ở sân chơi</strong>. Khi tất cả bọn trẻ đã dồn hết sang một đầu, đầu đó chạm đất — thấp hết cỡ, không thể xuống thêm. Còn ai để nhảy sang đầu đó mà dìm nó thấp hơn nữa? Không còn ai. Chỉ cần một đứa chạy sang đầu kia, cái bập bênh lập tức đảo chiều.</p>
+<p>Thị trường ở thái cực y hệt. Khi mọi người đã dồn sang phe mua, giá cao hết cỡ và không còn nhiên liệu để lên. Người khôn không đứng chen ở đầu đang chạm đất; họ bước sang đầu vắng — mua khi đám đông bán, bán khi đám đông tranh mua.</p>
+<p class="limit"><b>Chỗ ví von này hỏng:</b> bập bênh đảo chiều ngay tức khắc khi lệch cân, còn thị trường thì không. Nó có thể lì ở một thái cực rất lâu, thậm chí đu xa thêm, trước khi quay đầu — 'quá đắt' không có nghĩa 'giảm ngày mai'. Và bập bênh thì nhìn là biết đầu nào chạm đất. Ở thị trường, bạn phải tự phân tích mới biết đám đông sai chỗ nào, chứ không có dấu hiệu hiển nhiên.</p>
+</div>
+<p>Giữa khủng hoảng 2008, sau khi Lehman sụp, không kịch bản nào bi quan đến mức người ta không tin; ai cũng chỉ nói 'đừng bắt dao rơi'. Marks nhận ra hầu như không còn ai đặt giá mua mạnh tay — đó chính là lúc mua. Phần lớn các vụ mua nợ khốn khó quý cuối 2008 lãi 50 tới hơn 100% trong 18 tháng sau. Lạc quan lúc đó là hành động nghịch đám đông tột cùng.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Marks tinh chỉnh khái niệm hoài nghi thành hai chiều. Thường ta hiểu hoài nghi là biết nói 'không, cái đó tốt quá mức để là thật' — chối bong bóng, chối trò lừa. Nhưng ở đáy khủng hoảng, hoài nghi lại đòi nói 'không, cái đó <em>xấu</em> quá mức để là thật'. Đám đông áp lạc quan ở đỉnh và bi quan ở đáy; muốn hưởng lợi, phải hoài nghi cả hai — <em>skepticism</em> không đồng nghĩa với <em>pessimism</em>.</p>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">4</div>
+      <div class="step-meta"><span class="lbl">Kể lại gọn gàng</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Đỉnh hình thành khi người mua cuối cùng đã mua; đáy khi người bán cuối cùng đã bán. Vì chính đám đông tạo ra thái cực, nên ở thái cực họ buộc phải sai — và chìa khóa nằm ở chiều ngược lại. Nhưng làm ngược thôi chưa đủ: phải biết họ sai ở chỗ nào, và có neo giá trị đủ chắc để trụ khi vị thế tạm trông như sai.</p>
+<p class="core">Ở đỉnh và ở đáy, <span>đi ngược vì biết đám đông sai ở đâu, không phải vì họ đang đông.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã hiểu chưa?</h3>
+      <ol>
+        <li>Vì sao đỉnh thị trường hình thành đúng lúc 'người mua cuối cùng' đã mua xong?</li>
+        <li>'Làm ngược đám đông' và 'nghịch đám đông có phân tích' khác nhau ở điểm cốt nào?</li>
+        <li>Vì sao 'giá quá đắt' không cho phép bạn cược ngược ngay mà không cần neo giá trị?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nếu giải thích được cho bà ngoại hiểu, bạn mới thật sự hiểu.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-muot-ma-dang-ngo"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Giải thích theo phương pháp Feynman</div>
+    <h1 class="rise" style="animation-delay:.08s">Vì sao thành tích quá mượt lại che giấu rủi ro</h1>
+    <p class="core rise" style="animation-delay:.16s">Lãi đều nhiều năm <span>chưa chứng minh giỏi — có khi chỉ là rủi ro chưa nổ.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Điều cần hiểu &amp; cách tiếp cận</span><h2>Quy tắc: kết quả tốt không chứng minh quyết định tốt</h2></div>
+    </div>
+    <div class="rule">Marks (ch.16): <em>a good decision is one a logical, intelligent and informed person would have made under the circumstances as they appeared at the time, before the outcome was known</em>. Kết quả và chất lượng quyết định là hai thứ khác nhau. Rủi ro thì <em>vô hình trong thời kỳ tốt</em> (ch.7): chỉ khi <em>tide goes out</em>, thủy triều rút, mới lộ ai đang bơi truồng.</div>
+    <div class="sub">Cách giải thích</div>
+    <div class="approach"><p>Chỗ vấp: một người lãi đều đặn nhiều năm, ta lập tức tin họ giỏi và an toàn. Nhưng thành tích mượt có thể là kỹ năng thật, cũng có thể là một rủi ro lớn chưa kịp nổ. Cách làm ở đây: dùng vài câu chuyện cho thấy cùng một kết quả đẹp có thể đến từ tài năng, mà cũng có thể chỉ từ may. Và ta gần như không phân biệt được trong ngắn hạn.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Giải thích đơn giản</span><h2>Một đường lãi êm có thể đang giấu một quả bom</h2></div>
+    </div>
+    <p class="lead">Bạn thấy một người khoe bảng thành tích: năm nào cũng lãi, đường đi mượt như lụa. Bạn kết luận ngay: người này giỏi, bỏ tiền cho họ là chắc ăn. Nhưng khoan. Đường mượt đó có thể là kỹ năng thật — mà cũng có thể là một rủi ro lớn chưa kịp phát nổ.</p>
+
+<div class="sub">Vì sao rủi ro trốn kỹ trong thời kỳ tốt</div>
+<p>Rủi ro là khả năng một chuyện xấu <em>xảy ra</em>, chứ không phải nó đã xảy ra. Chừng nào cú xấu chưa tới, một danh mục đầy rủi ro trông y hệt một danh mục an toàn. Cả hai đều lãi đều, đều đẹp. Bạn không thể phân biệt hai thứ chỉ bằng cách nhìn kết quả trong thời kỳ thuận lợi.</p>
+
+<div class="sub">Kết quả tốt không chứng minh quyết định đúng</div>
+<p>Marks kể chuyện một người xây khu trượt tuyết ở Miami — nơi gần như không bao giờ có tuyết. Rồi một trận bão tuyết kỳ lạ đổ xuống, mùa đầu lãi to. Đó có phải quyết định giỏi? Không. Đó là một quyết định điên rồ gặp may. Kết quả đẹp mà lý do sai vẫn là sai.</p>
+
+<div class="sub">Nên nhìn cách làm, đừng chỉ nhìn con số</div>
+<p>Vì kết quả ngắn hạn có thể do may, ta không thể chấm một người chỉ qua bảng lãi. Phải hỏi: họ lãi <em>bằng cách nào</em>? Cách đó có lặp lại được không? Họ đã ôm rủi ro gì để có con số đó? Con số đẹp mà đến từ một canh bạc thì không đáng tin.</p>
+  </section>
+
+  <section class="gaps">
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Chỗ vấp · Lỗ hổng</span><h2>Mấy chỗ nghe xuôi mà nghĩ kỹ chưa thông</h2></div>
+    </div>
+    <div class="gap-q"><span class="q">"Lãi đều nhiều năm liền — chẳng lẽ vẫn chưa đủ chứng minh giỏi?"</span><p>Càng nhiều năm thì càng đáng tin hơn, nhưng vẫn phải xem cách làm. Marks khen các huyền thoại không phải vì lãi cao, mà vì <em>hàng chục năm nhất quán và vắng bóng thảm họa</em>. Vấn đề là một chuỗi năm đẹp cũng có thể do liên tục ôm một rủi ro chưa nổ. Thời gian dài lọc bớt may rủi, nhưng chỉ 'cách kiếm được' mới nói thật.</p></div>
+<div class="gap-q"><span class="q">"Làm sao tách được đâu là may, đâu là tài?"</span><p>Trong ngắn hạn thì gần như không tách được — đó là chỗ khó chịu. Marks mô tả nhiều danh mục cho cùng một kết quả nhưng chất lượng quyết định khác hẳn nhau. Cách duy nhất là cần rất nhiều lần quan sát, qua nhiều môi trường khác nhau, và soi kỹ <em>cách</em> làm chứ không chỉ kết quả. Một mùa thắng chẳng chứng minh gì.</p></div>
+<div class="gap-q"><span class="q">"Vậy chẳng lẽ đường lãi mượt lại là điều xấu?"</span><p>Không hẳn xấu, nhưng đáng để dè chừng, không phải để nhắm mắt tin. Mượt có thể vì người ta kiểm soát rủi ro giỏi thật; cũng có thể vì họ đang ngồi trên một rủi ro đuôi chưa kích hoạt. Đường êm không tự nói cho bạn biết là loại nào. Nên phải mở nắp ra xem bên dưới, thay vì tin ngay cái vẻ êm.</p></div>
+<div class="gap-q"><span class="q">"Nếu chưa mất tiền lần nào thì đúng là an toàn còn gì?"</span><p>Chưa mất không chứng minh không thể mất. Marks ví: mầm bệnh gây bệnh, nhưng bản thân mầm bệnh chưa phải là bệnh — bạn chỉ biết khi bệnh phát. Nhà ở California có thể có lỗi kết cấu khiến sập khi động đất; ta chỉ biết khi động đất tới. Chuỗi ngày yên có thể là quản trị tốt, cũng có thể là động đất chưa đến.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví von &amp; ví dụ đời thường</span><h2>Neo vào thứ bạn đã biết</h2></div>
+    </div>
+    <div class="analogy-card"><span class="tag">Ví dụ trung tâm</span>
+<p>Nghĩ về <strong>hai người lái xe không thắt dây an toàn</strong>. Suốt mười năm cả hai chạy êm, chưa một lần trầy xước. Nhìn vào 'thành tích', bạn thấy y hệt nhau: an toàn tuyệt đối. Ai cũng bảo họ là tay lái cứng.</p>
+<p>Nhưng cái không thắt dây đâu biến mất — nó chỉ chưa bị đòi. Đến ngày có cú va bất ngờ, người ta mới lộ ra ai được che chắn, ai không. Đường lãi mượt của nhà đầu tư cũng thế: nhiều năm êm chưa chứng minh có dây an toàn — nó chỉ chứng minh cú va chưa tới.</p>
+<p class="limit"><b>Chỗ ví von này hỏng:</b> với dây an toàn, bạn nhìn là biết ngay người ta có thắt hay không. Với danh mục đầu tư, cái 'dây an toàn' — mức kiểm soát rủi ro — lại vô hình từ bên ngoài. Hai bảng thành tích y hệt nhau có thể một bên rất kỷ luật, một bên đánh bạc. Nên ở đây bạn không nhìn thấy dây; bạn phải điều tra <em>cách</em> họ lái mới đoán được.</p>
+</div>
+<p>Buffett kể trò tung đồng xu: cho 225 triệu người cùng tung, mỗi ngày ai đoán trúng thì đi tiếp. Sau hai mươi ngày, vẫn còn vài trăm người trúng liên tục, mỗi người thắng cả triệu. Họ bắt đầu viết sách dạy 'bí quyết tung đồng xu'. Nhưng toàn bộ chỉ là may sống sót thuần túy — đủ đông người chơi thì kiểu gì cũng có vài người thắng dài, chẳng cần tài gì.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Marks mượn ý <em>alternative histories</em> (những lịch sử thay thế) của Nassim Taleb: cái đã xảy ra chỉ là một mẫu nhỏ trong vô số điều đã có thể xảy ra. Một kết quả tốt trong lịch sử đã diễn ra không chứng minh nó khôn ngoan — vì trong các lịch sử khác, cùng quyết định đó có thể đã phá sản. Taleb so 10 triệu đô kiếm từ trò cò quay Nga với 10 triệu từ nghề nha sĩ chăm chỉ: kế toán thấy như nhau, nhưng mức lệ thuộc vào may rủi thì khác hẳn.</p>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">4</div>
+      <div class="step-meta"><span class="lbl">Kể lại gọn gàng</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Rủi ro là khả năng chuyện xấu xảy ra, nên chừng nào nó chưa xảy ra, danh mục liều trông y hệt danh mục an toàn. Vì thế một đường lãi mượt chưa chứng minh giỏi — có khi chỉ là rủi ro chưa kịp nổ, hoặc là may sống sót. Kết quả đẹp mà lý do sai vẫn là sai. Muốn chấm đúng, phải soi cách kiếm được, không chỉ nhìn con số.</p>
+<p class="core">Lãi đều nhiều năm <span>thành tích mượt chưa phải kỹ năng — hãy hỏi cú va đã tới chưa.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã hiểu chưa?</h3>
+      <ol>
+        <li>Vì sao trong thời kỳ tốt, một danh mục đầy rủi ro lại trông giống hệt một danh mục an toàn?</li>
+        <li>Khu trượt tuyết ở Miami lãi to nhờ bão tuyết — vì sao đó vẫn là quyết định tồi?</li>
+        <li>Nếu không thể tin bảng lãi mượt, bạn phải nhìn vào điều gì để đánh giá một nhà đầu tư?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nếu giải thích được cho bà ngoại hiểu, bạn mới thật sự hiểu.</p>
+  </footer>
+
+</div></div>
+<script>
+  var bar=document.getElementById('progress');
+  function upd(){var h=document.documentElement;var s=h.scrollTop||document.body.scrollTop;
+    var max=(h.scrollHeight-h.clientHeight)||1;bar.style.width=(s/max*100)+'%';}
+  window.addEventListener('scroll',upd,{passive:true});upd();
+  var io=new IntersectionObserver(function(es){es.forEach(function(e){
+    if(e.isIntersecting){e.target.style.animation='rise .7s cubic-bezier(.2,.7,.3,1) forwards';io.unobserve(e.target);}});},{threshold:.12});
+  document.querySelectorAll('section').forEach(function(s){s.style.opacity='0';io.observe(s);});
+</script>
+
+<script>
+(function(){
+  var tabs=[].slice.call(document.querySelectorAll('.tabbar .tab'));
+  var panels=[].slice.call(document.querySelectorAll('.concept-panel'));
+  function show(i){
+    tabs.forEach(function(t,j){t.classList.toggle('active',j===i);});
+    panels.forEach(function(p,j){
+      var on=(j===i); p.classList.toggle('active',on);
+      if(on){p.querySelectorAll('section').forEach(function(s){s.style.opacity='';s.style.animation='';});}
+    });
+    try{history.replaceState(null,'','#'+panels[i].id);}catch(e){}
+    window.scrollTo(0,0); window.dispatchEvent(new Event('scroll'));
+  }
+  tabs.forEach(function(t){t.addEventListener('click',function(){show(+t.getAttribute('data-i'));});});
+  var start=0; panels.forEach(function(p,j){if('#'+p.id===location.hash)start=j;});
+  show(start);
+})();
+</script>
+
+</body></html>

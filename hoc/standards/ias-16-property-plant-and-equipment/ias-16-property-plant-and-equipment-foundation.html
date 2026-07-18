@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="vi"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IAS 16 — Property, Plant and Equipment — Nền tảng, hiểu từ gốc</title>
+<style>
+  /* Design tokens shared with ebook-to-study-html + feynman-from-study (styles_v2.css) */
+  :root{
+    --bg:#fafaf7; --bg-elevated:#ffffff; --bg-soft:#f3f3ee;
+    --border:#e0e0d8; --border-soft:#ececea; --border-strong:#d2c8b6;
+    --ink:#1a1a1f; --ink-soft:#3f3f4a; --muted:#7a7a85;
+    --accent:#2f6fed; --accent-2:#2258c8; --gold:#0fb6d4; --bridge:#5a6b4f;
+    --serif:"Fraunces",Georgia,"Iowan Old Style",serif;
+    --sans:"Geist",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    --mono:"Geist Mono","JetBrains Mono",Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:var(--sans);
+    font-size:19px;line-height:1.72;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}
+  .progress{position:fixed;top:0;left:0;height:3px;width:0;z-index:50;
+    background:linear-gradient(90deg,var(--gold),var(--accent));transition:width .08s linear}
+  .wrap{max-width:920px;margin:0 auto;padding:0 36px}
+  .rise{opacity:0;transform:translateY(14px);animation:rise .7s cubic-bezier(.2,.7,.3,1) forwards}
+  @keyframes rise{to{opacity:1;transform:none}}
+
+  header{padding:104px 0 60px;border-bottom:1px solid var(--border)}
+  .kicker{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.18em;
+    text-transform:uppercase;color:var(--accent);margin-bottom:26px}
+  h1{font-family:var(--serif);font-weight:600;font-size:clamp(42px,7.6vw,72px);
+    line-height:1.0;letter-spacing:-.022em;margin-bottom:28px;font-optical-sizing:auto;color:var(--ink)}
+  h1 em{font-style:italic;color:var(--accent)}
+  .core{font-family:var(--serif);font-style:italic;font-weight:400;
+    font-size:clamp(21px,3.6vw,27px);line-height:1.44;color:var(--ink-soft)}
+  .core span{font-style:normal;font-weight:600;color:var(--accent-2);
+    box-shadow:inset 0 -.5em 0 rgba(47,111,237,.16)}
+
+  /* ---- BƯỚC 0: ĐỊNH VỊ (what it is + why it's the foundation) ---- */
+  .anchor .rule{font-family:var(--serif);font-size:19px;line-height:1.5;color:var(--ink);
+    background:var(--bg-soft);border-left:3px solid var(--accent);
+    padding:18px 24px;border-radius:0 4px 4px 0;margin:0}
+  .anchor .rule em{font-style:italic;color:var(--accent-2)}
+  .anchor .rule strong{color:var(--ink);font-weight:600}
+  .anchor .why{color:var(--ink-soft)}
+
+  section{padding:72px 0;border-bottom:1px solid var(--border);position:relative}
+  .step-head{display:flex;align-items:flex-start;gap:22px;margin-bottom:34px}
+  .big-num{font-family:var(--serif);font-weight:700;font-size:62px;line-height:.8;
+    color:var(--border-strong);flex:none;font-optical-sizing:auto;letter-spacing:-.03em}
+  .step-meta{padding-top:4px}
+  .lbl{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--accent);display:block;margin-bottom:10px}
+  h2{font-family:var(--serif);font-weight:600;font-size:clamp(27px,4.4vw,37px);
+    line-height:1.12;letter-spacing:-.012em;color:var(--ink)}
+  h2 em{font-style:italic;color:var(--accent)}
+  p{margin-bottom:21px}
+  p:last-child{margin-bottom:0}
+  strong{font-weight:600;color:var(--ink)}
+  em{font-style:italic;color:var(--accent-2)}
+  .gloss{color:var(--muted);font-style:italic}
+
+  .lead::first-letter{font-family:var(--serif);font-weight:700;float:left;
+    font-size:74px;line-height:.74;padding:8px 12px 0 0;color:var(--accent)}
+
+  .sub{font-family:var(--serif);font-weight:600;font-size:17px;letter-spacing:.01em;
+    color:var(--ink);margin:34px 0 14px;display:flex;align-items:center;gap:11px}
+  .sub::before{content:"";width:18px;height:2px;background:var(--accent);flex:none;border-radius:2px}
+
+  /* ---- BƯỚC 1: VẤN ĐỀ (why it exists) ---- */
+  .problem{background:var(--bg-soft)}
+  .problem .big-num{color:#e2d6b4}
+
+  /* ---- BƯỚC 3: VÍ DỤ (concrete worked example) ---- */
+  .example-card{border:1px solid #e8c876;border-radius:4px;padding:30px 32px;margin:8px 0 28px;
+    background:linear-gradient(135deg,#fef9ed 0%,#fdf3e0 100%)}
+  .example-card .tag{font-family:var(--mono);font-weight:600;font-size:11px;
+    letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin-bottom:16px;display:block}
+  .example-card p{color:#5a4810}
+  .example-card strong{color:var(--accent-2)}
+  .example-card p:last-child{margin-bottom:0}
+
+  /* ---- DỄ NHẦM (optional clarify / boundaries) ---- */
+  .clarify{background:var(--bg-soft)}
+  .clarify .big-num{color:#d8cdb2}
+  .mix-q{margin:0 0 30px;padding-left:24px;border-left:2px solid var(--border-strong)}
+  .mix-q:last-child{margin-bottom:0}
+  .mix-q .q{font-family:var(--serif);font-style:italic;font-weight:500;
+    font-size:22px;line-height:1.35;color:var(--accent-2);margin-bottom:12px;display:block}
+  .mix-q p:last-child{margin-bottom:0}
+
+  /* ---- NỐI TIẾP (bridge to the harder concepts) ---- */
+  .bridge .big-num{color:#bcc7b2}
+  .bridge .lbl{color:var(--bridge)}
+  .bridge-card{border-left:3px solid var(--bridge);background:#f4f6f1;
+    padding:22px 26px;border-radius:0 4px 4px 0;margin-top:6px}
+  .bridge-card p:last-child{margin-bottom:0}
+  .bridge-card strong{color:#42513a}
+
+  /* ---- KỂ LẠI GỌN (refined retell) ---- */
+  .retell{background:linear-gradient(180deg,var(--bg-soft) 0%,var(--bg) 100%);border-bottom:none}
+  .retell h2{color:var(--ink)}
+  .retell strong{color:var(--accent-2)}
+  .retell .core{margin-top:6px}
+  .testbox{border:1px solid var(--border);background:var(--bg-elevated);
+    border-radius:4px;padding:28px 32px;margin-top:40px;box-shadow:0 1px 2px rgba(0,0,0,.03)}
+  .testbox h3{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--accent);margin-bottom:20px}
+  .testbox ol{margin:0;padding-left:22px;counter-reset:t}
+  .testbox li{margin-bottom:16px;color:var(--ink-soft);padding-left:6px}
+  .testbox li:last-child{margin-bottom:0}
+
+  footer{text-align:center;padding:60px 0 88px}
+  footer .mark{font-family:var(--serif);font-weight:700;color:var(--accent);
+    font-size:26px;display:block;margin-bottom:14px}
+  footer p{font-family:var(--serif);font-style:italic;color:var(--muted);font-size:17px;max-width:400px;margin:0 auto}
+
+  @media(max-width:560px){
+    body{font-size:18px}
+    header{padding:70px 0 44px}
+    section{padding:52px 0}
+    .step-head{gap:16px}
+    .big-num{font-size:46px}
+    .lead::first-letter{font-size:60px}
+  }
+
+/* ===== FLAMINDI THEME OVERRIDE (dong bo trang chu flamindi.com) ===== */
+:root{
+  --accent:#2f6fed;--accent-2:#2258c8;--accent2:#2258c8;--gold:#0fb6d4;--cyan:#0fb6d4;--blue:#2f6fed;
+  --bg:#f7f9fe;--bg-elevated:#ffffff;--bg-card:#ffffff;--card:#ffffff;--bg-soft:#eef2fb;--soft:#eef2fb;
+  --border:#e4e9f2;--border-soft:#eef1f7;--border-strong:#cfd8e8;
+  --text:#1a2233;--text-soft:#4e5a74;--text-dim:#6b7691;
+  --ink:#1a2233;--ink-soft:#4e5a74;--muted:#6b7691;--soft-t:#4e5a74;--dim:#6b7691;
+  --serif:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+  --mono:ui-monospace,Menlo,Consolas,monospace;
+}
+body{background:radial-gradient(1200px 600px at 85% -10%,rgba(47,111,237,.14),transparent 60%),radial-gradient(1000px 640px at -10% 30%,rgba(15,182,212,.09),transparent 55%),linear-gradient(#f7f9fe,#edf0f8) fixed !important;}
+</style>
+<style>
+ .tabbar{position:fixed;top:0;left:0;right:0;width:100%;box-sizing:border-box;z-index:40;background:rgba(250,250,247,.93);
+   backdrop-filter:saturate(1.1) blur(8px);-webkit-backdrop-filter:saturate(1.1) blur(8px);
+   border-bottom:1px solid var(--border);display:flex;gap:6px;overflow-x:auto;
+   padding:10px max(36px,calc((100% - 992px)/2));scrollbar-width:thin}
+ .tabbar .tab{flex:0 0 auto;display:flex;align-items:baseline;gap:9px;cursor:pointer;
+   background:transparent;border:1px solid transparent;border-radius:999px;
+   padding:8px 17px;transition:.15s;white-space:nowrap;color:var(--muted)}
+ .tabbar .tab:hover{color:var(--ink);background:var(--bg-soft)}
+ .tabbar .tab.active{color:var(--accent-2);background:var(--bg-soft);border-color:var(--border-strong)}
+ .tabbar .tn{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.1em;color:var(--accent)}
+ .tabbar .tl{font-family:var(--serif);font-weight:500;font-size:16px}
+ body{padding-top:56px} .concept-panel{display:none}
+ .concept-panel.active{display:block}
+ .concept-panel header{padding-top:50px}
+ @media(max-width:560px){.tabbar .tl{max-width:48vw;overflow:hidden;text-overflow:ellipsis}}
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+<nav class="tabbar" aria-label="Các khái niệm nền"><button class="tab" data-i="0"><span class="tn">01</span><span class="tl">PP&amp;E &amp; nguyên giá</span></button><button class="tab" data-i="1"><span class="tn">02</span><span class="tl">Khấu hao</span></button><button class="tab" data-i="2"><span class="tn">03</span><span class="tl">Giá gốc &amp; đánh giá lại</span></button><button class="tab" data-i="3"><span class="tn">04</span><span class="tl">Tách bộ phận &amp; tuổi thọ</span></button></nav>
+<div class="concept-panel" id="c-ppe-va-nguyen-gia"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Nền tảng · hiểu từ gốc</div>
+    <h1 class="rise" style="animation-delay:.08s">Tài sản cố định hữu hình là gì, và nguyên giá gồm những gì</h1>
+    <p class="core rise" style="animation-delay:.16s">Một món đồ giữ để dùng lâu, <span>và giá của nó là mọi chi phí để đưa nó vào chạy được.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Định vị · nó là gì &amp; vì sao học trước</span><h2>Nền: PP&E là gì và nguyên giá gồm gì</h2></div>
+    </div>
+    <div class="rule">Theo IAS 16 (¶6), <em>property, plant and equipment</em> (PP&E — tài sản cố định hữu hình) là tài sản <strong>hữu hình</strong> thỏa hai điều kiện: (a) <em>held for use</em> — giữ để sản xuất, cung cấp hàng/dịch vụ, cho thuê hoặc dùng cho quản lý; và (b) dự kiến dùng <strong>hơn một kỳ</strong>. Ghi nhận khi thỏa ¶7 (probable có lợi ích tương lai và đo được reliably). <em>Cost</em> (nguyên giá) theo ¶16 gồm ba mảnh: <em>purchase price</em>, <em>directly attributable costs</em>, và <em>initial estimate</em> chi phí tháo dỡ/hoàn nguyên.</div>
+    <div class="sub">Vì sao đây là nền</div>
+    <div class="why"><p>Đây là viên gạch dưới cùng. Khấu hao, chọn mô hình giá, hay tính lãi lỗ khi bán — tất cả đều đứng trên hai câu hỏi này. Món này có phải tài sản cố định không? Và ghi vào sổ bao nhiêu tiền? Chưa trả lời được hai câu đó, các chương sau chỉ là công thức học vẹt.</p></div>
+  </section>
+
+  <section class="problem">
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Vấn đề nó sinh ra để giải quyết</span><h2>Mua một cái máy về xưởng — ghi thành gì, ghi bao nhiêu?</h2></div>
+    </div>
+    <p class="lead">Công ty mua một cái máy về chạy xưởng. Hai câu hỏi hiện ra ngay. Máy này ghi vào sổ thành một <em>tài sản</em>, hay tính thẳng là chi phí trong năm? Và nếu là tài sản, ghi bao nhiêu tiền?</p>
+
+<p>Không phải cứ bỏ tiền mua là thành tài sản cố định. Một thùng hàng mua về để bán lại thì không phải. Một thứ chỉ xài vài tháng rồi bỏ cũng không phải.</p>
+
+<div class="sub">Và cái giá không chỉ là con số trên hoá đơn</div>
+<p>Mua máy hết 100. Nhưng còn tiền chở về, tiền lắp đặt, tiền chạy thử. Có nên cộng hết vào không? Có khoản cộng, có khoản không. Cần một quy tắc rõ để ai tính cũng ra một số.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Mô hình đơn giản · cách nó chạy</span><h2>Hai câu hỏi: có phải PP&E không, và cộng những gì vào giá</h2></div>
+    </div>
+    <p>Mô hình gọn trong hai bước. Một: xem món đồ có phải tài sản cố định không. Hai: gom đúng các chi phí vào nguyên giá.</p>
+
+<div class="sub">Bước một: có phải PP&E không</div>
+<p>Ba điều kiện phải cùng đúng. Món đồ sờ được, cầm được. Giữ để <strong>dùng</strong>, không phải để bán. Và dùng qua <strong>nhiều năm</strong>. Thiếu một điều là không phải.</p>
+
+<div class="sub">Bước hai: nguyên giá cộng những gì</div>
+<p>Cộng ba nhóm. Tiền mua món đồ, sau khi trừ chiết khấu. Mọi chi phí để <strong>đưa nó vào chạy được</strong>: chở về, lắp đặt, chạy thử. Và khoản ước tính tiền dọn dẹp, tháo dỡ về sau.</p>
+
+<div class="sub">Ranh giới của bước hai</div>
+<p>Chỉ cộng chi phí để đưa máy tới lúc <em>chạy được</em>. Tới đó là dừng. Tiệc khai trương, quảng cáo, đào tạo nhân viên đều không cộng. Chúng không giúp máy chạy được, nên tính chi phí ngay.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví dụ cụ thể</span><h2>Một cái máy 100 và những khoản đi kèm</h2></div>
+    </div>
+    <div class="example-card"><span class="tag">Bài toán</span>
+<p>Công ty mua máy: tiền máy <strong>100</strong>, chở về <strong>5</strong>, lắp đặt và chạy thử <strong>8</strong>. Ngoài ra tổ chức lễ ra mắt hết <strong>4</strong>.</p>
+<p>Nguyên giá của máy: 100 cộng 5 cộng 8, thành <strong>113</strong>. Ba khoản này đều để đưa máy tới lúc chạy được. Còn 4 tiền lễ ra mắt không cộng — tính chi phí ngay trong năm.</p>
+<p>Đổi tình huống một chút. Nếu người bán cho chiết khấu 10 trên tiền máy, thì tiền máy tính là 90, không phải 100. Chiết khấu phải trừ ra trước.</p>
+</div>
+<p>Đời thường hơn: bạn mua một cái tủ lạnh cho quán. Giá tủ, tiền ship, tiền thợ lắp — đó là cái bạn thật sự bỏ ra để có tủ chạy được. Còn tiền in tờ rơi khai trương quán thì là chuyện khác, không dính vào giá cái tủ.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Vài tinh chỉnh. <em>VAT được hoàn</em> (refundable) không vào cost, vì công ty đòi lại được. Nếu trả tiền chậm hơn kỳ hạn thường, cost lấy theo <em>cash price equivalent</em> — giá nếu trả ngay; phần trả thêm là lãi (¶23). Mảnh thứ ba, chi phí tháo dỡ tương lai (<em>decommissioning</em>), đo theo IAS 37 rồi cộng vào nguyên giá ngay từ đầu (¶16c).</p>
+  </section>
+
+  <section class="clarify">
+    <div class="step-head">
+      <div class="big-num">≠</div>
+      <div class="step-meta"><span class="lbl">Dễ nhầm · ranh giới</span><h2>Đừng nhầm 'để dùng' với 'để bán', và mọi chi phí với nguyên giá</h2></div>
+    </div>
+    <div class="mix-q"><span class="q">"Mua hàng về kho cũng là tài sản, cũng ghi kiểu này chứ?"</span><p>Không. Hàng mua về để <em>bán lại</em> là hàng tồn kho, theo chuẩn khác (IAS 2). PP&E là thứ giữ để <em>dùng</em> trong nhiều năm. Cùng một cái máy: nếu công ty giữ chạy xưởng thì là PP&E; nếu là đại lý mua để bán thì là hàng tồn kho.</p></div>
+<div class="mix-q"><span class="q">"Vậy cứ chi tiền quanh việc mua máy là cộng hết vào giá máy à?"</span><p>Không. Chỉ cộng chi phí để đưa máy tới lúc <strong>chạy được</strong>. Chở về, lắp đặt, chạy thử thì cộng. Quảng cáo, khai trương, đào tạo, chi phí lúc máy chạy dưới công suất thì không. Ranh giới là 'có giúp máy sẵn sàng chạy không'.</p></div>
+  </section>
+
+  <section class="bridge">
+    <div class="step-head">
+      <div class="big-num">→</div>
+      <div class="step-meta"><span class="lbl">Nối tiếp · nó dẫn tới đâu</span><h2>Có nguyên giá rồi, sẽ rải ra và có ngày phải bỏ sổ</h2></div>
+    </div>
+    <div class="bridge-card"><p>Con số nguyên giá này là điểm xuất phát cho mọi bước sau. Nó không nằm yên. Nó được rải dần qua các năm — đó là tab <strong>'Khấu hao'</strong>. Và mỗi lần đổ tiền thêm vào tài sản, bạn phải hỏi: cộng vào giá hay tính chi phí ngay? Đó là trang khó <strong>'Vốn hoá hay chi phí'</strong>.</p>
+<p>Đến cuối đời, tài sản được bán hay bỏ đi. Lúc đó lấy tiền bán so với số còn trên sổ để ra lãi lỗ — trang <strong>'Lãi/lỗ thanh lý'</strong>. Nắm nguyên giá trước, ba chặng đó đều nhẹ đi.</p></div>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">✦</div>
+      <div class="step-meta"><span class="lbl">Kể lại trong một hơi</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Tài sản cố định hữu hình là món đồ sờ được, giữ để dùng nhiều năm, không phải để bán. Nguyên giá của nó không chỉ là tiền mua. Nó là mọi chi phí để đưa món đồ tới lúc chạy được: mua, chở, lắp, chạy thử, cộng khoản dọn dẹp sau này. Tới lúc chạy được là dừng cộng.</p>
+<p class="core">Một món đồ giữ để dùng lâu, <span>giá của nó là mọi chi phí để đưa nó vào chạy được.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã nắm nền chưa?</h3>
+      <ol>
+        <li>Cùng một cái máy, khi nào nó là PP&E và khi nào là hàng tồn kho?</li>
+        <li>Máy 100, chở về 5, lắp đặt 8, tiệc khai trương 4. Nguyên giá là bao nhiêu, vì sao?</li>
+        <li>Vì sao chi phí đào tạo và quảng cáo không được cộng vào nguyên giá của máy?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nền vững thì cái khó tự nhẹ đi. Hiểu từ gốc, không học vẹt.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-khau-hao"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Nền tảng · hiểu từ gốc</div>
+    <h1 class="rise" style="animation-delay:.08s">Khấu hao: rải nguyên giá ra theo những năm dùng</h1>
+    <p class="core rise" style="animation-delay:.16s">Không tính hết tiền mua vào một năm, <span>mà rải đều ra suốt những năm món đồ giúp bạn làm ra tiền.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Định vị · nó là gì &amp; vì sao học trước</span><h2>Nền: khấu hao là rải nguyên giá theo thời gian dùng</h2></div>
+    </div>
+    <div class="rule">Theo IAS 16 (¶6), <em>depreciation</em> (khấu hao) là việc phân bổ có hệ thống <em>depreciable amount</em> của tài sản qua <em>useful life</em>. <em>Depreciable amount</em> = nguyên giá (hoặc số thay thế) trừ <em>residual value</em> — số kỳ vọng thu về khi thanh lý cuối đời. Khấu hao bắt đầu khi tài sản <em>available for use</em> (¶55), và mỗi kỳ thường ghi vào chi phí trong P/L (¶48).</div>
+    <div class="sub">Vì sao đây là nền</div>
+    <div class="why"><p>Khấu hao là con số xuất hiện ở mọi tài sản cố định, mọi năm, trong mọi báo cáo. Nó quyết định giá trị còn lại trên sổ, và ăn thẳng vào lợi nhuận từng năm. Chưa hiểu 'rải tiền ra sao', bạn không đọc nổi phần lớn con số trong bảng tài sản. Nắm rồi, phần đo lường sau ghi nhận sáng ra.</p></div>
+  </section>
+
+  <section class="problem">
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Vấn đề nó sinh ra để giải quyết</span><h2>Máy dùng 10 năm — tính hết tiền vào năm mua thì méo mó</h2></div>
+    </div>
+    <p class="lead">Công ty mua máy 100, dự tính dùng 10 năm. Giả sử tính hết 100 vào chi phí ngay năm mua. Năm đó sổ sách lỗ nặng. Chín năm sau, máy vẫn chạy làm ra tiền mà sổ ghi lời đẹp, như thể máy tự nhiên mà có.</p>
+
+<p>Bức tranh đó sai. Cái máy giúp làm ra tiền suốt cả 10 năm, không chỉ năm đầu. Vậy chi phí của nó cũng nên trải ra 10 năm, khớp với quãng nó phục vụ.</p>
+
+<div class="sub">Nên cần một cách chia đều gánh nặng</div>
+<p>Thay vì dồn cục vào một năm, ta rải tiền mua ra từng năm dùng. Mỗi năm gánh một phần. Cách chia đó chính là khấu hao — nội dung Bước 2.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Mô hình đơn giản · cách nó chạy</span><h2>Lấy số cần rải, chia qua số năm dùng</h2></div>
+    </div>
+    <p>Khấu hao chạy theo ba ý gọn. Rải cái gì, rải qua bao lâu, rải theo nhịp nào.</p>
+
+<div class="sub">Rải cái gì</div>
+<p>Không phải rải trọn nguyên giá. Cuối đời máy thường vẫn bán được ít tiền — gọi là giá trị còn lại. Số đem rải là nguyên giá trừ phần bán vớt được đó.</p>
+
+<div class="sub">Rải qua bao lâu</div>
+<p>Rải qua số năm công ty dự kiến dùng máy. Đây là ước tính của chính công ty, dựa trên cách họ xài. Nó có thể ngắn hơn tuổi thọ tối đa của máy.</p>
+
+<div class="sub">Rải theo nhịp nào</div>
+<p>Có vài cách. Chia <strong>đều</strong> mỗi năm bằng nhau. Chia <strong>nặng đầu nhẹ đuôi</strong>, khi máy hao nhiều lúc mới. Hoặc chia <strong>theo sản lượng</strong>, làm nhiều thì gánh nhiều. Chọn cách khớp với cách máy thật sự mòn.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví dụ cụ thể</span><h2>Cái máy sau ba năm rải đều</h2></div>
+    </div>
+    <div class="example-card"><span class="tag">Bài toán</span>
+<p>Máy <strong>100</strong>, dùng <strong>10 năm</strong>, cuối đời bán vớt được <strong>0</strong>. Chia đều: mỗi năm gánh 10.</p>
+<p>Sau 3 năm, đã rải 30. Số còn trên sổ là <strong>70</strong>. Con số này chỉ nói 'đã rải bao nhiêu, còn bao nhiêu' — nó không phải giá bán cái máy ngoài chợ.</p>
+<p>Đổi giả định. Nếu cuối đời máy còn bán được 20, thì số đem rải chỉ là 80, mỗi năm gánh 8. Phần vớt được cuối đời không đem rải.</p>
+</div>
+<p>Một nhịp khác: một cái máy dập, đo theo số sản phẩm. Cả đời dập được chừng một triệu cái. Năm nào dập nhiều thì gánh khấu hao nhiều, năm ế thì gánh ít. Đây là rải theo sản lượng, khớp với mức máy thật sự được dùng.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Số đem rải gọi là <em>depreciable amount</em> = cost trừ <em>residual value</em>. Ba nhịp rải là <em>straight-line</em>, <em>diminishing balance</em>, <em>units of production</em>. Một quy tắc dễ trật: ¶62A <strong>cấm</strong> khấu hao theo doanh thu — vì doanh thu phản ánh giá bán và lạm phát, không phản ánh mức tiêu hao lợi ích. Useful life và residual phải review mỗi cuối năm (¶51).</p>
+  </section>
+
+  <section class="clarify">
+    <div class="step-head">
+      <div class="big-num">≠</div>
+      <div class="step-meta"><span class="lbl">Dễ nhầm · ranh giới</span><h2>Đừng nhầm khấu hao với rớt giá ngoài chợ, hay với sửa chữa</h2></div>
+    </div>
+    <div class="mix-q"><span class="q">"Khấu hao chẳng phải là đo món đồ mỗi năm mất giá bao nhiêu sao?"</span><p>Không. Khấu hao chỉ là <em>chia tiền mua</em> ra các năm dùng theo một cách định trước. Nó không dò giá thị trường. Máy có thể đang lên giá ngoài chợ mà công ty vẫn khấu hao đều. Đây là phân bổ chi phí, không phải bảng giá.</p></div>
+<div class="mix-q"><span class="q">"Vậy bỏ tiền sửa máy hằng năm cũng là khấu hao à?"</span><p>Khác nhau. Sửa chữa, bảo dưỡng là tiền bỏ ra để giữ máy chạy, tính chi phí riêng lúc phát sinh. Khấu hao là rải cái tiền <em>đã bỏ ra để mua</em> máy. Sửa máy đều đặn cũng không xoá được nghĩa vụ khấu hao.</p></div>
+  </section>
+
+  <section class="bridge">
+    <div class="step-head">
+      <div class="big-num">→</div>
+      <div class="step-meta"><span class="lbl">Nối tiếp · nó dẫn tới đâu</span><h2>Từ đây hé ra một hiểu lầm lớn về khấu hao</h2></div>
+    </div>
+    <div class="bridge-card"><p>Giữ chắc một điều: khấu hao là <strong>rải tiền mua</strong>, không phải đo món đồ mất giá. Chính chỗ này sinh ra một hiểu lầm rất phổ biến, và cả một câu hỏi hóc: vì sao đất lại không khấu hao?</p>
+<p>Mở trang khó <strong>'Khấu hao ≠ định giá'</strong>. Ở đó bạn sẽ thấy: đúng vì khấu hao chỉ chia tiền theo số năm dùng, nên đất — thứ dùng mãi không hết — không có gì để chia. Nền 'rải tiền' bạn vừa nắm chính là chìa khoá cho trang đó.</p></div>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">✦</div>
+      <div class="step-meta"><span class="lbl">Kể lại trong một hơi</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Máy giúp làm ra tiền nhiều năm, nên tiền mua máy cũng nên trải ra nhiều năm. Đó là khấu hao. Lấy nguyên giá trừ phần bán vớt cuối đời, rồi chia qua số năm dùng. Có thể chia đều, nặng đầu, hay theo sản lượng. Số trên sổ tụt dần, nhưng nó không phải giá chợ.</p>
+<p class="core">Không tính hết tiền mua vào một năm, <span>rải tiền mua ra theo những năm dùng — không phải dò giá chợ.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã nắm nền chưa?</h3>
+      <ol>
+        <li>Vì sao tính hết tiền mua máy vào một năm lại cho bức tranh sai lệch?</li>
+        <li>Máy 100, dùng 10 năm, cuối đời bán vớt 20. Mỗi năm khấu hao bao nhiêu nếu chia đều?</li>
+        <li>Khấu hao khác với 'món đồ rớt giá ngoài chợ' ở điểm nào?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nền vững thì cái khó tự nhẹ đi. Hiểu từ gốc, không học vẹt.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-gia-goc-vs-danh-gia-lai"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Nền tảng · hiểu từ gốc</div>
+    <h1 class="rise" style="animation-delay:.08s">Hai cách ghi giá trị: giữ giá gốc, hay cập nhật theo thị trường</h1>
+    <p class="core rise" style="animation-delay:.16s">Chọn một trong hai lối: <span>giữ giá mua trừ hao mòn, hay cập nhật lên giá thị trường.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Định vị · nó là gì &amp; vì sao học trước</span><h2>Nền: cost model và revaluation model</h2></div>
+    </div>
+    <div class="rule">Theo IAS 16 (¶29), công ty chọn một chính sách áp cho <strong>cả một class</strong> PP&E. <em>Cost model</em> (¶30): carrying amount = cost trừ khấu hao lũy kế trừ lỗ suy giảm lũy kế — chỉ đi xuống. <em>Revaluation model</em> (¶31): carrying amount = <em>fair value</em> tại ngày đánh giá lại, trừ khấu hao và suy giảm phát sinh sau — chỉ áp khi FV đo được reliably, và phải revalue toàn class (¶36).</div>
+    <div class="sub">Vì sao đây là nền</div>
+    <div class="why"><p>Đây là ngã ba đường của đo lường sau ghi nhận. Chọn lối nào quyết định con số tài sản trên bảng cân đối trông ra sao qua thời gian: cứ tụt dần, hay cập nhật lên xuống theo chợ. Chưa phân biệt hai lối, bạn không hiểu vì sao hai công ty cùng cầm một toà nhà lại ghi hai con số khác nhau.</p></div>
+  </section>
+
+  <section class="problem">
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Vấn đề nó sinh ra để giải quyết</span><h2>Toà nhà mua 10 năm trước, giờ ghi con số nào?</h2></div>
+    </div>
+    <p class="lead">Công ty mua một toà nhà 10 năm trước, giá 10 tỷ. Nay giá thị trường quanh đó đã gấp đôi. Trên sổ nên ghi con số nào? Giá mua cũ đã trừ hao mòn, hay giá bây giờ ngoài thị trường?</p>
+
+<p>Hai câu trả lời, hai triết lý. Một bên trọng sự chắc chắn: cứ bám giá đã trả, ai cũng kiểm được. Một bên trọng sự cập nhật: cho người đọc thấy giá trị hôm nay.</p>
+
+<div class="sub">Nên chuẩn mực cho chọn, nhưng có luật</div>
+<p>IAS 16 không ép một lối. Nó cho công ty chọn, nhưng buộc chọn cho <strong>cả nhóm tài sản</strong>, không lựa từng món. Và mỗi lối có cái giá đi kèm.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Mô hình đơn giản · cách nó chạy</span><h2>Một lối đi xuống, một lối cập nhật hai chiều</h2></div>
+    </div>
+    <p>Hai lối khác nhau ở một điểm: có cập nhật theo giá thị trường không.</p>
+
+<div class="sub">Lối giá gốc</div>
+<p>Giữ nguyên giá mua, rồi trừ dần khấu hao và phần suy giảm. Con số chỉ đi xuống, không bao giờ tự tăng. Đơn giản, ổn định, ít tranh cãi. Không cần thuê ai định giá.</p>
+
+<div class="sub">Lối đánh giá lại</div>
+<p>Định kỳ cập nhật con số lên đúng giá thị trường. Giá lên thì sổ lên, giá xuống thì sổ xuống. Chỉ dùng được khi đo được giá thị trường đủ đáng tin. Phải làm đủ thường xuyên để sổ không lệch xa giá thật.</p>
+
+<div class="sub">Luật chung cho cả hai</div>
+<p>Chọn lối nào cũng phải áp cho <strong>cả nhóm</strong> tài sản cùng loại. Không thể chỉ đánh giá lại đúng món đang lên giá rồi bỏ qua món đang xuống. Làm vậy là bức tranh thiên vị.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví dụ cụ thể</span><h2>Cùng một toà nhà, hai con số</h2></div>
+    </div>
+    <div class="example-card"><span class="tag">Bài toán</span>
+<p>Toà nhà mua <strong>10 tỷ</strong>, đã khấu hao <strong>3 tỷ</strong>. Nay giá thị trường quanh đó là <strong>16 tỷ</strong>.</p>
+<p>Theo lối giá gốc: sổ ghi 10 trừ 3, còn <strong>7 tỷ</strong>. Đơn giản, cứ vậy. Theo lối đánh giá lại: cập nhật lên <strong>16 tỷ</strong>, phần tăng 9 tỷ được ghi vào một ngăn riêng trong vốn.</p>
+<p>Điểm quan trọng: hai công ty giống hệt nhau, cầm cùng toà nhà, có thể ghi 7 tỷ hoặc 16 tỷ — chỉ vì chọn lối khác nhau. Cả hai đều hợp lệ.</p>
+</div>
+<p>Nghĩ về chiếc xe cũ của bạn. Bạn có thể nhớ nó theo 'giá mua trừ dần hao mòn' — cách nội bộ, gọn. Hoặc theo 'giờ rao bán được bao nhiêu' — cập nhật theo chợ, nhưng phải chịu khó dò giá. Hai cách nhìn cùng một chiếc xe.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Lối đánh giá lại đòi <em>fair value</em> đo được reliably (IFRS 13), và revalue với <em>sufficient regularity</em>: hằng năm nếu giá biến động mạnh, 3-5 năm nếu ổn. Phần tăng vào <em>OCI</em>, tích thành <em>revaluation surplus</em> trong equity, và tạo <em>deferred tax</em> (IAS 12). Một <em>class</em> là nhóm tài sản cùng bản chất và cách dùng: đất, nhà, máy móc, tàu, máy bay, xe.</p>
+  </section>
+
+  <section class="clarify">
+    <div class="step-head">
+      <div class="big-num">≠</div>
+      <div class="step-meta"><span class="lbl">Dễ nhầm · ranh giới</span><h2>Đừng nhầm 'chọn theo món' và 'đánh giá lại là bắt buộc'</h2></div>
+    </div>
+    <div class="mix-q"><span class="q">"Tôi đánh giá lại riêng cái nhà đang lên giá thôi, được không?"</span><p>Không. Chính sách áp cho <strong>cả nhóm</strong> tài sản cùng loại, không lựa từng món. Nếu chọn đánh giá lại nhóm nhà cửa, phải làm cho tất cả nhà trong nhóm — cả cái đang xuống giá. Đây là để tránh chỉ khoe món lời, giấu món lỗ.</p></div>
+<div class="mix-q"><span class="q">"Nếu tài sản lên giá thì bắt buộc phải đánh giá lại chứ?"</span><p>Không bắt buộc. Rất nhiều công ty chọn lối giá gốc cho đơn giản, kể cả khi tài sản đang lên giá. Đánh giá lại là một lựa chọn, kèm chi phí thuê định giá và thêm phức tạp về thuế. Lên giá không tự động buộc phải cập nhật sổ.</p></div>
+  </section>
+
+  <section class="bridge">
+    <div class="step-head">
+      <div class="big-num">→</div>
+      <div class="step-meta"><span class="lbl">Nối tiếp · nó dẫn tới đâu</span><h2>Chọn lối đánh giá lại mở ra một quy tắc lệch lạ</h2></div>
+    </div>
+    <div class="bridge-card"><p>Khi công ty chọn lối đánh giá lại, một câu hỏi hóc hiện ra. Giá lên thì niềm vui đó ghi vào đâu, giá xuống thì nỗi buồn ghi vào đâu? Bất ngờ là hai chiều <strong>không</strong> xử như nhau.</p>
+<p>Mở trang khó <strong>'Tăng OCI, giảm P/L'</strong>. Ở đó bạn sẽ thấy: tăng thì cất riêng một ngăn, giảm thì trừ thẳng vào lãi trong năm. Hiểu nền hai lối ở đây trước, sự bất đối xứng đó mới hết rối.</p></div>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">✦</div>
+      <div class="step-meta"><span class="lbl">Kể lại trong một hơi</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Có hai lối ghi giá trị tài sản qua thời gian. Lối giá gốc: giữ giá mua, trừ dần hao mòn, chỉ đi xuống, đơn giản. Lối đánh giá lại: cập nhật lên đúng giá thị trường, lên xuống hai chiều, cần định giá đáng tin. Chọn lối nào cũng phải áp cho cả nhóm tài sản, không lựa từng món.</p>
+<p class="core">Chọn một trong hai lối: <span>giữ giá gốc trừ hao mòn, hay cập nhật theo chợ — cho cả nhóm.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã nắm nền chưa?</h3>
+      <ol>
+        <li>Cùng một toà nhà, vì sao hai công ty có thể ghi hai con số rất khác nhau?</li>
+        <li>Vì sao không được chỉ đánh giá lại riêng một món đang lên giá trong nhóm?</li>
+        <li>Lối giá gốc và lối đánh giá lại khác nhau ở điểm cốt lõi nào?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nền vững thì cái khó tự nhẹ đi. Hiểu từ gốc, không học vẹt.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-tach-bo-phan-useful-life"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Nền tảng · hiểu từ gốc</div>
+    <h1 class="rise" style="animation-delay:.08s">Tách một tài sản ra nhiều phần, mỗi phần một tuổi thọ riêng</h1>
+    <p class="core rise" style="animation-delay:.16s">Một cỗ máy lớn không phải một khối: <span>nó là nhiều phần, mỗi phần mòn theo nhịp riêng của nó.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Định vị · nó là gì &amp; vì sao học trước</span><h2>Nền: tách bộ phận và thời gian sử dụng hữu ích</h2></div>
+    </div>
+    <div class="rule">Theo IAS 16 (¶43), mỗi <strong>part</strong> có giá trị đáng kể so với tổng nguyên giá của một item phải được khấu hao <strong>riêng</strong> — đây là <em>component approach</em>. <em>Useful life</em> (¶6) là (a) khoảng thời gian entity dự kiến tài sản <em>available for use</em>, hoặc (b) số đơn vị sản xuất kỳ vọng. Đó là chỉ tiêu của entity, review ít nhất mỗi cuối năm (¶51), có thể ngắn hơn tuổi thọ vật lý.</div>
+    <div class="sub">Vì sao đây là nền</div>
+    <div class="why"><p>Nền này đứng ngay dưới khấu hao và dưới việc thay thế bộ phận. Nếu coi cả cỗ máy là một khối, bạn rải sai nhịp và ghi sổ méo mó khi thay một phần. Hiểu 'một tài sản gồm nhiều phần, mỗi phần một tuổi thọ', bạn mới đọc đúng khấu hao thực tế và xử đúng lúc thay đồ.</p></div>
+  </section>
+
+  <section class="problem">
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Vấn đề nó sinh ra để giải quyết</span><h2>Cả chiếc máy bay khấu hao đều — nghe đã thấy sai</h2></div>
+    </div>
+    <p class="lead">Một hãng mua chiếc máy bay. Thân máy bay dùng được chừng 25 năm. Nhưng động cơ phải đại tu theo giờ bay, còn ghế và nội thất thì đổi mới sau chừng 8 năm. Vậy coi cả chiếc là một khối rồi rải đều 25 năm, có ổn không?</p>
+
+<p>Không ổn. Ba phần đó mòn theo ba nhịp hoàn toàn khác nhau. Gộp chung thành một con số khấu hao là bôi trơn hết sự thật, và rối tung khi đến lúc thay ghế.</p>
+
+<div class="sub">Nên phải tách phần và định tuổi riêng</div>
+<p>Ý nền ở đây: một tài sản lớn thường gồm nhiều phần đáng giá. Mỗi phần có số năm dùng riêng. Tách chúng ra, mỗi phần rải theo nhịp của mình.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Mô hình đơn giản · cách nó chạy</span><h2>Tách phần đáng giá, mỗi phần một số năm dùng</h2></div>
+    </div>
+    <p>Mô hình gồm hai ý ăn khớp: tách phần, và định số năm dùng cho mỗi phần.</p>
+
+<div class="sub">Tách những phần đáng giá</div>
+<p>Phần nào chiếm một khoản đáng kể trong tổng giá thì tách ra, khấu hao riêng. Thân máy bay một sổ, động cơ một sổ, nội thất một sổ. Mỗi phần rải theo nhịp mòn của nó.</p>
+
+<div class="sub">Số năm dùng là ước tính của công ty</div>
+<p>Số năm dùng không phải tuổi thọ tối đa của vật. Nó là quãng công ty dự kiến <em>còn dùng</em> món đồ, theo cách họ xài. Một hãng thay máy bay sau 15 năm thì dùng con số 15, dù khung máy bay bền hơn.</p>
+
+<div class="sub">Xem lại mỗi cuối năm</div>
+<p>Số năm dùng và phần vớt cuối đời được xem lại mỗi cuối năm. Dùng thực tế khác dự tính thì chỉnh, và chỉnh cho <strong>tương lai</strong>, không sửa ngược quá khứ.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví dụ cụ thể</span><h2>Chiếc máy bay tách làm ba phần</h2></div>
+    </div>
+    <div class="example-card"><span class="tag">Bài toán</span>
+<p>Chiếc máy bay giá <strong>100</strong>, tách ba phần: thân <strong>60</strong> (dùng 25 năm), động cơ <strong>30</strong> (theo giờ bay), nội thất <strong>10</strong> (dùng 8 năm).</p>
+<p>Mỗi phần rải theo nhịp riêng. Thân rải qua 25 năm. Nội thất rải qua 8 năm, nhanh hơn nhiều. Đến năm thứ 8, nội thất cũ đã rải hết và được đổi mới — mà thân vẫn còn đang rải bình thường.</p>
+<p>Nếu gộp cả 100 rải đều 25 năm, con số khấu hao mỗi năm trông mượt nhưng sai. Nó giấu mất chuyện nội thất mòn nhanh gấp ba lần thân.</p>
+</div>
+<p>Một toà nhà cũng vậy. Khung nhà bền 50 năm, nhưng thang máy chừng 15 năm, mái chống thấm chừng 10 năm. Tách các phần đáng giá đó ra, mỗi phần có tuổi riêng, thay vì rải cả toà nhà theo một con số duy nhất.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Các part nhỏ không đáng kể có thể gộp thành một nhóm <em>remainder</em> khấu hao chung (¶46). <em>Useful life</em> có thể ngắn hơn <em>economic life</em> vì phản ánh chính sách dùng của entity. Đất có <em>unlimited useful life</em> nên không khấu hao, tách riêng khỏi nhà kể cả khi mua chung (¶58). Thay đổi useful life là <em>change in estimate</em> theo IAS 8 — áp prospective.</p>
+  </section>
+
+  <section class="clarify">
+    <div class="step-head">
+      <div class="big-num">≠</div>
+      <div class="step-meta"><span class="lbl">Dễ nhầm · ranh giới</span><h2>Đừng nhầm số năm dùng với tuổi thọ tối đa của vật</h2></div>
+    </div>
+    <div class="mix-q"><span class="q">"Khung máy bay bền 30 năm thì số năm dùng phải là 30 chứ?"</span><p>Không nhất thiết. Số năm dùng là quãng <em>công ty dự kiến còn dùng</em>, theo cách họ vận hành. Một hãng có chính sách thay máy bay sau 15 năm thì dùng 15, dù khung bền hơn. Đó là con số của công ty, không phải tuổi thọ tối đa của vật.</p></div>
+<div class="mix-q"><span class="q">"Tách phần ra chi cho rắc rối, gộp một khối cho gọn được không?"</span><p>Gộp thì gọn nhưng sai nhịp. Các phần mòn khác tốc độ, nên khấu hao gộp giấu mất sự thật và rối khi thay một phần. Chỉ những phần <em>đáng giá</em> mới cần tách; các phần nhỏ vụn có thể gộp chung một nhóm cho đỡ cồng kềnh.</p></div>
+  </section>
+
+  <section class="bridge">
+    <div class="step-head">
+      <div class="big-num">→</div>
+      <div class="step-meta"><span class="lbl">Nối tiếp · nó dẫn tới đâu</span><h2>Tách phần rồi, chuyện thay đồ mới xử đúng được</h2></div>
+    </div>
+    <div class="bridge-card"><p>Một khi mỗi phần có sổ riêng, việc thay đồ trở nên rõ ràng. Thay động cơ mới thì bỏ sổ động cơ cũ, ghi động cơ mới vào. Không có bước tách phần, bạn không biết bỏ cái gì ra khi thay.</p>
+<p>Mở trang khó <strong>'Vốn hoá hay chi phí'</strong>. Ở đó có đúng cái bẫy này: thay một bộ phận lớn thì cộng vào tài sản, nhưng phải nhớ xoá sổ phần cũ. Nền tách phần bạn vừa nắm chính là thứ làm bước xoá đó khả thi.</p></div>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">✦</div>
+      <div class="step-meta"><span class="lbl">Kể lại trong một hơi</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Một tài sản lớn thường gồm nhiều phần đáng giá, mòn theo những nhịp khác nhau. Nên tách các phần đó ra, mỗi phần khấu hao riêng theo số năm dùng của nó. Số năm dùng là ước tính của công ty, không phải tuổi thọ tối đa của vật, và được xem lại mỗi cuối năm.</p>
+<p class="core">Một cỗ máy lớn không phải một khối: <span>tách phần đáng giá ra, mỗi phần một tuổi thọ riêng.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã nắm nền chưa?</h3>
+      <ol>
+        <li>Vì sao coi cả chiếc máy bay là một khối rồi khấu hao đều lại cho con số sai?</li>
+        <li>Khung máy bay bền 30 năm nhưng công ty định thay sau 15 năm — số năm dùng là bao nhiêu, vì sao?</li>
+        <li>Vì sao tách phần lại giúp xử đúng khi thay một bộ phận lớn?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nền vững thì cái khó tự nhẹ đi. Hiểu từ gốc, không học vẹt.</p>
+  </footer>
+
+</div></div>
+<script>
+  var bar=document.getElementById('progress');
+  function upd(){var h=document.documentElement;var s=h.scrollTop||document.body.scrollTop;
+    var max=(h.scrollHeight-h.clientHeight)||1;bar.style.width=(s/max*100)+'%';}
+  window.addEventListener('scroll',upd,{passive:true});upd();
+  var io=new IntersectionObserver(function(es){es.forEach(function(e){
+    if(e.isIntersecting){e.target.style.animation='rise .7s cubic-bezier(.2,.7,.3,1) forwards';io.unobserve(e.target);}});},{threshold:.12});
+  document.querySelectorAll('section').forEach(function(s){s.style.opacity='0';io.observe(s);});
+</script>
+
+<script>
+(function(){
+  var tabs=[].slice.call(document.querySelectorAll('.tabbar .tab'));
+  var panels=[].slice.call(document.querySelectorAll('.concept-panel'));
+  function show(i){
+    tabs.forEach(function(t,j){t.classList.toggle('active',j===i);});
+    panels.forEach(function(p,j){
+      var on=(j===i); p.classList.toggle('active',on);
+      if(on){p.querySelectorAll('section').forEach(function(s){s.style.opacity='';s.style.animation='';});}
+    });
+    try{history.replaceState(null,'','#'+panels[i].id);}catch(e){}
+    window.scrollTo(0,0); window.dispatchEvent(new Event('scroll'));
+  }
+  tabs.forEach(function(t){t.addEventListener('click',function(){show(+t.getAttribute('data-i'));});});
+  var start=0; panels.forEach(function(p,j){if('#'+p.id===location.hash)start=j;});
+  show(start);
+})();
+</script>
+
+</body></html>

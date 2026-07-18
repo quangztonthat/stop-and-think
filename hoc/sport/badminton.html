@@ -1,0 +1,1600 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tư duy đánh đôi cầu lông — Vị trí, cú đánh & chiến thuật</title>
+<style>
+  :root{
+    --bg:#0d1117; --panel:#161b22; --panel2:#1c2430; --line:#2b3444;
+    --ink:#e6edf3; --muted:#9aa7b6; --dim:#6b7684; --glow:#15202e;
+    --court:#0f5132; --court2:#127a4a; --white:#f2f6f8;
+    --me:#4aa3ff; --mate:#7ee0b8; --opp:#ff6b6b; --opp2:#ffa94d;
+    --attack:#ff5d5d; --defend:#4db1ff; --shuttle:#ffd23f;
+    --acc:#ffd23f; --good:#57d38c; --bad:#ff7a7a; --warn:#ffb454;
+    --navbg:rgba(13,17,23,.82); --h1a:#fff; --h1b:#8ec7ff; --h1c:#ffd23f;
+    --shadow:0 8px 30px rgba(0,0,0,.4);
+    --radius:14px;
+  }
+  html[data-theme="light"]{
+    --bg:#eef2f7; --panel:#ffffff; --panel2:#f1f5fa; --line:#d5dee9;
+    --ink:#182430; --muted:#4f5c6b; --dim:#8894a3; --glow:#d3e2f5;
+    --me:#2a7fd6; --mate:#1fa87a; --opp:#e0463c; --opp2:#e08a1e;
+    --attack:#e0463c; --defend:#2a7fd6; --shuttle:#c99400;
+    --acc:#b5820a; --good:#1f9d57; --bad:#d64545; --warn:#c07f12;
+    --navbg:rgba(255,255,255,.85); --h1a:#1b6fc0; --h1b:#2aa3ff; --h1c:#c08a00;
+    --shadow:0 8px 24px rgba(30,50,80,.14);
+  }
+  html[data-theme="light"] .pill.atk{color:#c0392b}
+  html[data-theme="light"] .pill.def{color:#1f6fb2}
+  html[data-theme="light"] .pill.neu{color:#a67c00}
+  html[data-theme="light"] .node .resp{color:#a67209}
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0; background:radial-gradient(1200px 600px at 50% -10%,var(--glow),var(--bg)) fixed;
+    color:var(--ink); font-family:"Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif;
+    line-height:1.62; font-size:16px; transition:background .3s,color .3s;
+  }
+  .wrap{max-width:1120px; margin:0 auto; padding:0 18px 80px}
+  header.hero{
+    text-align:center; padding:46px 18px 26px;
+  }
+  header.hero .kick{color:var(--acc); font-weight:700; letter-spacing:2px; font-size:13px; text-transform:uppercase}
+  header.hero h1{
+    font-size:clamp(26px,4.6vw,44px); margin:.25em 0 .2em; line-height:1.12;
+    background:linear-gradient(120deg,var(--h1a),var(--h1b) 60%,var(--h1c));
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+  header.hero p{color:var(--muted); max-width:720px; margin:.2em auto 0; font-size:17px}
+
+  nav.tabs{
+    position:sticky; top:0; z-index:30; display:flex; flex-wrap:wrap; gap:6px; justify-content:center;
+    padding:12px 8px; margin:14px 0 22px;
+    background:var(--navbg); backdrop-filter:blur(10px);
+    border:1px solid var(--line); border-radius:16px;
+  }
+  nav.tabs button{
+    background:transparent; border:1px solid transparent; color:var(--muted);
+    padding:8px 14px; border-radius:10px; font-size:14px; font-weight:600; cursor:pointer;
+    transition:.15s;
+  }
+  nav.tabs button:hover{color:var(--ink); background:var(--panel2)}
+  nav.tabs button.active{color:#0d1117; background:linear-gradient(120deg,#8ec7ff,#ffd23f); border-color:transparent}
+
+  section.tab{display:none; animation:fade .3s ease}
+  section.tab.show{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+  h2.sec{font-size:26px; margin:8px 0 6px; display:flex; align-items:center; gap:10px}
+  h2.sec .dot{width:10px;height:24px;border-radius:4px;background:linear-gradient(180deg,#8ec7ff,#ffd23f)}
+  .lead{color:var(--muted); font-size:16.5px; margin:0 0 20px; max-width:820px}
+
+  .card{
+    background:var(--panel); border:1px solid var(--line); border-radius:var(--radius);
+    padding:20px 22px; margin:16px 0;
+  }
+  .card h3{margin:.1em 0 .4em; font-size:19px}
+  .card h3 .em{color:var(--acc)}
+  .grid{display:grid; gap:16px}
+  @media(min-width:780px){ .grid.c2{grid-template-columns:1fr 1fr} .grid.c3{grid-template-columns:1fr 1fr 1fr} }
+
+  .courtwrap{display:flex; flex-wrap:wrap; gap:22px; align-items:flex-start}
+  .courtbox{flex:0 0 auto; text-align:center}
+  .courtbox svg{display:block; margin:0 auto; border-radius:12px; box-shadow:var(--shadow)}
+
+  .themebtn{
+    position:fixed; top:14px; right:14px; z-index:60;
+    display:inline-flex; align-items:center; gap:7px;
+    background:var(--panel); color:var(--ink); border:1px solid var(--line);
+    padding:8px 13px; border-radius:999px; font-size:13.5px; font-weight:700; cursor:pointer;
+    box-shadow:var(--shadow); transition:.15s;
+  }
+  .themebtn:hover{border-color:var(--acc); transform:translateY(-1px)}
+  .themebtn .ic{font-size:15px; line-height:1}
+  @media(max-width:640px){ .themebtn span.lbl{display:none} .themebtn{padding:9px 11px} }
+  .courtcap{color:var(--muted); font-size:13.5px; margin-top:8px; max-width:280px}
+  .courtnote{flex:1 1 280px; min-width:260px}
+
+  .legend{display:flex; flex-wrap:wrap; gap:14px; margin:6px 0 4px; font-size:13.5px; color:var(--muted)}
+  .legend span{display:inline-flex; align-items:center; gap:7px}
+  .swatch{width:14px;height:14px;border-radius:50%; display:inline-block; border:2px solid rgba(255,255,255,.25)}
+
+  ul.clean{list-style:none; padding:0; margin:10px 0}
+  ul.clean li{position:relative; padding:6px 0 6px 26px; border-bottom:1px dashed var(--line)}
+  ul.clean li:last-child{border-bottom:0}
+  ul.clean li::before{content:"▸"; position:absolute; left:4px; top:6px; color:var(--acc)}
+  ul.clean li b{color:var(--ink)}
+
+  .pill{display:inline-block; padding:2px 10px; border-radius:999px; font-size:12.5px; font-weight:700; letter-spacing:.3px}
+  .pill.atk{background:rgba(255,93,93,.16); color:#ff9c9c; border:1px solid rgba(255,93,93,.4)}
+  .pill.def{background:rgba(77,177,255,.15); color:#8ec7ff; border:1px solid rgba(77,177,255,.4)}
+  .pill.neu{background:rgba(255,210,63,.14); color:#ffdd6b; border:1px solid rgba(255,210,63,.4)}
+
+  table.tbl{width:100%; border-collapse:collapse; margin:12px 0; font-size:14.5px}
+  table.tbl th,table.tbl td{border:1px solid var(--line); padding:10px 12px; text-align:left; vertical-align:top}
+  table.tbl th{background:var(--panel2); color:var(--ink); font-size:13px; text-transform:uppercase; letter-spacing:.5px}
+  table.tbl td b{color:var(--acc)}
+
+  .split2{display:grid; gap:14px}
+  @media(min-width:720px){ .split2{grid-template-columns:1fr 1fr} }
+  .good-box,.bad-box{border-radius:12px; padding:14px 16px; border:1px solid}
+  .good-box{background:rgba(87,211,140,.07); border-color:rgba(87,211,140,.35)}
+  .bad-box{background:rgba(255,122,122,.07); border-color:rgba(255,122,122,.35)}
+  .good-box h4{margin:0 0 6px; color:var(--good)}
+  .bad-box h4{margin:0 0 6px; color:var(--bad)}
+  .good-box ul,.bad-box ul{margin:6px 0 0; padding-left:18px}
+  .good-box li,.bad-box li{margin:4px 0}
+
+  .dont{border-color:rgba(255,122,122,.45)}
+  .dont h3{color:var(--bad)}
+  .mrow{margin:8px 0; font-size:14.8px}
+  .mrow .lb{font-weight:800; margin-right:5px}
+  .mrow.pos .lb{color:var(--warn)}
+  .mrow.pun .lb{color:var(--bad)}
+  .mrow.why .lb{color:var(--muted)}
+  .fix{background:rgba(87,211,140,.09); border:1px solid rgba(87,211,140,.32); border-radius:9px; padding:9px 12px; margin-top:10px; font-size:14.8px}
+  .fix .lb{color:var(--good); font-weight:800; margin-right:5px}
+  .mlegend{display:flex; flex-wrap:wrap; gap:16px; font-size:13.5px; color:var(--muted); margin:4px 0 2px}
+  .mlegend i{display:inline-block; width:22px; height:0; border-top:3px solid; vertical-align:middle; margin-right:6px}
+
+  /* decision tree */
+  .shotpicker{display:flex; flex-wrap:wrap; gap:8px; margin:12px 0 18px}
+  .shotpicker button{
+    background:var(--panel2); border:1px solid var(--line); color:var(--ink); cursor:pointer;
+    padding:9px 15px; border-radius:10px; font-weight:600; font-size:14px; transition:.15s;
+  }
+  .shotpicker button:hover{border-color:var(--acc)}
+  .shotpicker button.active{background:linear-gradient(120deg,#ff5d5d,#ffd23f); color:#0d1117; border-color:transparent}
+  .tree{display:none}
+  .tree.show{display:block; animation:fade .3s}
+  .branch{
+    border-left:3px solid var(--line); margin:8px 0 8px 8px; padding:2px 0 2px 16px;
+  }
+  .node{
+    background:var(--panel2); border:1px solid var(--line); border-radius:12px; padding:12px 14px; margin:8px 0;
+  }
+  .node .resp{color:var(--acc); font-weight:700; font-size:14.5px}
+  .node .act{color:var(--ink); margin-top:3px}
+  .node .why{color:var(--muted); font-size:13.5px; margin-top:4px}
+  .node.win{border-color:rgba(87,211,140,.5)}
+  .node.risk{border-color:rgba(255,180,84,.5)}
+
+  .kbd{background:var(--panel2); border:1px solid var(--line); border-bottom-width:2px; border-radius:6px; padding:1px 7px; font-size:13px}
+  .callout{border-left:4px solid var(--acc); background:var(--panel2); padding:12px 16px; border-radius:0 10px 10px 0; margin:14px 0; color:var(--muted)}
+  .callout b{color:var(--ink)}
+  .num{display:inline-flex; width:26px;height:26px; border-radius:50%; background:linear-gradient(120deg,#8ec7ff,#ffd23f); color:#0d1117; font-weight:800; align-items:center; justify-content:center; font-size:14px; margin-right:8px}
+  footer{color:var(--dim); text-align:center; font-size:13px; margin-top:40px; padding-top:20px; border-top:1px solid var(--line)}
+  .tag{font-size:12px; color:var(--dim)}
+</style>
+</head>
+<body>
+<button class="themebtn" id="themebtn" aria-label="Đổi giao diện sáng/tối">
+  <span class="ic" id="themeic">☀️</span><span class="lbl" id="themelbl">Sáng</span>
+</button>
+<div class="wrap">
+<header class="hero">
+  <div class="kick">🏸 Cầu lông · Đánh đôi</div>
+  <h1>Tư duy đánh đôi cầu lông</h1>
+  <p>Vị trí trên sân, cú đánh nên chọn ở từng vị trí, chiến thuật công–thủ, điểm mạnh–yếu, và cây kịch bản "đánh xong sẽ xảy ra gì". Học để hình dung được cả bàn cờ trước khi vụt cầu.</p>
+</header>
+
+<nav class="tabs" id="tabs">
+  <button data-t="overview" class="active">Tổng quan</button>
+  <button data-t="formation">3 đội hình</button>
+  <button data-t="myrole">Vị trí của tôi &amp; cú đánh</button>
+  <button data-t="placement">Điểm rơi chi tiết</button>
+  <button data-t="netgame">Net game (chuyên sâu)</button>
+  <button data-t="serve">Giao &amp; trả giao</button>
+  <button data-t="strategy">Chiến thuật</button>
+  <button data-t="tree">Kịch bản sau khi đánh</button>
+  <button data-t="sw">Điểm mạnh – yếu</button>
+  <button data-t="advanced">Nâng cao: đọc đối thủ &amp; cú cấm</button>
+  <button data-t="train">Luyện tư duy</button>
+</nav>
+
+<!-- ================= OVERVIEW ================= -->
+<section class="tab show" id="overview">
+  <h2 class="sec"><span class="dot"></span>Nguyên lý cốt lõi của đánh đôi</h2>
+  <p class="lead">Đánh đôi khác đánh đơn ở một điều: <b>hai người phải di chuyển như một cơ thể</b>. Trước khi bàn cú đánh, phải nắm 3 nguyên lý dưới đây — mọi chiến thuật đều bắt nguồn từ chúng.</p>
+
+  <div class="grid c3">
+    <div class="card">
+      <h3><span class="num">1</span>Ai đánh cầu <span class="em">đi xuống</span>, người đó nắm quyền</h3>
+      <p>Cầu bay <b>xuống</b> (smash, drop, bỏ nhỏ, vê lưới đè) = tấn công. Cầu bay <b>lên</b> (nâng, lốp, phông) = phòng thủ. Cả trận là cuộc giành lấy quyền được đánh xuống. Đừng nâng cầu nếu không bắt buộc.</p>
+    </div>
+    <div class="card">
+      <h3><span class="num">2</span>Đội hình đi theo <span class="em">hướng cầu</span></h3>
+      <p>Khi <b>đội mình tấn công</b> → đứng <b>trước–sau</b> (một người lưới, một người cuối sân). Khi <b>đội mình phòng thủ</b> → đứng <b>ngang hàng</b> (mỗi người giữ một nửa sân). Đọc hướng cầu để đổi đội hình kịp thời.</p>
+    </div>
+    <div class="card">
+      <h3><span class="num">3</span>Không có "sân của tôi" cố định — chỉ có <span class="em">vai trò</span></h3>
+      <p>Vị trí thay đổi liên tục qua <b>xoay vòng (rotation)</b>. Bạn không giữ mãi bên trái; bạn giữ <b>vai trò</b> (người lưới / người cuối sân / người thủ). Hiểu vai trò quan trọng hơn nhớ ô đứng.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Bản đồ sân đôi &amp; các vùng bạn cần gọi tên</h3>
+    <div class="courtwrap">
+      <div class="courtbox" id="c_overview"></div>
+      <div class="courtnote">
+        <p>Sân đôi rộng <b>6,1 m</b> × dài <b>13,4 m</b>. Ghi nhớ các mốc:</p>
+        <ul class="clean">
+          <li><b>Vùng lưới</b> (net) — nơi kết thúc điểm bằng vê lưới / đập bồi.</li>
+          <li><b>Vùng giữa sân</b> (midcourt) — nơi xảy ra <b>drive</b> đối vụt và phản xạ nhanh nhất.</li>
+          <li><b>Vùng cuối sân</b> (rearcourt) — bệ phóng của smash/drop/clear.</li>
+          <li><b>Hai góc cuối &amp; hai biên</b> — điểm ngắm để kéo giãn đối thủ.</li>
+          <li><b>"Lỗ hổng" giữa hai người</b> — đường cầu giữa 2 đối thủ, nơi dễ gây do dự "cầu của ai?".</li>
+        </ul>
+        <div class="legend">
+          <span><i class="swatch" style="background:var(--me)"></i> Tôi</span>
+          <span><i class="swatch" style="background:var(--mate)"></i> Đồng đội</span>
+          <span><i class="swatch" style="background:var(--opp)"></i> Đối thủ</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout">
+    <b>Cách dùng trang này:</b> đọc lần lượt các tab từ trái sang phải. Tab <b>"Kịch bản sau khi đánh"</b> là phần rèn tư duy quan trọng nhất — bấm từng cú đánh để xem đối thủ sẽ trả ra sao và mình xử lý tiếp thế nào.
+  </div>
+</section>
+
+<!-- ================= FORMATION ================= -->
+<section class="tab" id="formation">
+  <h2 class="sec"><span class="dot"></span>Ba đội hình &amp; cách xoay vòng</h2>
+  <p class="lead">Chỉ có ba trạng thái. Mọi pha cầu đôi là sự chuyển qua lại giữa chúng. Biết mình đang ở đội hình nào = biết mình phải đứng đâu.</p>
+
+  <div class="courtwrap">
+    <div class="courtbox" id="c_frontback"></div>
+    <div class="courtnote">
+      <h3 style="margin-top:0"><span class="pill atk">TẤN CÔNG</span> Trước – sau (dọc)</h3>
+      <p>Một người ở <b>lưới</b>, một người ở <b>cuối sân</b>. Áp dụng khi <b>đội mình đang đánh cầu đi xuống</b>.</p>
+      <ul class="clean">
+        <li><b>Người cuối sân</b>: đập, thả, treo — tạo áp lực đi xuống.</li>
+        <li><b>Người lưới</b>: chặn đường trả cầu thấp, bắt mọi quả block/net để kết thúc.</li>
+        <li>Vùng highlight <span style="color:var(--attack)">đỏ</span> = khu vực đội mình đang khống chế.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="courtwrap">
+    <div class="courtbox" id="c_sidebyside"></div>
+    <div class="courtnote">
+      <h3 style="margin-top:0"><span class="pill def">PHÒNG THỦ</span> Ngang hàng (song song)</h3>
+      <p>Hai người <b>chia đôi sân trái–phải</b>, mỗi người lo một nửa. Áp dụng khi <b>đội mình vừa nâng cầu</b> và đối thủ chuẩn bị đập.</p>
+      <ul class="clean">
+        <li>Mỗi người phủ một hành lang dọc; cầu đập vào <b>giữa</b> → người có <b>thuận tay (forehand) hướng vào giữa</b> đỡ (với 2 người thuận tay phải, thường là người bên trái nhìn từ phía mình).</li>
+        <li>Vợt để <b>cao ngang hông trở lên</b>, sẵn sàng phản xạ.</li>
+        <li>Vùng highlight <span style="color:var(--defend)">xanh</span> = nửa sân mỗi người chịu trách nhiệm.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="courtwrap">
+    <div class="courtbox" id="c_rotation"></div>
+    <div class="courtnote">
+      <h3 style="margin-top:0"><span class="pill neu">CHUYỂN</span> Xoay vòng (rotation)</h3>
+      <p>Cầu nối giữa hai đội hình. <b>Nguyên tắc bàn xoay:</b> khi người cuối sân đập chéo rồi lao lên, đồng đội ở lưới <b>trượt ngang</b> sang phía kia để lấp chỗ — hai người xoay quanh một trục tưởng tượng.</p>
+      <ul class="clean">
+        <li><b>Cầu mình đi xuống</b> → chuyển từ ngang → trước-sau (lên công).</li>
+        <li><b>Cầu mình đi lên</b> → chuyển từ trước-sau → ngang (lùi thủ).</li>
+        <li>Ai đánh quả vừa rồi thường là người <b>di chuyển</b>; người kia <b>giữ chỗ</b> và lấp.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="callout"><b>Câu thần chú:</b> “Đập thì lên, nâng thì ngang.” Nghe hướng cầu rời vợt là chân đã phải bắt đầu đổi đội hình, đừng đợi nhìn kết quả.</div>
+</section>
+
+<!-- ================= MY ROLE ================= -->
+<section class="tab" id="myrole">
+  <h2 class="sec"><span class="dot"></span>Vị trí của tôi &amp; nên đánh cú gì</h2>
+  <p class="lead">Với mỗi vai trò: <b>vùng bạn phụ trách</b>, <b>cú nên đánh</b>, <b>cú nên tránh</b>, và mục tiêu ngắm. Vùng tô màu trên sân là khu vực bạn phải bao quát.</p>
+
+  <div class="card">
+    <div class="courtwrap">
+      <div class="courtbox" id="c_role_front"></div>
+      <div class="courtnote">
+        <h3 style="margin-top:0">A. Tôi ở <span class="em">lưới</span> (người trước) <span class="pill atk">công</span></h3>
+        <p>Vai trò kết liễu. Bạn đứng cách lưới ~1–1,5 m, vợt <b>giơ cao sẵn</b>, mắt nhìn vợt đối thủ chứ không nhìn cầu.</p>
+        <div class="split2">
+          <div class="good-box"><h4>Nên đánh</h4><ul>
+            <li><b>Đập bồi / vê đè (net kill)</b> mọi quả cầu cao hơn mép lưới.</li>
+            <li><b>Vê lưới (net shot)</b> xoáy, sát mép, buộc đối thủ nâng.</li>
+            <li><b>Đẩy cầu (push)</b> nhanh xuống hai góc giữa sân khi đối thủ dâng.</li>
+            <li><b>Chặn (block)</b> đường drive để dập nhịp.</li>
+          </ul></div>
+          <div class="bad-box"><h4>Nên tránh</h4><ul>
+            <li>Lùi lại đỡ cầu cao — đó là việc của người cuối sân.</li>
+            <li>Nâng cầu ở lưới (mất ngay quyền công).</li>
+            <li>Vợt để thấp → mất nửa giây phản xạ chí mạng.</li>
+          </ul></div>
+        </div>
+        <p class="tag">Ngắm: mép băng lưới, hai vai đối thủ, khoảng trống giữa hai người.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="courtwrap">
+      <div class="courtbox" id="c_role_rear"></div>
+      <div class="courtnote">
+        <h3 style="margin-top:0">B. Tôi ở <span class="em">cuối sân</span> (người sau) <span class="pill atk">công</span></h3>
+        <p>Vai trò tạo sức ép. Bạn là động cơ tấn công, di chuyển hình chữ nhật quanh cuối sân, luôn <b>lấy cầu ở điểm cao nhất</b>.</p>
+        <div class="split2">
+          <div class="good-box"><h4>Nên đánh</h4><ul>
+            <li><b>Đập (smash)</b> — thẳng người, hoặc chéo vào vai trái đối thủ.</li>
+            <li><b>Đập nửa lực (half-smash)</b> cắm xuống giữa sân để tạo cầu bổng cho đồng đội.</li>
+            <li><b>Treo/thả (drop)</b> đổi nhịp khi đối thủ lùi sâu chờ đập.</li>
+            <li><b>Clear</b> tấn công chỉ khi cần đổi nhịp/kéo đối thủ ra sau.</li>
+          </ul></div>
+          <div class="bad-box"><h4>Nên tránh</h4><ul>
+            <li>Đập hết lực mọi quả → mất kiểm soát, hụt hơi.</li>
+            <li>Đập vào <b>giữa lưới của người trước đối thủ</b> (dễ bị bắt bồi).</li>
+            <li>Đứng đợi cầu rơi thấp mới đánh.</li>
+          </ul></div>
+        </div>
+        <p class="tag">Ngắm: giẫm chân đối thủ, vai không thuận, đường chéo dài, hoặc "lỗ hổng" giữa hai người.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="courtwrap">
+      <div class="courtbox" id="c_role_def"></div>
+      <div class="courtnote">
+        <h3 style="margin-top:0">C. Tôi đang <span class="em">phòng thủ</span> (ngang hàng) <span class="pill def">thủ</span></h3>
+        <p>Đội mình vừa nâng, đối thủ sắp đập. Bạn giữ <b>một nửa sân</b>, chùng gối, vợt cao, trọng tâm dồn trước.</p>
+        <div class="split2">
+          <div class="good-box"><h4>Nên đánh</h4><ul>
+            <li><b>Block (chặn) về lưới</b> — đỡ smash thành cầu nhỏ, ép đối thủ dâng để mình giành lại công.</li>
+            <li><b>Drive (đối vụt)</b> ngang nhanh qua người khi smash chưa hiểm.</li>
+            <li><b>Lift (nâng sâu)</b> ra <b>góc cuối</b> khi bị ép, để có thời gian về đội hình.</li>
+            <li><b>Đẩy phẳng (push)</b> vào giữa/nách khi đối thủ mất vị trí lưới.</li>
+          </ul></div>
+          <div class="bad-box"><h4>Nên tránh</h4><ul>
+            <li>Nâng cầu <b>ngắn/giữa sân</b> → dâng cỗ smash cho đối thủ.</li>
+            <li>Đỡ smash bằng vợt đưa thấp rồi mới hất lên.</li>
+            <li>Cả hai cùng lao vào quả giữa → bỏ trống hai biên.</li>
+          </ul></div>
+        </div>
+        <p class="tag">Mục tiêu số 1 khi thủ: <b>sống sót và chuyển hoá</b> — biến một quả đập thành cầu nhỏ để đảo vai công-thủ.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout"><b>Quy tắc chọn cú nhanh:</b> Cầu <b>cao hơn lưới</b> → đánh xuống. Cầu <b>ngang thân</b> → drive. Cầu <b>thấp dưới lưới</b> → vê nhỏ hoặc đẩy, đừng nâng trừ khi bí. Cầu <b>trên đầu &amp; sau</b> → nếu với tới thì đập/treo, không thì nâng sâu và lùi về thủ.</p>
+  </div>
+</section>
+
+<!-- ================= PLACEMENT ================= -->
+<section class="tab" id="placement">
+  <h2 class="sec"><span class="dot"></span>Điểm rơi từng cú đánh — trái hay phải, ưu &amp; nhược</h2>
+  <p class="lead">Mỗi cú đánh có mấy hướng điểm rơi. <b>Dấu đỏ ◎ có số</b> trên sân là chỗ ngắm; số đó ứng với dòng trong bảng phân tích bên cạnh. Ngắm đúng dấu, hiểu ưu–nhược từng hướng thì mới tập trúng đích.</p>
+  <div class="legend" style="margin-bottom:8px">
+    <span><i class="swatch" style="background:#ff2e2e;border-radius:2px"></i> Dấu đỏ = điểm rơi ngắm</span>
+    <span><i class="swatch" style="background:var(--me)"></i> Tôi (người đánh)</span>
+    <span><i class="swatch" style="background:var(--opp)"></i> Đối thủ</span>
+  </div>
+  <div class="callout" style="margin-top:8px"><b>Nguyên tắc chung điểm rơi:</b> đường <b>THẲNG</b> luôn ngắn – nhanh – an toàn và giúp mình về vị trí kịp; đường <b>CHÉO</b> kéo giãn đối thủ nhưng bay lâu hơn, dễ bị bắt nhịp và làm mình lộ sân. Với đối thủ thuận tay phải, <b>vai/nách trái (trái tay)</b> luôn là điểm đỡ yếu nhất — ưu tiên ngắm.</div>
+
+  <h3 style="font-size:21px;margin:26px 0 4px">① Cú đánh từ CUỐI SÂN <span class="pill atk">công</span></h3>
+
+  <div class="card">
+    <div class="courtwrap">
+      <div class="courtbox" id="c_pl_smash"><div class="courtcap">Đập (smash) — 3 hướng điểm rơi chính</div></div>
+      <div class="courtnote">
+        <h3 style="margin-top:0">Đập (smash)</h3>
+        <table class="tbl">
+          <tr><th>Dấu · Điểm rơi</th><th>Ưu</th><th>Nhược</th><th>Dùng khi</th></tr>
+          <tr><td><b>1 · Thẳng vào người</b> (đường thẳng, vào thân/vai đối thủ cùng phía)</td><td>Cầu tới nhanh nhất, quãng ngắn; mình về vị trí kịp, ít bị phản chéo.</td><td>Đối thủ đứng sẵn hướng đó dễ đoán nếu lặp.</td><td>Mặc định — muốn an toàn &amp; giữ đội hình.</td></tr>
+          <tr><td><b>2 · Vào giữa</b> (giữa 2 người)</td><td>Gây lưỡng lự "cầu của ai", triệt góc phản chéo, dễ va vợt.</td><td>Nếu 2 người ăn ý, người có trái tay ở giữa đỡ tốt.</td><td>Đối thủ giao tiếp kém, hoặc muốn giảm góc trả.</td></tr>
+          <tr><td><b>3 · Chéo</b> (biên xa, cross)</td><td>Kéo giãn, mở toang sân, đối thủ phải với xa.</td><td>Bay chéo lâu hơn → không đủ hiểm dễ bị block/counter; mình lộ sân, dễ bị phản chéo lại.</td><td>Sau khi đã ép 1 bên, bất ngờ đổi; dùng chọn lọc.</td></tr>
+        </table>
+        <p class="tag">Mẹo: hướng nào cũng nên nhắm <b>vai trái (trái tay)</b> đối thủ thuận phải — điểm đỡ yếu nhất. Đập <b>cắm dốc</b> (điểm rơi gần vạch giao ngắn đối thủ) hiểm hơn đập ngang.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="courtwrap">
+      <div class="courtbox" id="c_pl_drop"><div class="courtcap">Bỏ nhỏ (drop) — 2 góc lưới: thẳng &amp; chéo</div></div>
+      <div class="courtnote">
+        <h3 style="margin-top:0">Bỏ nhỏ / thả (drop từ cuối sân)</h3>
+        <table class="tbl">
+          <tr><th>Dấu · Điểm rơi</th><th>Ưu</th><th>Nhược</th><th>Dùng khi</th></tr>
+          <tr><td><b>1 · Bỏ nhỏ THẲNG</b> (góc lưới cùng phía tay đánh)</td><td>Quãng ngắn, qua lưới nhanh, ít thời gian cho đối thủ; mình dễ theo lên; an toàn.</td><td>Dễ đoán nếu lạm dụng.</td><td>Mặc định — ép đối thủ dâng để đảo công.</td></tr>
+          <tr><td><b>2 · Bỏ nhỏ CHÉO</b> (góc lưới đối diện)</td><td>Kéo đối thủ chạy chéo, mở khoảng trống; bất ngờ.</td><td>Bay chéo <b>quãng dài hơn → lâu hơn</b>, dễ bị lao lên bắt/đẩy; bỏ non (cao) rất dễ bị vồ đè.</td><td>Đối thủ lùi sâu chờ đập, hoặc đã dồn 1 bên; đánh khi tay chắc.</td></tr>
+        </table>
+        <p class="tag"><b>Điểm rơi chuẩn:</b> ngay sau vạch giao ngắn đối thủ, cầu <b>sát băng lưới &amp; cắm xuống nhanh</b>. Bỏ nhỏ nổi/cao = mời đập bồi.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="courtwrap">
+      <div class="courtbox" id="c_pl_clear"><div class="courtcap">Clear/phông — 2 góc cuối sân</div></div>
+      <div class="courtnote">
+        <h3 style="margin-top:0">Clear / phông sâu</h3>
+        <table class="tbl">
+          <tr><th>Dấu · Điểm rơi</th><th>Ưu</th><th>Nhược</th><th>Dùng khi</th></tr>
+          <tr><td><b>1 · Clear THẲNG</b> (góc cuối cùng phía)</td><td>Đẩy đối thủ ra sau, đổi nhịp, lấy lại thời gian; quãng ngắn an toàn.</td><td>Không đủ sâu → dâng cầu cho đối thủ đập.</td><td>Bị ép ở lưới cần thời gian; đổi nhịp sau loạt bỏ nhỏ.</td></tr>
+          <tr><td><b>2 · Clear CHÉO</b> (góc cuối đối diện)</td><td>Kéo giãn tối đa theo đường chéo dài nhất sân.</td><td>Bay lâu, dễ bị bắt nhịp đập chéo lại; lộ sân.</td><td>Hiếm — chỉ khi đối thủ đứng lệch hẳn 1 bên.</td></tr>
+        </table>
+        <p class="tag">Trong đôi, clear <b>ít dùng hơn đơn</b> vì dễ trao quyền công — chủ yếu để đổi nhịp/gỡ thế, và phải đủ sâu sát biên cuối.</p>
+      </div>
+    </div>
+  </div>
+
+  <h3 style="font-size:21px;margin:30px 0 4px">② Cú đánh ở LƯỚI <span class="pill atk">công</span></h3>
+
+  <div class="card">
+    <div class="courtwrap">
+      <div class="courtbox" id="c_pl_net"><div class="courtcap">Vê lưới — thẳng, xoáy giữa, chéo</div></div>
+      <div class="courtnote">
+        <h3 style="margin-top:0">Vê lưới (net shot)</h3>
+        <table class="tbl">
+          <tr><th>Dấu · Điểm rơi</th><th>Ưu</th><th>Nhược</th><th>Dùng khi</th></tr>
+          <tr><td><b>1 · Vê THẲNG</b> (góc lưới cùng phía)</td><td>Quãng ngắn, an toàn, nhanh; ép đối thủ nâng.</td><td>Dễ đoán.</td><td>Mặc định khi đấu lưới.</td></tr>
+          <tr><td><b>2 · Vê xoáy / chặn sát giữa</b> (tight, sát băng lưới)</td><td>Cầu xoáy lăn qua lưới cực khó đỡ, buộc nâng cao → mình đập.</td><td>Khó, rơi non thì bị vồ đè.</td><td>Cầu đến đủ cao sát lưới, tay cảm giác tốt.</td></tr>
+          <tr><td><b>3 · Vê CHÉO</b> (góc lưới đối diện)</td><td>Kéo đối thủ chạy ngang, mở sân.</td><td>Quãng chéo dài, dễ bị lao bắt; lộ nửa sân.</td><td>Đối thủ đứng sát góc thẳng chờ sẵn.</td></tr>
+        </table>
+        <p class="tag"><b>Điểm rơi lý tưởng:</b> sát băng lưới, nhô hơn mép lưới <b>càng ít càng tốt</b> — càng thấp đối thủ càng phải nâng.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="courtwrap">
+      <div class="courtbox" id="c_pl_push"><div class="courtcap">Đẩy cầu — 2 nách/hông giữa sân</div></div>
+      <div class="courtnote">
+        <h3 style="margin-top:0">Đẩy cầu (push)</h3>
+        <table class="tbl">
+          <tr><th>Dấu · Điểm rơi</th><th>Ưu</th><th>Nhược</th><th>Dùng khi</th></tr>
+          <tr><td><b>1 · Đẩy thẳng</b> vào hông/nách bên cùng phía</td><td>Nhanh, phẳng, đâm vào điểm chết giữa vợt–người; cướp nhịp khi đối thủ dâng.</td><td>Đối thủ đứng thấp, vợt cao thì chặn lại được.</td><td>Đối thủ vừa dâng lên lưới / mất vị trí giữa.</td></tr>
+          <tr><td><b>2 · Đẩy chéo</b> vào nách bên kia</td><td>Bất ngờ, đối thủ phải xoay người mới đỡ.</td><td>Quãng dài hơn, dễ bị đọc nếu lặp.</td><td>Xen kẽ để đối thủ không đoán được.</td></tr>
+        </table>
+        <p class="tag">Hiểm nhất: đẩy vào <b>điểm giao vai (giữa 2 người)</b> hoặc <b>nách trái</b> (trái tay). Cầu đi phẳng ngang vai, không nổi cao.</p>
+      </div>
+    </div>
+  </div>
+
+  <h3 style="font-size:21px;margin:30px 0 4px">③ Cú đánh khi GIẰNG CO / PHÒNG THỦ <span class="pill def">thủ</span></h3>
+
+  <div class="card">
+    <div class="courtwrap">
+      <div class="courtbox" id="c_pl_drive"><div class="courtcap">Drive — thẳng biên, vào người, chéo</div></div>
+      <div class="courtnote">
+        <h3 style="margin-top:0">Drive (đối vụt)</h3>
+        <table class="tbl">
+          <tr><th>Dấu · Điểm rơi</th><th>Ưu</th><th>Nhược</th><th>Dùng khi</th></tr>
+          <tr><td><b>1 · Drive THẲNG</b> (dọc biên qua người)</td><td>Nhanh nhất, đi sát lưới, ép đối thủ phản xạ.</td><td>Nếu cầu nổi cao dễ bị đè.</td><td>Mặc định trong loạt đọ drive.</td></tr>
+          <tr><td><b>2 · Drive vào người/nách</b></td><td>Đâm vào điểm chết, đối thủ khó trả đẹp.</td><td>—</td><td>Đối thủ đứng chính diện.</td></tr>
+          <tr><td><b>3 · Drive CHÉO</b></td><td>Đổi hướng, mở sân.</td><td>Quãng dài, hở sân chéo.</td><td>Xen kẽ bất ngờ.</td></tr>
+        </table>
+        <p class="tag">Luôn giữ cầu <b>THẤP</b> (ngang/dưới mép lưới). Trong đọ drive, cầu nào <b>nổi lên trước</b> sẽ bị trừng phạt.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="courtwrap">
+      <div class="courtbox" id="c_pl_block"><div class="courtcap">Block (chặn smash) — 2 góc lưới</div></div>
+      <div class="courtnote">
+        <h3 style="margin-top:0">Block (chặn smash về lưới)</h3>
+        <table class="tbl">
+          <tr><th>Dấu · Điểm rơi</th><th>Ưu</th><th>Nhược</th><th>Dùng khi</th></tr>
+          <tr><td><b>1 · Block THẲNG</b> (góc lưới cùng phía)</td><td>Quãng ngắn, cầu chết sát lưới, buộc đối thủ dâng → mình đảo công; an toàn nhất.</td><td>Người lưới đối thủ chực sẵn có thể vồ nếu block cao.</td><td>Mặc định khi đỡ smash.</td></tr>
+          <tr><td><b>2 · Block CHÉO</b> (góc lưới đối diện)</td><td>Kéo người lưới đối thủ chạy, mở khoảng trống.</td><td>Quãng chéo dài, dễ bị bắt; khó kiểm soát độ sát lưới.</td><td>Người lưới đối thủ đứng lệch/thiên vị 1 bên.</td></tr>
+        </table>
+        <p class="tag">Block phải rơi <b>sát lưới &amp; thấp</b>. Block bổng = dâng cầu cho đối thủ đập tiếp.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="courtwrap">
+      <div class="courtbox" id="c_pl_lift"><div class="courtcap">Nâng (lift) — 2 góc cuối sân</div></div>
+      <div class="courtnote">
+        <h3 style="margin-top:0">Nâng (lift) — quả "nhường quyền", phải nâng cho chuẩn</h3>
+        <table class="tbl">
+          <tr><th>Dấu · Điểm rơi</th><th>Ưu</th><th>Nhược</th><th>Dùng khi</th></tr>
+          <tr><td><b>1 · Nâng THẲNG</b> (góc cuối cùng phía)</td><td>Quãng ngắn, dễ nâng <b>SÂU sát biên cuối</b> → giảm góc đập đối thủ; mình kịp về ngang thủ.</td><td>Trao quyền công.</td><td>Bị ép ở lưới, không còn lựa chọn tấn công.</td></tr>
+          <tr><td><b>2 · Nâng CHÉO</b> (góc cuối đối diện)</td><td>Đẩy đối thủ ra góc xa, đổi nhịp.</td><td>Bay chéo lâu, dễ bị đập chéo mạnh lại; khó nâng đủ sâu.</td><td>Đối thủ đứng lệch hẳn 1 bên.</td></tr>
+        </table>
+        <p class="tag">Đã nâng thì phải nâng <b>THẬT SÂU tận cuối sân</b>. Nâng non giữa sân = ăn smash ngay lập tức.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= NET GAME ================= -->
+<section class="tab" id="netgame">
+  <h2 class="sec"><span class="dot"></span>Net game chuyên sâu — kéo lưới, bỏ nhỏ, hai nhịp</h2>
+  <p class="lead">Trận đôi thắng thua phần lớn ở <b>lưới</b>: ai giữ cầu <b>thấp &amp; sát mép</b> lâu hơn thì ép được đối thủ nâng để đội mình đập. Phần này đi sâu vào <b>kỹ thuật</b>, các <b>kiểu cú</b>, cách chơi <b>hai nhịp (nhử–đánh)</b> và <b>footwork</b> lên lưới. Hình <b>cắt ngang</b> (nhìn từ bên hông) cho thấy quỹ đạo &amp; độ cao cầu qua mép lưới.</p>
+  <div class="callout"><b>Đọc hình cắt ngang:</b> vạch trắng đứng ở giữa là <b>lưới</b> (nhìn nghiêng); trái là <b>sân bạn</b>, phải là <b>sân đối thủ</b>; đường cong màu là <b>đường bay của cầu</b>. Càng qua sát mép lưới &amp; rơi nhanh thì cú càng hiểm.</div>
+
+  <div class="card">
+    <div class="courtwrap">
+      <div class="courtbox" id="c_net_overview"><div class="courtcap">So sánh quỹ đạo 4 nhóm cú ở lưới</div></div>
+      <div class="courtnote">
+        <h3 style="margin-top:0">Bốn nhóm quỹ đạo cần phân biệt</h3>
+        <ul class="clean">
+          <li><b style="color:#ffd23f">Bỏ nhỏ/vê</b> — qua sát mép, chết ngay sau lưới → ép đối thủ dâng.</li>
+          <li><b style="color:#ff9c9c">Net kill</b> — đón cao hơn mép, đè dốc xuống → kết thúc điểm.</li>
+          <li><b style="color:#ffc46b">Lift/kéo ra sau</b> — hất sâu tận cuối sân → thoát thế bị ép ở lưới.</li>
+          <li><b style="color:#c4b5fd">Đẩy (push)</b> — phẳng &amp; nhanh xuống giữa sân → cướp nhịp khi đối thủ hở.</li>
+        </ul>
+        <p class="tag">Nguyên lý: cầu đến <b>cao</b> → chọn kill/đẩy; cầu đến <b>thấp</b> → chỉ còn bỏ nhỏ/hairpin hoặc lift.</p>
+      </div>
+    </div>
+  </div>
+
+  <h3 style="font-size:21px;margin:26px 0 4px">A. KÉO LƯỚI — đánh cầu sát lưới (kỹ thuật gốc của net game) <span class="pill neu">phần bạn cần nắm chắc</span></h3>
+  <div class="callout" style="margin-top:6px"><b>"Kéo lưới" là gì:</b> khi cầu <b>xuống thấp, sát lưới</b>, bạn <b>kéo/chém nhẹ</b> mặt vợt cho cầu đi <b>sát mép lưới</b> rồi rơi ngay xuống bên kia. Đây là nền tảng của mọi pha đấu lưới — kéo tốt thì đối thủ buộc phải nâng, đội mình lên đập. (Khác với <b>bỏ nhỏ từ cuối sân</b> và khác <b>lift/nâng ra sau</b>.)</div>
+
+  <div class="card">
+    <div class="courtwrap">
+      <div class="courtbox" id="c_keo_side"><div class="courtcap">Điểm tiếp xúc &amp; quỹ đạo — đón trong "vùng an toàn", kéo sát mép</div></div>
+      <div class="courtnote">
+        <h3 style="margin-top:0">Điểm tiếp xúc quyết định tất cả</h3>
+        <ul class="clean">
+          <li><b>Vùng tiếp xúc an toàn</b> = từ <b>mép lưới xuống khoảng giữa thân lưới</b>. Đón cầu trong vùng này thì kéo được cầu <b>sát mép, rơi nhanh</b>.</li>
+          <li><b>Đón quá thấp</b> (dưới giữa lưới) → buộc phải <b>bung cầu lên cao</b> qua lưới → cầu nổi, dễ bị đối thủ vồ đè.</li>
+          <li>Vì vậy phải <b>tới sớm</b>, đón cầu <b>càng cao &amp; sát lưới càng tốt</b>.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="courtwrap">
+      <div class="courtbox" id="c_keo_apex"><div class="courtcap">Đỉnh ở phía mình → cầu rơi khi qua lưới (vàng) · đỉnh bên kia → nổi → bị vồ (đỏ)</div></div>
+      <div class="courtnote">
+        <h3 style="margin-top:0">Bốn chi tiết quyết định thành–bại</h3>
+        <div class="mrow"><span class="lb" style="color:var(--acc)">1 · Đỉnh parabol:</span> điểm cao nhất phải ở <b>phía sân MÌNH (hoặc ngay mép lưới)</b>; cầu phải <b>ĐANG RƠI khi qua lưới</b>, chỉ nhỉnh hơn băng lưới vài cm. Nếu đỉnh <b>vọt sang bên kia</b> (cầu còn đang lên/cao khi qua) → cầu nổi → bị vồ.</div>
+        <div class="mrow"><span class="lb" style="color:var(--good)">2 · Chiều cao tiếp xúc:</span> đón cầu <b>càng CAO &amp; SỚM càng tốt</b> — lý tưởng <b>ngang/trên mép lưới (~1,5 m)</b>, chấp nhận tới <b>giữa lưới (~1,0 m)</b>. <b>KHÔNG để cầu rơi sát sàn</b> mới đánh: đón thấp &amp; xa lưới buộc phải hất lên → đỉnh vọt sang bên kia → bị giết (lúc đó chỉ còn hairpin chống chế).</div>
+        <div class="mrow"><span class="lb" style="color:var(--me)">3 · Cổ tay:</span> kéo <b>dịu</b> — gần như <b>KHÔNG dùng cổ tay</b>, giữ chắc, điều khiển bằng <b>ngón tay + cảm giác đưa cầu</b>; snap cổ tay = thêm lực = cầu nổi/vọt. Kéo <b>xoáy</b> — dùng cổ tay <b>rất nhỏ</b>, cắt nhanh rồi <b>DỪNG DỨT KHOÁT</b> ngay sau chạm, không vung tiếp.</div>
+        <div class="mrow"><span class="lb" style="color:var(--warn)">4 · Điểm chạm mặt vợt:</span> dùng <b>mặt dây</b> (không phải khung/cạnh vợt), đưa <b>xuống DƯỚI ĐẾ (cork) của cầu</b>, mặt vợt hơi <b>ngửa</b>. Kéo xoáy: <b>quẹt/cắt lướt dưới đế cầu</b> từ ngoài vào — vẫn là mặt dây nhưng chạm <b>lướt (glancing)</b> để tạo xoáy.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3 style="margin-top:0">Kỹ thuật 5 bước (kéo lưới chuẩn)</h3>
+    <table class="tbl">
+      <tr><th>Bước</th><th>Làm đúng thế nào</th><th>Vì sao</th></tr>
+      <tr><td><b>1 · Cầm vợt</b></td><td>Cầm <b>rất lỏng</b>, chừa khoảng trống trong lòng bàn tay, điều khiển bằng <b>ngón tay</b> để cổ tay xoay linh hoạt. Thuận tay: grip thuận nhẹ; trái tay: <b>tì ngón cái</b> sau cán.</td><td>Cầm chặt là <b>lỗi số 1</b> — mất cảm giác, cầu vọt cao/dài.</td></tr>
+      <tr><td><b>2 · Bước chân</b></td><td><b>Lunge chân thuận</b> lên lưới, hạ thấp người; <b>chân tới TRƯỚC</b> khi tay đánh.</td><td>Chân tới trước mới có điểm tựa để tay đánh dịu &amp; chính xác.</td></tr>
+      <tr><td><b>3 · Mặt vợt</b></td><td>Đưa vợt lên <b>nằm ngang, hơi ngửa</b>; tư thế giống nhau cho mọi cú.</td><td>Che ý đồ, tạo bất ngờ (kéo thẳng / chéo / xoáy đều giống nhau lúc chuẩn bị).</td></tr>
+      <tr><td><b>4 · Tiếp xúc</b></td><td>Đón cầu trong <b>vùng an toàn</b> (mép → giữa lưới), càng cao càng tốt.</td><td>Đón cao = kéo được sát mép; đón thấp = phải bung cao.</td></tr>
+      <tr><td><b>5 · Kéo / chém</b></td><td>Kéo mặt vợt <b>từ ngoài vào trong</b>, <b>chém nhẹ</b> tạo xoáy; cổ tay xoay nhanh rồi <b>DỪNG DỨT KHOÁT</b> ngay sau khi chạm cầu.</td><td>Chém + dừng gọn → cầu bay sát mép, <b>rơi nhanh, khó ra ngoài</b>, đối thủ khó đọc.</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <h3 style="margin-top:0">Các kiểu kéo lưới</h3>
+    <div class="courtwrap">
+      <div class="courtbox" id="c_keo_grip"><div class="courtcap">Cầu bên phải → thuận tay · bên trái → trái tay (ngón cái)</div></div>
+      <div class="courtbox" id="c_keo_dir"><div class="courtcap">Kéo thẳng (vàng) vs kéo chéo (xanh)</div></div>
+    </div>
+    <ul class="clean" style="margin-top:12px">
+      <li><b>Theo tay — thuận tay / trái tay:</b> cầu tới bên phải người (thuận tay phải) → dùng <b>thuận tay</b>; cầu bên trái → <b>trái tay tì ngón cái</b>. Phải luyện đều cả hai bên.</li>
+      <li><b>Theo hướng — thẳng / chéo:</b> <b>kéo thẳng</b> đường ngắn, an toàn, về vị trí kịp (mặc định); <b>kéo chéo</b> là "yếu tố chính" — buộc đối thủ chạy quãng xa, nhưng cầu <b>phơi lâu trước mặt họ</b> nên dễ bị bắt → chỉ kéo chéo khi đón cầu cao &amp; có xoáy.</li>
+      <li><b>Theo lực — kéo dịu / kéo xoáy:</b> <b>kéo dịu (đưa cầu)</b> cho quả sát mép cơ bản; <b>kéo xoáy (chém)</b> cho cầu lăn/lộn qua lưới — khó đỡ nhất, dùng khi đón được cầu sớm.</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h3 style="margin-top:0">Lỗi thường gặp &amp; cách sửa</h3>
+    <table class="tbl">
+      <tr><th>Lỗi</th><th>Hậu quả</th><th>Sửa</th></tr>
+      <tr><td>Cầm vợt <b>quá chặt</b></td><td>Cầu vọt cao/dài, mất cảm giác</td><td>Cầm lỏng, chỉ <b>siết ngón khi chạm</b> cầu.</td></tr>
+      <tr><td>Đánh <b>mạnh tay</b>, vung dài</td><td>Cầu bổng, chạm lưới hoặc bị vồ</td><td>"<b>Đưa</b>" cầu chứ không đánh; <b>dừng vợt dứt khoát</b> sau chạm.</td></tr>
+      <tr><td>Đón cầu <b>quá thấp</b></td><td>Phải bung cao → dâng cầu cho đối thủ</td><td>Tới sớm, đón trong <b>vùng an toàn</b> (mép → giữa lưới).</td></tr>
+      <tr><td><b>Không lunge / không hạ người</b></td><td>Với hụt, cầu nổi</td><td><b>Bước chân tới trước</b> khi đánh, gối chùng, người thăng bằng.</td></tr>
+      <tr><td><b>Cổ tay cứng</b></td><td>Không tạo được xoáy, cầu thô</td><td>Thả lỏng cổ tay, xoay nhanh rồi <b>dừng gọn</b>.</td></tr>
+    </table>
+    <p class="tag"><b>Bài tập kéo lưới:</b> (1) đấu kéo lưới 2 người trong ô giao — ai buộc đối thủ nâng thì thắng; (2) kéo xoáy lặp 20 quả cho cầu lăn; (3) kéo chéo tập điểm rơi 2 góc lưới; (4) đứng sát lưới thả cầu tự kéo để quen điểm tiếp xúc.</p>
+  </div>
+
+  <h3 style="font-size:21px;margin:26px 0 4px">B. Chơi HAI NHỊP ở lưới (nhử – đánh) <span class="pill neu">vũ khí nâng cao</span></h3>
+  <div class="card">
+    <div class="courtwrap">
+      <div class="courtbox" id="c_net_hold"><div class="courtcap">Nhịp 1: chần giữ vợt · Nhịp 2: nhử lốp (giả) hoặc thả nhỏ (thật)</div></div>
+      <div class="courtnote">
+        <p><b>"Hai nhịp" = tách một cú thành hai thì (tempo):</b> tới cầu <b>sớm</b>, giữ vợt <b>chần lại một nhịp</b> để đối thủ phải đoán &amp; di chuyển trước — rồi nhịp hai mới quyết đánh gì. Mấu chốt nằm ở <b>thời điểm (timing), không phải tốc độ cổ tay</b>.</p>
+        <ul class="clean">
+          <li><b>Nhịp 1 — CHẦN (the hold):</b> đón cầu sớm ở điểm cao, vợt giơ sẵn, <b>đứng yên nửa nhịp</b>. Đối thủ buộc phải chọn thế (dâng hay lùi).</li>
+          <li><b>Nhịp 2 — ĐÁNH ngược ý:</b> thấy họ <b>lùi</b> (sợ lốp) → <b>thả nhỏ</b> chết sát lưới; thấy họ <b>dâng</b> (chực bắt lưới) → <b>lốp/đẩy qua đầu</b>.</li>
+          <li><b>Động tác giả (double motion):</b> đưa vợt lên như sắp <b>hất lốp</b>, đối thủ ngả người ra sau → xoay thành <b>thả nhỏ</b> rơi ngay băng lưới.</li>
+          <li><b>Bí quyết:</b> <b>tư thế chuẩn bị giống hệt nhau</b> cho mọi cú, chỉ đổi ở khoảnh khắc cuối. Nếu lộ ý sớm, hai nhịp thành vô dụng.</li>
+        </ul>
+        <p class="tag">Chỉ chơi hai nhịp khi <b>đón được cầu sớm &amp; cao</b>. Cầu đã thấp thì không đủ thời gian để chần.</p>
+      </div>
+    </div>
+  </div>
+
+  <h3 style="font-size:21px;margin:30px 0 4px">C. Các kiểu cú ở lưới — kỹ thuật &amp; khi nào dùng</h3>
+
+  <div class="card">
+    <div class="courtwrap">
+      <div class="courtbox" id="c_net_tight"><div class="courtcap">Bỏ nhỏ / vê lưới sát mép (net shot)</div></div>
+      <div class="courtnote">
+        <h3 style="margin-top:0">1 · Bỏ nhỏ / vê lưới (tight net) <span class="pill neu">ép nâng</span></h3>
+        <div class="mrow"><span class="lb" style="color:var(--acc)">Kỹ thuật:</span> cầm vợt <b>lỏng</b>, <b>siết nhẹ khi chạm cầu</b>; đón cầu <b>sớm</b>, mặt vợt hơi ngửa hướng xuống; <b>chân thuận chạm đất đúng lúc</b> vụt; đẩy cầu <b>dịu</b> (guide) chứ không đánh mạnh.</div>
+        <div class="mrow"><span class="lb" style="color:var(--good)">Mục tiêu:</span> cầu qua <b>sát băng lưới</b>, rơi ngay sau vạch giao ngắn — càng thấp đối thủ càng phải nâng.</div>
+        <div class="mrow"><span class="lb" style="color:var(--muted)">Dùng khi:</span> đối thủ vừa thả/bỏ nhỏ vào forecourt, hoặc trả giao thấp.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="courtwrap">
+      <div class="courtbox" id="c_net_tumble"><div class="courtcap">Vê xoáy / cầu lăn (spinning / tumbling net)</div></div>
+      <div class="courtnote">
+        <h3 style="margin-top:0">2 · Vê XOÁY / cầu lăn (tumbling) <span class="pill neu">khó đỡ nhất</span></h3>
+        <div class="mrow"><span class="lb" style="color:var(--acc)">Kỹ thuật:</span> đưa mặt vợt <b>cắt xuống dưới đế cầu</b> (chuyển động cắt), cổ tay khoá, để cầu <b>lộn/xoáy</b> khi qua lưới. Động tác chuẩn bị giống hệt vê thường → có tính lừa.</div>
+        <div class="mrow"><span class="lb" style="color:var(--good)">Vì sao mạnh:</span> cầu lăn/xoáy khiến đối thủ <b>không đọc được điểm chạm</b>, buộc họ đỡ ở vị trí thấp → dễ hỏng hoặc phải nâng.</div>
+        <div class="mrow"><span class="lb" style="color:var(--muted)">Dùng khi:</span> đón được cầu <b>sớm &amp; cao</b> ở lưới; là cú vê lợi hại nhất khi đủ thời gian.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="courtwrap">
+      <div class="courtbox" id="c_net_hairpin"><div class="courtcap">Hairpin — cứu cầu rất thấp, hình kẹp tóc</div></div>
+      <div class="courtnote">
+        <h3 style="margin-top:0">3 · Hairpin (kẹp tóc) <span class="pill def">cứu thế</span></h3>
+        <div class="mrow"><span class="lb" style="color:var(--acc)">Kỹ thuật:</span> dùng khi cầu đã <b>rơi quá thấp</b> không vê thường được; điểm chạm rất thấp, cần <b>lực hơn một chút</b> để cầu vòng lên qua lưới rồi rơi xuống; thường <b>cắt tạo xoáy</b> cho chết nhanh.</div>
+        <div class="mrow"><span class="lb" style="color:var(--bad)">Lưu ý:</span> đây là quả <b>chống chế</b> — cầu buộc phải vòng lên nên có thời điểm cao, dễ bị đối thủ chực bắt. Chỉ dùng khi không kịp lift.</div>
+        <div class="mrow"><span class="lb" style="color:var(--muted)">Dùng khi:</span> sau cú vê sát lưới của đối thủ mà bạn tới trễ, cầu đã dưới mép lưới.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="courtwrap">
+      <div class="courtbox" id="c_net_kill"><div class="courtcap">Net kill — đón cao, đè dốc kết thúc</div></div>
+      <div class="courtnote">
+        <h3 style="margin-top:0">4 · Net kill / đập bồi ở lưới <span class="pill atk">kết thúc</span></h3>
+        <div class="mrow"><span class="lb" style="color:var(--acc)">Kỹ thuật:</span> <b>khuỷu tay giơ sẵn</b> (không đợi nâng vợt), đón cầu <b>cao hơn mép lưới</b>; <b>động tác NGẮN &amp; gọn</b> — quả sát lưới thì chỉ <b>quét nhẹ đỉnh cầu</b> cho đi xuống; grip lỏng rồi <b>siết khi chạm</b> (thuận tay dùng ngón, trái tay dùng ngón cái).</div>
+        <div class="mrow"><span class="lb" style="color:var(--bad)">Lỗi thường gặp:</span> vung tay dài → <b>chạm lưới</b> hoặc <b>cầu bay dài ra ngoài</b>; đón cầu <b>quá thấp</b> mất góc dốc; đứng <b>sát lưới quá</b> mất khoảng đánh.</div>
+        <div class="mrow"><span class="lb" style="color:var(--muted)">Footwork:</span> chân thuận dẫn, <b>lao/nhảy</b> tới đón ở điểm cao, giữ khoảng cách vừa với người để tay không quá gập/quá thẳng.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="courtwrap">
+      <div class="courtbox" id="c_net_lift"><div class="courtcap">Net lift — nâng cầu sâu ra sau, thoát thế</div></div>
+      <div class="courtnote">
+        <h3 style="margin-top:0">5 · Lift/nâng từ lưới (đưa ra sau) <span class="pill def">đổi nhịp / thoát</span></h3>
+        <p class="tag" style="margin-top:0">⚠️ Đây <b>KHÁC</b> "kéo lưới": kéo lưới là đánh cho cầu chết <b>sát lưới</b>; lift là <b>hất ra sau</b>.</p>
+        <div class="mrow"><span class="lb" style="color:var(--acc)">Kỹ thuật:</span> hất cầu từ lưới <b>lên cao &amp; SÂU</b> tận hai góc cuối sân đối thủ; dùng khi bị ép ở lưới, cần thời gian về đội hình.</div>
+        <div class="mrow"><span class="lb" style="color:var(--bad)">Lưu ý:</span> lift = <b>nhường quyền công</b> → phải <b>đủ sâu</b> để giảm góc đập; lift non giữa sân sẽ ăn smash ngay. Nhắm <b>góc trái tay cuối sân</b> đối thủ.</div>
+        <div class="mrow"><span class="lb" style="color:var(--muted)">Dùng khi:</span> đối thủ áp lưới chực bắt, hoặc để đổi nhịp sau một loạt vê nhỏ.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="courtwrap">
+      <div class="courtbox" id="c_net_push"><div class="courtcap">Push — đẩy phẳng nhanh xuống giữa sân</div></div>
+      <div class="courtnote">
+        <h3 style="margin-top:0">6 · Đẩy (push) <span class="pill atk">cướp nhịp</span></h3>
+        <div class="mrow"><span class="lb" style="color:var(--acc)">Kỹ thuật:</span> mặt vợt phẳng, đẩy cầu <b>nhanh &amp; thấp</b> xuống khoảng trống giữa sân / vào nách đối thủ; ít vung, nhiều điều khiển bằng ngón.</div>
+        <div class="mrow"><span class="lb" style="color:var(--good)">Mục tiêu hiểm:</span> điểm <b>giao vai giữa 2 người</b> hoặc <b>nách trái</b>; đối thủ vừa dâng lên lưới thì đẩy qua đầu/ngang sườn.</div>
+        <div class="mrow"><span class="lb" style="color:var(--muted)">Dùng khi:</span> đối thủ dâng cao ở lưới, hoặc cầu đến ngang tầm không đủ cao để kill.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout"><b>Vê THẲNG hay CHÉO?</b> Vê thẳng đường ngắn, an toàn, về vị trí kịp — dùng mặc định. Vê chéo kéo giãn nhưng <b>bay ngang trước mặt đối thủ lâu</b>, dễ bị tràn lên bắt (xem tab "Nâng cao" · Cấm 6). Chỉ vê chéo khi <b>đón cầu cao &amp; sớm</b> và có xoáy.</div>
+
+  <h3 style="font-size:21px;margin:30px 0 4px">D. Bốn nền tảng kỹ thuật quyết định cảm giác lưới</h3>
+  <div class="card">
+    <table class="tbl">
+      <tr><th>Nền tảng</th><th>Làm đúng thế nào</th><th>Vì sao quan trọng</th></tr>
+      <tr><td><b>Cầm vợt (grip)</b></td><td>Giữ <b>rất lỏng</b> khi chuẩn bị, chỉ <b>siết ngón khi chạm</b>; đổi nhanh giữa grip thuận tay ↔ trái tay (ngón cái).</td><td>Grip cứng = mất cảm giác, cầu vọt dài. Lỏng mới điều khiển được lực tinh tế.</td></tr>
+      <tr><td><b>Điểm chạm (contact point)</b></td><td>Đón cầu <b>càng sớm &amp; càng cao càng tốt</b>, sát mép lưới.</td><td>Đón cao = mở ra nhiều lựa chọn (kill/đẩy/xoáy/hai nhịp). Đón thấp = chỉ còn hairpin/lift bị động.</td></tr>
+      <tr><td><b>Cảm giác &amp; thả lỏng (touch)</b></td><td>Thân &amp; tay thả lỏng, "đưa" cầu chứ không "đánh"; hít thở, không căng cứng.</td><td>Lưới là cú <b>tinh tế</b> — căng thẳng làm siết vợt quá tay, hỏng cú.</td></tr>
+      <tr><td><b>Mặt vợt (racket face)</b></td><td>Góc mặt vợt quyết định <b>hướng &amp; xoáy</b>; cắt dưới đế cầu để tạo lăn; ngửa nhẹ để cầu qua lưới rồi rơi.</td><td>Cùng một tư thế, chỉ đổi mặt vợt phút chót = vừa chính xác vừa lừa được đối thủ.</td></tr>
+    </table>
+  </div>
+
+  <h3 style="font-size:21px;margin:30px 0 4px">E. Footwork lên lưới &amp; hướng đánh</h3>
+  <div class="grid c2">
+    <div class="card">
+      <div class="courtbox" id="c_net_foot" style="text-align:center"><div class="courtcap">Base → lunge chân thuận → bật về base</div></div>
+      <ul class="clean" style="margin-top:10px">
+        <li><b>Split-step</b> đúng lúc đối thủ chạm cầu để "nạp" chân.</li>
+        <li><b>Lunge</b> bằng <b>chân thuận dẫn trước</b> tới cầu, gối chùng, người thăng bằng.</li>
+        <li><b>Bật về</b> ngay bằng lực đạp của chân lunge — không đứng ngắm cú vừa đánh.</li>
+        <li>Đừng <b>sà sát lưới</b> quá → mất khoảng đánh &amp; chậm về.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="courtbox" id="c_net_dir" style="text-align:center"><div class="courtcap">Vê thẳng (vàng) vs vê chéo (xanh)</div></div>
+      <ul class="clean" style="margin-top:10px">
+        <li><b>Thẳng</b> (vàng): đường ngắn, ít phơi cầu, về kịp — mặc định.</li>
+        <li><b>Chéo</b> (xanh): kéo giãn nhưng phơi cầu lâu trước mặt đối thủ — chỉ khi đón cao &amp; có xoáy.</li>
+        <li>Sau khi vê, <b>đứng nguyên ở lưới, vợt cao</b>, đọc vợt đối thủ để chơi tiếp hai nhịp.</li>
+      </ul>
+    </div>
+  </div>
+
+  <h3 style="font-size:21px;margin:30px 0 4px">F. Đấu lưới (net battle) &amp; bài tập</h3>
+  <div class="grid c2">
+    <div class="card">
+      <h3 style="margin-top:0">Nguyên tắc thắng đấu lưới</h3>
+      <ul class="clean">
+        <li><b>Ai giữ cầu cao hơn mép lưới lâu hơn thì thắng</b> — luôn cố đón sớm.</li>
+        <li><b>Kiên nhẫn hơn đối thủ:</b> đừng vội đẩy mạnh khi cầu còn thấp — dễ hỏng lưới.</li>
+        <li><b>Buộc đối thủ nâng</b> rồi mới chuyển sang đập — mục tiêu của mọi cú vê.</li>
+        <li><b>Đọc vợt, không đọc cầu:</b> nhìn mặt vợt đối thủ để đoán vê/đẩy/lốp.</li>
+        <li><b>Dùng hai nhịp</b> khi có thời gian để phá nhịp đoán của đối thủ.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Bài tập rèn lưới</h3>
+      <ul class="clean">
+        <li><b>Đấu vê nhỏ 2 người:</b> chỉ vê trong ô giao, ai buộc đối thủ nâng thì thắng — rèn cảm giác tay.</li>
+        <li><b>Vê xoáy lặp:</b> 20 quả cắt dưới đế cầu cho cầu lăn qua lưới.</li>
+        <li><b>Phản xạ net kill:</b> người tung cầu cao ngang mép, tập quét ngắn đè xuống.</li>
+        <li><b>Shadow footwork:</b> lunge chân thuận tới 2 góc lưới rồi bật về base, không cầu.</li>
+        <li><b>Hai nhịp:</b> tập chần một nhịp rồi đổi giữa thả nhỏ / lốp theo tín hiệu tay của người tập cùng.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ================= SERVE ================= -->
+<section class="tab" id="serve">
+  <h2 class="sec"><span class="dot"></span>Giao cầu &amp; trả giao — pha quan trọng nhất</h2>
+  <p class="lead">Trong đôi trình độ cao, ~2–4 quả đầu quyết định điểm. Giao cầu đôi gần như luôn là <b>giao thấp (low serve)</b> để không dâng cầu cao.</p>
+
+  <div class="card">
+    <div class="courtwrap">
+      <div class="courtbox" id="c_serve"></div>
+      <div class="courtnote">
+        <h3 style="margin-top:0">Khi tôi <span class="em">giao cầu</span></h3>
+        <ul class="clean">
+          <li><b>Đứng sát vạch giao ngắn</b>, gần đường giữa → rút ngắn góc trả cầu của đối thủ.</li>
+          <li><b>Giao thấp (chủ đạo)</b>: cầu lướt sát băng lưới, rơi ngay sau vạch giao ngắn.</li>
+          <li><b>Giao lật (flick)</b>: bất ngờ đẩy sâu ra góc khi thấy đối thủ dâng bắt giao sớm.</li>
+          <li><b>Giao vẩy nhanh (drive serve)</b>: xỉa phẳng vào vai — chỉ là quả gài bất ngờ, hầu như không dùng ở trình độ cao vì rủi ro; thi thoảng hiệu quả ở trình phong trào. Đừng lạm dụng.</li>
+          <li>Sau khi giao, <b>vợt giơ cao ngay</b> để bắt quả trả nhanh — bạn thành người lưới.</li>
+        </ul>
+        <p class="tag">Đồng đội đứng sau bạn, sẵn sàng bọc lót cầu bị đẩy sâu.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="courtwrap">
+      <div class="courtbox" id="c_return"></div>
+      <div class="courtnote">
+        <h3 style="margin-top:0">Khi tôi <span class="em">trả giao</span> <span class="pill atk">giành thế chủ động</span></h3>
+        <p>Đứng <b>chân thuận trước</b>, người dồn lên vạch giao ngắn, vợt cao — tư thế "chồm tới" để ăn cầu sớm.</p>
+        <div class="split2">
+          <div class="good-box"><h4>Ưu tiên</h4><ul>
+            <li><b>Vồ giao (rush)</b>: ăn cầu ngay trên băng lưới, đè xuống chân đối thủ.</li>
+            <li><b>Đẩy phẳng (push)</b> vào hai góc giữa sân / vào nách người giao.</li>
+            <li><b>Vê nhỏ trả</b> lại nếu quả giao quá tốt, buộc đối thủ nâng.</li>
+          </ul></div>
+          <div class="bad-box"><h4>Tránh</h4><ul>
+            <li><b>Nâng cầu</b> lên — tự dâng smash, mất thế ngay quả đầu.</li>
+            <li>Trả cầu bổng vào giữa sân đối thủ.</li>
+            <li>Đứng thẳng lưng, vợt thấp → phản ứng chậm.</li>
+          </ul></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= STRATEGY ================= -->
+<section class="tab" id="strategy">
+  <h2 class="sec"><span class="dot"></span>Chiến thuật công &amp; thủ</h2>
+  <p class="lead">Cú đánh là chữ cái; chiến thuật là câu. Dưới đây là những "câu" hiệu quả nhất trong đánh đôi.</p>
+
+  <div class="grid c2">
+    <div class="card">
+      <h3><span class="pill atk">CÔNG</span> Khi đội mình đang tấn công</h3>
+      <ul class="clean">
+        <li><b>Đập vào giữa (attack the middle)</b>: đường cầu giữa 2 đối thủ gây do dự "của ai?", đồng thời triệt góc trả chéo.</li>
+        <li><b>Đập vào người yếu hơn</b>: dồn 70% cầu vào tay/vai người phòng thủ kém, ép họ mệt và sai.</li>
+        <li><b>Đổi nhịp</b>: xen kẽ đập mạnh – nửa lực – thả nhỏ để phá timing đỡ cầu.</li>
+        <li><b>Đập rồi lao lên bắt bồi</b>: người cuối sân đập xong tràn lên; người lưới sẵn sàng dứt điểm quả block.</li>
+        <li><b>Nhắm vai không thuận</b>: cầu vào vai trái (người thuận phải) là điểm đỡ yếu nhất.</li>
+        <li><b>Kiên nhẫn</b>: không có cầu ngon thì đập nửa lực xuống để giữ quyền công, chờ đối thủ nâng non.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3><span class="pill def">THỦ</span> Khi đội mình đang phòng thủ</h3>
+      <ul class="clean">
+        <li><b>Block về hai mép lưới</b>: biến smash thành cầu nhỏ → buộc đối thủ dâng lên, mở cơ hội mình lốp/đảo công.</li>
+        <li><b>Drive phản công qua người</b>: khi smash không hiểm, vụt phẳng nhanh cạnh sườn để cướp nhịp.</li>
+        <li><b>Nâng sâu &amp; đều tay</b>: nếu buộc phải nâng, nâng thật <b>sâu tận cuối sân</b> để giảm góc đập.</li>
+        <li><b>Lái cầu về người vừa đập</b>: họ đang mất đà lao tới, trả về chỗ đó dễ ăn.</li>
+        <li><b>Chờ &amp; đảo vai</b>: mục tiêu của thủ không phải ăn điểm ngay mà là <b>trung hoà</b> để chuyển sang công.</li>
+        <li><b>Đừng nâng vào giữa/ngắn</b>: đó là "mời" đối thủ đập điểm.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Bốn chiến thuật kéo giãn đội hình đối thủ</h3>
+    <table class="tbl">
+      <tr><th>Chiến thuật</th><th>Làm gì</th><th>Vì sao hiệu quả</th></tr>
+      <tr><td><b>Ép một góc rồi mở góc kia</b></td><td>Dồn 3–4 quả về một bên, rồi đột ngột đổi hướng.</td><td>Đối thủ dồn trọng tâm sang một phía, hở biên còn lại.</td></tr>
+      <tr><td><b>Kéo lên – đẩy xuống</b></td><td>Vê nhỏ buộc dâng, rồi lốp sâu qua đầu.</td><td>Phá vỡ đội hình trước-sau, tạo khoảng trống cuối sân.</td></tr>
+      <tr><td><b>Tấn công đường thẳng</b></td><td>Đập thẳng người thay vì chéo.</td><td>Cầu tới nhanh hơn, mình về vị trí kịp, ít bị phản chéo.</td></tr>
+      <tr><td><b>Nhắm điểm giao vai</b></td><td>Đánh vào ranh giới trách nhiệm giữa 2 người.</td><td>Gây lưỡng lự, dễ va vợt hoặc bỏ cầu.</td></tr>
+    </table>
+  </div>
+</section>
+
+<!-- ================= DECISION TREE ================= -->
+<section class="tab" id="tree">
+  <h2 class="sec"><span class="dot"></span>Đánh xong sẽ xảy ra gì? — Cây kịch bản</h2>
+  <p class="lead">Đây là phần rèn <b>tư duy dự đoán</b>. Chọn một cú bạn vừa đánh; xem các khả năng đối thủ trả lại và cách bạn xử lý tiếp. Tập nghĩ trước 1–2 quả.</p>
+
+  <div class="shotpicker" id="shotpicker">
+    <button data-s="smash" class="active">Tôi vừa ĐẬP (smash)</button>
+    <button data-s="drop">Tôi vừa THẢ (drop)</button>
+    <button data-s="net">Tôi vừa VÊ LƯỚI</button>
+    <button data-s="lift">Tôi vừa NÂNG (lift)</button>
+    <button data-s="drive">Tôi vừa DRIVE</button>
+  </div>
+
+  <div class="tree show" id="t_smash">
+    <div class="card">
+      <h3>Sau khi tôi đập — tôi đang ở thế <span class="pill atk">CÔNG</span></h3>
+      <p class="tag">Ngay khi đập xong: người cuối sân theo đà <b>tràn lên</b>, người lưới <b>hạ thấp vợt cảnh giác quả block</b>. Ba khả năng:</p>
+      <div class="branch">
+        <div class="node win"><div class="resp">Đối thủ BLOCK về lưới (khả năng cao nhất)</div>
+          <div class="act">→ Người lưới của mình <b>vồ lên đập bồi / vê đè</b> kết thúc. Đây chính là điểm ăn của đội hình công.</div>
+          <div class="why">Vì thế người đập xong phải tin đồng đội ở lưới và giữ nguyên đội hình trước-sau.</div></div>
+        <div class="node"><div class="resp">Đối thủ NÂNG lên lại</div>
+          <div class="act">→ Tiếp tục <b>đập quả nữa</b>, lần này đổi hướng (chéo/thẳng) hoặc nhắm người yếu. Giữ sức, có thể đập nửa lực.</div>
+          <div class="why">Họ đang bị động; đừng vội đập hết lực, hãy tăng dần áp lực.</div></div>
+        <div class="node risk"><div class="resp">Đối thủ DRIVE/đẩy phản công nhanh</div>
+          <div class="act">→ Phản xạ <b>chặn hoặc drive lại</b> qua người, giữ vợt cao. Nếu bị đẩy sâu, người cuối sân lùi bọc, tạm về ngang thủ.</div>
+          <div class="why">Đây là lúc dễ mất thế nhất — smash không đủ hiểm sẽ bị cướp nhịp.</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tree" id="t_drop">
+    <div class="card">
+      <h3>Sau khi tôi thả/treo — vẫn giữ thế <span class="pill atk">CÔNG</span> nhưng mong manh</h3>
+      <p class="tag">Thả để kéo đối thủ lên. Bạn (người cuối sân) phải <b>theo lên nửa bước</b>, đồng đội lưới ép sát.</p>
+      <div class="branch">
+        <div class="node win"><div class="resp">Đối thủ vê lưới lại (net)</div>
+          <div class="act">→ Người lưới mình <b>vê xoáy tiếp</b> hoặc <b>đẩy nhanh</b> xuống góc trống. Ai chạm cầu thấp hơn mép lưới thì đừng nâng.</div>
+          <div class="why">Đấu lưới: người nào giữ cầu <b>trên</b> mép lưới lâu hơn sẽ thắng pha.</div></div>
+        <div class="node"><div class="resp">Đối thủ nâng/lốp lên</div>
+          <div class="act">→ Tuyệt vời: <b>lùi đập</b>. Đội hình trước-sau đã sẵn, kết thúc bằng smash.</div>
+          <div class="why">Đây là mục đích của quả thả: dụ đối thủ nâng để mình đập.</div></div>
+        <div class="node risk"><div class="resp">Đối thủ đẩy phẳng nhanh qua đầu</div>
+          <div class="act">→ Nếu với được thì drive lại; nếu không, <b>nâng sâu và chuyển về ngang thủ</b>.</div>
+          <div class="why">Thả non/cao dễ bị phản đòn — thả phải sát lưới và xoáy.</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tree" id="t_net">
+    <div class="card">
+      <h3>Sau khi tôi vê lưới — <span class="pill neu">TRUNG GIAN</span>, đang ép để đối thủ nâng</h3>
+      <p class="tag">Vê xong <b>đứng nguyên ở lưới, vợt cao</b>, đừng lùi. Đọc vợt đối thủ.</p>
+      <div class="branch">
+        <div class="node win"><div class="resp">Đối thủ buộc phải nâng</div>
+          <div class="act">→ Bạn ở lưới <b>đứng yên</b>, để đồng đội cuối sân <b>đập</b>. Mình vào đúng đội hình công.</div>
+          <div class="why">Vê lưới tốt = ép đối thủ dâng cầu = mở đường đập cho đội.</div></div>
+        <div class="node"><div class="resp">Đối thủ vê lại (đấu nhả)</div>
+          <div class="act">→ Tiếp tục <b>vê xoáy sát mép</b> hoặc <b>đẩy đột ngột</b> nếu họ dâng cao. Kiên nhẫn hơn đối thủ.</div>
+          <div class="why">Đừng sốt ruột đẩy mạnh khi cầu còn thấp — dễ hỏng lưới.</div></div>
+        <div class="node risk"><div class="resp">Đối thủ vồ đè (net kill) vì bạn vê cao</div>
+          <div class="act">→ Chỉ kịp <b>phản xạ chắn</b>. Bài học: vê phải thấp sát băng lưới, không để cầu nổi trên mép.</div>
+          <div class="why">Quả vê nổi = mời đối thủ dứt điểm.</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tree" id="t_lift">
+    <div class="card">
+      <h3>Sau khi tôi nâng — tôi rơi vào thế <span class="pill def">THỦ</span></h3>
+      <p class="tag">Đã nâng thì <b>lập tức về ngang hàng</b> với đồng đội, chùng gối, vợt cao. Chuẩn bị ăn smash.</p>
+      <div class="branch">
+        <div class="node"><div class="resp">Đối thủ SMASH thẳng vào tôi</div>
+          <div class="act">→ <b>Block về lưới</b> để đổi thế, hoặc <b>drive</b> nếu smash yếu. Không nâng tiếp nếu tránh được.</div>
+          <div class="why">Block tốt buộc họ dâng → mình đảo sang công.</div></div>
+        <div class="node"><div class="resp">Đối thủ SMASH vào đồng đội / vào giữa</div>
+          <div class="act">→ Tôi <b>giữ nửa sân của mình</b>, không lao sang. Cầu giữa: người thuận vị trí đỡ, gọi "của tôi/của bạn".</div>
+          <div class="why">Kỷ luật nửa sân tránh bỏ trống biên.</div></div>
+        <div class="node win"><div class="resp">Đối thủ THẢ nhỏ (vì tôi nâng sâu)</div>
+          <div class="act">→ Người gần lưới <b>vê lại hoặc đẩy</b>, tìm cách ép họ nâng để mình đảo công.</div>
+          <div class="why">Nâng sâu làm đối thủ khó đập hiểm → họ hay chọn thả.</div></div>
+      </div>
+      <div class="callout" style="margin-top:14px"><b>Lưu ý:</b> nâng là quả "nhường quyền". Chỉ nâng khi bị ép, và luôn nâng <b>sâu tận cuối sân</b> để giảm góc đập của đối thủ.</div>
+    </div>
+  </div>
+
+  <div class="tree" id="t_drive">
+    <div class="card">
+      <h3>Sau khi tôi drive — <span class="pill neu">GIẰNG CO</span> tốc độ cao</h3>
+      <p class="tag">Drive là pha đọ phản xạ ngang giữa sân. Ai giữ vợt cao &amp; đánh cầu sớm hơn thì thắng.</p>
+      <div class="branch">
+        <div class="node win"><div class="resp">Đối thủ drive lại nhưng hơi cao</div>
+          <div class="act">→ <b>Đè xuống (đập phẳng)</b> hoặc bắt bồi. Cầu cao hơn lưới trong pha drive = cơ hội dứt điểm.</div>
+          <div class="why">Trong đọ drive, quả nào nổi lên trước sẽ bị trừng phạt.</div></div>
+        <div class="node"><div class="resp">Đối thủ block/chặn xuống lưới</div>
+          <div class="act">→ <b>Lao lên vê/đẩy</b>. Chuyển từ drive sang đấu lưới, giữ cầu thấp.</div>
+          <div class="why">Đừng nâng sau khi drive — dễ dâng smash.</div></div>
+        <div class="node risk"><div class="resp">Đối thủ đẩy phẳng qua vai/nách tôi</div>
+          <div class="act">→ Xoay người bắt bằng trái tay, drive tiếp hoặc chặn; nếu trễ thì nâng sâu và về thủ.</div>
+          <div class="why">Điểm yếu của drive là quả xỉa vào nách — luôn giữ vợt trước ngực.</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= STRENGTH/WEAKNESS ================= -->
+<section class="tab" id="sw">
+  <h2 class="sec"><span class="dot"></span>Điểm mạnh – điểm yếu</h2>
+  <p class="lead">Hiểu điểm yếu của chính đội hình mình để bịt, và điểm yếu của đối thủ để nhắm.</p>
+
+  <div class="split2">
+    <div class="card">
+      <h3><span class="pill atk">Đội hình trước–sau</span> (công)</h3>
+      <div class="good-box"><h4>Mạnh</h4><ul>
+        <li>Sức ép liên tục đi xuống, dễ ăn điểm.</li>
+        <li>Người lưới bắt bồi kết thúc nhanh.</li>
+        <li>Chủ động điều khiển nhịp trận.</li>
+      </ul></div>
+      <div class="bad-box" style="margin-top:10px"><h4>Yếu — đối thủ sẽ nhắm</h4><ul>
+        <li><b>Hai bên hông người cuối sân</b> khi bị đẩy phẳng ngang.</li>
+        <li><b>Lốp qua đầu người lưới</b> ra sau lưng.</li>
+        <li>Người cuối sân bị kéo chạy chéo liên tục sẽ đuối.</li>
+      </ul></div>
+    </div>
+    <div class="card">
+      <h3><span class="pill def">Đội hình ngang hàng</span> (thủ)</h3>
+      <div class="good-box"><h4>Mạnh</h4><ul>
+        <li>Phủ kín hai biên, khó bị đập xuyên.</li>
+        <li>Rõ ràng trách nhiệm nửa sân.</li>
+        <li>Tốt để phản công bằng block/drive.</li>
+      </ul></div>
+      <div class="bad-box" style="margin-top:10px"><h4>Yếu — đối thủ sẽ nhắm</h4><ul>
+        <li><b>Đường cầu vào giữa</b> gây lưỡng lự "của ai?".</li>
+        <li>Bị động, phải chờ đối thủ mắc lỗi.</li>
+        <li>Nếu nâng non → ăn smash ngay.</li>
+      </ul></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Đọc &amp; khai thác điểm yếu của đối thủ</h3>
+    <table class="tbl">
+      <tr><th>Dấu hiệu ở đối thủ</th><th>Điểm yếu</th><th>Tôi khai thác thế nào</th></tr>
+      <tr><td>Đứng thủ vợt thấp, phản xạ chậm</td><td>Kém đỡ smash nhanh</td><td>Đập phẳng vào người, đổi nhịp mạnh–nhẹ.</td></tr>
+      <tr><td>Hay nâng cầu ngắn/giữa sân</td><td>Nâng non</td><td>Chực sẵn đập ngay quả nâng non đó.</td></tr>
+      <tr><td>Người lưới lười lùi</td><td>Hở sau lưng</td><td>Lốp/đẩy sâu qua đầu người lưới.</td></tr>
+      <tr><td>Một người rõ ràng yếu hơn</td><td>Mắt xích yếu</td><td>Dồn 70% cầu vào người đó tới khi mệt/nản.</td></tr>
+      <tr><td>Hai người hay va vợt ở giữa</td><td>Giao tiếp kém</td><td>Nhắm liên tục vào điểm giao vai giữa sân.</td></tr>
+      <tr><td>Thuận tay phải, đỡ trái yếu</td><td>Vai trái</td><td>Đập/đẩy vào vai trái (backhand) của họ.</td></tr>
+    </table>
+  </div>
+</section>
+
+<!-- ================= ADVANCED ================= -->
+<section class="tab" id="advanced">
+  <h2 class="sec"><span class="dot"></span>Nâng cao: đọc điểm yếu đối thủ &amp; những cú KHÔNG nên đánh</h2>
+  <p class="lead">Trình nâng cao không chỉ đánh cú đẹp — mà là <b>đọc đối thủ</b> để biết đánh vào đâu, và <b>biết cú nào tuyệt đối không đánh</b> vì sẽ tự đưa mình vào thế chết. Phần này phân tích cả hai, luôn gắn với <b>vị trí đồng đội</b>.</p>
+
+  <h3 style="font-size:21px;margin:22px 0 4px">A. Đọc &amp; khai thác điểm yếu đối thủ (nâng cao)</h3>
+  <div class="card">
+    <h3 style="margin-top:0">Sáu tầng tín hiệu để đọc đối thủ</h3>
+    <ul class="clean">
+      <li><b>Đọc cầm vợt &amp; tư thế:</b> vợt để thấp ngang gối → yếu phản xạ drive/đỡ đập nhanh; đứng lệch hẳn về thuận tay → hở trái tay; cầm sẵn grip trái tay → yếu đường thẳng bên thuận.</li>
+      <li><b>Đọc bước chân (footwork):</b> lùi cuối sân chậm / không đổi chân → dồn cầu <b>ra sau đầu &amp; góc trái tay cuối sân</b>; dâng lưới chậm → bỏ nhỏ liên tục kéo lên.</li>
+      <li><b>Đọc thể lực &amp; nhịp:</b> cuối hiệp thở dốc → kéo dài rally, đổi nhịp mạnh–nhẹ liên tục; vừa bị kéo chạy chéo → đánh lại <b>đúng chỗ họ vừa rời</b>.</li>
+      <li><b>Đọc cặp đôi:</b> cặp lệch trình → dồn <b>70% cầu vào người yếu</b> tới khi mệt; hai người cùng thuận phải → <b>điểm giao vai giữa sân là trái tay của cả hai</b>, dồn vào đó; ai là "động cơ" tấn công → kéo họ lên lưới để tắt động cơ.</li>
+      <li><b>Đọc đội hình:</b> xoay vòng chậm → đánh <b>mồi</b> (nâng/bỏ nhỏ) để họ xoay rồi đánh ngay vào ô vừa bỏ trống; người lưới lười lùi → lốp qua đầu; người cuối sân bị kéo ngang → drive dọc biên.</li>
+      <li><b>Đọc thói quen:</b> nếu họ block toàn về <b>thẳng</b> → người lưới mình chực sẵn đường thẳng để bắt bồi; nếu họ hay nâng <b>chéo</b> → chực đập chéo lại.</li>
+    </ul>
+    <table class="tbl">
+      <tr><th>Tín hiệu quan sát</th><th>Điểm yếu</th><th>Khai thác (gắn vị trí đồng đội)</th></tr>
+      <tr><td>Lùi cuối sân chậm, đập ra sau đầu yếu</td><td>Cuối sân &amp; trái tay sau đầu</td><td>Lốp sâu vào <b>góc trái tay cuối sân</b>; ĐĐ lên lưới chực quả trả yếu để bắt bồi.</td></tr>
+      <tr><td>Người lưới đứng cao, lười lùi</td><td>Sau lưng người lưới</td><td>Đẩy/lốp <b>qua đầu người lưới</b> ra sau; ĐĐ giữ lưới sẵn đón quả nâng vội.</td></tr>
+      <tr><td>Hai người hay do dự ở giữa</td><td>Giao tiếp kém</td><td>Dồn <b>điểm giao vai giữa sân</b>; người sau mình đập giữa, người trước bắt bồi.</td></tr>
+      <tr><td>Một người rõ ràng yếu hơn</td><td>Mắt xích yếu</td><td>Khoá cầu vào người đó; ĐĐ &amp; mình giữ đội hình công để ép liên tục.</td></tr>
+      <tr><td>Đỡ đập bằng nâng non</td><td>Phòng thủ bị động</td><td>Người sau chực sẵn <b>đập lại ngay</b> quả nâng non; người trước áp lưới bắt bồi.</td></tr>
+    </table>
+  </div>
+
+  <h3 style="font-size:21px;margin:30px 0 4px">B. Những cú KHÔNG nên đánh — và vì sao</h3>
+  <div class="mlegend">
+    <span><i style="border-color:#ff9f1c;border-top-style:dashed"></i>Cú mình đánh (SAI)</span>
+    <span><i style="border-color:#ff2e2e"></i>Đối thủ trừng phạt</span>
+    <span><span class="swatch" style="background:#ff2e2e;border-radius:2px;width:13px;height:13px"></span> Vùng đỏ = chỗ mình/ĐĐ không cứu được</span>
+  </div>
+
+  <div class="card dont">
+    <div class="courtwrap">
+      <div class="courtbox" id="c_bad_lift"><div class="courtcap">Nâng non → smash dốc vào người</div></div>
+      <div class="courtnote">
+        <h3 style="margin-top:0">Cấm 1 · Nâng cầu NON (chỉ tới giữa sân) khi phòng thủ</h3>
+        <div class="mrow pos"><span class="lb">📍 Cú &amp; vị trí:</span> từ thế thủ, nâng cầu chỉ lên tới <b>giữa sân</b> đối thủ (không sâu).</div>
+        <div class="mrow pun"><span class="lb">⚡ Đối thủ trừng phạt:</span> bước vào đập <b>dốc</b> với góc rất hẹp, cắm thẳng xuống người/chân bạn.</div>
+        <div class="mrow why"><span class="lb">❌ Vì sao không cứu:</span> cầu ngắn cho họ đứng cao + góc dốc + quãng bay ngắn → bạn không kịp đưa vợt; đứng ngang thủ cũng không đỡ nổi cú cắm vào thân.</div>
+        <div class="fix"><span class="lb">✅ Nên thay:</span> nếu buộc nâng, nâng <b>THẬT SÂU sát biên cuối</b> (giảm góc đập); tốt hơn là <b>block/đẩy</b> thay vì nâng.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card dont">
+    <div class="courtwrap">
+      <div class="courtbox" id="c_bad_feed"><div class="courtcap">Đánh vào người lưới → bị giết ngay</div></div>
+      <div class="courtnote">
+        <h3 style="margin-top:0">Cấm 2 · Đánh phẳng/đập vào NGƯỜI TRƯỚC đối thủ</h3>
+        <div class="mrow pos"><span class="lb">📍 Cú &amp; vị trí:</span> drive/đẩy/đập nửa lực đi vào tầm <b>người đứng lưới</b> của đối thủ (đang giơ vợt sẵn).</div>
+        <div class="mrow pun"><span class="lb">⚡ Đối thủ trừng phạt:</span> vồ đè/bắt bồi <b>giết thẳng xuống</b> ngay, hoặc chặn nhanh vào chân bạn.</div>
+        <div class="mrow why"><span class="lb">❌ Vì sao không cứu:</span> người lưới vợt cao + gần lưới = gần như không có thời gian phản xạ cho bạn; bạn &amp; ĐĐ đều ở sau, xa điểm rơi.</div>
+        <div class="fix"><span class="lb">✅ Nên thay:</span> đánh <b>vòng qua</b> người lưới — lốp sâu qua đầu họ, hoặc đập/đẩy xuống chân <b>người cuối sân</b>, né tầm với của người lưới.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card dont">
+    <div class="courtwrap">
+      <div class="courtbox" id="c_bad_cross"><div class="courtcap">Đập chéo từ góc → block thẳng vào chỗ trống</div></div>
+      <div class="courtnote">
+        <h3 style="margin-top:0">Cấm 3 · Đập CHÉO hết đà từ góc sân</h3>
+        <div class="mrow pos"><span class="lb">📍 Cú &amp; vị trí:</span> đang ở sâu <b>một góc</b>, đập chéo hết lực sang biên đối diện.</div>
+        <div class="mrow pun"><span class="lb">⚡ Đối thủ trừng phạt:</span> chỉ cần <b>chặn nhẹ THẲNG</b> xuống lưới, cầu rơi vào khoảng trống <b>chéo với chỗ bạn đang kẹt</b>.</div>
+        <div class="mrow why"><span class="lb">❌ Vì sao không cứu:</span> cú chéo bay quãng dài + bạn <b>kẹt lại ở góc</b> → không kịp băng chéo cả sân; ĐĐ bị kéo lệch, không phủ nổi <b>khoảng trống phía đối diện</b> — vùng đỏ bỏ trống.</div>
+        <div class="fix"><span class="lb">✅ Nên thay:</span> từ góc, ưu tiên đập/treo <b>THẲNG</b> (đường ngắn, về vị trí kịp); chỉ đập chéo khi đứng gần trục giữa &amp; đủ hiểm.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card dont">
+    <div class="courtwrap">
+      <div class="courtbox" id="c_bad_drop"><div class="courtcap">Bỏ nhỏ vào người đã áp lưới → net kill</div></div>
+      <div class="courtnote">
+        <h3 style="margin-top:0">Cấm 4 · Bỏ nhỏ khi người trước đối thủ đã ÁP SÁT lưới</h3>
+        <div class="mrow pos"><span class="lb">📍 Cú &amp; vị trí:</span> thả/bỏ nhỏ từ cuối sân trong khi người lưới đối thủ <b>chực sẵn sát băng lưới</b>.</div>
+        <div class="mrow pun"><span class="lb">⚡ Đối thủ trừng phạt:</span> vồ đè (net kill) xuống ngay tức thì.</div>
+        <div class="mrow why"><span class="lb">❌ Vì sao không cứu:</span> điểm rơi ngay trước mặt người đã sẵn sàng; bạn ở cuối sân, ĐĐ không kịp lên đỡ quả giết tốc độ cao.</div>
+        <div class="fix"><span class="lb">✅ Nên thay:</span> đừng bỏ nhỏ vào họ — <b>lốp/clear qua đầu</b> ra sau, hoặc <b>đập xuống</b> để họ không kịp dâng.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card dont">
+    <div class="courtwrap">
+      <div class="courtbox" id="c_bad_form"><div class="courtcap">Nâng khi xếp dọc → smash vào biên hở</div></div>
+      <div class="courtnote">
+        <h3 style="margin-top:0">Cấm 5 · Nâng/clear khi hai người đang đứng TRƯỚC–SAU (công)</h3>
+        <div class="mrow pos"><span class="lb">📍 Cú &amp; vị trí:</span> bạn (hoặc ĐĐ) nâng/phông trong khi hai người còn <b>xếp dọc</b> trước–sau.</div>
+        <div class="mrow pun"><span class="lb">⚡ Đối thủ trừng phạt:</span> đập vào một trong <b>hai biên (cạnh sườn)</b> — nơi đội hình dọc bỏ trống.</div>
+        <div class="mrow why"><span class="lb">❌ Vì sao không cứu:</span> xếp trước–sau chỉ phủ <b>trục giữa</b>, không phủ chiều ngang; muốn đỡ smash phải là ngang hàng. Người vừa nâng chưa kịp lùi ngang, ĐĐ ở trục giữa không với tới biên.</div>
+        <div class="fix"><span class="lb">✅ Nên thay:</span> khi buộc phải nâng, <b>cả hai LẬP TỨC chuyển sang ngang hàng</b> (side-by-side) trước khi đối thủ chạm cầu.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card dont">
+    <div class="courtwrap">
+      <div class="courtbox" id="c_bad_crossnet"><div class="courtcap">Vê chéo chậm → bị tràn lên bắt giết</div></div>
+      <div class="courtnote">
+        <h3 style="margin-top:0">Cấm 6 · Vê CHÉO chậm khi đối thủ đứng chờ ở lưới</h3>
+        <div class="mrow pos"><span class="lb">📍 Cú &amp; vị trí:</span> vê lưới đường <b>chéo (chậm)</b> trong khi người lưới đối thủ đứng giữa/chực.</div>
+        <div class="mrow pun"><span class="lb">⚡ Đối thủ trừng phạt:</span> tràn ngang <b>bắt cầu giữa đường bay</b> và giết thẳng xuống.</div>
+        <div class="mrow why"><span class="lb">❌ Vì sao không cứu:</span> cú vê chéo bay ngang trước mặt đối thủ, <b>phơi cầu lâu</b>; bạn vừa vê xong đứng lệch một bên, không cứu được đường giết thẳng; ĐĐ ở cuối sân quá xa.</div>
+        <div class="fix"><span class="lb">✅ Nên thay:</span> vê <b>THẲNG</b> (đường ngắn, ít phơi cầu); nếu vê chéo thì phải <b>xoáy &amp; sát lưới</b> để họ không kịp bắt.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout"><b>Quy luật chung của "cú cấm":</b> một cú thành sai lầm khi nó (1) <b>cho đối thủ đánh xuống dễ dàng</b>, hoặc (2) <b>kéo bạn/đồng đội ra khỏi vị trí</b> mà không kịp về. Trước mỗi cú, tự hỏi: <i>"đánh xong mình &amp; ĐĐ đứng ở đâu, đối thủ trả mạnh nhất vào đâu, có cứu kịp không?"</i></div>
+</section>
+
+<!-- ================= TRAIN ================= -->
+<section class="tab" id="train">
+  <h2 class="sec"><span class="dot"></span>Luyện tư duy đánh cầu</h2>
+  <p class="lead">Kỹ năng tay cần tập thể lực; kỹ năng <b>tư duy</b> cần tập thói quen đọc trận. Đây là các bài rèn não bộ trên sân.</p>
+
+  <div class="grid c2">
+    <div class="card">
+      <h3>Thói quen tư duy cần rèn mỗi pha</h3>
+      <ul class="clean">
+        <li><b>Nghĩ trước 1 quả:</b> trước khi đánh, tự hỏi "nếu họ trả X thì mình làm Y ở đâu?".</li>
+        <li><b>Đọc vợt, không đọc cầu:</b> nhìn mặt vợt &amp; tư thế đối thủ để đoán hướng sớm nửa giây.</li>
+        <li><b>Gọi tên đội hình liên tục trong đầu:</b> "công – trước sau" / "thủ – ngang" để chân tự về đúng chỗ.</li>
+        <li><b>Sau mỗi điểm, hỏi "vì sao thắng/thua":</b> do cú đánh hay do vị trí? Ghi lại mẫu lặp.</li>
+        <li><b>Giao tiếp với đồng đội:</b> gọi "của tôi", "để đấy", "lùi", "đổi" — thắng nhờ đồng bộ, không phải cá nhân.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Bài tập cặp đôi (drills)</h3>
+      <ul class="clean">
+        <li><b>Drill xoay vòng:</b> A đập – lao lên; B trượt lấp; lặp để chân nhớ đường xoay.</li>
+        <li><b>Drill 2 đỡ 1 đập:</b> một người đập liên tục, hai người tập block/drive về lưới — rèn phản xạ &amp; đảo công.</li>
+        <li><b>Drill đấu lưới:</b> hai cặp chỉ vê nhỏ trong ô giao, ai buộc đối thủ nâng thì thắng — rèn tay cảm giác.</li>
+        <li><b>Drill giao–trả:</b> lặp riêng 20 quả giao thấp + vồ giao, vì đây là pha quyết định.</li>
+        <li><b>Drill "gọi tên":</b> vừa đánh vừa hô to đội hình để biến việc đọc trận thành phản xạ.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Checklist tự đánh giá sau trận</h3>
+    <table class="tbl">
+      <tr><th>Câu hỏi</th><th>Nếu "chưa" → sửa gì</th></tr>
+      <tr><td>Tôi có mất điểm vì nâng cầu non không?</td><td>Tập block/đẩy thay vì nâng khi bị ép.</td></tr>
+      <tr><td>Tôi và đồng đội có đúng đội hình theo hướng cầu không?</td><td>Rèn drill xoay vòng &amp; hô đội hình.</td></tr>
+      <tr><td>Tôi có đứng đúng khi công (lưới) / thủ (ngang) không?</td><td>Xem lại tab "Vị trí của tôi".</td></tr>
+      <tr><td>Tôi có nhắm vào điểm yếu đối thủ không hay đánh vu vơ?</td><td>Chủ động chọn mục tiêu mỗi quả.</td></tr>
+      <tr><td>Tôi có đọc trước quả tiếp theo không?</td><td>Tập nghĩ-trước-1-quả từng pha.</td></tr>
+    </table>
+  </div>
+
+  <div class="callout"><b>Tổng kết một câu:</b> Đánh đôi giỏi = <b>giành quyền đánh xuống</b> + <b>đứng đúng đội hình theo hướng cầu</b> + <b>nghĩ trước đối thủ một quả</b>. Cú đánh chỉ là công cụ để thực thi ba điều đó.</div>
+</section>
+
+<footer>
+  🏸 Tư duy đánh đôi cầu lông · trang tự học một-file · mở bằng bất kỳ trình duyệt nào.<br>
+  <span class="tag">Bấm các tab ở trên · tab "Kịch bản sau khi đánh" có thể bấm từng cú để xem cây tình huống.</span>
+</footer>
+</div>
+
+<script>
+/* ---------- Court drawing engine ---------- */
+const M = 34;              // px per meter
+const PAD = 26;            // margin
+const CW = 6.1, CL = 13.4; // doubles court meters
+const NET = 6.7, SHORT = 1.98, DBL_LONG = 0.76, SINGLE_IN = 0.46;
+const W = CW*M + PAD*2, H = CL*M + PAD*2;
+const mx = m => PAD + m*M;          // meters-from-left -> px
+const my = m => PAD + m*M;          // meters-from-top  -> px
+const esc = s => (s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;");
+
+function courtBase(){
+  const lc = "#eaf3ee", lw=1.6;
+  let s = "";
+  // court fill
+  s += `<rect x="${mx(0)}" y="${my(0)}" width="${CW*M}" height="${CL*M}" rx="6" fill="url(#cg)" stroke="${lc}" stroke-width="${lw+1}"/>`;
+  // singles sidelines
+  s += `<line x1="${mx(SINGLE_IN)}" y1="${my(0)}" x2="${mx(SINGLE_IN)}" y2="${my(CL)}" stroke="${lc}" stroke-width="${lw}" opacity=".8"/>`;
+  s += `<line x1="${mx(CW-SINGLE_IN)}" y1="${my(0)}" x2="${mx(CW-SINGLE_IN)}" y2="${my(CL)}" stroke="${lc}" stroke-width="${lw}" opacity=".8"/>`;
+  // short service lines
+  s += `<line x1="${mx(0)}" y1="${my(NET-SHORT)}" x2="${mx(CW)}" y2="${my(NET-SHORT)}" stroke="${lc}" stroke-width="${lw}"/>`;
+  s += `<line x1="${mx(0)}" y1="${my(NET+SHORT)}" x2="${mx(CW)}" y2="${my(NET+SHORT)}" stroke="${lc}" stroke-width="${lw}"/>`;
+  // doubles long service lines
+  s += `<line x1="${mx(0)}" y1="${my(DBL_LONG)}" x2="${mx(CW)}" y2="${my(DBL_LONG)}" stroke="${lc}" stroke-width="${lw}" opacity=".8"/>`;
+  s += `<line x1="${mx(0)}" y1="${my(CL-DBL_LONG)}" x2="${mx(CW)}" y2="${my(CL-DBL_LONG)}" stroke="${lc}" stroke-width="${lw}" opacity=".8"/>`;
+  // center line (only outside service short lines)
+  s += `<line x1="${mx(CW/2)}" y1="${my(0)}" x2="${mx(CW/2)}" y2="${my(NET-SHORT)}" stroke="${lc}" stroke-width="${lw}" opacity=".8"/>`;
+  s += `<line x1="${mx(CW/2)}" y1="${my(NET+SHORT)}" x2="${mx(CW/2)}" y2="${my(CL)}" stroke="${lc}" stroke-width="${lw}" opacity=".8"/>`;
+  // net
+  s += `<line x1="${mx(0)}" y1="${my(NET)}" x2="${mx(CW)}" y2="${my(NET)}" stroke="#fff" stroke-width="3"/>`;
+  s += `<rect x="${mx(0)}" y="${my(NET)-5}" width="${CW*M}" height="10" fill="url(#netpat)" opacity=".65"/>`;
+  return s;
+}
+
+function zoneRect(m1,mt,mw,mh,color,label){
+  let s = `<rect x="${mx(m1)}" y="${my(mt)}" width="${mw*M}" height="${mh*M}" fill="${color}" opacity=".22" rx="4"/>`;
+  s += `<rect x="${mx(m1)}" y="${my(mt)}" width="${mw*M}" height="${mh*M}" fill="none" stroke="${color}" stroke-width="1.4" stroke-dasharray="5 4" rx="4" opacity=".85"/>`;
+  if(label){ s += `<text x="${mx(m1)+mw*M/2}" y="${my(mt)+mh*M/2}" fill="#fff" font-size="11" font-weight="700" text-anchor="middle" dominant-baseline="middle" opacity=".92">${esc(label)}</text>`;}
+  return s;
+}
+
+function player(mX,mY,team,label){
+  const col = team==="me"?"var(--me)":team==="mate"?"var(--mate)":team==="opp"?"var(--opp)":"var(--opp2)";
+  const raw = team==="me"?"#4aa3ff":team==="mate"?"#7ee0b8":team==="opp"?"#ff6b6b":"#ffa94d";
+  let s = `<circle cx="${mx(mX)}" cy="${my(mY)}" r="12" fill="${raw}" stroke="#0d1117" stroke-width="2.5"/>`;
+  s += `<text x="${mx(mX)}" y="${my(mY)+4}" fill="#0d1117" font-size="12" font-weight="800" text-anchor="middle">${esc(label)}</text>`;
+  return s;
+}
+
+function arrow(m1x,m1y,m2x,m2y,color,dash){
+  const d = dash?`stroke-dasharray="6 5"`:"";
+  return `<line x1="${mx(m1x)}" y1="${my(m1y)}" x2="${mx(m2x)}" y2="${my(m2y)}" stroke="${color}" stroke-width="2.6" ${d} marker-end="url(#ah-${color.replace('#','')})"/>`;
+}
+
+/* red target mark ("dấu đỏ") with a number badge, for shot-placement diagrams */
+function targetMark(mX,mY,num){
+  const c="#ff2e2e", X=mx(mX), Y=my(mY);
+  let s = `<circle cx="${X}" cy="${Y}" r="13" fill="${c}" opacity=".16"/>`;
+  s += `<circle cx="${X}" cy="${Y}" r="8.5" fill="none" stroke="${c}" stroke-width="2.4"/>`;
+  s += `<circle cx="${X}" cy="${Y}" r="2.4" fill="${c}"/>`;
+  s += `<line x1="${X-14}" y1="${Y}" x2="${X+14}" y2="${Y}" stroke="${c}" stroke-width="1.1" opacity=".6"/>`;
+  s += `<line x1="${X}" y1="${Y-14}" x2="${X}" y2="${Y+14}" stroke="${c}" stroke-width="1.1" opacity=".6"/>`;
+  s += `<circle cx="${X+13}" cy="${Y-13}" r="8.5" fill="${c}" stroke="#fff" stroke-width="1.5"/>`;
+  s += `<text x="${X+13}" y="${Y-13+4}" fill="#fff" font-size="11.5" font-weight="800" text-anchor="middle">${num}</text>`;
+  return s;
+}
+function shotArrow(x1,y1,x2,y2){
+  return `<line x1="${mx(x1)}" y1="${my(y1)}" x2="${mx(x2)}" y2="${my(y2)}" stroke="#ff2e2e" stroke-width="1.8" stroke-dasharray="5 5" opacity=".5"/>`;
+}
+/* generic placement diagram: hitter + red target marks + faint aim lines */
+function placement(hitter, targets, opp){
+  let s = courtBase();
+  (opp||[[1.9,3.0],[4.2,3.0]]).forEach(o=> s+=player(o[0],o[1],"opp",""));
+  targets.forEach(t=> s += shotArrow(hitter[0],hitter[1],t.x,t.y));
+  s += player(hitter[0],hitter[1], hitter[3]||"me", hitter[2]||"Tôi");
+  targets.forEach(t=> s += targetMark(t.x,t.y,t.n));
+  return svg(s,[]);
+}
+
+let _uid=0;
+function svg(inner, arrowColors){
+  const u = (++_uid);   // unique id suffix so multiple inline SVGs never share paint-server ids
+  const defs = `
+   <defs>
+    <linearGradient id="cg${u}" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#0f5132"/><stop offset="1" stop-color="#0a3d26"/>
+    </linearGradient>
+    <pattern id="netpat${u}" width="7" height="10" patternUnits="userSpaceOnUse">
+      <path d="M0 0 L7 0 M0 5 L7 5 M0 0 L0 10 M3.5 0 L3.5 10 M7 0 L7 10" stroke="#fff" stroke-width=".5" opacity=".5"/>
+    </pattern>
+    ${(arrowColors||[]).map(c=>`<marker id="ah${u}-${c.replace('#','')}" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0 0 L9 4.5 L0 9 z" fill="${c}"/></marker>`).join("")}
+   </defs>`;
+  const body = inner.replace(/#cg\b/g,`#cg${u}`).replace(/#netpat\b/g,`#netpat${u}`).replace(/#ah-/g,`#ah${u}-`);
+  return `<svg viewBox="0 0 ${W} ${H}" width="248" height="${Math.round(248*H/W)}" xmlns="http://www.w3.org/2000/svg">${defs}${body}</svg>`;
+}
+
+/* zone color tokens */
+const RED="#ff5d5d", BLUE="#4db1ff", YEL="#ffd23f", GRN="#57d38c";
+
+/* ---- diagrams ---- */
+function d_overview(){
+  let s = courtBase();
+  s += zoneRect(0, NET-SHORT-1.0, CW, 2.0, YEL, "VÙNG LƯỚI");
+  s += zoneRect(0, NET+SHORT-0.2, CW, 2.4, BLUE, "GIỮA SÂN (drive)");
+  s += zoneRect(0, CL-2.4, CW, 2.0, RED, "CUỐI SÂN");
+  s += player(2.0,10.6,"me","Tôi");
+  s += player(4.1,10.6,"mate","ĐĐ");
+  s += player(2.0,2.8,"opp","Đối");
+  s += player(4.1,2.8,"opp2","thủ");
+  return svg(s,[]);
+}
+function d_frontback(){
+  let s = courtBase();
+  s += zoneRect(0, NET-SHORT-0.6, CW, 5.6, RED, "khu đội mình khống chế");
+  s += player(3.05,8.9,"me","Lưới");
+  s += player(3.05,11.6,"mate","Sau");
+  s += arrow(3.05,11.6,2.0,2.6,RED,false);
+  s += player(2.0,3.0,"opp","");
+  s += player(4.1,3.0,"opp2","");
+  return svg(s,[RED]);
+}
+function d_sidebyside(){
+  let s = courtBase();
+  s += zoneRect(0, NET+0.2, CW/2, CL-NET-0.4, BLUE, "nửa của tôi");
+  s += zoneRect(CW/2, NET+0.2, CW/2, CL-NET-0.4, BLUE, "nửa ĐĐ");
+  s += player(1.7,9.7,"me","Tôi");
+  s += player(4.4,9.7,"mate","ĐĐ");
+  s += player(3.05,3.2,"opp","");
+  s += arrow(3.05,3.2,2.4,9.0,RED,true);
+  s += arrow(3.05,3.2,4.0,9.0,RED,true);
+  return svg(s,[RED]);
+}
+function d_rotation(){
+  let s = courtBase();
+  // from side-by-side to front-back
+  s += player(1.9,9.6,"mate","B");
+  s += player(4.3,9.6,"me","A");
+  s += arrow(4.3,9.6,3.05,11.4,YEL,false);   // A drops back to smash
+  s += arrow(1.9,9.6,3.05,8.9,YEL,true);     // B slides up to net
+  s += `<text x="${mx(3.05)}" y="${my(11.9)+8}" fill="#ffd23f" font-size="10" font-weight="700" text-anchor="middle">A lùi đập</text>`;
+  s += `<text x="${mx(3.05)}" y="${my(8.4)}" fill="#ffd23f" font-size="10" font-weight="700" text-anchor="middle">B lên lưới</text>`;
+  s += player(2.0,3.0,"opp","");
+  s += player(4.1,3.0,"opp2","");
+  return svg(s,[YEL]);
+}
+function d_role_front(){
+  let s = courtBase();
+  s += zoneRect(0, NET+0.15, CW, 2.3, YEL, "vùng tôi phụ trách");
+  s += player(3.05,8.5,"me","Tôi");
+  s += player(3.05,11.6,"mate","ĐĐ");
+  s += player(2.0,3.0,"opp","");
+  s += player(4.1,3.0,"opp2","");
+  s += arrow(3.05,8.5,2.0,5.0,RED,false);
+  s += arrow(3.05,8.5,4.1,5.0,RED,false);
+  return svg(s,[RED]);
+}
+function d_role_rear(){
+  let s = courtBase();
+  s += zoneRect(0, NET+SHORT-0.1, CW, CL-(NET+SHORT)-0.3, RED, "vùng tôi phụ trách");
+  s += player(3.05,11.4,"me","Tôi");
+  s += player(3.05,8.7,"mate","ĐĐ");
+  s += player(2.0,3.0,"opp","");
+  s += player(4.1,3.0,"opp2","");
+  s += arrow(3.05,11.4,2.0,3.0,RED,false);      // smash straight
+  s += arrow(3.05,11.4,4.3,3.2,YEL,true);       // smash cross
+  return svg(s,[RED,YEL]);
+}
+function d_role_def(){
+  let s = courtBase();
+  s += zoneRect(0, NET+0.2, CW/2, CL-NET-0.4, BLUE, "nửa của tôi");
+  s += player(1.7,9.7,"me","Tôi");
+  s += player(4.4,9.7,"mate","ĐĐ");
+  s += player(2.0,3.0,"opp","");
+  s += player(4.1,3.0,"opp2","");
+  s += arrow(2.0,3.0,1.8,9.0,RED,true);          // smash to me
+  s += arrow(1.7,9.7,1.6,5.4,GRN,false);         // block back to net
+  return svg(s,[RED,GRN]);
+}
+function d_serve(){
+  let s = courtBase();
+  // I serve from right service court near center & short line (my side bottom)
+  s += zoneRect(CW/2, NET+SHORT, CW/2, 0.9, YEL, "");
+  s += player(3.35,8.9,"me","Giao");
+  s += player(4.2,11.0,"mate","ĐĐ");
+  s += player(2.75,4.9,"opp","Trả");
+  s += player(4.4,3.0,"opp2","");
+  s += arrow(3.35,8.9,2.75,5.2,YEL,false);       // low serve
+  s += arrow(3.35,8.9,4.6,1.2,BLUE,true);        // flick
+  s += `<text x="${mx(1.2)}" y="${my(6.0)}" fill="#ffd23f" font-size="10" font-weight="700">giao thấp</text>`;
+  s += `<text x="${mx(4.7)}" y="${my(1.0)}" fill="#8ec7ff" font-size="10" font-weight="700">flick</text>`;
+  return svg(s,[YEL,BLUE]);
+}
+function d_return(){
+  let s = courtBase();
+  s += player(2.75,8.6,"me","Trả");    // I stand at my short line to receive
+  s += player(2.0,11.0,"mate","ĐĐ");
+  s += player(3.35,5.0,"opp","Giao");
+  s += player(1.9,3.0,"opp2","");
+  s += arrow(2.75,8.6,3.3,5.7,RED,false);        // rush down
+  s += arrow(2.75,8.6,1.4,5.4,BLUE,true);        // push to corner
+  s += `<text x="${mx(3.4)}" y="${my(6.4)}" fill="#ff9c9c" font-size="10" font-weight="700">vồ đè</text>`;
+  s += `<text x="${mx(0.6)}" y="${my(5.6)}" fill="#8ec7ff" font-size="10" font-weight="700">đẩy góc</text>`;
+  return svg(s,[RED,BLUE]);
+}
+
+/* ---- shot-placement diagrams (red target marks) ---- */
+function d_pl_smash(){ return placement([3.05,11.2,"Đập"],[
+  {x:1.95,y:3.9,n:1},{x:3.05,y:4.15,n:2},{x:4.7,y:4.3,n:3} ]); }
+function d_pl_drop(){ return placement([3.05,11.2,"Bỏ nhỏ"],[
+  {x:1.0,y:5.15,n:1},{x:5.1,y:5.15,n:2} ]); }
+function d_pl_clear(){ return placement([3.05,11.2,"Clear"],[
+  {x:0.95,y:1.15,n:1},{x:5.15,y:1.15,n:2} ]); }
+function d_pl_net(){ return placement([3.05,8.35,"Vê"],[
+  {x:0.95,y:5.35,n:1},{x:3.05,y:5.25,n:2},{x:5.15,y:5.4,n:3} ]); }
+function d_pl_push(){ return placement([3.05,8.35,"Đẩy"],[
+  {x:1.15,y:4.05,n:1},{x:4.95,y:4.05,n:2} ]); }
+function d_pl_drive(){ return placement([2.4,7.9,"Drive"],[
+  {x:2.05,y:4.2,n:1},{x:3.5,y:4.9,n:2},{x:4.75,y:4.6,n:3} ]); }
+function d_pl_block(){ return placement([1.7,9.7,"Block"],[
+  {x:1.3,y:5.4,n:1},{x:4.5,y:5.6,n:2} ], [[1.9,3.0],[4.2,3.0]]); }
+function d_pl_lift(){ return placement([2.0,8.6,"Nâng"],[
+  {x:0.95,y:1.15,n:1},{x:5.15,y:1.15,n:2} ]); }
+
+/* ---- "mistake" diagrams: orange dashed = my bad shot, red = opponent punish, red zone = where I/partner can't cover ---- */
+const WARN="#ff9f1c";
+function d_bad_lift(){
+  let s=courtBase();
+  s+=player(3.0,3.9,"opp",""); s+=player(4.7,2.7,"opp2","");
+  s+=zoneRect(0.4,7.9,2.7,2.4,RED,"smash dốc vào người");
+  s+=player(2.0,9.5,"me","Tôi"); s+=player(4.4,9.5,"mate","ĐĐ");
+  s+=arrow(2.0,9.5,3.0,4.6,WARN,true);
+  s+=arrow(3.0,4.2,2.2,8.9,RED,false);
+  return svg(s,[WARN,RED]);
+}
+function d_bad_feed(){
+  let s=courtBase();
+  s+=player(3.0,5.2,"opp",""); s+=player(4.6,2.8,"opp2","");
+  s+=zoneRect(1.8,7.4,2.5,2.2,RED,"bị giết xuống");
+  s+=player(3.05,11.3,"me","Tôi"); s+=player(1.9,8.6,"mate","ĐĐ");
+  s+=arrow(3.05,11.3,3.0,5.4,WARN,true);
+  s+=arrow(3.0,5.4,3.0,8.1,RED,false);
+  return svg(s,[WARN,RED]);
+}
+function d_bad_cross(){
+  let s=courtBase();
+  s+=player(4.6,3.0,"opp",""); s+=player(2.2,2.8,"opp2","");
+  s+=zoneRect(3.5,6.95,2.4,2.4,RED,"trống — không ai kịp");
+  s+=player(1.3,11.4,"me","Tôi"); s+=player(2.7,8.7,"mate","ĐĐ");
+  s+=arrow(1.3,11.4,4.8,4.0,WARN,true);
+  s+=arrow(4.7,4.3,4.85,7.6,RED,false);
+  return svg(s,[WARN,RED]);
+}
+function d_bad_drop(){
+  let s=courtBase();
+  s+=player(2.4,5.1,"opp",""); s+=player(4.4,2.8,"opp2","");
+  s+=zoneRect(1.2,7.2,2.6,2.2,RED,"net kill xuống");
+  s+=player(3.05,11.3,"me","Tôi"); s+=player(1.8,8.6,"mate","ĐĐ");
+  s+=arrow(3.05,11.3,2.5,5.3,WARN,true);
+  s+=arrow(2.4,5.3,2.5,8.0,RED,false);
+  return svg(s,[WARN,RED]);
+}
+function d_bad_form(){
+  let s=courtBase();
+  s+=player(4.8,2.0,"opp",""); s+=player(2.4,3.0,"opp2","");
+  s+=zoneRect(0.3,7.4,2.3,3.0,RED,"biên hở — xếp dọc");
+  s+=player(3.05,8.4,"me","Tôi"); s+=player(3.05,11.2,"mate","ĐĐ");
+  s+=arrow(3.05,8.4,4.9,1.4,WARN,true);
+  s+=arrow(4.8,1.8,1.2,8.6,RED,false);
+  return svg(s,[WARN,RED]);
+}
+function d_bad_crossnet(){
+  let s=courtBase();
+  s+=player(4.8,5.2,"opp",""); s+=player(2.6,2.8,"opp2","");
+  s+=zoneRect(3.6,7.2,2.3,2.2,RED,"bị bắt & giết");
+  s+=player(2.5,8.3,"me","Tôi"); s+=player(3.0,11.2,"mate","ĐĐ");
+  s+=arrow(2.5,8.3,4.9,5.4,WARN,true);
+  s+=arrow(4.8,5.4,4.9,8.0,RED,false);
+  return svg(s,[WARN,RED]);
+}
+
+/* ===== side-view "net profile" engine (for shuttle arc / height over the tape) ===== */
+const SVW=300, SVH=176, GND=140, NETX=150, NETTOP=62;
+let _svid=0;
+function sideSvg(inner, colors){
+  const u=(++_svid);
+  const defs=`<defs>
+    <linearGradient id="sky${u}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#12324a"/><stop offset="1" stop-color="#0d2233"/></linearGradient>
+    <pattern id="netv${u}" width="4" height="4" patternUnits="userSpaceOnUse"><path d="M0 0 L4 0 M0 2 L4 2 M0 0 L0 4 M2 0 L2 4" stroke="#fff" stroke-width=".4" opacity=".5"/></pattern>
+    ${(colors||[]).map(c=>`<marker id="sah${u}-${c.replace('#','')}" markerWidth="9" markerHeight="9" refX="6.5" refY="4.5" orient="auto"><path d="M0 0 L9 4.5 L0 9 z" fill="${c}"/></marker>`).join('')}
+  </defs>`;
+  const body=inner.replace(/#sky\b/g,`#sky${u}`).replace(/#netv\b/g,`#netv${u}`).replace(/#sah-/g,`#sah${u}-`);
+  return `<svg viewBox="0 0 ${SVW} ${SVH}" width="300" height="${Math.round(300*SVH/SVW)}" xmlns="http://www.w3.org/2000/svg">${defs}${body}</svg>`;
+}
+function svBase(myLabel, oppLabel){
+  let s=`<rect x="0" y="0" width="${SVW}" height="${SVH}" rx="10" fill="url(#sky)"/>`;
+  s+=`<rect x="0" y="${GND}" width="${SVW}" height="${SVH-GND}" fill="#0a3d26"/>`;
+  s+=`<line x1="0" y1="${GND}" x2="${SVW}" y2="${GND}" stroke="#eaf3ee" stroke-width="1.5" opacity=".6"/>`;
+  s+=`<rect x="${NETX-1.5}" y="${NETTOP}" width="3" height="${GND-NETTOP}" fill="url(#netv)" opacity=".85"/>`;
+  s+=`<line x1="${NETX}" y1="${GND}" x2="${NETX}" y2="${NETTOP}" stroke="#fff" stroke-width="1.2" opacity=".5"/>`;
+  s+=`<line x1="${NETX-9}" y1="${NETTOP}" x2="${NETX+9}" y2="${NETTOP}" stroke="#fff" stroke-width="3"/>`;
+  s+=`<text x="14" y="${SVH-7}" fill="#9aa7b6" font-size="10" font-weight="700">◀ ${esc(myLabel||'Sân tôi')}</text>`;
+  s+=`<text x="${SVW-14}" y="${SVH-7}" fill="#9aa7b6" font-size="10" font-weight="700" text-anchor="end">${esc(oppLabel||'Sân đối thủ')} ▶</text>`;
+  return s;
+}
+function svArc(x1,y1,cx,cy,x2,y2,color,dash){
+  const d=dash?`stroke-dasharray="5 4"`:"";
+  return `<path d="M ${x1} ${y1} Q ${cx} ${cy} ${x2} ${y2}" fill="none" stroke="${color}" stroke-width="2.6" ${d} marker-end="url(#sah-${color.replace('#','')})"/>`;
+}
+function shDot(x,y){ return `<circle cx="${x}" cy="${y}" r="3.6" fill="#ffd23f" stroke="#0d1117" stroke-width="1"/>`; }
+function svT(x,y,color,str,size,anchor){ return `<text x="${x}" y="${y}" fill="${color}" font-size="${size||8.5}" font-weight="700" text-anchor="${anchor||'middle'}">${esc(str)}</text>`; }
+
+const VIO="#a78bfa";
+function d_net_overview(){
+  let s=svBase();
+  s+=svArc(60,112,120,68,176,120,"#ffd23f",false);
+  s+=svArc(92,52,138,64,194,134,"#ff2e2e",false);
+  s+=svArc(66,116,150,16,278,94,"#ff9f1c",false);
+  s+=svArc(96,82,172,74,246,104,VIO,false);
+  s+=svT(172,132,"#ffd23f","bỏ nhỏ",8,"end");
+  s+=svT(198,146,"#ff9c9c","kill",8);
+  s+=svT(254,88,"#ffc46b","lift",8);
+  s+=svT(214,114,"#c4b5fd","đẩy",8);
+  return sideSvg(s,["#ffd23f","#ff2e2e","#ff9f1c",VIO]);
+}
+function d_net_tight(){ let s=svBase();
+  s+=svArc(62,112,122,66,176,120,"#ffd23f",false); s+=shDot(176,120);
+  s+=svT(150,54,"#ffd23f","sát mép lưới, rơi ngay sau lưới",8); return sideSvg(s,["#ffd23f"]); }
+function d_net_tumble(){ let s=svBase();
+  s+=svArc(62,110,122,64,176,118,"#7ee0b8",false); s+=shDot(176,118);
+  s+=`<path d="M50 106 a6 6 0 1 1 -0.1 0" fill="none" stroke="#7ee0b8" stroke-width="1.5" marker-end="url(#sah-7ee0b8)"/>`;
+  s+=svT(150,52,"#7ee0b8","cắt dưới đế cầu → cầu lăn/xoáy",8); return sideSvg(s,["#7ee0b8"]); }
+function d_net_hairpin(){ let s=svBase();
+  s+=svArc(74,130,150,58,172,120,"#4db1ff",false); s+=shDot(172,120);
+  s+=svT(150,48,"#4db1ff","cứu cầu RẤT thấp — hình kẹp tóc",8); return sideSvg(s,["#4db1ff"]); }
+function d_net_kill(){ let s=svBase();
+  s+=svArc(92,50,138,62,196,134,"#ff2e2e",false); s+=shDot(196,134);
+  s+=svT(150,42,"#ff2e2e","đón CAO hơn mép → đè dốc xuống",8); return sideSvg(s,["#ff2e2e"]); }
+function d_net_lift(){ let s=svBase();
+  s+=svArc(66,116,150,14,278,92,"#ff9f1c",false); s+=shDot(278,92);
+  s+=svT(150,150,"#ffc46b","đưa cầu SÂU tận cuối sân đối thủ",8); return sideSvg(s,["#ff9f1c"]); }
+function d_net_push(){ let s=svBase();
+  s+=svArc(94,82,172,72,246,104,VIO,false); s+=shDot(246,104);
+  s+=svT(150,50,"#c4b5fd","đẩy PHẲNG, nhanh xuống giữa sân",8); return sideSvg(s,[VIO]); }
+function d_net_hold(){ let s=svBase();
+  s+=svArc(90,74,150,24,262,82,"#ff9f1c",true);
+  s+=svArc(90,74,140,66,176,120,"#ffd23f",false);
+  s+=shDot(90,74);
+  s+=svT(90,60,"#ffffff","nhịp 1: CHẦN (giữ vợt)",8);
+  s+=svT(254,74,"#ffc46b","nhử lốp (giả)",8,"end");
+  s+=svT(180,132,"#ffd23f","thả nhỏ thật (nhịp 2)",8,"start");
+  return sideSvg(s,["#ff9f1c","#ffd23f"]); }
+function d_net_foot(){ let s=courtBase();
+  s+=zoneRect(0,6.72,CW,2.0,YEL,"forecourt của tôi");
+  s+=player(3.05,9.8,"me","Base");
+  s+=arrow(3.05,9.8,1.2,7.15,"#4db1ff",false);
+  s+=arrow(3.05,9.8,4.9,7.15,"#4db1ff",false);
+  s+=arrow(1.2,7.15,3.05,9.5,GRN,true);
+  return svg(s,["#4db1ff",GRN]); }
+function d_net_dir(){ let s=courtBase();
+  s+=player(2.0,3.0,"opp",""); s+=player(4.2,3.0,"opp2","");
+  s+=player(1.6,7.7,"me","Tôi"); s+=player(4.4,8.9,"mate","ĐĐ");
+  s+=arrow(1.6,7.7,1.1,5.3,"#ffd23f",false);
+  s+=arrow(1.6,7.7,5.0,5.5,"#4db1ff",true);
+  return svg(s,["#ffd23f","#4db1ff"]); }
+function d_keo_side(){ let s=svBase();
+  s+=`<rect x="106" y="${NETTOP}" width="${NETX-106}" height="40" fill="#57d38c" opacity=".16"/>`;
+  s+=`<rect x="106" y="${NETTOP}" width="${NETX-106}" height="40" fill="none" stroke="#7ee0b8" stroke-width="1" stroke-dasharray="4 3" opacity=".75"/>`;
+  s+=svT(70,80,"#7ee0b8","vùng tiếp",7.5); s+=svT(70,90,"#7ee0b8","xúc AN TOÀN",7.5);
+  s+=svArc(122,84,140,66,176,116,"#ffd23f",false); s+=shDot(176,116);
+  s+=svArc(122,128,152,44,232,98,"#ff7a7a",true);
+  s+=svT(150,50,"#ffd23f","kéo sát mép → rơi nhanh",8);
+  s+=svT(196,152,"#ff9c9c","đón thấp → bung cao (dễ bị vồ)",7.5);
+  return sideSvg(s,["#ffd23f","#ff7a7a"]); }
+function d_keo_grip(){ let s=courtBase();
+  s+=zoneRect(CW/2,6.72,CW/2,2.0,"#ffd23f","THUẬN TAY");
+  s+=zoneRect(0,6.72,CW/2,2.0,"#4db1ff","TRÁI TAY");
+  s+=player(3.05,9.7,"me","Tôi");
+  return svg(s,[]); }
+function d_keo_apex(){ let s=svBase();
+  // GOOD: apex on my side, shuttle falling as it crosses, tight drop
+  s+=svArc(118,84,148,60,176,116,"#ffd23f",false); s+=shDot(176,116);
+  s+=`<circle cx="146" cy="66" r="4" fill="none" stroke="#ffd23f" stroke-width="2"/>`;
+  s+=svT(90,48,"#ffd23f","ĐỈNH ở phía mình → cầu ĐANG RƠI",7.5);
+  // BAD: apex past the net, floats high -> killed
+  s+=svArc(116,128,176,42,232,96,"#ff7a7a",true);
+  s+=`<circle cx="176" cy="55" r="4" fill="none" stroke="#ff7a7a" stroke-width="2"/>`;
+  s+=svArc(198,64,206,88,210,120,"#ff2e2e",false);
+  s+=svT(216,150,"#ff9c9c","đỉnh BÊN KIA → nổi → bị VỒ",7.5);
+  return sideSvg(s,["#ffd23f","#ff7a7a","#ff2e2e"]); }
+
+const DIAGS = {
+  c_overview:d_overview, c_frontback:d_frontback, c_sidebyside:d_sidebyside, c_rotation:d_rotation,
+  c_role_front:d_role_front, c_role_rear:d_role_rear, c_role_def:d_role_def,
+  c_serve:d_serve, c_return:d_return,
+  c_pl_smash:d_pl_smash, c_pl_drop:d_pl_drop, c_pl_clear:d_pl_clear, c_pl_net:d_pl_net,
+  c_pl_push:d_pl_push, c_pl_drive:d_pl_drive, c_pl_block:d_pl_block, c_pl_lift:d_pl_lift,
+  c_bad_lift:d_bad_lift, c_bad_feed:d_bad_feed, c_bad_cross:d_bad_cross,
+  c_bad_drop:d_bad_drop, c_bad_form:d_bad_form, c_bad_crossnet:d_bad_crossnet,
+  c_net_overview:d_net_overview, c_net_tight:d_net_tight, c_net_tumble:d_net_tumble,
+  c_net_hairpin:d_net_hairpin, c_net_kill:d_net_kill, c_net_lift:d_net_lift,
+  c_net_push:d_net_push, c_net_hold:d_net_hold, c_net_foot:d_net_foot, c_net_dir:d_net_dir,
+  c_keo_side:d_keo_side, c_keo_grip:d_keo_grip, c_keo_dir:d_net_dir, c_keo_apex:d_keo_apex
+};
+Object.keys(DIAGS).forEach(id=>{ const el=document.getElementById(id); if(el) el.insertAdjacentHTML("afterbegin", DIAGS[id]()); });
+
+/* ---------- tabs ---------- */
+const tabs = document.querySelectorAll("#tabs button");
+tabs.forEach(b=>b.addEventListener("click",()=>{
+  tabs.forEach(x=>x.classList.remove("active")); b.classList.add("active");
+  document.querySelectorAll("section.tab").forEach(s=>s.classList.remove("show"));
+  document.getElementById(b.dataset.t).classList.add("show");
+  window.scrollTo({top:0,behavior:"smooth"});
+}));
+
+/* ---------- theme toggle ---------- */
+(function(){
+  const root=document.documentElement, btn=document.getElementById("themebtn");
+  const ic=document.getElementById("themeic"), lbl=document.getElementById("themelbl");
+  function store(v){ try{ localStorage.setItem("bmtheme",v); }catch(e){} }
+  function read(){ try{ return localStorage.getItem("bmtheme"); }catch(e){ return null; } }
+  function apply(t){
+    root.setAttribute("data-theme",t);
+    // button shows the mode you'd switch TO
+    if(t==="light"){ ic.textContent="🌙"; lbl.textContent="Tối"; }
+    else{ ic.textContent="☀️"; lbl.textContent="Sáng"; }
+  }
+  let saved=read();
+  if(!saved){ saved = (window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches) ? "light":"dark"; }
+  apply(saved);
+  btn.addEventListener("click",()=>{
+    const next = root.getAttribute("data-theme")==="light" ? "dark":"light";
+    apply(next); store(next);
+  });
+})();
+
+/* ---------- decision tree picker ---------- */
+const sp = document.querySelectorAll("#shotpicker button");
+sp.forEach(b=>b.addEventListener("click",()=>{
+  sp.forEach(x=>x.classList.remove("active")); b.classList.add("active");
+  document.querySelectorAll(".tree").forEach(t=>t.classList.remove("show"));
+  document.getElementById("t_"+b.dataset.s).classList.add("show");
+}));
+</script>
+</body>
+</html>

@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="vi"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IAS 27 — Separate Financial Statements (Báo cáo tài chính riêng) — Nền tảng, hiểu từ gốc</title>
+<style>
+  /* Design tokens shared with ebook-to-study-html + feynman-from-study (styles_v2.css) */
+  :root{
+    --bg:#fafaf7; --bg-elevated:#ffffff; --bg-soft:#f3f3ee;
+    --border:#e0e0d8; --border-soft:#ececea; --border-strong:#d2c8b6;
+    --ink:#1a1a1f; --ink-soft:#3f3f4a; --muted:#7a7a85;
+    --accent:#2f6fed; --accent-2:#2258c8; --gold:#0fb6d4; --bridge:#5a6b4f;
+    --serif:"Fraunces",Georgia,"Iowan Old Style",serif;
+    --sans:"Geist",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    --mono:"Geist Mono","JetBrains Mono",Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:var(--sans);
+    font-size:19px;line-height:1.72;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}
+  .progress{position:fixed;top:0;left:0;height:3px;width:0;z-index:50;
+    background:linear-gradient(90deg,var(--gold),var(--accent));transition:width .08s linear}
+  .wrap{max-width:920px;margin:0 auto;padding:0 36px}
+  .rise{opacity:0;transform:translateY(14px);animation:rise .7s cubic-bezier(.2,.7,.3,1) forwards}
+  @keyframes rise{to{opacity:1;transform:none}}
+
+  header{padding:104px 0 60px;border-bottom:1px solid var(--border)}
+  .kicker{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.18em;
+    text-transform:uppercase;color:var(--accent);margin-bottom:26px}
+  h1{font-family:var(--serif);font-weight:600;font-size:clamp(42px,7.6vw,72px);
+    line-height:1.0;letter-spacing:-.022em;margin-bottom:28px;font-optical-sizing:auto;color:var(--ink)}
+  h1 em{font-style:italic;color:var(--accent)}
+  .core{font-family:var(--serif);font-style:italic;font-weight:400;
+    font-size:clamp(21px,3.6vw,27px);line-height:1.44;color:var(--ink-soft)}
+  .core span{font-style:normal;font-weight:600;color:var(--accent-2);
+    box-shadow:inset 0 -.5em 0 rgba(47,111,237,.16)}
+
+  /* ---- BƯỚC 0: ĐỊNH VỊ (what it is + why it's the foundation) ---- */
+  .anchor .rule{font-family:var(--serif);font-size:19px;line-height:1.5;color:var(--ink);
+    background:var(--bg-soft);border-left:3px solid var(--accent);
+    padding:18px 24px;border-radius:0 4px 4px 0;margin:0}
+  .anchor .rule em{font-style:italic;color:var(--accent-2)}
+  .anchor .rule strong{color:var(--ink);font-weight:600}
+  .anchor .why{color:var(--ink-soft)}
+
+  section{padding:72px 0;border-bottom:1px solid var(--border);position:relative}
+  .step-head{display:flex;align-items:flex-start;gap:22px;margin-bottom:34px}
+  .big-num{font-family:var(--serif);font-weight:700;font-size:62px;line-height:.8;
+    color:var(--border-strong);flex:none;font-optical-sizing:auto;letter-spacing:-.03em}
+  .step-meta{padding-top:4px}
+  .lbl{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--accent);display:block;margin-bottom:10px}
+  h2{font-family:var(--serif);font-weight:600;font-size:clamp(27px,4.4vw,37px);
+    line-height:1.12;letter-spacing:-.012em;color:var(--ink)}
+  h2 em{font-style:italic;color:var(--accent)}
+  p{margin-bottom:21px}
+  p:last-child{margin-bottom:0}
+  strong{font-weight:600;color:var(--ink)}
+  em{font-style:italic;color:var(--accent-2)}
+  .gloss{color:var(--muted);font-style:italic}
+
+  .lead::first-letter{font-family:var(--serif);font-weight:700;float:left;
+    font-size:74px;line-height:.74;padding:8px 12px 0 0;color:var(--accent)}
+
+  .sub{font-family:var(--serif);font-weight:600;font-size:17px;letter-spacing:.01em;
+    color:var(--ink);margin:34px 0 14px;display:flex;align-items:center;gap:11px}
+  .sub::before{content:"";width:18px;height:2px;background:var(--accent);flex:none;border-radius:2px}
+
+  /* ---- BƯỚC 1: VẤN ĐỀ (why it exists) ---- */
+  .problem{background:var(--bg-soft)}
+  .problem .big-num{color:#e2d6b4}
+
+  /* ---- BƯỚC 3: VÍ DỤ (concrete worked example) ---- */
+  .example-card{border:1px solid #e8c876;border-radius:4px;padding:30px 32px;margin:8px 0 28px;
+    background:linear-gradient(135deg,#fef9ed 0%,#fdf3e0 100%)}
+  .example-card .tag{font-family:var(--mono);font-weight:600;font-size:11px;
+    letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin-bottom:16px;display:block}
+  .example-card p{color:#5a4810}
+  .example-card strong{color:var(--accent-2)}
+  .example-card p:last-child{margin-bottom:0}
+
+  /* ---- DỄ NHẦM (optional clarify / boundaries) ---- */
+  .clarify{background:var(--bg-soft)}
+  .clarify .big-num{color:#d8cdb2}
+  .mix-q{margin:0 0 30px;padding-left:24px;border-left:2px solid var(--border-strong)}
+  .mix-q:last-child{margin-bottom:0}
+  .mix-q .q{font-family:var(--serif);font-style:italic;font-weight:500;
+    font-size:22px;line-height:1.35;color:var(--accent-2);margin-bottom:12px;display:block}
+  .mix-q p:last-child{margin-bottom:0}
+
+  /* ---- NỐI TIẾP (bridge to the harder concepts) ---- */
+  .bridge .big-num{color:#bcc7b2}
+  .bridge .lbl{color:var(--bridge)}
+  .bridge-card{border-left:3px solid var(--bridge);background:#f4f6f1;
+    padding:22px 26px;border-radius:0 4px 4px 0;margin-top:6px}
+  .bridge-card p:last-child{margin-bottom:0}
+  .bridge-card strong{color:#42513a}
+
+  /* ---- KỂ LẠI GỌN (refined retell) ---- */
+  .retell{background:linear-gradient(180deg,var(--bg-soft) 0%,var(--bg) 100%);border-bottom:none}
+  .retell h2{color:var(--ink)}
+  .retell strong{color:var(--accent-2)}
+  .retell .core{margin-top:6px}
+  .testbox{border:1px solid var(--border);background:var(--bg-elevated);
+    border-radius:4px;padding:28px 32px;margin-top:40px;box-shadow:0 1px 2px rgba(0,0,0,.03)}
+  .testbox h3{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--accent);margin-bottom:20px}
+  .testbox ol{margin:0;padding-left:22px;counter-reset:t}
+  .testbox li{margin-bottom:16px;color:var(--ink-soft);padding-left:6px}
+  .testbox li:last-child{margin-bottom:0}
+
+  footer{text-align:center;padding:60px 0 88px}
+  footer .mark{font-family:var(--serif);font-weight:700;color:var(--accent);
+    font-size:26px;display:block;margin-bottom:14px}
+  footer p{font-family:var(--serif);font-style:italic;color:var(--muted);font-size:17px;max-width:400px;margin:0 auto}
+
+  @media(max-width:560px){
+    body{font-size:18px}
+    header{padding:70px 0 44px}
+    section{padding:52px 0}
+    .step-head{gap:16px}
+    .big-num{font-size:46px}
+    .lead::first-letter{font-size:60px}
+  }
+
+/* ===== FLAMINDI THEME OVERRIDE (dong bo trang chu flamindi.com) ===== */
+:root{
+  --accent:#2f6fed;--accent-2:#2258c8;--accent2:#2258c8;--gold:#0fb6d4;--cyan:#0fb6d4;--blue:#2f6fed;
+  --bg:#f7f9fe;--bg-elevated:#ffffff;--bg-card:#ffffff;--card:#ffffff;--bg-soft:#eef2fb;--soft:#eef2fb;
+  --border:#e4e9f2;--border-soft:#eef1f7;--border-strong:#cfd8e8;
+  --text:#1a2233;--text-soft:#4e5a74;--text-dim:#6b7691;
+  --ink:#1a2233;--ink-soft:#4e5a74;--muted:#6b7691;--soft-t:#4e5a74;--dim:#6b7691;
+  --serif:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+  --mono:ui-monospace,Menlo,Consolas,monospace;
+}
+body{background:radial-gradient(1200px 600px at 85% -10%,rgba(47,111,237,.14),transparent 60%),radial-gradient(1000px 640px at -10% 30%,rgba(15,182,212,.09),transparent 55%),linear-gradient(#f7f9fe,#edf0f8) fixed !important;}
+</style>
+<style>
+ .tabbar{position:fixed;top:0;left:0;right:0;width:100%;box-sizing:border-box;z-index:40;background:rgba(250,250,247,.93);
+   backdrop-filter:saturate(1.1) blur(8px);-webkit-backdrop-filter:saturate(1.1) blur(8px);
+   border-bottom:1px solid var(--border);display:flex;gap:6px;overflow-x:auto;
+   padding:10px max(36px,calc((100% - 992px)/2));scrollbar-width:thin}
+ .tabbar .tab{flex:0 0 auto;display:flex;align-items:baseline;gap:9px;cursor:pointer;
+   background:transparent;border:1px solid transparent;border-radius:999px;
+   padding:8px 17px;transition:.15s;white-space:nowrap;color:var(--muted)}
+ .tabbar .tab:hover{color:var(--ink);background:var(--bg-soft)}
+ .tabbar .tab.active{color:var(--accent-2);background:var(--bg-soft);border-color:var(--border-strong)}
+ .tabbar .tn{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.1em;color:var(--accent)}
+ .tabbar .tl{font-family:var(--serif);font-weight:500;font-size:16px}
+ body{padding-top:56px} .concept-panel{display:none}
+ .concept-panel.active{display:block}
+ .concept-panel header{padding-top:50px}
+ @media(max-width:560px){.tabbar .tl{max-width:48vw;overflow:hidden;text-overflow:ellipsis}}
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+<nav class="tabbar" aria-label="Các khái niệm nền"><button class="tab" data-i="0"><span class="tn">01</span><span class="tl">Báo cáo riêng là gì</span></button><button class="tab" data-i="1"><span class="tn">02</span><span class="tl">Con, liên kết, liên doanh</span></button><button class="tab" data-i="2"><span class="tn">03</span><span class="tl">Ba cách ghi khoản đầu tư</span></button><button class="tab" data-i="3"><span class="tn">04</span><span class="tl">Cổ tức ghi thế nào</span></button></nav>
+<div class="concept-panel" id="c-bao-cao-rieng-la-gi"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Nền tảng · hiểu từ gốc</div>
+    <h1 class="rise" style="animation-delay:.08s">Báo cáo tài chính riêng: chụp riêng công ty mẹ, không gộp đàn con</h1>
+    <p class="core rise" style="animation-delay:.16s">Một công ty mẹ có thể tự <span>chụp riêng mình, giữ mỗi đứa con như một khoản đầu tư.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Định vị · nó là gì &amp; vì sao học trước</span><h2>Nền: separate financial statements là gì</h2></div>
+    </div>
+    <div class="rule">IAS 27 định nghĩa (¶4): <em>separate financial statements</em> (báo cáo tài chính riêng, SFS) là báo cáo do một đơn vị lập, trong đó khoản đầu tư vào <em>subsidiary</em> (công ty con), <em>joint venture</em> (công ty liên doanh) và <em>associate</em> (công ty liên kết) được ghi theo <strong>một trong ba cách</strong>: <em>at cost</em> (giá gốc), theo <em>IFRS 9</em>, hoặc theo <em>equity method</em> (IAS 28). Nó khác <em>consolidated financial statements</em> — báo cáo gộp cả mẹ và các con thành một thực thể kinh tế duy nhất.</div>
+    <div class="sub">Vì sao đây là nền</div>
+    <div class="why"><p>Cả chuẩn mực này chỉ nói về đúng một loại báo cáo đó. Chưa nắm 'báo cáo riêng là gì', mọi quy tắc sau — ghi khoản đầu tư ra sao, cổ tức tính thế nào — đều lơ lửng. Nắm nó trước, phần còn lại chỉ là chi tiết.</p></div>
+  </section>
+
+  <section class="problem">
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Vấn đề nó sinh ra để giải quyết</span><h2>Ba đứa con ghi vào bảng của mẹ thế nào</h2></div>
+    </div>
+    <p class="lead">Bà chủ có một tiệm lớn, rồi mua đứt ba tiệm nhỏ khác. Giờ bà muốn làm một bảng kê tài sản cho <em>riêng</em> tiệm mẹ. Ba tiệm con kia ghi vào bảng đó thế nào đây?</p>
+
+<p>Có hai lối. Lối một: gộp hết đồ đạc, tiền nong của cả ba tiệm con vào chung, coi bốn tiệm như một. Lối hai: chỉ ghi 'mình đang sở hữu ba tiệm con', như ghi ba món mình đã bỏ tiền mua.</p>
+
+<div class="sub">Vì sao phải tách bạch hai lối</div>
+<p>Hai lối cho ra hai bảng khác hẳn nhau. Chuẩn mực này chỉ lo lối thứ hai: bảng của riêng tiệm mẹ. Nên trước hết phải biết bảng 'riêng' đó trông ra sao. Đó là Bước 2.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Mô hình đơn giản · cách nó chạy</span><h2>Bảng riêng: mỗi đứa con gọn trong một dòng</h2></div>
+    </div>
+    <p>Bảng riêng nhìn mỗi đứa con như <strong>một khoản duy nhất</strong> trên sổ, không xé lẻ từng món.</p>
+
+<div class="sub">Một dòng, không phải trăm dòng</div>
+<p>Thay vì chép từng cái bàn, cái ghế, đồng tiền của con vào, mẹ chỉ ghi một dòng: 'khoản đầu tư vào tiệm con'. Gọn như ghi một món mình đã mua.</p>
+
+<div class="sub">Con số ở dòng đó lấy đâu ra</div>
+<p>Đây là chỗ mấu chốt. Con số cho dòng đó được chọn theo một trong ba cách ghi. Ba cách này là trọng tâm của cả chuẩn mực, và có hẳn một trang riêng cho chúng.</p>
+
+<div class="sub">Khác với bảng gộp</div>
+<p>Bảng gộp thì làm ngược: nó xuyên qua con, kéo từng tài sản và nợ của con lên bảng mẹ. Bảng riêng thì giữ con nguyên khối, đúng một dòng.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví dụ cụ thể</span><h2>Một đứa con, hai bảng nhìn khác hẳn</h2></div>
+    </div>
+    <div class="example-card"><span class="tag">Ví dụ</span>
+<p>Mẹ bỏ 100 đồng mua trọn một tiệm con.</p>
+<p>Trên <strong>bảng riêng</strong>, mẹ ghi đúng một dòng: 'khoản đầu tư vào con — 100 đồng'. Hết. Đồ đạc, tiền quầy của con không xuất hiện.</p>
+<p>Trên <strong>bảng gộp</strong>, mẹ lại kéo hết bàn ghế, tiền quầy của con lên, trộn chung với của mình. Cùng một đứa con, hai bảng nhìn khác hẳn.</p>
+</div>
+<p>Giống như bạn mua cổ phần một quán cà phê. Sổ của bạn chỉ ghi 'tôi có phần trong quán — bao nhiêu tiền'. Bạn không chép cái máy pha, bao cà phê của quán vào sổ mình.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. IAS 27 chỉ tự định nghĩa hai thứ: <em>consolidated</em> và <em>separate financial statements</em> (¶4). Các từ như <em>control</em>, <em>subsidiary</em> thì mượn định nghĩa từ IFRS 10, IFRS 11 và IAS 28 (¶5). Từ bản 2011, phần nguyên tắc hợp nhất tách hẳn sang IFRS 10.</p>
+  </section>
+
+  <section class="clarify">
+    <div class="step-head">
+      <div class="big-num">≠</div>
+      <div class="step-meta"><span class="lbl">Dễ nhầm · ranh giới</span><h2>Dễ nhầm — ranh giới</h2></div>
+    </div>
+    <div class="mix-q"><span class="q">"Báo cáo riêng với báo cáo gộp — chỉ là hai tên gọi của một thứ à?"</span><p>Không. Hai bảng khác nhau về bản chất. Bảng riêng giữ con là một dòng đầu tư. Bảng gộp xé con ra, trộn từng tài sản và nợ vào mẹ. Cùng một tập đoàn, hai bức ảnh rất khác.</p></div>
+<div class="mix-q"><span class="q">"Công ty nào có báo cáo riêng cũng phải có báo cáo gộp chứ?"</span><p>Thường thì bảng riêng đi kèm bảng gộp, như phần bổ sung. Nhưng vài trường hợp, bảng riêng lại đứng một mình làm báo cáo chính thức duy nhất. Chuyện 'chính hay phụ' này để dành cho trang khó.</p></div>
+  </section>
+
+  <section class="bridge">
+    <div class="step-head">
+      <div class="big-num">→</div>
+      <div class="step-meta"><span class="lbl">Nối tiếp · nó dẫn tới đâu</span><h2>Nối tiếp</h2></div>
+    </div>
+    <div class="bridge-card"><p>Có một điều lạ tai vừa ló ra: cái tên 'riêng' nghe như báo cáo chính của công ty, nhưng thường nó chỉ là bảng <strong>bổ sung</strong>. Bảng gộp mới là bản chính.</p>
+<p>Vì sao lại ngược đời vậy? Mở trang <strong>'Sao "riêng" không phải báo cáo chính'</strong> để rõ. Nền bạn vừa nắm — riêng giữ con một dòng, gộp thì xé con ra — chính là chìa khoá cho câu đó.</p></div>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">✦</div>
+      <div class="step-meta"><span class="lbl">Kể lại trong một hơi</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Báo cáo riêng là bảng của riêng công ty mẹ. Mỗi đứa con nằm gọn một dòng: 'khoản đầu tư'. Nó không xé con ra trộn vào như bảng gộp. Con số của dòng đó chọn theo một trong ba cách ghi.</p>
+<p class="core">Một công ty mẹ có thể tự <span>báo cáo riêng giữ mỗi đứa con là một dòng, không trộn vào mẹ.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã nắm nền chưa?</h3>
+      <ol>
+        <li>Trên bảng riêng, một công ty con được ghi thành mấy dòng, và nội dung dòng đó là gì?</li>
+        <li>Cùng một đứa con, bảng riêng và bảng gộp khác nhau ở chỗ nào?</li>
+        <li>Vì sao phải nắm 'báo cáo riêng là gì' trước khi học cách ghi khoản đầu tư?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nền vững thì cái khó tự nhẹ đi. Hiểu từ gốc, không học vẹt.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-con-lien-ket-lien-doanh"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Nền tảng · hiểu từ gốc</div>
+    <h1 class="rise" style="animation-delay:.08s">Ba kiểu 'dính' tới công ty khác: nắm trọn, nắm chung, hay chỉ có tiếng nói</h1>
+    <p class="core rise" style="animation-delay:.16s">Trước khi ghi sổ, phải biết <span>mình nắm trọn, nắm chung, hay chỉ có tiếng nói trong công ty kia.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Định vị · nó là gì &amp; vì sao học trước</span><h2>Nền: subsidiary, joint venture, associate</h2></div>
+    </div>
+    <div class="rule">IAS 27 áp dụng cho khoản đầu tư vào ba loại quan hệ, và mượn định nghĩa từ chuẩn khác (¶5): <em>subsidiary</em> (công ty con) — nơi nhà đầu tư có <em>control</em> (kiểm soát), định nghĩa ở IFRS 10; <em>joint venture</em> (công ty liên doanh) — nơi có <em>joint control</em> (đồng kiểm soát), IFRS 11; và <em>associate</em> (công ty liên kết) — nơi có <em>significant influence</em> (ảnh hưởng đáng kể), IAS 28.</div>
+    <div class="sub">Vì sao đây là nền</div>
+    <div class="why"><p>Ba loại này là ba cái hộp. Muốn biết ghi sổ ra sao, phải bỏ khoản đầu tư vào đúng hộp trước. Bỏ sai hộp thì mọi bước sau sai theo. Vì thế đây là nền phải nắm sớm.</p></div>
+  </section>
+
+  <section class="problem">
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Vấn đề nó sinh ra để giải quyết</span><h2>Ba mức 'dính' rất khác nhau</h2></div>
+    </div>
+    <p class="lead">Bạn góp tiền vào ba công ty. Ở công ty A, bạn nắm trọn, muốn gì được nấy. Ở công ty B, bạn với một người nữa phải bàn mới quyết. Ở công ty C, bạn chỉ có chút tiếng nói, góp ý được nhưng không ép được.</p>
+
+<p>Ba mức 'dính' rất khác nhau. Nếu gọi chung là 'đầu tư' rồi ghi sổ y như nhau thì hỏng. Mức quyền của bạn ở mỗi nơi mới là thứ quyết định cách ghi.</p>
+
+<div class="sub">Vì sao phải phân loại trước</div>
+<p>Chuẩn mực dành quy tắc riêng cho từng loại. Chưa xếp đúng loại, bạn chưa biết được dùng cách ghi nào. Nên bước đầu luôn là: khoản này thuộc hộp nào?</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Mô hình đơn giản · cách nó chạy</span><h2>Xếp hộp bằng đúng một câu: bạn có bao nhiêu quyền</h2></div>
+    </div>
+    <p>Xếp bằng đúng một câu hỏi: <strong>bạn có bao nhiêu quyền trong công ty kia?</strong></p>
+
+<div class="sub">Nắm trọn — công ty con</div>
+<p>Bạn điều khiển được công ty kia, tự quyết chuyện lớn. Nó là con của bạn. Kiểu quan hệ này gọi là kiểm soát.</p>
+
+<div class="sub">Nắm chung — công ty liên doanh</div>
+<p>Bạn và một bên nữa cùng cầm lái. Quyết định lớn phải các bên đồng ý. Không ai một mình quyết được.</p>
+
+<div class="sub">Chỉ có tiếng nói — công ty liên kết</div>
+<p>Bạn có ảnh hưởng, được ngồi bàn, được góp ý. Nhưng bạn không cầm lái. Thường là khi bạn giữ một phần vừa phải, không đủ để áp đảo.</p>
+
+<div class="sub">Ba hộp, ba mức quyền</div>
+<p>Trọn quyền, chung quyền, hay chỉ tiếng nói. Ba mức đó là ba cái hộp. Việc còn lại của chuẩn mực là: mỗi hộp ghi sổ thế nào.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví dụ cụ thể</span><h2>Cùng 100 đồng, ba mức quyền</h2></div>
+    </div>
+    <div class="example-card"><span class="tag">Ví dụ</span>
+<p>Bạn có 100 đồng, rót vào ba nơi.</p>
+<p><strong>Nơi 1</strong>: mua 90 phần trăm một quán. Bạn quyết hết — đây là công ty con. <strong>Nơi 2</strong>: cùng một người bạn mở quán, mỗi người một nửa, việc lớn phải bàn — công ty liên doanh. <strong>Nơi 3</strong>: mua 25 phần trăm một quán, được góp ý nhưng không quyết — công ty liên kết.</p>
+<p>Cùng 100 đồng, ba mức quyền khác nhau, nên ba nơi rơi vào ba hộp khác nhau.</p>
+</div>
+<p>Đời thường cũng vậy. Bạn tự làm chủ một xe bánh mì — nắm trọn. Hùn với anh họ một xe khác, chia đôi quyền — nắm chung. Bỏ ít tiền vào xe bạn thân, thỉnh thoảng cho lời khuyên — chỉ có tiếng nói.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. IAS 27 không tự định nghĩa ba loại này; nó mượn: <em>control</em> và <em>subsidiary</em> từ IFRS 10, <em>joint control</em> từ IFRS 11, <em>significant influence</em> và <em>associate</em> từ IAS 28 (¶5). Ranh giới 'ảnh hưởng đáng kể' thường gắn mốc tham khảo quanh 20% quyền biểu quyết.</p>
+  </section>
+
+  <section class="clarify">
+    <div class="step-head">
+      <div class="big-num">≠</div>
+      <div class="step-meta"><span class="lbl">Dễ nhầm · ranh giới</span><h2>Dễ nhầm — ranh giới</h2></div>
+    </div>
+    <div class="mix-q"><span class="q">"Cứ góp nhiều tiền hơn là thành công ty con phải không?"</span><p>Không hẳn. Cái quyết định là <em>quyền</em>, không phải số tiền. Có khi góp ít mà vẫn điều khiển được, có khi góp nhiều mà vẫn phải chia quyền. Hỏi 'ai cầm lái', đừng chỉ nhìn số tiền.</p></div>
+<div class="mix-q"><span class="q">"Liên doanh với liên kết khác nhau chỗ nào?"</span><p>Liên doanh là <em>cùng cầm lái</em>: phải có sự đồng ý của các bên mới quyết được. Liên kết là <em>chỉ có tiếng nói</em>: bạn ảnh hưởng được, nhưng không nằm trong nhóm cầm lái. Một bên chung tay lái, một bên đứng ngoài góp lời.</p></div>
+  </section>
+
+  <section class="bridge">
+    <div class="step-head">
+      <div class="big-num">→</div>
+      <div class="step-meta"><span class="lbl">Nối tiếp · nó dẫn tới đâu</span><h2>Nối tiếp</h2></div>
+    </div>
+    <div class="bridge-card"><p>Đã xếp xong hộp, câu tiếp theo là: mỗi hộp ghi sổ bằng con số nào? Cùng một khoản, có tới ba cách ghi ra ba con số khác nhau. Mở trang <strong>'Ba cách, ba con số'</strong> để thấy vì sao cả ba đều được chấp nhận.</p>
+<p>Và khi một công ty đổi mức quyền — ví dụ từ nắm trọn thành chỉ còn nắm ít — cách ghi cũng phải đổi. Đó là trang <strong>'Khi công ty đổi vai'</strong>.</p></div>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">✦</div>
+      <div class="step-meta"><span class="lbl">Kể lại trong một hơi</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Trước khi ghi sổ, hỏi mình nắm bao nhiêu quyền trong công ty kia. Nắm trọn là công ty con. Nắm chung với người khác là liên doanh. Chỉ có tiếng nói là liên kết. Ba mức quyền, ba cái hộp, rồi mới tới cách ghi.</p>
+<p class="core">Trước khi ghi sổ, phải biết <span>quyền của bạn — trọn, chung, hay chỉ tiếng nói — quyết định cái hộp.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã nắm nền chưa?</h3>
+      <ol>
+        <li>Ba loại quan hệ trong IAS 27 khác nhau ở điều gì, không phải ở số tiền góp?</li>
+        <li>Cùng góp tiền vào hai công ty, làm sao biết đâu là liên doanh, đâu là liên kết?</li>
+        <li>Vì sao phải xếp đúng 'hộp' trước khi chọn cách ghi sổ?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nền vững thì cái khó tự nhẹ đi. Hiểu từ gốc, không học vẹt.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-ba-cach-ghi-khoan-dau-tu"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Nền tảng · hiểu từ gốc</div>
+    <h1 class="rise" style="animation-delay:.08s">Ba cách đặt con số cho khoản đầu tư: tiền gốc, giá chợ, hay ăn theo lãi</h1>
+    <p class="core rise" style="animation-delay:.16s">Một khoản đầu tư có thể ghi <span>theo tiền gốc, theo giá chợ, hoặc ăn theo lãi của con.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Định vị · nó là gì &amp; vì sao học trước</span><h2>Nền: ba lựa chọn đo lường của ¶10</h2></div>
+    </div>
+    <div class="rule">IAS 27 ¶10: trong báo cáo riêng, khoản đầu tư vào công ty con, liên doanh, liên kết được ghi theo <strong>một trong ba cách</strong>: <em>at cost</em> (giá gốc); theo <em>IFRS 9</em> (thường là giá trị hợp lý — fair value); hoặc theo <em>equity method</em> (phương pháp vốn chủ, IAS 28). Phải áp dụng <em>nhất quán cho từng nhóm</em> (category) khoản đầu tư. Lựa chọn equity method được thêm vào ¶10 bởi bản sửa đổi năm 2014.</div>
+    <div class="sub">Vì sao đây là nền</div>
+    <div class="why"><p>Đây là trái tim của cả chuẩn mực. Gần như mọi câu hỏi khó về sau — cổ tức ghi vào đâu, con số nào lên bảng — đều quay về ba cách này. Nắm ba cách, bạn cầm chìa khoá của IAS 27.</p></div>
+  </section>
+
+  <section class="problem">
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Vấn đề nó sinh ra để giải quyết</span><h2>100, 150, hay số nào khác</h2></div>
+    </div>
+    <p class="lead">Bạn bỏ 100 đồng mua một tiệm con. Vài năm sau, tiệm ăn nên làm ra, ngoài chợ có người trả 150 đồng để mua lại phần của bạn. Trên sổ, bạn nên ghi khoản này là bao nhiêu — 100, 150, hay số nào khác?</p>
+
+<p>Nghe tưởng có một đáp án đúng. Nhưng thật ra có ba cách trả lời hợp lệ, mỗi cách nhìn khoản đầu tư một kiểu. Chọn cách nào là quyền của bạn, miễn nhất quán.</p>
+
+<div class="sub">Vì sao cần biết cả ba</div>
+<p>Mỗi cách cho một con số khác nhau, và ảnh hưởng khác nhau tới lời lãi báo cáo. Chưa nắm cả ba, bạn không hiểu vì sao hai công ty giống hệt lại ghi số khác nhau.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Mô hình đơn giản · cách nó chạy</span><h2>Ba cách, mỗi cách một câu hỏi gốc</h2></div>
+    </div>
+    <p>Ba cách, mỗi cách một câu hỏi gốc.</p>
+
+<div class="sub">Cách 1 — tiền gốc</div>
+<p>Ghi đúng số tiền ban đầu bỏ ra, rồi cứ để yên. Mua 100 thì trên sổ là 100. Đơn giản, ít nhảy múa.</p>
+
+<div class="sub">Cách 2 — giá chợ</div>
+<p>Ghi theo giá thị trường hôm nay. Chợ trả 150 thì sổ ghi 150. Giá chợ lên xuống, con số trên sổ lên xuống theo.</p>
+
+<div class="sub">Cách 3 — ăn theo lãi</div>
+<p>Bắt đầu từ tiền gốc, rồi mỗi năm cộng thêm phần lãi con kiếm được thuộc về bạn, trừ đi phần đã chia. Con số bám theo sức khoẻ của con.</p>
+
+<div class="sub">Một luật kèm theo: nhất quán từng nhóm</div>
+<p>Đã chọn một cách cho nhóm các công ty con thì mọi con dùng cách đó. Không được con này ghi tiền gốc, con kia ghi giá chợ. Nhóm liên kết có thể chọn cách khác, nhưng trong nhóm phải đều tay.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví dụ cụ thể</span><h2>Cùng một khoản, ba con số</h2></div>
+    </div>
+    <div class="example-card"><span class="tag">Ví dụ</span>
+<p>Mua tiệm con giá 100. Năm sau con lãi, phần của bạn trong khoản lãi là 20, con chia cho bạn 5. Ngoài chợ phần của bạn đáng 150.</p>
+<p><strong>Tiền gốc</strong>: sổ vẫn ghi 100. <strong>Giá chợ</strong>: sổ ghi 150. <strong>Ăn theo lãi</strong>: 100 cộng 20 lãi trừ 5 đã chia, thành 115.</p>
+<p>Cùng một khoản, ba cách cho ba số: 100, 150, 115. Không cách nào sai — chúng trả lời ba câu hỏi khác nhau.</p>
+</div>
+<p>Như định giá chiếc xe cũ: ghi theo giá mua lúc đầu, theo giá rao bán hôm nay, hay theo việc nó vẫn chạy tốt tới đâu. Ba góc nhìn, ba con số, tuỳ bạn muốn kể điều gì.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Tên chuẩn của ba cách: <em>at cost</em>, theo <em>IFRS 9</em> (đo <em>fair value</em>, thường FVTPL hoặc FVOCI), và <em>equity method</em> theo IAS 28 (¶10). Khi khoản ghi theo giá gốc hoặc equity method bị xếp 'giữ để bán' thì chuyển sang IFRS 5; riêng khoản theo IFRS 9 thì giữ nguyên.</p>
+  </section>
+
+  <section class="clarify">
+    <div class="step-head">
+      <div class="big-num">≠</div>
+      <div class="step-meta"><span class="lbl">Dễ nhầm · ranh giới</span><h2>Dễ nhầm — ranh giới</h2></div>
+    </div>
+    <div class="mix-q"><span class="q">"Ba cách cho ba số khác nhau — vậy hai cái sai, một cái đúng chứ?"</span><p>Không. Cả ba đều được chuẩn mực cho phép. Chúng không tranh nhau 'đúng', mà kể ba câu chuyện: tiền tôi bỏ ra, giá chợ hôm nay, hay phần lãi tôi gom được. Đúng hay sai là ở chỗ có nhất quán và công bố rõ hay không.</p></div>
+<div class="mix-q"><span class="q">"Chọn xong một cách rồi đổi qua đổi lại được không?"</span><p>Không tuỳ hứng. Đã chọn cách cho một nhóm thì phải giữ đều cho cả nhóm. Muốn đổi phải theo quy tắc riêng, không phải thích là đổi. Sự nhất quán chính là điều giữ cho con số còn tin được.</p></div>
+  </section>
+
+  <section class="bridge">
+    <div class="step-head">
+      <div class="big-num">→</div>
+      <div class="step-meta"><span class="lbl">Nối tiếp · nó dẫn tới đâu</span><h2>Nối tiếp</h2></div>
+    </div>
+    <div class="bridge-card"><p>Bạn vừa thấy ba cách cho ra ba con số. Nhưng thật sự khó chịu là: sao cả ba đều được coi là đúng, khi chúng khác nhau rõ ràng? Mở trang <strong>'Ba cách, ba con số'</strong> để mổ xẻ điều nghịch lý đó.</p>
+<p>Ba cách này cũng là nền cho câu chuyện cổ tức: tuỳ bạn chọn cách nào mà cổ tức ghi vào lời lãi hay giảm con số trên sổ.</p></div>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">✦</div>
+      <div class="step-meta"><span class="lbl">Kể lại trong một hơi</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Một khoản đầu tư ghi được theo ba cách. Tiền gốc: giữ nguyên số đã bỏ ra. Giá chợ: theo giá thị trường hôm nay. Ăn theo lãi: cộng dồn phần lãi của con. Ba số khác nhau, và phải chọn nhất quán cho từng nhóm.</p>
+<p class="core">Một khoản đầu tư có thể ghi <span>tiền gốc, giá chợ, hay ăn theo lãi — chọn một, và giữ đều cả nhóm.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã nắm nền chưa?</h3>
+      <ol>
+        <li>Kể ba cách ghi một khoản đầu tư và nói ngắn gọn mỗi cách dựa vào đâu.</li>
+        <li>Cùng một khoản mua giá 100, vì sao ba cách lại cho ba con số khác nhau?</li>
+        <li>Luật 'nhất quán theo từng nhóm' nghĩa là gì?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nền vững thì cái khó tự nhẹ đi. Hiểu từ gốc, không học vẹt.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-co-tuc-ghi-the-nao"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Nền tảng · hiểu từ gốc</div>
+    <h1 class="rise" style="animation-delay:.08s">Cổ tức con chia về: khi nào ghi, và ghi vào lời lãi hay trừ vào sổ</h1>
+    <p class="core rise" style="animation-delay:.16s">Con chia tiền về cho mẹ — <span>ghi khi mẹ có quyền nhận, vào lời lãi hoặc trừ vào giá trên sổ.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Định vị · nó là gì &amp; vì sao học trước</span><h2>Nền: cổ tức theo ¶12</h2></div>
+    </div>
+    <div class="rule">IAS 27 ¶12: cổ tức từ công ty con, liên doanh hoặc liên kết được ghi nhận trong báo cáo riêng <strong>khi quyền nhận cổ tức được xác lập</strong> (when the right to receive is established). Mặc định ghi vào <em>profit or loss</em> (lãi/lỗ). Ngoại lệ: nếu khoản đầu tư đo theo <em>equity method</em>, cổ tức ghi là <em>khoản giảm trừ</em> giá trị ghi sổ (carrying amount) của khoản đầu tư, không vào lãi/lỗ.</div>
+    <div class="sub">Vì sao đây là nền</div>
+    <div class="why"><p>Cổ tức là dòng tiền thật con trả về mẹ, gặp ở hầu hết mọi tập đoàn. Ghi sai chỗ là lời lãi báo cáo sai. Nền này nhỏ mà đụng tới túi tiền, nên phải chắc tay sớm.</p></div>
+  </section>
+
+  <section class="problem">
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Vấn đề nó sinh ra để giải quyết</span><h2>10 đồng con đưa ghi vào đâu</h2></div>
+    </div>
+    <p class="lead">Tiệm con làm ăn có lãi, cuối năm chia cho mẹ 10 đồng tiền mặt. Kế toán của mẹ cầm 10 đồng đó, phân vân: ghi vào đâu trên sổ? Coi là một khoản lãi mẹ vừa kiếm được, hay chỉ là tiền túi này chuyển sang túi kia?</p>
+
+<p>Câu trả lời không chỉ có một. Nó tuỳ vào việc mẹ đang ghi khoản đầu tư theo cách nào. Cùng 10 đồng cổ tức, có thể ghi hai kiểu rất khác.</p>
+
+<div class="sub">Vì sao chỗ ghi lại quan trọng</div>
+<p>Ghi vào lãi thì lời của mẹ tăng lên. Ghi giảm vào sổ thì lời không đổi. Cùng một dòng tiền mà bức tranh lời lãi khác hẳn. Nên phải biết khi nào ghi kiểu nào.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Mô hình đơn giản · cách nó chạy</span><h2>Hai câu hỏi: ghi lúc nào, ghi vào đâu</h2></div>
+    </div>
+    <p>Tách bạch hai câu hỏi: <strong>ghi lúc nào</strong>, và <strong>ghi vào đâu</strong>.</p>
+
+<div class="sub">Ghi lúc nào — khi có quyền nhận</div>
+<p>Không đợi tiền về tay. Ghi ngay khi mẹ đã có quyền nhận cổ tức, tức khi con chốt việc chia. Quyền có trước, tiền về sau.</p>
+
+<div class="sub">Ghi vào đâu — mặc định là lời lãi</div>
+<p>Bình thường, cổ tức được ghi thẳng vào lời lãi của mẹ. Coi như một khoản mẹ kiếm được trong năm.</p>
+
+<div class="sub">Ngoại lệ — khi đang ăn theo lãi</div>
+<p>Nếu mẹ ghi khoản đầu tư theo cách ăn theo lãi, thì cổ tức không vào lời lãi. Nó bị trừ vào con số khoản đầu tư trên sổ. Lý do: phần lãi đó mẹ đã ghi nhận từ trước rồi.</p>
+
+<div class="sub">Vì sao có ngoại lệ này</div>
+<p>Cách ăn theo lãi đã cộng phần lãi của con vào sổ ngay khi con kiếm được. Nếu giờ lại ghi cổ tức thành lãi nữa thì hoá ra đếm hai lần. Trừ vào sổ là để khỏi đếm trùng.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví dụ cụ thể</span><h2>Cùng 10 đồng, hai kiểu ghi</h2></div>
+    </div>
+    <div class="example-card"><span class="tag">Ví dụ</span>
+<p>Con chia cho mẹ 10 đồng.</p>
+<p><strong>Nếu mẹ ghi theo tiền gốc hoặc giá chợ</strong>: 10 đồng vào thẳng lời lãi. Lời của mẹ năm nay dày thêm 10.</p>
+<p><strong>Nếu mẹ ghi theo cách ăn theo lãi</strong>: 10 đồng trừ vào khoản đầu tư trên sổ. Sổ giảm 10, lời không đổi.</p>
+<p>Cùng 10 đồng, hai kiểu ghi, hai bức tranh lời lãi khác nhau.</p>
+</div>
+<p>Giống heo đất chung. Nếu bạn coi tiền lấy ra là 'thu nhập', bạn thấy mình vừa kiếm được. Nếu bạn đã tính phần của mình trong heo từ trước, thì lấy ra chỉ là rút bớt, không phải kiếm thêm.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Mốc ghi nhận là 'when the right to receive is established' (¶12). Mặc định vào <em>profit or loss</em>; nếu dùng <em>equity method</em> thì cổ tức là khoản giảm <em>carrying amount</em>, vì lãi đã vào qua bút toán equity pick-up. Cần soi thêm dấu hiệu <em>impairment</em> khi cổ tức lớn bất thường.</p>
+  </section>
+
+  <section class="clarify">
+    <div class="step-head">
+      <div class="big-num">≠</div>
+      <div class="step-meta"><span class="lbl">Dễ nhầm · ranh giới</span><h2>Dễ nhầm — ranh giới</h2></div>
+    </div>
+    <div class="mix-q"><span class="q">"Phải đợi tiền cổ tức về tài khoản mới được ghi chứ?"</span><p>Không. Ghi khi <em>quyền nhận</em> đã có, thường là khi việc chia được chốt. Tiền về sau đó vài hôm hay vài tuần không đổi thời điểm ghi. Quyền có trước, tiền theo sau.</p></div>
+<div class="mix-q"><span class="q">"Vậy có phải mọi cổ tức đều là lãi của mẹ không?"</span><p>Không phải mọi lúc. Chỉ khi ghi theo tiền gốc hoặc giá chợ thì cổ tức mới vào lời lãi. Khi đang ăn theo lãi, cổ tức chỉ rút bớt con số trên sổ. Nhìn cách ghi khoản đầu tư trước, rồi mới biết cổ tức đi về đâu.</p></div>
+  </section>
+
+  <section class="bridge">
+    <div class="step-head">
+      <div class="big-num">→</div>
+      <div class="step-meta"><span class="lbl">Nối tiếp · nó dẫn tới đâu</span><h2>Nối tiếp</h2></div>
+    </div>
+    <div class="bridge-card"><p>Có một điều nhức đầu. Cổ tức từ con thường ghi thành <strong>lãi</strong> của mẹ. Nhưng nói cho cùng, đó chỉ là tiền chuyển từ túi con sang túi mẹ trong cùng một nhà. Sao lại gọi là lãi?</p>
+<p>Mở trang <strong>'Cổ tức: lãi hay "chuyển túi"?'</strong> để gỡ. Nền bạn vừa nắm — ghi vào lời lãi hay trừ vào sổ — chính là chỗ câu đố đó được tháo.</p></div>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">✦</div>
+      <div class="step-meta"><span class="lbl">Kể lại trong một hơi</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Cổ tức ghi khi mẹ có quyền nhận, không đợi tiền về. Bình thường nó vào thẳng lời lãi của mẹ. Nhưng nếu mẹ đang ăn theo lãi thì cổ tức bị trừ vào khoản đầu tư trên sổ, để khỏi đếm hai lần.</p>
+<p class="core">Con chia tiền về cho mẹ — <span>cổ tức: ghi khi có quyền; vào lời lãi, trừ khi đang ăn theo lãi.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã nắm nền chưa?</h3>
+      <ol>
+        <li>Cổ tức được ghi vào thời điểm nào: khi tiền về tay hay khi có quyền nhận?</li>
+        <li>Khi nào cổ tức vào lời lãi, khi nào bị trừ vào giá trên sổ?</li>
+        <li>Vì sao cách 'ăn theo lãi' lại không cho ghi cổ tức thành lãi?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nền vững thì cái khó tự nhẹ đi. Hiểu từ gốc, không học vẹt.</p>
+  </footer>
+
+</div></div>
+<script>
+  var bar=document.getElementById('progress');
+  function upd(){var h=document.documentElement;var s=h.scrollTop||document.body.scrollTop;
+    var max=(h.scrollHeight-h.clientHeight)||1;bar.style.width=(s/max*100)+'%';}
+  window.addEventListener('scroll',upd,{passive:true});upd();
+  var io=new IntersectionObserver(function(es){es.forEach(function(e){
+    if(e.isIntersecting){e.target.style.animation='rise .7s cubic-bezier(.2,.7,.3,1) forwards';io.unobserve(e.target);}});},{threshold:.12});
+  document.querySelectorAll('section').forEach(function(s){s.style.opacity='0';io.observe(s);});
+</script>
+
+<script>
+(function(){
+  var tabs=[].slice.call(document.querySelectorAll('.tabbar .tab'));
+  var panels=[].slice.call(document.querySelectorAll('.concept-panel'));
+  function show(i){
+    tabs.forEach(function(t,j){t.classList.toggle('active',j===i);});
+    panels.forEach(function(p,j){
+      var on=(j===i); p.classList.toggle('active',on);
+      if(on){p.querySelectorAll('section').forEach(function(s){s.style.opacity='';s.style.animation='';});}
+    });
+    try{history.replaceState(null,'','#'+panels[i].id);}catch(e){}
+    window.scrollTo(0,0); window.dispatchEvent(new Event('scroll'));
+  }
+  tabs.forEach(function(t){t.addEventListener('click',function(){show(+t.getAttribute('data-i'));});});
+  var start=0; panels.forEach(function(p,j){if('#'+p.id===location.hash)start=j;});
+  show(start);
+})();
+</script>
+
+</body></html>

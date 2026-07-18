@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="vi"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Valuation — Đo lường và Quản trị Giá trị Doanh nghiệp (McKinsey) — Nền tảng, hiểu từ gốc</title>
+<style>
+  /* Design tokens shared with ebook-to-study-html + feynman-from-study (styles_v2.css) */
+  :root{
+    --bg:#fafaf7; --bg-elevated:#ffffff; --bg-soft:#f3f3ee;
+    --border:#e0e0d8; --border-soft:#ececea; --border-strong:#d2c8b6;
+    --ink:#1a1a1f; --ink-soft:#3f3f4a; --muted:#7a7a85;
+    --accent:#2f6fed; --accent-2:#2258c8; --gold:#0fb6d4; --bridge:#5a6b4f;
+    --serif:"Fraunces",Georgia,"Iowan Old Style",serif;
+    --sans:"Geist",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    --mono:"Geist Mono","JetBrains Mono",Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:var(--sans);
+    font-size:19px;line-height:1.72;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}
+  .progress{position:fixed;top:0;left:0;height:3px;width:0;z-index:50;
+    background:linear-gradient(90deg,var(--gold),var(--accent));transition:width .08s linear}
+  .wrap{max-width:920px;margin:0 auto;padding:0 36px}
+  .rise{opacity:0;transform:translateY(14px);animation:rise .7s cubic-bezier(.2,.7,.3,1) forwards}
+  @keyframes rise{to{opacity:1;transform:none}}
+
+  header{padding:104px 0 60px;border-bottom:1px solid var(--border)}
+  .kicker{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.18em;
+    text-transform:uppercase;color:var(--accent);margin-bottom:26px}
+  h1{font-family:var(--serif);font-weight:600;font-size:clamp(42px,7.6vw,72px);
+    line-height:1.0;letter-spacing:-.022em;margin-bottom:28px;font-optical-sizing:auto;color:var(--ink)}
+  h1 em{font-style:italic;color:var(--accent)}
+  .core{font-family:var(--serif);font-style:italic;font-weight:400;
+    font-size:clamp(21px,3.6vw,27px);line-height:1.44;color:var(--ink-soft)}
+  .core span{font-style:normal;font-weight:600;color:var(--accent-2);
+    box-shadow:inset 0 -.5em 0 rgba(47,111,237,.16)}
+
+  /* ---- BƯỚC 0: ĐỊNH VỊ (what it is + why it's the foundation) ---- */
+  .anchor .rule{font-family:var(--serif);font-size:19px;line-height:1.5;color:var(--ink);
+    background:var(--bg-soft);border-left:3px solid var(--accent);
+    padding:18px 24px;border-radius:0 4px 4px 0;margin:0}
+  .anchor .rule em{font-style:italic;color:var(--accent-2)}
+  .anchor .rule strong{color:var(--ink);font-weight:600}
+  .anchor .why{color:var(--ink-soft)}
+
+  section{padding:72px 0;border-bottom:1px solid var(--border);position:relative}
+  .step-head{display:flex;align-items:flex-start;gap:22px;margin-bottom:34px}
+  .big-num{font-family:var(--serif);font-weight:700;font-size:62px;line-height:.8;
+    color:var(--border-strong);flex:none;font-optical-sizing:auto;letter-spacing:-.03em}
+  .step-meta{padding-top:4px}
+  .lbl{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--accent);display:block;margin-bottom:10px}
+  h2{font-family:var(--serif);font-weight:600;font-size:clamp(27px,4.4vw,37px);
+    line-height:1.12;letter-spacing:-.012em;color:var(--ink)}
+  h2 em{font-style:italic;color:var(--accent)}
+  p{margin-bottom:21px}
+  p:last-child{margin-bottom:0}
+  strong{font-weight:600;color:var(--ink)}
+  em{font-style:italic;color:var(--accent-2)}
+  .gloss{color:var(--muted);font-style:italic}
+
+  .lead::first-letter{font-family:var(--serif);font-weight:700;float:left;
+    font-size:74px;line-height:.74;padding:8px 12px 0 0;color:var(--accent)}
+
+  .sub{font-family:var(--serif);font-weight:600;font-size:17px;letter-spacing:.01em;
+    color:var(--ink);margin:34px 0 14px;display:flex;align-items:center;gap:11px}
+  .sub::before{content:"";width:18px;height:2px;background:var(--accent);flex:none;border-radius:2px}
+
+  /* ---- BƯỚC 1: VẤN ĐỀ (why it exists) ---- */
+  .problem{background:var(--bg-soft)}
+  .problem .big-num{color:#e2d6b4}
+
+  /* ---- BƯỚC 3: VÍ DỤ (concrete worked example) ---- */
+  .example-card{border:1px solid #e8c876;border-radius:4px;padding:30px 32px;margin:8px 0 28px;
+    background:linear-gradient(135deg,#fef9ed 0%,#fdf3e0 100%)}
+  .example-card .tag{font-family:var(--mono);font-weight:600;font-size:11px;
+    letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin-bottom:16px;display:block}
+  .example-card p{color:#5a4810}
+  .example-card strong{color:var(--accent-2)}
+  .example-card p:last-child{margin-bottom:0}
+
+  /* ---- DỄ NHẦM (optional clarify / boundaries) ---- */
+  .clarify{background:var(--bg-soft)}
+  .clarify .big-num{color:#d8cdb2}
+  .mix-q{margin:0 0 30px;padding-left:24px;border-left:2px solid var(--border-strong)}
+  .mix-q:last-child{margin-bottom:0}
+  .mix-q .q{font-family:var(--serif);font-style:italic;font-weight:500;
+    font-size:22px;line-height:1.35;color:var(--accent-2);margin-bottom:12px;display:block}
+  .mix-q p:last-child{margin-bottom:0}
+
+  /* ---- NỐI TIẾP (bridge to the harder concepts) ---- */
+  .bridge .big-num{color:#bcc7b2}
+  .bridge .lbl{color:var(--bridge)}
+  .bridge-card{border-left:3px solid var(--bridge);background:#f4f6f1;
+    padding:22px 26px;border-radius:0 4px 4px 0;margin-top:6px}
+  .bridge-card p:last-child{margin-bottom:0}
+  .bridge-card strong{color:#42513a}
+
+  /* ---- KỂ LẠI GỌN (refined retell) ---- */
+  .retell{background:linear-gradient(180deg,var(--bg-soft) 0%,var(--bg) 100%);border-bottom:none}
+  .retell h2{color:var(--ink)}
+  .retell strong{color:var(--accent-2)}
+  .retell .core{margin-top:6px}
+  .testbox{border:1px solid var(--border);background:var(--bg-elevated);
+    border-radius:4px;padding:28px 32px;margin-top:40px;box-shadow:0 1px 2px rgba(0,0,0,.03)}
+  .testbox h3{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--accent);margin-bottom:20px}
+  .testbox ol{margin:0;padding-left:22px;counter-reset:t}
+  .testbox li{margin-bottom:16px;color:var(--ink-soft);padding-left:6px}
+  .testbox li:last-child{margin-bottom:0}
+
+  footer{text-align:center;padding:60px 0 88px}
+  footer .mark{font-family:var(--serif);font-weight:700;color:var(--accent);
+    font-size:26px;display:block;margin-bottom:14px}
+  footer p{font-family:var(--serif);font-style:italic;color:var(--muted);font-size:17px;max-width:400px;margin:0 auto}
+
+  @media(max-width:560px){
+    body{font-size:18px}
+    header{padding:70px 0 44px}
+    section{padding:52px 0}
+    .step-head{gap:16px}
+    .big-num{font-size:46px}
+    .lead::first-letter{font-size:60px}
+  }
+
+/* ===== FLAMINDI THEME OVERRIDE (dong bo trang chu flamindi.com) ===== */
+:root{
+  --accent:#2f6fed;--accent-2:#2258c8;--accent2:#2258c8;--gold:#0fb6d4;--cyan:#0fb6d4;--blue:#2f6fed;
+  --bg:#f7f9fe;--bg-elevated:#ffffff;--bg-card:#ffffff;--card:#ffffff;--bg-soft:#eef2fb;--soft:#eef2fb;
+  --border:#e4e9f2;--border-soft:#eef1f7;--border-strong:#cfd8e8;
+  --text:#1a2233;--text-soft:#4e5a74;--text-dim:#6b7691;
+  --ink:#1a2233;--ink-soft:#4e5a74;--muted:#6b7691;--soft-t:#4e5a74;--dim:#6b7691;
+  --serif:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+  --mono:ui-monospace,Menlo,Consolas,monospace;
+}
+body{background:radial-gradient(1200px 600px at 85% -10%,rgba(47,111,237,.14),transparent 60%),radial-gradient(1000px 640px at -10% 30%,rgba(15,182,212,.09),transparent 55%),linear-gradient(#f7f9fe,#edf0f8) fixed !important;}
+</style>
+<style>
+ .tabbar{position:fixed;top:0;left:0;right:0;width:100%;box-sizing:border-box;z-index:40;background:rgba(250,250,247,.93);
+   backdrop-filter:saturate(1.1) blur(8px);-webkit-backdrop-filter:saturate(1.1) blur(8px);
+   border-bottom:1px solid var(--border);display:flex;gap:6px;overflow-x:auto;
+   padding:10px max(36px,calc((100% - 992px)/2));scrollbar-width:thin}
+ .tabbar .tab{flex:0 0 auto;display:flex;align-items:baseline;gap:9px;cursor:pointer;
+   background:transparent;border:1px solid transparent;border-radius:999px;
+   padding:8px 17px;transition:.15s;white-space:nowrap;color:var(--muted)}
+ .tabbar .tab:hover{color:var(--ink);background:var(--bg-soft)}
+ .tabbar .tab.active{color:var(--accent-2);background:var(--bg-soft);border-color:var(--border-strong)}
+ .tabbar .tn{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.1em;color:var(--accent)}
+ .tabbar .tl{font-family:var(--serif);font-weight:500;font-size:16px}
+ body{padding-top:56px} .concept-panel{display:none}
+ .concept-panel.active{display:block}
+ .concept-panel header{padding-top:50px}
+ @media(max-width:560px){.tabbar .tl{max-width:48vw;overflow:hidden;text-overflow:ellipsis}}
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+<nav class="tabbar" aria-label="Các khái niệm nền"><button class="tab" data-i="0"><span class="tn">01</span><span class="tl">Tiền theo thời gian</span></button><button class="tab" data-i="1"><span class="tn">02</span><span class="tl">Dòng tiền &amp; chiết khấu</span></button><button class="tab" data-i="2"><span class="tn">03</span><span class="tl">Chi phí vốn (WACC)</span></button><button class="tab" data-i="3"><span class="tn">04</span><span class="tl">ROIC và tăng trưởng</span></button></nav>
+<div class="concept-panel" id="c-tien-theo-thoi-gian"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Nền tảng · hiểu từ gốc</div>
+    <h1 class="rise" style="animation-delay:.08s">Vì sao 100 đồng hôm nay đáng hơn 100 đồng năm sau</h1>
+    <p class="core rise" style="animation-delay:.16s">Cùng một số tiền, <span>nhận sớm luôn đáng hơn nhận muộn.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Định vị · nó là gì &amp; vì sao học trước</span><h2>Giá trị nội tại = hiện giá dòng tiền tương lai</h2></div>
+    </div>
+    <div class="rule">Cuốn sách đặt một nền duy nhất cho mọi con số về sau (ch.2): <strong>giá trị nội tại</strong> (<em>intrinsic value</em>) của một tài sản bằng <em>hiện giá</em> (<em>present value</em>) của dòng tiền nó sẽ sinh ra trong tương lai. Một đồng nhận năm sau <strong>nhẹ giá hơn</strong> một đồng nhận hôm nay, nên trước khi cộng, phải <em>chiết khấu</em> (<em>discount</em>) nó về hiện tại bằng cách chia cho (1 + lãi). Đây là công thức <em>DCF</em> ở dạng phôi thai.</div>
+    <div class="sub">Vì sao đây là nền</div>
+    <div class="why"><p>Đây là viên gạch dưới cùng. Chiết khấu dòng tiền, giá trị tiếp diễn, chi phí vốn — tất cả chỉ là cách kéo tiền tương lai về hôm nay rồi cộng lại. Chưa nắm 'tiền muộn thì nhẹ giá', mọi công thức sau chỉ là phép tính vô hồn. Nắm nó, phần còn lại thành hiển nhiên.</p></div>
+  </section>
+
+  <section class="problem">
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Vấn đề nó sinh ra để giải quyết</span><h2>Nhận ngay hay nhận sau — bạn chọn nào?</h2></div>
+    </div>
+    <p class="lead">Có người cho bạn chọn: cầm 100 nghìn ngay bây giờ, hay cầm đúng 100 nghìn sau một năm. Bạn chọn gì? Gần như ai cũng lấy ngay. Bạn vừa cảm thấy một sự thật mà chưa cần công thức nào.</p>
+
+<p>Vì sao lấy ngay? Vì tiền trong tay hôm nay có thể đem gửi, đem dùng, đem sinh lời. Chờ một năm là mất đúng phần lời đó. Nói cách khác, 100 nghìn năm sau <em>không</em> đáng bằng 100 nghìn hôm nay.</p>
+
+<div class="sub">Vấn đề nảy sinh khi phải cộng</div>
+<p>Giờ thử định giá một cửa hàng. Nó hứa trả bạn tiền suốt nhiều năm tới. Bạn không thể cộng thẳng các khoản của năm nay, năm sau, mười năm sau — vì chúng nặng nhẹ khác nhau. Cần một cách quy chúng về cùng một mốc. Bước 2 lo việc đó.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Mô hình đơn giản · cách nó chạy</span><h2>Kéo tiền tương lai về hôm nay rồi mới cộng</h2></div>
+    </div>
+    <p>Chỉ có một động tác: mỗi khoản tiền tương lai, <strong>kéo về hôm nay</strong> trước, rồi mới cộng lại.</p>
+
+<div class="sub">Kéo về nghĩa là bớt đi một chút</div>
+<p>Tiền càng nhận muộn thì càng bị bớt nhiều khi kéo về. Một khoản của năm sau bị bớt nhẹ. Một khoản của mười năm sau bị bớt nặng. Càng xa, càng teo lại.</p>
+
+<div class="sub">Cái gì quyết định teo bao nhiêu?</div>
+<p>Một con số: mức lời bạn đòi cho mỗi năm chờ. Đòi lời càng cao thì tiền xa càng teo mạnh. Con số này chính là 'cái giá của mỗi năm chờ', và ta sẽ gọi tên nó ở trang chi phí vốn.</p>
+
+<div class="sub">Vì sao phải kéo về cùng một mốc</div>
+<p>Chỉ khi mọi khoản đã về chung mốc hôm nay, chúng mới cùng đơn vị để cộng. Cộng tiền của các năm khác nhau mà chưa kéo về là cộng nhầm — như cộng cân nặng với chiều cao.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví dụ cụ thể</span><h2>Một khoản 110 nghìn của năm sau đáng bao nhiêu?</h2></div>
+    </div>
+    <div class="example-card"><span class="tag">Ví dụ</span>
+<p>Giả sử bạn đòi mức lời 10% cho một năm chờ. Có người hứa trả bạn 110 nghìn sau đúng một năm. Khoản đó đáng bao nhiêu <em>ngay hôm nay</em>?</p>
+<p>Đáng 100 nghìn. Vì nếu có 100 nghìn hôm nay, đem cho sinh lời 10%, một năm sau bạn cũng có 110 nghìn. Hai thứ ngang nhau. Ta nói: hiện giá của 110 nghìn năm sau, ở mức lời 10%, là 100 nghìn.</p>
+<p>Giờ đổi một chỗ. Nếu bạn đòi lời 20%, thì 110 nghìn năm sau chỉ còn đáng khoảng 92 nghìn hôm nay. Đòi lời càng cao, khoản tiền xa càng teo mạnh. Chỉ một con số đã đổi cả kết quả.</p>
+</div>
+<p>Đời thường hơn: bạn để dành mua một món đồ. Người bán nói 'trả trước thì bớt, trả sau năm sau thì đủ giá'. Cái 'bớt' đó chính là phần bạn được vì đưa tiền sớm. Tiền sớm luôn có giá hơn.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Viết gọn thành công thức: hiện giá = số tiền chia cho (1 + lãi) mũ số năm chờ. Với dòng tiền nhiều năm, cộng hiện giá của từng năm lại — đó chính là phép <em>DCF</em> (discounted cash flow). Giá trị nội tại của một doanh nghiệp là tổng các khoản dòng tiền tương lai đã kéo về hôm nay.</p>
+  </section>
+
+  <section class="clarify">
+    <div class="step-head">
+      <div class="big-num">≠</div>
+      <div class="step-meta"><span class="lbl">Dễ nhầm · ranh giới</span><h2>Dễ nhầm — ranh giới của ý này</h2></div>
+    </div>
+    <div class="mix-q"><span class="q">"Tiền muộn nhẹ giá — chẳng phải chỉ vì lạm phát thôi sao?"</span><p>Lạm phát chỉ là một phần. Ngay cả khi giá cả đứng yên, tiền sớm vẫn hơn tiền muộn — vì có tiền sớm là có cơ hội cho nó sinh lời ngay. Cái giá của mỗi năm chờ tồn tại cả khi không có lạm phát. Đừng gộp hai thứ làm một.</p></div>
+<div class="mix-q"><span class="q">"Kéo tiền về hôm nay nghĩa là mình bị mất tiền à?"</span><p>Không. Kéo về chỉ là <em>quy đổi</em> để so cho đúng, không phải ai lấy mất của bạn. 110 nghìn năm sau vẫn là 110 nghìn khi nó tới. Ta chỉ đang hỏi: hôm nay nó tương đương bao nhiêu, để đặt cạnh các khoản khác mà cân.</p></div>
+  </section>
+
+  <section class="bridge">
+    <div class="step-head">
+      <div class="big-num">→</div>
+      <div class="step-meta"><span class="lbl">Nối tiếp · nó dẫn tới đâu</span><h2>Nối sang: khi tiền muộn tiết lộ điều bất ngờ</h2></div>
+    </div>
+    <div class="bridge-card"><p>Khi đã quen 'tiền xa thì teo', bạn sẵn sàng cho một cú lật. Hãy tưởng tượng một công ty lớn nhanh nhưng phải bỏ tiền ra <em>trước</em> và chỉ thu về <em>rất muộn</em>. Dòng tiền muộn ấy teo mạnh khi kéo về. Đôi khi teo tới mức tăng trưởng lại làm mất giá trị.</p>
+<p>Đó chính là trang khó <strong>'Tăng trưởng phá giá trị'</strong> (Feynman). Cái máy kéo-về mà bạn vừa dùng chính là thứ phơi bày nghịch lý đó.</p></div>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">✦</div>
+      <div class="step-meta"><span class="lbl">Kể lại trong một hơi</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Tiền nhận càng muộn càng nhẹ giá, vì tiền sớm còn kịp sinh lời. Muốn định giá thứ trả tiền nhiều năm, đừng cộng thẳng. Kéo từng khoản về hôm nay — càng xa càng bớt nhiều — rồi mới cộng. Mức lời bạn đòi quyết định bớt bao nhiêu.</p>
+<p class="core">Cùng một số tiền, <span>kéo mọi khoản về hôm nay trước khi cộng.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã nắm nền chưa?</h3>
+      <ol>
+        <li>Vì sao 100 đồng nhận sau một năm không đáng bằng 100 đồng nhận ngay hôm nay?</li>
+        <li>Khi đòi mức lời cao hơn, một khoản tiền xa sẽ teo nhiều hơn hay ít hơn khi kéo về? Vì sao?</li>
+        <li>Vì sao không được cộng thẳng dòng tiền của các năm khác nhau?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nền vững thì cái khó tự nhẹ đi. Hiểu từ gốc, không học vẹt.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-dong-tien-va-chiet-khau"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Nền tảng · hiểu từ gốc</div>
+    <h1 class="rise" style="animation-delay:.08s">Tiền thật doanh nghiệp đẻ ra, và cách quy nó thành giá trị</h1>
+    <p class="core rise" style="animation-delay:.16s">Định giá quy về một câu: <span>công ty đẻ ra bao nhiêu tiền thật, và khi nào?</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Định vị · nó là gì &amp; vì sao học trước</span><h2>Free Cash Flow và Enterprise DCF</h2></div>
+    </div>
+    <div class="rule">Cuốn sách định giá doanh nghiệp bằng <strong>Enterprise DCF</strong> (ch.10): chiết khấu <em>free cash flow</em> (FCF — dòng tiền tự do) theo <em>WACC</em> để ra <em>enterprise value</em>. FCF là tiền thật còn lại cho người góp vốn sau khi đã nuôi hoạt động: <em>FCF = NOPAT − đầu tư ròng = NOPAT × (1 − g/ROIC)</em>. NOPAT là lợi nhuận hoạt động sau thuế; nó tách khỏi cách vay nợ, nên FCF phản ánh sức khoẻ kinh doanh thuần.</div>
+    <div class="sub">Vì sao đây là nền</div>
+    <div class="why"><p>Đây là bộ khung của cả phần định giá lõi. Dự phóng, giá trị tiếp diễn, chuyển sang giá mỗi cổ phiếu — mọi bước chỉ xoay quanh một dòng: tiền thật đi vào và đi ra. Nắm 'tiền thật, không phải lợi nhuận kế toán', bạn khỏi bị các con số sổ sách đánh lừa ở các trang sau.</p></div>
+  </section>
+
+  <section class="problem">
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Vấn đề nó sinh ra để giải quyết</span><h2>Lãi trên giấy, nhưng túi có tiền không?</h2></div>
+    </div>
+    <p class="lead">Hai cửa hàng cùng báo lãi 1 tỷ trong năm. Nghe như nhau. Nhưng một cửa hàng phải đổ gần hết tiền lãi vào mua thêm hàng, sửa cửa, ứng vốn — cuối năm túi gần như trống. Cửa hàng kia thu tiền về, tiêu ít, còn lại một cục. Cái nào đáng giá hơn?</p>
+
+<p>Rõ ràng là cửa hàng còn tiền trong túi. 'Lãi' trên giấy chưa nói bạn thật sự cầm được bao nhiêu. Vấn đề của định giá là phải bắt đúng <em>tiền thật</em> chảy về, không phải con số lợi nhuận trang trí.</p>
+
+<div class="sub">Và tiền đó lại rải ra nhiều năm</div>
+<p>Một doanh nghiệp trả tiền cho chủ suốt nhiều năm tới, mỗi năm một ít. Ta đã biết tiền các năm không cộng thẳng được. Vậy cần hai việc: đo đúng tiền thật mỗi năm, rồi kéo tất cả về hôm nay. Bước 2 ghép hai việc đó lại.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Mô hình đơn giản · cách nó chạy</span><h2>Đong tiền thật mỗi năm, rồi kéo hết về hôm nay</h2></div>
+    </div>
+    <p>Cách làm gồm hai nhịp: <strong>đong tiền thật</strong> từng năm, rồi <strong>kéo về hôm nay</strong> và cộng lại.</p>
+
+<div class="sub">Tiền thật là gì</div>
+<p>Lấy tiền lời từ việc kinh doanh, trừ đi phần buộc phải đổ lại để nuôi và mở rộng — mua hàng, sắm máy, ứng vốn. Cái còn lại mới thật sự thuộc về người bỏ vốn. Đó là 'tiền tự do'.</p>
+
+<div class="sub">Vì sao trừ phần đầu tư đi</div>
+<p>Muốn lớn thì phải bỏ vốn ra trước. Phần vốn đó tuy sinh ra lãi tương lai, nhưng năm nay nó rời khỏi túi. Không trừ nó đi là đếm thừa, tưởng mình giàu hơn thực tế.</p>
+
+<div class="sub">Rồi kéo về và cộng</div>
+<p>Có tiền thật của từng năm, ta kéo mỗi khoản về hôm nay như đã học, rồi cộng lại. Tổng đó là giá trị của cả doanh nghiệp. Một câu: giá trị bằng toàn bộ tiền thật tương lai, quy về hôm nay.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví dụ cụ thể</span><h2>Một quán nhỏ đẻ tiền trong ba năm</h2></div>
+    </div>
+    <div class="example-card"><span class="tag">Ví dụ</span>
+<p>Một quán mỗi năm lời 100 từ việc bán hàng. Nhưng để giữ quán chạy và lớn thêm, mỗi năm phải đổ lại 40. Vậy tiền thật về tay chủ mỗi năm là 60, không phải 100.</p>
+<p>Giả sử mức lời đòi hỏi là 10%. Kéo tiền thật ba năm về hôm nay: 60 của năm 1 còn khoảng 55; của năm 2 còn khoảng 50; của năm 3 còn khoảng 45. Cộng lại, ba năm đầu đáng khoảng 150 hôm nay.</p>
+<p>Đổi một chỗ cho thấy điều quan trọng. Nếu quán phải đổ lại 70 mỗi năm thay vì 40, tiền thật chỉ còn 30 — dù 'lãi' vẫn ghi 100. Giá trị tụt hẳn. Lãi không đổi mà giá trị đổi, vì tiền thật mới là thứ đáng kể.</p>
+</div>
+<p>Nghĩ về một cây ăn trái. Cây cho quả mỗi mùa (tiền lời), nhưng bạn phải chừa lại ít quả làm giống và tiền chăm bón (đầu tư). Số quả bạn thật sự mang ra chợ bán mới là cái nuôi được bạn — đó là tiền tự do.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Viết gọn: <em>FCF = NOPAT × (1 − g/ROIC)</em>, với g là tốc độ tăng trưởng và ROIC là mức sinh lời trên vốn. Chiết khấu chuỗi FCF theo <em>WACC</em> cho ra <em>enterprise value</em>; một cách tương đương là <em>economic profit</em> = vốn × (ROIC − WACC). Vì FCF độc lập với cách vay nợ, cùng một công ty cho cùng một giá trị dù đổi cấu trúc vốn.</p>
+  </section>
+
+  <section class="clarify">
+    <div class="step-head">
+      <div class="big-num">≠</div>
+      <div class="step-meta"><span class="lbl">Dễ nhầm · ranh giới</span><h2>Dễ nhầm — ranh giới của ý này</h2></div>
+    </div>
+    <div class="mix-q"><span class="q">"Dòng tiền tự do có phải là lợi nhuận đâu — sao lại khác?"</span><p>Khác ở phần đầu tư. Lợi nhuận kế toán chưa trừ hết số tiền buộc phải đổ lại để duy trì và lớn lên. Tiền tự do đã trừ. Một công ty lời to nhưng ngốn vốn liên tục có thể có tiền tự do bé tí. Nhìn tiền tự do, đừng nhìn dòng lãi.</p></div>
+<div class="mix-q"><span class="q">"Đổ tiền vào đầu tư là mất tiền, vậy càng ít đầu tư càng đáng giá?"</span><p>Không hẳn. Đầu tư làm giảm tiền tự do <em>năm nay</em>, nhưng nếu nó sinh lời tốt thì kéo tiền tự do các năm sau lên. Cắt sạch đầu tư thì hôm nay có tiền, mai teo dần. Cái đáng hỏi là: đồng vốn đổ vào có sinh lời vượt cái giá vốn không.</p></div>
+  </section>
+
+  <section class="bridge">
+    <div class="step-head">
+      <div class="big-num">→</div>
+      <div class="step-meta"><span class="lbl">Nối tiếp · nó dẫn tới đâu</span><h2>Nối sang: vì sao con số sổ sách hay đánh lừa</h2></div>
+    </div>
+    <div class="bridge-card"><p>Một khi bạn đã quen 'chỉ tiền thật mới tạo giá trị', bạn cầm sẵn chìa khoá cho một mẹo kế toán phổ biến. Có những nước cờ làm <em>con số lãi mỗi cổ phiếu</em> đẹp lên mà tiền thật không đổi chút nào.</p>
+<p>Trang khó <strong>'EPS tăng, giá trị đứng'</strong> (Feynman) mổ đúng chỗ đó. Vì phép chiết khấu chỉ ăn tiền thật, mọi trang điểm sổ sách đều trượt khỏi giá trị.</p></div>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">✦</div>
+      <div class="step-meta"><span class="lbl">Kể lại trong một hơi</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Giá trị doanh nghiệp là tiền thật nó đẻ ra, quy về hôm nay. Tiền thật là lãi từ kinh doanh trừ phần buộc đổ lại để nuôi và lớn. Đong tiền thật từng năm, kéo về hôm nay, cộng lại. Lãi trên giấy có thể đẹp mà túi vẫn cạn — nên bám vào tiền thật.</p>
+<p class="core">Định giá quy về một câu: <span>giá trị là tiền thật tương lai, kéo về hôm nay.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã nắm nền chưa?</h3>
+      <ol>
+        <li>Hai công ty cùng báo lãi 1 tỷ, vì sao một công ty vẫn đáng giá hơn công ty kia?</li>
+        <li>Vì sao khi tính tiền tự do phải trừ đi phần đầu tư, dù đầu tư sẽ sinh lời sau này?</li>
+        <li>Nói 'giá trị là tiền thật tương lai quy về hôm nay' nghĩa là làm hai việc gì?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nền vững thì cái khó tự nhẹ đi. Hiểu từ gốc, không học vẹt.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-chi-phi-von-wacc"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Nền tảng · hiểu từ gốc</div>
+    <h1 class="rise" style="animation-delay:.08s">Cái giá của việc dùng tiền, và vì sao nó là mức lời tối thiểu</h1>
+    <p class="core rise" style="animation-delay:.16s">Mỗi đồng vốn đều có <span>một cái giá — mức lời tối thiểu phải vượt qua.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Định vị · nó là gì &amp; vì sao học trước</span><h2>Cost of capital, WACC và CAPM</h2></div>
+    </div>
+    <div class="rule"><em>Cost of capital</em> (chi phí vốn) là <strong>chi phí cơ hội</strong>: mức lời nhà đầu tư có thể kiếm nơi khác với rủi ro tương đương (mục 1.4). Với công ty vừa có nợ vừa có vốn chủ, ta lấy bình quân gia quyền — <em>WACC</em> (weighted average cost of capital): <em>WACC = (D/V)·kd·(1−T) + (E/V)·ke</em>. Chi phí vốn chủ ke tính bằng <em>CAPM</em>: <em>ke = rf + β·(phần bù thị trường)</em>. Chỉ <strong>rủi ro hệ thống</strong> (không phân tán được) mới được tính giá; rủi ro riêng lẻ thì không.</div>
+    <div class="sub">Vì sao đây là nền</div>
+    <div class="why"><p>Đây là con số bạn còn nợ từ trang tiền-theo-thời-gian: 'mức lời đòi hỏi' để kéo tiền về hôm nay chính là chi phí vốn. Nó là thước đo mọi khoản đầu tư phải vượt qua để đáng làm. Chưa nắm nó, bạn không biết tăng trưởng hay dự án nào tạo giá trị, cái nào phá.</p></div>
+  </section>
+
+  <section class="problem">
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Vấn đề nó sinh ra để giải quyết</span><h2>Tiền có thật sự 'miễn phí' không?</h2></div>
+    </div>
+    <p class="lead">Bạn mở một quán bằng tiền của chính mình, không vay ai. Nghe như vốn miễn phí. Nhưng khoan: số tiền đó, nếu đem gửi hay bỏ vào chỗ khác cùng độ rủi ro, cũng đẻ ra lời. Dùng nó mở quán tức là bỏ qua khoản lời kia.</p>
+
+<p>Vậy vốn không hề miễn phí. Nó có một cái giá ẩn: đúng bằng mức lời tốt nhất bạn từ chối để dồn tiền vào đây. Nếu quán không kiếm nổi bằng mức đó, bạn đã lỗ so với việc chỉ để tiền chỗ khác.</p>
+
+<div class="sub">Vấn đề khi tiền đến từ nhiều nguồn</div>
+<p>Thực tế công ty pha tiền vay và tiền chủ. Người cho vay đòi một mức lời, người góp vốn đòi một mức khác, thường cao hơn vì chịu rủi ro nhiều hơn. Ta cần gộp hai đòi hỏi đó thành một con số duy nhất. Bước 2 làm việc gộp này.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Mô hình đơn giản · cách nó chạy</span><h2>Trộn cái giá của từng nguồn vốn theo tỷ trọng</h2></div>
+    </div>
+    <p>Cách làm: lấy cái giá của từng nguồn tiền, rồi <strong>trộn theo tỷ trọng</strong> mỗi nguồn.</p>
+
+<div class="sub">Hai nguồn, hai cái giá</div>
+<p>Tiền vay có giá là lãi phải trả cho chủ nợ. Tiền của người góp vốn có giá là mức lời họ đòi để chịu rủi ro. Người góp vốn đứng sau chủ nợ khi có chuyện, nên họ đòi cao hơn.</p>
+
+<div class="sub">Trộn theo tỷ trọng</div>
+<p>Nếu công ty dùng phần lớn là vốn chủ, con số chung nghiêng về giá vốn chủ. Nhiều nợ thì nghiêng về giá nợ. Bình quân có gia quyền đó là 'cái giá vốn chung' của công ty — mức lời tối thiểu nó phải đạt.</p>
+
+<div class="sub">Cái gì đẩy giá vốn lên</div>
+<p>Rủi ro. Nhưng chỉ một loại rủi ro được tính giá: loại dính chung cả thị trường, không né được bằng cách dàn tiền ra nhiều nơi. Rủi ro riêng của một công ty thì nhà đầu tư tự dàn cho tan, nên không được đòi thêm lời vì nó.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví dụ cụ thể</span><h2>Một công ty nửa vay nửa vốn chủ</h2></div>
+    </div>
+    <div class="example-card"><span class="tag">Ví dụ</span>
+<p>Một công ty lấy vốn từ hai nguồn. Một phần ba là tiền vay, chủ nợ đòi lãi 5%. Hai phần ba là tiền chủ, người góp đòi lời 11% vì chịu rủi ro nhiều hơn.</p>
+<p>Trộn theo tỷ trọng: một phần ba nhân 5%, cộng hai phần ba nhân 11%, ra khoảng 9%. Vậy cái giá vốn chung là 9%. Đây là mức lời tối thiểu mọi dự án của công ty phải vượt để đáng làm.</p>
+<p>Đổi một chỗ để thấy tác hại của tuỳ tiện. Nếu ai đó lo xa, cộng bừa thêm 3% cho 'chắc', mức đòi hỏi vọt lên 12%. Nhiều dự án tốt bỗng bị chê là không đủ lời và bị bỏ. Sách cảnh báo: thêm 3% có thể cắt giá trị tới 30–40%.</p>
+</div>
+<p>Đời thường: bạn mượn xe của bạn bè để chạy giao hàng. Xe 'miễn phí' đâu — bạn nợ một ân tình, và bạn gánh rủi ro nếu xe hỏng. Cái giá ẩn đó vẫn phải tính vào khi xem việc giao hàng có đáng không.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Công thức: <em>WACC = (D/V)·kd·(1−T) + (E/V)·ke</em>. Giá vốn chủ ke tính bằng <em>CAPM</em>: <em>ke = rf + β·(E(Rm)−rf)</em>, trong đó <em>beta</em> đo mức rủi ro hệ thống. Phần lãi vay được khấu trừ thuế nên nhân (1−T). Costco ví dụ có WACC khoảng 8%. Chỉ rủi ro không phân tán được (systematic) mới vào giá vốn — đó là lý do beta chỉ đo phần rủi ro dính với cả thị trường.</p>
+  </section>
+
+  <section class="clarify">
+    <div class="step-head">
+      <div class="big-num">≠</div>
+      <div class="step-meta"><span class="lbl">Dễ nhầm · ranh giới</span><h2>Dễ nhầm — ranh giới của ý này</h2></div>
+    </div>
+    <div class="mix-q"><span class="q">"Vốn tự có thì đâu mất đồng lãi nào — sao lại có giá?"</span><p>Vì có 'chi phí cơ hội'. Tiền của bạn nếu bỏ chỗ khác cùng rủi ro vẫn sinh lời. Dồn nó vào đây là từ chối khoản lời kia. Cái bị từ chối đó chính là giá của vốn tự có. Không xuất hiện trên hoá đơn, nhưng có thật.</p></div>
+<div class="mix-q"><span class="q">"Công ty càng nhiều rủi ro thì cứ cộng thêm phần bù cho an toàn, đúng không?"</span><p>Chỉ đúng với một loại rủi ro. Rủi ro dính chung cả thị trường thì được đòi thêm lời. Rủi ro riêng của một công ty thì nhà đầu tư dàn tiền ra nhiều nơi cho nó tan, nên không được cộng bù. Cộng phần bù tuỳ tiện làm hỏng cả định giá.</p></div>
+  </section>
+
+  <section class="bridge">
+    <div class="step-head">
+      <div class="big-num">→</div>
+      <div class="step-meta"><span class="lbl">Nối tiếp · nó dẫn tới đâu</span><h2>Nối sang: đổi cách vay có làm công ty đáng giá hơn?</h2></div>
+    </div>
+    <div class="bridge-card"><p>Bạn vừa thấy giá vốn chung là bình quân của giá nợ và giá vốn chủ. Nảy ra một câu cám dỗ: vay nhiều hơn cho rẻ, kéo con số chung xuống, chẳng phải công ty đáng giá hơn sao? Nghe rất xuôi.</p>
+<p>Trang khó <strong>'Bảo toàn giá trị'</strong> (Feynman) cho thấy vì sao thường là không. Đổi tỷ trọng vay chỉ dời rủi ro qua lại, đẩy giá vốn chủ lên bù lại — cái bánh không lớn thêm.</p></div>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">✦</div>
+      <div class="step-meta"><span class="lbl">Kể lại trong một hơi</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Vốn không miễn phí; giá của nó là mức lời tốt nhất bạn từ chối để dùng nó ở đây. Công ty pha nợ và vốn chủ, mỗi nguồn một giá, nên lấy bình quân theo tỷ trọng — đó là mức lời tối thiểu phải vượt. Chỉ rủi ro dính cả thị trường mới được tính giá.</p>
+<p class="core">Mỗi đồng vốn đều có <span>chi phí vốn là mức lời tối thiểu mọi đồng vốn phải vượt.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã nắm nền chưa?</h3>
+      <ol>
+        <li>Vì sao tiền tự có của bạn vẫn có một cái giá, dù không phải trả lãi cho ai?</li>
+        <li>Vì sao giá của tiền góp vốn thường cao hơn giá của tiền vay?</li>
+        <li>Loại rủi ro nào được tính vào chi phí vốn, loại nào không? Vì sao?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nền vững thì cái khó tự nhẹ đi. Hiểu từ gốc, không học vẹt.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-roic-va-tang-truong"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Nền tảng · hiểu từ gốc</div>
+    <h1 class="rise" style="animation-delay:.08s">Hai cần gạt tạo ra giá trị: sinh lời cao, và lớn thêm</h1>
+    <p class="core rise" style="animation-delay:.16s">Giá trị đến từ đúng hai chỗ: <span>sinh lời vượt giá vốn, và lớn thêm.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Định vị · nó là gì &amp; vì sao học trước</span><h2>ROIC × tăng trưởng — hai động lực giá trị</h2></div>
+    </div>
+    <div class="rule">Nguyên lý gốc của cả cuốn sách (Alfred Marshall, 1890; mục 1.1): doanh nghiệp tạo giá trị khi vừa <strong>tăng trưởng</strong>, vừa kiếm <em>ROIC</em> (return on invested capital — lợi nhuận trên vốn đầu tư) <strong>vượt</strong> <em>cost of capital</em>. Gói lại thành công thức value driver: <em>Giá trị = NOPAT × (1 − g/ROIC) / (WACC − g)</em>. Hai cần gạt là ROIC và g (tăng trưởng); một cách nhìn tương đương là <em>economic profit = vốn × (ROIC − WACC)</em>.</div>
+    <div class="sub">Vì sao đây là nền</div>
+    <div class="why"><p>Đây là kim chỉ nam cho mọi quyết định về sau — chiến lược, M&A, cấu trúc vốn, danh mục. Mọi trang khó phía sau chỉ hỏi lại một câu: nước cờ này có nâng ROIC hoặc thêm tăng trưởng tốt không? Chưa nắm hai cần gạt, bạn không phân biệt nổi tăng trưởng tạo giá trị với tăng trưởng phá giá trị.</p></div>
+  </section>
+
+  <section class="problem">
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Vấn đề nó sinh ra để giải quyết</span><h2>Hai công ty y hệt trên giấy, giá lại khác</h2></div>
+    </div>
+    <p class="lead">Hai công ty cùng lời 100 mỗi năm, cùng lớn thêm 5% mỗi năm. Trên giấy giống hệt. Vậy mà một công ty đáng giá 1.500, công ty kia chỉ 1.000. Cùng lãi, cùng tốc độ lớn — sao giá chênh nhau rưỡi lần?</p>
+
+<p>Khác biệt nằm ở chỗ không hiện trên dòng lãi: mỗi đồng vốn bỏ ra, công ty đắt giá kiếm lời gấp đôi công ty kia. Nó cần ít vốn hơn để đạt cùng mức lãi, nên tiền thật về tay chủ nhiều hơn.</p>
+
+<div class="sub">Vì sao cần một cách nhìn chung</div>
+<p>Chỉ nhìn lợi nhuận, ta không thấy được sự khác biệt này. Cần một khung tách rõ: công ty <em>sinh lời trên vốn</em> tốt cỡ nào, và nó <em>lớn thêm</em> bao nhiêu. Hai câu hỏi đó là hai cần gạt ở Bước 2.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Mô hình đơn giản · cách nó chạy</span><h2>Hai cần gạt: lời trên vốn, và tốc độ lớn</h2></div>
+    </div>
+    <p>Giá trị nằm trong tay hai cần gạt: <strong>mức lời trên vốn</strong> và <strong>tốc độ lớn thêm</strong>.</p>
+
+<div class="sub">Cần gạt 1 — lời trên mỗi đồng vốn</div>
+<p>Bỏ 100 vốn, kiếm về 20 lời một năm, thế là lời 20% trên vốn. Con số này đo công ty khéo cỡ nào khi biến vốn thành lời. Càng cao, mỗi đồng vốn đẻ càng nhiều tiền thật.</p>
+
+<div class="sub">Cần gạt 2 — lớn thêm</div>
+<p>Công ty bán được nhiều hơn qua từng năm. Lớn thêm nghĩa là dòng tiền tương lai to dần. Nhưng lớn thêm chỉ tốt khi cần gạt 1 đang tốt — chỗ này ta để dành cho trang khó.</p>
+
+<div class="sub">Một điều kiện sống còn</div>
+<p>Lời trên vốn phải <em>vượt cái giá vốn</em> thì mới tạo ra giá trị. Kiếm 20% trên vốn mà giá vốn chỉ 9% — phần vượt 11% chính là giá trị đẻ ra. Kiếm bằng đúng giá vốn thì huề: có làm cũng như không.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví dụ cụ thể</span><h2>Value Inc. và Volume Inc. — cùng lãi, khác giá</h2></div>
+    </div>
+    <div class="example-card"><span class="tag">Ví dụ</span>
+<p>Hai công ty trong sách, cả hai cùng lời 100 và cùng lớn 5% mỗi năm. Value Inc. kiếm lời 20% trên vốn, còn Volume Inc. chỉ 10%.</p>
+<p>Vì kiếm lời cao gấp đôi, Value Inc. chỉ cần đổ lại 25% lãi để lớn cùng tốc độ, phần còn lại thành tiền thật về tay chủ. Volume Inc. phải đổ lại tới 50%, nên tiền thật ít hơn hẳn. Kết quả: Value Inc. đáng tới 1.500 còn Volume Inc. chỉ đáng 1.000 — chênh nhau một phần rưỡi dù lãi y hệt.</p>
+<p>Bài học nằm ở cần gạt thứ nhất. Cùng lãi, cùng tốc độ lớn, nhưng ai biến vốn thành lời khéo hơn thì đáng giá hơn — vì nó rỗng túi ít hơn để đạt cùng kết quả.</p>
+</div>
+<p>Nghĩ về hai người bán nước mía cùng lời như nhau. Một người cần hai cái máy đắt tiền, người kia chỉ cần một. Người dùng ít vốn hơn mà lời bằng nhau thì túi rủng rỉnh hơn — và cái quán đó đáng mua hơn.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Công thức value driver: <em>Giá trị = NOPAT × (1 − g/ROIC) / (WACC − g)</em>. Ở đây ROIC là lời trên vốn, g là tăng trưởng, WACC là giá vốn. Cách nhìn tương đương: <em>economic profit = vốn × (ROIC − WACC)</em> — bề rộng phần vượt nhân với lượng vốn. Sách cũng cảnh báo: tối đa hoá ROIC là sai mục tiêu; mục tiêu đúng là tối đa hoá tổng economic profit.</p>
+  </section>
+
+  <section class="clarify">
+    <div class="step-head">
+      <div class="big-num">≠</div>
+      <div class="step-meta"><span class="lbl">Dễ nhầm · ranh giới</span><h2>Dễ nhầm — ranh giới của ý này</h2></div>
+    </div>
+    <div class="mix-q"><span class="q">"Lời trên vốn cao thì cứ dồn hết sức đẩy nó lên tối đa, đúng không?"</span><p>Không. Sách chỉ rõ: đẩy tỷ lệ lời trên vốn lên tối đa có thể phá giá trị. Đóng một cửa hàng lời 14% để kéo bình quân lên nghe hay, nhưng bạn mất luôn khoản lời thật cửa hàng đó tạo ra. Mục tiêu đúng là tổng tiền lời vượt giá vốn, không phải cái tỷ lệ bình quân.</p></div>
+<div class="mix-q"><span class="q">"Vậy hai cần gạt cái nào quan trọng hơn?"</span><p>Tuỳ công ty đang ở đâu. Nếu đã sinh lời cao, thêm một chút tăng trưởng tạo giá trị nhiều hơn. Nếu lời trên vốn còn thấp, nâng nó lên lại đáng hơn. Không có câu trả lời chung — chuyện này chính là nội dung một trang khó phía sau.</p></div>
+  </section>
+
+  <section class="bridge">
+    <div class="step-head">
+      <div class="big-num">→</div>
+      <div class="step-meta"><span class="lbl">Nối tiếp · nó dẫn tới đâu</span><h2>Nối sang: khi cần gạt lớn thêm quay ra hại</h2></div>
+    </div>
+    <div class="bridge-card"><p>Bạn vừa thấy tăng trưởng chỉ tốt khi lời trên vốn vượt giá vốn. Vậy điều gì xảy ra nếu công ty lớn thật nhanh nhưng lời trên vốn <em>dưới</em> giá vốn? Câu trả lời lật ngược trực giác: càng lớn càng mất giá trị.</p>
+<p>Đó là trang <strong>'Tăng trưởng phá giá trị'</strong> (Feynman). Và vì sao một công ty xuất sắc vẫn có thể là cổ phiếu tồi, xem trang <strong>'Tốt mà cổ phiếu vẫn tệ'</strong>.</p></div>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">✦</div>
+      <div class="step-meta"><span class="lbl">Kể lại trong một hơi</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Giá trị đến từ hai cần gạt: lời trên mỗi đồng vốn, và tốc độ lớn thêm. Cùng lãi, ai biến vốn thành lời khéo hơn thì đáng giá hơn, vì rỗng túi ít hơn. Nhưng lời trên vốn phải vượt giá vốn thì mới thật sự tạo giá trị; bằng đúng giá vốn là huề.</p>
+<p class="core">Giá trị đến từ đúng hai chỗ: <span>sinh lời trên vốn vượt giá vốn, rồi lớn thêm.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã nắm nền chưa?</h3>
+      <ol>
+        <li>Hai công ty cùng lãi và cùng tốc độ lớn, vì sao một công ty vẫn đáng giá hơn?</li>
+        <li>Vì sao 'lời trên vốn' phải vượt 'giá vốn' thì mới tạo ra giá trị?</li>
+        <li>Vì sao đẩy tỷ lệ lời trên vốn lên tối đa lại có thể phá giá trị?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nền vững thì cái khó tự nhẹ đi. Hiểu từ gốc, không học vẹt.</p>
+  </footer>
+
+</div></div>
+<script>
+  var bar=document.getElementById('progress');
+  function upd(){var h=document.documentElement;var s=h.scrollTop||document.body.scrollTop;
+    var max=(h.scrollHeight-h.clientHeight)||1;bar.style.width=(s/max*100)+'%';}
+  window.addEventListener('scroll',upd,{passive:true});upd();
+  var io=new IntersectionObserver(function(es){es.forEach(function(e){
+    if(e.isIntersecting){e.target.style.animation='rise .7s cubic-bezier(.2,.7,.3,1) forwards';io.unobserve(e.target);}});},{threshold:.12});
+  document.querySelectorAll('section').forEach(function(s){s.style.opacity='0';io.observe(s);});
+</script>
+
+<script>
+(function(){
+  var tabs=[].slice.call(document.querySelectorAll('.tabbar .tab'));
+  var panels=[].slice.call(document.querySelectorAll('.concept-panel'));
+  function show(i){
+    tabs.forEach(function(t,j){t.classList.toggle('active',j===i);});
+    panels.forEach(function(p,j){
+      var on=(j===i); p.classList.toggle('active',on);
+      if(on){p.querySelectorAll('section').forEach(function(s){s.style.opacity='';s.style.animation='';});}
+    });
+    try{history.replaceState(null,'','#'+panels[i].id);}catch(e){}
+    window.scrollTo(0,0); window.dispatchEvent(new Event('scroll'));
+  }
+  tabs.forEach(function(t){t.addEventListener('click',function(){show(+t.getAttribute('data-i'));});});
+  var start=0; panels.forEach(function(p,j){if('#'+p.id===location.hash)start=j;});
+  show(start);
+})();
+</script>
+
+</body></html>

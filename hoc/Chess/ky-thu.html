@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chess Coach — Kỳ thủ & phong cách</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg-card:#ffffff;--bg-soft:#f3f5fb;--border:#e4e9f2;--border-soft:#eef1f7;
+  --text:#1a2233;--text-soft:#4e5a74;--text-dim:#6b7691;
+  --accent:#2f6fed;--accent-2:#2258c8;--cyan:#0fb6d4;
+  --good:#0e9f6e;--good-soft:rgba(14,159,110,.08);--good-bd:rgba(14,159,110,.22);
+  --danger:#d64545;--danger-soft:rgba(214,69,69,.08);--danger-bd:rgba(214,69,69,.22);
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+  --mono:ui-monospace,Menlo,Consolas,monospace;
+  --shadow:0 1px 2px rgba(23,32,56,.06),0 12px 32px rgba(23,32,56,.10);
+}
+html{scroll-behavior:smooth}
+body{font-family:var(--sans);color:var(--text);line-height:1.65;font-size:16px;min-height:100vh;
+  background:radial-gradient(1200px 600px at 85% -10%,rgba(47,111,237,.14),transparent 60%),radial-gradient(1000px 640px at -10% 30%,rgba(15,182,212,.09),transparent 55%),linear-gradient(#f7f9fe,#edf0f8) fixed;}
+.topbar{max-width:1040px;margin:0 auto;padding:18px 24px 0;display:flex;gap:20px;font-size:13px;font-weight:600;flex-wrap:wrap}
+.topbar a{color:var(--text-soft);text-decoration:none;padding-bottom:5px;border-bottom:2px solid transparent;transition:.15s}
+.topbar a:hover{color:var(--accent)}
+.topbar a.active{color:var(--accent);border-bottom-color:var(--accent)}
+.hero{padding:52px 32px 40px;text-align:center;position:relative}
+.hero-eyebrow{font-size:12px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);margin-bottom:16px}
+.hero h1{font-weight:800;font-size:clamp(36px,6vw,56px);line-height:1.05;letter-spacing:-.035em;color:var(--text)}
+.hero h1 em{font-style:normal;color:inherit}
+.hero-sub{font-size:clamp(16px,2vw,19px);color:var(--text-soft);max-width:700px;margin:16px auto 0;line-height:1.6}
+.hero-sub em{font-style:italic;color:inherit}
+.content{max-width:1040px;margin:0 auto;padding:36px 24px 90px}
+.intro{font-size:16.5px;color:var(--text-soft);max-width:820px;margin:0 auto 34px;text-align:center;line-height:1.7}
+.intro b{color:var(--text);font-weight:700}
+.tabs{display:flex;gap:8px;margin-bottom:30px;flex-wrap:wrap;justify-content:center}
+.tab{font-family:var(--sans);font-size:12px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;padding:9px 16px;border-radius:999px;border:1px solid var(--border);background:#fff;color:var(--text-soft);cursor:pointer;transition:.15s}
+.tab:hover{color:var(--accent);border-color:var(--accent)}
+.tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.tab.special{border-style:dashed}.tab.special.active{border-style:solid}
+.panel{display:none;animation:fade .25s ease}.panel.active{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+/* player header */
+.p-head{display:flex;gap:22px;align-items:flex-start;flex-wrap:wrap;padding-bottom:22px;border-bottom:1px solid var(--border);margin-bottom:26px}
+.p-badge{font-size:40px;color:#fff;background:linear-gradient(135deg,var(--accent),var(--cyan));width:76px;height:76px;border-radius:18px;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 8px 22px rgba(47,111,237,.28)}
+.p-head-main{flex:1;min-width:240px}
+.p-name{font-weight:800;font-size:clamp(26px,4vw,34px);letter-spacing:-.03em;line-height:1.1;color:var(--text)}
+.p-nick{font-style:italic;color:var(--accent);font-size:18px;margin-top:2px;font-weight:500}
+.p-facts{display:flex;flex-wrap:wrap;gap:6px 8px;margin-top:12px}
+.p-fact{font-family:var(--mono);font-size:11px;letter-spacing:.02em;color:var(--text-soft);background:var(--bg-soft);border:1px solid var(--border-soft);border-radius:999px;padding:4px 10px}
+.p-essence{font-size:17px;color:var(--text-soft);margin-top:14px;line-height:1.55;border-left:3px solid var(--accent);padding-left:14px}
+.sec{margin-bottom:24px}
+.sec-label{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:8px;font-weight:600}
+.sec p{color:var(--text-soft);font-size:15.5px}
+.sec ul{list-style:none;display:grid;gap:7px;margin-top:4px}
+.sec li{padding-left:22px;position:relative;color:var(--text-soft);font-size:15.5px}
+.sec li::before{content:'▸';position:absolute;left:0;color:var(--accent);top:1px;font-size:12px}
+.sec li b,.sec p b{color:var(--text);font-weight:700}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:14px 30px}
+@media (max-width:720px){.two-col{grid-template-columns:1fr}}
+.game{background:linear-gradient(160deg,#fff,#f3f5fb);border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:12px;padding:14px 18px;margin-bottom:10px;box-shadow:0 1px 2px rgba(23,32,56,.04)}
+.game .g-t{font-weight:700;font-size:16px;color:var(--text);letter-spacing:-.01em}
+.game .g-d{font-size:14.5px;color:var(--text-soft);margin-top:2px}
+.quote{font-style:italic;font-size:19px;color:var(--text);line-height:1.5;background:rgba(47,111,237,.06);border:1px solid rgba(47,111,237,.18);border-radius:12px;padding:20px 24px;margin:6px 0}
+.quote .q-src{display:block;font-family:var(--mono);font-style:normal;font-size:11px;letter-spacing:.04em;color:var(--text-dim);margin-top:10px;text-transform:uppercase}
+.steal{background:var(--good-soft);border:1px solid var(--good-bd);border-radius:12px;padding:18px 22px}
+.steal .sec-label{color:var(--good)}.steal li::before{content:'✓';color:var(--good)}
+.fit{background:var(--bg-soft);border:1px solid var(--border);border-radius:12px;padding:16px 20px;margin-top:14px;font-style:italic;font-size:16px;color:var(--text-soft)}
+.fit b{color:var(--accent);font-style:normal;font-weight:700}
+/* bars */
+.bars{display:grid;gap:10px;margin-top:8px}
+.bar-row{display:grid;grid-template-columns:108px 1fr 108px;align-items:center;gap:10px;font-family:var(--mono);font-size:11px;color:var(--text-dim);letter-spacing:.02em}
+.bar-row .rt{text-align:right}
+.bar-track{height:8px;background:var(--bg-soft);border:1px solid var(--border-soft);border-radius:99px;position:relative;overflow:hidden}
+.bar-fill{position:absolute;top:0;bottom:0;left:0;background:linear-gradient(90deg,var(--accent),var(--cyan));border-radius:99px}
+.bar-lab{text-transform:uppercase}
+/* compass table */
+.cmp{overflow-x:auto}
+.cmp table{border-collapse:collapse;width:100%;min-width:620px}
+.cmp th,.cmp td{padding:12px 10px;text-align:center;border-bottom:1px solid var(--border-soft);font-size:13px}
+.cmp th{font-family:var(--mono);font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:var(--accent);font-weight:600}
+.cmp td.axis{text-align:left;font-family:var(--mono);font-size:11px;color:var(--text-soft);white-space:nowrap}
+.cmp .dots{font-size:15px;letter-spacing:2px;color:var(--accent)}
+.cmp .dots .off{color:var(--border)}
+/* finder */
+.finder{background:#fff;border:1px solid var(--border);border-radius:16px;padding:26px;box-shadow:0 1px 2px rgba(23,32,56,.05)}
+.q{margin-bottom:22px}
+.q-title{font-weight:700;font-size:18px;margin-bottom:12px;color:var(--text);letter-spacing:-.01em}
+.q-title span{color:var(--accent);font-family:var(--mono);font-size:12px;margin-right:8px}
+.opts{display:grid;gap:8px}
+.opt{text-align:left;background:var(--bg-soft);border:1px solid var(--border-soft);border-radius:10px;padding:12px 15px;cursor:pointer;font-size:15px;color:var(--text-soft);transition:.12s;font-family:var(--sans)}
+.opt:hover{border-color:var(--accent);color:var(--text)}
+.opt.sel{border-color:var(--accent);background:rgba(47,111,237,.08);color:var(--text);font-weight:600}
+.finder-actions{display:flex;gap:12px;align-items:center;margin-top:8px;flex-wrap:wrap}
+.btn{font-family:var(--sans);font-size:15px;font-weight:700;padding:12px 24px;border-radius:10px;border:1px solid var(--accent);background:var(--accent);color:#fff;cursor:pointer;transition:.15s}
+.btn:hover{background:var(--accent-2)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn-ghost{background:none;color:var(--text-soft);border-color:var(--border)}
+.finder-meta{font-family:var(--mono);font-size:12px;color:var(--text-dim)}
+.result{display:none;margin-top:22px;padding:24px;border-radius:14px;background:rgba(47,111,237,.06);border:1px solid rgba(47,111,237,.20)}
+.result.show{display:block;animation:fade .3s ease}
+.result h3{font-weight:800;font-size:24px;margin-bottom:4px;color:var(--text);letter-spacing:-.02em}
+.result h3 em{font-style:normal;color:inherit}
+.result .mix{font-family:var(--mono);font-size:12px;color:var(--text-dim);letter-spacing:.04em;margin-bottom:14px}
+.result p{color:var(--text-soft);font-size:15.5px;margin-bottom:10px}
+.result p b{color:var(--text)}
+.result .goto{display:inline-block;margin-top:6px;font-family:var(--mono);font-size:12px;color:var(--accent);cursor:pointer;text-decoration:underline;background:none;border:none;padding:0}
+.result .goto:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:3px}
+.note{margin-top:40px;padding:20px 24px;background:var(--bg-soft);border:1px solid var(--border);border-radius:14px;font-size:14px;color:var(--text-soft)}
+.note b{color:var(--text)}
+.foot{text-align:center;margin-top:40px;font-family:var(--mono);font-size:11px;letter-spacing:.08em;color:var(--text-dim)}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <a href="index.html#endgame">♔ ENDGAME</a>
+  <a href="index.html#middle">♞ MIDDLEGAME</a>
+  <a href="index.html#opening">♙ OPENING</a>
+  <a href="tu-duy.html">🧠 TƯ DUY</a>
+  <a href="ky-thu.html" class="active">♟ KỲ THỦ</a>
+</div>
+
+<header class="hero">
+  <div class="hero-eyebrow">Chess Coach · Styles &amp; Archetypes</div>
+  <h1>Năm <em>phong cách</em>, một bản đồ</h1>
+  <p class="hero-sub">Không phải chọn thần tượng — mà định vị chính mình. Năm kỳ thủ trải trên bản đồ phong cách để bạn tự soi ra toạ độ của mình và xây phong cách riêng.</p>
+</header>
+
+<div class="content">
+
+  <p class="intro">Phong cách không phải là <b>bắt chước một người</b>, mà là một <b>toạ độ pha trộn</b>. Năm người dưới đây trải trên các trục đối nghịch: tấn công ↔ vị trí, trực giác ↔ tính toán, hỗn loạn ↔ trong sáng, chủ động ↔ phòng ngừa (Capablanca &amp; Carlsen nằm gần nhau ở cụm kỹ thuật/tàn cuộc — xem La bàn). Đọc từng người, xem <b>La bàn</b> để so sánh, rồi làm <b>Tìm phong cách</b> để biết mình đứng ở đâu — và nên trộm gì từ ai.</p>
+
+  <div class="tabs">
+    <button class="tab active" data-tab="tal">🔥 Tal</button>
+    <button class="tab" data-tab="magnus">♛ Carlsen</button>
+    <button class="tab" data-tab="capa">◇ Capablanca</button>
+    <button class="tab" data-tab="petro">🛡 Petrosian</button>
+    <button class="tab" data-tab="liem">⚡ Quang Liêm</button>
+    <button class="tab special" data-tab="compass">◎ La bàn</button>
+    <button class="tab special" data-tab="finder">🧭 Tìm phong cách</button>
+  </div>
+
+  <!-- ================= TAL ================= -->
+  <div class="panel active" id="tal">
+    <div class="p-head">
+      <div class="p-badge">🔥</div>
+      <div class="p-head-main">
+        <div class="p-name">Mikhail Tal</div>
+        <div class="p-nick">"Phù thủy thành Riga"</div>
+        <div class="p-facts">
+          <span class="p-fact">1936–1992 · Liên Xô (Latvia)</span>
+          <span class="p-fact">VĐTG thứ 8 · 1960–61</span>
+          <span class="p-fact">GM 1957 · đỉnh FIDE 2705 (1980)</span>
+          <span class="p-fact">Bất bại 95 ván 1973–74</span>
+        </div>
+        <div class="p-essence">Cờ là một cuộc chiến và một nghệ thuật trước khi là khoa học: đổi vật chất &amp; an toàn lấy thế chủ động, cái đẹp và sự hỗn loạn nơi đối thủ phải toát mồ hôi.</div>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="sec"><div class="sec-label">Triết lý</div><p>Kéo đối thủ vào <b>rừng rậm</b> — thế cờ mù mờ, khó tính, nơi bản lĩnh và thần kinh quyết định chứ không phải sách vở. Thế chủ động &amp; đòn tấn công quý hơn một quân dư.</p></div>
+      <div class="sec"><div class="sec-label">Đặc trưng phong cách</div><ul><li><b>Thí quân trực giác</b> — nhiều đòn "phi lý" nhưng đổi lấy thế chủ động dài.</li><li><b>Cố ý phức tạp hoá</b> thế cờ tới mức không ai tính hết.</li><li><b>Ứng biến</b>, khó lường, gây <b>áp lực tâm lý</b> (đối thủ sập trong zeitnot).</li><li>Về sau thêm lớp vị trí/cổ điển chín chắn.</li></ul></div>
+      <div class="sec"><div class="sec-label">Vũ khí chiến thuật</div><ul><li>Thí mã / thí phẩm chất mang tính đầu cơ.</li><li>Thí Hậu lấy quân nhẹ + tốt thông + đòn công.</li><li>Tạo "rừng" đe doạ — đối thủ không gỡ hết trên bàn.</li></ul></div>
+      <div class="sec"><div class="sec-label">Chủ đề chiến lược</div><ul><li>Mở đường, giành thế chủ động, nhắm Vua đối thủ.</li><li>Ưa <b>bất cân xứng động</b> — hoạt động quân &gt; cấu trúc.</li><li>Phổ biến hoá Benoni Hiện đại (nhượng cấu trúc lấy hoạt động).</li></ul></div>
+    </div>
+
+    <div class="sec"><div class="sec-label">Khai cuộc tiêu biểu</div><p>Đen: <b>Benoni Hiện đại</b>, Sicilian sắc bén. Trắng: 1.e4 tấn công (Sicilian/Ruy Lopez). Có biến mang tên ông trong <b>Caro-Kann (Tal Variation)</b> và <b>Sicilian Scheveningen (Tal Variation, ECO B82)</b>.</p></div>
+
+    <div class="sec"><div class="sec-label">Ván / khoảnh khắc kinh điển</div>
+      <div class="game"><div class="g-t">Botvinnik – Tal, Ván 6, Tranh ngôi VĐTG 1960</div><div class="g-d">Đòn thí mã (…Nf4) mở màn cuộc công quyết định — góp phần đưa Tal lên ngôi ở tuổi 23.</div></div>
+      <div class="game"><div class="g-t">Tal – Smyslov, Candidates 1959</div><div class="g-d">Thắng giải thưởng ván hay: đòn thí tấn công choáng váng trước một cựu VĐTG.</div></div>
+    </div>
+
+    <div class="quote">"Bạn phải kéo đối thủ vào khu rừng sâu tối, nơi 2 + 2 = 5, và lối ra chỉ vừa đủ một người."<span class="q-src">Câu nói gắn liền với Tal — mang tính giai thoại, không rõ nguồn gốc chính xác</span></div>
+
+    <div class="sec steal"><div class="sec-label">Trộm gì được cho người 1500</div><ul><li><b>Tranh thế chủ động</b> — chịu đầu tư nhẹ vật chất cho một đòn công dài thường lãi.</li><li><b>Tạo vấn đề</b>, đừng chỉ chơi "đúng" — đặt câu hỏi khó khiến đối thủ sập (nhất là khi hết giờ).</li><li>Học các đòn thí của ông như <b>bài tập tính toán</b>, không phải đánh bạc mù.</li></ul></div>
+    <div class="fit"><b>Bạn nghiêng Tal nếu…</b> bạn thà thí một quân lấy đòn công cháy bỏng hơn là mài một tàn cuộc khô — thấy như cá gặp nước trong thế hỗn loạn hai lưỡi, sẵn sàng đổi an toàn khách quan lấy thế chủ động và cái đẹp.</div>
+  </div>
+
+  <!-- ================= MAGNUS ================= -->
+  <div class="panel" id="magnus">
+    <div class="p-head">
+      <div class="p-badge">♛</div>
+      <div class="p-head-main">
+        <div class="p-name">Magnus Carlsen</div>
+        <div class="p-nick">"Mozart của cờ vua"</div>
+        <div class="p-facts">
+          <span class="p-fact">1990 · Na Uy</span>
+          <span class="p-fact">VĐTG 2013–2023 (tự bỏ ngôi)</span>
+          <span class="p-fact">Đỉnh FIDE 2882 (2014) — kỷ lục</span>
+          <span class="p-fact">Bất bại 125 ván cổ điển 2018–20</span>
+        </div>
+        <div class="p-essence">Không cần ưu thế khai cuộc — chỉ cần một thế chơi được rồi <b>đè bẹp đối thủ trên bàn</b>. Cờ được quyết ở trung &amp; tàn cuộc, không phải ở nhà.</div>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="sec"><div class="sec-label">Triết lý</div><p>Đạt thế cân bằng chơi được, rồi chọn nước "<b>khó chịu nhất cho đối thủ và lối chơi của họ</b>". "Cờ thuần" — thắng bằng kỹ năng, không bằng bài vở.</p></div>
+      <div class="sec"><div class="sec-label">Đặc trưng phong cách</div><ul><li><b>Phổ quát</b> — không có lỗ hổng phong cách nào để khai thác.</li><li><b>Vắt kiệt</b> — thắng từ ưu thế tí hon người khác cầm hoà.</li><li><b>Bậc thầy tàn cuộc</b> — quy đổi cả một phần nhỏ của tốt.</li><li><b>Áp lực thực dụng + thể lực</b> — giữ căng 60–70 nước tới lúc đối thủ gục.</li></ul></div>
+      <div class="sec"><div class="sec-label">Vũ khí chiến thuật</div><ul><li>Chiến thuật <b>phục vụ kỹ thuật</b> — ra đòn khi thế siết đã tạo cơ hội.</li><li>Nước xen + tính toán chính xác trong thế đơn giản.</li><li>Phòng ngừa (prophylaxis) — dập ý đồ đối thủ trước khi ra đòn.</li></ul></div>
+      <div class="sec"><div class="sec-label">Chủ đề chiến lược</div><ul><li>Cố ý chơi thế "<b>nhỏ</b>", ít bất cân xứng, rồi gom ưu thế vi mô.</li><li>Quy đổi ưu thế cực nhỏ (quân nhẹ hơn tí, cấu trúc nhỉnh tí).</li><li>Giữ căng để đối thủ phải liên tục tìm nước duy nhất → sai.</li></ul></div>
+    </div>
+
+    <div class="sec"><div class="sec-label">Khai cuộc tiêu biểu</div><p>Cố ý <b>rộng &amp; khó lường</b> để đối thủ khó chuẩn bị; hay lái vào biến phụ để rời sách sớm. Trắng: Ruy Lopez, 1.d4, hệ Anh/Réti. Đen: nhiều biến Sicilian, phòng thủ Berlin vững.</p></div>
+
+    <div class="sec"><div class="sec-label">Ván / khoảnh khắc kinh điển</div>
+      <div class="game"><div class="g-t">Carlsen – Karjakin, Tie-break cờ nhanh, VĐTG 2016</div><div class="g-d">Kết bằng <b>50.Qh6+!!</b> thí Hậu chiếu hết — thắng loạt nhanh 3–1, giữ ngôi đúng sinh nhật 26 tuổi.</div></div>
+      <div class="game"><div class="g-t">Carlsen – Anand, Tranh ngôi VĐTG 2013</div><div class="g-d">Đoạt ngôi bằng cách mài Anand trong các trận vị trí/tàn cuộc dài — bản mẫu của lối "siết ưu thế nhỏ".</div></div>
+    </div>
+
+    <div class="quote">"Tôi cố đánh bại người ngồi đối diện, và chọn những nước khó chịu nhất cho anh ta và lối chơi của anh ta."<span class="q-src">Được gán cho Carlsen (tuyển tập trích dẫn) — cũng: "Bạn phải tàn nhẫn."</span></div>
+
+    <div class="sec steal"><div class="sec-label">Trộm gì được cho người 1500</div><ul><li>Ngừng săn đòn kết liễu — <b>học thắng các tàn cuộc thắng</b> (Vua-Tốt, Xe).</li><li><b>Giữ thế sống</b> — đừng đổi hết về hoà; giữ quân, giữ bất cân xứng để đối thủ còn cơ sai.</li><li><b>Chơi đối thủ</b>, không chỉ chơi bàn cờ; đừng hoà thế còn chơi được.</li></ul></div>
+    <div class="fit"><b>Bạn nghiêng Carlsen nếu…</b> bạn thà đạt thế trung cuộc cân bằng đầy căng thẳng rồi từ từ xoay chuyển hơn là phá thế; và bạn thực sự thích mài những tàn cuộc dài nơi một ưu thế tí hon là đủ.</div>
+  </div>
+
+  <!-- ================= CAPABLANCA ================= -->
+  <div class="panel" id="capa">
+    <div class="p-head">
+      <div class="p-badge">◇</div>
+      <div class="p-head-main">
+        <div class="p-name">José Raúl Capablanca</div>
+        <div class="p-nick">"Cỗ máy cờ vua"</div>
+        <div class="p-facts">
+          <span class="p-fact">1888–1942 · Cuba</span>
+          <span class="p-fact">VĐTG thứ 3 · 1921–1927</span>
+          <span class="p-fact">Bất bại 1916–1924 (63 ván)</span>
+          <span class="p-fact">Cả sự nghiệp chỉ thua 34 ván</span>
+        </div>
+        <div class="p-essence">Trong veo và tiết kiệm sức: thắng bằng cách gom ưu thế nhỏ bền vững, lái tới thế mà nước đúng trông hiển nhiên và chiến thắng nhẹ như không.</div>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="sec"><div class="sec-label">Triết lý</div><p>Sự <b>rõ ràng và kinh tế công sức</b>. Bậc thầy bắt đầu từ tàn cuộc chứ không phải khai cuộc — "muốn tiến bộ, học tàn cuộc trước tiên".</p></div>
+      <div class="sec"><div class="sec-label">Đặc trưng phong cách</div><ul><li><b>Trong veo về vị trí</b> — phán đoán gần như trực giác sau vài giây nhìn bàn.</li><li><b>Đơn giản hoá</b> về thế đơn giản có lợi thay vì phức tạp.</li><li><b>Bậc thầy tàn cuộc</b> — kỹ thuật "không tì vết".</li><li>Chơi <b>tự nhiên, nhẹ nhàng</b>, cực ít sai lầm, và nhanh.</li></ul></div>
+      <div class="sec"><div class="sec-label">Vũ khí chiến thuật</div><ul><li>Chiến thuật <b>phục vụ mục tiêu vị trí</b> — không đòn đầu cơ.</li><li>Đòn phối hợp <b>sạch, đơn giản hoá</b> về tàn cuộc thắng.</li><li>Cắt phản đòn của đối thủ bằng đổi quân đúng lúc.</li></ul></div>
+      <div class="sec"><div class="sec-label">Chủ đề chiến lược</div><ul><li>Gom <b>ưu thế nhỏ</b> rồi quy đổi bằng kỹ thuật chính xác.</li><li>Nguyên tắc <b>đơn giản hoá</b>: mỗi lần đổi phải cải thiện thế mình.</li><li>Vua &amp; Xe hoạt động trong tàn cuộc; "tốt thông phải đẩy".</li></ul></div>
+    </div>
+
+    <div class="sec"><div class="sec-label">Khai cuộc tiêu biểu</div><p>Tránh biến sắc bén nặng lý thuyết; ưa hệ <b>cổ điển, vững, dễ hiểu</b>. Hay chơi: <b>Gambit Hậu từ chối (QGD)</b>, Ruy Lopez, Ván Bốn Mã.</p></div>
+
+    <div class="sec"><div class="sec-label">Ván / khoảnh khắc kinh điển</div>
+      <div class="game"><div class="g-t">Capablanca – Tartakower, New York 1924</div><div class="g-d">Tàn cuộc Xe giáo khoa: <b>kích hoạt Vua</b>, thí tốt để đưa Vua lên trong khi Xe hoạt động tối đa — Vua+Xe chủ động thắng vật chất.</div></div>
+      <div class="game"><div class="g-t">Capablanca – Marshall, New York 1918</div><div class="g-d">Ván Marshall tung "Marshall Attack" đã chuẩn bị; Capablanca thủ chính xác ngay trên bàn và thắng.</div></div>
+    </div>
+
+    <div class="quote">"Muốn cải thiện cờ, hãy học tàn cuộc trước mọi thứ khác."<span class="q-src">Được gán rộng rãi cho Capablanca (gắn với "Chess Fundamentals") — chưa truy được nguồn gốc chính xác</span></div>
+
+    <div class="sec steal"><div class="sec-label">Trộm gì được cho người 1500</div><ul><li><b>Học tàn cuộc trước</b> — Vua-Tốt &amp; Xe: đó là nơi quy đổi ưu thế nhỏ bạn giành được.</li><li><b>Khi hơn quân thì đơn giản hoá</b> — đổi quân (không đổi tốt) về tàn cuộc thắng.</li><li><b>Kích hoạt Vua</b> trong tàn cuộc; chơi hệ khai cuộc <b>vững, ít lý thuyết</b>.</li></ul></div>
+    <div class="fit"><b>Bạn nghiêng Capablanca nếu…</b> bạn thà thắng một tàn cuộc kỹ thuật sạch hơn một tốt còn hơn lao vào ẩu đả chiến thuật — tin vào vị trí, sự đơn giản và quy đổi chính xác hơn là bài vở và phức tạp.</div>
+  </div>
+
+  <!-- ================= PETROSIAN ================= -->
+  <div class="panel" id="petro">
+    <div class="p-head">
+      <div class="p-badge">🛡</div>
+      <div class="p-head-main">
+        <div class="p-name">Tigran Petrosian</div>
+        <div class="p-nick">"Tigran Sắt"</div>
+        <div class="p-facts">
+          <span class="p-fact">1929–1984 · Liên Xô (Armenia)</span>
+          <span class="p-fact">VĐTG thứ 9 · 1963–1969</span>
+          <span class="p-fact">Cực khó đánh bại — rất ít thua</span>
+          <span class="p-fact">Bậc thầy phòng ngừa</span>
+        </div>
+        <div class="p-essence">Phòng ngừa &amp; an toàn trên hết: hiểu và <b>dập ý đồ đối thủ trước khi</b> nó thành nguy hiểm, không ra đòn cho tới khi thế mình an toàn tuyệt đối. Chịu ảnh hưởng sâu từ Nimzowitsch.</div>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="sec"><div class="sec-label">Triết lý</div><p><b>Prophylaxis</b> — hỏi "đối thủ muốn gì?" rồi chặn trước. An toàn Vua quý hơn vật chất; thà nhiều hoà còn hơn một ván hoa mỹ có thể thua.</p></div>
+      <div class="sec"><div class="sec-label">Đặc trưng phong cách</div><ul><li><b>Phòng ngừa</b> — dập ý đồ đối thủ từ trong trứng (nét định danh).</li><li><b>Phòng thủ siêu hạng</b> — đánh hơi nguy hiểm nhiều nước trước.</li><li><b>Thí phẩm chất vị trí</b> — đổi Xe lấy quân nhẹ để siết bền.</li><li><b>Xoay xở &amp; kiên nhẫn</b> — regroup lặng lẽ, "con trăn" siết ngạt.</li></ul></div>
+      <div class="sec"><div class="sec-label">Vũ khí chiến thuật</div><ul><li><b>Thí phẩm chất vị trí</b> — dấu ấn: đổi lấy thế bịt kín/mã khổng lồ/Vua an toàn.</li><li>Tài nguyên phòng thủ — tìm đúng nước gỡ đòn.</li><li>Nước <b>lặng mà mạnh</b> — cải thiện âm thầm.</li></ul></div>
+      <div class="sec"><div class="sec-label">Chủ đề chiến lược</div><ul><li>Tư duy phòng ngừa: hỏi đối thủ muốn gì → chặn.</li><li>Hạn chế / phong toả quân &amp; đòn phá tốt của đối thủ.</li><li>Đóng thế, cố định cấu trúc để triệt phản đòn.</li></ul></div>
+    </div>
+
+    <div class="sec"><div class="sec-label">Khai cuộc tiêu biểu</div><p>Ưa hệ <b>vững, ít rủi ro</b>, khớp triết lý an toàn: Trắng hệ Anh &amp; fianchetto; Đen Caro-Kann, French, đôi khi Najdorf. <em>(kho khai cuộc ghi chép hơi lỏng — coi là xu hướng.)</em></p></div>
+
+    <div class="sec"><div class="sec-label">Ván / khoảnh khắc kinh điển</div>
+      <div class="game"><div class="g-t">Petrosian – Spassky, Ván 10, Tranh ngôi VĐTG 1966</div><div class="g-d">Thí phẩm chất bóp nghẹt hoàn toàn Đen — thường gọi là "Bất tử VĐTG" của ông.</div></div>
+      <div class="game"><div class="g-t">Reshevsky – Petrosian, Candidates Zurich 1953</div><div class="g-d">Thí phẩm chất vị trí giáo khoa (…Re6) lấy thế bịt kín — "Nghệ thuật cao quý của phòng thủ".</div></div>
+    </div>
+
+    <div class="quote">"Người ta bảo ván của tôi nên 'thú vị' hơn. Tôi có thể thú vị hơn — và cũng thua."<span class="q-src">Trích dẫn xác thực (Wikipedia) — gói trọn triết lý ngại-rủi-ro</span></div>
+
+    <div class="sec steal"><div class="sec-label">Trộm gì được cho người 1500</div><ul><li><b>Hỏi đối thủ muốn gì, rồi chặn</b> — prophylaxis thuần (nối thẳng trang Tư duy).</li><li><b>Trọng an toàn Vua hơn vật chất</b> — đừng ăn tốt nếu hở Vua.</li><li><b>Kiên nhẫn — cải thiện quân tệ nhất</b>; để đối thủ tự overextend.</li><li>Cân nhắc <b>thí phẩm chất</b> khi được thế bịt kín / mã khổng lồ bền.</li></ul></div>
+    <div class="fit"><b>Bạn nghiêng Petrosian nếu…</b> bạn thà làm thế đối thủ tệ dần hơn là mạo hiểm thế mình — thích phòng ngừa, phòng thủ, siết ưu thế nhỏ, và sẵn sàng nhận hoà thay vì một ván hoa mỹ có thể thua.</div>
+  </div>
+
+  <!-- ================= LE QUANG LIEM ================= -->
+  <div class="panel" id="liem">
+    <div class="p-head">
+      <div class="p-badge">⚡</div>
+      <div class="p-head-main">
+        <div class="p-name">Lê Quang Liêm</div>
+        <div class="p-nick">Siêu đại kiện tướng Việt Nam</div>
+        <div class="p-facts">
+          <span class="p-fact">1991 · Việt Nam</span>
+          <span class="p-fact">VĐ Cờ chớp Thế giới 2013</span>
+          <span class="p-fact">GM 2006 · đỉnh FIDE 2741 (2024)</span>
+          <span class="p-fact">HLV trưởng &amp; GĐ SPICE, ĐH Webster</span>
+        </div>
+        <div class="p-essence">Chuyên nghiệp toàn diện: vững, chuẩn bị sâu, thần kinh thép — mài ưu thế bằng kỹ thuật sạch chứ không hỗn loạn, và cực nhanh-chính xác ở cờ nhanh/chớp.</div>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="sec"><div class="sec-label">Triết lý</div><p>Ưu tiên <b>đúng &amp; chắc</b> hơn mạo hiểm: ra bài chuẩn bị kỹ, giữ cấu trúc lành, rồi quy đổi bằng kỹ thuật. Điềm tĩnh dưới áp lực đồng hồ.</p></div>
+      <div class="sec"><div class="sec-label">Đặc trưng phong cách</div><ul><li><b>Nền vị trí vững như đá</b> — cực ít sai, khó bị đánh bại.</li><li><b>Chuẩn bị khai cuộc đỉnh cao</b> — bài vở sâu, tổ chức tốt.</li><li><b>Kỹ thuật xuất sắc</b> — quy đổi ưu thế nhỏ &amp; thủ thế khó.</li><li><b>Cờ nhanh/chớp đẳng cấp thế giới</b>; điềm tĩnh, thần kinh thép.</li></ul></div>
+      <div class="sec"><div class="sec-label">Vũ khí chiến thuật</div><ul><li>Mắt chiến thuật sắc, <b>tính nhanh &amp; chính xác</b>.</li><li>Cực nguy hiểm khi đồng hồ cạn (blitz/rapid).</li><li>Chiến thuật <b>phục vụ thế lành</b>, không thí đầu cơ.</li></ul></div>
+      <div class="sec"><div class="sec-label">Chủ đề chiến lược</div><ul><li>Chơi dẫn dắt bằng <b>chuẩn bị</b> vào cấu trúc tốt lành.</li><li>Kiên nhẫn gom ưu thế nhỏ → <b>quy đổi kỹ thuật</b>.</li><li>Ưu tiên an toàn &amp; chính xác hơn rủi ro.</li></ul></div>
+    </div>
+
+    <div class="sec"><div class="sec-label">Khai cuộc tiêu biểu</div><p><em>(theo hồ sơ chess.com — coi là chỉ dấu)</em> Cầm <b>Trắng</b>: dân <b>1.d4 / Catalan</b> — ván hay thành Catalan, QGD, Slav (Liêm ở phía Trắng của các thế đó). Cầm <b>Đen</b>: <b>Najdorf</b> chống 1.e4 (và phải hoá giải Rossolimo của Trắng), cùng 1.e4 e5 kiểu Ý (Giuoco).</p></div>
+
+    <div class="sec"><div class="sec-label">Ván / kết quả kinh điển</div>
+      <div class="game"><div class="g-t">Vô địch Cờ chớp Thế giới 2013 (Khanty-Mansiysk)</div><div class="g-d">20½/30 — nhà vô địch thế giới đầu tiên của thể thao Việt Nam ở môn cờ vua.</div></div>
+      <div class="game"><div class="g-t">Thắng ĐKVĐTG Đinh Lập Nhân (Ding Liren), Olympiad 2024</div><div class="g-d">Ván 62 nước giúp Việt Nam cầm hoà Trung Quốc, giữ mạch bất bại.</div></div>
+      <div class="game"><div class="g-t">Vô địch Aeroflot Open 2010 &amp; 2011 (Moscow)</div><div class="g-d">Hai năm liên tiếp ở giải mở mạnh nhất thế giới khi đó — bệ phóng lên đẳng elite.</div></div>
+    </div>
+
+    <div class="sec steal"><div class="sec-label">Trộm gì được cho người 1500</div><ul><li>Xây <b>repertoire nhỏ mà thuộc cực sâu</b> + nắm kế hoạch trung cuộc theo sau — sâu hơn rộng.</li><li><b>Ưu tiên vững</b>: cắt sai lầm, giữ cấu trúc lành trước khi săn đòn — ít thua nâng điểm nhanh hơn nhiều thắng.</li><li><b>Luyện tốc độ có chủ đích</b>: chơi + review blitz/rapid để sắc pattern &amp; tính nhanh.</li><li><b>Giữ điềm tĩnh</b> — quản đồng hồ &amp; cảm xúc; mài tàn cuộc sạch thay vì cố phức tạp.</li></ul></div>
+    <div class="fit"><b>Bạn nghiêng Quang Liêm nếu…</b> bạn thà out-chuẩn-bị &amp; out-kỹ-thuật đối thủ hơn là đánh bạc — thắng bằng cờ lành, đã luyện kỹ, cấu trúc sạch, và tăng áp lực khi đồng hồ chạy nhanh.</div>
+  </div>
+
+  <!-- ================= COMPASS ================= -->
+  <div class="panel" id="compass">
+    <div class="sec"><div class="sec-label">La bàn phong cách</div>
+      <p style="margin-bottom:6px;">Mỗi người chấm trên 5 trục. Không có trục nào "tốt hơn" — đây là <b>bản đồ để bạn định vị mình</b>, không phải bảng xếp hạng. Đối chiếu với chính bạn: bạn rơi vào đâu trên mỗi trục?</p>
+    </div>
+    <div class="cmp">
+      <table id="cmpTable"></table>
+    </div>
+    <div class="note" style="margin-top:24px;">
+      <b>Đọc la bàn:</b> Tal &amp; Petrosian là hai cực đối nghịch nhất (tấn công-mạo hiểm ↔ phòng ngừa-an toàn). Capablanca &amp; Carlsen gần nhau ở "vị trí + tàn cuộc" nhưng Carlsen thiên tính toán/thực dụng hơn. Quang Liêm là cực "chuẩn bị + tốc độ". <b>Phong cách của bạn không cần trùng ai</b> — mục tiêu là biết mình mạnh trục nào, yếu trục nào để trộm đúng người.
+    </div>
+  </div>
+
+  <!-- ================= FINDER ================= -->
+  <div class="panel" id="finder">
+    <div class="sec"><div class="sec-label">🧭 Tìm phong cách của bạn</div>
+      <p style="margin-bottom:18px;">6 câu. Chọn phương án <b>đúng con người cờ của bạn nhất</b> (không phải cái bạn nghĩ là "đúng"). Xong bấm Xem kết quả — bạn sẽ ra một <b>toạ độ pha trộn</b>: nghiêng ai, pha thêm ai, nên học gì, và điểm cần bù.</p>
+    </div>
+    <div class="finder" id="finderBox"></div>
+  </div>
+
+  <div class="note">
+    <b>Cách dùng:</b> đọc 5 người, mở <b>La bàn</b> đối chiếu với chính mình, rồi làm <b>Tìm phong cách</b>. Phong cách không phải chọn thần tượng — mà là biết toạ độ của mình để <b>trộm đúng thứ từ đúng người</b>: học đòn công của Tal, tàn cuộc của Capablanca/Carlsen, phòng ngừa của Petrosian, kỷ luật chuẩn bị của Quang Liêm. Và nhớ: phong cách chỉ định hình qua <b>thực chiến + review ván của mình</b>, không phải qua đọc trang này.
+  </div>
+
+  <div class="foot">CHESS COACH · KỲ THỦ &amp; PHONG CÁCH — build v2 · 2026-07-18 · dữ kiện kiểm chứng qua nguồn công khai (Wikipedia/chess.com/FIDE/chessgames)</div>
+
+</div>
+
+<script>
+/* ---------------- data ---------------- */
+var PLAYERS = ['tal','magnus','capa','petro','liem'];
+var PNAME = { tal:'Tal', magnus:'Carlsen', capa:'Capablanca', petro:'Petrosian', liem:'Quang Liêm' };
+var AXES = [
+  { key:'attack',  left:'Vị trí',      right:'Tấn công' },
+  { key:'risk',    left:'An toàn',     right:'Mạo hiểm' },
+  { key:'prep',    left:'Ứng biến',    right:'Chuẩn bị sâu' },
+  { key:'calc',    left:'Trực giác',   right:'Tính toán' },
+  { key:'endgame', left:'Trung cuộc',  right:'Tàn cuộc' }
+];
+// 1..5 (5 = nghiêng về nhãn phải)
+var SCORE = {
+  tal:    { attack:5, risk:5, prep:2, calc:2, endgame:2 },
+  magnus: { attack:3, risk:3, prep:2, calc:4, endgame:5 },
+  capa:   { attack:2, risk:2, prep:1, calc:3, endgame:5 },
+  petro:  { attack:1, risk:1, prep:3, calc:3, endgame:3 },
+  liem:   { attack:3, risk:2, prep:5, calc:5, endgame:4 }
+};
+var PROFILE = {
+  tal:    { learn:'đòn tấn công &amp; thí quân có tính toán, tranh thế chủ động', edge:'kỷ luật phòng thủ &amp; blunder-check — thí phải tính, đừng thí bừa' },
+  magnus: { learn:'kỹ thuật tàn cuộc &amp; nghệ thuật siết ưu thế nhỏ, giữ thế sống', edge:'vốn tactics để chớp thời cơ khi thế mở ra' },
+  capa:   { learn:'tàn cuộc &amp; đơn giản hoá, quy đổi sạch ưu thế nhỏ', edge:'chịu được thế phức tạp — đừng đổi hết quá sớm khi cần chơi tiếp' },
+  petro:  { learn:'phòng ngừa (hỏi đối thủ muốn gì → chặn) &amp; an toàn Vua', edge:'dám chủ động — đừng thụ động tới mức bỏ lỡ thế thắng' },
+  liem:   { learn:'kỷ luật chuẩn bị khai cuộc &amp; kỹ thuật quy đổi, luyện tốc độ', edge:'linh hoạt khi rời khỏi bài đã chuẩn bị' }
+};
+
+/* ---------------- tabs (with hash) ---------------- */
+var TABS = PLAYERS.concat(['compass','finder']);
+if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+function showTab(t, writeHash){
+  if (TABS.indexOf(t) < 0) t = 'tal';
+  document.querySelectorAll('.panel').forEach(function(p){ p.classList.toggle('active', p.id===t); });
+  document.querySelectorAll('.tab').forEach(function(b){ var on=b.dataset.tab===t; b.classList.toggle('active', on); b.setAttribute('aria-selected', on?'true':'false'); });
+  if (writeHash){ if (('#'+t) !== location.hash) history.replaceState(null,'','#'+t); window.scrollTo({ top:0, behavior:'auto' }); }
+}
+document.querySelectorAll('.tab').forEach(function(b){
+  b.addEventListener('click', function(){ showTab(b.dataset.tab, true); });
+});
+window.addEventListener('hashchange', function(){ showTab((location.hash||'#tal').slice(1), true); });
+
+/* ---------------- compass table ---------------- */
+(function(){
+  var t = document.getElementById('cmpTable');
+  var head = '<tr><th style="text-align:left">Trục</th>';
+  PLAYERS.forEach(function(p){ head += '<th>'+PNAME[p]+'</th>'; });
+  head += '</tr>';
+  var rows = '';
+  AXES.forEach(function(ax){
+    rows += '<tr><td class="axis">'+ax.left+' → '+ax.right+'</td>';
+    PLAYERS.forEach(function(p){
+      var v = SCORE[p][ax.key], d='';
+      for (var i=1;i<=5;i++){ d += (i<=v) ? '●' : '<span class="off">●</span>'; }
+      rows += '<td><span class="dots">'+d+'</span></td>';
+    });
+    rows += '</tr>';
+  });
+  t.innerHTML = head + rows;
+})();
+
+/* ---------------- per-player bars ---------------- */
+function barsHtml(p){
+  var h = '<div class="bars">';
+  AXES.forEach(function(ax){
+    var v = SCORE[p][ax.key];
+    h += '<div class="bar-row"><span class="bar-lab">'+ax.left+'</span>'
+       + '<span class="bar-track"><span class="bar-fill" style="width:'+((v-1)/4*100)+'%"></span></span>'
+       + '<span class="bar-lab rt">'+ax.right+'</span></div>';
+  });
+  h += '</div>';
+  return h;
+}
+PLAYERS.forEach(function(p){
+  var panel = document.getElementById(p);
+  var box = document.createElement('div');
+  box.className = 'sec';
+  box.innerHTML = '<div class="sec-label">La bàn phong cách</div>'+barsHtml(p);
+  // chèn ngay sau p-head
+  var head = panel.querySelector('.p-head');
+  head.parentNode.insertBefore(box, head.nextSibling);
+});
+
+/* ---------------- style finder ---------------- */
+var QS = [
+  { q:'Thế cờ mơ ước của bạn?', opts:[
+    ['Hỗn loạn, hai bên đâm nhau, nước nào cũng có đòn', {tal:2}],
+    ['Khô, mình nhỉnh tí, vắt dần 60 nước', {magnus:2}],
+    ['Sạch, đơn giản, đổi về tàn cuộc mình cầm', {capa:2}],
+    ['Đóng chặt, mình siết cho đối thủ ngạt thở', {petro:2}],
+    ['Cân bằng nhưng mình đã thuộc bài từ nhà', {liem:2}]
+  ]},
+  { q:'Có cơ hội thí một quân lấy tấn công, không chắc 100% đúng?', opts:[
+    ['Thí luôn, vào rừng rậm cho đối thủ tự lạc', {tal:2}],
+    ['Chỉ thí nếu tính ra được, không thì thôi', {magnus:1, liem:1}],
+    ['Không thí — giữ chắc, thắng bằng kỹ thuật', {capa:1, petro:1}]
+  ]},
+  { q:'Giai đoạn bạn tự tin / thích nhất?', opts:[
+    ['Trung cuộc tấn công', {tal:2}],
+    ['Tàn cuộc kỹ thuật', {capa:1, magnus:1}],
+    ['Thế đóng, xoay xở &amp; phòng thủ', {petro:2}],
+    ['Cờ nhanh / cờ chớp', {liem:1, magnus:1}]
+  ]},
+  { q:'Với bạn, thắng đẹp nhất là?', opts:[
+    ['Một đòn thí long lanh', {tal:2}],
+    ['Vắt kiệt đối thủ tới lúc họ gục', {magnus:2}],
+    ['Một tàn cuộc kỹ thuật sạch không tì vết', {capa:2}],
+    ['Đối thủ không làm được gì rồi hết cờ', {petro:2}],
+    ['Ra bài chuẩn bị, đối thủ sập bẫy từ nhà', {liem:2}]
+  ]},
+  { q:'Cách bạn chuẩn bị khai cuộc?', opts:[
+    ['Vài biến sắc bén để lao vào tấn công', {tal:2}],
+    ['Rộng, tránh lý thuyết, cốt ra thế chơi được', {magnus:2}],
+    ['Vài hệ vững, đơn giản, ít lý thuyết', {capa:1, petro:1}],
+    ['Đào rất sâu, thuộc tới tận tàn cuộc', {liem:2}]
+  ]},
+  { q:'Đối thủ bắt đầu tấn công Vua bạn — bạn?', opts:[
+    ['Phản công lại ngay, ai nhanh hơn thắng', {tal:2}],
+    ['Phòng thủ chính xác rồi lật lại bằng kỹ thuật', {petro:2}],
+    ['Đổi bớt quân, đơn giản hoá để dập đòn', {capa:2}],
+    ['Hấp thụ, giữ chắc, chờ vắt lại sau', {magnus:1, liem:1}]
+  ]}
+];
+
+var answers = {};
+(function buildFinder(){
+  var box = document.getElementById('finderBox');
+  var html = '';
+  QS.forEach(function(item, qi){
+    html += '<div class="q"><div class="q-title"><span>'+(qi+1)+'/'+QS.length+'</span>'+item.q+'</div><div class="opts">';
+    item.opts.forEach(function(o, oi){
+      html += '<button class="opt" data-q="'+qi+'" data-o="'+oi+'">'+o[0]+'</button>';
+    });
+    html += '</div></div>';
+  });
+  html += '<div class="finder-actions"><button class="btn" id="finderGo" disabled>Xem kết quả</button>'
+        + '<button class="btn btn-ghost" id="finderReset">Làm lại</button>'
+        + '<span class="finder-meta" id="finderMeta">Đã chọn 0/'+QS.length+'</span></div>'
+        + '<div class="result" id="finderResult"></div>';
+  box.innerHTML = html;
+
+  box.querySelectorAll('.opt').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var qi = btn.dataset.q;
+      box.querySelectorAll('.opt[data-q="'+qi+'"]').forEach(function(b){ b.classList.remove('sel'); });
+      btn.classList.add('sel');
+      answers[qi] = parseInt(btn.dataset.o,10);
+      var n = Object.keys(answers).length;
+      document.getElementById('finderMeta').textContent = 'Đã chọn '+n+'/'+QS.length;
+      document.getElementById('finderGo').disabled = (n < QS.length);
+    });
+  });
+  document.getElementById('finderGo').addEventListener('click', computeResult);
+  document.getElementById('finderReset').addEventListener('click', function(){
+    answers = {};
+    box.querySelectorAll('.opt').forEach(function(b){ b.classList.remove('sel'); });
+    document.getElementById('finderMeta').textContent = 'Đã chọn 0/'+QS.length;
+    document.getElementById('finderGo').disabled = true;
+    document.getElementById('finderResult').classList.remove('show');
+  });
+})();
+
+function computeResult(){
+  var tally = { tal:0, magnus:0, capa:0, petro:0, liem:0 };
+  Object.keys(answers).forEach(function(qi){
+    var pts = QS[qi].opts[answers[qi]][1];
+    Object.keys(pts).forEach(function(k){ tally[k] += pts[k]; });
+  });
+  var ranked = PLAYERS.slice().sort(function(a,b){ return tally[b]-tally[a]; });
+  var total = 0; PLAYERS.forEach(function(p){ total += tally[p]; });
+  var primary = ranked[0], secondary = ranked[1];
+  var tie = tally[primary] === tally[secondary];
+  var pPct = total ? Math.round(tally[primary]/total*100) : 0;
+  var sPct = total ? Math.round(tally[secondary]/total*100) : 0;
+  var rem = Math.max(0, 100 - pPct - sPct);
+  var el = document.getElementById('finderResult');
+  var head = tie
+    ? 'Bạn <em>cân bằng</em> giữa ' + PNAME[primary] + ' và ' + PNAME[secondary]
+    : 'Bạn nghiêng <em>' + PNAME[primary] + '</em>, pha thêm <em>' + PNAME[secondary] + '</em>';
+  el.innerHTML =
+    '<h3>'+head+'</h3>'
+    + '<div class="mix">Toạ độ: '+PNAME[primary]+' '+pPct+'% · '+PNAME[secondary]+' '+sPct+'% · (còn lại '+rem+'%)</div>'
+    + '<p><b>Nên học từ '+PNAME[primary]+':</b> '+PROFILE[primary].learn+'.</p>'
+    + '<p><b>Pha thêm từ '+PNAME[secondary]+':</b> '+PROFILE[secondary].learn+'.</p>'
+    + '<p><b>Điểm cần bù:</b> '+PROFILE[primary].edge+'.</p>'
+    + '<button type="button" class="goto" data-goto="'+primary+'">→ Mở hồ sơ '+PNAME[primary]+'</button>';
+  el.classList.add('show');
+  el.querySelector('.goto').addEventListener('click', function(){ showTab(this.dataset.goto, true); });
+  el.scrollIntoView({ behavior:'smooth', block:'nearest' });
+}
+
+/* init */
+showTab((location.hash||'#tal').slice(1), false);
+window.addEventListener('load', function(){ setTimeout(function(){ window.scrollTo(0, 0); }, 0); });
+</script>
+
+</body>
+</html>

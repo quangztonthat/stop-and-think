@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="vi"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Antifragile — Những Thứ Hưởng Lợi Từ Hỗn Loạn — Nền tảng, hiểu từ gốc</title>
+<style>
+  /* Design tokens shared with ebook-to-study-html + feynman-from-study (styles_v2.css) */
+  :root{
+    --bg:#fafaf7; --bg-elevated:#ffffff; --bg-soft:#f3f3ee;
+    --border:#e0e0d8; --border-soft:#ececea; --border-strong:#d2c8b6;
+    --ink:#1a1a1f; --ink-soft:#3f3f4a; --muted:#7a7a85;
+    --accent:#2f6fed; --accent-2:#2258c8; --gold:#0fb6d4; --bridge:#5a6b4f;
+    --serif:"Fraunces",Georgia,"Iowan Old Style",serif;
+    --sans:"Geist",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    --mono:"Geist Mono","JetBrains Mono",Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:var(--sans);
+    font-size:19px;line-height:1.72;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}
+  .progress{position:fixed;top:0;left:0;height:3px;width:0;z-index:50;
+    background:linear-gradient(90deg,var(--gold),var(--accent));transition:width .08s linear}
+  .wrap{max-width:920px;margin:0 auto;padding:0 36px}
+  .rise{opacity:0;transform:translateY(14px);animation:rise .7s cubic-bezier(.2,.7,.3,1) forwards}
+  @keyframes rise{to{opacity:1;transform:none}}
+
+  header{padding:104px 0 60px;border-bottom:1px solid var(--border)}
+  .kicker{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.18em;
+    text-transform:uppercase;color:var(--accent);margin-bottom:26px}
+  h1{font-family:var(--serif);font-weight:600;font-size:clamp(42px,7.6vw,72px);
+    line-height:1.0;letter-spacing:-.022em;margin-bottom:28px;font-optical-sizing:auto;color:var(--ink)}
+  h1 em{font-style:italic;color:var(--accent)}
+  .core{font-family:var(--serif);font-style:italic;font-weight:400;
+    font-size:clamp(21px,3.6vw,27px);line-height:1.44;color:var(--ink-soft)}
+  .core span{font-style:normal;font-weight:600;color:var(--accent-2);
+    box-shadow:inset 0 -.5em 0 rgba(47,111,237,.16)}
+
+  /* ---- BƯỚC 0: ĐỊNH VỊ (what it is + why it's the foundation) ---- */
+  .anchor .rule{font-family:var(--serif);font-size:19px;line-height:1.5;color:var(--ink);
+    background:var(--bg-soft);border-left:3px solid var(--accent);
+    padding:18px 24px;border-radius:0 4px 4px 0;margin:0}
+  .anchor .rule em{font-style:italic;color:var(--accent-2)}
+  .anchor .rule strong{color:var(--ink);font-weight:600}
+  .anchor .why{color:var(--ink-soft)}
+
+  section{padding:72px 0;border-bottom:1px solid var(--border);position:relative}
+  .step-head{display:flex;align-items:flex-start;gap:22px;margin-bottom:34px}
+  .big-num{font-family:var(--serif);font-weight:700;font-size:62px;line-height:.8;
+    color:var(--border-strong);flex:none;font-optical-sizing:auto;letter-spacing:-.03em}
+  .step-meta{padding-top:4px}
+  .lbl{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--accent);display:block;margin-bottom:10px}
+  h2{font-family:var(--serif);font-weight:600;font-size:clamp(27px,4.4vw,37px);
+    line-height:1.12;letter-spacing:-.012em;color:var(--ink)}
+  h2 em{font-style:italic;color:var(--accent)}
+  p{margin-bottom:21px}
+  p:last-child{margin-bottom:0}
+  strong{font-weight:600;color:var(--ink)}
+  em{font-style:italic;color:var(--accent-2)}
+  .gloss{color:var(--muted);font-style:italic}
+
+  .lead::first-letter{font-family:var(--serif);font-weight:700;float:left;
+    font-size:74px;line-height:.74;padding:8px 12px 0 0;color:var(--accent)}
+
+  .sub{font-family:var(--serif);font-weight:600;font-size:17px;letter-spacing:.01em;
+    color:var(--ink);margin:34px 0 14px;display:flex;align-items:center;gap:11px}
+  .sub::before{content:"";width:18px;height:2px;background:var(--accent);flex:none;border-radius:2px}
+
+  /* ---- BƯỚC 1: VẤN ĐỀ (why it exists) ---- */
+  .problem{background:var(--bg-soft)}
+  .problem .big-num{color:#e2d6b4}
+
+  /* ---- BƯỚC 3: VÍ DỤ (concrete worked example) ---- */
+  .example-card{border:1px solid #e8c876;border-radius:4px;padding:30px 32px;margin:8px 0 28px;
+    background:linear-gradient(135deg,#fef9ed 0%,#fdf3e0 100%)}
+  .example-card .tag{font-family:var(--mono);font-weight:600;font-size:11px;
+    letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin-bottom:16px;display:block}
+  .example-card p{color:#5a4810}
+  .example-card strong{color:var(--accent-2)}
+  .example-card p:last-child{margin-bottom:0}
+
+  /* ---- DỄ NHẦM (optional clarify / boundaries) ---- */
+  .clarify{background:var(--bg-soft)}
+  .clarify .big-num{color:#d8cdb2}
+  .mix-q{margin:0 0 30px;padding-left:24px;border-left:2px solid var(--border-strong)}
+  .mix-q:last-child{margin-bottom:0}
+  .mix-q .q{font-family:var(--serif);font-style:italic;font-weight:500;
+    font-size:22px;line-height:1.35;color:var(--accent-2);margin-bottom:12px;display:block}
+  .mix-q p:last-child{margin-bottom:0}
+
+  /* ---- NỐI TIẾP (bridge to the harder concepts) ---- */
+  .bridge .big-num{color:#bcc7b2}
+  .bridge .lbl{color:var(--bridge)}
+  .bridge-card{border-left:3px solid var(--bridge);background:#f4f6f1;
+    padding:22px 26px;border-radius:0 4px 4px 0;margin-top:6px}
+  .bridge-card p:last-child{margin-bottom:0}
+  .bridge-card strong{color:#42513a}
+
+  /* ---- KỂ LẠI GỌN (refined retell) ---- */
+  .retell{background:linear-gradient(180deg,var(--bg-soft) 0%,var(--bg) 100%);border-bottom:none}
+  .retell h2{color:var(--ink)}
+  .retell strong{color:var(--accent-2)}
+  .retell .core{margin-top:6px}
+  .testbox{border:1px solid var(--border);background:var(--bg-elevated);
+    border-radius:4px;padding:28px 32px;margin-top:40px;box-shadow:0 1px 2px rgba(0,0,0,.03)}
+  .testbox h3{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--accent);margin-bottom:20px}
+  .testbox ol{margin:0;padding-left:22px;counter-reset:t}
+  .testbox li{margin-bottom:16px;color:var(--ink-soft);padding-left:6px}
+  .testbox li:last-child{margin-bottom:0}
+
+  footer{text-align:center;padding:60px 0 88px}
+  footer .mark{font-family:var(--serif);font-weight:700;color:var(--accent);
+    font-size:26px;display:block;margin-bottom:14px}
+  footer p{font-family:var(--serif);font-style:italic;color:var(--muted);font-size:17px;max-width:400px;margin:0 auto}
+
+  @media(max-width:560px){
+    body{font-size:18px}
+    header{padding:70px 0 44px}
+    section{padding:52px 0}
+    .step-head{gap:16px}
+    .big-num{font-size:46px}
+    .lead::first-letter{font-size:60px}
+  }
+
+/* ===== FLAMINDI THEME OVERRIDE (dong bo trang chu flamindi.com) ===== */
+:root{
+  --accent:#2f6fed;--accent-2:#2258c8;--accent2:#2258c8;--gold:#0fb6d4;--cyan:#0fb6d4;--blue:#2f6fed;
+  --bg:#f7f9fe;--bg-elevated:#ffffff;--bg-card:#ffffff;--card:#ffffff;--bg-soft:#eef2fb;--soft:#eef2fb;
+  --border:#e4e9f2;--border-soft:#eef1f7;--border-strong:#cfd8e8;
+  --text:#1a2233;--text-soft:#4e5a74;--text-dim:#6b7691;
+  --ink:#1a2233;--ink-soft:#4e5a74;--muted:#6b7691;--soft-t:#4e5a74;--dim:#6b7691;
+  --serif:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+  --mono:ui-monospace,Menlo,Consolas,monospace;
+}
+body{background:radial-gradient(1200px 600px at 85% -10%,rgba(47,111,237,.14),transparent 60%),radial-gradient(1000px 640px at -10% 30%,rgba(15,182,212,.09),transparent 55%),linear-gradient(#f7f9fe,#edf0f8) fixed !important;}
+</style>
+<style>
+ .tabbar{position:fixed;top:0;left:0;right:0;width:100%;box-sizing:border-box;z-index:40;background:rgba(250,250,247,.93);
+   backdrop-filter:saturate(1.1) blur(8px);-webkit-backdrop-filter:saturate(1.1) blur(8px);
+   border-bottom:1px solid var(--border);display:flex;gap:6px;overflow-x:auto;
+   padding:10px max(36px,calc((100% - 992px)/2));scrollbar-width:thin}
+ .tabbar .tab{flex:0 0 auto;display:flex;align-items:baseline;gap:9px;cursor:pointer;
+   background:transparent;border:1px solid transparent;border-radius:999px;
+   padding:8px 17px;transition:.15s;white-space:nowrap;color:var(--muted)}
+ .tabbar .tab:hover{color:var(--ink);background:var(--bg-soft)}
+ .tabbar .tab.active{color:var(--accent-2);background:var(--bg-soft);border-color:var(--border-strong)}
+ .tabbar .tn{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.1em;color:var(--accent)}
+ .tabbar .tl{font-family:var(--serif);font-weight:500;font-size:16px}
+ body{padding-top:56px} .concept-panel{display:none}
+ .concept-panel.active{display:block}
+ .concept-panel header{padding-top:50px}
+ @media(max-width:560px){.tabbar .tl{max-width:48vw;overflow:hidden;text-overflow:ellipsis}}
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+<nav class="tabbar" aria-label="Các khái niệm nền"><button class="tab" data-i="0"><span class="tn">01</span><span class="tl">Bộ ba: vỡ – trơ – mạnh lên</span></button><button class="tab" data-i="1"><span class="tn">02</span><span class="tl">Được nhiều hơn mất</span></button><button class="tab" data-i="2"><span class="tn">03</span><span class="tl">Biến động là thông tin</span></button><button class="tab" data-i="3"><span class="tn">04</span><span class="tl">Hai loại ngẫu nhiên</span></button></nav>
+<div class="concept-panel" id="c-triad-fragile-robust-antifragile"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Nền tảng · hiểu từ gốc</div>
+    <h1 class="rise" style="animation-delay:.08s">Ba số phận trước biến động: vỡ, trơ, hay mạnh lên</h1>
+    <p class="core rise" style="animation-delay:.16s">Mọi thứ trên đời <span>rơi vào một trong ba: sợ shock, kệ shock, hay thích shock.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Định vị · nó là gì &amp; vì sao học trước</span><h2>Bộ ba nền: Fragile — Robust — Antifragile</h2></div>
+    </div>
+    <div class="rule">Cuốn sách mở ra bằng một khoảng trống: gần như mọi ngôn ngữ đều <strong>thiếu một từ</strong> cho cái đối lập với <em>fragile</em> (dễ vỡ). Từ điển gợi ý <em>robust</em> (vững chãi), nhưng Taleb nói thế là sai. Vững chãi chỉ là <em>không đổi</em> khi gặp shock. Ông đặt một từ mới — <strong>antifragile</strong> — cho thứ <em>tốt lên</em> nhờ shock (Prologue &amp; ch.1). Ba trạng thái đó hợp thành bộ ba <em>Triad</em>.</div>
+    <div class="sub">Vì sao đây là nền</div>
+    <div class="why"><p>Đây là tấm bản đồ của cả cuốn sách. Mọi lập luận về sau chỉ là một câu hỏi: thứ này thuộc cột nào trong ba cột? Nắm được ba cột, bạn khỏi cần đoán tương lai. Chỉ cần xếp mình vào đúng cột, rồi tìm cách dịch sang phải.</p></div>
+  </section>
+
+  <section class="problem">
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Vấn đề nó sinh ra để giải quyết</span><h2>Đối lập với 'dễ vỡ' — bạn đáp sai ngay từ đầu</h2></div>
+    </div>
+    <p class="lead">Thử trả lời nhanh: cái đối lập với 'dễ vỡ' là gì? Gần như ai cũng đáp 'chắc chắn', 'bền', 'không vỡ'. Nghe hợp lý. Nhưng đó mới chỉ là một nửa.</p>
+
+<p>Vấn đề nằm ở đây. Một cái ly bọc mút thì <em>không vỡ</em> — nhưng nó chẳng khá lên sau cú xóc. Vậy có thứ nào <strong>tốt hẳn lên</strong> nhờ bị xóc không? Có. Và ta lại không có sẵn một từ cho nó.</p>
+
+<div class="sub">Vì sao thiếu một từ lại nguy hiểm</div>
+<p>Không có tên thì khó nhìn ra. Ta gộp 'không vỡ' với 'mạnh lên nhờ shock' làm một, rồi bỏ lỡ nhóm thứ ba. Nên trước hết, phải tách bạch ba nhóm. Việc đó thuộc về Bước 2.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Mô hình đơn giản · cách nó chạy</span><h2>Ba cột, theo đúng một câu hỏi: gặp shock thì sao?</h2></div>
+    </div>
+    <p>Xếp mọi thứ vào ba cột, theo đúng một câu hỏi: gặp shock thì sao?</p>
+
+<div class="sub">Cột 1 — Dễ vỡ (fragile)</div>
+<p>Ghét biến động. Một cú xóc nhỏ đã bắt đầu rạn, cú lớn thì vỡ tan. Hình ảnh: thanh kiếm Damocles treo trên sợi lông đuôi ngựa — sớm muộn cũng đứt.</p>
+
+<div class="sub">Cột 2 — Vững chãi (robust)</div>
+<p>Trơ với biến động. Xóc hay không, nó vẫn thế, không tốt hơn cũng không tệ đi. Hình ảnh: chim phượng hoàng cháy thành tro rồi sống lại y như cũ.</p>
+
+<div class="sub">Cột 3 — Lợi từ biến động (antifragile)</div>
+<p>Thích biến động. Càng bị đánh càng mạnh lên. Hình ảnh: quái vật Hydra, chặt một đầu mọc ra hai đầu.</p>
+
+<div class="sub">Một mẹo nhớ: nhãn dán bưu kiện</div>
+<p>Thùng hàng dễ vỡ dán 'xin nhẹ tay'. Vậy thùng antifragile dán gì? 'Xin cứ quăng quật'. Còn thùng vững chãi khỏi dán, vì kệ ai làm gì cũng vậy.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví dụ cụ thể</span><h2>Cùng một cú xóc, ba số phận</h2></div>
+    </div>
+    <div class="example-card"><span class="tag">Ví dụ</span>
+<p>Lấy một cú sốc giống nhau — rung lắc mạnh — thả lên ba thứ.</p>
+<p><strong>Cái ly sứ</strong>: rơi xuống, vỡ. Dễ vỡ. <strong>Hòn đá</strong>: rơi xuống, vẫn nguyên. Vững chãi. <strong>Bắp cơ tay</strong>: bị ép nặng ở phòng gym, rách nhẹ, rồi mọc lại to hơn. Lợi từ biến động.</p>
+<p>Đổi liều một chút cho rõ. Cùng bắp cơ đó, nếu ép <em>quá</em> mức và không cho nghỉ, nó chấn thương. Vậy antifragile chỉ đúng <strong>trong một khoảng</strong> — quá ngưỡng thì thành dễ vỡ.</p>
+</div>
+<p>Đời thường hơn: xương của bạn. Đi bộ, mang vác vừa phải thì xương đặc và chắc thêm. Nằm một chỗ lâu ngày thì xương mỏng đi. Xương 'đòi' được dùng — đúng chất antifragile.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Ba cột ứng với ba kiểu phản ứng của 'lời lãi' theo mức biến động: lõm xuống (concave) là dễ vỡ, thẳng là vững, lồi lên (convex) là antifragile. Cái 'độ cong' này chính là nội dung trang Feynman về lồi–lõm.</p>
+  </section>
+
+  <section class="clarify">
+    <div class="step-head">
+      <div class="big-num">≠</div>
+      <div class="step-meta"><span class="lbl">Dễ nhầm · ranh giới</span><h2>Dễ nhầm — ranh giới của bộ ba</h2></div>
+    </div>
+    <div class="mix-q"><span class="q">"Vững chãi với antifragile — chẳng phải đều là 'không sao' cả sao?"</span><p>Khác nhau ở chỗ 'sau cú sốc'. Vững chãi thì <em>trở lại y như cũ</em>. Antifragile thì <em>tốt hơn cũ</em>. Hòn đá bị nện vẫn là hòn đá. Bắp cơ bị nện lại dày lên. Một cái đứng yên, một cái đi lên.</p></div>
+<div class="mix-q"><span class="q">"Antifragile nghĩa là không bao giờ hỏng à?"</span><p>Không. Nó chỉ mạnh lên trong một khoảng shock vừa phải, có nghỉ. Quá ngưỡng, hay bị dồn liên tục không ngơi, nó vẫn gãy. Mạnh lên nhờ shock không có nghĩa là bất tử.</p></div>
+  </section>
+
+  <section class="bridge">
+    <div class="step-head">
+      <div class="big-num">→</div>
+      <div class="step-meta"><span class="lbl">Nối tiếp · nó dẫn tới đâu</span><h2>Vì sao ba cột này lại có thật</h2></div>
+    </div>
+    <div class="bridge-card"><p>Ba cột không phải do Taleb bịa ra cho đẹp. Bên dưới chúng là <strong>một quy tắc đo được</strong>: so phần được và phần mất khi biến động. Đó chính là tab kế bên — <strong>'Được nhiều hơn mất'</strong>.</p>
+<p>Và khi bạn hỏi 'vì sao biến động lại giúp cột 3 mạnh lên?', câu trả lời sâu nằm ở trang khó <strong>'Lồi và lõm'</strong> (Feynman). Nắm ba cột trước, trang đó hết rối.</p></div>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">✦</div>
+      <div class="step-meta"><span class="lbl">Kể lại trong một hơi</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Mọi thứ đứng trước biến động theo một trong ba kiểu. Dễ vỡ: cú sốc làm nó rạn rồi vỡ. Vững chãi: cú sốc không đổi được nó. Antifragile: cú sốc làm nó mạnh lên, trong một khoảng vừa phải. Muốn an toàn, đừng đoán cú sốc nào sẽ đến — hãy dịch mình sang cột phải.</p>
+<p class="core">Mọi thứ trên đời <span>vỡ, trơ, hay mạnh lên — chọn cột, đừng đoán cú sốc.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã nắm nền chưa?</h3>
+      <ol>
+        <li>Vì sao 'vững chãi' chưa phải là đối lập thật sự của 'dễ vỡ'?</li>
+        <li>Cùng một cú xóc, hãy chỉ ra một thứ dễ vỡ, một thứ vững, một thứ mạnh lên.</li>
+        <li>Antifragile có nghĩa là không bao giờ hỏng không? Vì sao?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nền vững thì cái khó tự nhẹ đi. Hiểu từ gốc, không học vẹt.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-asymmetry-duoc-mat"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Nền tảng · hiểu từ gốc</div>
+    <h1 class="rise" style="animation-delay:.08s">Chìa khoá cả cuốn sách: được nhiều hơn, hay mất nhiều hơn?</h1>
+    <p class="core rise" style="animation-delay:.16s">Chỉ một phép so: <span>khi có biến động, bạn được nhiều hơn hay mất nhiều hơn?</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Định vị · nó là gì &amp; vì sao học trước</span><h2>Bất đối xứng nền: mất so với được</h2></div>
+    </div>
+    <div class="rule">Taleb rút cả cuốn sách về một câu (ch.11–12): <strong>antifragile</strong> = có nhiều phần được (upside) hơn phần mất (downside) khi gặp biến động; <strong>fragile</strong> = ngược lại, mất nhiều hơn được. Ông gọi đó là <em>bất đối xứng nền tảng</em> (foundational asymmetry). Mọi thứ khác trong sách chỉ là hệ quả của câu này.</div>
+    <div class="sub">Vì sao đây là nền</div>
+    <div class="why"><p>Đây là cái máy sinh ra tất cả. Bộ ba Triad, chiến lược tạ đôi, quyền chọn, 'trừ đi cái hại' — tất cả đều mọc ra từ một phép so được–mất. Nắm nó, bạn đọc phần còn lại như đọc hệ quả. Bỏ nó, mỗi chương thành một mẹo rời rạc.</p></div>
+  </section>
+
+  <section class="problem">
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Vấn đề nó sinh ra để giải quyết</span><h2>Một ván cược cho thấy điều ta thật sự nhìn</h2></div>
+    </div>
+    <p class="lead">Bạn sắp cược một ván. Có người bảo: thắng thì được 5 đồng, thua thì mất 100 đồng. Bạn có chơi không? Không đời nào. Bạn vừa dùng một thứ mạnh hơn cả tài đoán: bạn nhìn vào <em>được</em> và <em>mất</em>.</p>
+
+<p>Đó chính là vấn đề khi cố đoán tương lai. Ta cứ mải đoán 'chuyện gì sẽ xảy ra'. Nhưng chuyện tương lai thì mù mịt. Cái ta <em>nhìn rõ</em> ngay bây giờ là: nếu có biến động, mình được bao nhiêu, mất bao nhiêu.</p>
+
+<div class="sub">Vì sao phép so này mạnh hơn tài đoán</div>
+<p>Sai thì vẫn thường xảy ra. Nhưng nếu phần mất luôn nhỏ, phần được luôn lớn, thì đoán sai vẫn không chết. Ngược lại, mất lớn được nhỏ thì chỉ cần một lần xui là gục. Nên hãy lo phần được–mất trước, phần đoán để sau.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Mô hình đơn giản · cách nó chạy</span><h2>Đặt phần được cạnh phần mất, xem bên nào nặng</h2></div>
+    </div>
+    <p>Chỉ có một động tác: đặt <strong>phần được</strong> cạnh <strong>phần mất</strong>, rồi xem bên nào nặng hơn khi mọi thứ chao đảo.</p>
+
+<div class="sub">Ba khả năng</div>
+<p>Mất nặng hơn được: đó là <em>dễ vỡ</em>. Được nặng hơn mất: đó là <em>antifragile</em>. Hai bên bằng nhau: <em>vững chãi</em>, biến động không thêm bớt gì.</p>
+
+<div class="sub">'Nặng hơn', không phải 'hay xảy ra hơn'</div>
+<p>Một chuyện hiếm mà mất sạch thì vẫn đáng sợ hơn nhiều chuyện thường mà được tí. Nên ta cân <em>độ lớn</em> của được và mất, không chỉ đếm số lần. Một lần vỡ nợ xoá hết trăm lần lãi nhỏ.</p>
+
+<div class="sub">Hệ quả lạ tai</div>
+<p>Nếu bạn được nhiều hơn mất, thì sự <em>ổn định</em> lại hại bạn. Mỗi cú biến động là một món quà. Đây là lý do người làm ăn thật sự không sợ khủng hoảng — họ cần nó để bứt lên.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví dụ cụ thể</span><h2>Hai lời cược, cùng một cơn bão</h2></div>
+    </div>
+    <div class="example-card"><span class="tag">Ví dụ</span>
+<p>So hai người trong cùng một cơn biến động thị trường.</p>
+<p><strong>An</strong> vay tiền mua cổ phiếu. Lên thì lời to. Xuống thì không chỉ mất tiền mình, còn ôm nợ. Mất có thể lớn hơn được rất nhiều — <em>dễ vỡ</em>.</p>
+<p><strong>Bình</strong> để dành phần lớn tiền mặt an toàn, chỉ bỏ một khoản nhỏ vào vài cược liều. Xui thì mất đúng khoản nhỏ đó. Hên thì được gấp nhiều lần. Được lớn, mất bé — <em>antifragile</em>.</p>
+<p>Đổi bối cảnh xem sao. Thị trường càng chao đảo mạnh, An càng dễ gục, còn Bình càng có cơ trúng lớn. Cùng một cơn bão, hai số phận ngược nhau — chỉ vì hình dạng được–mất khác nhau.</p>
+</div>
+<p>Chuyện nhỏ hằng ngày: gửi lời mời 'tiện thì ghé' cho một người. Họ đến thì bạn có bạn chơi. Họ bận thì bạn chẳng mất gì. Được thì có, mất thì gần như không — một cược lệch hẳn về phía lợi.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Trong tài chính, một <em>option</em> (quyền chọn) là bất đối xứng đóng gói sẵn: mất tối đa là phí bỏ ra, được thì bỏ ngỏ. Đây là lý do Thales cổ đại giàu lên nhờ đặt cọc thuê máy ép ô liu — một quyền, không phải nghĩa vụ.</p>
+  </section>
+
+  <section class="clarify">
+    <div class="step-head">
+      <div class="big-num">≠</div>
+      <div class="step-meta"><span class="lbl">Dễ nhầm · ranh giới</span><h2>Dễ nhầm — ranh giới của phép so</h2></div>
+    </div>
+    <div class="mix-q"><span class="q">"Được nhiều hơn mất — chẳng phải chỉ là 'lời nhiều hơn lỗ' như buôn bán thường?"</span><p>Gần, nhưng khác một điểm cốt. Buôn bán thường lo <em>trung bình</em> lời hay lỗ. Ở đây ta lo <em>cực điểm</em>: lần mất tệ nhất lớn cỡ nào. Một cửa hàng lời đều nhưng một trận cháy xoá sạch thì vẫn là dễ vỡ. Nhìn cái đuôi xấu nhất, đừng nhìn số trung bình.</p></div>
+<div class="mix-q"><span class="q">"Vậy cứ tránh mọi rủi ro cho chắc?"</span><p>Không phải. Điểm mấu chốt là <em>hình dạng</em>, không phải 'có rủi ro hay không'. Ta vui vẻ nhận rủi ro khi mất thì bé mà được thì lớn. Ta chỉ tránh loại rủi ro mà mất thì lớn còn được thì bé.</p></div>
+  </section>
+
+  <section class="bridge">
+    <div class="step-head">
+      <div class="big-num">→</div>
+      <div class="step-meta"><span class="lbl">Nối tiếp · nó dẫn tới đâu</span><h2>Phép so này đưa thẳng tới hai ý sau</h2></div>
+    </div>
+    <div class="bridge-card"><p>Bất đối xứng được–mất chính là <strong>cái cân</strong> nằm dưới ba cột ở tab trước. Cột nào cũng chỉ là một câu trả lời cho câu hỏi 'bên nào nặng hơn'.</p>
+<p>Nó cũng mở ra hai câu hỏi sâu hơn ở trang Feynman. Một: vì sao biến động lại <em>tự</em> nghiêng cán cân về phía lợi cho vài thứ? — đó là trang <strong>'Lồi và lõm'</strong>. Hai: vì sao quá khứ êm đềm lại giấu mất phần mất khổng lồ? — đó là trang <strong>'Con gà tây'</strong>.</p></div>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">✦</div>
+      <div class="step-meta"><span class="lbl">Kể lại trong một hơi</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Thay vì đoán chuyện gì sẽ xảy ra, hãy nhìn: khi có biến động, mình được nhiều hơn hay mất nhiều hơn? Mất nặng hơn là dễ vỡ. Được nặng hơn là antifragile. Cân độ lớn, nhất là lần tệ nhất, đừng chỉ đếm số lần.</p>
+<p class="core">Chỉ một phép so: <span>được nhiều hơn mất thì biến động là bạn; ngược lại nó là kẻ thù.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã nắm nền chưa?</h3>
+      <ol>
+        <li>Vì sao nhìn vào 'được và mất' lại chắc ăn hơn cố đoán 'chuyện gì sẽ xảy ra'?</li>
+        <li>Hai người cùng gặp một cơn biến động, vì sao một người gục còn một người trúng lớn?</li>
+        <li>Vì sao phải cân độ lớn của lần mất tệ nhất, thay vì chỉ đếm xem mất mấy lần?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nền vững thì cái khó tự nhẹ đi. Hiểu từ gốc, không học vẹt.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-bien-dong-la-thong-tin"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Nền tảng · hiểu từ gốc</div>
+    <h1 class="rise" style="animation-delay:.08s">Vì sao 'êm quá' lại đáng ngờ, còn cú xóc lại có ích</h1>
+    <p class="core rise" style="animation-delay:.16s">Biến động không chỉ là rủi ro — <span>nó là tin nhắn; dẹp hết biến động là bịt tai lại.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Định vị · nó là gì &amp; vì sao học trước</span><h2>Stressor là thông tin, không phải tổn thương</h2></div>
+    </div>
+    <div class="rule">Taleb (ch.2–5): cơ thể sống và các hệ phức tạp nhận biết môi trường <strong>qua stressor</strong> — cú va, sức ép, thiếu thốn — chứ không qua suy luận. Xương chắc lên khi bị nén (Wolff's Law); cơ to lên khi bị căng; miễn dịch học được khi gặp mầm bệnh (<em>hormesis</em>). Bịt hết các cú sốc nhỏ không làm hệ an toàn hơn — nó làm hệ mù thông tin và dồn rủi ro thành cú lớn.</div>
+    <div class="sub">Vì sao đây là nền</div>
+    <div class="why"><p>Đây là nền lý giải cho nửa sau cuốn sách. Vì sao lương đều lại nguy? Vì sao 'ổn định hoá' nền kinh tế lại gây sụp? Vì sao chữa bệnh quá tay lại hại? Tất cả đều từ một ý: biến động mang tin. Chưa nắm ý này, các cảnh báo sau nghe như nghịch lý. Nắm rồi, chúng thành hiển nhiên.</p></div>
+  </section>
+
+  <section class="problem">
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Vấn đề nó sinh ra để giải quyết</span><h2>Hai anh em sinh đôi: ai thật sự an toàn hơn?</h2></div>
+    </div>
+    <p class="lead">Hai anh em sinh đôi ở London, thu nhập trung bình như nhau. An làm nhân viên ngân hàng, lương đều tăm tắp mỗi tháng. Bình chạy taxi, ngày được nhiều ngày ít. Ai an toàn hơn?</p>
+
+<p>Gần như ai cũng chỉ An. Nhưng khoan. Lương đều của An <em>giấu</em> một sự thật: nếu ngày nào đó bị cho nghỉ ở tuổi năm mươi, anh gần như không gượng dậy nổi. Cú sốc dồn lại một lần, rất lớn.</p>
+
+<div class="sub">Cái êm ả đã nói dối chỗ nào</div>
+<p>Bình bị xóc mỗi ngày, nên anh chỉnh mình liên tục. Cái xóc đó là <em>tin</em>: hôm nay ế thì mai đổi tuyến. An không có tin gì cả, vì mọi thứ phẳng lì — cho tới ngày phẳng lì gãy đổ. Đường đi càng mượt, rủi ro giấu bên dưới càng dày.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Mô hình đơn giản · cách nó chạy</span><h2>Coi cú sốc là tin nhắn, không phải đòn đánh</h2></div>
+    </div>
+    <p>Đổi cách nhìn: coi cú sốc là <strong>tin nhắn</strong> gửi cho hệ thống, không phải đòn đánh.</p>
+
+<div class="sub">Cú sốc dạy hệ mạnh lên</div>
+<p>Nén xương, xương đặc thêm. Căng cơ, cơ dày thêm. Cho một liều độc bé, cơ thể bật cơ chế phòng vệ và khoẻ hơn — đó là <em>hormesis</em>, kiểu như vắc-xin hay tập tạ. Không có cú sốc, hệ không có cớ để mạnh lên.</p>
+
+<div class="sub">Bịt cú sốc nhỏ, nuôi cú sốc lớn</div>
+<p>Khi ta ép mọi thứ phải phẳng, biến động nhỏ biến mất trên bề mặt. Nhưng nó không tan — nó dồn lại. Đến lúc bung ra thì thành một cú khổng lồ. Rừng cấm cháy nhỏ sẽ tích củi khô cho một trận cháy lớn.</p>
+
+<div class="sub">Một điều kiện quan trọng: phải có nghỉ</div>
+<p>Cú sốc chỉ nuôi hệ khi nó <em>vừa phải và có quãng hồi</em>. Tập nặng rồi nghỉ hai ngày thì khoẻ. Bị ép liên miên không ngơi — nợ, kẹt xe, lo âu triền miên — thì gục. Cùng là sức ép, nhịp nghỉ quyết định lợi hay hại.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví dụ cụ thể</span><h2>Cơ bắp, khu rừng, và bảng lương</h2></div>
+    </div>
+    <div class="example-card"><span class="tag">Ví dụ</span>
+<p>Ba nơi, cùng một quy luật 'biến động là tin'.</p>
+<p><strong>Cơ bắp</strong>: buổi tập nặng là cú sốc. Nghỉ đủ thì cơ mọc lại dày hơn. Bỏ tập, nằm yên, cơ teo. <strong>Khu rừng</strong>: những đám cháy nhỏ dọn bớt củi khô. Cấm sạch cháy nhỏ, củi dồn lại, một tia lửa thành đại hoạ.</p>
+<p>Giờ đến <strong>bảng lương</strong>. Thu nhập lên xuống của người chạy taxi là tin để chỉnh mỗi ngày. Lương phẳng của nhân viên văn phòng là sự êm ả đi vay: rủi ro mất việc vẫn còn nguyên, chỉ bị dời tới một ngày, gộp thành cục lớn.</p>
+</div>
+<p>Ngay cả cơn sốt cũng vậy. Sốt nhẹ là cách cơ thể báo động và chống lại mầm bệnh. Vội tắt cho 'êm' đôi khi lại tắt luôn tín hiệu và kéo dài bệnh. Cái khó chịu ấy thường là tin, không phải kẻ thù.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Taleb chia stressor thành cấp tính (có hồi phục) và mạn tính (triền miên). Hệ antifragile yêu loại cấp tính kèm nghỉ, và chết dưới loại mạn tính. Một từ khác cho 'liều nhỏ có lợi' là <em>hormesis</em>; nhịn ăn ngắt quãng kích hoạt <em>autophagy</em> — tế bào dọn phần yếu để tái tạo.</p>
+  </section>
+
+  <section class="clarify">
+    <div class="step-head">
+      <div class="big-num">≠</div>
+      <div class="step-meta"><span class="lbl">Dễ nhầm · ranh giới</span><h2>Dễ nhầm — ranh giới</h2></div>
+    </div>
+    <div class="mix-q"><span class="q">"Biến động có ích — vậy càng nhiều sốc càng tốt à?"</span><p>Không. Chỉ sốc <em>vừa phải và có nghỉ</em> mới nuôi hệ. Quá liều, hoặc dồn dập không ngơi, thì chính cú sốc giết hệ. Liều thuốc thành thuốc độc là ở chỗ đó. 'Có ích' luôn kèm điều kiện về liều và nhịp nghỉ.</p></div>
+<div class="mix-q"><span class="q">"Lương đều thì có gì sai? Ổn định chẳng phải điều tốt sao?"</span><p>Ổn định không xấu, nhưng nó có thể là <em>giả</em>. Cái êm ả của lương đều khiến ta không thấy rủi ro mất việc đang lớn dần. Nó không mất đi, chỉ bị giấu. Ổn định thật đến từ nhiều nguồn thu và có phần dự phòng, không phải từ một dòng phẳng lì.</p></div>
+  </section>
+
+  <section class="bridge">
+    <div class="step-head">
+      <div class="big-num">→</div>
+      <div class="step-meta"><span class="lbl">Nối tiếp · nó dẫn tới đâu</span><h2>Từ đây mở ra hai cảnh báo lớn</h2></div>
+    </div>
+    <div class="bridge-card"><p>Một khi thấy 'êm quá là đáng ngờ', bạn đã cầm chìa khoá cho hai trang khó phía sau. Trang <strong>'Con gà tây'</strong> (Feynman) kể chuyện một con vật thấy đời ngày càng êm — ngay trước ngày bị làm thịt. Chuỗi ngày êm chính là bằng chứng rủi ro đang bị nén.</p>
+<p>Trang <strong>'Người chữa gây hại'</strong> (Feynman) đẩy tiếp một bước. Khi ta can thiệp để 'ổn định hoá' — nền kinh tế, cơ thể, khu rừng — điều gì xảy ra? Ta thường nuôi lớn đúng cái tai hoạ mình muốn tránh.</p></div>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">✦</div>
+      <div class="step-meta"><span class="lbl">Kể lại trong một hơi</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Cú sốc mang tin: xương, cơ, miễn dịch đều mạnh lên nhờ bị thử. Dẹp sạch biến động nhỏ không làm ta an toàn — nó bịt tin và dồn rủi ro thành một cú lớn. Nhưng sốc chỉ nuôi ta khi vừa phải và có nghỉ; triền miên thì giết.</p>
+<p class="core">Biến động không chỉ là rủi ro — <span>êm quá thường là rủi ro đang bị nén, chờ ngày bung.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã nắm nền chưa?</h3>
+      <ol>
+        <li>Vì sao lương đều mỗi tháng lại có thể 'an toàn giả', nguy hơn thu nhập lên xuống?</li>
+        <li>Cấm hết các đám cháy nhỏ trong rừng dẫn tới điều gì, và vì sao?</li>
+        <li>Cùng là sức ép lên cơ thể, điều gì quyết định nó làm ta mạnh lên hay gục xuống?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nền vững thì cái khó tự nhẹ đi. Hiểu từ gốc, không học vẹt.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-hai-loai-ngau-nhien"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Nền tảng · hiểu từ gốc</div>
+    <h1 class="rise" style="animation-delay:.08s">Hai thế giới ngẫu nhiên: nơi không cú nào lớn, và nơi một cú đổi tất cả</h1>
+    <p class="core rise" style="animation-delay:.16s">Không phải ngẫu nhiên nào cũng giống nhau: <span>có nơi không cú nào lớn, có nơi một cú nuốt cả tổng.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Định vị · nó là gì &amp; vì sao học trước</span><h2>Mediocristan và Extremistan</h2></div>
+    </div>
+    <div class="rule">Taleb (ch.3) tách ngẫu nhiên làm hai miền. <strong>Mediocristan</strong>: nhiều biến động nhỏ, không cú nào áp đảo; một mẫu riêng lẻ không đổi được tổng thể (ví dụ chiều cao, cân nặng). <strong>Extremistan</strong>: ít biến động nhưng có cú cực lớn nuốt gần hết tổng (ví dụ giá tài sản, doanh thu sách, thương vong chiến tranh). Nhầm miền này với miền kia là gốc của phần lớn sai lầm khi dự đoán.</div>
+    <div class="sub">Vì sao đây là nền</div>
+    <div class="why"><p>Nền này quyết định bạn được phép tin dữ liệu quá khứ tới đâu. Ở một miền, quá khứ nói khá đủ về tương lai. Ở miền kia, cú lớn nhất chưa từng xuất hiện trong mẫu — nên quá khứ ru ngủ bạn. Chưa phân biệt hai miền, bạn sẽ mang trực giác của miền an toàn vào miền chết người.</p></div>
+  </section>
+
+  <section class="problem">
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Vấn đề nó sinh ra để giải quyết</span><h2>Một người bước vào phòng — và mọi thứ đổi khác</h2></div>
+    </div>
+    <p class="lead">Lấy một nghìn người vào một phòng, tính cân nặng trung bình. Giờ cho người nặng nhất hành tinh bước vào. Trung bình nhích lên không đáng kể. Bây giờ đổi trò: tính tài sản trung bình của một nghìn người đó, rồi cho người giàu nhất thế giới bước vào.</p>
+
+<p>Con số trung bình nổ tung. Một người vừa nuốt trọn cả phòng. Hai trò chơi, hai loại ngẫu nhiên khác hẳn nhau — và ta hay lẫn chúng làm một.</p>
+
+<div class="sub">Vì sao lẫn hai miền là chết người</div>
+<p>Với cân nặng, không ai một mình lật được tổng. Với tài sản, một cú là đủ. Nếu mang thói quen của 'cân nặng' sang xử chuyện 'tài sản', bạn sẽ tưởng mình đo được rủi ro — trong khi cú lớn nhất còn chưa ló mặt.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Mô hình đơn giản · cách nó chạy</span><h2>Hỏi một câu: một mẫu có lật được cả tổng không?</h2></div>
+    </div>
+    <p>Hỏi đúng một câu để biết mình đang ở miền nào: <strong>một mẫu đơn lẻ có thể lật cả tổng không?</strong></p>
+
+<div class="sub">Miền 'không cú nào lớn'</div>
+<p>Ở đây mọi mẫu đều xấp xỉ nhau. Không ai cao gấp mười người thường, không ai ăn gấp nghìn lần người thường. Gom càng nhiều mẫu, trung bình càng vững. Quá khứ nói khá đủ về tương lai.</p>
+
+<div class="sub">Miền 'một cú nuốt tất cả'</div>
+<p>Ở đây phần lớn cái nhỏ, nhưng thi thoảng có cú khổng lồ chiếm gần hết. Một cuốn sách bán chạy gánh doanh thu cho vạn cuốn ế. Một ngày có thể nhân đôi hay xoá nửa tài sản. Trung bình gần như vô nghĩa.</p>
+
+<div class="sub">Cái bẫy: can thiệp có thể đổi miền</div>
+<p>Nén biến động nhỏ của một hệ 'không cú nào lớn' có thể biến nó thành hệ 'một cú nuốt tất cả'. Bề mặt trông êm hơn, nhưng bên dưới nuôi một cú bung. Đây là cầu nối sang ý 'biến động là thông tin'.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví dụ cụ thể</span><h2>Chiều cao và doanh thu sách</h2></div>
+    </div>
+    <div class="example-card"><span class="tag">Ví dụ</span>
+<p><strong>Chiều cao</strong>: người cao nhất lịch sử chưa tới ba mét. Không ai cao gấp năm lần bạn. Cộng chiều cao vạn người, một cá nhân không xê dịch được trung bình. Đây là miền 'không cú nào lớn'.</p>
+<p><strong>Doanh thu sách</strong>: phần rất nhỏ tác giả gom gần hết tiền của cả ngành. Một cuốn hiện tượng bán hơn triệu bản, muôn cuốn khác bán vài trăm. Một cái tên lật cả bảng tổng. Đây là miền 'một cú nuốt tất cả'.</p>
+<p>Thử đặt sai chỗ mà xem. Bạn ước lượng 'doanh thu cuốn sách tới' bằng cách lấy trung bình quá khứ, như thể nó là chiều cao. Bạn sẽ trật xa — vì cú lớn nhất chưa nằm trong mẫu.</p>
+</div>
+<p>Vài miền quen thuộc, xếp nhanh: lượng calo ăn mỗi ngày, số đo cơ thể — miền không cú nào lớn. Giá nhà đất, số người theo dõi trên mạng, thiệt hại một trận thiên tai — miền một cú nuốt tất cả.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Taleb xếp thêm một tầng: ghép 'miền ngẫu nhiên' với 'mức phơi nhiễm đuôi' thành bốn ô (Fourth Quadrant). Ô nguy nhất là Extremistan cộng phơi nhiễm đuôi cao — nơi dự đoán bất khả thi, chỉ còn cách giảm phơi nhiễm: bớt đòn bẩy, giữ tiền mặt, dự phòng.</p>
+  </section>
+
+  <section class="clarify">
+    <div class="step-head">
+      <div class="big-num">≠</div>
+      <div class="step-meta"><span class="lbl">Dễ nhầm · ranh giới</span><h2>Dễ nhầm — ranh giới</h2></div>
+    </div>
+    <div class="mix-q"><span class="q">"Extremistan chỉ là 'nhiều rủi ro hơn' thôi phải không?"</span><p>Không hẳn. Khác biệt không nằm ở 'nhiều hay ít' rủi ro, mà ở <em>hình dạng</em>. Ở Mediocristan, rủi ro trải đều, không cú nào lật bàn. Ở Extremistan, gần như toàn bộ rủi ro dồn vào một cú hiếm. Cùng một độ 'nguy', hai hình dạng đòi hai cách ứng xử khác nhau.</p></div>
+<div class="mix-q"><span class="q">"Ở Extremistan cứ thu thập thêm dữ liệu là đo được rủi ro chứ gì?"</span><p>Đây mới là chỗ ngược đời. Thêm dữ liệu quá khứ giúp ích ở miền 'không cú nào lớn'. Ở miền 'một cú nuốt tất cả', cú quyết định thường <em>chưa</em> có trong dữ liệu. Mẫu càng mượt càng dễ khiến bạn tự tin nhầm, ngay trước cú lớn.</p></div>
+  </section>
+
+  <section class="bridge">
+    <div class="step-head">
+      <div class="big-num">→</div>
+      <div class="step-meta"><span class="lbl">Nối tiếp · nó dẫn tới đâu</span><h2>Miền này dẫn thẳng tới con gà tây</h2></div>
+    </div>
+    <div class="bridge-card"><p>Biết mình đang ở Extremistan là biết vì sao 'quá khứ êm' không cứu được bạn. Đó chính là trang khó <strong>'Con gà tây'</strong> (Feynman). Con vật thấy đời ngày càng tốt suốt nghìn ngày — vì cú lớn nhất dồn hết vào đúng ngày cuối.</p>
+<p>Nó cũng nối lại với tab <strong>'Được nhiều hơn mất'</strong>. Ở Extremistan, phần mất nằm ở cái đuôi hiếm. Nên phải nhìn lần tệ nhất, đừng nhìn số trung bình.</p></div>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">✦</div>
+      <div class="step-meta"><span class="lbl">Kể lại trong một hơi</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Có hai loại ngẫu nhiên. Một loại không cú nào lớn: mọi mẫu xấp xỉ nhau, quá khứ nói khá đủ, như chiều cao. Một loại một cú nuốt tất cả: vài cú khổng lồ gom gần hết, trung bình vô nghĩa, như tài sản. Hỏi 'một mẫu có lật được cả tổng không' để biết mình đang ở đâu.</p>
+<p class="core">Không phải ngẫu nhiên nào cũng giống nhau: <span>hỏi 'một cú có lật cả tổng không' — rồi mới biết tin quá khứ tới đâu.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã nắm nền chưa?</h3>
+      <ol>
+        <li>Cùng cho một người 'kỷ lục' bước vào phòng, vì sao trung bình cân nặng gần như không đổi mà trung bình tài sản thì nổ tung?</li>
+        <li>Làm sao chỉ bằng một câu hỏi để biết mình đang ở miền ngẫu nhiên nào?</li>
+        <li>Vì sao ở Extremistan, càng nhiều dữ liệu quá khứ đôi khi lại khiến ta tự tin nhầm?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nền vững thì cái khó tự nhẹ đi. Hiểu từ gốc, không học vẹt.</p>
+  </footer>
+
+</div></div>
+<script>
+  var bar=document.getElementById('progress');
+  function upd(){var h=document.documentElement;var s=h.scrollTop||document.body.scrollTop;
+    var max=(h.scrollHeight-h.clientHeight)||1;bar.style.width=(s/max*100)+'%';}
+  window.addEventListener('scroll',upd,{passive:true});upd();
+  var io=new IntersectionObserver(function(es){es.forEach(function(e){
+    if(e.isIntersecting){e.target.style.animation='rise .7s cubic-bezier(.2,.7,.3,1) forwards';io.unobserve(e.target);}});},{threshold:.12});
+  document.querySelectorAll('section').forEach(function(s){s.style.opacity='0';io.observe(s);});
+</script>
+
+<script>
+(function(){
+  var tabs=[].slice.call(document.querySelectorAll('.tabbar .tab'));
+  var panels=[].slice.call(document.querySelectorAll('.concept-panel'));
+  function show(i){
+    tabs.forEach(function(t,j){t.classList.toggle('active',j===i);});
+    panels.forEach(function(p,j){
+      var on=(j===i); p.classList.toggle('active',on);
+      if(on){p.querySelectorAll('section').forEach(function(s){s.style.opacity='';s.style.animation='';});}
+    });
+    try{history.replaceState(null,'','#'+panels[i].id);}catch(e){}
+    window.scrollTo(0,0); window.dispatchEvent(new Event('scroll'));
+  }
+  tabs.forEach(function(t){t.addEventListener('click',function(){show(+t.getAttribute('data-i'));});});
+  var start=0; panels.forEach(function(p,j){if('#'+p.id===location.hash)start=j;});
+  show(start);
+})();
+</script>
+
+</body></html>

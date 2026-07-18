@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="vi"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IAS 28 Investments in Associates and Joint Ventures — Nền tảng, hiểu từ gốc</title>
+<style>
+  /* Design tokens shared with ebook-to-study-html + feynman-from-study (styles_v2.css) */
+  :root{
+    --bg:#fafaf7; --bg-elevated:#ffffff; --bg-soft:#f3f3ee;
+    --border:#e0e0d8; --border-soft:#ececea; --border-strong:#d2c8b6;
+    --ink:#1a1a1f; --ink-soft:#3f3f4a; --muted:#7a7a85;
+    --accent:#2f6fed; --accent-2:#2258c8; --gold:#0fb6d4; --bridge:#5a6b4f;
+    --serif:"Fraunces",Georgia,"Iowan Old Style",serif;
+    --sans:"Geist",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    --mono:"Geist Mono","JetBrains Mono",Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:var(--sans);
+    font-size:19px;line-height:1.72;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}
+  .progress{position:fixed;top:0;left:0;height:3px;width:0;z-index:50;
+    background:linear-gradient(90deg,var(--gold),var(--accent));transition:width .08s linear}
+  .wrap{max-width:920px;margin:0 auto;padding:0 36px}
+  .rise{opacity:0;transform:translateY(14px);animation:rise .7s cubic-bezier(.2,.7,.3,1) forwards}
+  @keyframes rise{to{opacity:1;transform:none}}
+
+  header{padding:104px 0 60px;border-bottom:1px solid var(--border)}
+  .kicker{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.18em;
+    text-transform:uppercase;color:var(--accent);margin-bottom:26px}
+  h1{font-family:var(--serif);font-weight:600;font-size:clamp(42px,7.6vw,72px);
+    line-height:1.0;letter-spacing:-.022em;margin-bottom:28px;font-optical-sizing:auto;color:var(--ink)}
+  h1 em{font-style:italic;color:var(--accent)}
+  .core{font-family:var(--serif);font-style:italic;font-weight:400;
+    font-size:clamp(21px,3.6vw,27px);line-height:1.44;color:var(--ink-soft)}
+  .core span{font-style:normal;font-weight:600;color:var(--accent-2);
+    box-shadow:inset 0 -.5em 0 rgba(47,111,237,.16)}
+
+  /* ---- BƯỚC 0: ĐỊNH VỊ (what it is + why it's the foundation) ---- */
+  .anchor .rule{font-family:var(--serif);font-size:19px;line-height:1.5;color:var(--ink);
+    background:var(--bg-soft);border-left:3px solid var(--accent);
+    padding:18px 24px;border-radius:0 4px 4px 0;margin:0}
+  .anchor .rule em{font-style:italic;color:var(--accent-2)}
+  .anchor .rule strong{color:var(--ink);font-weight:600}
+  .anchor .why{color:var(--ink-soft)}
+
+  section{padding:72px 0;border-bottom:1px solid var(--border);position:relative}
+  .step-head{display:flex;align-items:flex-start;gap:22px;margin-bottom:34px}
+  .big-num{font-family:var(--serif);font-weight:700;font-size:62px;line-height:.8;
+    color:var(--border-strong);flex:none;font-optical-sizing:auto;letter-spacing:-.03em}
+  .step-meta{padding-top:4px}
+  .lbl{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--accent);display:block;margin-bottom:10px}
+  h2{font-family:var(--serif);font-weight:600;font-size:clamp(27px,4.4vw,37px);
+    line-height:1.12;letter-spacing:-.012em;color:var(--ink)}
+  h2 em{font-style:italic;color:var(--accent)}
+  p{margin-bottom:21px}
+  p:last-child{margin-bottom:0}
+  strong{font-weight:600;color:var(--ink)}
+  em{font-style:italic;color:var(--accent-2)}
+  .gloss{color:var(--muted);font-style:italic}
+
+  .lead::first-letter{font-family:var(--serif);font-weight:700;float:left;
+    font-size:74px;line-height:.74;padding:8px 12px 0 0;color:var(--accent)}
+
+  .sub{font-family:var(--serif);font-weight:600;font-size:17px;letter-spacing:.01em;
+    color:var(--ink);margin:34px 0 14px;display:flex;align-items:center;gap:11px}
+  .sub::before{content:"";width:18px;height:2px;background:var(--accent);flex:none;border-radius:2px}
+
+  /* ---- BƯỚC 1: VẤN ĐỀ (why it exists) ---- */
+  .problem{background:var(--bg-soft)}
+  .problem .big-num{color:#e2d6b4}
+
+  /* ---- BƯỚC 3: VÍ DỤ (concrete worked example) ---- */
+  .example-card{border:1px solid #e8c876;border-radius:4px;padding:30px 32px;margin:8px 0 28px;
+    background:linear-gradient(135deg,#fef9ed 0%,#fdf3e0 100%)}
+  .example-card .tag{font-family:var(--mono);font-weight:600;font-size:11px;
+    letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin-bottom:16px;display:block}
+  .example-card p{color:#5a4810}
+  .example-card strong{color:var(--accent-2)}
+  .example-card p:last-child{margin-bottom:0}
+
+  /* ---- DỄ NHẦM (optional clarify / boundaries) ---- */
+  .clarify{background:var(--bg-soft)}
+  .clarify .big-num{color:#d8cdb2}
+  .mix-q{margin:0 0 30px;padding-left:24px;border-left:2px solid var(--border-strong)}
+  .mix-q:last-child{margin-bottom:0}
+  .mix-q .q{font-family:var(--serif);font-style:italic;font-weight:500;
+    font-size:22px;line-height:1.35;color:var(--accent-2);margin-bottom:12px;display:block}
+  .mix-q p:last-child{margin-bottom:0}
+
+  /* ---- NỐI TIẾP (bridge to the harder concepts) ---- */
+  .bridge .big-num{color:#bcc7b2}
+  .bridge .lbl{color:var(--bridge)}
+  .bridge-card{border-left:3px solid var(--bridge);background:#f4f6f1;
+    padding:22px 26px;border-radius:0 4px 4px 0;margin-top:6px}
+  .bridge-card p:last-child{margin-bottom:0}
+  .bridge-card strong{color:#42513a}
+
+  /* ---- KỂ LẠI GỌN (refined retell) ---- */
+  .retell{background:linear-gradient(180deg,var(--bg-soft) 0%,var(--bg) 100%);border-bottom:none}
+  .retell h2{color:var(--ink)}
+  .retell strong{color:var(--accent-2)}
+  .retell .core{margin-top:6px}
+  .testbox{border:1px solid var(--border);background:var(--bg-elevated);
+    border-radius:4px;padding:28px 32px;margin-top:40px;box-shadow:0 1px 2px rgba(0,0,0,.03)}
+  .testbox h3{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--accent);margin-bottom:20px}
+  .testbox ol{margin:0;padding-left:22px;counter-reset:t}
+  .testbox li{margin-bottom:16px;color:var(--ink-soft);padding-left:6px}
+  .testbox li:last-child{margin-bottom:0}
+
+  footer{text-align:center;padding:60px 0 88px}
+  footer .mark{font-family:var(--serif);font-weight:700;color:var(--accent);
+    font-size:26px;display:block;margin-bottom:14px}
+  footer p{font-family:var(--serif);font-style:italic;color:var(--muted);font-size:17px;max-width:400px;margin:0 auto}
+
+  @media(max-width:560px){
+    body{font-size:18px}
+    header{padding:70px 0 44px}
+    section{padding:52px 0}
+    .step-head{gap:16px}
+    .big-num{font-size:46px}
+    .lead::first-letter{font-size:60px}
+  }
+
+/* ===== FLAMINDI THEME OVERRIDE (dong bo trang chu flamindi.com) ===== */
+:root{
+  --accent:#2f6fed;--accent-2:#2258c8;--accent2:#2258c8;--gold:#0fb6d4;--cyan:#0fb6d4;--blue:#2f6fed;
+  --bg:#f7f9fe;--bg-elevated:#ffffff;--bg-card:#ffffff;--card:#ffffff;--bg-soft:#eef2fb;--soft:#eef2fb;
+  --border:#e4e9f2;--border-soft:#eef1f7;--border-strong:#cfd8e8;
+  --text:#1a2233;--text-soft:#4e5a74;--text-dim:#6b7691;
+  --ink:#1a2233;--ink-soft:#4e5a74;--muted:#6b7691;--soft-t:#4e5a74;--dim:#6b7691;
+  --serif:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+  --mono:ui-monospace,Menlo,Consolas,monospace;
+}
+body{background:radial-gradient(1200px 600px at 85% -10%,rgba(47,111,237,.14),transparent 60%),radial-gradient(1000px 640px at -10% 30%,rgba(15,182,212,.09),transparent 55%),linear-gradient(#f7f9fe,#edf0f8) fixed !important;}
+</style>
+<style>
+ .tabbar{position:fixed;top:0;left:0;right:0;width:100%;box-sizing:border-box;z-index:40;background:rgba(250,250,247,.93);
+   backdrop-filter:saturate(1.1) blur(8px);-webkit-backdrop-filter:saturate(1.1) blur(8px);
+   border-bottom:1px solid var(--border);display:flex;gap:6px;overflow-x:auto;
+   padding:10px max(36px,calc((100% - 992px)/2));scrollbar-width:thin}
+ .tabbar .tab{flex:0 0 auto;display:flex;align-items:baseline;gap:9px;cursor:pointer;
+   background:transparent;border:1px solid transparent;border-radius:999px;
+   padding:8px 17px;transition:.15s;white-space:nowrap;color:var(--muted)}
+ .tabbar .tab:hover{color:var(--ink);background:var(--bg-soft)}
+ .tabbar .tab.active{color:var(--accent-2);background:var(--bg-soft);border-color:var(--border-strong)}
+ .tabbar .tn{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.1em;color:var(--accent)}
+ .tabbar .tl{font-family:var(--serif);font-weight:500;font-size:16px}
+ body{padding-top:56px} .concept-panel{display:none}
+ .concept-panel.active{display:block}
+ .concept-panel header{padding-top:50px}
+ @media(max-width:560px){.tabbar .tl{max-width:48vw;overflow:hidden;text-overflow:ellipsis}}
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+<nav class="tabbar" aria-label="Các khái niệm nền"><button class="tab" data-i="0"><span class="tn">01</span><span class="tl">Ảnh hưởng đáng kể</span></button><button class="tab" data-i="1"><span class="tn">02</span><span class="tl">Liên kết vs liên doanh</span></button><button class="tab" data-i="2"><span class="tn">03</span><span class="tl">Phương pháp vốn chủ</span></button><button class="tab" data-i="3"><span class="tn">04</span><span class="tl">Giá gốc rồi điều chỉnh</span></button></nav>
+<div class="concept-panel" id="c-significant-influence"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Nền tảng · hiểu từ gốc</div>
+    <h1 class="rise" style="animation-delay:.08s">Ảnh hưởng đáng kể: có tiếng nói, nhưng chưa nắm quyền</h1>
+    <p class="core rise" style="animation-delay:.16s">Không nắm quyền, <span>chỉ cần có tiếng nói thật sự trong công ty kia.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Định vị · nó là gì &amp; vì sao học trước</span><h2>Nền: significant influence là cửa vào IAS 28</h2></div>
+    </div>
+    <div class="rule">Theo IAS 28 (¶3), <strong>ảnh hưởng đáng kể</strong> (<em>significant influence</em>) là quyền <em>tham gia</em> (participate) vào các quyết định về chính sách tài chính và hoạt động của bên nhận đầu tư — nhưng <strong>không phải</strong> kiểm soát (control) hay đồng kiểm soát (joint control). ¶5: nắm <strong>≥ 20%</strong> quyền biểu quyết thì <em>giả định là CÓ</em> ảnh hưởng đáng kể; <strong>&lt; 20%</strong> thì <em>giả định là KHÔNG</em>. Cả hai đều là giả định <strong>có thể bác bỏ</strong>.</div>
+    <div class="sub">Vì sao đây là nền</div>
+    <div class="why"><p>Đây là viên gạch dưới cùng. IAS 28 chỉ áp cho khoản đầu tư có ảnh hưởng đáng kể hoặc đồng kiểm soát. Không có một trong hai, khoản đầu tư đi theo chuẩn khác. Nắm được ý này, bạn mới biết khi nào cả cuốn chuẩn này được phép mở ra.</p></div>
+  </section>
+
+  <section class="problem">
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Vấn đề nó sinh ra để giải quyết</span><h2>Mảnh đất ở giữa: không phải chủ, cũng không phải người ngoài</h2></div>
+    </div>
+    <p class="lead">Bạn góp tiền vào một công ty. Có hai đầu dễ hiểu. Nắm hết công ty thì đó là công ty của bạn, bạn ra lệnh. Nắm một mẩu tí xíu thì bạn chỉ là người ngoài, đứng xem. Nhưng còn khoảng giữa thì sao?</p>
+
+<p>Ở khoảng giữa, bạn có ghế trong hội đồng, có góp lời khi công ty quyết chuyện lớn. Bạn không sai khiến được, nhưng tiếng nói của bạn có trọng lượng. Cần một cái tên và một cây thước cho đúng cái khoảng giữa này.</p>
+
+<div class="sub">Vì sao phải gọi tên khoảng giữa</div>
+<p>Ba mức quyền lực khác nhau đòi ba cách ghi sổ khác nhau. Không tách bạch được khoảng giữa, bạn sẽ ghi nhầm một bên có tiếng nói thành người ngoài, hoặc thành ông chủ. Cả hai đều sai.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Mô hình đơn giản · cách nó chạy</span><h2>Một cái thang quyền lực, và tấm biển 20%</h2></div>
+    </div>
+    <p>Hình dung một cái thang ba bậc, theo mức tiếng nói của bạn trong công ty kia.</p>
+
+<div class="sub">Ba bậc thang</div>
+<p>Bậc thấp: <strong>tham gia</strong> — bạn góp ý được, không ép được. Đây chính là ảnh hưởng đáng kể. Bậc giữa: <strong>đồng kiểm soát</strong> — mọi việc lớn phải các bên gật đầu cùng nhau. Bậc cao: <strong>chi phối</strong> — bạn tự quyết. IAS 28 lo hai bậc dưới.</p>
+
+<div class="sub">Tấm biển 20% chỉ là điểm khởi đầu</div>
+<p>Nắm từ 20% phiếu bầu trở lên thì tạm cho là có tiếng nói. Dưới đó thì tạm cho là không. Nhưng đây là một phỏng đoán ban đầu, không phải luật cứng. Có bằng chứng ngược lại thì lật được cả hai chiều.</p>
+
+<div class="sub">Bằng chứng thật nằm ở hành vi</div>
+<p>Cái nói lên tiếng nói thật là những dấu hiệu cụ thể. Có ghế trong hội đồng. Được góp mặt khi định chính sách, kể cả chuyện chia cổ tức. Có giao dịch lớn qua lại. Đổi người quản lý cho nhau. Hoặc cung cấp bí quyết kỹ thuật thiết yếu.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví dụ cụ thể</span><h2>18% mà là liên kết, 25% mà không</h2></div>
+    </div>
+    <div class="example-card"><span class="tag">Bài toán</span>
+<p>Công ty A nắm <strong>18%</strong> công ty X. Nghe thì dưới ngưỡng. Nhưng A có một ghế trong hội đồng và thường góp mặt khi X định giá bán, định mức cổ tức.</p>
+<p>Vậy A vẫn có tiếng nói thật. X là <strong>công ty liên kết</strong> của A, dù chỉ 18%. Con số nhỏ không xóa được bằng chứng hành vi.</p>
+<p>Đổi chiều xem. Công ty B nắm <strong>25%</strong> công ty Y nhưng chỉ ngồi im, không ghế, không góp lời. 25% ở đây có thể vẫn <em>không</em> tạo ảnh hưởng đáng kể.</p>
+</div>
+<p>Nghĩ như trong một nhóm bạn chung tiền mở quán. Người bỏ ít tiền nhưng luôn được hỏi ý khi chọn món, chọn giá, thì tiếng nói thật sự có. Người bỏ nhiều tiền mà mặc kệ mọi quyết định thì gần như đứng ngoài.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. IAS 28 (¶7) còn tính cả <em>potential voting rights</em> — quyền chọn mua, công cụ chuyển đổi — nhưng chỉ khi <strong>hiện đang có thể thực hiện</strong> ngay. ¶8: khi xét, bỏ qua ý định của ban quản lý và cả việc họ có đủ tiền thực hiện hay không. ¶9: mất quyền tham gia là mất ảnh hưởng đáng kể, dù tỷ lệ sở hữu không đổi.</p>
+  </section>
+
+  <section class="clarify">
+    <div class="step-head">
+      <div class="big-num">≠</div>
+      <div class="step-meta"><span class="lbl">Dễ nhầm · ranh giới</span><h2>Đừng nhầm — hai ranh giới hay lẫn</h2></div>
+    </div>
+    <div class="mix-q"><span class="q">"Cứ đủ 20% là công ty liên kết, đúng không?"</span><p>Không. 20% chỉ là điểm khởi đầu để phỏng đoán, không phải định nghĩa. Một khoản 18% kèm ghế hội đồng vẫn là liên kết. Một khoản 25% thụ động vẫn có thể không. Phải nhìn tiếng nói thật, không chỉ nhìn con số.</p></div>
+<div class="mix-q"><span class="q">"Vậy có tiếng nói mạnh là gần như kiểm soát chứ gì?"</span><p>Khác hẳn. Tham gia là góp ý. Kiểm soát là tự quyết. Dấu hiệu của kiểm soát là được bổ nhiệm hay bãi nhiệm phần lớn ban giám đốc. Cái đó nằm ở bậc cao hơn, không thuộc ảnh hưởng đáng kể.</p></div>
+  </section>
+
+  <section class="bridge">
+    <div class="step-head">
+      <div class="big-num">→</div>
+      <div class="step-meta"><span class="lbl">Nối tiếp · nó dẫn tới đâu</span><h2>Có tiếng nói nhưng không nắm quyền — nên ghi sổ kiểu gì?</h2></div>
+    </div>
+    <div class="bridge-card"><p>Giờ bạn biết mình đứng ở khoảng giữa: có tiếng nói thật, nhưng không ra lệnh được. Chính cái vị trí giữa này quyết định cách ghi sổ. Không gộp hết như ông chủ, cũng không lơ đi như người ngoài.</p>
+<p>Đó là lý do IAS 28 chọn một lối ghi ở giữa. Mở trang khó <strong>'Hợp nhất một dòng'</strong> để thấy vì sao mức quyền lực giữa lại sinh ra đúng một phương pháp giữa. Không phải giá gốc, cũng không phải gộp toàn bộ.</p></div>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">✦</div>
+      <div class="step-meta"><span class="lbl">Kể lại trong một hơi</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Có ba mức quyền lực trong một công ty khác: tham gia, đồng kiểm soát, chi phối. Ảnh hưởng đáng kể là mức thấp nhất — bạn có tiếng nói thật nhưng không ra lệnh. Con số 20% chỉ là điểm khởi đầu để phỏng đoán, có thể lật cả hai chiều. Bằng chứng thật nằm ở hành vi: ghế hội đồng, góp mặt khi định chính sách.</p>
+<p class="core">Không nắm quyền, <span>có tiếng nói thật, không nắm quyền — đó là cửa vào IAS 28.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã nắm nền chưa?</h3>
+      <ol>
+        <li>Vì sao một khoản 18% vẫn có thể là công ty liên kết, còn 25% thì có khi không?</li>
+        <li>Ảnh hưởng đáng kể khác kiểm soát ở điểm cốt lõi nào?</li>
+        <li>Kể ra hai bằng chứng hành vi cho thấy một nhà đầu tư có ảnh hưởng đáng kể.</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nền vững thì cái khó tự nhẹ đi. Hiểu từ gốc, không học vẹt.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-associate-vs-jv"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Nền tảng · hiểu từ gốc</div>
+    <h1 class="rise" style="animation-delay:.08s">Công ty liên kết và liên doanh: hai cửa cùng dẫn vào một phương pháp</h1>
+    <p class="core rise" style="animation-delay:.16s">Hai loại quan hệ khác nhau, <span>nhưng cùng đi vào một lối ghi sổ.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Định vị · nó là gì &amp; vì sao học trước</span><h2>Nền: bốn loại quan hệ, IAS 28 lấy đúng hai</h2></div>
+    </div>
+    <div class="rule">Theo IAS 28 (¶3): <strong>công ty liên kết</strong> (<em>associate</em>) là đơn vị mà nhà đầu tư có <em>significant influence</em>; <strong>liên doanh</strong> (<em>joint venture</em>) là thỏa thuận mà các bên có <em>joint control</em> và có quyền đối với <strong>tài sản thuần</strong> (net assets) của thỏa thuận. Cả hai đều kế toán bằng <em>equity method</em> (¶2). Khác với <em>subsidiary</em> (hợp nhất theo IFRS 10) và <em>joint operation</em> (theo IFRS 11).</div>
+    <div class="sub">Vì sao đây là nền</div>
+    <div class="why"><p>Đây là tấm bản đồ. Một khoản đầu tư rơi vào ô nào thì đi theo chuẩn của ô đó. IAS 28 chỉ trông coi đúng hai ô: liên kết và liên doanh. Chưa xếp đúng ô, bạn sẽ dùng nhầm cả một bộ quy tắc.</p></div>
+  </section>
+
+  <section class="problem">
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Vấn đề nó sinh ra để giải quyết</span><h2>Ba khoản góp vốn, ba kiểu quyền lực</h2></div>
+    </div>
+    <p class="lead">Giả sử bạn có phần trong ba công ty. Công ty M bạn nắm quá nửa, tự quyết mọi thứ. Công ty N bạn góp một nửa, mọi việc lớn phải bàn với bên kia rồi cùng gật. Công ty P bạn chỉ có một ghế hội đồng. Ba mối quan hệ, ba mức quyền khác nhau.</p>
+
+<p>Vấn đề: mỗi mức quyền đòi một cách ghi sổ riêng. Muốn ghi đúng, trước hết phải sắp ba khoản này vào đúng nhóm. Sắp sai một khoản là kéo theo cả bộ số sai.</p>
+
+<div class="sub">Vì sao phải phân nhóm trước</div>
+<p>Chuẩn mực không cho tự chọn cách ghi. Cách ghi bị buộc chặt vào loại quan hệ. Nên bước đầu tiên luôn là hỏi: quan hệ này thuộc loại nào?</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Mô hình đơn giản · cách nó chạy</span><h2>Một bảng phân loại theo mức quyền lực</h2></div>
+    </div>
+    <p>Xếp mọi khoản góp vốn theo đúng một trục: bạn có bao nhiêu quyền với công ty kia?</p>
+
+<div class="sub">Bạn tự quyết — công ty con</div>
+<p>Nắm quyền chi phối thì đó là công ty con. Gộp toàn bộ báo cáo của nó vào của bạn. Đây là địa hạt của chuẩn khác, không phải IAS 28.</p>
+
+<div class="sub">Bạn chia quyền theo thỏa thuận — liên doanh</div>
+<p>Khi các bên đồng kiểm soát và mỗi bên có quyền với <strong>phần tài sản thuần</strong>, đó là liên doanh. Ghi bằng phương pháp vốn chủ, thuộc IAS 28.</p>
+
+<div class="sub">Bạn có tiếng nói — công ty liên kết</div>
+<p>Chỉ có ảnh hưởng đáng kể, không chi phối, không đồng kiểm soát, thì đó là công ty liên kết. Cũng ghi bằng phương pháp vốn chủ, cũng thuộc IAS 28.</p>
+
+<div class="sub">Hai cửa, một lối</div>
+<p>Vậy liên kết và liên doanh khác nhau về nguồn quyền, nhưng đều đổ về cùng một cách ghi. Đó là lý do IAS 28 gom cả hai vào một chuẩn.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví dụ cụ thể</span><h2>Nửa – nửa, và ba mươi phần trăm</h2></div>
+    </div>
+    <div class="example-card"><span class="tag">Bài toán</span>
+<p>Hai công ty cùng lập một liên doanh, mỗi bên <strong>50%</strong>. Thỏa thuận ghi rõ: mọi việc lớn phải cả hai đồng ý, và mỗi bên hưởng phần <em>tài sản thuần</em>. Đây là liên doanh, ghi bằng phương pháp vốn chủ.</p>
+<p>Khoản khác: bạn nắm <strong>30%</strong> một công ty, có ghế hội đồng, góp lời khi định chính sách. Đây là công ty liên kết, cũng ghi bằng phương pháp vốn chủ.</p>
+<p>Hai xuất phát điểm khác nhau — một bên chia quyền, một bên có tiếng nói — nhưng về đích ở cùng một lối ghi.</p>
+</div>
+<p>Ví như hai cách được ngồi vào bàn quyết định của một quán. Một người là đối tác chia đôi quyền, phải cùng gật mới xong. Một người chỉ được mời góp ý. Vai khác nhau, nhưng cả hai đều không phải ông chủ, và không phải khách qua đường.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Cả <em>joint venture</em> và <em>joint operation</em> đều có joint control, nhưng chỉ JV dùng equity method. Khác biệt: JV cho quyền với <strong>tài sản thuần</strong>; joint operation cho quyền với <strong>từng tài sản</strong> và nghĩa vụ với <strong>từng khoản nợ</strong> — bên tham gia ghi thẳng phần của mình theo IFRS 11.</p>
+  </section>
+
+  <section class="clarify">
+    <div class="step-head">
+      <div class="big-num">≠</div>
+      <div class="step-meta"><span class="lbl">Dễ nhầm · ranh giới</span><h2>Đừng nhầm — hai ranh giới hay lẫn</h2></div>
+    </div>
+    <div class="mix-q"><span class="q">"Liên doanh với công ty con đều là 'chung tay', khác gì nhau?"</span><p>Khác ở chỗ ai quyết. Công ty con là bạn tự quyết, nên gộp toàn bộ vào sổ. Liên doanh là phải cùng bên kia gật đầu, không ai một mình định đoạt. Chi phối một mình khác hẳn đồng kiểm soát.</p></div>
+<div class="mix-q"><span class="q">"Cứ đồng kiểm soát là liên doanh, ghi vốn chủ hết?"</span><p>Chưa chắc. Đồng kiểm soát còn chia hai loại. Nếu bạn có quyền với phần tài sản thuần thì là liên doanh, ghi vốn chủ. Nếu bạn có quyền với từng tài sản và gánh từng khoản nợ thì là loại khác, ghi thẳng phần của mình theo một chuẩn riêng.</p></div>
+  </section>
+
+  <section class="bridge">
+    <div class="step-head">
+      <div class="big-num">→</div>
+      <div class="step-meta"><span class="lbl">Nối tiếp · nó dẫn tới đâu</span><h2>Cùng một lối ghi — giờ xem lối đó chạy ra sao</h2></div>
+    </div>
+    <div class="bridge-card"><p>Bạn vừa thấy hai cửa dẫn vào cùng một phương pháp. Bước tiếp là mở đúng cái phương pháp đó ra. Vì sao nó không gộp hết như công ty con, cũng không chỉ ghi cổ tức như người ngoài?</p>
+<p>Mở trang khó <strong>'Hợp nhất một dòng'</strong> để thấy lối ghi giữa này hoạt động thế nào. Cả liên kết lẫn liên doanh đều bán mua qua lại với nhà đầu tư. Trang <strong>'Loại trừ lãi nội bộ'</strong> cho biết phần lãi nào chưa được tính.</p></div>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">✦</div>
+      <div class="step-meta"><span class="lbl">Kể lại trong một hơi</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Một khoản góp vốn rơi vào một trong bốn ô, theo mức quyền của bạn. Tự quyết thì là công ty con. Chia quyền và hưởng tài sản thuần thì là liên doanh. Chỉ có tiếng nói thì là công ty liên kết. Không có gì thì là khoản đầu tư thường. IAS 28 lấy đúng hai ô giữa — liên kết và liên doanh — và cho cả hai cùng một lối ghi.</p>
+<p class="core">Hai loại quan hệ khác nhau, <span>liên kết và liên doanh khác nguồn quyền, chung một cách ghi.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã nắm nền chưa?</h3>
+      <ol>
+        <li>Ba khoản góp vốn: 60%, 50/50 đồng kiểm soát, 30% có ghế hội đồng — xếp mỗi khoản vào loại nào?</li>
+        <li>Liên doanh khác công ty con ở điểm cốt lõi nào về quyền quyết định?</li>
+        <li>Vì sao IAS 28 gom cả công ty liên kết và liên doanh vào cùng một chuẩn?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nền vững thì cái khó tự nhẹ đi. Hiểu từ gốc, không học vẹt.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-equity-method-core"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Nền tảng · hiểu từ gốc</div>
+    <h1 class="rise" style="animation-delay:.08s">Phương pháp vốn chủ: một lát cắt sở hữu, chạy theo công ty kia</h1>
+    <p class="core rise" style="animation-delay:.16s">Khoản đầu tư của bạn <span>là một lát cắt trong công ty kia, lên xuống cùng nó.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Định vị · nó là gì &amp; vì sao học trước</span><h2>Nền: equity method là ý tưởng cốt lõi của IAS 28</h2></div>
+    </div>
+    <div class="rule">Theo IAS 28 (¶3 &amp; ¶10), <strong>equity method</strong> (phương pháp vốn chủ): khoản đầu tư ghi nhận ban đầu theo <strong>giá gốc</strong> (cost), sau đó điều chỉnh theo thay đổi <strong>sau ngày mua</strong> trong phần sở hữu của nhà đầu tư đối với <strong>tài sản thuần</strong> (net assets) của investee. Phần lãi/lỗ của investee đi vào <em>lãi/lỗ</em> của nhà đầu tư; phần OCI đi vào OCI của nhà đầu tư. ¶11 giải thích: chỉ ghi theo cổ tức thì không phản ánh đúng thu nhập thật kiếm được.</div>
+    <div class="sub">Vì sao đây là nền</div>
+    <div class="why"><p>Đây là xương sống của cả chuẩn. Mọi thứ về sau — cộng lãi, hấp thụ lỗ, thử tổn thất — chỉ là áp đúng ý này vào từng tình huống. Nắm được nó, phần còn lại đọc như hệ quả. Bỏ nó, mỗi mục thành một mẹo rời rạc.</p></div>
+  </section>
+
+  <section class="problem">
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Vấn đề nó sinh ra để giải quyết</span><h2>Công ty kia giàu lên, mà sổ bạn không thấy gì</h2></div>
+    </div>
+    <p class="lead">Bạn nắm 30% một công ty. Năm nay nó làm ăn tốt, lãi lớn, nhưng chia cổ tức rất ít, để tiền lại làm ăn tiếp. Nếu sổ của bạn chỉ ghi đúng số cổ tức nhận về, sổ sẽ nói bạn gần như chẳng được gì năm nay.</p>
+
+<p>Nhưng thực tế thì phần của bạn trong công ty đã dày lên. Lãi giữ lại làm tài sản thuần của nó tăng, và bạn sở hữu 30% chỗ đó. Ghi theo cổ tức đã bỏ sót cái phần dày lên ấy.</p>
+
+<div class="sub">Vì sao ghi theo cổ tức lại lệch</div>
+<p>Cổ tức là chuyện công ty <em>quyết chia bao nhiêu</em>, không phải chuyện nó <em>kiếm được bao nhiêu</em>. Một công ty lãi to vẫn có thể không chia đồng nào. Nên cần một lối ghi bám theo cái nó kiếm được, không bám theo cái nó chịu chia.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Mô hình đơn giản · cách nó chạy</span><h2>Coi khoản đầu tư là một lát cắt trong công ty</h2></div>
+    </div>
+    <p>Đổi cách nhìn: khoản đầu tư của bạn không phải một cục tiền chết. Nó là <strong>một lát cắt</strong> trong tài sản thuần của công ty kia — phần thuộc về bạn.</p>
+
+<div class="sub">Lát cắt dày lên khi công ty lãi</div>
+<p>Công ty kiếm được lãi thì tài sản thuần của nó tăng. Lát cắt của bạn tăng theo. Bạn ghi <strong>phần lãi</strong> của mình như một khoản thu nhập — ngay khi công ty kiếm ra, không đợi nó chia.</p>
+
+<div class="sub">Lát cắt mỏng đi khi nó trả tiền cho bạn</div>
+<p>Khi công ty chia cổ tức, nó rút bớt tài sản ra đưa cho bạn. Lát cắt của bạn trong công ty mỏng đi đúng chỗ đó. Nên cổ tức làm <strong>giảm</strong> giá trị khoản đầu tư, chứ không phải một khoản lãi mới.</p>
+
+<div class="sub">Lát cắt chạy theo công ty</div>
+<p>Gọn lại: khoản đầu tư lên xuống theo công ty kia, không theo dòng tiền mặt. Công ty đi lên, lát cắt dày lên. Công ty trả tiền ra, lát cắt mỏng đi.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví dụ cụ thể</span><h2>Ba mươi phần trăm của một năm ăn nên làm ra</h2></div>
+    </div>
+    <div class="example-card"><span class="tag">Bài toán</span>
+<p>Bạn mua <strong>30%</strong> một công ty, trả <strong>300</strong>. Ghi ban đầu: khoản đầu tư 300.</p>
+<p>Năm đó công ty lãi <strong>100</strong>. Phần của bạn là 30. Ghi 30 là thu nhập, khoản đầu tư lên <strong>330</strong>. Sổ bạn thấy được cái công ty vừa kiếm ra.</p>
+<p>Sau đó công ty chia cổ tức <strong>40</strong>, phần bạn nhận là <strong>12</strong>. Đây là rút bớt lát cắt, nên khoản đầu tư giảm còn <strong>318</strong>. Bạn cầm 12 tiền mặt, đổi lấy 12 mỏng đi trong công ty.</p>
+</div>
+<p>Như một cái ao chung mà bạn sở hữu ba phần mười. Ao đầy thêm nước thì phần của bạn nhiều thêm. Khi ao múc bớt nước đưa cho bạn, phần của bạn trong ao vơi đi đúng chỗ đó. Nước không tự nhiên sinh ra hai lần.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Có hai đường điều chỉnh khác nhau. Phần lãi/lỗ của investee đi vào <em>lãi/lỗ</em> của bạn. Phần <em>OCI</em> của investee — như đánh giá lại tài sản, chênh lệch tỷ giá — đi vào OCI của bạn, không qua P/L. IAS 28 (¶10) tách hai đường này để đúng bản chất từng khoản.</p>
+  </section>
+
+  <section class="clarify">
+    <div class="step-head">
+      <div class="big-num">≠</div>
+      <div class="step-meta"><span class="lbl">Dễ nhầm · ranh giới</span><h2>Đừng nhầm — hai ranh giới hay lẫn</h2></div>
+    </div>
+    <div class="mix-q"><span class="q">"Phương pháp vốn chủ với ghi theo giá gốc khác gì nhau?"</span><p>Giá gốc giữ nguyên con số đã mua, chỉ ghi cổ tức thành doanh thu. Phương pháp vốn chủ thì cho con số chạy theo công ty: cộng phần lãi, trừ cổ tức. Một cái đứng yên, một cái sống theo công ty kia.</p></div>
+<div class="mix-q"><span class="q">"Vậy có phải gộp từng tài sản của công ty kia vào sổ không?"</span><p>Không. Bạn không gộp từng cái máy, từng khoản nợ của họ. Bạn chỉ giữ một con số duy nhất — lát cắt của mình — rồi cho nó lên xuống. Gộp từng dòng là việc của công ty con, không phải công ty liên kết.</p></div>
+  </section>
+
+  <section class="bridge">
+    <div class="step-head">
+      <div class="big-num">→</div>
+      <div class="step-meta"><span class="lbl">Nối tiếp · nó dẫn tới đâu</span><h2>Từ một ý tưởng tới một phép tính lặp mỗi năm</h2></div>
+    </div>
+    <div class="bridge-card"><p>Bạn đã nắm cái lõi: khoản đầu tư là một lát cắt, lên xuống theo công ty kia. Bước tiếp là biến ý đó thành con số cụ thể cuối mỗi năm. Mở tab <strong>'Giá gốc rồi điều chỉnh'</strong> để thấy phép tính lặp: giá mua, cộng lãi, trừ cổ tức.</p>
+<p>Và chỗ khó nhất của ý này — vì sao nhận tiền về mà lại ghi giảm tài sản — nằm ở trang <strong>'Cổ tức làm giảm'</strong>. Nắm cái lõi trước, chỗ khó đó hết ngược tai.</p></div>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">✦</div>
+      <div class="step-meta"><span class="lbl">Kể lại trong một hơi</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Khoản đầu tư không phải cục tiền chết. Nó là một lát cắt sở hữu trong công ty kia, lên xuống cùng nó. Công ty lãi thì lát cắt dày lên, bạn ghi phần lãi ngay khi nó kiếm ra. Công ty trả cổ tức thì lát cắt mỏng đi, nên cổ tức làm giảm khoản đầu tư. Bám theo cái công ty kiếm được, không bám theo cái nó chịu chia.</p>
+<p class="core">Khoản đầu tư của bạn <span>một lát cắt sở hữu, dày lên khi công ty lãi, mỏng đi khi nó trả tiền.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã nắm nền chưa?</h3>
+      <ol>
+        <li>Vì sao ghi thu nhập chỉ theo cổ tức nhận về lại làm lệch bức tranh thật?</li>
+        <li>Công ty bạn nắm 30% lãi 100 nhưng không chia đồng nào — sổ bạn ghi gì?</li>
+        <li>Phương pháp vốn chủ khác cách ghi theo giá gốc ở điểm nào?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nền vững thì cái khó tự nhẹ đi. Hiểu từ gốc, không học vẹt.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-cost-then-adjust"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Nền tảng · hiểu từ gốc</div>
+    <h1 class="rise" style="animation-delay:.08s">Bắt đầu từ giá mua, rồi cộng lãi trừ cổ tức mỗi năm</h1>
+    <p class="core rise" style="animation-delay:.16s">Một số dư chạy: <span>giá mua, cộng phần lãi, trừ cổ tức, ra số cuối kỳ.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Định vị · nó là gì &amp; vì sao học trước</span><h2>Nền: cơ chế cuốn chiếu (roll-forward) của equity method</h2></div>
+    </div>
+    <div class="rule">IAS 28 (¶10) cho công thức cuốn chiếu. Sau khi ghi ban đầu theo <strong>giá gốc</strong> (cost): <strong>+ phần lãi/lỗ</strong> của investee (vào lãi/lỗ của nhà đầu tư); <strong>+ phần OCI</strong> của investee (vào OCI của nhà đầu tư); <strong>− cổ tức/phân phối</strong> nhận được (giảm giá trị ghi sổ, KHÔNG ghi vào doanh thu). Kết quả là <strong>giá trị ghi sổ cuối kỳ</strong> của khoản đầu tư.</div>
+    <div class="sub">Vì sao đây là nền</div>
+    <div class="why"><p>Đây là phép tính bạn lặp mỗi kỳ. Giá trị ghi sổ, việc hấp thụ lỗ, thử tổn thất — tất cả đều đứng trên con số ra từ công thức này. Nắm được nhịp cộng–trừ, bạn theo được khoản đầu tư qua từng năm mà không rối.</p></div>
+  </section>
+
+  <section class="problem">
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Vấn đề nó sinh ra để giải quyết</span><h2>Cuối năm, con số nào ghi vào sổ?</h2></div>
+    </div>
+    <p class="lead">Bạn đã hiểu ý lớn: khoản đầu tư là lát cắt, lên xuống theo công ty kia. Nhưng đến cuối năm, kế toán cần một con số cụ thể để ghi. Lát cắt đó giờ đáng bao nhiêu? Cần một công thức rõ ràng, ai tính cũng ra một số.</p>
+
+<p>Vấn đề là trong năm có nhiều thứ động vào lát cắt cùng lúc. Công ty lãi. Công ty đánh giá lại tài sản. Công ty chia cổ tức. Mỗi thứ kéo con số một hướng. Phải có một trật tự cộng trừ để không sót, không đếm hai lần.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Mô hình đơn giản · cách nó chạy</span><h2>Một số dư chạy, cộng trừ theo trật tự</h2></div>
+    </div>
+    <p>Hình dung một cái đồng hồ số dư, khởi đầu bằng giá mua, rồi mỗi năm chỉnh theo bốn động tác.</p>
+
+<div class="sub">Điểm khởi đầu: giá mua</div>
+<p>Ghi khoản đầu tư đúng bằng số tiền bỏ ra ban đầu. Đây là mốc xuất phát của mọi năm sau.</p>
+
+<div class="sub">Cộng phần lãi của công ty kia</div>
+<p>Công ty lãi bao nhiêu, bạn cộng phần của mình vào. Khoản này cũng chạy vào lãi của bạn trong năm. Nếu công ty lỗ thì đây là một khoản trừ.</p>
+
+<div class="sub">Cộng phần OCI, theo một đường riêng</div>
+<p>Vài thứ như đánh giá lại tài sản hay chênh lệch tỷ giá không đi qua lãi. Chúng đi theo một đường riêng gọi là OCI. Phần của bạn trong đó cũng cộng vào số dư, nhưng ghi ở đường riêng ấy.</p>
+
+<div class="sub">Trừ cổ tức nhận được</div>
+<p>Cổ tức là công ty rút tài sản trả cho bạn, nên trừ ra khỏi số dư. Đây là chỗ dễ ghi nhầm nhất, để dành mổ ở trang khó.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví dụ cụ thể</span><h2>Hai năm của một khoản đầu tư</h2></div>
+    </div>
+    <div class="example-card"><span class="tag">Bài toán</span>
+<p>Mua <strong>25%</strong> một công ty, trả <strong>200</strong>. Số dư đầu: 200.</p>
+<p><strong>Năm 1:</strong> công ty lãi 80, phần bạn 20. Công ty chia cổ tức, phần bạn nhận 8. Số dư: 200 cộng 20 trừ 8, còn <strong>212</strong>.</p>
+<p><strong>Năm 2:</strong> công ty lãi 60, phần bạn 15. Không chia cổ tức. Số dư: 212 cộng 15, thành <strong>227</strong>. Con số cứ chạy tiếp mỗi năm theo đúng nhịp cộng trừ đó.</p>
+</div>
+<p>Giống như số dư một cuốn sổ tiết kiệm chung. Mỗi kỳ có tiền lãi cộng vào, có lần rút ra thì trừ đi. Bạn không tính lại từ đầu mỗi lần — chỉ lấy số cũ, cộng cái mới vào, trừ cái đã rút ra.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Nếu giá mua lớn hơn phần tài sản thuần hợp lý mua được, phần dôi ra là <em>goodwill</em> — nằm gộp trong số dư, không tách riêng, và không khấu hao. Sau ngày mua còn phải điều chỉnh phần lãi cho khấu hao tài sản theo <em>giá trị hợp lý tại ngày mua</em>, nên phần lãi bạn cộng vào đôi khi khác con số lãi thô của investee.</p>
+  </section>
+
+  <section class="clarify">
+    <div class="step-head">
+      <div class="big-num">≠</div>
+      <div class="step-meta"><span class="lbl">Dễ nhầm · ranh giới</span><h2>Đừng nhầm — hai ranh giới hay lẫn</h2></div>
+    </div>
+    <div class="mix-q"><span class="q">"Cổ tức nhận được — ghi luôn thành doanh thu cho gọn?"</span><p>Không. Ghi cổ tức thành doanh thu là cách của giá gốc. Ở đây phần lãi đã được ghi khi công ty kiếm ra rồi. Ghi thêm cổ tức thành lãi nữa là đếm hai lần. Nên cổ tức chỉ trừ vào số dư.</p></div>
+<div class="mix-q"><span class="q">"Phần OCI cũng cộng thẳng vào lãi trong năm chứ?"</span><p>Không. Phần lãi/lỗ đi vào lãi của bạn. Phần OCI đi theo đường OCI riêng. Cộng cả hai vào số dư khoản đầu tư thì đúng, nhưng chúng hiện ra ở hai chỗ khác nhau trên báo cáo.</p></div>
+  </section>
+
+  <section class="bridge">
+    <div class="step-head">
+      <div class="big-num">→</div>
+      <div class="step-meta"><span class="lbl">Nối tiếp · nó dẫn tới đâu</span><h2>Hai chỗ dễ vấp nhất của phép tính này</h2></div>
+    </div>
+    <div class="bridge-card"><p>Phép cộng trừ nghe êm, nhưng có hai chỗ làm người mới khựng lại. Chỗ thứ nhất: vì sao trừ cổ tức chứ không cộng thành lãi? Mở trang khó <strong>'Cổ tức làm giảm'</strong> để thấy rõ.</p>
+<p>Chỗ thứ hai: nếu công ty lỗ mãi, số dư trừ hoài thì có xuống âm không? Mở trang <strong>'Lỗ dừng ở 0'</strong> để thấy phép trừ dừng ở đâu và vì sao.</p></div>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">✦</div>
+      <div class="step-meta"><span class="lbl">Kể lại trong một hơi</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Khoản đầu tư là một số dư chạy. Khởi đầu bằng giá mua. Mỗi năm cộng phần lãi của công ty kia vào, cộng thêm phần OCI theo đường riêng, rồi trừ cổ tức nhận được. Ra số dư cuối kỳ. Không tính lại từ đầu, chỉ cuốn tiếp con số cũ theo nhịp cộng trừ.</p>
+<p class="core">Một số dư chạy: <span>giá mua, cộng lãi, cộng OCI, trừ cổ tức — cuốn tiếp mỗi năm.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã nắm nền chưa?</h3>
+      <ol>
+        <li>Nêu bốn động tác của công thức cuốn chiếu, theo đúng thứ tự.</li>
+        <li>Mua 25% giá 200; năm 1 công ty lãi 80, chia cổ tức phần bạn 8 — số dư cuối năm 1 là bao nhiêu?</li>
+        <li>Vì sao cổ tức bị trừ khỏi số dư thay vì cộng vào lãi?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nền vững thì cái khó tự nhẹ đi. Hiểu từ gốc, không học vẹt.</p>
+  </footer>
+
+</div></div>
+<script>
+  var bar=document.getElementById('progress');
+  function upd(){var h=document.documentElement;var s=h.scrollTop||document.body.scrollTop;
+    var max=(h.scrollHeight-h.clientHeight)||1;bar.style.width=(s/max*100)+'%';}
+  window.addEventListener('scroll',upd,{passive:true});upd();
+  var io=new IntersectionObserver(function(es){es.forEach(function(e){
+    if(e.isIntersecting){e.target.style.animation='rise .7s cubic-bezier(.2,.7,.3,1) forwards';io.unobserve(e.target);}});},{threshold:.12});
+  document.querySelectorAll('section').forEach(function(s){s.style.opacity='0';io.observe(s);});
+</script>
+
+<script>
+(function(){
+  var tabs=[].slice.call(document.querySelectorAll('.tabbar .tab'));
+  var panels=[].slice.call(document.querySelectorAll('.concept-panel'));
+  function show(i){
+    tabs.forEach(function(t,j){t.classList.toggle('active',j===i);});
+    panels.forEach(function(p,j){
+      var on=(j===i); p.classList.toggle('active',on);
+      if(on){p.querySelectorAll('section').forEach(function(s){s.style.opacity='';s.style.animation='';});}
+    });
+    try{history.replaceState(null,'','#'+panels[i].id);}catch(e){}
+    window.scrollTo(0,0); window.dispatchEvent(new Event('scroll'));
+  }
+  tabs.forEach(function(t){t.addEventListener('click',function(){show(+t.getAttribute('data-i'));});});
+  var start=0; panels.forEach(function(p,j){if('#'+p.id===location.hash)start=j;});
+  show(start);
+})();
+</script>
+
+</body></html>

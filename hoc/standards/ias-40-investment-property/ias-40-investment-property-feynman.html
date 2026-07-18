@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="vi"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IAS 40 Investment Property — Hiểu sâu theo Feynman</title>
+<style>
+  /* Design tokens shared with ebook-to-study-html (styles_v2.css) */
+  :root{
+    --bg:#fafaf7; --bg-elevated:#ffffff; --bg-soft:#f3f3ee;
+    --border:#e0e0d8; --border-soft:#ececea; --border-strong:#d2c8b6;
+    --ink:#1a1a1f; --ink-soft:#3f3f4a; --muted:#7a7a85;
+    --accent:#2f6fed; --accent-2:#2258c8; --gold:#0fb6d4; --gap:#2258c8;
+    --serif:"Fraunces",Georgia,"Iowan Old Style",serif;
+    --sans:"Geist",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    --mono:"Geist Mono","JetBrains Mono",Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:var(--sans);
+    font-size:19px;line-height:1.72;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}
+  .progress{position:fixed;top:0;left:0;height:3px;width:0;z-index:50;
+    background:linear-gradient(90deg,var(--gold),var(--accent));transition:width .08s linear}
+  .wrap{max-width:920px;margin:0 auto;padding:0 36px}
+  .rise{opacity:0;transform:translateY(14px);animation:rise .7s cubic-bezier(.2,.7,.3,1) forwards}
+  @keyframes rise{to{opacity:1;transform:none}}
+
+  header{padding:104px 0 60px;border-bottom:1px solid var(--border)}
+  .kicker{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.18em;
+    text-transform:uppercase;color:var(--accent);margin-bottom:26px}
+  h1{font-family:var(--serif);font-weight:600;font-size:clamp(42px,7.6vw,72px);
+    line-height:1.0;letter-spacing:-.022em;margin-bottom:28px;font-optical-sizing:auto;color:var(--ink)}
+  h1 em{font-style:italic;color:var(--accent)}
+  .core{font-family:var(--serif);font-style:italic;font-weight:400;
+    font-size:clamp(21px,3.6vw,27px);line-height:1.44;color:var(--ink-soft)}
+  .core span{font-style:normal;font-weight:600;color:var(--accent-2);
+    box-shadow:inset 0 -.5em 0 rgba(47,111,237,.16)}
+
+  /* ---- BƯỚC 0: ANCHOR (state the rule + plan before explaining) ---- */
+  .anchor .rule{font-family:var(--serif);font-size:19px;line-height:1.5;color:var(--ink);
+    background:var(--bg-soft);border-left:3px solid var(--accent);
+    padding:18px 24px;border-radius:0 4px 4px 0;margin:0}
+  .anchor .rule em{font-style:italic;color:var(--accent-2)}
+  .anchor .rule strong{color:var(--ink);font-weight:600}
+  .anchor .approach{color:var(--ink-soft)}
+
+  section{padding:72px 0;border-bottom:1px solid var(--border);position:relative}
+  .step-head{display:flex;align-items:flex-start;gap:22px;margin-bottom:34px}
+  .big-num{font-family:var(--serif);font-weight:700;font-size:62px;line-height:.8;
+    color:var(--border-strong);flex:none;font-optical-sizing:auto;letter-spacing:-.03em}
+  .step-meta{padding-top:4px}
+  .lbl{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--accent);display:block;margin-bottom:10px}
+  h2{font-family:var(--serif);font-weight:600;font-size:clamp(27px,4.4vw,37px);
+    line-height:1.12;letter-spacing:-.012em;color:var(--ink)}
+  h2 em{font-style:italic;color:var(--accent)}
+  p{margin-bottom:21px}
+  p:last-child{margin-bottom:0}
+  strong{font-weight:600;color:var(--ink)}
+  em{font-style:italic;color:var(--accent-2)}
+  .gloss{color:var(--muted);font-style:italic}
+
+  .lead::first-letter{font-family:var(--serif);font-weight:700;float:left;
+    font-size:74px;line-height:.74;padding:8px 12px 0 0;color:var(--accent)}
+
+  .sub{font-family:var(--serif);font-weight:600;font-size:17px;letter-spacing:.01em;
+    color:var(--ink);margin:34px 0 14px;display:flex;align-items:center;gap:11px}
+  .sub::before{content:"";width:18px;height:2px;background:var(--accent);flex:none;border-radius:2px}
+
+  .gaps{background:var(--bg-soft)}
+  .gaps .big-num{color:#e2d6b4}
+  .gaps .lbl{color:var(--gap)}
+  .gap-q{margin:0 0 30px;padding-left:24px;border-left:2px solid var(--border-strong)}
+  .gap-q:last-child{margin-bottom:0}
+  .gap-q .q{font-family:var(--serif);font-style:italic;font-weight:500;
+    font-size:22px;line-height:1.35;color:var(--gap);margin-bottom:12px;display:block}
+  .gap-q p:last-child{margin-bottom:0}
+
+  .analogy-card{border:1px solid #e8c876;border-radius:4px;padding:30px 32px;margin:8px 0 28px;
+    background:linear-gradient(135deg,#fef9ed 0%,#fdf3e0 100%)}
+  .analogy-card .tag{font-family:var(--mono);font-weight:600;font-size:11px;
+    letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin-bottom:16px;display:block}
+  .analogy-card p{color:#5a4810}
+  .analogy-card strong{color:var(--accent-2)}
+  .limit{font-size:17px;line-height:1.6;color:#5a4810;
+    border-top:1px solid #e8c876;padding-top:20px;margin-top:22px}
+  .limit b{color:var(--accent-2);font-weight:600;font-family:var(--serif)}
+
+  .retell{background:linear-gradient(180deg,var(--bg-soft) 0%,var(--bg) 100%);border-bottom:none}
+  .retell h2{color:var(--ink)}
+  .retell strong{color:var(--accent-2)}
+  .retell .core{margin-top:6px}
+  .testbox{border:1px solid var(--border);background:var(--bg-elevated);
+    border-radius:4px;padding:28px 32px;margin-top:40px;box-shadow:0 1px 2px rgba(0,0,0,.03)}
+  .testbox h3{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--accent);margin-bottom:20px}
+  .testbox ol{margin:0;padding-left:22px;counter-reset:t}
+  .testbox li{margin-bottom:16px;color:var(--ink-soft);padding-left:6px}
+  .testbox li:last-child{margin-bottom:0}
+
+  footer{text-align:center;padding:60px 0 88px}
+  footer .mark{font-family:var(--serif);font-weight:700;color:var(--accent);
+    font-size:26px;display:block;margin-bottom:14px}
+  footer p{font-family:var(--serif);font-style:italic;color:var(--muted);font-size:17px;max-width:380px;margin:0 auto}
+
+  @media(max-width:560px){
+    body{font-size:18px}
+    header{padding:70px 0 44px}
+    section{padding:52px 0}
+    .step-head{gap:16px}
+    .big-num{font-size:46px}
+    .lead::first-letter{font-size:60px}
+  }
+
+/* ===== FLAMINDI THEME OVERRIDE (dong bo trang chu flamindi.com) ===== */
+:root{
+  --accent:#2f6fed;--accent-2:#2258c8;--accent2:#2258c8;--gold:#0fb6d4;--cyan:#0fb6d4;--blue:#2f6fed;
+  --bg:#f7f9fe;--bg-elevated:#ffffff;--bg-card:#ffffff;--card:#ffffff;--bg-soft:#eef2fb;--soft:#eef2fb;
+  --border:#e4e9f2;--border-soft:#eef1f7;--border-strong:#cfd8e8;
+  --text:#1a2233;--text-soft:#4e5a74;--text-dim:#6b7691;
+  --ink:#1a2233;--ink-soft:#4e5a74;--muted:#6b7691;--soft-t:#4e5a74;--dim:#6b7691;
+  --serif:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+  --mono:ui-monospace,Menlo,Consolas,monospace;
+}
+body{background:radial-gradient(1200px 600px at 85% -10%,rgba(47,111,237,.14),transparent 60%),radial-gradient(1000px 640px at -10% 30%,rgba(15,182,212,.09),transparent 55%),linear-gradient(#f7f9fe,#edf0f8) fixed !important;}
+</style>
+<style>
+ .tabbar{position:fixed;top:0;left:0;right:0;width:100%;box-sizing:border-box;z-index:40;background:rgba(250,250,247,.93);
+   backdrop-filter:saturate(1.1) blur(8px);-webkit-backdrop-filter:saturate(1.1) blur(8px);
+   border-bottom:1px solid var(--border);display:flex;gap:6px;overflow-x:auto;
+   padding:10px max(36px,calc((100% - 992px)/2));scrollbar-width:thin}
+ .tabbar .tab{flex:0 0 auto;display:flex;align-items:baseline;gap:9px;cursor:pointer;
+   background:transparent;border:1px solid transparent;border-radius:999px;
+   padding:8px 17px;transition:.15s;white-space:nowrap;color:var(--muted)}
+ .tabbar .tab:hover{color:var(--ink);background:var(--bg-soft)}
+ .tabbar .tab.active{color:var(--accent-2);background:var(--bg-soft);border-color:var(--border-strong)}
+ .tabbar .tn{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.1em;color:var(--accent)}
+ .tabbar .tl{font-family:var(--serif);font-weight:500;font-size:16px}
+ body{padding-top:56px} .concept-panel{display:none}
+ .concept-panel.active{display:block}
+ .concept-panel header{padding-top:50px}
+ @media(max-width:560px){.tabbar .tl{max-width:48vw;overflow:hidden;text-overflow:ellipsis}}
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+<nav class="tabbar" aria-label="Các khái niệm"><button class="tab" data-i="0"><span class="tn">01</span><span class="tl">Lãi FV vào P/L</span></button><button class="tab" data-i="1"><span class="tn">02</span><span class="tl">Không khấu hao</span></button><button class="tab" data-i="2"><span class="tn">03</span><span class="tl">Chuyển đổi phân loại</span></button><button class="tab" data-i="3"><span class="tn">04</span><span class="tl">Vừa thuê vừa tự dùng</span></button></nav>
+<div class="concept-panel" id="c-lai-fv-vao-pl"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Giải thích theo phương pháp Feynman</div>
+    <h1 class="rise" style="animation-delay:.08s">Sao chênh lệch giá lại vào thẳng lãi lỗ, không giấu vào OCI?</h1>
+    <p class="core rise" style="animation-delay:.16s">Giá lên là <span>kết quả kinh doanh của một khoản đầu tư — nên tính ngay vào lãi.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Điều cần hiểu &amp; cách tiếp cận</span><h2>Quy tắc: chênh lệch fair value vào profit or loss</h2></div>
+    </div>
+    <div class="rule">IAS 40 (đoạn 35): lãi hoặc lỗ do <strong>thay đổi fair value</strong> của một investment property ghi vào <em>profit or loss</em> ngay trong kỳ phát sinh. Trái với mô hình đánh giá lại của IAS 16, nơi phần tăng đi vào <em>other comprehensive income</em> (OCI) — thặng dư đánh giá lại. Cùng là 'đo theo giá trị hợp lý', hai đường đi của lãi hoàn toàn khác nhau.</div>
+    <div class="sub">Cách giải thích</div>
+    <div class="approach"><p>Chỗ vấp: sao cùng đo theo giá thị trường mà một cái tính thẳng vào lãi, một cái lại để riêng một ngăn? Cách làm ở đây: neo vào chuyện giữ cổ phiếu để kiếm lời — giá lên là 'lãi', dù chưa bán. Rồi so với nhà xưởng tự dùng, thứ bạn giữ để chạy máy chứ không phải để hưởng giá lên.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Giải thích đơn giản</span><h2>Giá lên của khoản đầu tư chính là lãi của nó</h2></div>
+    </div>
+    <p class="lead">Bạn có một căn hộ mua để cho thuê. Năm nay khu đó lên giá, căn hộ từ 2 tỷ thành 2,2 tỷ. Với mô hình giá thị trường, phần lên 200 triệu đó tính thẳng vào lãi năm nay. Chưa bán gì cả mà đã ghi lãi. Nghe lạ, nhưng có lý do.</p>
+
+<div class="sub">Vì sao là lãi</div>
+<p>Bạn giữ căn hộ này để làm gì? Để hưởng tiền thuê và giá lên. Đó chính là công việc kinh doanh của nó. Nên khi giá lên, đó là kết quả kinh doanh trong năm. Ghi vào lãi là ghi đúng việc nó sinh ra.</p>
+
+<div class="sub">Nhà xưởng tự dùng thì khác</div>
+<p>Giờ đổi sang một nhà xưởng công ty tự dùng để chạy máy. Nó cũng có thể lên giá. Nhưng bạn đâu giữ nó để hưởng giá lên. Bạn giữ để sản xuất. Phần lên giá không phải việc nó làm ra tiền.</p>
+
+<div class="sub">Nên phần tăng bị để riêng</div>
+<p>Với nhà xưởng tự dùng, luật cho phần tăng vào một ngăn để riêng, chưa đụng vào lãi. Ngăn đó là 'của để dành', chờ tới khi thật sự bán. Bất động sản đầu tư thì không cần chờ: giá lên là ăn ngay vào lãi.</p>
+  </section>
+
+  <section class="gaps">
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Chỗ vấp · Lỗ hổng</span><h2>Mấy chỗ nghe xuôi mà nghĩ kỹ chưa thông</h2></div>
+    </div>
+    <div class="gap-q"><span class="q">"Chưa bán, lãi đâu ra mà ghi? Nghe như đếm cua trong lỗ."</span><p>Đúng là lãi chưa thành tiền mặt. Nhưng của cải thì có thật: bạn đang nắm một tài sản đáng 2,2 tỷ thay vì 2 tỷ. Mô hình giá thị trường coi mỗi cuối kỳ như chốt sổ theo giá hiện thời. Của cải tăng là ghi, dù chưa rút ra tiêu.</p></div>
+<div class="gap-q"><span class="q">"Sao nhà xưởng lại được giấu phần tăng vào ngăn riêng?"</span><p>Vì nó không giữ để bán kiếm lời. Phần tăng chưa chắc thành tiền, và không phải mục đích nắm giữ. Luật thận trọng để riêng, khỏi thổi phồng lãi bằng thứ chưa chắc chắn. Bất động sản đầu tư thì giá lên đúng là điều nó sinh ra, nên không giấu.</p></div>
+<div class="gap-q"><span class="q">"Vậy lợi nhuận công ty sẽ nhảy loạn theo thị trường?"</span><p>Đúng, và đây là mặt trái thật. Thị trường lên xuống mạnh thì lãi năm này năm kia dập dềnh theo, dù công ty chẳng làm gì khác. Chuẩn không giấu điều này. Nó bù lại bằng bắt thuyết minh rõ phần lãi lỗ nào đến từ đánh giá lại giá trị.</p></div>
+<div class="gap-q"><span class="q">"Con số 2,2 tỷ ấy là ai định? Tin được không?"</span><p>Đây là chỗ quy tắc tự nhận là mong manh. Bất động sản không có giá niêm yết mỗi giây. Con số phải do thẩm định đoán, dựa trên giao dịch quanh đó và kỳ vọng tiền thuê. Đổi giả định một chút là số nhảy. Vì thế chuẩn khuyến khích thẩm định viên độc lập và bắt công bố cách đo.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví von &amp; ví dụ đời thường</span><h2>Neo vào thứ bạn đã biết</h2></div>
+    </div>
+    <div class="analogy-card"><span class="tag">Ví dụ trung tâm</span>
+<p>Nghĩ về <strong>cổ phiếu trong tài khoản</strong> của bạn. Bạn mua cổ phiếu để kiếm lời từ giá lên và cổ tức. Cuối năm giá lên, bảng sao kê hiện ngay một khoản lãi, dù bạn chưa bán một cổ nào. Không ai thấy lạ, vì kiếm lời từ giá lên chính là lý do bạn giữ nó. Bất động sản đầu tư y hệt: giữ để hưởng giá lên, nên giá lên là lãi ngay.</p>
+<p class="limit"><b>Chỗ ví von này hỏng:</b> cổ phiếu có giá niêm yết mỗi giây, ai cũng thấy cùng một con số. Bất động sản thì không — phải thuê thẩm định viên đoán giá, và hai người có thể ra hai số. Ngoài ra bạn bán vài cổ phiếu trong một giây, còn bán một góc tòa nhà thì không. Nên phần 'giá lên là lãi' thì khớp, nhưng phần 'đo dễ và chắc' thì không.</p>
+</div>
+<p>Gần đời hơn: bạn sưu tầm đồng hồ cổ để bán lại kiếm lời. Một mẫu bạn giữ vừa lên cơn sốt, giá chợ tăng gấp đôi. Trong đầu bạn đã thấy mình 'lời', dù chưa gả nó đi. Vì bạn giữ nó để bán, giá lên đúng là thành quả. Còn chiếc đồng hồ bạn đeo đi làm mỗi ngày lên giá thì bạn chẳng gọi đó là 'lời kinh doanh'.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Fair value đo theo IFRS 13, phản ánh điều kiện thị trường tại ngày báo cáo, gồm tiền thuê từ hợp đồng hiện hành và giả định của người tham gia thị trường (đoạn 40). Điểm gài hay gặp trong thi: IAS 40 đưa chênh lệch vào <em>profit or loss</em>, còn revaluation model của IAS 16 đưa phần tăng vào <em>OCI</em> (rồi khi giảm mới trừ ngược lại surplus). Cùng một cụm từ 'fair value', hai cơ chế kế toán khác hẳn.</p>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">4</div>
+      <div class="step-meta"><span class="lbl">Kể lại gọn gàng</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Bất động sản đầu tư giữ để hưởng tiền thuê và giá lên. Nên khi giá lên, đó là kết quả kinh doanh của nó, ghi thẳng vào lãi ngay trong kỳ — dù chưa bán. Nhà xưởng tự dùng thì giữ để chạy máy, không phải để hưởng giá lên, nên phần tăng bị để riêng một ngăn. Cùng đo giá thị trường, hai đường lãi khác nhau vì hai mục đích nắm giữ khác nhau.</p>
+<p class="core">Giá lên là <span>giá lên của thứ giữ-để-kiếm-lời là lãi ngay, không phải của để dành.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã hiểu chưa?</h3>
+      <ol>
+        <li>Vì sao chênh lệch giá trị hợp lý của bất động sản đầu tư vào thẳng lãi lỗ, dù chưa bán?</li>
+        <li>Cùng lên giá, vì sao nhà xưởng tự dùng lại đưa phần tăng vào OCI thay vì lãi?</li>
+        <li>Mặt trái của việc ghi lãi theo giá thị trường mỗi kỳ là gì?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nếu giải thích được cho bà ngoại hiểu, bạn mới thật sự hiểu.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-khong-khau-hao"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Giải thích theo phương pháp Feynman</div>
+    <h1 class="rise" style="animation-delay:.08s">Vì sao đo theo giá thị trường thì tuyệt nhiên không khấu hao</h1>
+    <p class="core rise" style="animation-delay:.16s">Giá thị trường đã tính hao mòn rồi — <span>khấu hao thêm là trừ hai lần một thứ.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Điều cần hiểu &amp; cách tiếp cận</span><h2>Quy tắc: fair value thì không khấu hao</h2></div>
+    </div>
+    <div class="rule">IAS 40 (đoạn 35): bất động sản đầu tư đo theo <em>fair value</em> thì <strong>KHÔNG</strong> trích khấu hao. Đây là hệ quả trực tiếp của việc mỗi kỳ đã đưa tài sản về giá thị trường. Ngược lại, nếu chọn <em>cost model</em> (đoạn 56), tài sản đo theo IAS 16 và <strong>vẫn khấu hao</strong> bình thường.</div>
+    <div class="sub">Cách giải thích</div>
+    <div class="approach"><p>Chỗ vấp: mọi tài sản dài hạn đều khấu hao, sao cái này lại không? Cách làm ở đây: nhìn kỹ khấu hao thật ra để làm gì. Nó là cách bù cho việc sổ giữ giá mua cũ đứng yên. Khi sổ đã tự chạy về giá thị trường mỗi kỳ, cái việc bù đó thành thừa — làm nữa là đếm hao mòn hai lần.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Giải thích đơn giản</span><h2>Khấu hao là gì, và khi nào mới cần nó</h2></div>
+    </div>
+    <p class="lead">Khấu hao là gì? Là mỗi năm trừ bớt một ít giá trị tài sản, vì nó cũ đi và hao mòn dần. Một cái máy 100 triệu dùng 10 năm thì mỗi năm 'mòn' 10 triệu. Nghe rất tự nhiên. Nhưng để ý một điều: ta cần khấu hao vì sổ đang <em>giữ nguyên</em> giá mua cũ.</p>
+
+<div class="sub">Khấu hao chỉ là cách bù</div>
+<p>Khi sổ ghi cứng giá mua ban đầu, con số đó không tự biết tài sản đã cũ. Nên ta phải chủ động trừ dần bằng tay. Khấu hao chính là động tác trừ tay đó. Nó bù cho việc con số trên sổ đứng yên.</p>
+
+<div class="sub">Giá thị trường tự làm việc đó rồi</div>
+<p>Giờ chuyển sang mô hình giá thị trường. Mỗi kỳ, ta kéo con số về đúng giá chợ hôm nay. Nếu tòa nhà cũ đi, hỏng dần, thì thị trường tự trả giá thấp hơn. Ta ghi nhận cái đó ngay qua chênh lệch giá. Hao mòn đã nằm sẵn trong giá chợ.</p>
+
+<div class="sub">Trừ thêm khấu hao là trừ hai lần</div>
+<p>Nếu vừa kéo về giá chợ, vừa trừ thêm khấu hao, ta trừ cùng một hao mòn hai lượt. Con số sẽ thấp giả tạo. Nên đo theo giá thị trường thì bỏ hẳn khấu hao. Một cơ chế lo hao mòn là đủ.</p>
+  </section>
+
+  <section class="gaps">
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Chỗ vấp · Lỗ hổng</span><h2>Mấy chỗ nghe xuôi mà nghĩ kỹ chưa thông</h2></div>
+    </div>
+    <div class="gap-q"><span class="q">"Nhà cửa vẫn cũ đi, xuống cấp thật mà — sao không khấu hao?"</span><p>Nó cũ đi thật, không ai chối. Câu hỏi chỉ là ghi nhận hao mòn đó bằng đường nào. Mô hình giá thị trường ghi qua việc giá chợ tụt xuống. Mô hình giá gốc ghi qua khấu hao. Hai đường, cùng một mục tiêu. Chỉ là không được đi cả hai cùng lúc.</p></div>
+<div class="gap-q"><span class="q">"Vậy chọn giá gốc thì sao lại phải khấu hao?"</span><p>Vì giá gốc giữ cứng giá mua, con số không tự tụt. Không khấu hao thì tài sản mãi mãi đáng như mới, sai sự thật. Nên dưới giá gốc, khấu hao là bắt buộc để phản ánh tài sản già đi. Đúng như cách IAS 16 làm với mọi tài sản dài hạn khác.</p></div>
+<div class="gap-q"><span class="q">"Đất trong tòa nhà thì sao? Đất đâu có mòn."</span><p>Đúng, đất thường không khấu hao dù theo mô hình nào, vì nó không hao mòn. Nhưng dưới mô hình giá thị trường, chuyện này thành khỏi bận tâm: cả tòa nhà lẫn đất đều được đưa về một con số giá chợ chung. Không phải tách phần nào mòn, phần nào không.</p></div>
+<div class="gap-q"><span class="q">"Nếu không đo nổi giá thị trường thì lấy gì thay khấu hao?"</span><p>Đây là chỗ quy tắc chừa một cửa. Có trường hợp hiếm: thị trường cho bất động sản tương đương đóng băng, lại không có cách đo tin cậy nào. Khi đó đơn vị quay về mô hình giá gốc theo IAS 16. Lúc này khấu hao trở lại, với giá trị thanh lý giả định bằng 0. Không đo được giá chợ thì phải dùng lại đường trừ tay.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví von &amp; ví dụ đời thường</span><h2>Neo vào thứ bạn đã biết</h2></div>
+    </div>
+    <div class="analogy-card"><span class="tag">Ví dụ trung tâm</span>
+<p>Nghĩ về việc định giá <strong>chiếc điện thoại cũ</strong> để bán lại. Có hai cách. Cách một: ghi giá mua, rồi mỗi tháng tự trừ một ít cho 'cũ dần'. Cách hai: mỗi tháng lên chợ đồ cũ tra đúng giá hôm nay. Nếu bạn đã tra giá chợ, bạn không cần trừ hao riêng nữa. Giá chợ đã gồm cả chuyện máy cũ, pin chai, đời mới ra rồi.</p>
+<p class="limit"><b>Chỗ ví von này hỏng:</b> chợ điện thoại cũ sôi động, tra giá trong một phút, số khá chắc. Bất động sản thì phải thuê thẩm định, số kém chắc và tốn công. Hơn nữa giá trị hợp lý của bất động sản còn gồm kỳ vọng tiền thuê tương lai, không chỉ hao mòn vật lý như cái điện thoại. Nên ý 'giá chợ đã gồm hao mòn' thì khớp, còn 'đo nhanh và chắc' thì không.</p>
+</div>
+<p>Cùng khuôn: một chiếc xe hơi cũ. Bạn không vừa tra giá lăn bánh trên chợ xe cũ hôm nay, vừa lại trừ thêm 'khấu hao' của riêng mình. Làm vậy là dìm giá xuống quá thấp, trừ hai lần một chuyện. Chọn một đường: hoặc theo giá chợ, hoặc theo giá mua trừ dần.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Dưới <em>fair value model</em>, thay đổi giá trị mỗi kỳ chạy vào <em>profit or loss</em> (đoạn 35), gồm luôn phần phản ánh tài sản xuống cấp — nên khấu hao riêng là thừa. Dưới <em>cost model</em>, tài sản theo IAS 16: khấu hao theo thời gian sử dụng hữu ích và xét tổn thất (impairment) theo IAS 36. Một bất động sản đầu tư đang xây mà chưa đo được fair value cũng tạm đo theo giá gốc cho tới khi đo được hoặc xây xong (đoạn 53).</p>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">4</div>
+      <div class="step-meta"><span class="lbl">Kể lại gọn gàng</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Khấu hao là cách trừ dần hao mòn khi sổ giữ cứng giá mua cũ. Dưới mô hình giá thị trường, mỗi kỳ ta đã kéo con số về đúng giá chợ, và giá chợ tự phản ánh tài sản cũ đi. Trừ thêm khấu hao là đếm hao mòn hai lần. Nên fair value thì không khấu hao. Chỉ khi quay về mô hình giá gốc, khấu hao mới trở lại.</p>
+<p class="core">Giá thị trường đã tính hao mòn rồi — <span>một cơ chế lo hao mòn là đủ — giá chợ đã tính, khỏi trừ lần nữa.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã hiểu chưa?</h3>
+      <ol>
+        <li>Khấu hao thật ra bù cho điều gì, và vì sao mô hình giá thị trường không cần nó?</li>
+        <li>Vì sao chọn cost model thì lại phải khấu hao?</li>
+        <li>Khi thị trường không đo được giá trị hợp lý tin cậy, khấu hao có trở lại không? Vì sao?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nếu giải thích được cho bà ngoại hiểu, bạn mới thật sự hiểu.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-chuyen-doi-phan-loai"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Giải thích theo phương pháp Feynman</div>
+    <h1 class="rise" style="animation-delay:.08s">Chuyển đổi phân loại: cùng 'đi vào' mà đường lãi lại khác nhau</h1>
+    <p class="core rise" style="animation-delay:.16s">Đổi nhóm cần một việc thật, <span>và con số đi qua cửa nào thì lãi chạy theo lối đó.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Điều cần hiểu &amp; cách tiếp cận</span><h2>Quy tắc: đổi nhóm khi có change in use, hạch toán không đối xứng</h2></div>
+    </div>
+    <div class="rule">IAS 40 (đoạn 57): chỉ chuyển bất động sản vào/ra nhóm investment property <strong>khi và chỉ khi</strong> có <em>change in use</em> kèm bằng chứng; riêng việc ban lãnh đạo đổi ý định thì KHÔNG đủ. Dưới <em>fair value model</em>, cách xử lý chênh lệch <strong>không đối xứng</strong> theo hướng chuyển (đoạn 60–65): tự dùng → đầu tư đi qua cơ chế đánh giá lại IAS 16 (tăng vào OCI); còn tồn kho → đầu tư và tự xây xong thì chênh lệch vào thẳng <em>profit or loss</em>.</div>
+    <div class="sub">Cách giải thích</div>
+    <div class="approach"><p>Chỗ vấp: cùng là 'đi vào' nhóm bất động sản đầu tư, sao đường lãi lại khác nhau tùy nó đến từ đâu? Cách làm ở đây: theo dấu con số xem nó bước qua 'cửa' nào. Đến từ tự dùng thì qua cửa IAS 16, lãi vào ngăn để riêng. Đến từ tồn kho hay tự xây thì qua cửa thẳng, lãi vào kỳ ngay.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Giải thích đơn giản</span><h2>Đổi nhóm phải có việc thật, rồi lãi đi theo cửa</h2></div>
+    </div>
+    <p class="lead">Khi nào một tòa nhà đổi nhóm? Chỉ khi cách dùng nó thật sự đổi. Chủ dọn ra và bắt đầu cho thuê. Hay ngược lại, chủ thu về tự dùng. Phải có một việc xảy ra thật. Chỉ ngồi đổi ý trong đầu thì chưa tính.</p>
+
+<div class="sub">Vì sao đòi việc thật</div>
+<p>Nếu chỉ cần đổi ý là được đổi nhóm, người ta sẽ lợi dụng. Chọn đúng lúc thị trường lên để 'đổi ý', kéo một khoản lãi vào cho đẹp sổ. Nên chuẩn đòi bằng chứng: hành động, không phải ý nghĩ.</p>
+
+<div class="sub">Phần khó: lãi đi đâu tùy hướng</div>
+<p>Dưới mô hình giá thị trường, lúc đổi nhóm phải đưa con số về giá chợ. Phần chênh đi đâu thì tùy nó đến từ đâu. Đây là chỗ hay gài nhất.</p>
+
+<div class="sub">Ba cửa, ba lối</div>
+<p>Từ <strong>tự dùng</strong> sang đầu tư: phần tăng vào ngăn để riêng, y như đánh giá lại nhà xưởng; phần giảm vào lãi lỗ. Từ <strong>hàng tồn kho</strong> sang đầu tư: chênh vào thẳng lãi lỗ. Từ <strong>tự xây xong</strong> thành đầu tư: cũng vào thẳng lãi lỗ.</p>
+
+<div class="sub">Còn đi ra thì sao</div>
+<p>Từ đầu tư <strong>ra</strong> tự dùng hay tồn kho: giá chợ tại ngày đổi thành 'giá gốc giả định' để tính tiếp. Không ghi lãi lúc đổi. Con số đó chỉ là điểm xuất phát mới.</p>
+  </section>
+
+  <section class="gaps">
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Chỗ vấp · Lỗ hổng</span><h2>Mấy chỗ nghe xuôi mà nghĩ kỹ chưa thông</h2></div>
+    </div>
+    <div class="gap-q"><span class="q">"Sao đổi ý lại không đủ? Chủ nhà biết rõ mình định làm gì mà."</span><p>Vì ý định nằm trong đầu, không ai kiểm được. Cho phép đổi nhóm chỉ bằng ý định là mở cửa cho việc chọn thời điểm ghi lãi. Chuẩn cần một mốc bên ngoài nhìn thấy được: chủ thật sự dọn ra, thật sự cho thuê, thật sự khởi công. Hành động là bằng chứng, ý nghĩ thì không.</p></div>
+<div class="gap-q"><span class="q">"Cùng đi vào nhóm đầu tư, sao tồn kho thì lãi ngay, tự dùng thì để riêng?"</span><p>Vì trước lúc đổi, hai thứ nằm dưới hai luật khác nhau, và ta giữ nhất quán với luật cũ của chúng. Hàng tồn kho vốn được so với giá bán, nên chênh lệch quen vào lãi lỗ. Tài sản tự dùng đi theo cơ chế đánh giá lại của IAS 16, nơi phần tăng vào ngăn để riêng. Đổi nhóm chỉ nối tiếp cái nếp cũ đó.</p></div>
+<div class="gap-q"><span class="q">"Đầu tư chuyển ra tự dùng thì phần lãi bao năm giữ đi đâu?"</span><p>Không có bút toán lãi riêng lúc đổi. Vì suốt thời gian là bất động sản đầu tư, mọi thay đổi giá đã được ghi vào lãi mỗi kỳ rồi. Đến lúc đổi ra, giá chợ hiện thời chỉ đơn giản thành điểm khởi đầu mới để khấu hao tiếp. Lãi đã ghi dần, không dồn lại một cục.</p></div>
+<div class="gap-q"><span class="q">"Bất đối xứng kiểu này có bị lợi dụng để tô lợi nhuận không?"</span><p>Đây là chỗ quy tắc tự nhận là dễ bị vặn. Cùng một tòa nhà, chọn đường đi vào khác nhau cho ra đường lãi khác nhau. Nên chuẩn siết bằng hai chốt: phải có bằng chứng thật của thay đổi mục đích, và phải thuyết minh một bảng đối chiếu rõ mọi lần chuyển đổi. Khó giấu hơn, dù không tuyệt đối kín.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví von &amp; ví dụ đời thường</span><h2>Neo vào thứ bạn đã biết</h2></div>
+    </div>
+    <div class="analogy-card"><span class="tag">Ví dụ trung tâm</span>
+<p>Nghĩ về việc đổi công năng một <strong>căn phòng trong nhà</strong>, từ phòng ngủ thành phòng cho khách thuê ngắn ngày. Khi nào coi là 'đã đổi'? Không phải lúc bạn <em>nghĩ</em> sẽ cho thuê. Mà là lúc bạn thật sự dọn giường ra, kê lại đồ, đăng tin, đón khách đầu tiên. Có việc làm thật thì mới tính là đổi công năng.</p>
+<p class="limit"><b>Chỗ ví von này hỏng:</b> đổi phòng trong nhà mình không đẻ ra 'lãi kế toán', và cũng chẳng có ba cửa lãi khác nhau tùy phòng đến từ đâu. Ví von chỉ khớp đúng phần 'phải có hành động thật, không phải ý nghĩ'. Phần con số chênh lệch đi qua cửa nào — OCI hay lãi lỗ — thì đời thường không có, phải quay lại chính văn bản chuẩn mực.</p>
+</div>
+<p>Một ví dụ ở tầm công ty: một hãng địa ốc xây chung cư để bán (hàng tồn kho). Bán ế, hãng quyết định giữ lại cho thuê dài hạn. Đó là một việc thật: đổi từ 'để bán' sang 'cho thuê'. Tại ngày đổi, chênh giữa giá thị trường và giá trị ghi sổ cũ chạy thẳng vào lãi lỗ của kỳ.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Lưu ý đoạn 58: nếu quyết định bán một investment property mà <em>không phát triển thêm</em>, nó vẫn là investment property cho tới khi ghi giảm — không nhảy sang hàng tồn kho. Và dưới <em>cost model</em>, các lần chuyển đổi không làm đổi giá trị ghi sổ hay giá gốc (đoạn 59). Mọi rắc rối bất đối xứng ở trên chỉ phát sinh dưới fair value model. Bản sửa 'Transfers' 2016 (đoạn 84C) làm rõ danh sách bằng chứng ở đoạn 57 không phải đóng kín.</p>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">4</div>
+      <div class="step-meta"><span class="lbl">Kể lại gọn gàng</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Bất động sản chỉ đổi nhóm khi cách dùng thật sự đổi, có bằng chứng hành động — đổi ý trong đầu không đủ. Dưới mô hình giá thị trường, lúc đổi phải đưa con số về giá chợ, và phần chênh đi đâu tùy hướng. Từ tự dùng vào thì phần tăng để riêng như đánh giá lại. Từ tồn kho hay tự xây vào thì vào thẳng lãi lỗ. Cùng 'đi vào' mà lối lãi khác nhau, vì trước đó chúng theo luật khác nhau.</p>
+<p class="core">Đổi nhóm cần một việc thật, <span>cần một việc thật để đổi nhóm, rồi lãi đi theo cửa mà con số bước qua.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã hiểu chưa?</h3>
+      <ol>
+        <li>Vì sao 'ban lãnh đạo đổi ý định' không đủ để chuyển đổi phân loại?</li>
+        <li>Cùng chuyển vào nhóm đầu tư, vì sao từ tồn kho thì lãi vào P/L còn từ tự dùng thì phần tăng vào OCI?</li>
+        <li>Chuyển từ đầu tư ra tự dùng, chênh lệch giá trị hợp lý lúc đó được xử lý ra sao?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nếu giải thích được cho bà ngoại hiểu, bạn mới thật sự hiểu.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-vua-thue-vua-tu-dung"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Giải thích theo phương pháp Feynman</div>
+    <h1 class="rise" style="animation-delay:.08s">Một tòa nhà vừa cho thuê vừa tự dùng thì xếp vào đâu?</h1>
+    <p class="core rise" style="animation-delay:.16s">Tách được thì chẻ đôi; <span>không tách được thì hỏi phần tự dùng có đáng kể không.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Điều cần hiểu &amp; cách tiếp cận</span><h2>Quy tắc: tách riêng, hoặc xét 'không đáng kể'</h2></div>
+    </div>
+    <div class="rule">IAS 40 (đoạn 10): nếu các phần của một bất động sản có thể <strong>bán hoặc cho thuê riêng</strong>, hạch toán riêng từng phần. Nếu KHÔNG tách được, cả bất động sản là investment property <strong>chỉ khi</strong> phần tự dùng là <strong>không đáng kể</strong> (<em>insignificant</em>). Với dịch vụ kèm theo (đoạn 11–13): dịch vụ phụ như bảo vệ, bảo trì thì không đáng kể, vẫn là investment property; nhưng tự vận hành khách sạn thì dịch vụ đáng kể, thành owner-occupied.</div>
+    <div class="sub">Cách giải thích</div>
+    <div class="approach"><p>Chỗ vấp: một tòa nhà nửa cho thuê nửa tự ngồi thì thuộc nhóm nào, khi định nghĩa chỉ cho chọn một? Cách làm ở đây: đi hai nước. Nước một, hỏi có tách riêng được không — tách được thì chẻ đôi sổ. Nước hai, nếu không tách, cân xem phần tự dùng lớn hay nhỏ.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Giải thích đơn giản</span><h2>Đi hai nước: tách riêng, rồi cân phần tự dùng</h2></div>
+    </div>
+    <p class="lead">Một tòa nhà mười tầng. Chín tầng cho thuê, một tầng công ty tự ngồi làm việc. Xếp cả tòa vào nhóm nào? Nó vừa hợp định nghĩa bất động sản đầu tư, vừa hợp định nghĩa tài sản tự dùng. Mà luật chỉ cho chọn một. Phải có cách gỡ.</p>
+
+<div class="sub">Nước một: tách riêng được không</div>
+<p>Hỏi trước: hai phần này có bán hoặc cho thuê riêng được không? Nếu mỗi tầng có sổ riêng, bán tách bạch được, thì chẻ đôi sổ. Chín tầng cho thuê ghi là bất động sản đầu tư. Một tầng tự ngồi ghi là tài sản tự dùng. Mỗi phần theo luật của nó.</p>
+
+<div class="sub">Nước hai: không tách được thì cân</div>
+<p>Nếu tòa nhà là một khối, không thể bán riêng từng phần, thì phải xếp cả tòa vào một nhóm. Lúc này nhìn phần tự dùng: nó lớn hay nhỏ?</p>
+
+<div class="sub">Cây cân: 'không đáng kể'</div>
+<p>Phần tự dùng rất nhỏ, không đáng kể, thì cả tòa coi là bất động sản đầu tư. Phần tự dùng đáng kể thì không được, cả tòa thành tài sản tự dùng. Một tầng trên mười, nếu chỉ là góc nhỏ, thường coi là không đáng kể.</p>
+  </section>
+
+  <section class="gaps">
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Chỗ vấp · Lỗ hổng</span><h2>Mấy chỗ nghe xuôi mà nghĩ kỹ chưa thông</h2></div>
+    </div>
+    <div class="gap-q"><span class="q">"'Không đáng kể' là bao nhiêu phần trăm? 5%? 10%?"</span><p>Chuẩn cố tình không cho con số cứng. Vì mỗi tòa nhà, mỗi ngành một khác, một ngưỡng chung sẽ méo. Thay vào đó, đơn vị tự đặt tiêu chí nhất quán và phải thuyết minh tiêu chí đó ra ngoài. Đây là chỗ đòi xét đoán, không phải tra bảng.</p></div>
+<div class="gap-q"><span class="q">"Chủ nhà có bảo vệ, dọn dẹp cho khách thuê — vậy là tự vận hành, thành tự dùng?"</span><p>Không. Bảo vệ, bảo trì chỉ là dịch vụ phụ, không đáng kể so với việc cho thuê. Cả tòa vẫn là bất động sản đầu tư. Ranh giới là mức độ dịch vụ: phụ trợ lặt vặt thì bỏ qua, còn cả một guồng vận hành phục vụ khách thì mới đổi bản chất.</p></div>
+<div class="gap-q"><span class="q">"Vậy khách sạn do chủ tự chạy thì khác gì?"</span><p>Khác hẳn. Tự vận hành khách sạn là cả một dịch vụ lớn: lễ tân, buồng phòng, ăn uống. Tiền về chủ yếu nhờ dịch vụ đó, không chỉ nhờ tòa nhà. Nên khách sạn tự chạy là tài sản tự dùng, không phải bất động sản đầu tư. Dịch vụ đáng kể kéo nó sang nhóm khác.</p></div>
+<div class="gap-q"><span class="q">"Ranh giới 'đáng kể' mờ thế, chẳng phải rất dễ cãi nhau sao?"</span><p>Đúng, đây là chỗ quy tắc thừa nhận mình không sắc. Hai người có thể nhìn cùng một tòa nhà mà kết luận khác nhau. Chính vì thế chuẩn không giả vờ có ngưỡng chính xác. Nó đòi đơn vị công bố tiêu chí đã dùng, để người đọc tự đánh giá cách xét đoán đó.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví von &amp; ví dụ đời thường</span><h2>Neo vào thứ bạn đã biết</h2></div>
+    </div>
+    <div class="analogy-card"><span class="tag">Ví dụ trung tâm</span>
+<p>Nghĩ về <strong>căn nhà của bạn</strong>: bạn ở tầng trệt, cho thuê tầng trên. Xếp nó thế nào? Nếu tầng trên có lối đi riêng, đồng hồ điện riêng, cho thuê tách bạch, thì tính riêng hai phần. Nhưng giả sử bạn chỉ kê một chiếc giường ở góc phòng khách cho người ở trọ, dùng chung bếp chung cửa. Khi đó cả căn vẫn là nhà bạn ở, vì phần cho thuê quá nhỏ, không đáng kể.</p>
+<p class="limit"><b>Chỗ ví von này hỏng:</b> nhà bạn ở không phải xếp loại kế toán, nên 'đáng kể hay không' chỉ là cảm giác cá nhân. Trong chuẩn mực, 'không đáng kể' là một xét đoán chuyên môn, phải nhất quán qua các kỳ và phải thuyết minh ra ngoài. Ngoài ra tiêu chí 'tách riêng được không' trong chuẩn nói về khả năng bán/cho thuê riêng về mặt pháp lý, chặt hơn chuyện có lối đi riêng.</p>
+</div>
+<p>Cùng khuôn ở tầm doanh nghiệp: một tòa văn phòng cho thuê, tầng trệt công ty đặt một quầy lễ tân nhỏ của chính mình. Quầy đó quá bé so với cả tòa cho thuê. Không đáng kể, nên cả tòa vẫn là bất động sản đầu tư. Nhưng nếu công ty chiếm hẳn năm trên mười tầng để làm trụ sở, phần tự dùng thành đáng kể, câu trả lời đổi.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Đoạn 14 nói rõ: khi phân loại khó, đơn vị tự xây tiêu chí và áp dụng nhất quán, rồi thuyết minh tiêu chí đó theo đoạn 75(c). Cũng cần tách riêng đoạn 14A: việc mua một bất động sản đầu tư có thể là mua một tài sản, hoặc là một hợp nhất kinh doanh theo IFRS 3 — xét đoán đó độc lập với chuyện phân loại đầu tư hay tự dùng.</p>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">4</div>
+      <div class="step-meta"><span class="lbl">Kể lại gọn gàng</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Một tòa nhà vừa cho thuê vừa tự dùng thì đi hai nước. Nước một: tách riêng được thì chẻ đôi sổ, mỗi phần theo luật của nó. Nước hai: không tách được thì cân phần tự dùng. Rất nhỏ, không đáng kể, thì cả tòa là bất động sản đầu tư; đáng kể thì thành tài sản tự dùng. Với dịch vụ kèm theo cũng vậy: phụ trợ lặt vặt thì bỏ qua, tự chạy khách sạn thì đổi nhóm.</p>
+<p class="core">Tách được thì chẻ đôi; <span>chẻ đôi nếu tách được; nếu không, phần tự dùng nhỏ thì cả tòa là đầu tư.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã hiểu chưa?</h3>
+      <ol>
+        <li>Tòa nhà 9 tầng cho thuê, 1 tầng tự dùng, tách bán riêng được — xếp loại thế nào?</li>
+        <li>Khi không tách được, cây cân nào quyết định cả tòa là đầu tư hay tự dùng?</li>
+        <li>Vì sao chủ nhà lo bảo vệ, bảo trì thì vẫn là đầu tư, nhưng tự vận hành khách sạn thì không?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nếu giải thích được cho bà ngoại hiểu, bạn mới thật sự hiểu.</p>
+  </footer>
+
+</div></div>
+<script>
+  var bar=document.getElementById('progress');
+  function upd(){var h=document.documentElement;var s=h.scrollTop||document.body.scrollTop;
+    var max=(h.scrollHeight-h.clientHeight)||1;bar.style.width=(s/max*100)+'%';}
+  window.addEventListener('scroll',upd,{passive:true});upd();
+  var io=new IntersectionObserver(function(es){es.forEach(function(e){
+    if(e.isIntersecting){e.target.style.animation='rise .7s cubic-bezier(.2,.7,.3,1) forwards';io.unobserve(e.target);}});},{threshold:.12});
+  document.querySelectorAll('section').forEach(function(s){s.style.opacity='0';io.observe(s);});
+</script>
+
+<script>
+(function(){
+  var tabs=[].slice.call(document.querySelectorAll('.tabbar .tab'));
+  var panels=[].slice.call(document.querySelectorAll('.concept-panel'));
+  function show(i){
+    tabs.forEach(function(t,j){t.classList.toggle('active',j===i);});
+    panels.forEach(function(p,j){
+      var on=(j===i); p.classList.toggle('active',on);
+      if(on){p.querySelectorAll('section').forEach(function(s){s.style.opacity='';s.style.animation='';});}
+    });
+    try{history.replaceState(null,'','#'+panels[i].id);}catch(e){}
+    window.scrollTo(0,0); window.dispatchEvent(new Event('scroll'));
+  }
+  tabs.forEach(function(t){t.addEventListener('click',function(){show(+t.getAttribute('data-i'));});});
+  var start=0; panels.forEach(function(p,j){if('#'+p.id===location.hash)start=j;});
+  show(start);
+})();
+</script>
+
+</body></html>

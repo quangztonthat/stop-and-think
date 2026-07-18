@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="vi"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Skin in the Game — Hidden Asymmetries in Daily Life — Nền tảng, hiểu từ gốc</title>
+<style>
+  /* Design tokens shared with ebook-to-study-html + feynman-from-study (styles_v2.css) */
+  :root{
+    --bg:#fafaf7; --bg-elevated:#ffffff; --bg-soft:#f3f3ee;
+    --border:#e0e0d8; --border-soft:#ececea; --border-strong:#d2c8b6;
+    --ink:#1a1a1f; --ink-soft:#3f3f4a; --muted:#7a7a85;
+    --accent:#2f6fed; --accent-2:#2258c8; --gold:#0fb6d4; --bridge:#5a6b4f;
+    --serif:"Fraunces",Georgia,"Iowan Old Style",serif;
+    --sans:"Geist",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    --mono:"Geist Mono","JetBrains Mono",Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:var(--sans);
+    font-size:19px;line-height:1.72;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}
+  .progress{position:fixed;top:0;left:0;height:3px;width:0;z-index:50;
+    background:linear-gradient(90deg,var(--gold),var(--accent));transition:width .08s linear}
+  .wrap{max-width:920px;margin:0 auto;padding:0 36px}
+  .rise{opacity:0;transform:translateY(14px);animation:rise .7s cubic-bezier(.2,.7,.3,1) forwards}
+  @keyframes rise{to{opacity:1;transform:none}}
+
+  header{padding:104px 0 60px;border-bottom:1px solid var(--border)}
+  .kicker{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.18em;
+    text-transform:uppercase;color:var(--accent);margin-bottom:26px}
+  h1{font-family:var(--serif);font-weight:600;font-size:clamp(42px,7.6vw,72px);
+    line-height:1.0;letter-spacing:-.022em;margin-bottom:28px;font-optical-sizing:auto;color:var(--ink)}
+  h1 em{font-style:italic;color:var(--accent)}
+  .core{font-family:var(--serif);font-style:italic;font-weight:400;
+    font-size:clamp(21px,3.6vw,27px);line-height:1.44;color:var(--ink-soft)}
+  .core span{font-style:normal;font-weight:600;color:var(--accent-2);
+    box-shadow:inset 0 -.5em 0 rgba(47,111,237,.16)}
+
+  /* ---- BƯỚC 0: ĐỊNH VỊ (what it is + why it's the foundation) ---- */
+  .anchor .rule{font-family:var(--serif);font-size:19px;line-height:1.5;color:var(--ink);
+    background:var(--bg-soft);border-left:3px solid var(--accent);
+    padding:18px 24px;border-radius:0 4px 4px 0;margin:0}
+  .anchor .rule em{font-style:italic;color:var(--accent-2)}
+  .anchor .rule strong{color:var(--ink);font-weight:600}
+  .anchor .why{color:var(--ink-soft)}
+
+  section{padding:72px 0;border-bottom:1px solid var(--border);position:relative}
+  .step-head{display:flex;align-items:flex-start;gap:22px;margin-bottom:34px}
+  .big-num{font-family:var(--serif);font-weight:700;font-size:62px;line-height:.8;
+    color:var(--border-strong);flex:none;font-optical-sizing:auto;letter-spacing:-.03em}
+  .step-meta{padding-top:4px}
+  .lbl{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--accent);display:block;margin-bottom:10px}
+  h2{font-family:var(--serif);font-weight:600;font-size:clamp(27px,4.4vw,37px);
+    line-height:1.12;letter-spacing:-.012em;color:var(--ink)}
+  h2 em{font-style:italic;color:var(--accent)}
+  p{margin-bottom:21px}
+  p:last-child{margin-bottom:0}
+  strong{font-weight:600;color:var(--ink)}
+  em{font-style:italic;color:var(--accent-2)}
+  .gloss{color:var(--muted);font-style:italic}
+
+  .lead::first-letter{font-family:var(--serif);font-weight:700;float:left;
+    font-size:74px;line-height:.74;padding:8px 12px 0 0;color:var(--accent)}
+
+  .sub{font-family:var(--serif);font-weight:600;font-size:17px;letter-spacing:.01em;
+    color:var(--ink);margin:34px 0 14px;display:flex;align-items:center;gap:11px}
+  .sub::before{content:"";width:18px;height:2px;background:var(--accent);flex:none;border-radius:2px}
+
+  /* ---- BƯỚC 1: VẤN ĐỀ (why it exists) ---- */
+  .problem{background:var(--bg-soft)}
+  .problem .big-num{color:#e2d6b4}
+
+  /* ---- BƯỚC 3: VÍ DỤ (concrete worked example) ---- */
+  .example-card{border:1px solid #e8c876;border-radius:4px;padding:30px 32px;margin:8px 0 28px;
+    background:linear-gradient(135deg,#fef9ed 0%,#fdf3e0 100%)}
+  .example-card .tag{font-family:var(--mono);font-weight:600;font-size:11px;
+    letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin-bottom:16px;display:block}
+  .example-card p{color:#5a4810}
+  .example-card strong{color:var(--accent-2)}
+  .example-card p:last-child{margin-bottom:0}
+
+  /* ---- DỄ NHẦM (optional clarify / boundaries) ---- */
+  .clarify{background:var(--bg-soft)}
+  .clarify .big-num{color:#d8cdb2}
+  .mix-q{margin:0 0 30px;padding-left:24px;border-left:2px solid var(--border-strong)}
+  .mix-q:last-child{margin-bottom:0}
+  .mix-q .q{font-family:var(--serif);font-style:italic;font-weight:500;
+    font-size:22px;line-height:1.35;color:var(--accent-2);margin-bottom:12px;display:block}
+  .mix-q p:last-child{margin-bottom:0}
+
+  /* ---- NỐI TIẾP (bridge to the harder concepts) ---- */
+  .bridge .big-num{color:#bcc7b2}
+  .bridge .lbl{color:var(--bridge)}
+  .bridge-card{border-left:3px solid var(--bridge);background:#f4f6f1;
+    padding:22px 26px;border-radius:0 4px 4px 0;margin-top:6px}
+  .bridge-card p:last-child{margin-bottom:0}
+  .bridge-card strong{color:#42513a}
+
+  /* ---- KỂ LẠI GỌN (refined retell) ---- */
+  .retell{background:linear-gradient(180deg,var(--bg-soft) 0%,var(--bg) 100%);border-bottom:none}
+  .retell h2{color:var(--ink)}
+  .retell strong{color:var(--accent-2)}
+  .retell .core{margin-top:6px}
+  .testbox{border:1px solid var(--border);background:var(--bg-elevated);
+    border-radius:4px;padding:28px 32px;margin-top:40px;box-shadow:0 1px 2px rgba(0,0,0,.03)}
+  .testbox h3{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--accent);margin-bottom:20px}
+  .testbox ol{margin:0;padding-left:22px;counter-reset:t}
+  .testbox li{margin-bottom:16px;color:var(--ink-soft);padding-left:6px}
+  .testbox li:last-child{margin-bottom:0}
+
+  footer{text-align:center;padding:60px 0 88px}
+  footer .mark{font-family:var(--serif);font-weight:700;color:var(--accent);
+    font-size:26px;display:block;margin-bottom:14px}
+  footer p{font-family:var(--serif);font-style:italic;color:var(--muted);font-size:17px;max-width:400px;margin:0 auto}
+
+  @media(max-width:560px){
+    body{font-size:18px}
+    header{padding:70px 0 44px}
+    section{padding:52px 0}
+    .step-head{gap:16px}
+    .big-num{font-size:46px}
+    .lead::first-letter{font-size:60px}
+  }
+
+/* ===== FLAMINDI THEME OVERRIDE (dong bo trang chu flamindi.com) ===== */
+:root{
+  --accent:#2f6fed;--accent-2:#2258c8;--accent2:#2258c8;--gold:#0fb6d4;--cyan:#0fb6d4;--blue:#2f6fed;
+  --bg:#f7f9fe;--bg-elevated:#ffffff;--bg-card:#ffffff;--card:#ffffff;--bg-soft:#eef2fb;--soft:#eef2fb;
+  --border:#e4e9f2;--border-soft:#eef1f7;--border-strong:#cfd8e8;
+  --text:#1a2233;--text-soft:#4e5a74;--text-dim:#6b7691;
+  --ink:#1a2233;--ink-soft:#4e5a74;--muted:#6b7691;--soft-t:#4e5a74;--dim:#6b7691;
+  --serif:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+  --mono:ui-monospace,Menlo,Consolas,monospace;
+}
+body{background:radial-gradient(1200px 600px at 85% -10%,rgba(47,111,237,.14),transparent 60%),radial-gradient(1000px 640px at -10% 30%,rgba(15,182,212,.09),transparent 55%),linear-gradient(#f7f9fe,#edf0f8) fixed !important;}
+</style>
+<style>
+ .tabbar{position:fixed;top:0;left:0;right:0;width:100%;box-sizing:border-box;z-index:40;background:rgba(250,250,247,.93);
+   backdrop-filter:saturate(1.1) blur(8px);-webkit-backdrop-filter:saturate(1.1) blur(8px);
+   border-bottom:1px solid var(--border);display:flex;gap:6px;overflow-x:auto;
+   padding:10px max(36px,calc((100% - 992px)/2));scrollbar-width:thin}
+ .tabbar .tab{flex:0 0 auto;display:flex;align-items:baseline;gap:9px;cursor:pointer;
+   background:transparent;border:1px solid transparent;border-radius:999px;
+   padding:8px 17px;transition:.15s;white-space:nowrap;color:var(--muted)}
+ .tabbar .tab:hover{color:var(--ink);background:var(--bg-soft)}
+ .tabbar .tab.active{color:var(--accent-2);background:var(--bg-soft);border-color:var(--border-strong)}
+ .tabbar .tn{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.1em;color:var(--accent)}
+ .tabbar .tl{font-family:var(--serif);font-weight:500;font-size:16px}
+ body{padding-top:56px} .concept-panel{display:none}
+ .concept-panel.active{display:block}
+ .concept-panel header{padding-top:50px}
+ @media(max-width:560px){.tabbar .tl{max-width:48vw;overflow:hidden;text-overflow:ellipsis}}
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+<nav class="tabbar" aria-label="Các khái niệm nền"><button class="tab" data-i="0"><span class="tn">01</span><span class="tl">Da thịt trong cuộc</span></button><button class="tab" data-i="1"><span class="tn">02</span><span class="tl">Chuyển rủi ro cho người khác</span></button><button class="tab" data-i="2"><span class="tn">03</span><span class="tl">Vấn đề đại diện</span></button><button class="tab" data-i="3"><span class="tn">04</span><span class="tl">Bất cân xứng thông tin</span></button></nav>
+<div class="concept-panel" id="c-da-thit-trong-cuoc"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Nền tảng · hiểu từ gốc</div>
+    <h1 class="rise" style="animation-delay:.08s">Skin in the game: ai quyết định thì phải tự gánh hậu quả</h1>
+    <p class="core rise" style="animation-delay:.16s">Ai ra quyết định <span>thì phải nhận cả phần thắng lẫn phần thua.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Định vị · nó là gì &amp; vì sao học trước</span><h2>Nguyên tắc nền: có phần thân trong cuộc chơi</h2></div>
+    </div>
+    <div class="rule"><strong>Skin in the game</strong> (có phần thân trong cuộc chơi) nghĩa là: kẻ ra quyết định phải <em>phơi nhiễm</em> với hậu quả thật của quyết định đó — được thì mình hưởng, sai thì mình trả. Taleb mở cuốn sách bằng huyền thoại <em>Antaeus</em> (Prologue 1): gã khổng lồ bất bại chừng nào còn chạm đất mẹ; Hercules nhấc hắn khỏi mặt đất và bóp chết. Bài học: tri thức tách khỏi mặt đất — tức tách khỏi <em>skin in the game</em> — thì rỗng.</div>
+    <div class="sub">Vì sao đây là nền</div>
+    <div class="why"><p>Đây là viên gạch dưới cùng của cả cuốn. Mọi lập luận về sau chỉ là một câu hỏi lặp lại. Kẻ quyết có gánh hậu quả của quyết định không? Nắm ý này, các chương sau tự sáng ra. Bỏ nó, mỗi chương thành một mẹo rời rạc.</p></div>
+  </section>
+
+  <section class="problem">
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Vấn đề nó sinh ra để giải quyết</span><h2>Khi người quyết không phải người trả giá</h2></div>
+    </div>
+    <p class="lead">Một người xây nhà cho bạn. Vài năm sau nhà sập, đè chết người trong đó. Người xây đã nhận tiền công từ lâu, đã đi xa. Ai gánh cái chết ấy? Không phải anh ta. Vậy anh ta có thật sự lo cho cái móng không?</p>
+
+<p>Vấn đề sinh ra từ đúng khe hở đó. Khi người ra quyết định không phải người trả giá, họ hết lý do để cẩn thận. Họ có thể giấu điểm yếu vào những góc khuất, để nó nổ ra lúc mình đã ở xa.</p>
+
+<div class="sub">Vì sao chuyện này ở khắp nơi</div>
+<p>Đây không phải chuyện riêng của thợ xây. Nó lặp ở nhà tư vấn, quan chức, chủ ngân hàng. Ai cũng có thể khuyên bạn liều, rồi phủi tay khi bạn thua. Nên ta cần một nguyên tắc buộc người quyết chịu chung. Đó là Bước 2.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Mô hình đơn giản · cách nó chạy</span><h2>Buộc hậu quả rơi trúng người ra quyết định</h2></div>
+    </div>
+    <p>Mô hình chỉ có một động tác. Cột chặt <strong>quyền quyết</strong> vào <strong>hậu quả</strong>, để cả hai rơi trúng cùng một người.</p>
+
+<div class="sub">Hai chiều, không phải một</div>
+<p>Có skin in the game nghĩa là bạn nhận cả hai đầu. Làm tốt thì bạn hưởng lời. Làm hỏng thì bạn mất thật. Chỉ ăn phần lời mà né phần lỗ thì không tính.</p>
+
+<div class="sub">Đau là thầy dạy</div>
+<p>Người Hy Lạp có câu <em>pathemata mathemata</em> — học qua nỗi đau. Vết trầy trên da dẫn đường cho ta học. Kiến thức từ mày mò, trả giá, chịu hậu quả thì chắc hơn kiến thức chỉ nghĩ trong đầu.</p>
+
+<div class="sub">Hệ thống học bằng cách loại bỏ</div>
+<p>Phi công liều sẽ rơi và không còn bay nữa. Nhờ vậy bầu trời an toàn dần. Nhưng cơ chế lọc này chỉ chạy khi người quyết cũng ngồi trên chiếc máy bay đó. Không phơi nhiễm thì không bị lọc.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví dụ cụ thể</span><h2>Luật thợ xây bốn ngàn năm tuổi</h2></div>
+    </div>
+    <div class="example-card"><span class="tag">Ví dụ</span>
+<p>Bia đá Hammurabi ở Babylon, gần 3.800 năm trước, có một điều luật nổi tiếng. <em>Nhà sập làm chết chủ nhà thì thợ xây phải chết.</em></p>
+<p>Vì sao nặng thế? Vì chỗ tốt nhất để giấu rủi ro là trong các góc khuất. Chỉ thợ xây mới biết cái móng yếu chỗ nào. Buộc anh ta trả giá bằng chính mình thì anh ta hết muốn giấu.</p>
+<p>Đổi bối cảnh cho rõ. Cũng trò giấu rủi ro đó, ngày nay một trader chôn điểm yếu vào sự kiện hiếm, rồi ôm tiền thưởng bỏ đi trước khi nổ. Bốn ngàn năm, một khuôn.</p>
+</div>
+<p>Đời thường hơn: ảo thuật gia David Blaine đâm dùi xuyên qua bàn tay mình thật, chảy máu thật. Ông không diễn ảo giác — ông chịu rủi ro. Vết sẹo là bằng chứng của skin in the game, thứ mà người chỉ nói suông không có.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Cao hơn <em>skin in the game</em> một bậc là <em>soul in the game</em>: chịu rủi ro thay cho người khác hay cho một giá trị chung — hiệp sĩ, người tố giác, nhà tiên tri. Cơ chế loại bỏ ở trên là <em>via negativa</em>: hệ mạnh lên bằng cách gạt bỏ cái hỏng, không phải bằng cách thêm quy tắc.</p>
+  </section>
+
+  <section class="clarify">
+    <div class="step-head">
+      <div class="big-num">≠</div>
+      <div class="step-meta"><span class="lbl">Dễ nhầm · ranh giới</span><h2>Đừng nhầm — vài ranh giới</h2></div>
+    </div>
+    <div class="mix-q"><span class="q">"Skin in the game chỉ là 'có đặt tiền cược' thôi phải không?"</span><p>Không hẳn. Cốt lõi là <strong>phơi nhiễm hai chiều</strong>, nhất là chiều thua. Một người ăn lương thưởng theo phần lời nhưng không mất gì khi lỗ thì vẫn thiếu skin in the game. Phải có phần thua thật thì mới tính.</p></div>
+<div class="mix-q"><span class="q">"Vậy nó chỉ là hình phạt cho người làm sai?"</span><p>Không. Nó là sự đối xứng, có trước cả khi ai làm sai. Người quyết đứng chung một con thuyền với người chịu hậu quả. Nhờ vậy họ tự lo cẩn thận, chứ không đợi bị phạt.</p></div>
+  </section>
+
+  <section class="bridge">
+    <div class="step-head">
+      <div class="big-num">→</div>
+      <div class="step-meta"><span class="lbl">Nối tiếp · nó dẫn tới đâu</span><h2>Vì sao nguyên tắc này lại sâu đến thế</h2></div>
+    </div>
+    <div class="bridge-card"><p>Skin in the game không chỉ là chuyện công bằng. Bên dưới nó là chuyện <strong>sống sót</strong>. Người gánh hậu quả thật, qua nhiều lần phơi nhiễm, hoặc trụ được hoặc bị loại. Ai không phơi nhiễm thì không bao giờ bị thực tại kiểm tra.</p>
+<p>Đây chính là chỗ mở sang trang khó <strong>'Rủi ro tuyệt chủng'</strong>. Ở đó bạn sẽ thấy vì sao chỉ cần một cú thua kiểu 'hết game' là mọi con tính lời lãi trở nên vô nghĩa. Nắm nền này trước, trang đó hết rối.</p></div>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">✦</div>
+      <div class="step-meta"><span class="lbl">Kể lại trong một hơi</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Skin in the game là: ai quyết thì người đó phơi nhiễm với hậu quả, cả tốt lẫn xấu. Cột quyền quyết vào phần thua thật. Nhờ vậy người ta tự cẩn thận, và hệ thống loại được kẻ liều. Tri thức tách khỏi hậu quả thì rỗng, như Antaeus bị nhấc khỏi đất.</p>
+<p class="core">Ai ra quyết định <span>ai quyết thì phải chịu phần thua — nếu không, lời khuyên của họ rỗng.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã nắm nền chưa?</h3>
+      <ol>
+        <li>Vì sao luật Hammurabi bắt thợ xây phải chết khi nhà sập lại làm anh ta hết muốn giấu điểm yếu?</li>
+        <li>Skin in the game khác với 'ăn lương thưởng theo phần lời' ở điểm cốt lõi nào?</li>
+        <li>Vì sao hệ thống chỉ 'học bằng cách loại bỏ' khi người ra quyết định cũng bị phơi nhiễm?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nền vững thì cái khó tự nhẹ đi. Hiểu từ gốc, không học vẹt.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-chuyen-rui-ro-cho-nguoi-khac"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Nền tảng · hiểu từ gốc</div>
+    <h1 class="rise" style="animation-delay:.08s">Bất đối xứng rủi ro: giữ phần lời, đẩy phần lỗ cho người khác</h1>
+    <p class="core rise" style="animation-delay:.16s">Thắng thì tôi hưởng, <span>thua thì người khác trả — đó là gốc của nhiều bất công.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Định vị · nó là gì &amp; vì sao học trước</span><h2>Nguyên tắc nền: rủi ro bị đẩy sang người vô can</h2></div>
+    </div>
+    <div class="rule"><strong>Bất đối xứng rủi ro</strong> là khi một người giữ <em>phần lời</em> (upside) cho mình, còn <em>phần lỗ</em> — nhất là rủi ro đuôi (<em>tail risk</em>, cú sập hiếm mà lớn) — thì đẩy sang người khác. Taleb đặt tên cụ thể: <em>Bob Rubin trade</em> (Prologue 1). Robert Rubin nhận hơn 120 triệu đô thưởng từ Citibank; khi ngân hàng vỡ và người đóng thuế cứu, ông không viết một tấm séc nào, chỉ kêu "sự không chắc chắn".</div>
+    <div class="sub">Vì sao đây là nền</div>
+    <div class="why"><p>Đây là viên gạch giải thích mọi bất công trong sách. Sai lầm chính sách, lừa đảo tài chính, chiến tranh vô cớ — tất cả quy về một hình dạng. Ai đó tách được phần lời khỏi phần lỗ, rồi đẩy phần lỗ đi. Thấy được hình dạng này, bạn đọc phần còn lại như đọc hệ quả.</p></div>
+  </section>
+
+  <section class="problem">
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Vấn đề nó sinh ra để giải quyết</span><h2>Cùng một quyết định, hai người khác nhau lãnh hai đầu</h2></div>
+    </div>
+    <p class="lead">Một nhóm cổ vũ lật đổ chế độ ở một nước xa. Kế hoạch đổ vỡ, đất nước tan hoang, hàng vạn người mất mạng. Còn nhóm cổ vũ thì vẫn ngồi trong căn nhà ngoại ô có điều hòa, hai xe trong ga-ra. Ai trả giá? Không phải họ.</p>
+
+<p>Vấn đề nằm ở chỗ phần lời và phần lỗ <em>tách rời</em>, rơi trúng hai người khác nhau. Người hưởng danh tiếng, tiền thưởng thì một đằng. Người ôm cái chết, cái nợ thì một nẻo.</p>
+
+<div class="sub">Vì sao đây là cỗ máy sinh bất công</div>
+<p>Khi phần lỗ luôn có người khác gánh, kẻ quyết chẳng còn lý do dừng lại. Cứ liều tiếp, vì thua không đau. Cơ chế lọc tự nhiên cũng bó tay, vì nó không đụng tới được người vô can.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Mô hình đơn giản · cách nó chạy</span><h2>Tách hai dòng: ai hưởng lời, ai ôm lỗ</h2></div>
+    </div>
+    <p>Chỉ có một động tác để nhìn ra bất đối xứng. Tách <strong>dòng lời</strong> khỏi <strong>dòng lỗ</strong>, rồi hỏi hai dòng đó chảy về ai.</p>
+
+<div class="sub">Khi hai dòng về cùng một người</div>
+<p>Đó là skin in the game lành mạnh. Được thì mình hưởng, thua thì mình chịu. Người ta tự cân nhắc, vì cả hai đầu đều dính vào mình.</p>
+
+<div class="sub">Khi hai dòng về hai người</div>
+<p>Đó là <em>Bob Rubin trade</em>. Ngửa thì tôi thắng, sấp thì tôi hét "thiên nga đen" rồi giữ nguyên tiền cũ. Phần lỗ được đẩy âm thầm sang người khác, thường là công chúng.</p>
+
+<div class="sub">Rủi ro giấu ở cái đuôi</div>
+<p>Kiểu nguy nhất là giữ tiền đều đặn từ một rủi ro che giấu có thể nổ tung. Ngày thường trông ổn. Đến khi cú hiếm ập tới thì người khác lãnh, còn mình đã ôm tiền đi xa.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví dụ cụ thể</span><h2>120 triệu đô giữ lại, hóa đơn đẩy cho dân</h2></div>
+    </div>
+    <div class="example-card"><span class="tag">Ví dụ</span>
+<p>Robert Rubin nhận hơn <strong>120 triệu đô</strong> tiền thưởng trong thập kỷ trước khủng hoảng 2008. Ông giữ steady money từ những rủi ro chạy tốt trên giấy.</p>
+<p>Rồi ngân hàng vỡ trên thực tế. Người đóng thuế đứng ra cứu. Rubin không hoàn lại đồng nào — ông viện "sự không chắc chắn" làm cớ. Phần lời đã bỏ túi, phần lỗ đẩy sang dân.</p>
+<p>Đổi cách xếp để thấy hình dạng. Ngửa thì ông ăn, sấp thì ông hét thiên nga đen. Con tính lệch hẳn về một phía, vì hai đầu rơi vào hai người.</p>
+</div>
+<p>Ngược lại là quỹ phòng hộ kiểu owner-operator: người chủ để ít nhất một nửa tài sản ròng của mình trong quỹ. Quỹ chìm thì ông chìm theo. Hai dòng lời và lỗ chảy về đúng một người — nên ông không dám liều bằng tiền như Rubin.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Taleb gọi bộ máy hành chính là cỗ máy tách người ra khỏi hậu quả của họ. Cách chống là <em>phi tập trung hóa</em>: dễ nói dối ở tầm vĩ mô hơn ở tầm vi mô. Cùng cấu trúc này còn có <em>interventionista</em> — kẻ can thiệp chỉ thấy bước một, không thấy bước hai ba bốn, và không bao giờ ngồi trên chiếc máy bay do chính mình thiết kế.</p>
+  </section>
+
+  <section class="clarify">
+    <div class="step-head">
+      <div class="big-num">≠</div>
+      <div class="step-meta"><span class="lbl">Dễ nhầm · ranh giới</span><h2>Đừng nhầm — vài ranh giới</h2></div>
+    </div>
+    <div class="mix-q"><span class="q">"Kinh doanh nào chẳng có rủi ro — vậy bất đối xứng thì sao?"</span><p>Vấn đề không phải 'có rủi ro hay không'. Vấn đề là <strong>ai ôm cái đuôi</strong> — cú thua tệ nhất. Nhận rủi ro mà tự gánh phần thua là lành mạnh. Đẩy phần thua sang người vô can mới là bất đối xứng cần chặn.</p></div>
+<div class="mix-q"><span class="q">"Rubin làm đúng luật mà, sao lại là vấn đề?"</span><p>Đúng luật không có nghĩa là đối xứng. Chính cơ chế cứu trợ của nhà nước đã làm chuyện đẩy rủi ro thành khả thi. Luật đến rồi đi; sự bất đối xứng trong gánh rủi ro mới là gốc bệnh.</p></div>
+  </section>
+
+  <section class="bridge">
+    <div class="step-head">
+      <div class="big-num">→</div>
+      <div class="step-meta"><span class="lbl">Nối tiếp · nó dẫn tới đâu</span><h2>Từ bất đối xứng rủi ro sang bất đối xứng lạ hơn</h2></div>
+    </div>
+    <div class="bridge-card"><p>Bạn vừa thấy một chiều lệch: phần lời một nơi, phần lỗ một nẻo. Bất đối xứng một chiều là cỗ máy sinh ra rất nhiều thứ trong sách.</p>
+<p>Có một dạng bất đối xứng còn lạ hơn, nằm ở <em>sở thích</em> chứ không phải rủi ro. Taleb gọi nó là 'mẹ của mọi bất đối xứng'. Mở trang khó <strong>'Luật thiểu số'</strong>: chỉ một nhóm nhỏ cứng rắn, không bao giờ nhượng, lại bẻ cong lựa chọn của cả số đông. Cùng một chiều lệch, một kết quả bất ngờ.</p></div>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">✦</div>
+      <div class="step-meta"><span class="lbl">Kể lại trong một hơi</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Bất đối xứng rủi ro là khi phần lời và phần lỗ rơi vào hai người. Kẻ quyết giữ lời, đẩy cái đuôi tệ nhất sang người vô can. Ngửa thì tôi thắng, sấp thì tôi hét thiên nga đen. Muốn lành mạnh, buộc hai dòng chảy về cùng một người.</p>
+<p class="core">Thắng thì tôi hưởng, <span>hãy hỏi ai ôm cái đuôi tệ nhất — đó mới là người thật sự chịu rủi ro.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã nắm nền chưa?</h3>
+      <ol>
+        <li>Vì sao 'ngửa thì tôi thắng, sấp thì tôi hét thiên nga đen' lại là một con tính lệch hẳn về một phía?</li>
+        <li>Cùng chấp nhận rủi ro, điều gì tách một quỹ owner-operator khỏi một Bob Rubin trade?</li>
+        <li>Vì sao nên hỏi 'ai ôm cái đuôi' thay vì hỏi 'có rủi ro hay không'?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nền vững thì cái khó tự nhẹ đi. Hiểu từ gốc, không học vẹt.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-van-de-dai-dien"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Nền tảng · hiểu từ gốc</div>
+    <h1 class="rise" style="animation-delay:.08s">Vấn đề đại diện: người quyết thay bạn có lợi ích riêng</h1>
+    <p class="core rise" style="animation-delay:.16s">Người làm thay bạn <span>chơi bằng tiền của bạn, nhưng ăn theo túi của họ.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Định vị · nó là gì &amp; vì sao học trước</span><h2>Nguyên tắc nền: lợi ích của người đại diện lệch với bạn</h2></div>
+    </div>
+    <div class="rule"><strong>Vấn đề đại diện</strong> (<em>agency problem</em>) là sự lệch lạc lợi ích khi một người ra quyết định <em>thay</em> người khác. <em>Người ủy thác</em> (principal) gánh kết quả; <em>người đại diện</em> (agent) bấm nút. CEO chơi bằng tiền cổ đông, chủ ngân hàng chơi bằng tiền người gửi, chính trị gia chơi bằng máu lính. Taleb tách hai kiểu: <em>kẻ ngu của ngẫu nhiên</em> tự hại mình và bị thực tại lọc; <em>kẻ lừa của ngẫu nhiên</em> chuyển rủi ro sang người khác nên không bị lọc.</div>
+    <div class="sub">Vì sao đây là nền</div>
+    <div class="why"><p>Đây là gốc rễ của cả cuốn sách, theo đúng lời Taleb. Chưa nắm rằng người quyết thay bạn có thể có lợi ích riêng, bạn sẽ tin nhầm mọi lời khuyên. Nắm rồi, bạn tự hỏi đúng câu: người này ăn gì nếu tôi nghe theo, và mất gì nếu tôi thua?</p></div>
+  </section>
+
+  <section class="problem">
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Vấn đề nó sinh ra để giải quyết</span><h2>Lời khuyên 'tốt cho bạn' mà cũng tốt cho người khuyên</h2></div>
+    </div>
+    <p class="lead">Một người bán hăng hái khuyên bạn mua một món, nhấn đi nhấn lại rằng nó 'tốt cho bạn'. Có thể đúng. Nhưng nó cũng tốt cho hoa hồng của anh ta. Còn nếu sai, chỉ bạn ôm lỗ. Bạn đang nghe lời ai, vì ai?</p>
+
+<p>Vấn đề là bạn không nhìn thấu lợi ích ẩn của người quyết thay. Anh ta có phần thưởng nếu bạn nghe theo, nhưng không mất gì nếu bạn thiệt. Cấu trúc đó biến lời khuyên thành bán hàng ngụy trang.</p>
+
+<div class="sub">Vì sao chuyện này ở khắp nơi</div>
+<p>Không chỉ người bán hàng. Nó ở CEO, ở banker, ở nhà tư vấn. Bất cứ ai bấm nút bằng nguồn lực của bạn mà không chịu chung phần thua đều rơi vào đây. Nên ta cần một lối nhìn xuyên qua lời hoa mỹ. Đó là Bước 2.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Mô hình đơn giản · cách nó chạy</span><h2>Tách hai vai: ai gánh kết quả, ai bấm nút</h2></div>
+    </div>
+    <p>Chỉ cần một động tác. Tách <strong>người gánh kết quả</strong> khỏi <strong>người bấm nút</strong>, rồi xem lợi ích hai bên có trùng không.</p>
+
+<div class="sub">Khi lợi ích lệch</div>
+<p>Người đại diện ăn theo một thứ, còn bạn ăn theo một thứ khác. Anh ta có thể giấu thông tin, ôm rủi ro ẩn, chọn cái lợi cho mình. Không phải vì anh ta xấu, mà vì cấu trúc thưởng phạt kéo anh ta đi.</p>
+
+<div class="sub">Kẻ ngu và kẻ lừa</div>
+<p>Kẻ ngu chịu rủi ro mình không hiểu, nhầm may thành tài. Thực tại rồi cũng lọc bỏ họ. Kẻ lừa thì khác: họ đẩy rủi ro sang bạn, nên hậu quả không chạm tới họ, và họ không bị lọc.</p>
+
+<div class="sub">Cách gỡ cổ điển</div>
+<p>Buộc người đại diện chịu chung phần thua. Người La Mã dùng nô lệ làm thủ quỹ vì có thể phạt nặng hơn, tức nô lệ có nhiều phần thua hơn. Nhiều phần thua thì đáng tin hơn.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví dụ cụ thể</span><h2>Thần Mercury và những con rùa</h2></div>
+    </div>
+    <div class="example-card"><span class="tag">Ví dụ</span>
+<p>Một nhóm ngư dân bắt được nhiều rùa biển, nấu lên rồi thấy thịt dở, không ai muốn ăn. Thần Mercury đi ngang, họ mời ăn cùng — thực ra để tống chỗ thịt ế sang miệng khách.</p>
+<p>Mercury nhận ra ngay ý đồ. Ông không từ chối. Ông <strong>buộc tất cả ngư dân phải ăn rùa cùng mình</strong>. Nguyên tắc đặt ra: kẻ bắt được rùa thì phải ăn rùa.</p>
+<p>Đây là hạt giống của cả chủ đề. Bạn không được cho người khác ăn món chính bạn không dám ăn. Người khuyên phải nếm chung món mình khuyên.</p>
+</div>
+<p>Đời thường hơn: một người bán bảo hiểm hay bán khoản đầu tư khuyên bạn 'gói này hợp anh lắm'. Hãy hỏi thẳng: anh có bỏ tiền của chính anh vào đúng gói này không? Câu trả lời cho biết anh đang nếm rùa hay đang chuyền rùa.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Kinh tế học gọi đây là <em>agency problem</em> và chỉ quan tâm tới kẻ lừa, không phải kẻ ngu. Taleb thêm <em>Stiglitz Syndrome</em>: nói đúng một lần rồi quên mình đã nói gì khi nó nổ, giữ uy tín mà không trả giá cho phán đoán sai. Hệ luận thực tế: tránh nghe lời khuyên của người kiếm sống bằng cách cho lời khuyên, trừ khi lời đó có chế tài.</p>
+  </section>
+
+  <section class="clarify">
+    <div class="step-head">
+      <div class="big-num">≠</div>
+      <div class="step-meta"><span class="lbl">Dễ nhầm · ranh giới</span><h2>Đừng nhầm — vài ranh giới</h2></div>
+    </div>
+    <div class="mix-q"><span class="q">"Vấn đề đại diện nghĩa là người đại diện đều là người xấu?"</span><p>Không. Đây là lệch lạc <strong>cấu trúc</strong>, không phải xấu tính. Một người rất tử tế vẫn bị cấu trúc thưởng phạt kéo đi khi lợi ích của họ không trùng lợi ích của bạn. Sửa cấu trúc, đừng chỉ trách con người.</p></div>
+<div class="mix-q"><span class="q">"Vậy đừng bao giờ nghe ai khuyên nữa à?"</span><p>Không. Chỉ cần hỏi thêm một câu: người này mất gì nếu tôi thua? Nếu họ chịu chung phần thua, lời khuyên đáng tin hơn nhiều. Nghe người có nếm rùa, dè chừng người chỉ chuyền rùa.</p></div>
+  </section>
+
+  <section class="bridge">
+    <div class="step-head">
+      <div class="big-num">→</div>
+      <div class="step-meta"><span class="lbl">Nối tiếp · nó dẫn tới đâu</span><h2>Khi người đại diện không chịu hậu quả, hình thức nuốt nội dung</h2></div>
+    </div>
+    <div class="bridge-card"><p>Giữ chắc ý này: người đại diện không chịu hậu quả thì hết lý do lo phần thật. Vậy họ lo phần gì? Họ lo cái <em>trông có vẻ</em> đúng vai — bằng cấp đẹp, jargon trơn tru, vẻ ngoài chỉn chu.</p>
+<p>Đây đúng là chỗ mở sang trang khó <strong>'Bác sĩ không nên trông giống bác sĩ'</strong>. Ở đó có một mẹo phản trực giác: khi thiếu bộ lọc hậu quả, người trông ít giống vai lại thường giỏi hơn. Nắm vấn đề đại diện trước, trang đó sáng hẳn.</p></div>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">✦</div>
+      <div class="step-meta"><span class="lbl">Kể lại trong một hơi</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Vấn đề đại diện là khi người quyết thay bạn có lợi ích riêng. Người gánh kết quả là bạn; người bấm nút là họ. Lợi ích lệch thì họ giấu tin, ôm rủi ro ẩn. Cách gỡ: buộc họ nếm chung món mình khuyên — kẻ bắt rùa phải ăn rùa.</p>
+<p class="core">Người làm thay bạn <span>hỏi người khuyên bạn mất gì nếu bạn thua — nếu không mất gì, hãy dè chừng.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã nắm nền chưa?</h3>
+      <ol>
+        <li>Vì sao lời khuyên 'tốt cho bạn' lại đáng ngờ khi nó đồng thời tốt cho người khuyên mà họ không chịu phần thua?</li>
+        <li>Thần Mercury 'buộc ngư dân ăn rùa cùng mình' dạy nguyên tắc gì về người đại diện?</li>
+        <li>Vì sao 'kẻ lừa của ngẫu nhiên' không bị thực tại lọc bỏ như 'kẻ ngu của ngẫu nhiên'?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nền vững thì cái khó tự nhẹ đi. Hiểu từ gốc, không học vẹt.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-bat-can-xung-thong-tin"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Nền tảng · hiểu từ gốc</div>
+    <h1 class="rise" style="animation-delay:.08s">Bất cân xứng thông tin: người bán biết thứ người mua không biết</h1>
+    <p class="core rise" style="animation-delay:.16s">Một bên biết rõ, <span>một bên mù mờ — và khoảng chênh đó là chỗ moi tiền.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Định vị · nó là gì &amp; vì sao học trước</span><h2>Nguyên tắc nền: bất bình đẳng về sự chắc chắn</h2></div>
+    </div>
+    <div class="rule"><strong>Bất cân xứng thông tin</strong> là khi hai bên trong giao dịch không biết ngang nhau — một bên nắm điều bên kia không biết. Luật giao dịch Hồi giáo có từ <em>gharar</em> (غرر): vừa là bất định, vừa là lừa dối. Taleb hiểu <em>gharar</em> = bất bình đẳng về sự chắc chắn giữa hai bên. Triết gia Stoic Antipater đi xa hơn: người bán <strong>phải tiết lộ mọi thứ</strong>, kể cả khi luật không buộc — để không có tin nào người bán biết mà người mua không.</div>
+    <div class="sub">Vì sao đây là nền</div>
+    <div class="why"><p>Đây là dạng tinh khiết nhất của bất đối xứng, nằm ngay trong từng cuộc mua bán đời thường. Nắm nó, bạn thấy 'lời khuyên nhiệt tình' và 'món hời bất ngờ' dưới một ánh sáng khác. Nó cũng là nền để hiểu vì sao minh bạch, chứ không phải mưu mẹo, mới giữ được giao dịch bền.</p></div>
+  </section>
+
+  <section class="problem">
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Vấn đề nó sinh ra để giải quyết</span><h2>Cùng một cái giá, chỉ một người đang đoán mò</h2></div>
+    </div>
+    <p class="lead">Bạn mua một chiếc xe cũ. Người bán biết nó từng ngập nước; bạn thì không. Hai người trả và nhận cùng một cái giá, nhưng chỉ mình bạn đang đoán mò. Cái khe chênh lệch hiểu biết đó chính là toàn bộ vấn đề.</p>
+
+<p>Khi một bên chắc chắn về kết quả còn bên kia mù mờ, giao dịch không còn công bằng. Bên biết nhiều có thể im lặng đúng chỗ, để bên kia tự sa vào. Không cần một câu nói dối nào.</p>
+
+<div class="sub">Vì sao khe hở này nguy hiểm</div>
+<p>Người bán có thể moi tiền chỉ bằng cách giấu điều mình biết. Bên mua tưởng mình mua món hời, thực ra mua rủi ro của người bán. Nên ta cần một nguyên tắc lấp khe hở đó. Đó là Bước 2.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Mô hình đơn giản · cách nó chạy</span><h2>Đo xem mỗi bên biết gì, rồi lấp khe hở</h2></div>
+    </div>
+    <p>Chỉ một động tác. Đặt <strong>điều người bán biết</strong> cạnh <strong>điều người mua biết</strong>, rồi tìm phần chênh.</p>
+
+<div class="sub">Quy tắc gốc</div>
+<p>Không ai trong giao dịch được phép biết chắc kết quả trong khi bên kia còn mù mờ. Nếu có phần chênh, người biết nhiều phải nói ra. Nói ra là lấp khe, đưa hai bên về ngang nhau.</p>
+
+<div class="sub">Minh bạch cả về ý định</div>
+<p>Đạo đức Do Thái đi xa hơn: minh bạch cả điều đang nghĩ trong đầu. Rav Safra đã thầm đồng ý một cái giá; khách hiểu lầm, tự nâng lên. Ông vẫn bán theo giá đầu, vì trong lòng đã gật.</p>
+
+<div class="sub">Vì sao minh bạch lại bền</div>
+<p>Có lần Taleb chào bán 5 đô; nhân viên 'cải tiến' lên 5,1. Mười xu dư đó không bao giờ thấy đúng. Nếu khách phát hiện giá gốc thì sao? Không khoản lãi nào đáng để đổi lấy cảm giác xấu hổ.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví dụ cụ thể</span><h2>"Moi tiền họ, đừng để họ giận"</h2></div>
+    </div>
+    <div class="example-card"><span class="tag">Ví dụ</span>
+<p>Taleb kể thời làm ở một ngân hàng đầu tư danh tiếng. Nhân viên sales được thưởng theo mức trader muốn tống một loại chứng khoán ế ra khỏi sổ.</p>
+<p>Họ mời khách đi ăn tối, đặt chai rượu 2.000 đô, rồi nhồi cho khách đống chứng khoán đang ế. Một sales kỳ cựu nói thẳng: mua cho khách chai rượu đó thì tôi sở hữu anh ta vài tháng.</p>
+<p>Phương châm của trùm sales: <em>moi tiền họ, đừng để họ giận.</em> Và: mỗi ngày lại có một khách mới ra đời. Cả trò chơi chạy trên đúng cái khe chênh lệch hiểu biết.</p>
+</div>
+<p>Ngược lại là quy tắc Antipater: người bán tiết lộ mọi thứ, kể cả khi luật không buộc. Một thương gia biết sắp có thuyền lương thực cập bến vẫn nói cho người mua biết, dù nói ra thì giá sẽ giảm. Luật đến rồi đi; đạo đức thì ở lại.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. <em>Sharia</em> cấm <em>riba</em> (lãi cố định) và <em>gharar</em> vì cả hai dồn sự chắc chắn về một bên. Đối lại, <em>mudarabah</em> là hợp đồng chia sẻ rủi ro: một bên góp vốn, một bên góp công, lỗ thì người góp vốn chịu — cả hai cùng có skin in the game. Nhưng đạo đức này có <em>phạm vi</em>: áp cho gia đình, làng xóm thì được; kéo ra toàn nhân loại trừu tượng thì hệ sụp.</p>
+  </section>
+
+  <section class="clarify">
+    <div class="step-head">
+      <div class="big-num">≠</div>
+      <div class="step-meta"><span class="lbl">Dễ nhầm · ranh giới</span><h2>Đừng nhầm — vài ranh giới</h2></div>
+    </div>
+    <div class="mix-q"><span class="q">"Giấu thông tin thì có khác gì nói dối đâu?"</span><p>Khác ở cách làm, giống ở kết quả. Bạn có thể đánh lừa mà không cần một câu sai — chỉ bằng cách <strong>bỏ sót</strong>. Chọn điều nào nói, điều nào im, cũng là một dạng thao túng. Đó là lý do quy tắc đòi tiết lộ, không chỉ đòi 'đừng nói dối'.</p></div>
+<div class="mix-q"><span class="q">"Vậy phải kể hết mọi thứ cho mọi người sao?"</span><p>Đạo đức này có phạm vi. Với người trong cộng đồng — gia đình, làng xóm, bạn hàng quen — minh bạch tối đa là bền nhất. Với người hoàn toàn xa lạ một lần gặp thì quy tắc lỏng hơn. Nhưng khe chênh lệch càng nhỏ, giao dịch càng sạch.</p></div>
+  </section>
+
+  <section class="bridge">
+    <div class="step-head">
+      <div class="big-num">→</div>
+      <div class="step-meta"><span class="lbl">Nối tiếp · nó dẫn tới đâu</span><h2>Cách lấp khe hở không phải mẹo hay, mà là quy tắc trừ</h2></div>
+    </div>
+    <div class="bridge-card"><p>Bạn vừa thấy cách chữa bất cân xứng. Đó không phải một mưu kế khôn ngoan, mà một quy tắc giản dị: đừng làm với người khác điều bạn không muốn bị làm. Bớt đi cái hại, thay vì thêm vào cái khôn.</p>
+<p>Đây là cửa mở sang trang khó <strong>'Via negativa'</strong>. Ở đó bạn sẽ thấy vì sao 'đừng làm' lại mạnh và ít sai hơn 'hãy làm' — vì ta biết cái xấu chắc hơn cái tốt. Nắm bất cân xứng thông tin trước, trang đó tự nối liền.</p></div>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">✦</div>
+      <div class="step-meta"><span class="lbl">Kể lại trong một hơi</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Bất cân xứng thông tin là khi người bán biết thứ người mua không biết. Một bên chắc, một bên mù mờ — khe đó là chỗ moi tiền, kể cả không nói dối câu nào. Quy tắc gốc: không ai được biết chắc trong khi bên kia mù mờ. Cách lấp: tiết lộ, minh bạch cả ý định.</p>
+<p class="core">Một bên biết rõ, <span>một bên chắc, một bên mù mờ thì đó là trộm cắp — lấp bằng tiết lộ.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã nắm nền chưa?</h3>
+      <ol>
+        <li>Vì sao 'giấu thông tin' có thể lừa người mua mà không cần một câu nói dối nào?</li>
+        <li>Rav Safra vẫn bán theo giá thấp ban đầu dù khách tự nâng giá — nguyên tắc gì đứng sau?</li>
+        <li>Vì sao đạo đức minh bạch của Antipater lại có 'phạm vi', không kéo ra được toàn nhân loại trừu tượng?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nền vững thì cái khó tự nhẹ đi. Hiểu từ gốc, không học vẹt.</p>
+  </footer>
+
+</div></div>
+<script>
+  var bar=document.getElementById('progress');
+  function upd(){var h=document.documentElement;var s=h.scrollTop||document.body.scrollTop;
+    var max=(h.scrollHeight-h.clientHeight)||1;bar.style.width=(s/max*100)+'%';}
+  window.addEventListener('scroll',upd,{passive:true});upd();
+  var io=new IntersectionObserver(function(es){es.forEach(function(e){
+    if(e.isIntersecting){e.target.style.animation='rise .7s cubic-bezier(.2,.7,.3,1) forwards';io.unobserve(e.target);}});},{threshold:.12});
+  document.querySelectorAll('section').forEach(function(s){s.style.opacity='0';io.observe(s);});
+</script>
+
+<script>
+(function(){
+  var tabs=[].slice.call(document.querySelectorAll('.tabbar .tab'));
+  var panels=[].slice.call(document.querySelectorAll('.concept-panel'));
+  function show(i){
+    tabs.forEach(function(t,j){t.classList.toggle('active',j===i);});
+    panels.forEach(function(p,j){
+      var on=(j===i); p.classList.toggle('active',on);
+      if(on){p.querySelectorAll('section').forEach(function(s){s.style.opacity='';s.style.animation='';});}
+    });
+    try{history.replaceState(null,'','#'+panels[i].id);}catch(e){}
+    window.scrollTo(0,0); window.dispatchEvent(new Event('scroll'));
+  }
+  tabs.forEach(function(t){t.addEventListener('click',function(){show(+t.getAttribute('data-i'));});});
+  var start=0; panels.forEach(function(p,j){if('#'+p.id===location.hash)start=j;});
+  show(start);
+})();
+</script>
+
+</body></html>

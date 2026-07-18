@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="vi"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IAS 40 Investment Property — Nền tảng, hiểu từ gốc</title>
+<style>
+  /* Design tokens shared with ebook-to-study-html + feynman-from-study (styles_v2.css) */
+  :root{
+    --bg:#fafaf7; --bg-elevated:#ffffff; --bg-soft:#f3f3ee;
+    --border:#e0e0d8; --border-soft:#ececea; --border-strong:#d2c8b6;
+    --ink:#1a1a1f; --ink-soft:#3f3f4a; --muted:#7a7a85;
+    --accent:#2f6fed; --accent-2:#2258c8; --gold:#0fb6d4; --bridge:#5a6b4f;
+    --serif:"Fraunces",Georgia,"Iowan Old Style",serif;
+    --sans:"Geist",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    --mono:"Geist Mono","JetBrains Mono",Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:var(--sans);
+    font-size:19px;line-height:1.72;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}
+  .progress{position:fixed;top:0;left:0;height:3px;width:0;z-index:50;
+    background:linear-gradient(90deg,var(--gold),var(--accent));transition:width .08s linear}
+  .wrap{max-width:920px;margin:0 auto;padding:0 36px}
+  .rise{opacity:0;transform:translateY(14px);animation:rise .7s cubic-bezier(.2,.7,.3,1) forwards}
+  @keyframes rise{to{opacity:1;transform:none}}
+
+  header{padding:104px 0 60px;border-bottom:1px solid var(--border)}
+  .kicker{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.18em;
+    text-transform:uppercase;color:var(--accent);margin-bottom:26px}
+  h1{font-family:var(--serif);font-weight:600;font-size:clamp(42px,7.6vw,72px);
+    line-height:1.0;letter-spacing:-.022em;margin-bottom:28px;font-optical-sizing:auto;color:var(--ink)}
+  h1 em{font-style:italic;color:var(--accent)}
+  .core{font-family:var(--serif);font-style:italic;font-weight:400;
+    font-size:clamp(21px,3.6vw,27px);line-height:1.44;color:var(--ink-soft)}
+  .core span{font-style:normal;font-weight:600;color:var(--accent-2);
+    box-shadow:inset 0 -.5em 0 rgba(47,111,237,.16)}
+
+  /* ---- BƯỚC 0: ĐỊNH VỊ (what it is + why it's the foundation) ---- */
+  .anchor .rule{font-family:var(--serif);font-size:19px;line-height:1.5;color:var(--ink);
+    background:var(--bg-soft);border-left:3px solid var(--accent);
+    padding:18px 24px;border-radius:0 4px 4px 0;margin:0}
+  .anchor .rule em{font-style:italic;color:var(--accent-2)}
+  .anchor .rule strong{color:var(--ink);font-weight:600}
+  .anchor .why{color:var(--ink-soft)}
+
+  section{padding:72px 0;border-bottom:1px solid var(--border);position:relative}
+  .step-head{display:flex;align-items:flex-start;gap:22px;margin-bottom:34px}
+  .big-num{font-family:var(--serif);font-weight:700;font-size:62px;line-height:.8;
+    color:var(--border-strong);flex:none;font-optical-sizing:auto;letter-spacing:-.03em}
+  .step-meta{padding-top:4px}
+  .lbl{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--accent);display:block;margin-bottom:10px}
+  h2{font-family:var(--serif);font-weight:600;font-size:clamp(27px,4.4vw,37px);
+    line-height:1.12;letter-spacing:-.012em;color:var(--ink)}
+  h2 em{font-style:italic;color:var(--accent)}
+  p{margin-bottom:21px}
+  p:last-child{margin-bottom:0}
+  strong{font-weight:600;color:var(--ink)}
+  em{font-style:italic;color:var(--accent-2)}
+  .gloss{color:var(--muted);font-style:italic}
+
+  .lead::first-letter{font-family:var(--serif);font-weight:700;float:left;
+    font-size:74px;line-height:.74;padding:8px 12px 0 0;color:var(--accent)}
+
+  .sub{font-family:var(--serif);font-weight:600;font-size:17px;letter-spacing:.01em;
+    color:var(--ink);margin:34px 0 14px;display:flex;align-items:center;gap:11px}
+  .sub::before{content:"";width:18px;height:2px;background:var(--accent);flex:none;border-radius:2px}
+
+  /* ---- BƯỚC 1: VẤN ĐỀ (why it exists) ---- */
+  .problem{background:var(--bg-soft)}
+  .problem .big-num{color:#e2d6b4}
+
+  /* ---- BƯỚC 3: VÍ DỤ (concrete worked example) ---- */
+  .example-card{border:1px solid #e8c876;border-radius:4px;padding:30px 32px;margin:8px 0 28px;
+    background:linear-gradient(135deg,#fef9ed 0%,#fdf3e0 100%)}
+  .example-card .tag{font-family:var(--mono);font-weight:600;font-size:11px;
+    letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin-bottom:16px;display:block}
+  .example-card p{color:#5a4810}
+  .example-card strong{color:var(--accent-2)}
+  .example-card p:last-child{margin-bottom:0}
+
+  /* ---- DỄ NHẦM (optional clarify / boundaries) ---- */
+  .clarify{background:var(--bg-soft)}
+  .clarify .big-num{color:#d8cdb2}
+  .mix-q{margin:0 0 30px;padding-left:24px;border-left:2px solid var(--border-strong)}
+  .mix-q:last-child{margin-bottom:0}
+  .mix-q .q{font-family:var(--serif);font-style:italic;font-weight:500;
+    font-size:22px;line-height:1.35;color:var(--accent-2);margin-bottom:12px;display:block}
+  .mix-q p:last-child{margin-bottom:0}
+
+  /* ---- NỐI TIẾP (bridge to the harder concepts) ---- */
+  .bridge .big-num{color:#bcc7b2}
+  .bridge .lbl{color:var(--bridge)}
+  .bridge-card{border-left:3px solid var(--bridge);background:#f4f6f1;
+    padding:22px 26px;border-radius:0 4px 4px 0;margin-top:6px}
+  .bridge-card p:last-child{margin-bottom:0}
+  .bridge-card strong{color:#42513a}
+
+  /* ---- KỂ LẠI GỌN (refined retell) ---- */
+  .retell{background:linear-gradient(180deg,var(--bg-soft) 0%,var(--bg) 100%);border-bottom:none}
+  .retell h2{color:var(--ink)}
+  .retell strong{color:var(--accent-2)}
+  .retell .core{margin-top:6px}
+  .testbox{border:1px solid var(--border);background:var(--bg-elevated);
+    border-radius:4px;padding:28px 32px;margin-top:40px;box-shadow:0 1px 2px rgba(0,0,0,.03)}
+  .testbox h3{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--accent);margin-bottom:20px}
+  .testbox ol{margin:0;padding-left:22px;counter-reset:t}
+  .testbox li{margin-bottom:16px;color:var(--ink-soft);padding-left:6px}
+  .testbox li:last-child{margin-bottom:0}
+
+  footer{text-align:center;padding:60px 0 88px}
+  footer .mark{font-family:var(--serif);font-weight:700;color:var(--accent);
+    font-size:26px;display:block;margin-bottom:14px}
+  footer p{font-family:var(--serif);font-style:italic;color:var(--muted);font-size:17px;max-width:400px;margin:0 auto}
+
+  @media(max-width:560px){
+    body{font-size:18px}
+    header{padding:70px 0 44px}
+    section{padding:52px 0}
+    .step-head{gap:16px}
+    .big-num{font-size:46px}
+    .lead::first-letter{font-size:60px}
+  }
+
+/* ===== FLAMINDI THEME OVERRIDE (dong bo trang chu flamindi.com) ===== */
+:root{
+  --accent:#2f6fed;--accent-2:#2258c8;--accent2:#2258c8;--gold:#0fb6d4;--cyan:#0fb6d4;--blue:#2f6fed;
+  --bg:#f7f9fe;--bg-elevated:#ffffff;--bg-card:#ffffff;--card:#ffffff;--bg-soft:#eef2fb;--soft:#eef2fb;
+  --border:#e4e9f2;--border-soft:#eef1f7;--border-strong:#cfd8e8;
+  --text:#1a2233;--text-soft:#4e5a74;--text-dim:#6b7691;
+  --ink:#1a2233;--ink-soft:#4e5a74;--muted:#6b7691;--soft-t:#4e5a74;--dim:#6b7691;
+  --serif:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+  --mono:ui-monospace,Menlo,Consolas,monospace;
+}
+body{background:radial-gradient(1200px 600px at 85% -10%,rgba(47,111,237,.14),transparent 60%),radial-gradient(1000px 640px at -10% 30%,rgba(15,182,212,.09),transparent 55%),linear-gradient(#f7f9fe,#edf0f8) fixed !important;}
+</style>
+<style>
+ .tabbar{position:fixed;top:0;left:0;right:0;width:100%;box-sizing:border-box;z-index:40;background:rgba(250,250,247,.93);
+   backdrop-filter:saturate(1.1) blur(8px);-webkit-backdrop-filter:saturate(1.1) blur(8px);
+   border-bottom:1px solid var(--border);display:flex;gap:6px;overflow-x:auto;
+   padding:10px max(36px,calc((100% - 992px)/2));scrollbar-width:thin}
+ .tabbar .tab{flex:0 0 auto;display:flex;align-items:baseline;gap:9px;cursor:pointer;
+   background:transparent;border:1px solid transparent;border-radius:999px;
+   padding:8px 17px;transition:.15s;white-space:nowrap;color:var(--muted)}
+ .tabbar .tab:hover{color:var(--ink);background:var(--bg-soft)}
+ .tabbar .tab.active{color:var(--accent-2);background:var(--bg-soft);border-color:var(--border-strong)}
+ .tabbar .tn{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.1em;color:var(--accent)}
+ .tabbar .tl{font-family:var(--serif);font-weight:500;font-size:16px}
+ body{padding-top:56px} .concept-panel{display:none}
+ .concept-panel.active{display:block}
+ .concept-panel header{padding-top:50px}
+ @media(max-width:560px){.tabbar .tl{max-width:48vw;overflow:hidden;text-overflow:ellipsis}}
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+<nav class="tabbar" aria-label="Các khái niệm nền"><button class="tab" data-i="0"><span class="tn">01</span><span class="tl">BĐS đầu tư là gì</span></button><button class="tab" data-i="1"><span class="tn">02</span><span class="tl">Ranh giới ba loại</span></button><button class="tab" data-i="2"><span class="tn">03</span><span class="tl">Ghi nhận theo giá gốc</span></button><button class="tab" data-i="3"><span class="tn">04</span><span class="tl">Hai mô hình đo lường</span></button></nav>
+<div class="concept-panel" id="c-bat-dong-san-dau-tu-la-gi"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Nền tảng · hiểu từ gốc</div>
+    <h1 class="rise" style="animation-delay:.08s">Bất động sản đầu tư: giữ để cho thuê hay chờ giá lên</h1>
+    <p class="core rise" style="animation-delay:.16s">Không phải căn nhà, <span>mà lý do bạn giữ nó, mới quyết định nó là gì.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Định vị · nó là gì &amp; vì sao học trước</span><h2>Nguyên tắc nền: xếp loại theo mục đích nắm giữ</h2></div>
+    </div>
+    <div class="rule">Theo IAS 40 (đoạn 5), <strong>bất động sản đầu tư</strong> (<em>investment property</em>) là đất hoặc nhà — hoặc một phần nhà — do chủ sở hữu, hoặc do người thuê nắm giữ như <em>right-of-use asset</em>, giữ để <strong>thu tiền thuê</strong> hoặc <strong>chờ giá lên</strong>, hoặc cả hai. Chữ then chốt là <em>rather than</em>: KHÔNG phải để tự dùng trong sản xuất, dịch vụ, quản lý; cũng KHÔNG phải để bán trong kỳ kinh doanh bình thường. Đoạn 7: dấu hiệu là dòng tiền <em>gần như độc lập</em> với các tài sản khác.</div>
+    <div class="sub">Vì sao đây là nền</div>
+    <div class="why"><p>Đây là viên gạch dưới cùng của cả chuẩn mực. Mọi quy tắc sau — đo ban đầu, chọn mô hình, chuyển đổi — đều đứng trên câu hỏi "tài sản này có phải bất động sản đầu tư không". Xếp loại sai từ đầu thì mọi con số sau đều sai theo. Nắm phân loại trước là nắm gốc.</p></div>
+  </section>
+
+  <section class="problem">
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Vấn đề nó sinh ra để giải quyết</span><h2>Cùng một căn nhà, ghi sổ ba kiểu khác nhau</h2></div>
+    </div>
+    <p class="lead">Công ty bạn mua một căn nhà. Hỏi: ghi nó vào sổ thế nào? Nghe tưởng dễ, nhưng khoan. Cùng một căn nhà đó, kế toán có thể ghi theo ba luật hoàn toàn khác nhau. Tùy vào một điều: bạn giữ nó để làm gì.</p>
+
+<p>Đó là vấn đề. Bản thân viên gạch, mái ngói không nói cho ta biết phải ghi sổ ra sao. Chỉ mục đích nắm giữ mới nói.</p>
+
+<div class="sub">Ba mục đích, ba số phận</div>
+<p>Giữ để cho thuê, hay bỏ đó chờ giá lên: đó là bất động sản đầu tư. Giữ để tự dùng — đặt máy, mở văn phòng: đó là tài sản tự dùng. Giữ để bán như bán hàng: đó là hàng tồn kho.</p>
+
+<p>Nên trước khi bàn ghi bao nhiêu, phải trả lời: giữ để làm gì. Đó là nội dung Bước 2.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Mô hình đơn giản · cách nó chạy</span><h2>Hỏi một câu: giữ miếng này để làm gì</h2></div>
+    </div>
+    <p>Mô hình chỉ có một câu hỏi: bạn giữ đất hay nhà này <strong>để làm gì</strong>? Câu trả lời quyết định nhóm.</p>
+
+<div class="sub">Hai đường dẫn tới 'đầu tư'</div>
+<p>Một là cho thuê: có người trả tiền thuê hằng tháng. Hai là chờ giá lên: mua rồi để đó, đợi bán lại lời. Rơi vào một trong hai, đó là bất động sản đầu tư.</p>
+
+<div class="sub">Dấu hiệu: tiền tự chảy về</div>
+<p>Bất động sản đầu tư đẻ ra tiền gần như một mình. Tiền thuê về chủ yếu nhờ chính miếng đất, tòa nhà đó. Nhà xưởng tự dùng thì khác: tiền về nhờ cả máy, cả người, cả quy trình cùng chạy.</p>
+
+<div class="sub">Chưa rõ mục đích thì tính sao</div>
+<p>Mua đất mà chưa định làm gì với nó, chuẩn coi như đang giữ chờ giá lên. Vẫn là bất động sản đầu tư, cho tới khi có quyết định khác.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví dụ cụ thể</span><h2>Bốn miếng, xếp thử vào nhóm</h2></div>
+    </div>
+    <div class="example-card"><span class="tag">Bài toán</span>
+<p>Xếp thử bốn trường hợp.</p>
+<p><strong>Căn hộ mua cho thuê</strong>: tiền thuê chảy về mỗi tháng. Là bất động sản đầu tư. <strong>Mảnh đất mua để đó chờ lên giá</strong>: cũng là bất động sản đầu tư.</p>
+<p><strong>Nhà xưởng để đặt dây chuyền sản xuất</strong>: tự dùng, không phải đầu tư. <strong>Dãy nhà công ty xây để bán từng căn</strong>: là hàng tồn kho, không phải đầu tư.</p>
+<p>Thấy chưa? Bốn miếng gần giống nhau về vật chất. Chỉ mục đích tách chúng ra bốn ngả.</p>
+</div>
+<p>Đời thường hơn: cùng là chiếc xe máy. Một chiếc bạn mua để chạy đi làm mỗi ngày. Một chiếc bạn mua cho thuê tự lái. Cùng một loại xe, hai mục đích, hai cách hạch toán. Bất động sản cũng đúng logic đó.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. IAS 40 (đoạn 4) loại vài thứ ra khỏi phạm vi: tài sản sinh học gắn với nông nghiệp (theo IAS 41 / IAS 16), và quyền hay trữ lượng khoáng sản như dầu, khí. Ngoài ra một người thuê giữ <em>right-of-use asset</em> để cho thuê lại cũng có thể phân loại là investment property (đoạn 5).</p>
+  </section>
+
+  <section class="clarify">
+    <div class="step-head">
+      <div class="big-num">≠</div>
+      <div class="step-meta"><span class="lbl">Dễ nhầm · ranh giới</span><h2>Đừng nhầm với mấy loại sát bên</h2></div>
+    </div>
+    <div class="mix-q"><span class="q">"Nhà cho nhân viên ở, có thu tiền thuê — vậy là đầu tư chứ gì?"</span><p>Không. Nhà cho nhân viên ở phục vụ hoạt động của chính công ty, dù có thu tiền thuê theo giá thị trường. Nó là tài sản tự dùng, không phải bất động sản đầu tư. Mục đích thật là giữ người, không phải kiếm tiền thuê.</p></div>
+<div class="mix-q"><span class="q">"Giữ chờ giá lên với giữ để bán — khác gì nhau?"</span><p>Khác ở cách ra tiền. Chờ giá lên là ôm dài hạn, đợi tài sản tự lên giá: đó là đầu tư. Giữ để bán là bán như bán hàng trong kỳ kinh doanh: đó là hàng tồn kho theo luật khác. Một bên nằm đợi, một bên xoay vòng để bán.</p></div>
+  </section>
+
+  <section class="bridge">
+    <div class="step-head">
+      <div class="big-num">→</div>
+      <div class="step-meta"><span class="lbl">Nối tiếp · nó dẫn tới đâu</span><h2>Nối tiếp: khi ranh giới nhòe đi</h2></div>
+    </div>
+    <div class="bridge-card"><p>Nắm được 'xếp loại theo mục đích', bạn đã cầm chìa khóa. Nhưng đời thật ít khi gọn. Một tòa nhà vừa cho thuê vừa để công ty tự ngồi thì tính sao? Đó là trang khó <strong>'Vừa thuê vừa tự dùng'</strong>. Ở đó, bạn sẽ chẻ nhỏ tòa nhà đúng bằng câu hỏi mục đích vừa học.</p>
+<p>Và khi mục đích thay đổi giữa chừng — chủ dọn ra rồi cho thuê — tài sản đổi nhóm. Chuyện đó ở trang <strong>'Chuyển đổi phân loại'</strong>. Ba viên gạch nền khớp vào đúng hai trang đó.</p></div>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">✦</div>
+      <div class="step-meta"><span class="lbl">Kể lại trong một hơi</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Bất động sản đầu tư là đất hay nhà giữ để cho thuê hoặc chờ giá lên. Không phải để tự dùng, cũng không phải để bán. Dấu hiệu: nó tự đẻ ra tiền, gần như một mình. Muốn xếp loại, đừng nhìn viên gạch. Hãy hỏi: giữ nó để làm gì.</p>
+<p class="core">Không phải căn nhà, <span>không phải căn nhà, mà lý do giữ nó, mới quyết định nó là gì.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã nắm nền chưa?</h3>
+      <ol>
+        <li>Vì sao cùng một căn nhà lại có thể ghi sổ theo ba luật khác nhau?</li>
+        <li>Nhà cho nhân viên ở, có thu tiền thuê — vì sao vẫn không phải bất động sản đầu tư?</li>
+        <li>Dấu hiệu 'dòng tiền gần như độc lập' giúp phân biệt điều gì?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nền vững thì cái khó tự nhẹ đi. Hiểu từ gốc, không học vẹt.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-ranh-gioi-ba-loai"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Nền tảng · hiểu từ gốc</div>
+    <h1 class="rise" style="animation-delay:.08s">Ba nhóm bất động sản và lằn ranh giữa chúng</h1>
+    <p class="core rise" style="animation-delay:.16s">Đầu tư, tự dùng, để bán — <span>chọn sai nhóm thì cả cách đo lẫn đường lãi đều lệch.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Định vị · nó là gì &amp; vì sao học trước</span><h2>Ba nhóm, ba chuẩn mực</h2></div>
+    </div>
+    <div class="rule">IAS 40 xếp bất động sản vào ba nhóm, mỗi nhóm theo một chuẩn mực. <strong>Investment property</strong> — giữ để cho thuê / chờ giá lên — theo IAS 40. <strong>Owner-occupied property</strong> (bất động sản chủ sở hữu sử dụng) — giữ để tự dùng — theo IAS 16. Bất động sản giữ để <strong>bán trong kỳ kinh doanh</strong> — theo IAS 2 (hàng tồn kho). Lằn ranh, theo đoạn 7, là <em>tính độc lập của dòng tiền</em>.</div>
+    <div class="sub">Vì sao đây là nền</div>
+    <div class="why"><p>Đây là tấm bản đồ trước khi đo đạc. Ba nhóm này đo lường khác nhau, khấu hao khác nhau, đường lãi lỗ khác nhau. Đặt tài sản vào nhầm nhóm là đi nhầm cả con đường phía sau. Nên phải vẽ đúng ba ô này trước, rồi mới bàn con số.</p></div>
+  </section>
+
+  <section class="problem">
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Vấn đề nó sinh ra để giải quyết</span><h2>Một tòa nhà, ba luật cùng đòi</h2></div>
+    </div>
+    <p class="lead">Bạn cầm trong tay một tòa nhà. Có ba luật kế toán cùng giơ tay: 'nó thuộc về tôi'. Luật bất động sản đầu tư, luật tài sản tự dùng, luật hàng tồn kho. Chỉ một luật đúng. Làm sao biết luật nào?</p>
+
+<p>Vấn đề là cả ba luật đều nói về đất và nhà. Nhìn bề ngoài, tòa nhà nào cũng như tòa nhà nào. Không thể tra bằng mắt.</p>
+
+<div class="sub">Vì sao chọn nhầm là tai họa</div>
+<p>Nhóm đầu tư có thể đo theo giá thị trường, lãi lỗ chạy vào kết quả kinh doanh. Nhóm tự dùng thì khấu hao đều. Nhóm tồn kho lại theo giá thấp hơn giữa giá gốc và giá bán. Cùng một tòa nhà, ba nhóm cho ba con số lời lỗ khác hẳn.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Mô hình đơn giản · cách nó chạy</span><h2>Cùng một câu hỏi mục đích, lọc ra ba ngả</h2></div>
+    </div>
+    <p>Vẫn chính câu hỏi ở viên gạch trước: giữ để làm gì? Nhưng lần này ta lọc ra đủ ba ngả.</p>
+
+<div class="sub">Ngả một: cho thuê hoặc chờ giá lên</div>
+<p>Tiền về chủ yếu nhờ chính tòa nhà. Dòng tiền tách bạch, đo riêng được. Đây là bất động sản đầu tư.</p>
+
+<div class="sub">Ngả hai: tự dùng</div>
+<p>Tòa nhà là nơi công ty đặt máy, mở văn phòng, bán hàng. Tiền về nhờ cả một guồng máy chạy chung, không nhờ riêng tòa nhà. Đây là tài sản tự dùng.</p>
+
+<div class="sub">Ngả ba: để bán</div>
+<p>Công ty xây hoặc mua để bán lại như bán hàng. Tòa nhà xoay vòng qua tay để kiếm lời từ việc bán. Đây là hàng tồn kho.</p>
+
+<div class="sub">Cây thước chung: dòng tiền độc lập</div>
+<p>Khi bí, hỏi: tiền về nhờ riêng tòa nhà, hay nhờ cả bộ máy? Riêng tòa nhà thì nghiêng về đầu tư. Cả bộ máy thì nghiêng về tự dùng.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví dụ cụ thể</span><h2>Ghép đôi để thấy lằn ranh</h2></div>
+    </div>
+    <div class="example-card"><span class="tag">Bài toán</span>
+<p>Đặt các cặp sát nhau cho rõ ranh giới.</p>
+<p><strong>Đất chờ tăng giá</strong> là đầu tư. <strong>Đất công ty địa ốc mua để phân lô bán</strong> là hàng tồn kho.</p>
+<p><strong>Văn phòng cho công ty khác thuê</strong> là đầu tư. <strong>Văn phòng công ty tự ngồi làm việc</strong> là tự dùng.</p>
+<p>Từng cặp gần như y hệt về vật chất. Chỉ mục đích và hướng dòng tiền tách chúng sang hai chuẩn mực khác nhau.</p>
+</div>
+<p>Một mẹo nhỏ: nhìn xem ai trả tiền cho bạn. Người thuê ngoài trả tiền thuê thì nghiêng về đầu tư. Chính công ty bạn 'trả' bằng việc dùng nó để làm ra sản phẩm thì là tự dùng. Người mua đứt trả tiền mua thì là tồn kho.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Có một bẫy góc nhìn (đoạn 15). Công ty A cho công ty mẹ trong cùng tập đoàn thuê nhà. Trên báo cáo <em>riêng</em> của A, đó vẫn là investment property. Nhưng trên báo cáo <em>hợp nhất</em> của cả tập đoàn, tòa nhà đang được người trong nhà tự dùng, nên không còn là investment property. Cùng một tòa nhà, hai câu trả lời tùy báo cáo.</p>
+  </section>
+
+  <section class="clarify">
+    <div class="step-head">
+      <div class="big-num">≠</div>
+      <div class="step-meta"><span class="lbl">Dễ nhầm · ranh giới</span><h2>Đừng nhầm hai cặp hay lẫn</h2></div>
+    </div>
+    <div class="mix-q"><span class="q">"Chờ tăng giá với để bán — đều là mong bán lời mà?"</span><p>Đích thì giống, nhưng cách khác. Chờ tăng giá là ôm một tài sản dài hạn, để nó tự lên giá. Để bán là công việc thường ngày: mua vào, bán ra, xoay vòng kiếm lời. Nhà đầu tư nằm đợi. Nhà buôn thì luân chuyển hàng.</p></div>
+<div class="mix-q"><span class="q">"Đang tự dùng nhưng rao bán rồi — chuyển thành tồn kho chứ?"</span><p>Không tự động. Bất động sản tự dùng đang chờ bán vẫn theo luật tài sản tự dùng, không nhảy sang hàng tồn kho chỉ vì rao bán. Muốn đổi nhóm phải có thay đổi mục đích thật sự, không phải chỉ một ý định bán.</p></div>
+  </section>
+
+  <section class="bridge">
+    <div class="step-head">
+      <div class="big-num">→</div>
+      <div class="step-meta"><span class="lbl">Nối tiếp · nó dẫn tới đâu</span><h2>Nối tiếp: khi tài sản đứng giữa hai nhóm</h2></div>
+    </div>
+    <div class="bridge-card"><p>Ba ô này gọn khi tài sản nằm hẳn trong một ô. Rắc rối bắt đầu khi nó đứng giữa. Một tòa nhà vừa cho thuê vừa tự dùng thuộc ô nào? Trang khó <strong>'Vừa thuê vừa tự dùng'</strong> sẽ chẻ nó ra bằng chính lằn ranh bạn vừa vẽ.</p>
+<p>Và khi tài sản <em>đổi ô</em> — tồn kho thành cho thuê, tự dùng thành đầu tư — con số nhảy theo cách không đối xứng. Đó là trang <strong>'Chuyển đổi phân loại'</strong>. Vẽ đúng ba ô trước, hai trang đó hết rối.</p></div>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">✦</div>
+      <div class="step-meta"><span class="lbl">Kể lại trong một hơi</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Bất động sản rơi vào một trong ba nhóm. Giữ để cho thuê hay chờ giá lên là đầu tư. Giữ để tự dùng là tài sản tự dùng. Giữ để bán là hàng tồn kho. Cây thước phân biệt là dòng tiền: về nhờ riêng tòa nhà, hay nhờ cả bộ máy. Chọn nhóm trước, đo sau.</p>
+<p class="core">Đầu tư, tự dùng, để bán — <span>ba nhóm, ba chuẩn — chọn sai thì cả con đường sau đều lệch.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã nắm nền chưa?</h3>
+      <ol>
+        <li>Ba nhóm bất động sản là gì, mỗi nhóm theo chuẩn mực nào?</li>
+        <li>Cây thước 'dòng tiền độc lập' phân biệt đầu tư với tự dùng như thế nào?</li>
+        <li>Cùng một tòa nhà cho công ty mẹ thuê, vì sao báo cáo riêng và báo cáo hợp nhất lại xếp loại khác nhau?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nền vững thì cái khó tự nhẹ đi. Hiểu từ gốc, không học vẹt.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-ghi-nhan-theo-gia-goc"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Nền tảng · hiểu từ gốc</div>
+    <h1 class="rise" style="animation-delay:.08s">Con số đầu tiên vào sổ: giá gốc gồm những gì</h1>
+    <p class="core rise" style="animation-delay:.16s">Ngày đầu vào sổ, <span>mọi bất động sản đầu tư đều bắt đầu từ giá gốc.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Định vị · nó là gì &amp; vì sao học trước</span><h2>Ghi nhận ban đầu theo giá gốc</h2></div>
+    </div>
+    <div class="rule">IAS 40 (đoạn 16): một bất động sản đầu tư do chủ sở hữu được ghi nhận <strong>khi và chỉ khi</strong> (a) <em>probable</em> — nhiều khả năng lợi ích kinh tế tương lai chảy về đơn vị, và (b) giá gốc đo được <strong>đáng tin cậy</strong>. Đo ban đầu theo <strong>giá gốc</strong> (<em>cost</em>), và <strong>chi phí giao dịch được tính vào</strong> giá gốc (đoạn 20–21): giá mua cộng phí pháp lý, thuế chuyển nhượng và các chi phí trực tiếp khác.</div>
+    <div class="sub">Vì sao đây là nền</div>
+    <div class="why"><p>Đây là điểm xuất phát chung cho mọi bất động sản đầu tư. Dù sau này bạn chọn đo theo giá thị trường hay theo giá gốc, ngày đầu tiên vào sổ luôn ghi bằng giá gốc. Chưa nắm 'giá gốc gồm gì', bạn không có con số khởi đầu đúng để mọi bước sau tính tiếp.</p></div>
+  </section>
+
+  <section class="problem">
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Vấn đề nó sinh ra để giải quyết</span><h2>Vừa mua xong, ghi vào sổ bao nhiêu</h2></div>
+    </div>
+    <p class="lead">Công ty vừa mua một tòa nhà cho thuê. Kế toán hỏi: ghi vào sổ con số nào? Chỉ đúng giá mua ghi trên hợp đồng? Hay cộng thêm phí luật sư, thuế chuyển nhượng, phí môi giới đã trả? Và mấy tháng đầu chưa có khách, lỗ tiền điện bảo vệ — có cộng vào không?</p>
+
+<p>Vấn đề là ranh giới. Có khoản gắn liền với việc 'có được tòa nhà'. Có khoản chỉ là chi phí chạy việc sau đó. Trộn lẫn hai loại thì con số đầu vào sai ngay.</p>
+
+<div class="sub">Vì sao con số đầu phải chuẩn</div>
+<p>Con số này là chân đế. Khấu hao tính từ nó. Lãi lỗ khi bán sau này so với nó. Sai một chút ở đây, sai kéo dài suốt đời tài sản.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Mô hình đơn giản · cách nó chạy</span><h2>Cộng cái gắn với việc mua, loại cái chạy việc</h2></div>
+    </div>
+    <p>Quy tắc gọn: cộng vào giá gốc những gì <strong>bỏ ra để có</strong> tòa nhà và đưa nó vào dùng được. Loại ra những gì chỉ là chi phí <strong>chạy việc</strong> về sau.</p>
+
+<div class="sub">Cái được cộng vào</div>
+<p>Giá mua ghi trên hợp đồng. Cộng phí pháp lý, thuế chuyển nhượng bất động sản, phí giao dịch trực tiếp. Đây là các khoản dính liền với hành động mua.</p>
+
+<div class="sub">Ba khoản bị loại (đoạn 23)</div>
+<p>Một: chi phí khởi động, trừ khi cần để đưa tòa nhà vào trạng thái sẵn sàng chạy. Hai: khoản lỗ lúc đầu, khi chưa đạt mức lấp đầy dự kiến. Ba: hao phí bất thường về vật liệu, nhân công khi xây.</p>
+
+<div class="sub">Trả chậm thì tính giá trả ngay</div>
+<p>Nếu trả tiền chậm nhiều năm, giá gốc lấy theo giá tương đương trả ngay. Phần chênh giữa tổng phải trả và giá trả ngay được coi là chi phí lãi, rải qua thời gian.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví dụ cụ thể</span><h2>Một thương vụ mua tòa nhà</h2></div>
+    </div>
+    <div class="example-card"><span class="tag">Bài toán</span>
+<p>Công ty mua một tòa nhà cho thuê. Giá trên hợp đồng <strong>100 tỷ</strong>. Trả thêm phí pháp lý và thuế chuyển nhượng <strong>3 tỷ</strong>. Giá gốc ghi sổ là bao nhiêu?</p>
+<p>Cộng cả hai khoản dính với việc mua. Giá gốc là <strong>103 tỷ</strong>, không phải 100 tỷ.</p>
+<p>Giờ tòa nhà trống sáu tháng đầu, lỗ tiền bảo vệ và điện nước <strong>2 tỷ</strong>. Khoản này có cộng không? Không. Đó là lỗ vận hành trước khi đạt mức lấp đầy. Nó đi thẳng vào chi phí trong kỳ, không nhập vào giá gốc.</p>
+</div>
+<p>Giống như mua một chiếc xe. Tiền cộng vào 'giá chiếc xe' gồm giá bán, thuế trước bạ, phí đăng ký. Còn tiền xăng, tiền gửi xe hằng tháng thì không. Đó là chi phí dùng xe, không phải giá có được xe.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Chi tiêu <em>sau</em> ghi nhận cũng theo cùng một cây thước. Sửa chữa, bảo trì hằng ngày ghi thẳng vào chi phí trong kỳ (đoạn 18). Nhưng thay một bộ phận lớn thì được <em>vốn hóa</em> vào giá trị tài sản, đồng thời ghi giảm giá trị bộ phận cũ bị thay (đoạn 19). Bất động sản có qua trao đổi tài sản phi tiền tệ thì đo theo <em>fair value</em>, trừ vài ngoại lệ (đoạn 27–29).</p>
+  </section>
+
+  <section class="clarify">
+    <div class="step-head">
+      <div class="big-num">≠</div>
+      <div class="step-meta"><span class="lbl">Dễ nhầm · ranh giới</span><h2>Đừng nhầm khoản cộng với khoản loại</h2></div>
+    </div>
+    <div class="mix-q"><span class="q">"Phí giao dịch với chi phí khởi động — đều là tiền tiêu lúc đầu mà?"</span><p>Khác bản chất. Phí giao dịch dính liền với hành động mua, nên cộng vào giá gốc. Chi phí khởi động chỉ là tiền chạy bộ máy lúc đầu, không làm tòa nhà 'có được' hơn. Nó bị loại, trừ khi thật sự cần để đưa tài sản vào chạy.</p></div>
+<div class="mix-q"><span class="q">"Giá gốc là mãi mãi giữ nguyên con số này à?"</span><p>Không hẳn. Giá gốc là con số <em>ban đầu</em>. Sau đó đơn vị chọn một mô hình đo lường tiếp. Nếu chọn giá thị trường, con số sẽ được cập nhật mỗi kỳ. Giá gốc chỉ là điểm khởi hành, không phải điểm dừng.</p></div>
+  </section>
+
+  <section class="bridge">
+    <div class="step-head">
+      <div class="big-num">→</div>
+      <div class="step-meta"><span class="lbl">Nối tiếp · nó dẫn tới đâu</span><h2>Nối tiếp: sau giá gốc, chọn đường đo tiếp</h2></div>
+    </div>
+    <div class="bridge-card"><p>Con số 103 tỷ vừa ghi mới là điểm khởi hành. Ngay sau đó, đơn vị phải chọn: những kỳ sau đo tòa nhà theo con số nào? Đó là viên gạch kế bên — trang <strong>'Hai mô hình đo lường'</strong>. Ở đó bạn sẽ thấy hai ngả: giữ giá gốc mà trừ dần, hay kéo về giá thị trường mỗi kỳ.</p>
+<p>Nếu chọn ngả giá thị trường, phần chênh lệch đi thẳng vào lãi lỗ — chuyện gây ngạc nhiên ở trang khó <strong>'Lãi FV vào P/L'</strong>. Giá gốc hôm nay là mốc để mọi thay đổi đó đo từ đấy.</p></div>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">✦</div>
+      <div class="step-meta"><span class="lbl">Kể lại trong một hơi</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Ngày đầu vào sổ, mọi bất động sản đầu tư ghi theo giá gốc. Giá gốc gồm giá mua và các khoản dính với việc mua: phí pháp lý, thuế chuyển nhượng, phí giao dịch. Loại ra chi phí khởi động, khoản lỗ lúc đầu, hao phí bất thường. Con số này là chân đế cho mọi bước sau.</p>
+<p class="core">Ngày đầu vào sổ, <span>cộng cái gắn với việc mua, loại cái chỉ là chạy việc.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã nắm nền chưa?</h3>
+      <ol>
+        <li>Hai điều kiện để ghi nhận một bất động sản đầu tư là gì?</li>
+        <li>Mua tòa nhà 100 tỷ, phí pháp lý và thuế chuyển nhượng 3 tỷ. Giá gốc ghi sổ bao nhiêu, vì sao?</li>
+        <li>Khoản lỗ vận hành sáu tháng đầu khi chưa có khách — vì sao không cộng vào giá gốc?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nền vững thì cái khó tự nhẹ đi. Hiểu từ gốc, không học vẹt.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-hai-mo-hinh-do-luong"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Nền tảng · hiểu từ gốc</div>
+    <h1 class="rise" style="animation-delay:.08s">Hai mô hình đo lường: giá thị trường hay giá gốc</h1>
+    <p class="core rise" style="animation-delay:.16s">Sau ngày mua, <span>chọn một mô hình cho tất cả — và nhớ mãi lựa chọn đó.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Định vị · nó là gì &amp; vì sao học trước</span><h2>Fair value model hay cost model</h2></div>
+    </div>
+    <div class="rule">IAS 40 (đoạn 30): sau ghi nhận, đơn vị chọn <strong>một</strong> chính sách cho <strong>toàn bộ</strong> bất động sản đầu tư — <em>fair value model</em> (mô hình giá trị hợp lý) hoặc <em>cost model</em> (mô hình giá gốc). Chọn <em>fair value model</em>: đo mọi bất động sản đầu tư theo <em>fair value</em>, chênh lệch vào <em>profit or loss</em>, và KHÔNG khấu hao (đoạn 33, 35). Chọn <em>cost model</em>: đo theo IAS 16, vẫn khấu hao (đoạn 56). Dù chọn gì, đơn vị vẫn phải xác định <em>fair value</em> (đoạn 32).</div>
+    <div class="sub">Vì sao đây là nền</div>
+    <div class="why"><p>Đây là ngã ba lớn của cả chuẩn mực. Lựa chọn này chi phối mọi con số về sau: tài sản đáng bao nhiêu mỗi kỳ, có khấu hao không, lãi lỗ chạy đi đâu. Đây cũng là điểm khác biệt lớn nhất giữa IAS 40 và các chuẩn tài sản khác. Nắm hai mô hình là nắm phần lõi.</p></div>
+  </section>
+
+  <section class="problem">
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Vấn đề nó sinh ra để giải quyết</span><h2>Mỗi năm, tòa nhà đáng bao nhiêu trên sổ</h2></div>
+    </div>
+    <p class="lead">Bạn ghi tòa nhà vào sổ với giá gốc 103 tỷ. Một năm trôi qua. Câu hỏi: cuối năm, tòa nhà đáng bao nhiêu trên sổ? Giữ nguyên giá cũ rồi trừ chút hao mòn? Hay cập nhật về đúng giá thị trường hôm nay, khi khu đó vừa lên giá mạnh?</p>
+
+<p>Đó là vấn đề. Có hai triết lý ghi sổ trái ngược. Một bên tin con số ổn định, khách quan. Một bên tin con số sát thực tế thị trường.</p>
+
+<div class="sub">Vì sao IAS 40 phải cho chọn</div>
+<p>Bất động sản đầu tư giữ để kiếm tiền từ chính giá trị của nó. Nên giá thị trường rất đáng quan tâm. Nhưng không phải lúc nào cũng đo được giá thị trường tin cậy. Vì thế chuẩn mở hai đường, cho đơn vị chọn.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Mô hình đơn giản · cách nó chạy</span><h2>Hai đường: giữ giá gốc, hay kéo về giá thị trường</h2></div>
+    </div>
+    <p>Có hai mô hình. Điểm mấu chốt: chọn một, và áp cho <strong>tất cả</strong> bất động sản đầu tư. Không trộn nửa nọ nửa kia.</p>
+
+<div class="sub">Mô hình giá gốc</div>
+<p>Giữ con số giá mua ban đầu. Mỗi năm trừ dần một ít khấu hao vì tài sản cũ đi. Giống hệt cách ghi một cái máy. Con số ổn định, tụt đều theo tuổi.</p>
+
+<div class="sub">Mô hình giá trị hợp lý</div>
+<p>Mỗi kỳ, kéo con số về đúng giá thị trường hôm nay. Thị trường lên thì sổ ghi cao hơn. Thị trường xuống thì sổ ghi thấp hơn. Con số luôn sát giá hiện thời.</p>
+
+<div class="sub">Một hệ quả bất ngờ</div>
+<p>Đo theo giá thị trường thì không khấu hao. Vì giá thị trường đã tự phản ánh tài sản cũ đi rồi. Đây là chỗ gây ngạc nhiên, để dành cho trang khó.</p>
+
+<div class="sub">Chọn xong khó quay lại</div>
+<p>Đã đo theo giá thị trường thì gần như không được lùi về giá gốc. Chuẩn coi việc lùi lại là làm báo cáo kém tin hơn. Trên thực tế, đây là con đường một chiều.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví dụ cụ thể</span><h2>Cùng tòa nhà, hai mô hình hai con số</h2></div>
+    </div>
+    <div class="example-card"><span class="tag">Bài toán</span>
+<p>Tòa nhà ghi giá gốc <strong>103 tỷ</strong>. Sang năm, khu vực lên giá, thị trường định tòa nhà đáng <strong>115 tỷ</strong>.</p>
+<p><strong>Theo giá gốc</strong>: giữ 103 tỷ, trừ khấu hao trong năm, còn khoảng 100 tỷ. Phần lên giá của thị trường không hiện ra trên sổ.</p>
+<p><strong>Theo giá trị hợp lý</strong>: ghi thẳng 115 tỷ. Phần tăng 12 tỷ được ghi nhận ngay trong kỳ, và không trừ khấu hao.</p>
+<p>Cùng một tòa nhà, cùng một năm. Hai mô hình cho hai con số cách nhau 15 tỷ.</p>
+</div>
+<p>Nghĩ về một chiếc đồng hồ cổ bạn giữ. Cách một: ghi giá mua, coi như nó cũ dần. Cách hai: mỗi năm tra giá chợ đồ cổ hôm nay, ghi đúng giá đó. Nếu đồ cổ lên cơn sốt, hai cách cho hai con số rất khác nhau.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Ngay cả khi chọn <em>cost model</em>, IAS 40 vẫn buộc đơn vị xác định <em>fair value</em> để thuyết minh (đoạn 32). Giá trị hợp lý đo theo IFRS 13, phản ánh điều kiện thị trường tại ngày báo cáo. Có một ngoại lệ hẹp (đoạn 53): khi thị trường cho bất động sản tương đương không hoạt động và không có cách đo tin cậy nào khác, đơn vị mới dùng cost model theo IAS 16, với giá trị thanh lý giả định bằng 0.</p>
+  </section>
+
+  <section class="clarify">
+    <div class="step-head">
+      <div class="big-num">≠</div>
+      <div class="step-meta"><span class="lbl">Dễ nhầm · ranh giới</span><h2>Đừng nhầm mấy chỗ hay lẫn</h2></div>
+    </div>
+    <div class="mix-q"><span class="q">"Chọn mô hình theo từng tòa nhà cho linh hoạt được không?"</span><p>Không. Chọn một mô hình rồi áp cho <em>toàn bộ</em> bất động sản đầu tư của đơn vị. Không được tòa này giá thị trường, tòa kia giá gốc. Đây là chính sách kế toán chung, không phải chọn theo từng món.</p></div>
+<div class="mix-q"><span class="q">"Chọn giá gốc thì khỏi bận tâm giá thị trường luôn chứ?"</span><p>Không thoát được. Dù chọn giá gốc, đơn vị vẫn phải đi xác định giá trị hợp lý để <em>thuyết minh</em> ra ngoài. Người đọc báo cáo vẫn được biết tòa nhà đáng bao nhiêu theo thị trường. Chọn giá gốc chỉ đổi cách đo trên sổ, không xóa nghĩa vụ công bố.</p></div>
+  </section>
+
+  <section class="bridge">
+    <div class="step-head">
+      <div class="big-num">→</div>
+      <div class="step-meta"><span class="lbl">Nối tiếp · nó dẫn tới đâu</span><h2>Nối tiếp: hai điều lạ của mô hình giá thị trường</h2></div>
+    </div>
+    <div class="bridge-card"><p>Chọn mô hình giá trị hợp lý mở ra hai điều nghe rất ngược. Một: phần tăng giá đi thẳng vào lãi lỗ của kỳ, dù chưa bán. Vì sao lại thế, khác hẳn đánh giá lại nhà xưởng? Đó là trang khó <strong>'Lãi FV vào P/L'</strong>.</p>
+<p>Hai: đo theo giá thị trường thì tuyệt nhiên không khấu hao. Sao một tài sản dài hạn lại không khấu hao? Đó là trang khó <strong>'Không khấu hao'</strong>. Nắm hai mô hình trước, hai trang đó hết ngược.</p></div>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">✦</div>
+      <div class="step-meta"><span class="lbl">Kể lại trong một hơi</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Sau ghi nhận, đơn vị chọn một trong hai mô hình cho tất cả bất động sản đầu tư. Giá gốc: giữ giá mua, trừ dần khấu hao. Giá trị hợp lý: kéo về giá thị trường mỗi kỳ, không khấu hao. Chọn giá thị trường rồi thì gần như không lùi lại được. Và dù chọn gì, vẫn phải công bố giá thị trường.</p>
+<p class="core">Sau ngày mua, <span>chọn một mô hình cho tất cả, và đó gần như là đường một chiều.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã nắm nền chưa?</h3>
+      <ol>
+        <li>Hai mô hình đo lường sau ghi nhận là gì, khác nhau ở điểm cốt lõi nào?</li>
+        <li>Vì sao không được chọn giá thị trường cho tòa này, giá gốc cho tòa kia?</li>
+        <li>Chọn mô hình giá gốc rồi, vì sao đơn vị vẫn phải xác định giá trị hợp lý?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nền vững thì cái khó tự nhẹ đi. Hiểu từ gốc, không học vẹt.</p>
+  </footer>
+
+</div></div>
+<script>
+  var bar=document.getElementById('progress');
+  function upd(){var h=document.documentElement;var s=h.scrollTop||document.body.scrollTop;
+    var max=(h.scrollHeight-h.clientHeight)||1;bar.style.width=(s/max*100)+'%';}
+  window.addEventListener('scroll',upd,{passive:true});upd();
+  var io=new IntersectionObserver(function(es){es.forEach(function(e){
+    if(e.isIntersecting){e.target.style.animation='rise .7s cubic-bezier(.2,.7,.3,1) forwards';io.unobserve(e.target);}});},{threshold:.12});
+  document.querySelectorAll('section').forEach(function(s){s.style.opacity='0';io.observe(s);});
+</script>
+
+<script>
+(function(){
+  var tabs=[].slice.call(document.querySelectorAll('.tabbar .tab'));
+  var panels=[].slice.call(document.querySelectorAll('.concept-panel'));
+  function show(i){
+    tabs.forEach(function(t,j){t.classList.toggle('active',j===i);});
+    panels.forEach(function(p,j){
+      var on=(j===i); p.classList.toggle('active',on);
+      if(on){p.querySelectorAll('section').forEach(function(s){s.style.opacity='';s.style.animation='';});}
+    });
+    try{history.replaceState(null,'','#'+panels[i].id);}catch(e){}
+    window.scrollTo(0,0); window.dispatchEvent(new Event('scroll'));
+  }
+  tabs.forEach(function(t){t.addEventListener('click',function(){show(+t.getAttribute('data-i'));});});
+  var start=0; panels.forEach(function(p,j){if('#'+p.id===location.hash)start=j;});
+  show(start);
+})();
+</script>
+
+</body></html>

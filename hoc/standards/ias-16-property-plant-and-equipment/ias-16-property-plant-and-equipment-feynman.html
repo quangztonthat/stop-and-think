@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="vi"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IAS 16 — Property, Plant and Equipment — Hiểu sâu theo Feynman</title>
+<style>
+  /* Design tokens shared with ebook-to-study-html (styles_v2.css) */
+  :root{
+    --bg:#fafaf7; --bg-elevated:#ffffff; --bg-soft:#f3f3ee;
+    --border:#e0e0d8; --border-soft:#ececea; --border-strong:#d2c8b6;
+    --ink:#1a1a1f; --ink-soft:#3f3f4a; --muted:#7a7a85;
+    --accent:#2f6fed; --accent-2:#2258c8; --gold:#0fb6d4; --gap:#2258c8;
+    --serif:"Fraunces",Georgia,"Iowan Old Style",serif;
+    --sans:"Geist",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    --mono:"Geist Mono","JetBrains Mono",Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:var(--sans);
+    font-size:19px;line-height:1.72;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}
+  .progress{position:fixed;top:0;left:0;height:3px;width:0;z-index:50;
+    background:linear-gradient(90deg,var(--gold),var(--accent));transition:width .08s linear}
+  .wrap{max-width:920px;margin:0 auto;padding:0 36px}
+  .rise{opacity:0;transform:translateY(14px);animation:rise .7s cubic-bezier(.2,.7,.3,1) forwards}
+  @keyframes rise{to{opacity:1;transform:none}}
+
+  header{padding:104px 0 60px;border-bottom:1px solid var(--border)}
+  .kicker{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.18em;
+    text-transform:uppercase;color:var(--accent);margin-bottom:26px}
+  h1{font-family:var(--serif);font-weight:600;font-size:clamp(42px,7.6vw,72px);
+    line-height:1.0;letter-spacing:-.022em;margin-bottom:28px;font-optical-sizing:auto;color:var(--ink)}
+  h1 em{font-style:italic;color:var(--accent)}
+  .core{font-family:var(--serif);font-style:italic;font-weight:400;
+    font-size:clamp(21px,3.6vw,27px);line-height:1.44;color:var(--ink-soft)}
+  .core span{font-style:normal;font-weight:600;color:var(--accent-2);
+    box-shadow:inset 0 -.5em 0 rgba(47,111,237,.16)}
+
+  /* ---- BƯỚC 0: ANCHOR (state the rule + plan before explaining) ---- */
+  .anchor .rule{font-family:var(--serif);font-size:19px;line-height:1.5;color:var(--ink);
+    background:var(--bg-soft);border-left:3px solid var(--accent);
+    padding:18px 24px;border-radius:0 4px 4px 0;margin:0}
+  .anchor .rule em{font-style:italic;color:var(--accent-2)}
+  .anchor .rule strong{color:var(--ink);font-weight:600}
+  .anchor .approach{color:var(--ink-soft)}
+
+  section{padding:72px 0;border-bottom:1px solid var(--border);position:relative}
+  .step-head{display:flex;align-items:flex-start;gap:22px;margin-bottom:34px}
+  .big-num{font-family:var(--serif);font-weight:700;font-size:62px;line-height:.8;
+    color:var(--border-strong);flex:none;font-optical-sizing:auto;letter-spacing:-.03em}
+  .step-meta{padding-top:4px}
+  .lbl{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--accent);display:block;margin-bottom:10px}
+  h2{font-family:var(--serif);font-weight:600;font-size:clamp(27px,4.4vw,37px);
+    line-height:1.12;letter-spacing:-.012em;color:var(--ink)}
+  h2 em{font-style:italic;color:var(--accent)}
+  p{margin-bottom:21px}
+  p:last-child{margin-bottom:0}
+  strong{font-weight:600;color:var(--ink)}
+  em{font-style:italic;color:var(--accent-2)}
+  .gloss{color:var(--muted);font-style:italic}
+
+  .lead::first-letter{font-family:var(--serif);font-weight:700;float:left;
+    font-size:74px;line-height:.74;padding:8px 12px 0 0;color:var(--accent)}
+
+  .sub{font-family:var(--serif);font-weight:600;font-size:17px;letter-spacing:.01em;
+    color:var(--ink);margin:34px 0 14px;display:flex;align-items:center;gap:11px}
+  .sub::before{content:"";width:18px;height:2px;background:var(--accent);flex:none;border-radius:2px}
+
+  .gaps{background:var(--bg-soft)}
+  .gaps .big-num{color:#e2d6b4}
+  .gaps .lbl{color:var(--gap)}
+  .gap-q{margin:0 0 30px;padding-left:24px;border-left:2px solid var(--border-strong)}
+  .gap-q:last-child{margin-bottom:0}
+  .gap-q .q{font-family:var(--serif);font-style:italic;font-weight:500;
+    font-size:22px;line-height:1.35;color:var(--gap);margin-bottom:12px;display:block}
+  .gap-q p:last-child{margin-bottom:0}
+
+  .analogy-card{border:1px solid #e8c876;border-radius:4px;padding:30px 32px;margin:8px 0 28px;
+    background:linear-gradient(135deg,#fef9ed 0%,#fdf3e0 100%)}
+  .analogy-card .tag{font-family:var(--mono);font-weight:600;font-size:11px;
+    letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin-bottom:16px;display:block}
+  .analogy-card p{color:#5a4810}
+  .analogy-card strong{color:var(--accent-2)}
+  .limit{font-size:17px;line-height:1.6;color:#5a4810;
+    border-top:1px solid #e8c876;padding-top:20px;margin-top:22px}
+  .limit b{color:var(--accent-2);font-weight:600;font-family:var(--serif)}
+
+  .retell{background:linear-gradient(180deg,var(--bg-soft) 0%,var(--bg) 100%);border-bottom:none}
+  .retell h2{color:var(--ink)}
+  .retell strong{color:var(--accent-2)}
+  .retell .core{margin-top:6px}
+  .testbox{border:1px solid var(--border);background:var(--bg-elevated);
+    border-radius:4px;padding:28px 32px;margin-top:40px;box-shadow:0 1px 2px rgba(0,0,0,.03)}
+  .testbox h3{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--accent);margin-bottom:20px}
+  .testbox ol{margin:0;padding-left:22px;counter-reset:t}
+  .testbox li{margin-bottom:16px;color:var(--ink-soft);padding-left:6px}
+  .testbox li:last-child{margin-bottom:0}
+
+  footer{text-align:center;padding:60px 0 88px}
+  footer .mark{font-family:var(--serif);font-weight:700;color:var(--accent);
+    font-size:26px;display:block;margin-bottom:14px}
+  footer p{font-family:var(--serif);font-style:italic;color:var(--muted);font-size:17px;max-width:380px;margin:0 auto}
+
+  @media(max-width:560px){
+    body{font-size:18px}
+    header{padding:70px 0 44px}
+    section{padding:52px 0}
+    .step-head{gap:16px}
+    .big-num{font-size:46px}
+    .lead::first-letter{font-size:60px}
+  }
+
+/* ===== FLAMINDI THEME OVERRIDE (dong bo trang chu flamindi.com) ===== */
+:root{
+  --accent:#2f6fed;--accent-2:#2258c8;--accent2:#2258c8;--gold:#0fb6d4;--cyan:#0fb6d4;--blue:#2f6fed;
+  --bg:#f7f9fe;--bg-elevated:#ffffff;--bg-card:#ffffff;--card:#ffffff;--bg-soft:#eef2fb;--soft:#eef2fb;
+  --border:#e4e9f2;--border-soft:#eef1f7;--border-strong:#cfd8e8;
+  --text:#1a2233;--text-soft:#4e5a74;--text-dim:#6b7691;
+  --ink:#1a2233;--ink-soft:#4e5a74;--muted:#6b7691;--soft-t:#4e5a74;--dim:#6b7691;
+  --serif:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+  --mono:ui-monospace,Menlo,Consolas,monospace;
+}
+body{background:radial-gradient(1200px 600px at 85% -10%,rgba(47,111,237,.14),transparent 60%),radial-gradient(1000px 640px at -10% 30%,rgba(15,182,212,.09),transparent 55%),linear-gradient(#f7f9fe,#edf0f8) fixed !important;}
+</style>
+<style>
+ .tabbar{position:fixed;top:0;left:0;right:0;width:100%;box-sizing:border-box;z-index:40;background:rgba(250,250,247,.93);
+   backdrop-filter:saturate(1.1) blur(8px);-webkit-backdrop-filter:saturate(1.1) blur(8px);
+   border-bottom:1px solid var(--border);display:flex;gap:6px;overflow-x:auto;
+   padding:10px max(36px,calc((100% - 992px)/2));scrollbar-width:thin}
+ .tabbar .tab{flex:0 0 auto;display:flex;align-items:baseline;gap:9px;cursor:pointer;
+   background:transparent;border:1px solid transparent;border-radius:999px;
+   padding:8px 17px;transition:.15s;white-space:nowrap;color:var(--muted)}
+ .tabbar .tab:hover{color:var(--ink);background:var(--bg-soft)}
+ .tabbar .tab.active{color:var(--accent-2);background:var(--bg-soft);border-color:var(--border-strong)}
+ .tabbar .tn{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.1em;color:var(--accent)}
+ .tabbar .tl{font-family:var(--serif);font-weight:500;font-size:16px}
+ body{padding-top:56px} .concept-panel{display:none}
+ .concept-panel.active{display:block}
+ .concept-panel header{padding-top:50px}
+ @media(max-width:560px){.tabbar .tl{max-width:48vw;overflow:hidden;text-overflow:ellipsis}}
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+<nav class="tabbar" aria-label="Các khái niệm"><button class="tab" data-i="0"><span class="tn">01</span><span class="tl">Tăng OCI, giảm P/L</span></button><button class="tab" data-i="1"><span class="tn">02</span><span class="tl">Khấu hao ≠ định giá</span></button><button class="tab" data-i="2"><span class="tn">03</span><span class="tl">Vốn hoá hay chi phí</span></button><button class="tab" data-i="3"><span class="tn">04</span><span class="tl">Lãi/lỗ thanh lý</span></button></nav>
+<div class="concept-panel" id="c-bat-doi-xung-danh-gia-lai"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Giải thích theo phương pháp Feynman</div>
+    <h1 class="rise" style="animation-delay:.08s">Sao đánh giá lại tăng thì né lãi/lỗ, mà giảm lại đâm thẳng vào lãi/lỗ?</h1>
+    <p class="core rise" style="animation-delay:.16s">Cùng một cú cập nhật giá, <span>lên thì cất riêng một ngăn, xuống thì trừ ngay vào lãi năm nay.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Điều cần hiểu &amp; cách tiếp cận</span><h2>Quy tắc: tăng vào OCI, giảm vào P/L</h2></div>
+    </div>
+    <div class="rule">IAS 16, ¶39: khi đánh giá lại <strong>tăng</strong>, phần tăng ghi vào <em>OCI</em> và tích thành <em>revaluation surplus</em> trong equity. ¶40: khi đánh giá lại <strong>giảm</strong>, phần giảm ghi vào <em>P/L</em>. Ngoại lệ đối ngược: tăng để đảo một khoản giảm đã hit P/L trước đó thì vào P/L; giảm đến mức có surplus dư của cùng asset thì vào OCI trước. Surplus không bao giờ âm.</div>
+    <div class="sub">Cách giải thích</div>
+    <div class="approach"><p>Chỗ vấp là sự <strong>lệch</strong>. Cùng là cập nhật giá, sao lên và xuống lại xử ngược nhau? Cách làm ở đây: tách 'lãi đã cầm được tiền' khỏi 'lãi mới trên giấy'. Lãi trên giấy chưa chắc, nên cất riêng, chưa khoe vào lãi năm nay. Còn lỗ thì phải báo ngay cho thật.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Giải thích đơn giản</span><h2>Lên giá thì cất một ngăn, xuống giá thì trừ ngay</h2></div>
+    </div>
+    <p class="lead">Công ty có một toà nhà, chọn lối cập nhật theo giá thị trường. Năm nay nhà lên giá 2 tỷ. Niềm vui đó ghi vào đâu? Không ghi vào 'lãi trong năm'. Nó được cất vào một ngăn riêng trong vốn. Nhưng nếu năm nay nhà <em>xuống</em> giá 2 tỷ, khoản đó bị trừ thẳng vào lãi năm nay.</p>
+
+<div class="sub">Hai chiều, hai chỗ ghi</div>
+<p><strong>Lên giá</strong>: cất vào một ngăn riêng trong vốn, gọi là thặng dư đánh giá lại. Chưa đụng vào lãi năm nay.</p>
+<p><strong>Xuống giá</strong>: trừ ngay vào lãi năm nay. Ai đọc báo cáo cũng thấy liền.</p>
+
+<div class="sub">Vì sao lại lệch như vậy</div>
+<p>Lãi do lên giá mới chỉ nằm trên giấy. Công ty chưa bán, chưa cầm đồng nào. Khoe nó thành lãi thì dễ vẽ ra tiền chưa có. Còn lỗ do xuống giá là dấu hiệu xấu, phải báo ngay, không được giấu vào một ngăn kín.</p>
+
+<div class="sub">Chỗ có ngoại lệ</div>
+<p>Có một trường hợp bắc cầu. Nếu trước đó nhà từng xuống giá, đã trừ vào lãi rồi. Nay nhà lên lại, phần lên đó được cộng bù vào lãi trước — vì nó chỉ đang gỡ lại cái đã báo lỗ. Phần lên vượt quá mới cất vào ngăn riêng.</p>
+  </section>
+
+  <section class="gaps">
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Chỗ vấp · Lỗ hổng</span><h2>Mấy chỗ nghe xuôi mà nghĩ kỹ chưa thông</h2></div>
+    </div>
+    <div class="gap-q"><span class="q">"Lên xuống đều là đổi giá — sao lại ghi hai chỗ khác nhau?"</span><p>Vì hai chiều mang hai loại tin khác nhau. Lỗ là tin xấu, kế toán vốn thận trọng, phải báo ngay. Lãi mới trên giấy là tin vui chưa chắc, chưa bán chưa cầm tiền. Báo ngay lãi chưa chắc là dễ thổi phồng, nên nó bị giữ ở một ngăn riêng cho tới khi thật sự thành tiền.</p></div>
+<div class="gap-q"><span class="q">"Vậy công ty đánh giá lại tăng thì lợi nhuận năm đó không tăng à?"</span><p>Đúng, không tăng. Phần lên giá đi vào ngăn riêng trong vốn, không chảy qua dòng lãi/lỗ. Chủ công ty vẫn giàu hơn trên bảng cân đối, nhưng dòng lợi nhuận trong năm không được cộng thêm. Muốn biến nó thành lãi thật, phải bán tài sản đi.</p></div>
+<div class="gap-q"><span class="q">"Năm sau nhà lại xuống giá, thì cái ngăn riêng kia đi đâu?"</span><p>Xuống giá thì đục vào chính cái ngăn đó trước. Còn bao nhiêu thặng dư của nhà thì trừ vào đó, chưa đụng tới lãi năm nay. Chỉ khi xuống quá mức ngăn đó còn giữ, phần vượt mới rơi xuống lãi/lỗ. Cái ngăn không bao giờ bị âm.</p></div>
+<div class="gap-q"><span class="q">"Hai công ty y hệt, một bên đánh giá lại một bên không — lãi khác nhau, có thật không?"</span><p>Đây là chỗ quy tắc tự nhận là gai. Con số lãi có thể khác, và cả giá trị tài sản trên sổ cũng khác. Đó là lý do chuẩn buộc phải thuyết minh: ai định giá, ngày nào, và con số sẽ là bao nhiêu nếu để theo giá gốc. Người đọc cần dữ liệu đó để so hai công ty cho công bằng.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví von &amp; ví dụ đời thường</span><h2>Neo vào thứ bạn đã biết</h2></div>
+    </div>
+    <div class="analogy-card"><span class="tag">Ví dụ trung tâm</span>
+<p>Nghĩ về <strong>một chỉ vàng bạn cất trong tủ</strong>. Năm nay vàng lên giá, bạn giàu hơn — nhưng chỉ trên giấy. Bạn chưa bán, chưa cầm đồng tiền lời nào. Nên bạn không thể khoe rằng 'năm nay tôi <em>kiếm được</em> khoản đó'. Nó chỉ là của để dành phình lên. Ngược lại, nếu vàng xuống giá, bạn phải thành thật nhận mình vừa nghèo đi. Công ty ghi sổ y hệt: lãi trên giấy thì cất riêng, lỗ thì nhận ngay.</p>
+<p class="limit"><b>Chỗ ví von này hỏng:</b> chỉ vàng của bạn thì ghi kiểu gì cũng được, không ai soi. Công ty thì bị luật buộc chia đúng hai ngăn. Và cái 'ngăn riêng' (OCI) không phải một túi tiền để dành — nó chỉ là một mục trong vốn chủ, không có tiền mặt nằm trong đó.</p>
+</div>
+<p>Gần hơn: căn nhà bạn đang ở lên giá gấp đôi. Bạn thấy mình 'giàu' hơn, nhưng vẫn ở đó, chưa bán, tài khoản không nhích một đồng. Cái giàu ấy là trên giấy. Chỉ khi bán nhà, khoản lời mới thành tiền thật trong tay.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Ngăn riêng chính là <em>revaluation surplus</em> trong equity, cộng qua <em>OCI</em>. Khi tài sản được bán hoặc dùng dần, surplus có thể chuyển thẳng sang <em>retained earnings</em>, không bao giờ đi qua P/L (¶41). Đánh giá lại còn sinh <em>deferred tax</em> theo IAS 12. Logic tăng-OCI/giảm-P/L cũng phản chiếu ở impairment của tài sản đã revalue.</p>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">4</div>
+      <div class="step-meta"><span class="lbl">Kể lại gọn gàng</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Đánh giá lại tăng thì cất vào một ngăn riêng trong vốn, chưa tính là lãi năm nay. Đánh giá lại giảm thì trừ thẳng vào lãi năm nay. Lệch vì lãi trên giấy chưa chắc, còn lỗ phải báo ngay. Ngoại lệ: lên để gỡ một khoản lỗ đã báo trước thì cho vào lãi, giảm đến mức còn thặng dư thì trừ vào ngăn riêng trước.</p>
+<p class="core">Cùng một cú cập nhật giá, <span>lãi chưa bán thì cất riêng; lỗ thì nhận ngay.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã hiểu chưa?</h3>
+      <ol>
+        <li>Vì sao đánh giá lại tăng lại không được cộng vào lợi nhuận trong năm?</li>
+        <li>Đánh giá lại giảm 2 tỷ, mà nhà đó còn thặng dư 1,5 tỷ. Phần nào vào ngăn riêng, phần nào vào lãi/lỗ?</li>
+        <li>Vì sao chiều lên và chiều xuống của cùng một cú đổi giá lại xử khác nhau?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nếu giải thích được cho bà ngoại hiểu, bạn mới thật sự hiểu.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-khau-hao-khong-phai-dinh-gia"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Giải thích theo phương pháp Feynman</div>
+    <h1 class="rise" style="animation-delay:.08s">Khấu hao không phải đo món đồ mất giá — và vì sao đất không khấu hao</h1>
+    <p class="core rise" style="animation-delay:.16s">Khấu hao không hỏi 'giờ đáng bao nhiêu', <span>nó chỉ chia tiền mua ra theo những năm dùng — nên đất, dùng mãi, không chia.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Điều cần hiểu &amp; cách tiếp cận</span><h2>Quy tắc: khấu hao là phân bổ chi phí, đất không khấu hao</h2></div>
+    </div>
+    <div class="rule">IAS 16, ¶6: <em>depreciation</em> là <strong>phân bổ có hệ thống</strong> depreciable amount qua useful life — không phải đo giá thị trường. ¶52: vẫn khấu hao <strong>kể cả khi</strong> fair value đang cao hơn carrying amount. ¶58: đất có <em>unlimited useful life</em> nên <strong>không khấu hao</strong>, và tách riêng khỏi nhà kể cả khi mua chung.</div>
+    <div class="sub">Cách giải thích</div>
+    <div class="approach"><p>Chỗ vấp: gần như ai cũng nghĩ khấu hao là 'đo món đồ mỗi năm rớt giá bao nhiêu'. Nếu vậy, món đang lên giá thì khỏi khấu hao? Sai. Cách làm ở đây: đổi hình ảnh từ 'bảng giá' sang 'chia hoá đơn'. Rồi soi vào đất — thứ dùng mãi không hết, nên không có gì để chia.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Giải thích đơn giản</span><h2>Chia hoá đơn, không phải dò bảng giá</h2></div>
+    </div>
+    <p class="lead">Nhiều người tin khấu hao là đo món đồ mỗi năm cũ đi, mất giá bao nhiêu. Nghe hợp lý, nhưng sai. Khấu hao chỉ là <em>chia số tiền đã bỏ ra mua</em> thành từng phần, rải qua các năm dùng. Nó không hề ngó ra chợ xem món đồ giờ bán được bao nhiêu.</p>
+
+<div class="sub">Bằng chứng rõ nhất: món lên giá vẫn khấu hao</div>
+<p>Một toà nhà đang lên giá ngoài thị trường. Theo lối 'đo mất giá', lẽ ra khỏi khấu hao. Nhưng chuẩn nói: cứ khấu hao đều như thường. Vì khấu hao đâu có đo giá chợ — nó chỉ đang chia dần cái tiền đã bỏ ra.</p>
+
+<div class="sub">Vậy khấu hao thật ra là gì</div>
+<p>Là chia hoá đơn theo thời gian. Bạn trả một cục tiền để dùng món đồ nhiều năm. Mỗi năm bạn ghi nhận một phần của cục tiền đó, khớp với năm bạn hưởng lợi từ nó. Giá chợ lên hay xuống không liên quan.</p>
+
+<div class="sub">Nên đất mới không khấu hao</div>
+<p>Đây là chỗ sáng ra. Muốn chia tiền theo 'số năm dùng', phải có một số năm hữu hạn. Toà nhà có: dùng mấy chục năm rồi hỏng. Đất thì dùng <strong>mãi</strong> không hết. Không có số năm để chia, nên đất không khấu hao — dù cả hai mua chung một cục.</p>
+  </section>
+
+  <section class="gaps">
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Chỗ vấp · Lỗ hổng</span><h2>Mấy chỗ nghe xuôi mà nghĩ kỹ chưa thông</h2></div>
+    </div>
+    <div class="gap-q"><span class="q">"Máy đang lên giá ngoài chợ mà vẫn khấu hao — nghe vô lý?"</span><p>Không vô lý, một khi bỏ được ý 'khấu hao là đo mất giá'. Khấu hao chia dần cái tiền đã bỏ ra mua, theo số năm dùng. Việc đó chẳng dính gì tới giá chợ hôm nay. Máy lên giá là chuyện của thị trường; tiền mua máy vẫn cần được rải cho hết quãng dùng.</p></div>
+<div class="gap-q"><span class="q">"Nếu không phải mất giá, thì con số khấu hao rốt cuộc là gì?"</span><p>Là phần hoá đơn của năm nay. Hãy xem tiền mua máy như trả trước cho nhiều năm phục vụ. Mỗi năm dùng, bạn 'tiêu' một phần khoản trả trước đó. Con số khấu hao chính là phần bị tiêu trong năm — một cách phân bổ, không phải một mức định giá.</p></div>
+<div class="gap-q"><span class="q">"Đất với nhà mua chung một cục tiền, sao lại tách ra được?"</span><p>Vì chúng khác bản chất tuổi thọ. Nhà mòn theo thời gian, có ngày phải đập. Đất thì còn đó mãi. Nên phải tách giá mua thành phần đất và phần nhà, rồi chỉ khấu hao phần nhà. Gộp chung rồi khấu hao cả cục là kéo đất vào chỗ nó không thuộc về.</p></div>
+<div class="gap-q"><span class="q">"Vậy số còn lại trên sổ sau khấu hao có phải giá bán không?"</span><p>Không, và đây là hệ quả trực tiếp. Số trên sổ chỉ là 'tiền mua trừ phần đã rải'. Nó là con số kế toán, không phải giá thị trường. Máy trên sổ còn 70 vẫn có thể bán ngoài chợ được 40 hoặc 90. Hai con số, hai mục đích khác nhau.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví von &amp; ví dụ đời thường</span><h2>Neo vào thứ bạn đã biết</h2></div>
+    </div>
+    <div class="analogy-card"><span class="tag">Ví dụ trung tâm</span>
+<p>Nghĩ về <strong>một tấm vé xem phim cả năm</strong>, mua 12 triệu, xem suốt 12 tháng. Mỗi tháng, bạn coi như mình 'dùng' 1 triệu tiền vé. Con số 1 triệu đó không hề phụ thuộc giá vé ngoài rạp lên hay xuống. Nó chỉ là chia đều cái bạn đã trả, theo quãng bạn được dùng. Khấu hao y hệt: chia tiền đã bỏ ra, theo thời gian dùng.</p>
+<p class="limit"><b>Chỗ ví von này hỏng:</b> tấm vé hết đúng 12 tháng rồi thành giấy lộn, giá trị về 0. Máy móc thì cuối đời thường còn bán vớt được ít tiền (residual value), nên không rải hết. Và nhịp rải có thể không đều như vé. Còn đất thì giống một tấm vé <em>không bao giờ hết hạn</em> — nên không có gì để chia.</p>
+</div>
+<p>Gần hơn: bạn đóng tiền tập gym một năm. Mỗi tháng bạn 'xài' một phần khoản đó, bất kể giá gói gym tháng này ngoài kia tăng hay giảm. Cái bạn phân bổ là tiền đã trả, không phải giá thị trường hiện thời.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Số đem rải là <em>depreciable amount</em> = cost trừ <em>residual value</em>. Nhịp rải có thể là <em>straight-line</em>, <em>diminishing balance</em> hay <em>units of production</em>. Nếu residual value tăng đến bằng hoặc vượt carrying amount thì khấu hao tạm về 0 (¶54). Đất có ngoại lệ hiếm: mỏ đá, bãi chôn lấp có tuổi hữu hạn thì vẫn khấu hao theo lượng khai thác.</p>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">4</div>
+      <div class="step-meta"><span class="lbl">Kể lại gọn gàng</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Khấu hao không đo món đồ mất giá. Nó chia tiền mua ra theo những năm dùng, như chia hoá đơn. Bằng chứng: món đang lên giá vẫn khấu hao đều. Và vì phải chia theo số năm dùng hữu hạn, đất — thứ dùng mãi không hết — không có gì để chia, nên không khấu hao. Số trên sổ vì thế không phải giá bán.</p>
+<p class="core">Khấu hao không hỏi 'giờ đáng bao nhiêu', <span>khấu hao chia tiền theo số năm dùng; đất dùng mãi nên không chia.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã hiểu chưa?</h3>
+      <ol>
+        <li>Một toà nhà đang lên giá ngoài thị trường, vì sao vẫn phải khấu hao?</li>
+        <li>Vì sao đất không khấu hao còn toà nhà trên nó thì có?</li>
+        <li>Số còn lại trên sổ sau khấu hao có phải giá bán được ngoài chợ không? Vì sao?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nếu giải thích được cho bà ngoại hiểu, bạn mới thật sự hiểu.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-chi-phi-sau-ghi-nhan"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Giải thích theo phương pháp Feynman</div>
+    <h1 class="rise" style="animation-delay:.08s">Đổ tiền thêm vào tài sản: khi nào cộng vào sổ, khi nào tính chi phí ngay</h1>
+    <p class="core rise" style="animation-delay:.16s">Cùng là bỏ tiền vào một cái máy, <span>sửa vặt thì tính chi phí ngay, thay hẳn bộ phận lớn thì cộng vào tài sản.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Điều cần hiểu &amp; cách tiếp cận</span><h2>Quy tắc: cùng một test, ra hai cách ghi</h2></div>
+    </div>
+    <div class="rule">IAS 16 áp <strong>cùng một</strong> recognition test (¶7) cho mọi chi phí. <em>Day-to-day servicing</em> (¶12) — sửa vặt, bảo dưỡng — vào <em>expense</em> ở P/L ngay. <em>Replacement</em> một part lớn (¶13) hay <em>major inspection</em> (¶14) thì <em>capitalise</em> nếu thỏa ¶7. Và khi capitalise phần thay, phải <strong>derecognise</strong> carrying amount của part cũ (¶70).</div>
+    <div class="sub">Cách giải thích</div>
+    <div class="approach"><p>Chỗ vấp: cùng là tiền đổ vào một cái máy, sao chỗ tính chi phí ngay, chỗ lại cộng vào tài sản? Cách làm ở đây: hỏi một câu — khoản này chỉ giữ máy chạy như cũ, hay mua thêm nhiều năm tương lai? Rồi chỉ ra một bước hay bị quên: thay phần mới thì phải xoá phần cũ.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Giải thích đơn giản</span><h2>Thay dầu hay thay động cơ — hai số phận khác nhau</h2></div>
+    </div>
+    <p class="lead">Công ty có một chiếc xe tải. Thay dầu, bảo dưỡng định kỳ: tính chi phí ngay trong năm. Thay nguyên một động cơ mới: cộng vào giá trị chiếc xe trên sổ. Cùng bỏ tiền vào một chiếc xe, mà hai cách ghi khác hẳn nhau. Vì sao?</p>
+
+<div class="sub">Câu hỏi phân loại</div>
+<p>Hỏi một câu duy nhất: khoản chi này <strong>mua thêm tương lai</strong>, hay chỉ giữ máy chạy như cũ? Thay dầu chỉ giữ xe chạy bình thường, không thêm gì mới. Động cơ mới cho xe thêm nhiều năm chạy nữa — đó là tương lai mới.</p>
+
+<div class="sub">Hai cách ghi</div>
+<p>Chỉ giữ nguyên hiện trạng: tính chi phí ngay, ăn vào lãi năm nay. Mua thêm tương lai: cộng vào tài sản, rồi khấu hao dần qua các năm nó phục vụ.</p>
+
+<div class="sub">Bước hay bị quên: xoá phần cũ</div>
+<p>Khi cộng động cơ mới vào xe, phải đồng thời <strong>bỏ sổ</strong> động cơ cũ. Nếu quên, chiếc xe trên sổ có tới hai động cơ — một cái đã tháo bỏ vẫn còn nằm đó. Tài sản bị thổi phồng. Đây là lỗi cực phổ biến.</p>
+  </section>
+
+  <section class="gaps">
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Chỗ vấp · Lỗ hổng</span><h2>Mấy chỗ nghe xuôi mà nghĩ kỹ chưa thông</h2></div>
+    </div>
+    <div class="gap-q"><span class="q">"Đều là tiền bỏ vào chiếc xe — sao lại ghi hai kiểu?"</span><p>Vì hai khoản mua hai thứ khác nhau. Thay dầu mua lại đúng cái năng lực mà xe vốn đã có, chỉ giữ nó chạy. Động cơ mới mua thêm nhiều năm sống nữa cho xe. Cái chỉ giữ hiện trạng thì hết giá trị trong năm, nên tính chi phí ngay. Cái thêm tương lai thì để dành, khấu hao dần.</p></div>
+<div class="gap-q"><span class="q">"Sao thay bộ phận mới lại phải xoá sổ phần cũ?"</span><p>Vì phần cũ đã ra khỏi chiếc xe rồi. Nếu để nguyên giá trị nó trên sổ mà cộng thêm phần mới, bạn đang ghi hai bộ phận cho một vị trí. Xoá phần cũ là nói thật: cái đó không còn nữa. Không xoá thì tài sản phình lên giả tạo.</p></div>
+<div class="gap-q"><span class="q">"Kiểm định định kỳ có tạo ra bộ phận nào đâu, sao lại cộng vào tài sản?"</span><p>Vì nó mua một thứ vô hình nhưng có thật: quyền được tiếp tục vận hành trong quãng tới. Một cuộc kiểm định lớn cho máy bay đủ điều kiện bay thêm mấy năm. Cái 'mấy năm' đó là tương lai mới, nên được cộng vào và rải dần cho tới kỳ kiểm định sau.</p></div>
+<div class="gap-q"><span class="q">"Ranh giới 'sửa vặt' và 'thay lớn' có khi nào mờ không?"</span><p>Có, và chuẩn không cho một con số cứng. Đây là chỗ phải xét đoán thật. Câu hỏi trục vẫn là: khoản này có mang lợi ích tương lai mới vào không, và đo được đáng tin không? Nhiều ca rõ ràng; vài ca ở giữa thì cần lập luận cẩn thận, chứ không có công thức máy móc.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví von &amp; ví dụ đời thường</span><h2>Neo vào thứ bạn đã biết</h2></div>
+    </div>
+    <div class="analogy-card"><span class="tag">Ví dụ trung tâm</span>
+<p>Nghĩ về <strong>chiếc điện thoại</strong> của bạn. Lau máy, thay ốp lưng, dán lại miếng dán màn hình — mấy khoản lặt vặt giữ máy dùng được như cũ. Bạn coi đó là chi tiêu trong tháng, xong là hết. Nhưng thay hẳn một viên pin mới và màn hình mới thì khác. Nó kéo dài đời máy thêm hai năm. Đó là bỏ vốn vào tương lai của chiếc máy, khác hẳn tiền lau chùi.</p>
+<p class="limit"><b>Chỗ ví von này hỏng:</b> điện thoại cá nhân thì không ai bắt bạn ghi sổ, và bạn cũng chẳng phải 'xoá phần cũ'. Công ty thì buộc phải bỏ sổ viên pin cũ khi lắp pin mới. Ví von cho cảm giác 'giữ hiện trạng hay mua tương lai', nhưng bỏ mất bước xoá phần cũ — vốn là chỗ hay sai nhất.</p>
+</div>
+<p>Gần hơn: căn nhà bạn ở. Quét vôi, thông cống, vá chỗ dột nhỏ — chi phí sinh hoạt, xong trong năm. Nhưng lắp nguyên một mái mới hay thay hệ thống điện toàn nhà thì khác. Nó cho nhà dùng thêm hàng chục năm. Đó là bỏ vốn vào căn nhà, không phải chi phí vặt.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. ¶13 và ¶70: khi capitalise part thay, derecognise carrying amount của part cũ; nếu không biết giá trị part cũ, dùng <em>cost</em> của part mới làm chỉ dấu cho cost gốc của part cũ. ¶11: tài sản an toàn/môi trường vẫn qualify dù không trực tiếp tăng lợi ích. ¶12: day-to-day servicing luôn vào P/L. Test gốc luôn là ¶7.</p>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">4</div>
+      <div class="step-meta"><span class="lbl">Kể lại gọn gàng</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Cùng bỏ tiền vào một cái máy, hỏi một câu: khoản này chỉ giữ máy chạy như cũ, hay mua thêm nhiều năm tương lai? Sửa vặt, bảo dưỡng chỉ giữ hiện trạng, nên tính chi phí ngay. Thay bộ phận lớn hay kiểm định lớn mua thêm tương lai, nên cộng vào tài sản rồi khấu hao dần. Và khi cộng phần mới, nhớ xoá sổ phần cũ.</p>
+<p class="core">Cùng là bỏ tiền vào một cái máy, <span>giữ hiện trạng thì tính chi phí ngay; mua thêm tương lai thì cộng vào tài sản.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã hiểu chưa?</h3>
+      <ol>
+        <li>Cùng bỏ tiền vào một chiếc xe, vì sao thay dầu là chi phí còn thay động cơ là vốn hoá?</li>
+        <li>Vì sao khi lắp động cơ mới lại phải xoá sổ động cơ cũ?</li>
+        <li>Kiểm định định kỳ không tạo ra bộ phận mới, vì sao vẫn được cộng vào tài sản?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nếu giải thích được cho bà ngoại hiểu, bạn mới thật sự hiểu.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-lai-lo-thanh-ly"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Giải thích theo phương pháp Feynman</div>
+    <h1 class="rise" style="animation-delay:.08s">Bán một tài sản: lãi lỗ tính thế nào, và vì sao không phải doanh thu</h1>
+    <p class="core rise" style="animation-delay:.16s">Lấy tiền bán trừ số còn trên sổ, <span>ra lãi hay lỗ — nhưng khoản lãi đó không được gọi là doanh thu.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Điều cần hiểu &amp; cách tiếp cận</span><h2>Quy tắc: lãi/lỗ = tiền bán trừ số trên sổ, và không phải doanh thu</h2></div>
+    </div>
+    <div class="rule">IAS 16, ¶71: lãi hoặc lỗ khi <em>derecognition</em> = <strong>net proceeds</strong> (tiền bán đã trừ chi phí bán) trừ <strong>carrying amount</strong> (số còn trên sổ). ¶68: khoản lãi này <strong>không</strong> được trình bày là <em>revenue</em> — nó là 'other income'. Ngoại lệ ¶68A: doanh nghiệp routinely bán tài sản từng cho thuê thì chuyển sang inventory, và tiền bán là revenue.</div>
+    <div class="sub">Cách giải thích</div>
+    <div class="approach"><p>Chỗ vấp: bán được giá cao hơn số trên sổ thì có lãi — nhưng sao khoản lãi này không được tính vào doanh thu như bán hàng? Cách làm ở đây: so tiền bán với con số <em>còn trên sổ</em>, không phải giá mua gốc. Rồi tách 'việc kinh doanh chính' khỏi 'bán đồ cũ lặt vặt'.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Giải thích đơn giản</span><h2>Tiền bán trừ số trên sổ, rồi cất riêng khỏi doanh thu</h2></div>
+    </div>
+    <p class="lead">Công ty bán một chiếc xe tải cũ, thu về 300 triệu. Trên sổ, sau nhiều năm khấu hao, chiếc xe còn ghi 250 triệu. Vậy lãi bao nhiêu? Lấy 300 trừ 250, lãi 50 triệu. Đơn giản. Nhưng 50 triệu đó không được đứng chung hàng với doanh thu bán hàng.</p>
+
+<div class="sub">Trừ số trên sổ, không trừ giá mua</div>
+<p>Chiếc xe hồi xưa mua 800 triệu. Nhưng ta không đem 300 trừ 800. Ta trừ con số <em>còn trên sổ hôm nay</em> là 250 — tức giá mua đã trừ hết phần khấu hao. Phần đã khấu hao coi như đã ghi nhận qua các năm rồi.</p>
+
+<div class="sub">Vì sao lãi này không phải doanh thu</div>
+<p>Công ty này bán hàng hoá, chứ đâu có kinh doanh mua bán xe tải. Bán chiếc xe cũ chỉ là chuyện lẻ, ngoài rìa việc chính. Nên khoản lãi vào mục 'thu nhập khác', không trộn vào doanh thu. Như vậy dòng doanh thu mới không bị thổi phồng bởi một vụ bán đồ cũ.</p>
+
+<div class="sub">Nếu bán lỗ, hay vứt bỏ</div>
+<p>Bán được 200 thôi thì lỗ 50, ghi vào chi phí. Còn nếu tài sản hỏng hẳn, vứt bỏ không thu được đồng nào, thì lỗ đúng bằng cả số còn trên sổ. Không chờ tháo dỡ xong mới ghi.</p>
+  </section>
+
+  <section class="gaps">
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Chỗ vấp · Lỗ hổng</span><h2>Mấy chỗ nghe xuôi mà nghĩ kỹ chưa thông</h2></div>
+    </div>
+    <div class="gap-q"><span class="q">"Sao lấy tiền bán trừ số trên sổ, không trừ giá mua ban đầu?"</span><p>Vì phần chênh giữa giá mua và số trên sổ đã được ghi nhận rồi, qua khấu hao từng năm. Đem trừ giá mua gốc là tính lại một lần nữa cái đã tính. Số trên sổ mới là 'phần chưa được ghi nhận' còn sót. Nên lãi lỗ chỉ so với con số còn sót đó.</p></div>
+<div class="gap-q"><span class="q">"Lãi 50 triệu là tiền thật mà, sao không cho vào doanh thu?"</span><p>Vì doanh thu chỉ dành cho việc kinh doanh chính, đều đặn. Một công ty sản xuất bánh thì doanh thu là tiền bán bánh. Bán một chiếc xe cũ là chuyện một lần, ngoài rìa. Trộn nó vào doanh thu sẽ khiến người đọc tưởng việc kinh doanh chính tốt lên, trong khi đó chỉ là bán tài sản.</p></div>
+<div class="gap-q"><span class="q">"Vứt bỏ tài sản hỏng, không thu được đồng nào thì ghi sao?"</span><p>Ghi lỗ đúng bằng số còn trên sổ, ngay khi không còn kỳ vọng lợi ích từ nó. Không cần đợi mang đi tháo dỡ hay bán sắt vụn. Giữ một tài sản đã chết ở giá trị cũ trên sổ là méo mó — phải bỏ sổ và nhận lỗ liền.</p></div>
+<div class="gap-q"><span class="q">"Vậy công ty chuyên cho thuê xe rồi bán xe cũ thì cũng là 'thu nhập khác'?"</span><p>Đây là ngoại lệ đáng nhớ. Với doanh nghiệp mà việc <em>mua–cho thuê–rồi bán</em> là kinh doanh thường ngày, bán xe cũ lại chính là hoạt động chính. Khi xe ngừng cho thuê, nó chuyển thành hàng tồn kho, và tiền bán được ghi là <strong>doanh thu</strong>. Chỉ mô hình kinh doanh kiểu đó mới vào ngoại lệ này.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví von &amp; ví dụ đời thường</span><h2>Neo vào thứ bạn đã biết</h2></div>
+    </div>
+    <div class="analogy-card"><span class="tag">Ví dụ trung tâm</span>
+<p>Nghĩ về việc <strong>bán lại chiếc điện thoại cũ</strong> của bạn. Hồi đó mua 20 triệu, dùng hai năm. Trong đầu bạn, nó giờ 'còn đáng' chừng 8 triệu — đã trừ hao hai năm xài. Bạn rao bán, có người trả 9 triệu. Bạn thấy mình được thêm 1 triệu so với cái mức 8 triệu trong đầu, chứ không ai đi so với giá mua 20 triệu ngày xưa.</p>
+<p class="limit"><b>Chỗ ví von này hỏng:</b> bạn là cá nhân, không có khái niệm 'doanh thu', nên phần 'lãi này không phải doanh thu' không áp cho bạn. Và cái '8 triệu trong đầu' chỉ là ước lượng, còn công ty có con số khấu hao chính thức trên sổ. Ví von cho thấy 'so với số còn lại, không so giá mua', nhưng dừng ở đó.</p>
+</div>
+<p>Gần hơn: bán lại chiếc xe máy. Bạn không mừng chỉ vì con số 'bán được 15 triệu' đứng một mình. Bạn so nó với cái giá bạn nghĩ xe còn đáng lúc này. Bán trên mức đó là hời, dưới mức đó là hụt — đúng cái logic 'so với số còn lại' của kế toán.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. ¶71: gain/loss = <em>net proceeds</em> trừ <em>carrying amount</em>, ghi vào P/L nhưng không phải revenue (¶68). Ngày bán là ngày người mua <em>obtains control</em> theo IFRS 15, và giá bán đo theo IFRS 15 (gồm variable consideration). Ngoại lệ ¶68A áp cho doanh nghiệp cho thuê tài sản rồi routinely bán: chuyển sang inventory tại carrying amount, tiền bán vào revenue.</p>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">4</div>
+      <div class="step-meta"><span class="lbl">Kể lại gọn gàng</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Bán một tài sản, lãi lỗ bằng tiền bán trừ số còn trên sổ — không phải trừ giá mua gốc, vì phần chênh đã ghi qua khấu hao rồi. Khoản lãi đó vào 'thu nhập khác', không phải doanh thu, vì bán tài sản là chuyện lẻ ngoài việc kinh doanh chính. Vứt bỏ tài sản hỏng thì lỗ đúng bằng số còn trên sổ, ghi ngay.</p>
+<p class="core">Lấy tiền bán trừ số còn trên sổ, <span>tiền bán trừ số trên sổ; và đó là thu nhập khác, không phải doanh thu.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã hiểu chưa?</h3>
+      <ol>
+        <li>Xe mua 800, trên sổ còn 250, bán được 300. Lãi bao nhiêu, và vì sao không trừ 800?</li>
+        <li>Vì sao lãi từ bán một chiếc xe cũ không được ghi vào doanh thu?</li>
+        <li>Khi nào thì tiền bán một tài sản từng cho thuê lại được ghi là doanh thu?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nếu giải thích được cho bà ngoại hiểu, bạn mới thật sự hiểu.</p>
+  </footer>
+
+</div></div>
+<script>
+  var bar=document.getElementById('progress');
+  function upd(){var h=document.documentElement;var s=h.scrollTop||document.body.scrollTop;
+    var max=(h.scrollHeight-h.clientHeight)||1;bar.style.width=(s/max*100)+'%';}
+  window.addEventListener('scroll',upd,{passive:true});upd();
+  var io=new IntersectionObserver(function(es){es.forEach(function(e){
+    if(e.isIntersecting){e.target.style.animation='rise .7s cubic-bezier(.2,.7,.3,1) forwards';io.unobserve(e.target);}});},{threshold:.12});
+  document.querySelectorAll('section').forEach(function(s){s.style.opacity='0';io.observe(s);});
+</script>
+
+<script>
+(function(){
+  var tabs=[].slice.call(document.querySelectorAll('.tabbar .tab'));
+  var panels=[].slice.call(document.querySelectorAll('.concept-panel'));
+  function show(i){
+    tabs.forEach(function(t,j){t.classList.toggle('active',j===i);});
+    panels.forEach(function(p,j){
+      var on=(j===i); p.classList.toggle('active',on);
+      if(on){p.querySelectorAll('section').forEach(function(s){s.style.opacity='';s.style.animation='';});}
+    });
+    try{history.replaceState(null,'','#'+panels[i].id);}catch(e){}
+    window.scrollTo(0,0); window.dispatchEvent(new Event('scroll'));
+  }
+  tabs.forEach(function(t){t.addEventListener('click',function(){show(+t.getAttribute('data-i'));});});
+  var start=0; panels.forEach(function(p,j){if('#'+p.id===location.hash)start=j;});
+  show(start);
+})();
+</script>
+
+</body></html>

@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="vi"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IAS 28 Investments in Associates and Joint Ventures — Hiểu sâu theo Feynman</title>
+<style>
+  /* Design tokens shared with ebook-to-study-html (styles_v2.css) */
+  :root{
+    --bg:#fafaf7; --bg-elevated:#ffffff; --bg-soft:#f3f3ee;
+    --border:#e0e0d8; --border-soft:#ececea; --border-strong:#d2c8b6;
+    --ink:#1a1a1f; --ink-soft:#3f3f4a; --muted:#7a7a85;
+    --accent:#2f6fed; --accent-2:#2258c8; --gold:#0fb6d4; --gap:#2258c8;
+    --serif:"Fraunces",Georgia,"Iowan Old Style",serif;
+    --sans:"Geist",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    --mono:"Geist Mono","JetBrains Mono",Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:var(--sans);
+    font-size:19px;line-height:1.72;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}
+  .progress{position:fixed;top:0;left:0;height:3px;width:0;z-index:50;
+    background:linear-gradient(90deg,var(--gold),var(--accent));transition:width .08s linear}
+  .wrap{max-width:920px;margin:0 auto;padding:0 36px}
+  .rise{opacity:0;transform:translateY(14px);animation:rise .7s cubic-bezier(.2,.7,.3,1) forwards}
+  @keyframes rise{to{opacity:1;transform:none}}
+
+  header{padding:104px 0 60px;border-bottom:1px solid var(--border)}
+  .kicker{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.18em;
+    text-transform:uppercase;color:var(--accent);margin-bottom:26px}
+  h1{font-family:var(--serif);font-weight:600;font-size:clamp(42px,7.6vw,72px);
+    line-height:1.0;letter-spacing:-.022em;margin-bottom:28px;font-optical-sizing:auto;color:var(--ink)}
+  h1 em{font-style:italic;color:var(--accent)}
+  .core{font-family:var(--serif);font-style:italic;font-weight:400;
+    font-size:clamp(21px,3.6vw,27px);line-height:1.44;color:var(--ink-soft)}
+  .core span{font-style:normal;font-weight:600;color:var(--accent-2);
+    box-shadow:inset 0 -.5em 0 rgba(47,111,237,.16)}
+
+  /* ---- BƯỚC 0: ANCHOR (state the rule + plan before explaining) ---- */
+  .anchor .rule{font-family:var(--serif);font-size:19px;line-height:1.5;color:var(--ink);
+    background:var(--bg-soft);border-left:3px solid var(--accent);
+    padding:18px 24px;border-radius:0 4px 4px 0;margin:0}
+  .anchor .rule em{font-style:italic;color:var(--accent-2)}
+  .anchor .rule strong{color:var(--ink);font-weight:600}
+  .anchor .approach{color:var(--ink-soft)}
+
+  section{padding:72px 0;border-bottom:1px solid var(--border);position:relative}
+  .step-head{display:flex;align-items:flex-start;gap:22px;margin-bottom:34px}
+  .big-num{font-family:var(--serif);font-weight:700;font-size:62px;line-height:.8;
+    color:var(--border-strong);flex:none;font-optical-sizing:auto;letter-spacing:-.03em}
+  .step-meta{padding-top:4px}
+  .lbl{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--accent);display:block;margin-bottom:10px}
+  h2{font-family:var(--serif);font-weight:600;font-size:clamp(27px,4.4vw,37px);
+    line-height:1.12;letter-spacing:-.012em;color:var(--ink)}
+  h2 em{font-style:italic;color:var(--accent)}
+  p{margin-bottom:21px}
+  p:last-child{margin-bottom:0}
+  strong{font-weight:600;color:var(--ink)}
+  em{font-style:italic;color:var(--accent-2)}
+  .gloss{color:var(--muted);font-style:italic}
+
+  .lead::first-letter{font-family:var(--serif);font-weight:700;float:left;
+    font-size:74px;line-height:.74;padding:8px 12px 0 0;color:var(--accent)}
+
+  .sub{font-family:var(--serif);font-weight:600;font-size:17px;letter-spacing:.01em;
+    color:var(--ink);margin:34px 0 14px;display:flex;align-items:center;gap:11px}
+  .sub::before{content:"";width:18px;height:2px;background:var(--accent);flex:none;border-radius:2px}
+
+  .gaps{background:var(--bg-soft)}
+  .gaps .big-num{color:#e2d6b4}
+  .gaps .lbl{color:var(--gap)}
+  .gap-q{margin:0 0 30px;padding-left:24px;border-left:2px solid var(--border-strong)}
+  .gap-q:last-child{margin-bottom:0}
+  .gap-q .q{font-family:var(--serif);font-style:italic;font-weight:500;
+    font-size:22px;line-height:1.35;color:var(--gap);margin-bottom:12px;display:block}
+  .gap-q p:last-child{margin-bottom:0}
+
+  .analogy-card{border:1px solid #e8c876;border-radius:4px;padding:30px 32px;margin:8px 0 28px;
+    background:linear-gradient(135deg,#fef9ed 0%,#fdf3e0 100%)}
+  .analogy-card .tag{font-family:var(--mono);font-weight:600;font-size:11px;
+    letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin-bottom:16px;display:block}
+  .analogy-card p{color:#5a4810}
+  .analogy-card strong{color:var(--accent-2)}
+  .limit{font-size:17px;line-height:1.6;color:#5a4810;
+    border-top:1px solid #e8c876;padding-top:20px;margin-top:22px}
+  .limit b{color:var(--accent-2);font-weight:600;font-family:var(--serif)}
+
+  .retell{background:linear-gradient(180deg,var(--bg-soft) 0%,var(--bg) 100%);border-bottom:none}
+  .retell h2{color:var(--ink)}
+  .retell strong{color:var(--accent-2)}
+  .retell .core{margin-top:6px}
+  .testbox{border:1px solid var(--border);background:var(--bg-elevated);
+    border-radius:4px;padding:28px 32px;margin-top:40px;box-shadow:0 1px 2px rgba(0,0,0,.03)}
+  .testbox h3{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--accent);margin-bottom:20px}
+  .testbox ol{margin:0;padding-left:22px;counter-reset:t}
+  .testbox li{margin-bottom:16px;color:var(--ink-soft);padding-left:6px}
+  .testbox li:last-child{margin-bottom:0}
+
+  footer{text-align:center;padding:60px 0 88px}
+  footer .mark{font-family:var(--serif);font-weight:700;color:var(--accent);
+    font-size:26px;display:block;margin-bottom:14px}
+  footer p{font-family:var(--serif);font-style:italic;color:var(--muted);font-size:17px;max-width:380px;margin:0 auto}
+
+  @media(max-width:560px){
+    body{font-size:18px}
+    header{padding:70px 0 44px}
+    section{padding:52px 0}
+    .step-head{gap:16px}
+    .big-num{font-size:46px}
+    .lead::first-letter{font-size:60px}
+  }
+
+/* ===== FLAMINDI THEME OVERRIDE (dong bo trang chu flamindi.com) ===== */
+:root{
+  --accent:#2f6fed;--accent-2:#2258c8;--accent2:#2258c8;--gold:#0fb6d4;--cyan:#0fb6d4;--blue:#2f6fed;
+  --bg:#f7f9fe;--bg-elevated:#ffffff;--bg-card:#ffffff;--card:#ffffff;--bg-soft:#eef2fb;--soft:#eef2fb;
+  --border:#e4e9f2;--border-soft:#eef1f7;--border-strong:#cfd8e8;
+  --text:#1a2233;--text-soft:#4e5a74;--text-dim:#6b7691;
+  --ink:#1a2233;--ink-soft:#4e5a74;--muted:#6b7691;--soft-t:#4e5a74;--dim:#6b7691;
+  --serif:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+  --mono:ui-monospace,Menlo,Consolas,monospace;
+}
+body{background:radial-gradient(1200px 600px at 85% -10%,rgba(47,111,237,.14),transparent 60%),radial-gradient(1000px 640px at -10% 30%,rgba(15,182,212,.09),transparent 55%),linear-gradient(#f7f9fe,#edf0f8) fixed !important;}
+</style>
+<style>
+ .tabbar{position:fixed;top:0;left:0;right:0;width:100%;box-sizing:border-box;z-index:40;background:rgba(250,250,247,.93);
+   backdrop-filter:saturate(1.1) blur(8px);-webkit-backdrop-filter:saturate(1.1) blur(8px);
+   border-bottom:1px solid var(--border);display:flex;gap:6px;overflow-x:auto;
+   padding:10px max(36px,calc((100% - 992px)/2));scrollbar-width:thin}
+ .tabbar .tab{flex:0 0 auto;display:flex;align-items:baseline;gap:9px;cursor:pointer;
+   background:transparent;border:1px solid transparent;border-radius:999px;
+   padding:8px 17px;transition:.15s;white-space:nowrap;color:var(--muted)}
+ .tabbar .tab:hover{color:var(--ink);background:var(--bg-soft)}
+ .tabbar .tab.active{color:var(--accent-2);background:var(--bg-soft);border-color:var(--border-strong)}
+ .tabbar .tn{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.1em;color:var(--accent)}
+ .tabbar .tl{font-family:var(--serif);font-weight:500;font-size:16px}
+ body{padding-top:56px} .concept-panel{display:none}
+ .concept-panel.active{display:block}
+ .concept-panel header{padding-top:50px}
+ @media(max-width:560px){.tabbar .tl{max-width:48vw;overflow:hidden;text-overflow:ellipsis}}
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+<nav class="tabbar" aria-label="Các khái niệm"><button class="tab" data-i="0"><span class="tn">01</span><span class="tl">Hợp nhất một dòng</span></button><button class="tab" data-i="1"><span class="tn">02</span><span class="tl">Cổ tức làm giảm</span></button><button class="tab" data-i="2"><span class="tn">03</span><span class="tl">Lỗ dừng ở 0</span></button><button class="tab" data-i="3"><span class="tn">04</span><span class="tl">Loại trừ lãi nội bộ</span></button></nav>
+<div class="concept-panel" id="c-one-line-consolidation"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Giải thích theo phương pháp Feynman</div>
+    <h1 class="rise" style="animation-delay:.08s">Vì sao equity method là 'hợp nhất một dòng' — không phải giá gốc, cũng không phải gộp hết</h1>
+    <p class="core rise" style="animation-delay:.16s">Có tiếng nói, không nắm quyền, <span>nên ghi một dòng — không gộp hết, cũng không lơ đi.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Điều cần hiểu &amp; cách tiếp cận</span><h2>Quy tắc: một con số, nhưng lãi ròng như hợp nhất</h2></div>
+    </div>
+    <div class="rule">IAS 28 (¶10 &amp; ¶26): <strong>equity method</strong> ghi khoản đầu tư theo giá gốc rồi điều chỉnh theo phần sở hữu trong <em>net assets</em> của investee; ¶26 nói nhiều thủ tục <em>giống hợp nhất</em> theo IFRS 10. Kết quả: bảng cân đối chỉ hiện <strong>một con số</strong>, nhưng phần lãi ròng cộng vào đúng bằng khi hợp nhất đầy đủ — nên gọi là <em>one-line consolidation</em> (hợp nhất một dòng).</div>
+    <div class="sub">Cách giải thích</div>
+    <div class="approach"><p>Chỗ vấp: sao lại có một phương pháp "nửa vời" nằm giữa? Cách làm ở đây: đặt cạnh nhau ba cách đưa công ty khác lên sổ — giá gốc, hợp nhất một dòng, hợp nhất đầy đủ. Rồi cho thấy mức quyền lực ở giữa buộc phải chọn cách ghi ở giữa.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Giải thích đơn giản</span><h2>Ba cách đưa công ty khác lên sổ của bạn</h2></div>
+    </div>
+    <p class="lead">Bạn có phần trong một công ty khác. Có ba cách ghi nó lên sổ, tùy bạn nắm bao nhiêu quyền. Ba cách này khác nhau ở chỗ: bạn kéo bao nhiêu của công ty kia vào sổ mình.</p>
+
+<div class="sub">Cách một: chỉ ghi giá mua</div>
+<p>Bạn để nguyên con số đã bỏ ra mua, và chỉ tính cổ tức nhận về thành thu nhập. Sổ bạn mù tịt chuyện công ty kia làm ăn lên hay xuống. Đây là cách cho người ngoài, gần như không có tiếng nói.</p>
+
+<div class="sub">Cách hai: gộp từng dòng</div>
+<p>Nếu bạn là ông chủ, nắm quá nửa, bạn dán từng dòng báo cáo của họ vào báo cáo mình. Từng cái máy, từng khoản nợ. Rồi trừ ra phần không thuộc về mình. Đây là hợp nhất đầy đủ, cho người cầm quyền.</p>
+
+<div class="sub">Cách ba: giữ đúng một dòng</div>
+<p>Bạn có tiếng nói thật nhưng không ra lệnh được. Nên bạn không dán từng dòng của họ. Bạn giữ <strong>một con số duy nhất</strong>. Con số ấy dày lên theo phần lãi của họ, mỏng đi khi họ chia cổ tức cho bạn.</p>
+
+<div class="sub">Vì sao đúng cách giữa</div>
+<p>Lạ ở chỗ: phần lãi ròng cộng vào sổ bạn theo cách ba lại bằng đúng cách hai. Cùng một đáy, nhưng cách ba chỉ hiện một dòng thay vì cả trăm dòng. Quyền của bạn ở giữa, nên cách ghi cũng ở giữa.</p>
+  </section>
+
+  <section class="gaps">
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Chỗ vấp · Lỗ hổng</span><h2>Mấy chỗ nghe xuôi mà nghĩ kỹ chưa thông</h2></div>
+    </div>
+    <div class="gap-q"><span class="q">"Nếu lãi ròng giống hệt hợp nhất đầy đủ, sao không gộp hết cho xong?"</span><p>Vì bạn không cầm quyền với từng tài sản của họ. Dán cả một nhà máy bạn không điều hành vào sổ mình là nói quá quyền của mình. Bạn chỉ có phần trong tài sản thuần, nên chỉ được hiện đúng một dòng cho phần đó.</p></div>
+<div class="gap-q"><span class="q">"Vậy dùng giá gốc cho gọn có được không?"</span><p>Không ổn. Giá gốc chỉ ghi cổ tức, mà cổ tức ít dính tới chuyện công ty làm ra bao nhiêu. Công ty lãi to nhưng giữ tiền lại thì sổ bạn thấy gần như số không. Bạn có quyền lợi trong cái lãi đó, nên phải phản ánh nó.</p></div>
+<div class="gap-q"><span class="q">"Cái 'một dòng' đó thực ra chứa những gì bên trong?"</span><p>Nhiều thứ cuộn lại: giá mua, cộng dần phần lãi, trừ cổ tức, trừ tổn thất. Cả phần trả thêm khi mua đắt hơn giá trị thuần cũng nằm luôn trong đó, không tách ra. Một con số gọn mặt ngoài, nhưng bên trong là cả một cỗ máy.</p></div>
+<div class="gap-q"><span class="q">"Cùng một công ty liên kết, hai nhà đầu tư ghi ra hai con số khác nhau?"</span><p>Đúng, và đây là chỗ dễ giật mình. Mỗi người mua ở một giá khác, nắm một tỷ lệ khác, nên phần lãi cộng vào khác nhau. Con số 'một dòng' vì thế không giống nhau giữa hai bên, dù cùng nhìn vào một công ty.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví von &amp; ví dụ đời thường</span><h2>Neo vào thứ bạn đã biết</h2></div>
+    </div>
+    <div class="analogy-card"><span class="tag">Ví dụ trung tâm</span>
+<p>Nghĩ về <strong>một quán ăn bạn có phần</strong>. Nếu bạn làm chủ cả quán, sổ của bạn liệt kê từng cái bếp, từng bộ bàn ghế, từng khoản nợ nhà cung cấp. Từng dòng một. Nhưng nếu bạn chỉ góp một phần và có ghế bàn bạc, bạn không kê ra từng cái bếp. Bạn giữ đúng một dòng: <em>'phần của tôi trong quán'</em>. Quán lời thì dòng đó dày lên. Quán chia tiền cho bạn thì nó mỏng đi.</p>
+<p class="limit"><b>Chỗ ví von này hỏng:</b> con số 'một dòng' không chỉ đơn giản phồng lên xẹp xuống theo tiền mặt. Bên trong nó vẫn phải chỉnh cho khấu hao tài sản theo giá lúc mua, và loại bớt lãi từ những lần bạn bán hàng qua lại với quán. Một dòng gọn mặt ngoài, nhưng vẫn giấu cỗ máy y như hợp nhất — chỉ là không bày ra.</p>
+</div>
+<p>Gần đời hơn: bạn hùn vốn một chiếc thuyền cá với ba người, chiếm một phần. Bạn không ghi 'cái lưới, cái máy nổ, thùng đá' vào sổ nhà mình. Bạn ghi một dòng 'phần hùn thuyền'. Mỗi chuyến trúng cá thì phần hùn của bạn lớn lên; khi chia tiền về túi bạn thì phần hùn vơi bớt.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Tên kỹ thuật của cái đáy giống nhau là: <em>equity method</em> cho ra cùng <em>net profit</em> và cùng <em>net assets</em> thuộc về nhà đầu tư như <em>full consolidation</em>, chỉ khác cách trình bày. Vì thế IAS 28 ¶26 mượn thẳng nhiều thủ tục của IFRS 10 — từ tính goodwill tới loại trừ giao dịch nội bộ — rồi nén tất cả vào một dòng duy nhất trên bảng cân đối.</p>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">4</div>
+      <div class="step-meta"><span class="lbl">Kể lại gọn gàng</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Có ba cách đưa công ty khác lên sổ. Giá gốc: chỉ ghi cổ tức, mù chuyện làm ăn. Hợp nhất đầy đủ: dán từng dòng, cho ông chủ. Equity method nằm giữa: giữ đúng một dòng, dày lên theo lãi, mỏng đi theo cổ tức. Lãi ròng ra bằng hợp nhất đầy đủ, chỉ khác là gói gọn trong một con số. Quyền ở giữa thì cách ghi ở giữa.</p>
+<p class="core">Có tiếng nói, không nắm quyền, <span>một dòng gọn mặt ngoài, đáy lãi vẫn như hợp nhất đầy đủ.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã hiểu chưa?</h3>
+      <ol>
+        <li>Ba cách đưa công ty khác lên sổ khác nhau ở điểm cốt lõi nào?</li>
+        <li>Nếu lãi ròng bằng hợp nhất đầy đủ, vì sao vẫn không được gộp từng dòng?</li>
+        <li>Vì sao dùng giá gốc lại làm lệch bức tranh khi bạn có ảnh hưởng đáng kể?</li>
+        <li>Vì sao cùng một công ty liên kết, hai nhà đầu tư lại ghi ra hai con số khác nhau?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nếu giải thích được cho bà ngoại hiểu, bạn mới thật sự hiểu.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-dividend-reduces"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Giải thích theo phương pháp Feynman</div>
+    <h1 class="rise" style="animation-delay:.08s">Vì sao nhận cổ tức lại LÀM GIẢM khoản đầu tư — chứ không phải một khoản lãi</h1>
+    <p class="core rise" style="animation-delay:.16s">Nhận tiền về, <span>mà lại ghi giảm tài sản — vì lãi đã tính từ trước rồi.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Điều cần hiểu &amp; cách tiếp cận</span><h2>Quy tắc: cổ tức trừ vào giá trị ghi sổ, không vào doanh thu</h2></div>
+    </div>
+    <div class="rule">IAS 28 (¶10): cổ tức hay phân phối nhận từ investee <strong>làm giảm giá trị ghi sổ</strong> của khoản đầu tư — <strong>KHÔNG</strong> ghi vào doanh thu. ¶11: phần lãi được ghi <em>khi investee tạo ra nó</em>, không phải khi nó trả cổ tức. Ghi cổ tức thành thu nhập là cách của <em>cost method</em>, không phải equity method.</div>
+    <div class="sub">Cách giải thích</div>
+    <div class="approach"><p>Chỗ vấp: tiền thật chảy về túi mình, mà sổ lại ghi tài sản đi xuống — nghe như mất mát. Cách làm ở đây: neo vào một cái ao chung mà bạn có phần. Lãi đã được tính lúc ao đầy lên, còn cổ tức chỉ là múc nước từ ao sang xô.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Giải thích đơn giản</span><h2>Bạn đã tính cái lãi đó từ trước rồi</h2></div>
+    </div>
+    <p class="lead">Nghe thì ngược: nhận cổ tức là nhận tiền thật, sao lại ghi khoản đầu tư <em>giảm</em> đi? Mấu chốt nằm ở một chữ: <strong>trước</strong>. Bạn đã tính phần lãi của mình từ lúc công ty kiếm ra nó, chứ không đợi tới lúc nó chia.</p>
+
+<div class="sub">Lãi ghi lúc công ty kiếm được</div>
+<p>Công ty làm ăn có lãi, phần của bạn được cộng vào khoản đầu tư ngay năm đó. Đó là lúc bạn giàu thêm trên sổ. Cổ tức chưa xuất hiện ở bước này.</p>
+
+<div class="sub">Cổ tức chỉ là đổi túi</div>
+<p>Khi công ty chia cổ tức, nó rút bớt tài sản của chính nó đưa cho bạn. Phần của bạn trong công ty vơi đi đúng bằng số tiền đó. Túi tiền mặt của bạn dày lên, nhưng phần trong công ty mỏng lại. Tổng của cải không đổi ngay lúc ấy.</p>
+
+<div class="sub">Vì sao không được ghi thành lãi</div>
+<p>Nếu ghi cổ tức thành lãi, bạn đếm hai lần. Một lần lúc công ty kiếm được, một lần lúc nó chia. Cùng một đồng mà tính lãi hai bận. Nên cổ tức chỉ là thu hồi bớt khoản đầu tư, không phải lãi mới.</p>
+  </section>
+
+  <section class="gaps">
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Chỗ vấp · Lỗ hổng</span><h2>Mấy chỗ nghe xuôi mà nghĩ kỹ chưa thông</h2></div>
+    </div>
+    <div class="gap-q"><span class="q">"Nhưng tôi vừa nhận tiền thật — sao gọi là giảm được?"</span><p>Nhìn hai túi cùng lúc. Túi tiền mặt tăng. Túi 'phần trong công ty' giảm đúng bằng đó. Của cải của bạn ngay lúc đó không tăng — nó chỉ chuyển từ trong công ty ra tiền mặt. Cái làm bạn giàu thêm đã xảy ra trước, lúc công ty kiếm được lãi.</p></div>
+<div class="gap-q"><span class="q">"Vậy rốt cuộc khi nào tôi mới được ghi lãi?"</span><p>Lúc công ty kiếm ra, không phải lúc nó trả. Đây là điểm lật của cả phương pháp. Thu nhập bám theo cái công ty làm được, không bám theo cái nó quyết chia. Chia nhiều hay ít không đổi được con số lãi bạn đã ghi.</p></div>
+<div class="gap-q"><span class="q">"Thế cách ghi theo giá gốc coi cổ tức là lãi — vậy nó sai à?"</span><p>Không sai, chỉ khác hệ. Giá gốc chưa bao giờ ghi phần lãi lúc công ty kiếm được, nên tới lúc chia cổ tức nó mới ghi thành thu nhập. Hai hệ đều nhất quán. Equity method chỉ ghi <em>sớm hơn</em>, nên tới cổ tức thì không ghi lại nữa.</p></div>
+<div class="gap-q"><span class="q">"Nếu cổ tức trả nhiều hơn cả phần lãi thì khoản đầu tư ra sao?"</span><p>Thì số dư tụt xuống dưới cả giá mua ban đầu. Điều đó có thể ổn — công ty trả bớt vốn tích cũ. Nhưng nếu nó tụt vì công ty đang yếu đi, đó là dấu hiệu cần dừng lại soi xem khoản đầu tư có bị tổn thất không.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví von &amp; ví dụ đời thường</span><h2>Neo vào thứ bạn đã biết</h2></div>
+    </div>
+    <div class="analogy-card"><span class="tag">Ví dụ trung tâm</span>
+<p>Nghĩ về <strong>một cái ao chung</strong> mà bạn sở hữu ba phần mười. Trời mưa, ao đầy thêm nước — phần của bạn trong ao lớn lên, và bạn ghi nhận ngay cái phần lớn thêm đó. Rồi một hôm ao múc bớt nước đổ sang xô của bạn. Xô bạn đầy hơn, nhưng phần nước của bạn <em>trong ao</em> vơi đi đúng chừng ấy. Bạn không tự nhiên có thêm nước — nước chỉ chuyển từ ao sang xô.</p>
+<p class="limit"><b>Chỗ ví von này hỏng:</b> cái ao chỉ đầy hay vơi. Còn một công ty thật thì <em>tự tạo ra nước mới</em> — tức là làm ra lãi — và chính cái đó mới làm phần của bạn lớn lên. Ao tĩnh không đẻ nước. Ngoài ra cổ tức có khi trả vượt cả phần lãi, như múc cạn hơn mức nước mới thêm, chuyện cái ao đơn giản không cho thấy.</p>
+</div>
+<p>Gần đời hơn: một cuốn sổ tiết kiệm chung sinh lãi. Mỗi kỳ ngân hàng cộng lãi vào — đó là lúc bạn giàu thêm. Khi bạn rút một ít tiền ra tiêu, số dư tụt xuống. Bạn đâu coi lần rút đó là 'kiếm thêm được tiền' — nó chỉ là lấy ra phần đã có sẵn.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Trong bút toán, phần lãi ghi <em>Dr khoản đầu tư / Cr lãi trong công ty liên kết</em> lúc investee kiếm được. Khi nhận cổ tức, bút toán là <em>Dr tiền / Cr khoản đầu tư</em> — không đụng tới doanh thu. Đây chính là điểm tách equity method khỏi cost method: một bên ghi lãi theo <em>hiệu quả</em>, một bên ghi theo <em>dòng tiền</em> cổ tức.</p>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">4</div>
+      <div class="step-meta"><span class="lbl">Kể lại gọn gàng</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Cổ tức không phải lãi mới. Phần lãi của bạn đã được ghi từ lúc công ty kiếm ra nó. Khi công ty chia cổ tức, nó rút tài sản đưa cho bạn: tiền mặt của bạn tăng, phần trong công ty giảm đúng bằng đó. Ghi cổ tức thành lãi nữa là đếm hai lần một đồng. Nên cổ tức chỉ trừ vào khoản đầu tư.</p>
+<p class="core">Nhận tiền về, <span>cổ tức là rút bớt phần của mình ra tiền mặt, không phải kiếm thêm.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã hiểu chưa?</h3>
+      <ol>
+        <li>Vì sao nhận cổ tức lại ghi giảm khoản đầu tư thay vì ghi thành lãi?</li>
+        <li>Trong equity method, thời điểm nào bạn mới ghi nhận phần lãi của mình?</li>
+        <li>Cách ghi theo giá gốc coi cổ tức là thu nhập — vì sao nó vẫn nhất quán, không mâu thuẫn?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nếu giải thích được cho bà ngoại hiểu, bạn mới thật sự hiểu.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-loss-floor-zero"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Giải thích theo phương pháp Feynman</div>
+    <h1 class="rise" style="animation-delay:.08s">Vì sao lỗ chỉ ghi tới khi khoản đầu tư về 0 — rồi dừng</h1>
+    <p class="core rise" style="animation-delay:.16s">Mất tối đa <span>đúng bằng cái bạn đã bỏ vào — không hơn.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Điều cần hiểu &amp; cách tiếp cận</span><h2>Quy tắc: giá trị ghi sổ chạm 0 thì ngưng hấp thụ lỗ</h2></div>
+    </div>
+    <div class="rule">IAS 28 (¶38): khi phần lỗ của đơn vị <strong>bằng hoặc vượt</strong> phần lợi ích (<em>interest</em>) trong investee, đơn vị <strong>ngưng</strong> ghi nhận phần lỗ tiếp theo; khoản đầu tư <strong>không xuống dưới 0</strong>. Ở đây <em>interest</em> = giá trị ghi sổ equity-method cộng các <em>long-term interests</em> về thực chất là một phần net investment. ¶39: chỉ ghi lỗ vượt mức đó khi đơn vị có nghĩa vụ pháp lý/ngầm định hoặc đã trả hộ.</div>
+    <div class="sub">Cách giải thích</div>
+    <div class="approach"><p>Chỗ vấp: công ty kia còn lỗ nặng thêm, mà sổ mình lại làm ngơ? Cách làm ở đây: neo vào chuyện mua cổ phần với trách nhiệm hữu hạn — bạn chỉ mất được đúng số đã bỏ vào. Rồi chỉ ra cái sàn 0 chính là ranh giới của mất mát đó.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Giải thích đơn giản</span><h2>Phần lỗ ăn dần khoản đầu tư, tới 0 thì thôi</h2></div>
+    </div>
+    <p class="lead">Công ty bạn có phần đang lỗ. Mỗi năm, phần lỗ của bạn bị trừ vào khoản đầu tư trên sổ. Trừ mãi, tới lúc con số về 0. Rồi bạn <strong>dừng</strong>, không trừ tiếp, dù công ty vẫn lỗ nữa.</p>
+
+<div class="sub">Vì sao dừng ở 0</div>
+<p>Khoản đầu tư là phần bạn đã bỏ vào, không phải lời hứa rót thêm mãi. Bạn chỉ có thể mất cái đã bỏ vào. Mất hết là hết, không thể mất hơn số không có.</p>
+
+<div class="sub">Vì sao không cho xuống âm</div>
+<p>Ghi số âm nghĩa là nói bạn đang <em>nợ</em> công ty kia. Nhưng bạn không nợ, trừ khi bạn thật sự đứng ra bảo lãnh nợ cho nó. Không có cam kết đó thì lỗ của công ty không thành nợ của bạn.</p>
+
+<div class="sub">Khi công ty lãi trở lại</div>
+<p>Những khoản lỗ bạn đã bỏ qua không biến mất — bạn ghi nhớ chúng bên lề. Lúc công ty lãi lại, bạn chưa ghi lãi ngay. Phải đợi phần lãi bù đủ hết đống lỗ đã bỏ qua, rồi mới ghi tiếp phần lãi thật.</p>
+  </section>
+
+  <section class="gaps">
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Chỗ vấp · Lỗ hổng</span><h2>Mấy chỗ nghe xuôi mà nghĩ kỹ chưa thông</h2></div>
+    </div>
+    <div class="gap-q"><span class="q">"Công ty vẫn lỗ thật, sao sổ mình lại lờ đi cho được?"</span><p>Vì phần lỗ thêm đó không phải của bạn gánh. Mức mất tối đa của bạn là số đã bỏ vào. Phần lỗ vượt qua đó thuộc về người khác — chủ nợ, cổ đông khác. Bạn vẫn ghi nhớ nó bên lề để tính sau, nhưng không đưa vào con số trên sổ.</p></div>
+<div class="gap-q"><span class="q">"'Phần lợi ích' để trừ lỗ chỉ là cổ phần thường thôi à?"</span><p>Không, rộng hơn. Nó gồm cả những khoản dài hạn về thực chất là tiền bạn cắm trong công ty. Ví dụ cổ phần ưu đãi, hay khoản cho vay dài hạn không tính đòi lại sớm. Những khoản đó cũng hấp thụ lỗ. Nhưng phải thu thương mại hay khoản vay có thế chấp đầy đủ thì không tính vào.</p></div>
+<div class="gap-q"><span class="q">"Lỗ ăn vào các khoản đó theo thứ tự nào?"</span><p>Ngược với thứ tự an toàn khi thanh lý. Khoản nào rủi ro nhất, kém ưu tiên được trả nhất, thì gánh lỗ trước. Cổ phần thường chịu đòn đầu tiên. Khoản được ưu tiên trả lại thì gánh sau cùng. Ai đứng chót hàng nhận tiền thì đứng đầu hàng chịu lỗ.</p></div>
+<div class="gap-q"><span class="q">"Vậy có bao giờ ghi xuống dưới 0 thật không?"</span><p>Có, nhưng chỉ khi bạn thực sự mắc kẹt. Giả sử bạn có nghĩa vụ pháp lý hay ngầm định phải trả cho công ty, hoặc đã trả nợ hộ nó. Khi đó phần lỗ thêm thành một khoản nợ phải trả của bạn. Lúc ấy sổ mới ghi vượt quá số 0 — vì giờ nó là nợ thật.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví von &amp; ví dụ đời thường</span><h2>Neo vào thứ bạn đã biết</h2></div>
+    </div>
+    <div class="analogy-card"><span class="tag">Ví dụ trung tâm</span>
+<p>Nghĩ về việc <strong>bạn bỏ tiền mua cổ phần</strong> một công ty. Bạn góp 100. Công ty làm ăn bết bát, cổ phần rớt giá. Tệ nhất là gì? Cổ phần thành vô giá trị — bạn mất trắng 100, đúng bằng số đã bỏ. Không ai tới đòi bạn thêm một đồng vì công ty lỗ nữa, trừ khi bạn đã ký bảo lãnh cho nó. Sàn của mất mát là số bạn đã bỏ vào.</p>
+<p class="limit"><b>Chỗ ví von này hỏng:</b> chuyện cổ phần nghe như 'về 0 là hết sạch', nhưng equity method rắc rối hơn. Những khoản lỗ vượt quá 0 vẫn được ghi nhớ bên lề, và sẽ chặn bạn ghi lãi khi công ty hồi phục. Ngoài ra không chỉ cổ phần thường bị lỗ ăn vào. Cả các khoản cắm dài hạn khác cũng gánh, nên 'cái sàn' không đơn giản bằng đúng cổ phần.</p>
+</div>
+<p>Gần đời hơn: bạn hùn 50 triệu mở quán với bạn bè. Quán lỗ liên miên rồi đóng cửa. Bạn mất 50 triệu đã hùn — đau, nhưng hết ở đó. Chủ nợ của quán không đòi được bạn phần lỗ vượt quá phần hùn, vì bạn chỉ góp vốn chứ không đứng ra bảo lãnh khoản vay của quán.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Thứ tự hấp thụ lỗ theo <em>reverse seniority</em>: lỗ vượt cổ phần thường được phân bổ vào các thành phần khác của <em>net investment</em> theo thứ tự ngược mức ưu tiên thanh lý. Sau khi ghi lỗ theo ¶38, đơn vị còn phải chạy thử tổn thất net investment theo IAS 36 (¶40–43) — một lớp kiểm tra riêng, khác với việc hấp thụ lỗ này.</p>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">4</div>
+      <div class="step-meta"><span class="lbl">Kể lại gọn gàng</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Phần lỗ của bạn ăn dần khoản đầu tư trên sổ. Về 0 thì dừng, không cho xuống âm. Lý do: bạn chỉ mất được cái đã bỏ vào; ghi âm là nói bạn đang nợ, mà bạn không nợ nếu chưa bảo lãnh. Lỗ vượt được ghi nhớ bên lề. Công ty lãi lại thì phải bù hết đống lỗ đó trước, rồi mới ghi lãi tiếp.</p>
+<p class="core">Mất tối đa <span>mất tối đa đúng bằng cái đã bỏ vào — sàn là số 0.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã hiểu chưa?</h3>
+      <ol>
+        <li>Vì sao khoản đầu tư theo equity method không được ghi xuống dưới 0 khi công ty lỗ nặng?</li>
+        <li>'Phần lợi ích' hấp thụ lỗ gồm những gì ngoài cổ phần thường?</li>
+        <li>Khi công ty lãi trở lại sau chuỗi năm lỗ, khi nào bạn mới được ghi nhận lãi tiếp?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nếu giải thích được cho bà ngoại hiểu, bạn mới thật sự hiểu.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-upstream-downstream"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Giải thích theo phương pháp Feynman</div>
+    <h1 class="rise" style="animation-delay:.08s">Loại trừ lãi nội bộ: bán qua lại với công ty liên kết, lãi chưa 'ra ngoài'</h1>
+    <p class="core rise" style="animation-delay:.16s">Bán cho một phần của chính mình, <span>thì phần lãi đó chưa thật sự kiếm được.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Điều cần hiểu &amp; cách tiếp cận</span><h2>Quy tắc: loại phần lãi thuộc về chính mình</h2></div>
+    </div>
+    <div class="rule">IAS 28 (¶28): với giao dịch <em>upstream</em> và <em>downstream</em> về tài sản <strong>không cấu thành business</strong>, lãi/lỗ chỉ ghi nhận đến mức phần lợi ích của các <strong>nhà đầu tư không liên quan</strong> (unrelated investors) trong associate/JV — phần thuộc về chính nhà đầu tư bị <strong>loại trừ</strong>. <em>Downstream</em> = nhà đầu tư bán cho associate/JV; <em>upstream</em> = associate/JV bán cho nhà đầu tư. ¶29: nếu là lỗ thật (giảm giá trị), ghi nhận đầy đủ, không loại.</div>
+    <div class="sub">Cách giải thích</div>
+    <div class="approach"><p>Chỗ vấp: bán hàng có lãi hẳn hoi, sao lại phải bỏ bớt một phần lãi? Cách làm ở đây: neo vào chuyện bán món đồ cho chính một phần của mình. Rồi tách rõ: phần bán cho người ngoài là lãi thật, phần bán cho chính mình thì chưa.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Giải thích đơn giản</span><h2>Một phần món hàng đó, bạn đang bán cho chính mình</h2></div>
+    </div>
+    <p class="lead">Bạn nắm 30% một công ty liên kết. Bạn bán hàng cho nó, có lãi. Nghe thì lãi rõ ràng. Nhưng khoan: bạn <em>sở hữu</em> 30% cái công ty vừa mua hàng. Vậy 30% món lãi đó là bạn đang bán cho chính mình.</p>
+
+<div class="sub">Lãi bán cho chính mình chưa phải lãi thật</div>
+<p>Chừng nào công ty liên kết còn giữ món hàng trong kho, nó chưa bán ra cho ai bên ngoài. Phần lãi ứng với 30% của bạn vẫn quanh quẩn trong nhà, chưa 'ra ngoài'. Chưa ra ngoài thì chưa kiếm được thật.</p>
+
+<div class="sub">Chỉ giữ phần bán cho người ngoài</div>
+<p>Còn 70% công ty thuộc về những người chủ khác, không liên quan tới bạn. Bán cho phần đó là bán thật cho người ngoài. Nên bạn giữ lại 70% món lãi, và bỏ đi 30% — đúng phần bán cho chính mình.</p>
+
+<div class="sub">Hai chiều, cùng một lối nghĩ</div>
+<p>Bạn bán xuống cho công ty, hay công ty bán lên cho bạn, đều xét cùng kiểu. Phần lãi ứng với sở hữu của bạn bị gạt ra. Khi nào món hàng được bán tiếp ra ngoài thật, phần lãi bị gạt đó mới trở thành lãi thật.</p>
+
+<div class="sub">Nhưng lỗ thật thì khác</div>
+<p>Nếu món hàng thật sự mất giá — bán lỗ, hàng hỏng — thì đó là lỗ thật, ghi đủ ngay. Quy tắc chỉ hoãn phần <em>lãi</em> chưa ra ngoài. Nó không bao giờ giấu một khoản lỗ thật.</p>
+  </section>
+
+  <section class="gaps">
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Chỗ vấp · Lỗ hổng</span><h2>Mấy chỗ nghe xuôi mà nghĩ kỹ chưa thông</h2></div>
+    </div>
+    <div class="gap-q"><span class="q">"Sao chỉ bỏ phần của mình, không bỏ luôn cả khoản lãi?"</span><p>Vì phần còn lại là bán thật. 70% công ty thuộc về những người chủ khác, chẳng dính gì tới bạn. Bán cho họ là giao dịch với người ngoài, lãi đó có thật. Chỉ có 30% ứng với phần bạn sở hữu mới là 'bán cho chính mình', nên chỉ bỏ đúng chừng đó.</p></div>
+<div class="gap-q"><span class="q">"Bán xuống và bán lên khác nhau chỗ nào?"</span><p>Khác ở chiều đi của hàng. Bán xuống là bạn đưa hàng cho công ty; bán lên là công ty đưa hàng cho bạn. Với phần lãi chưa ra ngoài, cả hai đều gạt phần của bạn như nhau. Chỗ khác nằm ở lỗ thật: bán xuống ghi đủ khoản lỗ, bán lên chỉ ghi phần của bạn.</p></div>
+<div class="gap-q"><span class="q">"Phần lãi bị gạt ra rồi biến mất luôn à?"</span><p>Không, chỉ hoãn lại. Khi công ty liên kết bán món hàng đó tiếp ra cho một người ngoài thật sự, lúc đó lãi mới 'ra ngoài'. Phần bạn từng gạt đi giờ thành lãi thật và được ghi nhận. Gạt ra là để đúng thời điểm, không phải xóa vĩnh viễn.</p></div>
+<div class="gap-q"><span class="q">"Nếu cái bạn bán là cả một mảng kinh doanh thì sao?"</span><p>Đó lại là chuyện khác, và là chỗ dễ vấp. Khi tài sản bán đi cấu thành cả một 'business', quy tắc cho bán xuống đổi khác. Lúc đó ghi nhận <em>toàn bộ</em> lãi trong sổ nhà đầu tư, không gạt phần của mình. Ranh giới 'có phải một mảng kinh doanh không' đổi hẳn cách xử lý — để dành phần nâng cao.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví von &amp; ví dụ đời thường</span><h2>Neo vào thứ bạn đã biết</h2></div>
+    </div>
+    <div class="analogy-card"><span class="tag">Ví dụ trung tâm</span>
+<p>Nghĩ về việc bạn <strong>chuyển một miếng bánh từ đĩa trái sang đĩa phải</strong>, và tự 'tính giá' cao hơn. Bạn có giàu thêm không? Không — cả hai đĩa đều là của bạn, miếng bánh vẫn nằm trong nhà. Chỉ khi bán miếng bánh cho một người khách bên ngoài, khoản lời mới có thật. Bán qua lại với công ty mình có phần cũng vậy: phần ứng với sở hữu của bạn giống như chuyển từ đĩa này sang đĩa kia.</p>
+<p class="limit"><b>Chỗ ví von này hỏng:</b> hai cái đĩa <em>đều</em> là của bạn, nên lời tự bán bằng không hoàn toàn. Nhưng công ty liên kết bạn <em>không</em> sở hữu trọn — 70% là của người ngoài. Nên chỉ 30% giống 'đổi đĩa', còn 70% là bán thật và lãi có thật ngay. Ngoài ra, nếu bánh thật sự hỏng (lỗ thật), bạn ghi lỗ ngay — khác hẳn phép đổi đĩa trung tính.</p>
+</div>
+<p>Gần đời hơn: hai vợ chồng chung ví tiền. Chồng 'bán' cái điện thoại cũ cho vợ giá cao. Tổng tiền trong nhà không đổi một xu — chỉ là tiền chạy từ túi này sang túi kia. Phải bán cho hàng xóm thì mới thật sự có thêm tiền vào nhà.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Cơ chế: lãi chưa thực hiện bị loại bằng cách điều chỉnh phần lãi/lỗ ghi theo equity method, tức trừ vào chính con số 'một dòng'. Với tài sản <em>cấu thành business</em>, ¶31A cho ghi nhận toàn bộ lãi ở giao dịch downstream; góp tài sản phi tiền tệ thiếu bản chất thương mại (¶30) thì coi lãi là chưa thực hiện, không ghi. Ranh giới 'có phải business không' là chỗ IASB đang bàn để giảm khác biệt thực hành.</p>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">4</div>
+      <div class="step-meta"><span class="lbl">Kể lại gọn gàng</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Bạn bán hàng qua lại với công ty mình có phần. Phần lãi ứng với sở hữu của bạn là 'bán cho chính mình' — chưa ra ngoài, chưa phải lãi thật. Bạn gạt đúng phần đó ra, giữ lại phần bán cho các chủ khác. Khi hàng được bán tiếp ra ngoài thật, phần gạt đó mới thành lãi. Nhưng lỗ thật thì ghi đủ ngay — quy tắc chỉ hoãn lãi, không giấu lỗ.</p>
+<p class="core">Bán cho một phần của chính mình, <span>phần bán cho chính mình chưa ra ngoài, nên gạt lại chờ.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã hiểu chưa?</h3>
+      <ol>
+        <li>Bạn nắm 30% và bán hàng có lãi cho công ty liên kết — vì sao chỉ ghi 70% khoản lãi?</li>
+        <li>Giao dịch bán xuống và bán lên khác nhau chỗ nào khi xử lý lỗ thật?</li>
+        <li>Phần lãi bị loại trừ khi nào mới được ghi nhận thành lãi thật?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nếu giải thích được cho bà ngoại hiểu, bạn mới thật sự hiểu.</p>
+  </footer>
+
+</div></div>
+<script>
+  var bar=document.getElementById('progress');
+  function upd(){var h=document.documentElement;var s=h.scrollTop||document.body.scrollTop;
+    var max=(h.scrollHeight-h.clientHeight)||1;bar.style.width=(s/max*100)+'%';}
+  window.addEventListener('scroll',upd,{passive:true});upd();
+  var io=new IntersectionObserver(function(es){es.forEach(function(e){
+    if(e.isIntersecting){e.target.style.animation='rise .7s cubic-bezier(.2,.7,.3,1) forwards';io.unobserve(e.target);}});},{threshold:.12});
+  document.querySelectorAll('section').forEach(function(s){s.style.opacity='0';io.observe(s);});
+</script>
+
+<script>
+(function(){
+  var tabs=[].slice.call(document.querySelectorAll('.tabbar .tab'));
+  var panels=[].slice.call(document.querySelectorAll('.concept-panel'));
+  function show(i){
+    tabs.forEach(function(t,j){t.classList.toggle('active',j===i);});
+    panels.forEach(function(p,j){
+      var on=(j===i); p.classList.toggle('active',on);
+      if(on){p.querySelectorAll('section').forEach(function(s){s.style.opacity='';s.style.animation='';});}
+    });
+    try{history.replaceState(null,'','#'+panels[i].id);}catch(e){}
+    window.scrollTo(0,0); window.dispatchEvent(new Event('scroll'));
+  }
+  tabs.forEach(function(t){t.addEventListener('click',function(){show(+t.getAttribute('data-i'));});});
+  var start=0; panels.forEach(function(p,j){if('#'+p.id===location.hash)start=j;});
+  show(start);
+})();
+</script>
+
+</body></html>

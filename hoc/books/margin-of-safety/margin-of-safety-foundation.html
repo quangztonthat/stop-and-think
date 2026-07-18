@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="vi"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Margin of Safety — Biên An Toàn (Seth Klarman) — Nền tảng, hiểu từ gốc</title>
+<style>
+  /* Design tokens shared with ebook-to-study-html + feynman-from-study (styles_v2.css) */
+  :root{
+    --bg:#fafaf7; --bg-elevated:#ffffff; --bg-soft:#f3f3ee;
+    --border:#e0e0d8; --border-soft:#ececea; --border-strong:#d2c8b6;
+    --ink:#1a1a1f; --ink-soft:#3f3f4a; --muted:#7a7a85;
+    --accent:#2f6fed; --accent-2:#2258c8; --gold:#0fb6d4; --bridge:#5a6b4f;
+    --serif:"Fraunces",Georgia,"Iowan Old Style",serif;
+    --sans:"Geist",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    --mono:"Geist Mono","JetBrains Mono",Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:var(--sans);
+    font-size:19px;line-height:1.72;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}
+  .progress{position:fixed;top:0;left:0;height:3px;width:0;z-index:50;
+    background:linear-gradient(90deg,var(--gold),var(--accent));transition:width .08s linear}
+  .wrap{max-width:920px;margin:0 auto;padding:0 36px}
+  .rise{opacity:0;transform:translateY(14px);animation:rise .7s cubic-bezier(.2,.7,.3,1) forwards}
+  @keyframes rise{to{opacity:1;transform:none}}
+
+  header{padding:104px 0 60px;border-bottom:1px solid var(--border)}
+  .kicker{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.18em;
+    text-transform:uppercase;color:var(--accent);margin-bottom:26px}
+  h1{font-family:var(--serif);font-weight:600;font-size:clamp(42px,7.6vw,72px);
+    line-height:1.0;letter-spacing:-.022em;margin-bottom:28px;font-optical-sizing:auto;color:var(--ink)}
+  h1 em{font-style:italic;color:var(--accent)}
+  .core{font-family:var(--serif);font-style:italic;font-weight:400;
+    font-size:clamp(21px,3.6vw,27px);line-height:1.44;color:var(--ink-soft)}
+  .core span{font-style:normal;font-weight:600;color:var(--accent-2);
+    box-shadow:inset 0 -.5em 0 rgba(47,111,237,.16)}
+
+  /* ---- BƯỚC 0: ĐỊNH VỊ (what it is + why it's the foundation) ---- */
+  .anchor .rule{font-family:var(--serif);font-size:19px;line-height:1.5;color:var(--ink);
+    background:var(--bg-soft);border-left:3px solid var(--accent);
+    padding:18px 24px;border-radius:0 4px 4px 0;margin:0}
+  .anchor .rule em{font-style:italic;color:var(--accent-2)}
+  .anchor .rule strong{color:var(--ink);font-weight:600}
+  .anchor .why{color:var(--ink-soft)}
+
+  section{padding:72px 0;border-bottom:1px solid var(--border);position:relative}
+  .step-head{display:flex;align-items:flex-start;gap:22px;margin-bottom:34px}
+  .big-num{font-family:var(--serif);font-weight:700;font-size:62px;line-height:.8;
+    color:var(--border-strong);flex:none;font-optical-sizing:auto;letter-spacing:-.03em}
+  .step-meta{padding-top:4px}
+  .lbl{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--accent);display:block;margin-bottom:10px}
+  h2{font-family:var(--serif);font-weight:600;font-size:clamp(27px,4.4vw,37px);
+    line-height:1.12;letter-spacing:-.012em;color:var(--ink)}
+  h2 em{font-style:italic;color:var(--accent)}
+  p{margin-bottom:21px}
+  p:last-child{margin-bottom:0}
+  strong{font-weight:600;color:var(--ink)}
+  em{font-style:italic;color:var(--accent-2)}
+  .gloss{color:var(--muted);font-style:italic}
+
+  .lead::first-letter{font-family:var(--serif);font-weight:700;float:left;
+    font-size:74px;line-height:.74;padding:8px 12px 0 0;color:var(--accent)}
+
+  .sub{font-family:var(--serif);font-weight:600;font-size:17px;letter-spacing:.01em;
+    color:var(--ink);margin:34px 0 14px;display:flex;align-items:center;gap:11px}
+  .sub::before{content:"";width:18px;height:2px;background:var(--accent);flex:none;border-radius:2px}
+
+  /* ---- BƯỚC 1: VẤN ĐỀ (why it exists) ---- */
+  .problem{background:var(--bg-soft)}
+  .problem .big-num{color:#e2d6b4}
+
+  /* ---- BƯỚC 3: VÍ DỤ (concrete worked example) ---- */
+  .example-card{border:1px solid #e8c876;border-radius:4px;padding:30px 32px;margin:8px 0 28px;
+    background:linear-gradient(135deg,#fef9ed 0%,#fdf3e0 100%)}
+  .example-card .tag{font-family:var(--mono);font-weight:600;font-size:11px;
+    letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin-bottom:16px;display:block}
+  .example-card p{color:#5a4810}
+  .example-card strong{color:var(--accent-2)}
+  .example-card p:last-child{margin-bottom:0}
+
+  /* ---- DỄ NHẦM (optional clarify / boundaries) ---- */
+  .clarify{background:var(--bg-soft)}
+  .clarify .big-num{color:#d8cdb2}
+  .mix-q{margin:0 0 30px;padding-left:24px;border-left:2px solid var(--border-strong)}
+  .mix-q:last-child{margin-bottom:0}
+  .mix-q .q{font-family:var(--serif);font-style:italic;font-weight:500;
+    font-size:22px;line-height:1.35;color:var(--accent-2);margin-bottom:12px;display:block}
+  .mix-q p:last-child{margin-bottom:0}
+
+  /* ---- NỐI TIẾP (bridge to the harder concepts) ---- */
+  .bridge .big-num{color:#bcc7b2}
+  .bridge .lbl{color:var(--bridge)}
+  .bridge-card{border-left:3px solid var(--bridge);background:#f4f6f1;
+    padding:22px 26px;border-radius:0 4px 4px 0;margin-top:6px}
+  .bridge-card p:last-child{margin-bottom:0}
+  .bridge-card strong{color:#42513a}
+
+  /* ---- KỂ LẠI GỌN (refined retell) ---- */
+  .retell{background:linear-gradient(180deg,var(--bg-soft) 0%,var(--bg) 100%);border-bottom:none}
+  .retell h2{color:var(--ink)}
+  .retell strong{color:var(--accent-2)}
+  .retell .core{margin-top:6px}
+  .testbox{border:1px solid var(--border);background:var(--bg-elevated);
+    border-radius:4px;padding:28px 32px;margin-top:40px;box-shadow:0 1px 2px rgba(0,0,0,.03)}
+  .testbox h3{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--accent);margin-bottom:20px}
+  .testbox ol{margin:0;padding-left:22px;counter-reset:t}
+  .testbox li{margin-bottom:16px;color:var(--ink-soft);padding-left:6px}
+  .testbox li:last-child{margin-bottom:0}
+
+  footer{text-align:center;padding:60px 0 88px}
+  footer .mark{font-family:var(--serif);font-weight:700;color:var(--accent);
+    font-size:26px;display:block;margin-bottom:14px}
+  footer p{font-family:var(--serif);font-style:italic;color:var(--muted);font-size:17px;max-width:400px;margin:0 auto}
+
+  @media(max-width:560px){
+    body{font-size:18px}
+    header{padding:70px 0 44px}
+    section{padding:52px 0}
+    .step-head{gap:16px}
+    .big-num{font-size:46px}
+    .lead::first-letter{font-size:60px}
+  }
+
+/* ===== FLAMINDI THEME OVERRIDE (dong bo trang chu flamindi.com) ===== */
+:root{
+  --accent:#2f6fed;--accent-2:#2258c8;--accent2:#2258c8;--gold:#0fb6d4;--cyan:#0fb6d4;--blue:#2f6fed;
+  --bg:#f7f9fe;--bg-elevated:#ffffff;--bg-card:#ffffff;--card:#ffffff;--bg-soft:#eef2fb;--soft:#eef2fb;
+  --border:#e4e9f2;--border-soft:#eef1f7;--border-strong:#cfd8e8;
+  --text:#1a2233;--text-soft:#4e5a74;--text-dim:#6b7691;
+  --ink:#1a2233;--ink-soft:#4e5a74;--muted:#6b7691;--soft-t:#4e5a74;--dim:#6b7691;
+  --serif:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+  --mono:ui-monospace,Menlo,Consolas,monospace;
+}
+body{background:radial-gradient(1200px 600px at 85% -10%,rgba(47,111,237,.14),transparent 60%),radial-gradient(1000px 640px at -10% 30%,rgba(15,182,212,.09),transparent 55%),linear-gradient(#f7f9fe,#edf0f8) fixed !important;}
+</style>
+<style>
+ .tabbar{position:fixed;top:0;left:0;right:0;width:100%;box-sizing:border-box;z-index:40;background:rgba(250,250,247,.93);
+   backdrop-filter:saturate(1.1) blur(8px);-webkit-backdrop-filter:saturate(1.1) blur(8px);
+   border-bottom:1px solid var(--border);display:flex;gap:6px;overflow-x:auto;
+   padding:10px max(36px,calc((100% - 992px)/2));scrollbar-width:thin}
+ .tabbar .tab{flex:0 0 auto;display:flex;align-items:baseline;gap:9px;cursor:pointer;
+   background:transparent;border:1px solid transparent;border-radius:999px;
+   padding:8px 17px;transition:.15s;white-space:nowrap;color:var(--muted)}
+ .tabbar .tab:hover{color:var(--ink);background:var(--bg-soft)}
+ .tabbar .tab.active{color:var(--accent-2);background:var(--bg-soft);border-color:var(--border-strong)}
+ .tabbar .tn{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.1em;color:var(--accent)}
+ .tabbar .tl{font-family:var(--serif);font-weight:500;font-size:16px}
+ body{padding-top:56px} .concept-panel{display:none}
+ .concept-panel.active{display:block}
+ .concept-panel header{padding-top:50px}
+ @media(max-width:560px){.tabbar .tl{max-width:48vw;overflow:hidden;text-overflow:ellipsis}}
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+<nav class="tabbar" aria-label="Các khái niệm nền"><button class="tab" data-i="0"><span class="tn">01</span><span class="tl">Đầu tư khác đầu cơ</span></button><button class="tab" data-i="1"><span class="tn">02</span><span class="tl">Giá không phải giá trị</span></button><button class="tab" data-i="2"><span class="tn">03</span><span class="tl">Biên an toàn là gì</span></button><button class="tab" data-i="3"><span class="tn">04</span><span class="tl">Rủi ro trước, lợi nhuận sau</span></button></nav>
+<div class="concept-panel" id="c-dau-tu-khac-dau-co"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Nền tảng · hiểu từ gốc</div>
+    <h1 class="rise" style="animation-delay:.08s">Viên gạch đầu tiên: đầu tư khác đầu cơ ở đúng một điểm</h1>
+    <p class="core rise" style="animation-delay:.16s">Chỉ một phép thử: <span>trong lúc bạn giữ, nó có tự trả tiền cho bạn không?</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Định vị · nó là gì &amp; vì sao học trước</span><h2>Nền: đầu tư khác đầu cơ ở phép thử dòng tiền</h2></div>
+    </div>
+    <div class="rule">Klarman mở đầu cuốn sách không bằng việc nhà đầu tư làm <em>đúng</em> gì, mà bằng ranh giới sống còn giữa <strong>đầu tư (investment)</strong> và <strong>đầu cơ (speculation)</strong> (t1, mục 1.1). Phép thử của ông chỉ có một: khoản <em>đầu tư</em> tự sinh ra dòng tiền cho chủ — cổ tức, tiền thuê, lợi nhuận; khoản <em>đầu cơ</em> thì không, lãi của nó hoàn toàn dựa vào việc bán lại cho người khác. Nhà đầu tư coi cổ phiếu là phần sở hữu doanh nghiệp; nhà đầu cơ coi nó là tờ giấy để trao tay.</div>
+    <div class="sub">Vì sao đây là nền</div>
+    <div class="why"><p>Đây là viên gạch đầu tiên. Chưa phân biệt được hai thứ này, mọi ý sau đều lung lay: biên an toàn, giá trị nội tại, cách tận dụng Mr. Market. Người tưởng mình đầu tư mà thật ra đang đầu cơ sẽ mua bán theo đám đông, rồi tự hỏi vì sao thua. Nên phải cắm mốc này trước.</p></div>
+  </section>
+
+  <section class="problem">
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Vấn đề nó sinh ra để giải quyết</span><h2>Hai cách bỏ tiền, khác nhau tận gốc</h2></div>
+    </div>
+    <p class="lead">Bạn có 50 triệu. Cách một: mua một căn phòng nhỏ cho thuê, mỗi tháng thu tiền thuê. Cách hai: mua một đồng tiền số, chỉ mong tháng sau bán lại đắt hơn. Cùng bỏ tiền ra, nhưng hai việc này khác nhau tận gốc.</p>
+
+<p>Khác ở đâu? Căn phòng <em>tự nuôi bạn</em> bằng tiền thuê, dù giá nhà lên hay xuống. Đồng tiền số không đẻ ra đồng nào; bạn chỉ lời nếu tìm được người mua lại giá cao hơn. Nếu không tìm được, chính bạn ôm cục lỗ.</p>
+
+<div class="sub">Vì sao ranh giới này quan trọng</div>
+<p>Cả hai đều mua đi bán lại, đều nhảy giá mỗi ngày. Nên nhìn thoáng qua trông giống nhau. Ta cần một phép thử tách bạch chúng, để biết mình đang thật sự đầu tư hay chỉ đang cược. Việc đó thuộc Bước 2.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Mô hình đơn giản · cách nó chạy</span><h2>Hỏi một câu: nó có tự trả tiền khi bạn giữ không?</h2></div>
+    </div>
+    <p>Chỉ cần hỏi một câu: <strong>trong lúc bạn nắm giữ, nó có tự trả tiền cho bạn không?</strong></p>
+
+<div class="sub">Có dòng tiền — đó là đầu tư</div>
+<p>Cổ phiếu trả cổ tức, căn nhà cho thuê, trái phiếu trả lãi. Chúng nuôi chủ bằng dòng tiền thật. Bạn có thể lời thêm khi giá lên, nhưng không phụ thuộc hoàn toàn vào đó.</p>
+
+<div class="sub">Không dòng tiền — đó là đầu cơ</div>
+<p>Vàng, đồ cổ, một đồng tiền số, một cổ phiếu đang nóng. Chúng không đẻ ra đồng nào khi bạn giữ. Lời hay lỗ chỉ do người sau trả bạn nhiều hay ít hơn.</p>
+
+<div class="sub">Trò ‘kẻ ngốc hơn’</div>
+<p>Người đầu cơ mua vì tin sẽ có ‘kẻ ngốc hơn’ mua lại giá cao hơn. Trò này chạy được tới khi hết người mua. Ai cầm món hàng lúc nhạc dừng chính là kẻ ngốc cuối cùng.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví dụ cụ thể</span><h2>Hộp cá mòi để mua bán, không phải để ăn</h2></div>
+    </div>
+    <div class="example-card"><span class="tag">Ví dụ</span>
+<p>Klarman kể chuyện <strong>hộp cá mòi</strong>. Khi cá mòi biến mất khỏi vùng biển, giới buôn đẩy giá một hộp cá lên trời.</p>
+<p>Một người mua mở hộp ra ăn thử, phát bệnh, kêu cá hỏng. Người bán đáp tỉnh bơ: đây là cá mòi <em>để mua bán</em>, không phải để ăn. Nhiều người chơi thị trường y hệt — trao tay món hàng mà chẳng bao giờ ‘nếm’ xem nó đáng gì.</p>
+<p>Đổi một chi tiết cho rõ. Nếu hộp cá đó cho thuê ra tiền mỗi tháng, người mua sẽ quan tâm nó thật sự đáng bao nhiêu. Vì nó chỉ để chuyền tay, họ chỉ lo bán lại được cho ai.</p>
+</div>
+<p>Ví dụ đời thường: thẻ bóng đá, tranh, đồ sưu tầm. Chúng có thể lên giá, nhưng không trả bạn đồng nào khi bạn giữ. Klarman gói gọn: hãy phân biệt được Pepsico với Picasso — một bên đẻ ra tiền, một bên chỉ đổi chủ.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Nhà đầu tư ra quyết định dựa trên <em>giá so với giá trị (price vs value)</em>: mua khi giá thấp hơn giá trị nội tại. Nhà đầu cơ dựa trên <em>dự đoán hành vi người khác</em> và động lượng giá — mua vì nó đang chạy tốt. Ngay cả trái phiếu Kho bạc ‘an toàn’ cũng thành công cụ đầu cơ khi bị mua bán chớp nhoáng để cược lãi suất.</p>
+  </section>
+
+  <section class="clarify">
+    <div class="step-head">
+      <div class="big-num">≠</div>
+      <div class="step-meta"><span class="lbl">Dễ nhầm · ranh giới</span><h2>Dễ nhầm — ranh giới của phép thử</h2></div>
+    </div>
+    <div class="mix-q"><span class="q">"Giá cổ phiếu tôi mua đang lên đều — vậy chắc chắn là khoản đầu tư tốt rồi?"</span><p>Chưa chắc. Giá lên không nói nó là đầu tư hay đầu cơ. Nếu bạn mua chỉ vì tin giá còn lên nữa, đó vẫn là đầu cơ, dù đang lời. Phép thử là <em>dòng tiền</em>, không phải chiều của giá.</p></div>
+<div class="mix-q"><span class="q">"Vậy đầu cơ là xấu, phải tránh hết à?"</span><p>Không hẳn xấu về đạo đức. Nhưng bạn phải biết mình đang làm gì. Đầu cơ đặt số phận vào tay người mua sau, thứ bạn không kiểm soát. Đầu tư dựa vào dòng tiền doanh nghiệp, thứ có thật và đo được.</p></div>
+  </section>
+
+  <section class="bridge">
+    <div class="step-head">
+      <div class="big-num">→</div>
+      <div class="step-meta"><span class="lbl">Nối tiếp · nó dẫn tới đâu</span><h2>Nối tiếp — từ đây đi đâu</h2></div>
+    </div>
+    <div class="bridge-card"><p>Khi đã tách đầu tư khỏi đầu cơ, câu hỏi kế là: nếu tôi không nghe theo giá thị trường, thì nghe theo ai? Câu trả lời nằm ở trang <strong>‘Mr. Market không hiệu quả’</strong> (Hiểu sâu). Ở đó, thị trường được vẽ thành một ông hàng xóm khùng — nguồn cơ hội, không phải người dẫn đường.</p>
+<p>Nó cũng dẫn thẳng tới <strong>‘Phòng thủ thắng tấn công’</strong>: người đầu cơ dồn sức tấn công để thắng nhanh, còn nhà đầu tư lo giữ mình trước đã.</p></div>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">✦</div>
+      <div class="step-meta"><span class="lbl">Kể lại trong một hơi</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Chỉ một câu tách đầu tư khỏi đầu cơ: trong lúc bạn giữ, nó có tự trả tiền cho bạn không? Có dòng tiền — cổ tức, tiền thuê, lãi — là đầu tư. Không có, chỉ mong bán lại đắt hơn, là đầu cơ. Nhà đầu tư mua phần sở hữu doanh nghiệp; nhà đầu cơ mua tờ giấy để trao tay.</p>
+<p class="core">Chỉ một phép thử: <span>có tự trả tiền khi bạn giữ thì là đầu tư; không thì là đầu cơ.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã nắm nền chưa?</h3>
+      <ol>
+        <li>Phép thử một-câu để tách đầu tư khỏi đầu cơ là gì?</li>
+        <li>Vì sao một cổ phiếu đang lên giá vẫn có thể là đầu cơ chứ không phải đầu tư?</li>
+        <li>Vì sao người đầu cơ phụ thuộc vào ‘kẻ ngốc hơn’, còn nhà đầu tư thì không?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nền vững thì cái khó tự nhẹ đi. Hiểu từ gốc, không học vẹt.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-gia-khong-phai-gia-tri"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Nền tảng · hiểu từ gốc</div>
+    <h1 class="rise" style="animation-delay:.08s">Giá và giá trị là hai thứ khác nhau — và thường lệch xa</h1>
+    <p class="core rise" style="animation-delay:.16s">Hai câu hỏi tách rời: <span>giá là bao nhiêu, và nó thật sự đáng bao nhiêu?</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Định vị · nó là gì &amp; vì sao học trước</span><h2>Nền: giá là con số Mr. Market chào, giá trị là thứ doanh nghiệp thật sự đáng</h2></div>
+    </div>
+    <div class="rule">Klarman tách bạch hai thứ người ta hay gộp làm một: <strong>giá (price)</strong> — con số Mr. Market chào mỗi ngày, và <strong>giá trị (value)</strong> — thứ doanh nghiệp thật sự đáng, tính từ dòng tiền và tài sản của nó (t1 §1.3–1.4). Hai thứ này thường lệch nhau, có khi rất xa. Ông nói thêm ở phần định giá: giá trị không phải một con số chính xác, mà là một <em>khoảng</em> (t4 §4.1).</div>
+    <div class="sub">Vì sao đây là nền</div>
+    <div class="why"><p>Cả nghề đầu tư giá trị gói trong một câu: mua khi giá thấp hơn nhiều so với giá trị. Câu đó vô nghĩa nếu bạn chưa tách rời giá khỏi giá trị. Người coi giá thị trường là giá trị thật sẽ mua đắt lúc hưng phấn, bán rẻ lúc hoảng loạn. Nắm được khác biệt này, bạn có một mỏ neo riêng, không trôi theo đám đông.</p></div>
+  </section>
+
+  <section class="problem">
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Vấn đề nó sinh ra để giải quyết</span><h2>Căn nhà rẻ một nửa: hời, hay có vấn đề?</h2></div>
+    </div>
+    <p class="lead">Một căn nhà bốn phòng ngủ trong khu mà nhà tương tự bán 300.000, nay rao chỉ 150.000. Phản ứng đầu tiên của bạn nên là gì? Không phải ‘rẻ quá, hời quá!’. Mà là: căn này <em>bị làm sao</em>?</p>
+
+<p>Con số 150.000 là <strong>giá</strong> — thứ người bán đang hỏi. Còn căn nhà thật sự đáng bao nhiêu là <strong>giá trị</strong> — thứ bạn phải tự tìm ra. Có khi nó đáng 300.000 thật và đây là món hời. Có khi nền móng nứt, và 150.000 vẫn là đắt.</p>
+
+<div class="sub">Vì sao không được lẫn hai thứ</div>
+<p>Nếu bạn tin giá chính là giá trị, bạn hết đường phán xét. Giá xuống thì bạn tưởng giá trị xấu đi, giá lên thì tưởng nó tốt lên. Nhưng giá nhảy vì trăm lý do chẳng liên quan gì tới doanh nghiệp. Ta cần nhìn xuyên qua giá, tới giá trị.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Mô hình đơn giản · cách nó chạy</span><h2>Tách hai câu hỏi: giá bao nhiêu, và đáng bao nhiêu</h2></div>
+    </div>
+    <p>Đặt hai câu hỏi tách rời nhau: <strong>giá là bao nhiêu?</strong> và <strong>nó thật sự đáng bao nhiêu?</strong></p>
+
+<div class="sub">Giá đến từ tâm trạng đám đông</div>
+<p>Phần lớn dao động giá mỗi ngày đến từ cung và cầu ngắn hạn: bán tháo cuối năm vì thuế, một tin đồn, một quỹ tháo chạy. Nó phản ánh cảm xúc, không phải nền tảng.</p>
+
+<div class="sub">Giá trị đến từ bản thân doanh nghiệp</div>
+<p>Giá trị bắt nguồn từ dòng tiền doanh nghiệp đẻ ra và tài sản nó nắm. Muốn biết nó, bạn phải xem sổ sách, tài sản, sức kiếm tiền — chứ không phải xem bảng giá.</p>
+
+<div class="sub">Giá trị là một khoảng, không phải một điểm</div>
+<p>Bạn không định giá nổi căn nhà mình tới từng nghìn đồng. Doanh nghiệp còn khó hơn. Nên đừng đòi một con số chính xác; hãy tìm một khoảng, rồi chỉ mua khi giá nằm thấp hẳn dưới khoảng đó.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví dụ cụ thể</span><h2>Quỹ Spain Fund: trả 2 đồng cho 1 đồng giá trị</h2></div>
+    </div>
+    <div class="example-card"><span class="tag">Ví dụ</span>
+<p>Klarman kể quỹ <strong>Spain Fund</strong> năm 1989. Đây là một quỹ đóng, danh mục của nó gồm đúng những cổ phiếu Tây Ban Nha ai cũng mua được trên sàn.</p>
+<p>Vậy mà giá cổ phần quỹ bị đẩy lên hơn <em>gấp đôi</em> giá trị tài sản ròng của chính nó. Nghĩa là người ta trả 2 đồng cho 1 đồng giá trị y hệt, chỉ vì đám đông đang phấn khích. Vài tháng sau, giá rơi về đúng giá trị.</p>
+<p>Đổi chiều nhìn: giá trị của danh mục gần như không đổi suốt thời gian đó. Chỉ có <em>giá</em> chạy lên rồi chạy xuống. Hai đường tách hẳn nhau — đó là toàn bộ ý.</p>
+</div>
+<p>Chuyện nhỏ hơn: một tấm vé xem trận cầu đinh. Sát giờ, người ta tranh nhau trả giá gấp mấy lần in trên vé; trận thường thì bán rẻ vẫn ế. Chỗ ngồi y hệt — chỉ có giá người ta chịu trả là đổi theo tâm lý.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Klarman tách hai nguồn làm giá đổi: (1) thay đổi thật ở doanh nghiệp hoặc <em>nhận thức</em> về nó (lãi suất, lợi nhuận, một thảm họa ngành); (2) mất cân cung–cầu ngắn hạn (bán tháo vì thuế, tổ chức tháo chạy). Phần lớn nhiễu hằng ngày thuộc loại (2). Vì không thể biết kỳ vọng nào đã nằm trong giá, nhà đầu tư phải luôn tự ước lượng giá trị nền tảng rồi so với giá.</p>
+  </section>
+
+  <section class="clarify">
+    <div class="step-head">
+      <div class="big-num">≠</div>
+      <div class="step-meta"><span class="lbl">Dễ nhầm · ranh giới</span><h2>Dễ nhầm — ranh giới</h2></div>
+    </div>
+    <div class="mix-q"><span class="q">"Giá thị trường là do hàng triệu người định ra — chẳng lẽ nó sai, còn tôi đúng?"</span><p>Giá là <em>trung bình phiếu bầu</em> của đám đông, gồm cả lý trí lẫn cảm xúc. Nó rất giỏi phản ánh tâm trạng, nhưng tâm trạng không phải giá trị. Đám đông có thể cùng phấn khích hoặc cùng sợ. Bạn không cần họ sai mọi lúc — chỉ cần thi thoảng họ lệch đủ xa.</p></div>
+<div class="mix-q"><span class="q">"Giá lên thì giá trị doanh nghiệp cũng tăng theo chứ?"</span><p>Không tự động. Giá lên có thể chỉ vì đám đông đổi tâm trạng, trong khi doanh nghiệp y nguyên. Klarman nhắc: giá tăng không bảo đảm công ty đang tốt lên; giá giảm không tự nó nghĩa là giá trị xấu đi.</p></div>
+  </section>
+
+  <section class="bridge">
+    <div class="step-head">
+      <div class="big-num">→</div>
+      <div class="step-meta"><span class="lbl">Nối tiếp · nó dẫn tới đâu</span><h2>Nối tiếp — từ đây đi đâu</h2></div>
+    </div>
+    <div class="bridge-card"><p>Nếu giá và giá trị là hai thứ khác nhau, một câu hỏi lớn hiện ra: vì sao chúng lệch nhau, và vì sao lệch đó không bị ‘sửa’ ngay? Đó là trang <strong>‘Mr. Market không hiệu quả’</strong> (Hiểu sâu). Ở đó ta mổ xem vì sao thị trường không phải lúc nào cũng đúng giá.</p>
+<p>Nó cũng là móng cho tab nền <strong>‘Biên an toàn là gì’</strong>: khoảng cách giữa giá thấp và giá trị cao chính là chỗ để bạn an toàn.</p></div>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">✦</div>
+      <div class="step-meta"><span class="lbl">Kể lại trong một hơi</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Giá là con số Mr. Market chào hôm nay; giá trị là thứ doanh nghiệp thật sự đáng. Hai thứ khác nhau và thường lệch xa. Giá chạy theo tâm trạng đám đông; giá trị đến từ dòng tiền và tài sản. Và giá trị là một khoảng, không phải một con số chính xác. Việc của bạn: nhìn xuyên qua giá, tới giá trị.</p>
+<p class="core">Hai câu hỏi tách rời: <span>giá là điều đám đông chào; giá trị là điều doanh nghiệp thật sự đáng.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã nắm nền chưa?</h3>
+      <ol>
+        <li>Nghe tin một cổ phiếu vừa rớt giá mạnh, vì sao chưa thể kết luận giá trị nó xấu đi?</li>
+        <li>‘Giá trị là một khoảng, không phải một con số’ nghĩa là gì với người mua?</li>
+        <li>Quỹ Spain Fund cho thấy giá và giá trị có thể lệch nhau tới mức nào?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nền vững thì cái khó tự nhẹ đi. Hiểu từ gốc, không học vẹt.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-bien-an-toan-la-gi"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Nền tảng · hiểu từ gốc</div>
+    <h1 class="rise" style="animation-delay:.08s">Biên an toàn: tấm đệm để sai lầm không xóa sạch vốn</h1>
+    <p class="core rise" style="animation-delay:.16s">Một khoảng cách: <span>giá bạn trả càng thấp hơn giá trị, đệm càng dày.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Định vị · nó là gì &amp; vì sao học trước</span><h2>Nền: chiết khấu so với giá trị chính là biên an toàn</h2></div>
+    </div>
+    <div class="rule">Đây là khái niệm cho cuốn sách cái tên. Graham hiểu một tài sản đáng 1 đô-la hôm nay có thể đáng 0,75 hay 1,25 đô-la trong tương lai gần — và bản thân ông cũng có thể ước sai giá trị hôm nay (t3 §3.4). Vì thế ông chỉ mua ở mức <em>chiết khấu lớn</em> so với giá trị. Chính khoảng chiết khấu đó là <strong>biên an toàn (margin of safety)</strong>: chỗ dung sai cho sai lầm, xui rủi và biến động cực đoan. Nói gọn: mua một đô-la giá trị với năm mươi xu.</div>
+    <div class="sub">Vì sao đây là nền</div>
+    <div class="why"><p>Tên sách nằm ở đây, và mọi lời khuyên khác đều xoay quanh nó. Vì sao phải định giá thận trọng? Để có biên an toàn. Vì sao tránh cổ phiếu kỳ vọng cao? Vì chúng không có biên an toàn. Chưa nắm ý này, các quy tắc sau nghe rời rạc. Nắm rồi, chúng thành một.</p></div>
+  </section>
+
+  <section class="problem">
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Vấn đề nó sinh ra để giải quyết</span><h2>Bạn tính nó đáng 1 đô-la — nhưng lỡ tính cao thì sao?</h2></div>
+    </div>
+    <p class="lead">Bạn tính một doanh nghiệp đáng 1 đô-la một cổ phần. Bạn làm kỹ. Nhưng bạn là con người, và tương lai thì mù. Lỡ bạn tính hơi cao, nó chỉ đáng 80 xu thì sao?</p>
+
+<p>Nếu bạn trả đúng 1 đô-la, chỉ cần sai một chút là lỗ. Nếu bạn chỉ trả 50 xu, bạn có nguyên một khoảng đệm. Bạn sai một chút vẫn hòa; công ty xui một phen vẫn không mất vốn. Khoảng đệm đó cứu bạn.</p>
+
+<div class="sub">Vấn đề gốc: bạn luôn có thể sai</div>
+<p>Không ai định giá đúng tuyệt đối, và giá trị lại còn tự đổi theo thời gian. Nên câu hỏi không phải ‘làm sao tính thật chính xác’, mà ‘trả bao nhiêu để sai vẫn không chết’. Trả lời được câu đó là có biên an toàn.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Mô hình đơn giản · cách nó chạy</span><h2>Đệm chính là khoảng cách giữa giá trả và giá trị</h2></div>
+    </div>
+    <p>Biên an toàn chỉ là <strong>khoảng cách giữa giá trả và giá trị</strong>. Giá càng thấp hơn giá trị, đệm càng dày.</p>
+
+<div class="sub">Đệm dày lên nhờ trả rẻ</div>
+<p>Mua ở một nửa giá trị thì đệm là một nửa. Mua ở một phần tư giá trị thì đệm còn dày hơn. Graham nói thẳng: biên an toàn lớn ở giá thấp, nhỏ ở giá cao, và biến mất ở giá quá cao.</p>
+
+<div class="sub">Đệm để làm gì</div>
+<p>Để chịu ba thứ bạn không tránh được: bạn tính sai, công ty gặp xui, và thị trường điên loạn. Có đệm thì cả ba thứ đó chỉ làm bạn lời ít hơn, chứ không xóa sạch vốn.</p>
+
+<div class="sub">Chọn tài sản dễ đỡ hơn</div>
+<p>Tài sản sờ được — hàng tồn, nhà xưởng, tiền mặt — cho đệm chắc, vì bán ra vẫn thu lại được. Tài sản vô hình như thương hiệu, giấy phép thì mong manh: khẩu vị đổi là đệm bốc hơi.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví dụ cụ thể</span><h2>Trái phiếu 110 đứng sau 140 tiền mặt</h2></div>
+    </div>
+    <div class="example-card"><span class="tag">Ví dụ</span>
+<p>Klarman kể cổ phiếu <strong>Erie Lackawanna</strong>. Giá 110 đô-la, nhưng riêng tiền mặt bảo chứng đã gần 140 đô-la một cổ phần.</p>
+<p>Nghĩa là bạn bỏ ra 110 để đứng sau một đống tiền mặt 140. Nếu mọi thứ tệ đi, tiền mặt vẫn thừa sức trả bạn. Đệm ở đây gần như tuyệt đối — rủi ro mất vốn gần bằng không.</p>
+<p>Điều hay là gì? Nếu giá rớt thêm, từ 110 xuống 100, món này không thành ‘nguy hơn’. Nó chỉ thành <em>hời hơn</em> — cùng đống tiền mặt đó, nay mua với giá rẻ hơn nữa.</p>
+</div>
+<p>Ví dụ đời thường: bạn mua chiếc xe cũ đáng 100 triệu với giá 60 triệu. Xe có trục trặc nhỏ bạn chưa thấy, sửa hết 10 triệu, bạn vẫn hời. Chính 40 triệu mua rẻ được là tấm đệm cho những bất ngờ.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Klarman ưu tiên <em>tài sản hữu hình</em> vì định giá chính xác hơn và thường có ‘giá trị ở công dụng thay thế’: một chuỗi cửa hàng lỗ vẫn thanh lý được hàng tồn, thu hồi phải thu, sang nhượng mặt bằng. Trái phiếu Texaco mua ở 90 sau khi công ty phá sản vì phán quyết Pennzoil cho lợi nhuận năm hóa 19,5–44,1%, với tài sản thừa sức bao phủ nợ.</p>
+  </section>
+
+  <section class="clarify">
+    <div class="step-head">
+      <div class="big-num">≠</div>
+      <div class="step-meta"><span class="lbl">Dễ nhầm · ranh giới</span><h2>Dễ nhầm — ranh giới</h2></div>
+    </div>
+    <div class="mix-q"><span class="q">"Biên an toàn có bảo đảm tôi chắc chắn lời không?"</span><p>Không. Nó không phải tấm vé chắc thắng, mà là tấm đệm. Nó không xóa rủi ro; nó làm rủi ro mất vốn nhỏ đi rất nhiều. Bạn vẫn có thể lời ít, hòa, hoặc thi thoảng lỗ nhẹ — nhưng khó bị xóa sạch.</p></div>
+<div class="mix-q"><span class="q">"Đòi chiết khấu lớn thế thì hiếm khi mua được gì?"</span><p>Đúng, và đó là chủ ý. Bạn không cần mua nhiều, chỉ cần mua đúng. Phần lớn thời gian ngồi yên chờ; khi món đủ rẻ mới xuống tiền. Chuyện chờ đúng cơ hội được nói kỹ ở trang biên an toàn phải lớn.</p></div>
+  </section>
+
+  <section class="bridge">
+    <div class="step-head">
+      <div class="big-num">→</div>
+      <div class="step-meta"><span class="lbl">Nối tiếp · nó dẫn tới đâu</span><h2>Nối tiếp — từ đây đi đâu</h2></div>
+    </div>
+    <div class="bridge-card"><p>Câu hỏi tự nhiên tiếp theo: đệm bao nhiêu là đủ, và vì sao phải đòi đệm <em>lớn</em> chứ không phải một chút cho có? Đó là trang <strong>‘Biên an toàn phải lớn’</strong> (Hiểu sâu). Ở đó ta mổ vì sao tương lai càng mù thì đệm càng phải dày.</p>
+<p>Nó cũng tựa vào tab nền <strong>‘Rủi ro trước, lợi nhuận sau’</strong>: biên an toàn chính là cách cụ thể để đặt rủi ro lên trước.</p></div>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">✦</div>
+      <div class="step-meta"><span class="lbl">Kể lại trong một hơi</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Biên an toàn là khoảng cách giữa giá bạn trả và giá trị thật. Bạn luôn có thể tính sai, công ty có thể gặp xui, thị trường có thể điên. Trả rẻ hơn nhiều so với giá trị cho bạn một tấm đệm chịu được cả ba. Mua một đô-la giá trị với năm mươi xu — sai một chút vẫn không mất vốn.</p>
+<p class="core">Một khoảng cách: <span>trả rẻ hơn hẳn giá trị, để sai lầm và xui rủi không xóa sạch vốn.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã nắm nền chưa?</h3>
+      <ol>
+        <li>Vì sao ‘khoảng chiết khấu so với giá trị’ lại chính là tấm đệm chống mất vốn?</li>
+        <li>Một món đang có biên an toàn lớn, nếu giá rớt thêm, vì sao nó thành hời hơn chứ không nguy hơn?</li>
+        <li>Vì sao Klarman ưu tiên tài sản hữu hình khi tìm biên an toàn?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nền vững thì cái khó tự nhẹ đi. Hiểu từ gốc, không học vẹt.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-rui-ro-truoc-loi-nhuan-sau"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Nền tảng · hiểu từ gốc</div>
+    <h1 class="rise" style="animation-delay:.08s">Đảo thứ tự: hỏi ‘có thể mất gì’ trước ‘được bao nhiêu’</h1>
+    <p class="core rise" style="animation-delay:.16s">Đổi câu hỏi mở đầu: <span>món này có thể mất gì, chứ không phải nó hứa lời bao nhiêu.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Định vị · nó là gì &amp; vì sao học trước</span><h2>Nền: mục tiêu số một là đừng mất tiền — nhắm vào rủi ro</h2></div>
+    </div>
+    <div class="rule">Klarman đặt mục tiêu số một không phải là kiếm nhiều, mà là <strong>đừng mất tiền</strong> — nhắc quy tắc của Buffett: quy tắc một ‘đừng mất tiền’, quy tắc hai ‘đừng quên quy tắc một’ (t3 §3.1). Từ đó ông lật cách nghĩ thường gặp: đừng đặt <em>lợi nhuận mục tiêu</em> rồi gánh rủi ro để đạt nó; hãy <strong>nhắm vào rủi ro trước</strong>, chỉ nhận rủi ro khi phần thưởng bù đắp hơn hẳn (t3 §3.2). Luôn có sẵn lựa chọn giữ tiền trong tín phiếu Kho bạc — <em>lãi suất phi rủi ro (risk-free rate)</em> — nên không việc gì phải liều nếu không được trả xứng đáng.</div>
+    <div class="sub">Vì sao đây là nền</div>
+    <div class="why"><p>Đây là cái đảo ngược thứ tự suy nghĩ. Người thường hỏi ‘món này lời bao nhiêu?’ trước. Klarman hỏi ‘món này có thể mất bao nhiêu?’ trước. Đảo thứ tự đó là nền cho biên an toàn, cho việc tránh cổ phiếu kỳ vọng cao, cho cả cách chọn danh mục. Chưa lật được, bạn sẽ luôn bị phần thưởng dụ đi.</p></div>
+  </section>
+
+  <section class="problem">
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Vấn đề nó sinh ra để giải quyết</span><h2>‘Tôi muốn 15% mỗi năm’ — câu đó vô dụng</h2></div>
+    </div>
+    <p class="lead">Bạn nói ‘tôi muốn kiếm 15% mỗi năm’. Nghe rất quyết tâm. Nhưng thử hỏi: câu đó có nói cho bạn <em>cách</em> đạt 15% không? Không một chữ nào.</p>
+
+<p>Tệ hơn, đặt mục tiêu lợi nhuận đẩy bạn đi sai hướng. Muốn đạt con số, bạn phải với tay tới những món hứa hẹn cao — mà món hứa cao thường kèm rủi ro mất vốn lớn. Lợi nhuận không đến vì bạn muốn nó mạnh tới đâu.</p>
+
+<div class="sub">Cần đổi câu hỏi mở đầu</div>
+<p>Vì bạn không ép được lợi nhuận, thứ duy nhất bạn thật sự nắm là <em>rủi ro</em> mình nhận. Nên hãy bắt đầu từ đó: món này có thể mất gì, và mình có được trả xứng đáng để chịu không? Đó là Bước 2.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Mô hình đơn giản · cách nó chạy</span><h2>Nhìn rủi ro trước, lợi nhuận để sau</h2></div>
+    </div>
+    <p>Lật thứ tự: nhìn <strong>rủi ro trước</strong>, lợi nhuận để sau.</p>
+
+<div class="sub">Có một mức ‘không liều’</div>
+<p>Bạn luôn có thể gửi tiền vào tín phiếu Kho bạc, gần như không rủi ro, ăn một mức lãi cố định. Đó là mốc. Chỉ bước ra khỏi mốc đó khi món liều hơn hứa trả bạn <em>hơn hẳn</em>, đủ bù cho rủi ro thêm.</p>
+
+<div class="sub">Vì sao ‘đừng mất’ mạnh hơn ‘kiếm to’</div>
+<p>Lãi kép cần thời gian và sự liên tục. Một cú lỗ lớn cắt đứt chuỗi đó, xóa thành quả nhiều năm. Nên tránh cú lỗ lớn còn quý hơn ráng thắng một phen đậm.</p>
+
+<div class="sub">Một cú mất sâu rất khó gỡ</div>
+<p>Mất một nửa vốn không cần lời 50% để hoàn — bạn cần lời tới 100%. Càng mất sâu, đường về càng dốc. Vì thế người giữ được vốn qua nhiều năm thường về đích trước người lúc thắng đậm lúc lỗ nặng.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví dụ cụ thể</span><h2>16% đều mười năm thắng 20% rồi một cú ngã</h2></div>
+    </div>
+    <div class="example-card"><span class="tag">Ví dụ</span>
+<p>Klarman so hai người trong mười năm.</p>
+<p><strong>Người A</strong> kiếm đều 16% mỗi năm, suốt mười năm, không năm nào lỗ. <strong>Người B</strong> kiếm 20% mỗi năm trong chín năm — nhỉnh hơn hẳn — rồi năm thứ mười mất 15%.</p>
+<p>Ai nhiều tiền hơn? Người A. Chỉ một năm sảy chân của B đã xóa hết cái lợi ‘nhỉnh hơn’ của chín năm. Kiếm đều mà không sập thắng kiếm đậm mà có một cú ngã.</p>
+</div>
+<p>Chuyện đời thường: hai người chạy xe đường dài. Một người chạy vừa phải, về đều. Một người phóng thật nhanh nhưng một lần tông, phải dừng sửa cả tuần. Người chạy đều tới trước. Giữ được nhịp quý hơn lao vút rồi gãy.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Đây là lý do Klarman khuyên sẵn lòng bỏ một phần lợi nhuận ngắn hạn như một khoản ‘phí bảo hiểm’ chống nghịch cảnh bất ngờ — bạn vẫn mua bảo hiểm lũ mỗi năm dù sông hiếm khi tràn. Nó cũng dẫn tới ba trụ của ông: đi từ dưới lên, đo lợi nhuận <em>tuyệt đối</em>, và né rủi ro — chú ý cái có thể sai ngang cái có thể đúng.</p>
+  </section>
+
+  <section class="clarify">
+    <div class="step-head">
+      <div class="big-num">≠</div>
+      <div class="step-meta"><span class="lbl">Dễ nhầm · ranh giới</span><h2>Dễ nhầm — ranh giới</h2></div>
+    </div>
+    <div class="mix-q"><span class="q">"Nhắm vào rủi ro trước nghĩa là né sạch mọi rủi ro à?"</span><p>Không. Không phải không bao giờ liều, mà là <em>được trả xứng đáng</em> mới liều. Bạn vẫn nhận rủi ro — khi phần thưởng bù đắp hơn hẳn. Cái bị loại là loại rủi ro trả công bèo, hoặc có thể xóa sạch vốn.</p></div>
+<div class="mix-q"><span class="q">"Đặt mục tiêu lợi nhuận thì có gì sai? Ai chẳng muốn một con số?"</span><p>Muốn thì không sai, nhưng con số đó không tự thành hiện thực. Nó chỉ khiến bạn với tay tới món rủi ro hơn để ép cho đạt. Klarman lật lại: lo phần rủi ro cho tốt, rồi lợi nhuận sẽ tự đến.</p></div>
+  </section>
+
+  <section class="bridge">
+    <div class="step-head">
+      <div class="big-num">→</div>
+      <div class="step-meta"><span class="lbl">Nối tiếp · nó dẫn tới đâu</span><h2>Nối tiếp — từ đây đi đâu</h2></div>
+    </div>
+    <div class="bridge-card"><p>Đặt rủi ro lên trước buộc ta hỏi: vậy ‘rủi ro’ thật ra là gì? Nhà trường đo nó bằng độ nhấp nhô của giá, gọi là beta. Klarman nói thế là sai — mời bạn mở trang <strong>‘Rủi ro không phải beta’</strong> (Hiểu sâu).</p>
+<p>Và vì sao ‘đừng mất’ lại thắng ‘kiếm to’ về dài hạn, trang <strong>‘Phòng thủ thắng tấn công’</strong> đào tiếp bằng chính phép tính lãi kép.</p></div>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">✦</div>
+      <div class="step-meta"><span class="lbl">Kể lại trong một hơi</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Mục tiêu số một là đừng mất tiền, không phải kiếm thật nhiều. Đừng đặt lợi nhuận mục tiêu rồi gánh rủi ro để đạt — bạn không ép được lợi nhuận. Hãy nhìn rủi ro trước: có sẵn tín phiếu Kho bạc gần như không rủi ro, chỉ liều khi được trả hơn hẳn. Một cú lỗ lớn xóa thành quả nhiều năm, nên giữ vốn quý hơn thắng đậm.</p>
+<p class="core">Đổi câu hỏi mở đầu: <span>hỏi ‘có thể mất gì’ trước khi hỏi ‘được bao nhiêu’; giữ vốn hơn thắng đậm.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã nắm nền chưa?</h3>
+      <ol>
+        <li>Vì sao câu ‘tôi muốn kiếm 15% mỗi năm’ lại là điểm khởi đầu sai?</li>
+        <li>Tín phiếu Kho bạc đóng vai trò gì khi ta ‘nhắm vào rủi ro trước’?</li>
+        <li>Vì sao 16% đều trong mười năm lại thắng 20% chín năm rồi mất 15%?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nền vững thì cái khó tự nhẹ đi. Hiểu từ gốc, không học vẹt.</p>
+  </footer>
+
+</div></div>
+<script>
+  var bar=document.getElementById('progress');
+  function upd(){var h=document.documentElement;var s=h.scrollTop||document.body.scrollTop;
+    var max=(h.scrollHeight-h.clientHeight)||1;bar.style.width=(s/max*100)+'%';}
+  window.addEventListener('scroll',upd,{passive:true});upd();
+  var io=new IntersectionObserver(function(es){es.forEach(function(e){
+    if(e.isIntersecting){e.target.style.animation='rise .7s cubic-bezier(.2,.7,.3,1) forwards';io.unobserve(e.target);}});},{threshold:.12});
+  document.querySelectorAll('section').forEach(function(s){s.style.opacity='0';io.observe(s);});
+</script>
+
+<script>
+(function(){
+  var tabs=[].slice.call(document.querySelectorAll('.tabbar .tab'));
+  var panels=[].slice.call(document.querySelectorAll('.concept-panel'));
+  function show(i){
+    tabs.forEach(function(t,j){t.classList.toggle('active',j===i);});
+    panels.forEach(function(p,j){
+      var on=(j===i); p.classList.toggle('active',on);
+      if(on){p.querySelectorAll('section').forEach(function(s){s.style.opacity='';s.style.animation='';});}
+    });
+    try{history.replaceState(null,'','#'+panels[i].id);}catch(e){}
+    window.scrollTo(0,0); window.dispatchEvent(new Event('scroll'));
+  }
+  tabs.forEach(function(t){t.addEventListener('click',function(){show(+t.getAttribute('data-i'));});});
+  var start=0; panels.forEach(function(p,j){if('#'+p.id===location.hash)start=j;});
+  show(start);
+})();
+</script>
+
+</body></html>

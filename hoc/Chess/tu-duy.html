@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chess Coach — Tư duy trước mỗi nước</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg-elevated:#ffffff;--bg-card:#ffffff;--bg-soft:#f3f5fb;
+  --border:#e4e9f2;--border-soft:#eef1f7;
+  --text:#1a2233;--text-soft:#4e5a74;--text-dim:#6b7691;
+  --accent:#2f6fed;--accent-2:#2258c8;--cyan:#0fb6d4;
+  --danger:#d64545;--danger-soft:rgba(214,69,69,.08);--danger-bd:rgba(214,69,69,.22);
+  --good:#0e9f6e;--good-soft:rgba(14,159,110,.08);--good-bd:rgba(14,159,110,.22);
+  --serif:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+  --mono:ui-monospace,Menlo,Consolas,monospace;
+  --shadow:0 1px 2px rgba(23,32,56,.06),0 12px 32px rgba(23,32,56,.10);
+}
+html{scroll-behavior:smooth}
+body{font-family:var(--sans);color:var(--text);line-height:1.65;font-size:16px;min-height:100vh;
+  background:radial-gradient(1200px 600px at 85% -10%,rgba(47,111,237,.14),transparent 60%),radial-gradient(1000px 640px at -10% 30%,rgba(15,182,212,.09),transparent 55%),linear-gradient(#f7f9fe,#edf0f8) fixed;}
+.topbar{max-width:1000px;margin:0 auto;padding:18px 24px 0;display:flex;gap:20px;font-size:13px;font-weight:600;flex-wrap:wrap}
+.topbar a{color:var(--text-soft);text-decoration:none;padding-bottom:5px;border-bottom:2px solid transparent;transition:.15s}
+.topbar a:hover{color:var(--accent)}
+.topbar a.active{color:var(--accent);border-bottom-color:var(--accent)}
+.hero{padding:52px 32px 40px;text-align:center;position:relative}
+.hero-eyebrow{font-size:12px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);margin-bottom:16px}
+.hero h1{font-weight:800;font-size:clamp(36px,6vw,56px);line-height:1.05;letter-spacing:-.035em;color:var(--text)}
+.hero h1 em{font-style:normal;color:inherit}
+.hero-sub{font-size:clamp(16px,2vw,19px);color:var(--text-soft);max-width:680px;margin:16px auto 0;line-height:1.6}
+.hero-sub em{font-style:italic;color:inherit}
+.content{max-width:1000px;margin:0 auto;padding:36px 24px 90px}
+.section-eyebrow{font-size:12px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin-bottom:8px}
+.section-h2{font-weight:800;font-size:clamp(24px,4vw,32px);letter-spacing:-.025em;line-height:1.15;color:var(--text);margin-bottom:10px}
+.section-h2 em{font-style:normal;color:inherit}
+.section-lead{font-size:16px;color:var(--text-soft);max-width:760px;margin-bottom:30px;line-height:1.6}
+.block{margin-top:64px}.block:first-child{margin-top:0}
+/* loop */
+.loop{display:grid;gap:14px}
+.step{background:linear-gradient(160deg,#fff,#f3f5fb);border:1px solid var(--border);border-left:4px solid var(--accent);border-radius:14px;padding:22px 26px;box-shadow:0 1px 2px rgba(23,32,56,.05)}
+.step-head{display:flex;align-items:baseline;gap:14px;margin-bottom:8px;flex-wrap:wrap}
+.step-num{font-family:var(--mono);font-size:12px;font-weight:600;letter-spacing:.1em;color:#fff;background:var(--accent);border-radius:7px;padding:3px 9px}
+.step-title{font-weight:800;font-size:20px;letter-spacing:-.02em;color:var(--text)}.step-title em{font-style:normal;color:inherit}
+.step-key{margin-left:auto;font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--text-dim)}
+.step-body{color:var(--text-soft);font-size:15px}
+.step-body ul{list-style:none;margin-top:8px;display:grid;gap:5px}
+.step-body li{padding-left:20px;position:relative}
+.step-body li::before{content:'▸';position:absolute;left:0;color:var(--accent);font-size:12px;top:2px}
+.step-ask{font-weight:600;color:var(--text);font-size:16px}
+.mnemo{margin-top:22px;padding:18px 22px;border-radius:12px;background:rgba(47,111,237,.07);border:1px solid rgba(47,111,237,.20);display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+.mnemo b{font-family:var(--mono);font-size:13px;letter-spacing:.1em;color:var(--accent-2)}
+.mnemo span{color:var(--text-soft);font-size:14px}
+/* phase tabs */
+.tabs{display:flex;gap:8px;margin-bottom:26px;flex-wrap:wrap}
+.tab{font-family:var(--sans);font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:9px 18px;border-radius:999px;border:1px solid var(--border);background:#fff;color:var(--text-soft);cursor:pointer;transition:.15s}
+.tab:hover{color:var(--accent);border-color:var(--accent)}
+.tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.panel{display:none;animation:fade .25s ease}.panel.active{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.phase-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media (max-width:760px){.phase-grid{grid-template-columns:1fr}}
+.card{background:linear-gradient(160deg,#fff,#f3f5fb);border:1px solid var(--border);border-radius:14px;padding:22px 24px;box-shadow:0 1px 2px rgba(23,32,56,.05)}
+.card h4{font-weight:800;font-size:18px;margin-bottom:4px;letter-spacing:-.02em;color:var(--text)}
+.card .card-sub{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--text-dim);margin-bottom:14px}
+.card ul{list-style:none;display:grid;gap:8px}
+.card li{padding-left:22px;position:relative;font-size:15px;color:var(--text-soft)}
+.card li::before{content:'▸';position:absolute;left:0;color:var(--accent);top:1px;font-size:12px}
+.card li b{color:var(--text);font-weight:700}
+.card.danger{border-color:var(--danger-bd);background:var(--danger-soft)}
+.card.danger h4{color:var(--danger)}.card.danger li::before{content:'✕';color:var(--danger);font-size:11px}
+.card.good{border-color:var(--good-bd);background:var(--good-soft)}
+.card.good h4{color:var(--good)}.card.good li::before{content:'✓';color:var(--good);font-size:12px}
+.card.wide{grid-column:1 / -1}
+.chk{display:grid;gap:8px}
+.chk .row{display:flex;gap:12px;align-items:flex-start;padding:12px 14px;background:var(--bg-soft);border:1px solid var(--border-soft);border-radius:9px}
+.chk .q{font-family:var(--mono);font-size:11px;color:var(--accent);font-weight:600;letter-spacing:.05em;padding-top:2px;white-space:nowrap}
+.chk .t{font-size:15px;color:var(--text-soft)}.chk .t b{color:var(--text)}
+/* quick (dark navy) */
+.quick{background:#141a2b;color:#e7ecf6;border-radius:16px;padding:30px 30px 26px;box-shadow:0 20px 50px rgba(20,26,43,.28);border:1px solid #232c45}
+.quick .qh{font-family:var(--mono);font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:#5fd3ea;margin-bottom:18px}
+.quick-grid{display:grid;grid-template-columns:1fr 1fr;gap:26px}
+@media (max-width:760px){.quick-grid{grid-template-columns:1fr;gap:20px}}
+.quick h5{font-weight:800;font-size:17px;color:#fff;margin-bottom:10px;letter-spacing:-.01em}
+.quick ol{list-style:none;counter-reset:q;display:grid;gap:7px}
+.quick ol li{counter-increment:q;padding-left:30px;position:relative;font-size:14px;color:#c3cbde}
+.quick ol li::before{content:counter(q);position:absolute;left:0;top:0;width:20px;height:20px;border-radius:50%;background:linear-gradient(135deg,#2f6fed,#0fb6d4);color:#fff;font-family:var(--mono);font-size:11px;font-weight:600;display:flex;align-items:center;justify-content:center}
+.quick ul{list-style:none;display:grid;gap:6px}
+.quick ul li{padding-left:18px;position:relative;font-size:14px;color:#c3cbde}
+.quick ul li::before{content:'·';position:absolute;left:4px;color:#5fd3ea;font-weight:700}
+.quick kbd{font-family:var(--mono);font-size:12px;background:#20293f;border:1px solid #313c58;border-radius:5px;padding:1px 7px;color:#9fd8e8}
+/* trainer */
+.trainer{background:#fff;border:1px solid var(--border);border-radius:16px;padding:26px;box-shadow:0 1px 2px rgba(23,32,56,.05)}
+.trainer-top{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:18px;flex-wrap:wrap}
+.deck-pick{display:flex;gap:6px;flex-wrap:wrap}
+.deck-pick button{font-family:var(--sans);font-size:11px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;padding:7px 13px;border-radius:999px;border:1px solid var(--border);background:var(--bg-soft);color:var(--text-soft);cursor:pointer;transition:.15s}
+.deck-pick button:hover{color:var(--accent);border-color:var(--accent)}
+.deck-pick button.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.progress-wrap{flex:1;min-width:180px}
+.progress-label{font-family:var(--mono);font-size:11px;color:var(--text-dim);letter-spacing:.06em;margin-bottom:6px;display:flex;justify-content:space-between}
+.bar{height:8px;background:var(--bg-soft);border-radius:99px;overflow:hidden;border:1px solid var(--border-soft)}
+.bar>i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),var(--cyan));width:0%;transition:width .35s ease}
+.flash{position:relative;border:1px solid var(--border);border-radius:14px;background:var(--bg-soft);min-height:220px;padding:30px;display:flex;flex-direction:column;justify-content:center;text-align:center;cursor:pointer;user-select:none;transition:border-color .15s}
+.flash:hover{border-color:var(--accent)}
+.flash .tagline{font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--text-dim);position:absolute;top:14px;left:0;right:0}
+.flash .cue{font-weight:800;font-size:clamp(19px,3vw,25px);line-height:1.35;color:var(--text);letter-spacing:-.01em}
+.flash .cue em{font-style:normal;color:inherit}
+.flash .ans{margin-top:18px;font-size:16px;color:var(--text-soft);line-height:1.65;border-top:1px dashed var(--border);padding-top:18px;text-align:left}
+.flash .ans b{color:var(--text)}
+.flash .hint{margin-top:14px;font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--text-dim)}
+.flash-actions{display:flex;gap:10px;margin-top:16px}
+.flash-actions button{flex:1;font-family:var(--sans);font-size:14px;font-weight:700;padding:13px;border-radius:10px;border:1px solid var(--border);cursor:pointer;transition:.15s}
+.btn-again{background:var(--danger-soft);border-color:var(--danger-bd);color:var(--danger)}
+.btn-again:hover{background:rgba(214,69,69,.14)}
+.btn-got{background:var(--good-soft);border-color:var(--good-bd);color:var(--good)}
+.btn-got:hover{background:rgba(14,159,110,.16)}
+.trainer-foot{display:flex;justify-content:space-between;align-items:center;margin-top:16px;flex-wrap:wrap;gap:10px}
+.trainer-foot .meta{font-family:var(--mono);font-size:11px;color:var(--text-dim);letter-spacing:.04em}
+.linkbtn{background:none;border:none;font-family:var(--mono);font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:var(--text-dim);cursor:pointer;text-decoration:underline}
+.linkbtn:hover{color:var(--accent)}
+.done-banner{text-align:center;padding:30px}
+.done-banner .big{font-weight:800;font-size:24px;color:var(--good);margin-bottom:8px;letter-spacing:-.02em}
+.note{margin-top:64px;padding:22px 26px;background:var(--bg-soft);border:1px solid var(--border);border-radius:14px;font-size:14px;color:var(--text-soft)}
+.note b{color:var(--text)}
+.foot{text-align:center;margin-top:44px;font-family:var(--mono);font-size:11px;letter-spacing:.08em;color:var(--text-dim)}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <a href="index.html#endgame">♔ ENDGAME</a>
+  <a href="index.html#middle">♞ MIDDLEGAME</a>
+  <a href="index.html#opening">♙ OPENING</a>
+  <a href="tu-duy.html" class="active">🧠 TƯ DUY</a>
+  <a href="ky-thu.html">♟ KỲ THỦ</a>
+</div>
+
+<header class="hero">
+  <div class="hero-eyebrow">Chess Coach · Clear Thought</div>
+  <h1>Nghĩ gì <em>trước mỗi nước</em></h1>
+  <p class="hero-sub">Không phải học nước đi — mà luyện <em>quy trình</em> chạy trong đầu mỗi lượt, đến khi thành phản xạ. Vào trận, thời gian ít, tư duy phải sạch.</p>
+</header>
+
+<div class="content">
+
+  <!-- ============ BLOCK 1: THE LOOP ============ -->
+  <section class="block">
+    <div class="section-eyebrow">Lõi · dùng ở mọi giai đoạn</div>
+    <h2 class="section-h2">Vòng lặp <em>mỗi nước</em></h2>
+    <p class="section-lead">Chạy đúng 5 bước này, đúng thứ tự, mỗi lượt. Nhanh dần theo thời gian — nhưng không bỏ bước 1 và bước 5, đó là hai bước cứu bạn khỏi thua.</p>
+
+    <div class="loop">
+      <div class="step">
+        <div class="step-head"><span class="step-num">1</span><span class="step-title">Đối thủ vừa <em>làm gì?</em></span><span class="step-key">phản ứng, đừng bỏ qua</span></div>
+        <div class="step-body">
+          <p class="step-ask">"Nước vừa rồi của họ <b>chiếu / bắt / đe doạ</b> gì mới?"</p>
+          <ul>
+            <li>Nước đó có tạo đe doạ nào (ăn quân, chiếu hết, nĩa, ghim)?</li>
+            <li>Nó có <b>mở</b> đường cho quân nào không (đòn mở, tia xe/tượng vừa thông)?</li>
+            <li>Nó có <b>bỏ trống</b> ô nào, rời khỏi việc phòng thủ gì không?</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-head"><span class="step-num">2</span><span class="step-title">Thế cờ đang <em>cần gì?</em></span><span class="step-key">quét nhanh · prophylaxis khi cần</span></div>
+        <div class="step-body">
+          <p class="step-ask">"Ai đang tốt hơn, và vì sao?"</p>
+          <ul>
+            <li><b>An toàn Vua</b> — vua ai hở hơn? Đó thường là việc quan trọng nhất.</li>
+            <li><b>Vật chất</b> — đang hơn/kém quân? (đổi quân khi hơn, tránh đổi khi kém)</li>
+            <li><b>Quân tệ nhất của mình</b> — con nào đang không làm gì? Ghi nhớ nó cho bước 3.</li>
+            <li><b>Đối thủ đang MUỐN gì?</b> — nếu tới lượt họ, <b>kế hoạch</b> mạnh nhất là gì (không chỉ đe doạ tức thời)? Có nước nào của tôi <b>chặn trước</b> không? <em>(phòng ngừa — prophylaxis; tầng 1500→1700, dùng ở khoảnh khắc then chốt chứ không phải mỗi nước)</em></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-head"><span class="step-num">3</span><span class="step-title">Nước <em>ứng viên</em></span><span class="step-key">2–3 nước, đừng cưới nước đầu</span></div>
+        <div class="step-body">
+          <p class="step-ask">"Có những nước nào đáng cân nhắc?"</p>
+          <ul>
+            <li>Liệt <b>2–3</b> nước, đừng đi ngay nước đầu tiên nghĩ ra.</li>
+            <li>Ưu tiên nước <b>forcing</b> theo thứ tự: <b>Chiếu → Bắt → Đe doạ</b> (CCT).</li>
+            <li>Nếu không có đòn — quay lại quân tệ nhất (bước 2) và cải thiện nó.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-head"><span class="step-num">4</span><span class="step-title"><em>Tính</em> hết mức cần</span><span class="step-key">tới khi thế "lặng"</span></div>
+        <div class="step-body">
+          <p class="step-ask">"Với mỗi ứng viên, đối thủ trả đòn <b>mạnh nhất</b> là gì?"</p>
+          <ul>
+            <li>Luôn tính <b>nước trả lời tốt nhất</b> của họ, không phải nước bạn mong họ đi.</li>
+            <li>Tính tới khi hết nước forcing — thế "lặng".</li>
+            <li>Ở <b>cuối mỗi biến</b> vừa tính (trong đầu), chạy lại <b>CCT</b> — đừng chỉ quét trên bàn thật.</li>
+            <li>Tới thế lặng: <b>đánh giá bằng lăng kính bước 2</b> rồi mới chọn. Nước forcing tính sâu; nước yên tĩnh chỉ cần chắc là an toàn.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="step" style="border-left-color:var(--danger);">
+        <div class="step-head"><span class="step-num" style="background:var(--danger);">5</span><span class="step-title">Chốt <em>an toàn</em> — trước khi thả tay</span><span class="step-key" style="color:var(--danger);">bước cứu mạng</span></div>
+        <div class="step-body">
+          <p class="step-ask">"Nếu tôi đi nước này, đối thủ có <b>chiếu / bắt / đe doạ</b> gì làm tôi sập không?"</p>
+          <ul>
+            <li>Nước mình định đi có <b>để hớ quân</b> nào (ô đó có được bảo vệ đủ)?</li>
+            <li>Có <b>dính nĩa, ghim, xiên, đòn mở</b> sau khi đi không?</li>
+            <li>Có <b>bỏ trống phòng thủ</b> (hàng cuối, ô quanh vua, con đang giữ chốt chặn)?</li>
+            <li>Chỉ khi trả lời <b>"không"</b> cho tất cả — mới đi.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="mnemo">
+      <b>NHỚ 3 CHỮ</b>
+      <span><b>C·C·T</b> = <b>Check</b> (chiếu) · <b>Capture</b> (bắt) · <b>Threat</b> (đe doạ). Quét CCT hai lần mỗi lượt: một lần cho <b>nước đối thủ vừa đi</b> (bước 1), một lần cho <b>nước mình sắp đi</b> (bước 5).</span>
+    </div>
+
+    <div class="card" style="margin-top:22px;">
+      <h4>Khi nào nghĩ lâu — <em style="color:var(--accent);font-style:italic;">khoảnh khắc then chốt</em></h4>
+      <div class="card-sub">chạy đủ 5 bước MỖI nước là bất khả thi trên đồng hồ — biết KHI NÀO mới là kỹ năng</div>
+      <p style="color:var(--text-soft);font-size:15px;margin-bottom:12px;">Đa số nước chỉ cần <b>bước 1 + bước 5</b>. Bung <b>full loop</b> chỉ ở khoảnh khắc then chốt:</p>
+      <ul>
+        <li>Trước một <b>vụ đổi quân lớn</b> hoặc sắp vào <b>tàn cuộc</b>.</li>
+        <li>Khi <b>cấu trúc tốt</b> sắp đổi (một bên đẩy tốt phá).</li>
+        <li>Có nước <b>forcing</b> — của mình hoặc của đối thủ.</li>
+        <li>Trước khi <b>cam kết một kế hoạch</b> dài.</li>
+        <li>Khi <b>đánh giá thế cờ đổi đột ngột</b> (vừa ăn/mất quân, vua vừa hở).</li>
+      </ul>
+      <p style="color:var(--text-soft);font-size:15px;margin-top:14px;padding-top:12px;border-top:1px solid var(--border-soft);"><b>Đường tắt liên tục:</b> bước 1 thấy <b>không có gì đổi</b> → tiếp tục kế hoạch đang chạy → nhảy thẳng <b>bước 5</b>. Không cần khởi động lại cả vòng mỗi nước.</p>
+    </div>
+  </section>
+
+  <!-- ============ BLOCK 2: PHASE TABS ============ -->
+  <section class="block">
+    <div class="section-eyebrow">Ưu tiên riêng từng giai đoạn</div>
+    <h2 class="section-h2">Ba <em>giai đoạn</em></h2>
+    <p class="section-lead">Vòng lặp trên không đổi. Nhưng câu hỏi "thế cờ cần gì?" (bước 2) có trọng số khác nhau tuỳ giai đoạn. Đây là bộ ưu tiên + dấu hiệu nguy hiểm cho mỗi giai đoạn.</p>
+
+    <div class="tabs">
+      <button class="tab active" data-tab="op">♙ Khai cuộc</button>
+      <button class="tab" data-tab="mi">♞ Trung cuộc</button>
+      <button class="tab" data-tab="en">♔ Tàn cuộc</button>
+    </div>
+
+    <!-- OPENING -->
+    <div class="panel active" id="op">
+      <div class="phase-grid">
+        <div class="card good">
+          <h4>Việc phải làm</h4>
+          <div class="card-sub">10–12 nước đầu · mục tiêu: ra quân xong &amp; vua an toàn</div>
+          <ul>
+            <li><b>Chiếm trung tâm</b> bằng tốt (e4/d4 hoặc c/d) — giành không gian trước.</li>
+            <li><b>Ra quân nhẹ nhanh</b>: hướng quân về ô tốt — ô tốt của Mã thường xác định sớm hơn Tượng; mỗi nước một quân mới.</li>
+            <li><b>Nhập thành sớm</b> — cất vua, nối xe.</li>
+            <li><b>Nối hai xe</b>: ra hết quân nhẹ + Hậu khỏi hàng cuối rồi tính chuyện tấn công.</li>
+            <li>Hướng quân về ô tốt <b>lâu dài</b>, đừng đặt tạm.</li>
+          </ul>
+        </div>
+        <div class="card danger">
+          <h4>Đừng làm</h4>
+          <div class="card-sub">những nước phí thời gian / tự làm yếu</div>
+          <ul>
+            <li><b>Đi một quân hai lần</b> khi chưa ra hết quân khác.</li>
+            <li><b>Ra Hậu sớm</b> — bị quân nhẹ đối phương đuổi, mất tempo.</li>
+            <li><b>Đẩy tốt cánh</b> vô cớ (đặc biệt tốt trước vua) khi chưa phát triển xong.</li>
+            <li><b>Tham ăn tốt</b> (nhất là tốt biên) mà bỏ phát triển → dẫn trước phát triển của đối thủ thành đòn tấn công.</li>
+            <li>Ghim mã mình rồi để tốt h/a phá ghim làm hỏng cấu trúc vô ích.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="card wide" style="margin-top:16px;">
+        <h4>3 câu tự hỏi mỗi nước khai cuộc</h4>
+        <div class="card-sub">nếu nước đang tính không trả lời "có" cho câu nào — cân nhắc lại</div>
+        <div class="chk">
+          <div class="row"><span class="q">TRUNG TÂM</span><span class="t">Nước này <b>giành hoặc giữ</b> trung tâm chứ?</span></div>
+          <div class="row"><span class="q">PHÁT TRIỂN</span><span class="t">Nó đưa <b>một quân mới</b> vào cuộc, hay tiến gần nhập thành?</span></div>
+          <div class="row"><span class="q">AN TOÀN</span><span class="t">Sau nước này vua tôi vẫn an toàn, không mở đường cho đòn nào (vẫn chạy bước 5)?</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MIDDLEGAME -->
+    <div class="panel" id="mi">
+      <div class="phase-grid">
+        <div class="card good">
+          <h4>Tìm kế hoạch từ đâu</h4>
+          <div class="card-sub">không có đòn ép? → chơi theo tương quan (imbalances)</div>
+          <ul>
+            <li><b>Quân tệ nhất → cải thiện.</b> Câu hỏi vàng của trung cuộc: "con nào của tôi đang tệ nhất?" rồi làm nó tốt lên.</li>
+            <li><b>Ô yếu &amp; tiền đồn</b>: ô đối thủ không thể dùng tốt đuổi → đặt Mã vào đó.</li>
+            <li><b>Cột mở</b>: chiếm bằng xe; nhắm đột nhập hàng 7.</li>
+            <li><b>Cấu trúc tốt</b>: nhắm tốt cô lập / tốt lạc hậu / tốt đôi của đối thủ làm mục tiêu.</li>
+            <li><b>Chọn cánh để chơi</b>: tấn công ở nơi mình có nhiều quân/không gian hơn (thường là hướng mũi tốt chỉ).</li>
+          </ul>
+        </div>
+        <div class="card danger">
+          <h4>Dấu hiệu nguy hiểm</h4>
+          <div class="card-sub">thấy một trong số này → dừng, kiểm kỹ</div>
+          <ul>
+            <li>Vua mình <b>hở</b>: tốt chắn vua đã đẩy / bị đổi, hàng cuối trống.</li>
+            <li>Đối thủ dồn <b>nhiều quân</b> về phía vua mình — đếm quân công vs thủ.</li>
+            <li>Một quân của mình <b>bị ghim</b> hoặc <b>quá tải</b> (giữ hai việc cùng lúc).</li>
+            <li>Sắp đổi vào thế <b>tàn cuộc thua</b> (đọc trước cấu trúc tốt sau khi đổi hết).</li>
+            <li>Định tấn công khi <b>chưa an toàn</b> / chưa ra hết quân — dễ bị phản đòn trung tâm.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="card wide" style="margin-top:16px;">
+        <h4>Quy trình ra kế hoạch (khi thế "lặng")</h4>
+        <div class="card-sub">dùng khi không có nước forcing nào ở bước 3</div>
+        <div class="chk">
+          <div class="row"><span class="q">SO SÁNH</span><span class="t">Liệt <b>điểm mạnh của tôi vs điểm yếu của đối thủ</b> (vua, cấu trúc, quân mạnh/yếu, không gian, cột mở).</span></div>
+          <div class="row"><span class="q">CHỌN CÁNH</span><span class="t">Chơi ở nơi mình <b>ưu thế</b>. Đối thủ mạnh cánh vua thì mình tìm việc ở cánh hậu/trung tâm.</span></div>
+          <div class="row"><span class="q">QUÂN LÝ TƯỞNG</span><span class="t">Hình dung <b>thế đặt quân trong mơ</b> 3–4 nước tới, rồi đi nước đưa quân tệ nhất về gần thế đó.</span></div>
+          <div class="row"><span class="q">TRƯỚC KHI CÔNG</span><span class="t">Chỉ tấn công vua khi <b>vua mình an toàn</b> và mình có <b>đủ quân</b> tham gia đòn.</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ENDGAME -->
+    <div class="panel" id="en">
+      <div class="phase-grid">
+        <div class="card good">
+          <h4>Đảo ưu tiên</h4>
+          <div class="card-sub">luật tàn cuộc khác hẳn — Vua đổi vai</div>
+          <ul>
+            <li><b>Kích hoạt Vua.</b> Hết nguy chiếu hết → Vua thành quân tấn công mạnh, đẩy nó lên trung tâm.</li>
+            <li><b>Tốt thông phải đẩy</b> — nó là quân nguy hiểm nhất; nhưng có Vua/quân hỗ trợ.</li>
+            <li><b>Đối mặt (opposition)</b> trong tàn Vua–Tốt: giành đối mặt để lùa Vua đối thủ.</li>
+            <li><b>Xe sau tốt thông</b> (của mình và của đối thủ) — quy tắc Tarrasch.</li>
+            <li><b>Đổi quân, không đổi tốt</b> khi đang hơn quân; ngược lại khi kém.</li>
+          </ul>
+        </div>
+        <div class="card danger">
+          <h4>Bẫy thường sập</h4>
+          <div class="card-sub">tàn cuộc phạt nặng lỗi nhỏ</div>
+          <ul>
+            <li><b>Vội.</b> "Đừng vội" — củng cố tối đa, cải thiện từng chút trước khi phá.</li>
+            <li>Đổi về thế <b>hoà lý thuyết</b> khi đang thắng (vd sai màu Tượng + tốt biên).</li>
+            <li>Đẩy tốt <b>quá xa Vua</b> → bị chặn/bắt.</li>
+            <li>Quên <b>thí hoà</b> (stalemate) khi ép Vua đối thủ — cho họ nước đi.</li>
+            <li>Để Vua <b>bị động</b>; trong tàn cuộc Vua thụ động gần như thua.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="card wide" style="margin-top:16px;">
+        <h4>Checklist mỗi nước tàn cuộc</h4>
+        <div class="card-sub">chạy trước khi đi</div>
+        <div class="chk">
+          <div class="row"><span class="q">VUA</span><span class="t">Vua tôi đã <b>hoạt động</b> chưa? Có nước nào đưa nó lên tốt hơn không?</span></div>
+          <div class="row"><span class="q">TỐT THÔNG</span><span class="t">Ai có tốt thông? Nó có được <b>Vua/quân hộ tống</b> không? Xe đã ra <b>sau lưng</b> nó chưa?</span></div>
+          <div class="row"><span class="q">KHÔNG VỘI</span><span class="t">Có nước nào <b>cải thiện thế</b> mà không hỏng gì không? Nếu có, làm nó trước khi cam kết.</span></div>
+          <div class="row"><span class="q">HOÀ?</span><span class="t">Nước này có vô tình <b>thí hoà</b> đối thủ, hay để họ <b>chiếu mãi</b> không?</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ BLOCK 3: QUICK CARD ============ -->
+  <section class="block">
+    <div class="section-eyebrow">Liếc giữa ván</div>
+    <h2 class="section-h2">Thẻ <em>tra nhanh</em></h2>
+    <p class="section-lead">Bản rút gọn nhất — thuộc cái này là đủ để bắt đầu áp dụng ngay.</p>
+
+    <div class="quick">
+      <div class="qh">◎ Clear Thought — 1 màn hình</div>
+      <div style="background:rgba(15,182,212,0.14);border:1px solid rgba(15,182,212,0.35);border-radius:8px;padding:12px 16px;margin-bottom:22px;color:#dfe6f2;font-size:14px;line-height:1.55;"><b style="color:#5fd3ea;">⚡ Đa số nước = chỉ bước 1 + bước 5.</b> Bung cả 5 bước chỉ ở <b>khoảnh khắc then chốt</b> (đổi quân lớn · cấu trúc đổi · có forcing · trước khi cam kết kế hoạch).</div>
+      <div class="quick-grid">
+        <div>
+          <h5>Vòng lặp mỗi nước</h5>
+          <ol>
+            <li>Nước đối thủ vừa <b>chiếu/bắt/đe doạ</b> gì?</li>
+            <li>Ai tốt hơn? Quân nào tôi <b>tệ nhất</b>?</li>
+            <li>2–3 ứng viên — ưu tiên <b>Chiếu→Bắt→Đe doạ</b></li>
+            <li>Đối thủ trả đòn <b>mạnh nhất</b> là gì?</li>
+            <li><b>Trước khi đi:</b> tôi có để hớ / dính đòn gì không?</li>
+          </ol>
+        </div>
+        <div>
+          <h5>Trọng số theo giai đoạn</h5>
+          <ul>
+            <li><b>Khai cuộc</b> — trung tâm · ra quân · nhập thành. Đừng đi 1 quân 2 lần, đừng ra Hậu sớm.</li>
+            <li><b>Trung cuộc</b> — cải thiện <b>quân tệ nhất</b> · ô yếu · cột mở · an toàn vua. Chơi ở cánh mình mạnh.</li>
+            <li><b>Tàn cuộc</b> — <b>kích hoạt Vua</b> · đẩy tốt thông (có hộ tống) · xe sau tốt · đừng vội.</li>
+          </ul>
+        </div>
+      </div>
+      <div style="margin-top:22px;padding-top:16px;border-top:1px solid #2a3350;color:#b7c0d8;font-size:13px;line-height:1.55;"><b style="color:#5fd3ea;">⚠ Điều kiện tiên quyết:</b> khung chỉ tốt bằng vốn tactics của bạn — <b>giải puzzle mỗi ngày</b>, nếu không bước 5 vẫn "mù" đòn.</div>
+    </div>
+  </section>
+
+  <!-- ============ BLOCK 4: TRAINER ============ -->
+  <section class="block">
+    <div class="section-eyebrow">Luyện tới khi thành phản xạ</div>
+    <h2 class="section-h2">Luyện <em>phản xạ</em></h2>
+    <p class="section-lead">Đọc thì hiểu, nhưng vào trận mới quên. Che đáp án — tự trả lời trong đầu — lật ra kiểm. Card bạn "chưa nhớ" sẽ quay lại. Tiến độ tự lưu trên máy này.</p>
+
+    <div class="trainer">
+      <div class="trainer-top">
+        <div class="deck-pick" id="deckPick">
+          <button data-deck="all" class="active">Tất cả</button>
+          <button data-deck="loop">Vòng lặp</button>
+          <button data-deck="op">Khai cuộc</button>
+          <button data-deck="mi">Trung cuộc</button>
+          <button data-deck="en">Tàn cuộc</button>
+        </div>
+        <div class="progress-wrap">
+          <div class="progress-label"><span id="pLabel">Đã nhớ 0 / 0</span><span id="pPct">0%</span></div>
+          <div class="bar"><i id="pBar"></i></div>
+        </div>
+      </div>
+
+      <div id="cardArea">
+        <div class="flash" id="flash">
+          <div class="tagline" id="fTag">—</div>
+          <div class="cue" id="fCue">Bấm để bắt đầu</div>
+          <div class="ans" id="fAns" style="display:none;"></div>
+          <div class="hint" id="fHint">bấm vào thẻ để lật đáp án</div>
+        </div>
+        <div class="flash-actions" id="fActions" style="display:none;">
+          <button class="btn-again" id="btnAgain">Chưa nhớ ↻</button>
+          <button class="btn-got" id="btnGot">Nhớ được ✓</button>
+        </div>
+      </div>
+
+      <div class="trainer-foot">
+        <span class="meta" id="fMeta"></span>
+        <button class="linkbtn" id="btnReset">Xoá tiến độ bộ này</button>
+      </div>
+    </div>
+  </section>
+
+  <div class="note">
+    <b>Cách dùng hiệu quả:</b> mỗi ngày chạy bộ <b>Vòng lặp</b> 2–3 lượt tới khi trả lời không cần nghĩ, rồi mới sang từng giai đoạn. Quan trọng nhất là <b>bước 1</b> (đọc nước đối thủ) và <b>bước 5</b> (chốt an toàn) — hầu hết ván thua ở nghiệp dư là do bỏ hai bước này chứ không phải do thiếu kiến thức. Trang này cố ý <b>không dạy nước cụ thể</b>; muốn học nước/thế thì qua các tab Khai cuộc / Trung cuộc / Tàn cuộc ở trên.
+    <span style="display:block;margin-top:16px;padding-top:16px;border-top:1px solid var(--border);"><b>⚠ Khung này là HỆ ĐIỀU HÀNH — không phải toàn bộ.</b> Blunder-check (bước 5) chỉ bắt được cái nĩa / ghim / xiên nếu <b>mắt bạn đã quen mẫu đó</b>. Nó chỉ tốt bằng vốn tactics trong đầu. <b>Bắt buộc kèm: giải tactics puzzle mỗi ngày</b> (phần cứng) — thiếu vế này, khung tư duy chạy trên phần cứng hỏng: quét CCT mà vẫn không "thấy" đòn.</span>
+  </div>
+
+  <div class="foot">CHESS COACH · TƯ DUY · CLEAR THOUGHT — build v3 · 2026-07-18</div>
+
+</div>
+
+<script>
+/* ---------- Phase tabs ---------- */
+document.querySelectorAll('.tab').forEach(function(t){
+  t.addEventListener('click', function(){
+    document.querySelectorAll('.tab').forEach(function(x){ x.classList.remove('active'); });
+    document.querySelectorAll('.panel').forEach(function(x){ x.classList.remove('active'); });
+    t.classList.add('active');
+    document.getElementById(t.dataset.tab).classList.add('active');
+  });
+});
+
+/* ---------- Trainer ---------- */
+var DECK = {
+  loop: [
+    {q:'Đối thủ vừa đi một nước. Câu hỏi <em>đầu tiên</em> trong đầu bạn là gì?', a:'Nước đó vừa tạo ra <b>Chiếu / Bắt / Đe doạ</b> gì mới? — và nó có <b>mở đường</b> cho quân nào hoặc <b>bỏ trống</b> ô/nhiệm vụ phòng thủ nào không?'},
+    {q:'CCT là viết tắt của gì, và dùng khi nào?', a:'<b>Check · Capture · Threat</b> (Chiếu · Bắt · Đe doạ). Quét CCT <b>hai lần</b>: cho nước đối thủ vừa đi (bước 1) và cho nước mình sắp đi (bước 5).'},
+    {q:'Khi liệt nước ứng viên, bạn ưu tiên loại nước nào trước?', a:'Nước <b>forcing</b> theo thứ tự <b>Chiếu → Bắt → Đe doạ</b>. Liệt 2–3 ứng viên, đừng đi ngay nước đầu nghĩ ra.'},
+    {q:'Khi tính biến, bạn giả định đối thủ đi nước nào? Và kiểm gì ở cuối?', a:'Nước <b>trả lời tốt nhất</b> của họ — không phải nước bạn <em>mong</em> họ đi. Ở <b>cuối mỗi biến</b> chạy lại <b>CCT trong đầu</b> (không chỉ trên bàn thật); tính tới thế "lặng" rồi đánh giá bằng <b>lăng kính bước 2</b>.'},
+    {q:'Bước <em>cuối cùng</em> trước khi thả tay quân là gì?', a:'<b>Chốt an toàn (blunder-check):</b> nếu tôi đi nước này, đối thủ có Chiếu/Bắt/Đe doạ nào làm tôi sập không? Có để hớ quân, dính nĩa/ghim/đòn mở, bỏ trống hàng cuối không?'},
+    {q:'Hai bước nào của vòng lặp <em>không bao giờ</em> được bỏ, dù hết giờ?', a:'<b>Bước 1</b> (đọc nước đối thủ vừa đi) và <b>bước 5</b> (chốt an toàn). Đa số ván thua nghiệp dư là do bỏ hai bước này.'},
+    {q:'Không có nước forcing nào đáng chơi. Giờ bạn nghĩ gì?', a:'Quay về <b>quân tệ nhất của mình</b> (đã ghi nhớ ở bước 2) và tìm nước <b>cải thiện</b> nó / cải thiện thế cờ.'},
+    {q:'Ngoài đe doạ tức thời, tầng câu hỏi nào đưa bạn từ 1500 lên 1700?', a:'<b>Phòng ngừa (prophylaxis):</b> "Đối thủ đang MUỐN gì?" — nếu tới lượt họ, kế hoạch/nước mạnh nhất là gì, và có nước nào của tôi <b>chặn trước</b> việc đó không?'},
+    {q:'Chạy đủ 5 bước MỖI nước là bất khả thi. Vậy khi nào mới bung full loop?', a:'Ở <b>khoảnh khắc then chốt</b>: trước đổi quân lớn / vào tàn cuộc · cấu trúc tốt sắp đổi · có nước forcing · trước khi cam kết kế hoạch · khi đánh giá đổi đột ngột. Còn lại chỉ cần <b>bước 1 + bước 5</b>.'},
+    {q:'Vì sao chỉ học khung tư duy thôi là chưa đủ?', a:'Khung là <b>hệ điều hành</b>; blunder-check chỉ bắt được đòn nếu mắt đã quen mẫu. Phải kèm <b>giải tactics puzzle mỗi ngày</b> (phần cứng) — thiếu nó, quét CCT vẫn không "thấy" nĩa.'},
+  ],
+  op: [
+    {q:'Ba việc <em>phải</em> làm xong trong khai cuộc?', a:'<b>Chiếm trung tâm · Ra quân nhanh · Nhập thành</b> (cất vua, nối xe). Hướng quân về ô tốt (ô tốt của Mã thường rõ sớm hơn Tượng), mỗi nước một quân mới.'},
+    {q:'Vì sao <em>không</em> nên ra Hậu sớm?', a:'Hậu bị quân nhẹ đối phương <b>đuổi</b>, mỗi lần chạy là mất một nước phát triển (tempo) → đối thủ ra quân miễn phí.'},
+    {q:'Đối thủ đề nghị cho bạn ăn một tốt biên trong khai cuộc. Nghĩ gì?', a:'Cẩn thận <b>tham tốt bỏ phát triển</b>: đối thủ dùng thời gian đó ra quân, <b>dẫn trước phát triển</b> có thể thành đòn tấn công. Chỉ ăn nếu chắc an toàn.'},
+    {q:'Ba câu tự hỏi cho mỗi nước khai cuộc?', a:'<b>Trung tâm</b> (nước này giành/giữ trung tâm?) · <b>Phát triển</b> (đưa quân mới vào cuộc / tiến gần nhập thành?) · <b>An toàn</b> (vua vẫn an toàn, không mở đòn?).'},
+    {q:'Khi nào được đi <em>một quân hai lần</em> trong khai cuộc?', a:'Nói chung là <b>tránh</b> khi chưa ra hết quân — trừ khi để ăn quân, né mất quân, hoặc chiếm ô rõ ràng tốt hơn. Mặc định: ra quân mới trước.'},
+    {q:'"Nối xe" nghĩa là gì và vì sao là mốc kết thúc khai cuộc?', a:'Hai xe <b>nhìn thấy nhau</b> trên hàng cuối (đã ra hết quân nhẹ + Hậu rời hàng cuối + nhập thành). Đó là dấu hiệu đã phát triển xong, sẵn sàng vào kế hoạch trung cuộc.'},
+  ],
+  mi: [
+    {q:'Câu hỏi <em>vàng</em> của trung cuộc khi không có đòn ép?', a:'"<b>Quân nào của tôi đang tệ nhất?</b>" → rồi tìm nước làm nó tốt lên. Cải thiện quân tệ nhất là kế hoạch mặc định luôn đúng.'},
+    {q:'Tiền đồn (outpost) là gì, đặt quân gì vào?', a:'Ô mà <b>tốt đối thủ không thể đuổi</b> (không còn tốt kiểm soát ô đó), nằm sâu trong thế địch. Đặt <b>Mã</b> vào — mạnh nhất.'},
+    {q:'Bạn tấn công ở cánh nào?', a:'Cánh mình có <b>nhiều quân / không gian hơn</b> — thường là hướng <b>mũi tốt chỉ</b>. Đối thủ mạnh cánh vua thì mình tìm việc ở cánh hậu / trung tâm.'},
+    {q:'Điều kiện <em>trước khi</em> mở đòn tấn công vua?', a:'<b>Vua mình đã an toàn</b> và mình có <b>đủ quân tham gia</b> đòn. Tấn công khi chưa ra hết quân dễ ăn phản đòn trung tâm.'},
+    {q:'Kể vài "dấu hiệu nguy hiểm" buộc bạn dừng kiểm kỹ?', a:'Vua mình hở (tốt chắn đã đẩy/đổi, hàng cuối trống) · đối thủ dồn nhiều quân về vua mình · quân mình bị <b>ghim</b> hoặc <b>quá tải</b> · sắp đổi vào tàn cuộc thua.'},
+    {q:'"Quân quá tải" (overloaded) là gì?', a:'Một quân đang gánh <b>hai nhiệm vụ phòng thủ</b> cùng lúc. Đánh vào một nhiệm vụ → nó buộc rời nhiệm vụ kia → bạn thắng ở đó.'},
+    {q:'Cột mở dùng để làm gì?', a:'Đặt <b>xe</b> chiếm cột → nhắm <b>đột nhập hàng 7</b> (hàng 2 của đối thủ), nơi xe ăn tốt và trói vua.'},
+  ],
+  en: [
+    {q:'Thay đổi tư duy <em>lớn nhất</em> khi vào tàn cuộc?', a:'<b>Vua đổi vai</b>: hết nguy chiếu hết, Vua thành <b>quân tấn công mạnh</b> → kích hoạt, đẩy lên trung tâm. Vua thụ động trong tàn cuộc gần như thua.'},
+    {q:'Có tốt thông — làm gì với nó?', a:'<b>Đẩy</b> (nó là quân nguy hiểm nhất) nhưng phải có <b>Vua/quân hộ tống</b>; đừng đẩy quá xa Vua kẻo bị chặn/bắt.'},
+    {q:'Quy tắc Tarrasch về xe và tốt thông?', a:'<b>Xe đặt sau lưng tốt thông</b> — cả tốt của mình (để đẩy) lẫn tốt của đối thủ (để chặn). Xe càng đẩy tốt càng mạnh, xe chặn trước tốt càng bị động.'},
+    {q:'Đang <em>hơn quân</em> — đổi tốt hay đổi quân?', a:'<b>Đổi quân, giữ tốt</b> (đơn giản hoá về thế thắng dễ). Khi <b>kém quân</b> thì ngược lại: giữ quân, tránh đổi để còn cơ hội phản đòn / cầu hoà.'},
+    {q:'"Đừng vội" nghĩa là gì trong tàn cuộc?', a:'Trước khi phá thế, <b>củng cố tối đa</b> — cải thiện từng chút (Vua, quân, tốt) tới thế tối ưu rồi mới ra đòn quyết định. Tàn cuộc phạt nặng lỗi vội.'},
+    {q:'Đang ép Vua đối thủ vào góc — rủi ro gì phải nhớ?', a:'<b>Thí hoà (stalemate)</b>: nếu Vua họ hết nước đi hợp lệ mà <b>không bị chiếu</b> → hoà. Luôn chừa cho họ một nước, hoặc tính kỹ trước khi vây kín.'},
+    {q:'Trong tàn Vua–Tốt, "đối mặt" (opposition) để làm gì?', a:'Hai Vua đứng đối nhau cách một ô, <b>bên tới lượt phải nhường</b>. Giành đối mặt để <b>lùa Vua đối thủ</b> khỏi ô phòng thủ, mở đường cho tốt phong hậu.'},
+  ]
+};
+
+var LSKEY = 'chess:tuduy:v1';
+var known = {};   // id -> true
+try { known = JSON.parse(localStorage.getItem(LSKEY) || '{}') || {}; } catch(e){ known = {}; }
+function save(){ try { localStorage.setItem(LSKEY, JSON.stringify(known)); } catch(e){} }
+
+var curDeck = 'all';
+var queue = [];        // ids còn phải học lượt này
+var cur = null;        // id đang hiện
+var flipped = false;
+
+function idOf(deck, i){ return deck + ':' + i; }
+function allCards(){
+  var out = [];
+  var decks = curDeck === 'all' ? ['loop','op','mi','en'] : [curDeck];
+  decks.forEach(function(d){
+    DECK[d].forEach(function(c, i){ out.push({id: idOf(d,i), deck:d, q:c.q, a:c.a}); });
+  });
+  return out;
+}
+function labelOf(d){ return {loop:'Vòng lặp', op:'Khai cuộc', mi:'Trung cuộc', en:'Tàn cuộc'}[d]; }
+
+function refreshProgress(){
+  var cards = allCards();
+  var total = cards.length;
+  var got = cards.filter(function(c){ return known[c.id]; }).length;
+  var pct = total ? Math.round(got/total*100) : 0;
+  document.getElementById('pLabel').textContent = 'Đã nhớ ' + got + ' / ' + total;
+  document.getElementById('pPct').textContent = pct + '%';
+  document.getElementById('pBar').style.width = pct + '%';
+}
+
+function buildQueue(){
+  // ưu tiên card chưa nhớ; nếu nhớ hết thì cho ôn lại toàn bộ
+  var cards = allCards();
+  var todo = cards.filter(function(c){ return !known[c.id]; });
+  if (todo.length === 0) todo = cards.slice();
+  // shuffle (Fisher-Yates)
+  for (var i = todo.length - 1; i > 0; i--){
+    var j = Math.floor(Math.random() * (i+1));
+    var t = todo[i]; todo[i] = todo[j]; todo[j] = t;
+  }
+  queue = todo;
+}
+
+function findCard(id){
+  var d = id.split(':')[0], i = parseInt(id.split(':')[1],10);
+  return DECK[d][i];
+}
+
+function showNext(){
+  refreshProgress();
+  if (queue.length === 0){
+    document.getElementById('cardArea').innerHTML =
+      '<div class="flash"><div class="done-banner"><div class="big">Xong lượt này ✓</div>' +
+      '<div style="color:var(--text-soft)">Bạn đã đi hết bộ. Bấm bên dưới để ôn lại.</div>' +
+      '<div style="margin-top:16px"><button class="btn-got" style="padding:11px 20px;border-radius:9px;cursor:pointer" id="btnRedo">Ôn lại lượt mới ↻</button></div></div></div>';
+    document.getElementById('btnRedo').addEventListener('click', function(){ startDeck(curDeck, true); });
+    document.getElementById('fMeta').textContent = '';
+    return;
+  }
+  cur = queue[0].id;
+  var c = findCard(cur);
+  flipped = false;
+  document.getElementById('cardArea').innerHTML =
+    '<div class="flash" id="flash">' +
+      '<div class="tagline" id="fTag">' + labelOf(cur.split(':')[0]) + '</div>' +
+      '<div class="cue" id="fCue">' + c.q + '</div>' +
+      '<div class="ans" id="fAns" style="display:none;">' + c.a + '</div>' +
+      '<div class="hint" id="fHint">bấm vào thẻ để lật đáp án</div>' +
+    '</div>' +
+    '<div class="flash-actions" id="fActions" style="display:none;">' +
+      '<button class="btn-again" id="btnAgain">Chưa nhớ ↻</button>' +
+      '<button class="btn-got" id="btnGot">Nhớ được ✓</button>' +
+    '</div>';
+  document.getElementById('flash').addEventListener('click', flip);
+  document.getElementById('fMeta').textContent = 'Còn ' + queue.length + ' thẻ trong lượt';
+  bindActions();
+}
+
+function flip(){
+  if (flipped) return;
+  flipped = true;
+  document.getElementById('fAns').style.display = 'block';
+  document.getElementById('fHint').style.display = 'none';
+  document.getElementById('fActions').style.display = 'flex';
+}
+
+function bindActions(){
+  var g = document.getElementById('btnGot'), a = document.getElementById('btnAgain');
+  if (g) g.addEventListener('click', function(e){ e.stopPropagation(); known[cur] = true; save(); queue.shift(); showNext(); });
+  if (a) a.addEventListener('click', function(e){ e.stopPropagation(); delete known[cur]; save(); var f = queue.shift(); queue.push(f); showNext(); });
+}
+
+function startDeck(deck, keepKnown){
+  curDeck = deck;
+  buildQueue();
+  showNext();
+}
+
+document.querySelectorAll('#deckPick button').forEach(function(b){
+  b.addEventListener('click', function(){
+    document.querySelectorAll('#deckPick button').forEach(function(x){ x.classList.remove('active'); });
+    b.classList.add('active');
+    startDeck(b.dataset.deck, false);
+  });
+});
+
+document.getElementById('btnReset').addEventListener('click', function(){
+  var decks = curDeck === 'all' ? ['loop','op','mi','en'] : [curDeck];
+  allCards().forEach(function(c){ delete known[c.id]; });
+  save(); startDeck(curDeck, false);
+});
+
+// initial: click-to-start on the first static card
+document.getElementById('flash').addEventListener('click', function(){ startDeck('all', false); });
+refreshProgress();
+</script>
+
+</body>
+</html>

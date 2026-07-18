@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="vi"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Options, Futures, and Other Derivatives — Hull — Hiểu sâu theo Feynman</title>
+<style>
+  /* Design tokens shared with ebook-to-study-html (styles_v2.css) */
+  :root{
+    --bg:#fafaf7; --bg-elevated:#ffffff; --bg-soft:#f3f3ee;
+    --border:#e0e0d8; --border-soft:#ececea; --border-strong:#d2c8b6;
+    --ink:#1a1a1f; --ink-soft:#3f3f4a; --muted:#7a7a85;
+    --accent:#2f6fed; --accent-2:#2258c8; --gold:#0fb6d4; --gap:#2258c8;
+    --serif:"Fraunces",Georgia,"Iowan Old Style",serif;
+    --sans:"Geist",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    --mono:"Geist Mono","JetBrains Mono",Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:var(--sans);
+    font-size:19px;line-height:1.72;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}
+  .progress{position:fixed;top:0;left:0;height:3px;width:0;z-index:50;
+    background:linear-gradient(90deg,var(--gold),var(--accent));transition:width .08s linear}
+  .wrap{max-width:920px;margin:0 auto;padding:0 36px}
+  .rise{opacity:0;transform:translateY(14px);animation:rise .7s cubic-bezier(.2,.7,.3,1) forwards}
+  @keyframes rise{to{opacity:1;transform:none}}
+
+  header{padding:104px 0 60px;border-bottom:1px solid var(--border)}
+  .kicker{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.18em;
+    text-transform:uppercase;color:var(--accent);margin-bottom:26px}
+  h1{font-family:var(--serif);font-weight:600;font-size:clamp(42px,7.6vw,72px);
+    line-height:1.0;letter-spacing:-.022em;margin-bottom:28px;font-optical-sizing:auto;color:var(--ink)}
+  h1 em{font-style:italic;color:var(--accent)}
+  .core{font-family:var(--serif);font-style:italic;font-weight:400;
+    font-size:clamp(21px,3.6vw,27px);line-height:1.44;color:var(--ink-soft)}
+  .core span{font-style:normal;font-weight:600;color:var(--accent-2);
+    box-shadow:inset 0 -.5em 0 rgba(47,111,237,.16)}
+
+  /* ---- BƯỚC 0: ANCHOR (state the rule + plan before explaining) ---- */
+  .anchor .rule{font-family:var(--serif);font-size:19px;line-height:1.5;color:var(--ink);
+    background:var(--bg-soft);border-left:3px solid var(--accent);
+    padding:18px 24px;border-radius:0 4px 4px 0;margin:0}
+  .anchor .rule em{font-style:italic;color:var(--accent-2)}
+  .anchor .rule strong{color:var(--ink);font-weight:600}
+  .anchor .approach{color:var(--ink-soft)}
+
+  section{padding:72px 0;border-bottom:1px solid var(--border);position:relative}
+  .step-head{display:flex;align-items:flex-start;gap:22px;margin-bottom:34px}
+  .big-num{font-family:var(--serif);font-weight:700;font-size:62px;line-height:.8;
+    color:var(--border-strong);flex:none;font-optical-sizing:auto;letter-spacing:-.03em}
+  .step-meta{padding-top:4px}
+  .lbl{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--accent);display:block;margin-bottom:10px}
+  h2{font-family:var(--serif);font-weight:600;font-size:clamp(27px,4.4vw,37px);
+    line-height:1.12;letter-spacing:-.012em;color:var(--ink)}
+  h2 em{font-style:italic;color:var(--accent)}
+  p{margin-bottom:21px}
+  p:last-child{margin-bottom:0}
+  strong{font-weight:600;color:var(--ink)}
+  em{font-style:italic;color:var(--accent-2)}
+  .gloss{color:var(--muted);font-style:italic}
+
+  .lead::first-letter{font-family:var(--serif);font-weight:700;float:left;
+    font-size:74px;line-height:.74;padding:8px 12px 0 0;color:var(--accent)}
+
+  .sub{font-family:var(--serif);font-weight:600;font-size:17px;letter-spacing:.01em;
+    color:var(--ink);margin:34px 0 14px;display:flex;align-items:center;gap:11px}
+  .sub::before{content:"";width:18px;height:2px;background:var(--accent);flex:none;border-radius:2px}
+
+  .gaps{background:var(--bg-soft)}
+  .gaps .big-num{color:#e2d6b4}
+  .gaps .lbl{color:var(--gap)}
+  .gap-q{margin:0 0 30px;padding-left:24px;border-left:2px solid var(--border-strong)}
+  .gap-q:last-child{margin-bottom:0}
+  .gap-q .q{font-family:var(--serif);font-style:italic;font-weight:500;
+    font-size:22px;line-height:1.35;color:var(--gap);margin-bottom:12px;display:block}
+  .gap-q p:last-child{margin-bottom:0}
+
+  .analogy-card{border:1px solid #e8c876;border-radius:4px;padding:30px 32px;margin:8px 0 28px;
+    background:linear-gradient(135deg,#fef9ed 0%,#fdf3e0 100%)}
+  .analogy-card .tag{font-family:var(--mono);font-weight:600;font-size:11px;
+    letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin-bottom:16px;display:block}
+  .analogy-card p{color:#5a4810}
+  .analogy-card strong{color:var(--accent-2)}
+  .limit{font-size:17px;line-height:1.6;color:#5a4810;
+    border-top:1px solid #e8c876;padding-top:20px;margin-top:22px}
+  .limit b{color:var(--accent-2);font-weight:600;font-family:var(--serif)}
+
+  .retell{background:linear-gradient(180deg,var(--bg-soft) 0%,var(--bg) 100%);border-bottom:none}
+  .retell h2{color:var(--ink)}
+  .retell strong{color:var(--accent-2)}
+  .retell .core{margin-top:6px}
+  .testbox{border:1px solid var(--border);background:var(--bg-elevated);
+    border-radius:4px;padding:28px 32px;margin-top:40px;box-shadow:0 1px 2px rgba(0,0,0,.03)}
+  .testbox h3{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--accent);margin-bottom:20px}
+  .testbox ol{margin:0;padding-left:22px;counter-reset:t}
+  .testbox li{margin-bottom:16px;color:var(--ink-soft);padding-left:6px}
+  .testbox li:last-child{margin-bottom:0}
+
+  footer{text-align:center;padding:60px 0 88px}
+  footer .mark{font-family:var(--serif);font-weight:700;color:var(--accent);
+    font-size:26px;display:block;margin-bottom:14px}
+  footer p{font-family:var(--serif);font-style:italic;color:var(--muted);font-size:17px;max-width:380px;margin:0 auto}
+
+  @media(max-width:560px){
+    body{font-size:18px}
+    header{padding:70px 0 44px}
+    section{padding:52px 0}
+    .step-head{gap:16px}
+    .big-num{font-size:46px}
+    .lead::first-letter{font-size:60px}
+  }
+
+/* ===== FLAMINDI THEME OVERRIDE (dong bo trang chu flamindi.com) ===== */
+:root{
+  --accent:#2f6fed;--accent-2:#2258c8;--accent2:#2258c8;--gold:#0fb6d4;--cyan:#0fb6d4;--blue:#2f6fed;
+  --bg:#f7f9fe;--bg-elevated:#ffffff;--bg-card:#ffffff;--card:#ffffff;--bg-soft:#eef2fb;--soft:#eef2fb;
+  --border:#e4e9f2;--border-soft:#eef1f7;--border-strong:#cfd8e8;
+  --text:#1a2233;--text-soft:#4e5a74;--text-dim:#6b7691;
+  --ink:#1a2233;--ink-soft:#4e5a74;--muted:#6b7691;--soft-t:#4e5a74;--dim:#6b7691;
+  --serif:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+  --mono:ui-monospace,Menlo,Consolas,monospace;
+}
+body{background:radial-gradient(1200px 600px at 85% -10%,rgba(47,111,237,.14),transparent 60%),radial-gradient(1000px 640px at -10% 30%,rgba(15,182,212,.09),transparent 55%),linear-gradient(#f7f9fe,#edf0f8) fixed !important;}
+</style>
+<style>
+ .tabbar{position:fixed;top:0;left:0;right:0;width:100%;box-sizing:border-box;z-index:40;background:rgba(250,250,247,.93);
+   backdrop-filter:saturate(1.1) blur(8px);-webkit-backdrop-filter:saturate(1.1) blur(8px);
+   border-bottom:1px solid var(--border);display:flex;gap:6px;overflow-x:auto;
+   padding:10px max(36px,calc((100% - 992px)/2));scrollbar-width:thin}
+ .tabbar .tab{flex:0 0 auto;display:flex;align-items:baseline;gap:9px;cursor:pointer;
+   background:transparent;border:1px solid transparent;border-radius:999px;
+   padding:8px 17px;transition:.15s;white-space:nowrap;color:var(--muted)}
+ .tabbar .tab:hover{color:var(--ink);background:var(--bg-soft)}
+ .tabbar .tab.active{color:var(--accent-2);background:var(--bg-soft);border-color:var(--border-strong)}
+ .tabbar .tn{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.1em;color:var(--accent)}
+ .tabbar .tl{font-family:var(--serif);font-weight:500;font-size:16px}
+ body{padding-top:56px} .concept-panel{display:none}
+ .concept-panel.active{display:block}
+ .concept-panel header{padding-top:50px}
+ @media(max-width:560px){.tabbar .tl{max-width:48vw;overflow:hidden;text-overflow:ellipsis}}
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+<nav class="tabbar" aria-label="Các khái niệm"><button class="tab" data-i="0"><span class="tn">01</span><span class="tl">Trung hoà rủi ro</span></button><button class="tab" data-i="1"><span class="tn">02</span><span class="tl">Put–call parity</span></button><button class="tab" data-i="2"><span class="tn">03</span><span class="tl">Biến động làm đắt</span></button><button class="tab" data-i="3"><span class="tn">04</span><span class="tl">Phòng hộ động</span></button></nav>
+<div class="concept-panel" id="c-trung-hoa-rui-ro"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Giải thích theo phương pháp Feynman</div>
+    <h1 class="rise" style="animation-delay:.08s">Trung hoà rủi ro: vì sao giả vờ ai cũng bàng quan rủi ro lại ra đúng giá</h1>
+    <p class="core rise" style="animation-delay:.16s">Để định giá quyền chọn, <span>ta giả vờ mọi người bất chấp rủi ro — và vẫn ra đúng giá cho thế giới thật.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Điều cần hiểu &amp; cách tiếp cận</span><h2>Định giá trung lập rủi ro</h2></div>
+    </div>
+    <div class="rule">Hull (ch.13, 15): lập một danh mục gồm option cộng một lượng Δ cổ phiếu sao cho nó <strong>phi rủi ro</strong>; danh mục phi rủi ro phải sinh lời đúng lãi phi rủi ro r. Điều then chốt: lợi suất kỳ vọng thật μ của cổ phiếu <strong>biến mất</strong> khỏi lời giải. Nên ta được phép định giá trong một 'thế giới trung lập rủi ro': mọi tài sản kỳ vọng sinh lời r, và payoff kỳ vọng được chiết khấu ở r. Xác suất trung lập rủi ro p = (e^(rΔt) − d)/(u − d) — <strong>không</strong> phải xác suất thật.</div>
+    <div class="sub">Cách giải thích</div>
+    <div class="approach"><p>Chỗ vấp: định giá mà bỏ qua chuyện cổ phiếu thật sự tăng bao nhiêu, và còn giả vờ ai cũng bàng quan rủi ro — nghe như gian lận. Cách làm ở đây: dựng một danh mục ghép option với cổ phiếu sao cho hết rủi ro. Rồi chỉ ra vì sao nó buộc phần 'khẩu vị rủi ro' triệt tiêu. Ta bám vào một cây nhị thức một bước với số cụ thể.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Giải thích đơn giản</span><h2>Ghép option với cổ phiếu cho hết rủi ro</h2></div>
+    </div>
+    <p class="lead">Bạn vừa bán một quyền chọn và muốn biết nó đáng bao nhiêu. Vấn đề: giá cổ phiếu tương lai thì mù mịt, ai cũng đoán một kiểu. Nhưng có một mẹo làm cho chuyện đoán đó không còn quan trọng.</p>
+
+<div class="sub">Dựng một túi không rủi ro</div>
+<p>Giả sử sang tháng cổ phiếu chỉ có thể nhảy lên một mức, hoặc rớt xuống một mức. Bạn bỏ vào túi: một quyền chọn đã bán, cộng vừa đủ cổ phiếu. Khéo léo chọn số cổ phiếu, thì dù lên hay xuống, cái túi vẫn đáng đúng một con số như nhau.</p>
+
+<div class="sub">Túi không rủi ro thì lời đúng lãi ngân hàng</div>
+<p>Cái túi giờ chắc như gửi tiết kiệm: kết cục nào cũng ra một giá trị. Một thứ không rủi ro thì không thể lời hơn hay kém lãi ngân hàng, nếu không lại có lời chùa. Từ đó bạn suy ngược ra giá quyền chọn hôm nay.</p>
+
+<div class="sub">Chỗ ngược đời: khẩu vị rủi ro bay mất</div>
+<p>Để ý điều lạ. Trong cả phép tính, không hề có 'cổ phiếu sẽ tăng bao nhiêu', cũng không có 'người ta ưa hay ngại rủi ro'. Vì cái túi đã hết rủi ro, mấy thứ đó không còn ảnh hưởng gì. Nên ta được phép giả vờ ai cũng bàng quan rủi ro cho dễ tính.</p>
+
+<div class="sub">Vì sao giả vờ mà vẫn đúng</div>
+<p>Giá quyền chọn được neo vào giá cổ phiếu và lãi ngân hàng — hai thứ có thật, quan sát được. Nó không phụ thuộc khẩu vị rủi ro của ai. Nên đáp số tính trong thế giới giả vờ ấy khớp đúng thế giới thật.</p>
+  </section>
+
+  <section class="gaps">
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Chỗ vấp · Lỗ hổng</span><h2>Mấy chỗ nghe xuôi mà nghĩ kỹ chưa thông</h2></div>
+    </div>
+    <div class="gap-q"><span class="q">"Giả vờ ai cũng bàng quan rủi ro — thế giới thật đâu như vậy, sao ra đúng giá?"</span><p>Vì giá quyền chọn không hề dựa vào khẩu vị rủi ro. Nó chỉ dựa vào giá cổ phiếu hôm nay và lãi ngân hàng. Cái 'thế giới giả vờ' chỉ là đường tính gọn. Nó cho cùng đáp số với thế giới thật, vì cả hai đều bị khoá bởi cùng một giá cổ phiếu và cùng một lãi.</p></div>
+<div class="gap-q"><span class="q">"Vậy cổ phiếu tăng mạnh hay yếu không ảnh hưởng giá quyền chọn à? Vô lý quá."</span><p>Nghe vô lý nhưng đúng. Kỳ vọng tăng của cổ phiếu <em>đã nằm sẵn</em> trong giá cổ phiếu hôm nay rồi. Ai tin nó tăng mạnh thì đã trả giá cao để mua. Vì ta định giá quyền chọn <em>theo</em> giá cổ phiếu hiện tại, cái kỳ vọng đó không được đếm thêm lần nữa.</p></div>
+<div class="gap-q"><span class="q">"Cái xác suất p trong công thức — nó là khả năng thật cổ phiếu lên chứ gì?"</span><p>Không, và đây là bẫy lớn nhất. p chỉ là một con số công cụ để tính cho gọn, không phải khả năng thật cổ phiếu lên. Khả năng thật có thể khác hẳn. Gọi p là 'xác suất' chỉ vì nó cư xử giống xác suất trong phép tính, chứ nó không đo niềm tin thật của ai.</p></div>
+<div class="gap-q"><span class="q">"Mẹo này chỉ chạy khi cổ phiếu có đúng hai kết cục thôi phải không?"</span><p>Hai kết cục chỉ là bước tập. Chẻ thời gian thành nhiều bước nhỏ, mỗi bước hai nhánh, ta xử được đường giá cong queo bất kỳ. Chẻ nhỏ mãi, cây nhị thức tiến về đúng công thức Black–Scholes. Cùng một ý tưởng, chỉ mịn hơn.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví von &amp; ví dụ đời thường</span><h2>Neo vào thứ bạn đã biết</h2></div>
+    </div>
+    <div class="analogy-card"><span class="tag">Ví dụ trung tâm</span>
+<p>Nghĩ về <strong>cân một túi đồ trên cái cân thăng bằng</strong>. Bạn không biết túi nặng bao nhiêu, nhưng bạn cứ thêm quả cân đã biết vào đĩa bên kia cho tới khi hai đĩa ngang nhau. Lúc cân thăng bằng, trọng lượng túi lộ ra — bằng đúng tổng quả cân, dù ban đầu bạn mù tịt về nó.</p>
+<p>Định giá quyền chọn y hệt. Cổ phiếu là 'quả cân đã biết'. Bạn thêm vừa đủ cổ phiếu vào cho tới khi cái túi hết chao đảo, hết rủi ro. Khi nó đứng yên, giá quyền chọn lộ ra — neo vào giá cổ phiếu, không cần đoán tương lai.</p>
+<p class="limit"><b>Chỗ ví von này hỏng:</b> cái cân chỉ cần cân MỘT lần là xong, vì trọng lượng túi không đổi. Quyền chọn thì độ nhạy của nó với giá cổ phiếu <em>thay đổi liên tục</em>. Nên số cổ phiếu cần thêm phải chỉnh đi chỉnh lại mãi — đó chính là phòng hộ động. Cái cân tĩnh; định giá option động. Ví von này bắt được ý 'neo vào quả cân đã biết', nhưng bỏ mất chuyện phải cân đi cân lại.</p>
+</div>
+<p>Hình dung theo lối khác: bạn đặt hai cược ngược nhau trên cùng một trận đấu, khéo tới mức thắng thua bên nào cũng huề. Khi đã huề chắc chắn, kết quả trận đấu không còn quyết định túi tiền bạn. Định giá quyền chọn là dựng đúng thế 'huề dù kết quả nào' đó.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Danh mục option + Δ cổ phiếu chỉ phi rủi ro trong một khoảng cực ngắn, nên phải cân bằng lại liên tục. Trong phương trình Black–Scholes, lợi suất kỳ vọng μ của cổ phiếu triệt tiêu — đó là lý do sâu của định giá trung lập rủi ro. Công thức: c = S₀·N(d₁) − K·e^(−rT)·N(d₂), với N(d₂) xấp xỉ xác suất trung lập rủi ro option kết thúc in-the-money.</p>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">4</div>
+      <div class="step-meta"><span class="lbl">Kể lại gọn gàng</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Ghép quyền chọn với vừa đủ cổ phiếu, cái túi thành phi rủi ro, nên chỉ được lời đúng lãi ngân hàng. Từ đó suy ra giá quyền chọn, mà kỳ vọng tăng của cổ phiếu và khẩu vị rủi ro của ai đều biến mất. Vì thế ta giả vờ ai cũng bàng quan rủi ro cho gọn — giá vẫn đúng, vì nó neo vào giá cổ phiếu thật.</p>
+<p class="core">Để định giá quyền chọn, <span>túi hết rủi ro thì khẩu vị rủi ro bay mất — nên giả vờ trung hoà vẫn ra đúng giá.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã hiểu chưa?</h3>
+      <ol>
+        <li>Vì sao 'giả vờ mọi người bàng quan rủi ro' lại cho ra đúng giá cho thế giới thật?</li>
+        <li>Vì sao kỳ vọng cổ phiếu tăng mạnh hay yếu không làm đổi giá quyền chọn?</li>
+        <li>Con số xác suất trong định giá trung lập rủi ro có phải là khả năng thật cổ phiếu lên không? Vì sao?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nếu giải thích được cho bà ngoại hiểu, bạn mới thật sự hiểu.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-put-call-parity"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Giải thích theo phương pháp Feynman</div>
+    <h1 class="rise" style="animation-delay:.08s">Put–call parity: vì sao hai giỏ đồ trông khác nhau lại buộc phải cùng giá</h1>
+    <p class="core rise" style="animation-delay:.16s">Một giỏ có quyền mua cộng tiền, <span>một giỏ có quyền bán cộng cổ phiếu — hai giỏ khác hẳn mà bắt buộc cùng giá.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Điều cần hiểu &amp; cách tiếp cận</span><h2>Put–call parity (option châu Âu)</h2></div>
+    </div>
+    <div class="rule">Hull (ch.11): với option châu Âu trên cổ phiếu không cổ tức, c + K·e^(−rT) = p + S₀. Nghĩa là: (một call cộng một khoản tiền mặt bằng hiện giá của K) đáng đúng bằng (một put cộng một cổ phiếu). Lý do: hai danh mục có <strong>giá trị hệt nhau khi đáo hạn</strong> nên phải cùng giá hôm nay. Đẳng thức này <strong>không</strong> đúng cho option Mỹ (vì thực hiện sớm).</div>
+    <div class="sub">Cách giải thích</div>
+    <div class="approach"><p>Chỗ vấp: một bên có quyền mua, một bên có quyền bán, kèm những thứ khác nhau — sao lại bằng giá? Cách làm ở đây: đóng hai giỏ đồ, rồi mở ra xem chúng đáng bao nhiêu ở đúng ngày đáo hạn, trong hai trường hợp giá lên và giá xuống. Ta sẽ thấy hai giỏ luôn cho cùng số tiền, nên hôm nay phải cùng giá.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Giải thích đơn giản</span><h2>Đóng hai giỏ, mở ra ở ngày đáo hạn</h2></div>
+    </div>
+    <p class="lead">Ta đóng hai giỏ đồ tài chính. Giỏ A: một quyền mua cổ phiếu ở giá K, cộng một khoản tiền để dành, vừa đủ để tới ngày hẹn nó thành đúng K. Giỏ B: một quyền bán cổ phiếu ở giá K, cộng một cổ phiếu thật.</p>
+
+<div class="sub">Mở giỏ khi giá cổ phiếu cao hơn K</div>
+<p>Giỏ A: dùng quyền mua, lấy khoản tiền K mua cổ phiếu. Cuối cùng cầm một cổ phiếu. Giỏ B: quyền bán vô dụng (ai bán rẻ khi giá cao), bỏ đi, còn lại một cổ phiếu. Hai giỏ cùng cầm một cổ phiếu.</p>
+
+<div class="sub">Mở giỏ khi giá cổ phiếu thấp hơn K</div>
+<p>Giỏ A: quyền mua vô dụng, bỏ; còn lại khoản tiền đúng bằng K. Giỏ B: dùng quyền bán, bán cổ phiếu lấy đúng K. Hai giỏ cùng cầm một khoản tiền K. Lại bằng nhau.</p>
+
+<div class="sub">Kết cục nào cũng bằng, nên hôm nay phải bằng</div>
+<p>Giá lên hay xuống, hai giỏ luôn mở ra cùng một thứ. Hai giỏ cho kết cục y hệt trong mọi trường hợp thì không thể có giá khác nhau hôm nay. Nếu khác, người ta mua giỏ rẻ bán giỏ đắt, khoá lời chùa.</p>
+  </section>
+
+  <section class="gaps">
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Chỗ vấp · Lỗ hổng</span><h2>Mấy chỗ nghe xuôi mà nghĩ kỹ chưa thông</h2></div>
+    </div>
+    <div class="gap-q"><span class="q">"Hai giỏ có món khác hẳn nhau, sao bảo là 'cùng một thứ'?"</span><p>Không cần các món giống nhau. Chỉ cần <em>kết cục cuối cùng</em> giống nhau. Hai con đường khác nhau mà tới cùng một đích thì đáng cùng một giá vé. Ta không so từng món trong giỏ, ta so cái mà cả giỏ biến thành ở ngày đáo hạn.</p></div>
+<div class="gap-q"><span class="q">"Vì sao khoản tiền trong giỏ A phải là hiện giá của K, không phải K chẵn?"</span><p>Vì tiền để dành tới ngày hẹn sẽ sinh lãi. Muốn tới hẹn nó thành đúng K, hôm nay chỉ cần bỏ ít hơn — đúng bằng K đã kéo về hôm nay. Bỏ đủ K chẵn thì tới hẹn lại dư. Chi tiết 'kéo về hôm nay' này là chỗ khoản tiền phải nhỏ hơn K.</p></div>
+<div class="gap-q"><span class="q">"Nếu thị trường lệch khỏi đẳng thức này một chút thì sao?"</span><p>Thì có lời chùa, và dân buôn lao vào ngay. Họ mua giỏ đang rẻ, bán giỏ đang đắt, khoá chênh lệch mà không chịu rủi ro. Chính lực đó kéo hai giá về sát nhau. Đẳng thức đứng vững không phải vì lý thuyết đẹp, mà vì ai cũng chộp phần lệch.</p></div>
+<div class="gap-q"><span class="q">"Vì sao nó hỏng với option kiểu Mỹ?"</span><p>Vì option Mỹ có thể bị thực hiện <em>bất cứ lúc nào</em>, không đợi tới hẹn. Lập luận trên dựa vào chuyện 'mở giỏ đúng ngày đáo hạn'. Khi một bên có thể bị thực hiện sớm, hai giỏ không còn chắc chắn mở ra cùng thứ. Nên với option Mỹ chỉ suy được một khoảng, không phải đẳng thức.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví von &amp; ví dụ đời thường</span><h2>Neo vào thứ bạn đã biết</h2></div>
+    </div>
+    <div class="analogy-card"><span class="tag">Ví dụ trung tâm</span>
+<p>Nghĩ về <strong>hai đường đi tới cùng một đỉnh núi</strong>. Một đường vòng bên trái, một đường vòng bên phải, cây cối hai bên khác hẳn nhau. Nhưng cả hai đều dẫn tới đúng cái đỉnh đó. Nếu một hãng tour bán vé đường trái đắt hơn đường phải, ai cũng chọn đường phải — giá vé buộc phải bằng nhau, vì đích đến y hệt.</p>
+<p>Hai giỏ option cũng vậy. Món trong giỏ khác nhau (quyền mua với tiền, quyền bán với cổ phiếu) như cảnh hai bên đường khác nhau. Nhưng đích đến ở ngày đáo hạn thì trùng khít. Nên hôm nay hai giỏ phải cùng giá.</p>
+<p class="limit"><b>Chỗ ví von này hỏng:</b> hai đường núi 'cùng đích' chỉ đúng ở điểm cuối. Còn option đòi hai giỏ trùng nhau ở <em>mọi</em> mức giá có thể xảy ra, không chỉ một đích duy nhất. Và ví von đường núi bỏ qua vai trò của lãi suất — cái khiến khoản tiền phải là hiện giá của K chứ không phải K chẵn. Đường núi bắt được ý 'cùng đích thì cùng giá vé', nhưng thiếu chuyện 'trùng ở mọi kịch bản' và yếu tố thời gian của tiền.</p>
+</div>
+<p>Đời thường hơn: đi từ nhà tới cơ quan có thể bắt xe buýt, hoặc đi bộ ra ga rồi lên tàu. Hai cách trải nghiệm khác nhau hoàn toàn, nhưng cùng đưa bạn tới đúng cửa cơ quan. Nếu hai cách tốn tiền chênh nhau vô lý, bạn luôn chọn cách rẻ — và cách đắt buộc phải hạ giá.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Đầy đủ: c + K·e^(−rT) = p + S₀ cho option châu Âu không cổ tức; có cổ tức hiện giá D thì c + D + K·e^(−rT) = p + S₀. Đây là một hệ quả trực tiếp của no-arbitrage, và là công cụ để suy giá put từ giá call. Nó cũng giải thích vì sao volatility smile của call và put trùng nhau: parity ràng hai bên vào nhau.</p>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">4</div>
+      <div class="step-meta"><span class="lbl">Kể lại gọn gàng</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Đóng hai giỏ: một giỏ quyền mua cộng tiền để dành, một giỏ quyền bán cộng cổ phiếu. Dù giá lên hay xuống, tới ngày đáo hạn hai giỏ luôn mở ra cùng một thứ. Kết cục hệt nhau ở mọi trường hợp thì hôm nay phải cùng giá, nếu không sẽ có lời chùa. Đó là put–call parity.</p>
+<p class="core">Một giỏ có quyền mua cộng tiền, <span>cùng kết cục ở mọi kịch bản thì buộc cùng giá hôm nay.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã hiểu chưa?</h3>
+      <ol>
+        <li>Vì sao hai danh mục chứa những món khác hẳn nhau lại buộc phải có cùng giá hôm nay?</li>
+        <li>Vì sao khoản tiền trong giỏ 'quyền mua' phải là hiện giá của K chứ không phải K chẵn?</li>
+        <li>Vì sao put–call parity đúng cho option châu Âu nhưng không đúng cho option Mỹ?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nếu giải thích được cho bà ngoại hiểu, bạn mới thật sự hiểu.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-bien-dong-lam-dat"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Giải thích theo phương pháp Feynman</div>
+    <h1 class="rise" style="animation-delay:.08s">Vì sao biến động làm quyền chọn đắt hơn — dù chưa biết giá sẽ lên hay xuống</h1>
+    <p class="core rise" style="animation-delay:.16s">Cổ phiếu càng dao động mạnh, <span>quyền chọn càng đắt — dù ta không hề biết nó sẽ lên hay xuống.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Điều cần hiểu &amp; cách tiếp cận</span><h2>Biến động và giá quyền chọn</h2></div>
+    </div>
+    <div class="rule">Hull (ch.11): khi độ biến động σ của cổ phiếu tăng, <strong>cả call lẫn put đều đắt lên</strong>. Lý do: option có payoff <em>bất đối xứng</em> — lỗ bị chặn ở khoản phí, còn lời thì bỏ ngỏ. Biến động lớn hơn làm phần đuôi có lợi dày lên, trong khi phần đuôi bất lợi vẫn bị chặn ở 0, nên payoff kỳ vọng tăng cho cả hai loại.</div>
+    <div class="sub">Cách giải thích</div>
+    <div class="approach"><p>Chỗ vấp: dao động mạnh nghĩa là giá có thể lao xuống sâu, sao lại làm quyền chọn <em>đắt</em> lên? Bình thường ta ghét bất định cơ mà. Cách làm ở đây: nhìn kỹ cái phanh của quyền chọn — mất tối đa chỉ là khoản phí. Rồi so hai cổ phiếu, một hiền một loạn, xem cái phanh biến bất định thành lợi thế ra sao.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Giải thích đơn giản</span><h2>Cái phanh biến dao động thành lợi thế</h2></div>
+    </div>
+    <p class="lead">Bạn giữ một quyền mua cổ phiếu ở giá K. Điều kỳ lạ: bạn sẽ <em>thích</em> cổ phiếu này dao động thật mạnh. Càng loạn càng tốt. Nghe ngược đời, vì loạn thì có thể rớt sâu. Nhưng hãy nhìn kỹ cái phanh.</p>
+
+<div class="sub">Xuống thì có phanh, lên thì bỏ ngỏ</div>
+<p>Nếu cổ phiếu rớt thảm, bạn chỉ việc không dùng quyền mua. Mất tối đa là khoản phí đã trả, không hơn. Rớt sâu tới đâu cũng chỉ mất bấy nhiêu. Nhưng nếu cổ phiếu vọt lên, phần lời của bạn chạy theo, không có trần.</p>
+
+<div class="sub">Vì sao dao động mạnh có lợi</div>
+<p>So hai cổ phiếu. Một cái hiền, quanh quẩn gần K. Một cái loạn, có thể vọt rất cao hoặc rớt rất sâu. Phía rớt sâu, cả hai đều chỉ mất khoản phí — huề. Nhưng phía vọt cao, cái loạn cho bạn khoản lời to hơn hẳn. Được thêm ở một phía, không mất thêm ở phía kia.</p>
+
+<div class="sub">Nên trung bình lại, cái loạn đáng giá hơn</div>
+<p>Gộp hai phía: cái loạn có cùng mức 'đáy mất', nhưng 'đỉnh được' cao hơn. Nên tính bình quân, quyền chọn trên cổ phiếu loạn đáng nhiều tiền hơn. Với quyền bán cũng vậy, chỉ đổi chiều: nó hưởng lợi từ những cú rớt sâu.</p>
+
+<div class="sub">Chưa cần biết lên hay xuống</div>
+<p>Để ý: ta không hề đoán cổ phiếu sẽ lên hay xuống. Chỉ cần nó <em>có thể</em> đi xa hơn về cả hai phía. Cái phanh lo phần xấu, còn phần đẹp thì mở rộng. Bất định, thứ ta thường ghét, ở đây lại thành thứ đáng trả tiền.</p>
+  </section>
+
+  <section class="gaps">
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Chỗ vấp · Lỗ hổng</span><h2>Mấy chỗ nghe xuôi mà nghĩ kỹ chưa thông</h2></div>
+    </div>
+    <div class="gap-q"><span class="q">"Dao động mạnh thì cũng dễ rớt sâu — sao chỉ tính phía lời?"</span><p>Vì phía rớt đã bị cái phanh chặn. Rớt 10% hay 90%, người giữ quyền mua vẫn chỉ mất đúng khoản phí. Cổ phiếu càng loạn không làm phần lỗ nặng thêm, vì nó đã chạm sàn. Trong khi phần lời thì cứ dày lên theo. Bất đối xứng nằm ở đó.</p></div>
+<div class="gap-q"><span class="q">"Nếu tôi giữ thẳng cổ phiếu thay vì quyền chọn thì biến động có tốt không?"</span><p>Không. Giữ thẳng cổ phiếu thì bạn ăn trọn cả cú lên lẫn cú xuống, không có phanh. Rớt sâu là mất thật. Biến động chỉ 'đáng tiền' khi bạn có cái phanh của quyền chọn. Chính cái phanh mới biến bất định thành lợi thế, chứ bản thân bất định không tốt.</p></div>
+<div class="gap-q"><span class="q">"Vậy quyền chọn càng lâu đáo hạn càng đắt, cùng lý do chứ gì?"</span><p>Đúng một phần, và đây là chỗ tinh tế. Thời gian dài hơn cho giá nhiều cơ hội đi xa hơn — giống như biến động cao hơn. Nên thường thì để lâu hơn cũng làm option đắt lên. Cùng một gốc: nhiều đất để phần lời bỏ ngỏ mở rộng, trong khi phần lỗ vẫn bị chặn.</p></div>
+<div class="gap-q"><span class="q">"Người bán quyền chọn thì sao, họ chịu thiệt khi biến động cao à?"</span><p>Người bán ở phía ngược lại: họ ghét biến động, vì phần đuôi bỏ ngỏ là phần họ phải trả. Nên họ đòi phí cao hơn khi cổ phiếu loạn. Giá quyền chọn đắt lên chính là cách thị trường bắt người mua trả đúng cho cái lợi thế bất đối xứng đó.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví von &amp; ví dụ đời thường</span><h2>Neo vào thứ bạn đã biết</h2></div>
+    </div>
+    <div class="analogy-card"><span class="tag">Ví dụ trung tâm</span>
+<p>Nghĩ về <strong>một tấm vé số mà tiền mua đã cố định</strong>. Bạn mất tối đa đúng giá tấm vé, dù kết quả tệ tới đâu. Giờ chọn một trong hai loại vé, cùng giá: vé 'hiền' trúng bét cho vài chục nghìn, vé 'loạn' có thể trúng độc đắc hàng tỷ. Loại nào đáng mua hơn? Rõ ràng vé loạn — vì đằng nào lỗ cũng chỉ đúng giá vé, mà giải thưởng lại to hơn nhiều.</p>
+<p>Quyền chọn giống hệt. Khoản phí là giá tấm vé, mất tối đa bấy nhiêu. Cổ phiếu càng loạn thì 'giải độc đắc' phía lời càng to, còn phía lỗ vẫn chặn ở giá vé. Nên vé trên cổ phiếu loạn đáng trả nhiều tiền hơn.</p>
+<p class="limit"><b>Chỗ ví von này hỏng:</b> vé số là may rủi thuần, kỳ vọng thường âm vì nhà cái ăn. Quyền chọn thì được định giá công bằng theo no-arbitrage, không phải trò móc túi. Ngoài ra vé số chỉ có 'trúng hoặc trượt', còn payoff option trải liên tục theo giá cổ phiếu. Vé số bắt được ý 'lỗ chặn, thưởng bỏ ngỏ nên thích loạn', nhưng đừng suy ra rằng mua option là cờ bạc thua thiệt.</p>
+</div>
+<p>Một hình ảnh khác: thi đấu mà tiền phạt thua đã đóng trần, còn tiền thưởng thắng thì không giới hạn. Ở thế đó, bạn sẽ muốn trận đấu càng nhiều bất ngờ càng tốt. Bất ngờ chỉ có thể đẩy bạn lên cao hơn, vì mức rơi đã bị chặn sẵn.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Đây chính là bất đẳng thức Jensen áp lên hàm payoff lồi: trung bình của payoff cao hơn payoff của mức trung bình, và khoảng chênh nới rộng theo σ. Trong Black–Scholes, độ nhạy của giá option với σ gọi là <em>vega</em>, luôn dương cho cả call và put châu Âu. Do put–call parity, biến động đẩy giá call và put lên cùng nhịp.</p>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">4</div>
+      <div class="step-meta"><span class="lbl">Kể lại gọn gàng</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Quyền chọn có phanh: lỗ chặn ở khoản phí, lời bỏ ngỏ. Cổ phiếu càng dao động mạnh thì phía lời càng dày lên, còn phía lỗ vẫn chạm sàn cũ. Được thêm một phía, không mất thêm phía kia, nên bình quân quyền chọn đắt lên. Không cần biết giá sẽ lên hay xuống, chỉ cần nó có thể đi xa hơn.</p>
+<p class="core">Cổ phiếu càng dao động mạnh, <span>lỗ có phanh, lời bỏ ngỏ — nên dao động mạnh chỉ làm quyền chọn đắt thêm.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã hiểu chưa?</h3>
+      <ol>
+        <li>Vì sao biến động mạnh làm quyền chọn đắt hơn, dù dao động mạnh cũng kéo theo khả năng rớt sâu?</li>
+        <li>Vì sao biến động 'đáng tiền' với người giữ quyền chọn nhưng không giúp gì người giữ thẳng cổ phiếu?</li>
+        <li>Vì sao lập luận này không cần biết trước cổ phiếu sẽ lên hay xuống?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nếu giải thích được cho bà ngoại hiểu, bạn mới thật sự hiểu.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-phong-ho-dong"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Giải thích theo phương pháp Feynman</div>
+    <h1 class="rise" style="animation-delay:.08s">Phòng hộ động: vì sao để bọc rủi ro một quyền chọn phải chỉnh vị thế liên tục</h1>
+    <p class="core rise" style="animation-delay:.16s">Bọc rủi ro một quyền chọn đã bán, <span>không phải khoá một lần rồi để yên, mà phải chỉnh vị thế đi chỉnh lại mãi.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Điều cần hiểu &amp; cách tiếp cận</span><h2>Delta và delta hedging</h2></div>
+    </div>
+    <div class="rule">Hull (ch.19): <em>delta</em> (Δ) là tốc độ thay đổi giá option theo giá tài sản cơ sở. Để bọc rủi ro một option, ta giữ một lượng cổ phiếu bằng Δ sao cho vị thế tổng <em>delta-neutral</em> (độ nhạy với giá bằng 0). Nhưng Δ <strong>thay đổi theo giá và theo thời gian</strong>, nên phải cân bằng lại (<em>rebalance</em>) định kỳ — đây là phòng hộ <strong>động</strong> (dynamic), không phải tĩnh.</div>
+    <div class="sub">Cách giải thích</div>
+    <div class="approach"><p>Chỗ vấp: bác nông dân khoá giá một lần rồi để yên, sao bọc rủi ro một option lại phải chỉnh mãi không nghỉ? Cách làm ở đây: hình dung độ dốc của quyền chọn — nó cho biết cần bao nhiêu cổ phiếu để bù. Rồi chỉ ra độ dốc ấy tự đổi mỗi khi giá nhúc nhích, nên số cổ phiếu cũng phải đổi theo.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Giải thích đơn giản</span><h2>Số cổ phiếu cần giữ tự thay đổi liên tục</h2></div>
+    </div>
+    <p class="lead">Bạn vừa bán một quyền chọn cho khách, giờ phải tự bảo vệ mình khỏi rủi ro giá. Cách làm: giữ sẵn một ít cổ phiếu, để khi giá chạy, phần được của cổ phiếu bù phần mất do quyền chọn. Nghe giống bác nông dân khoá giá. Nhưng có một chỗ khác hẳn.</p>
+
+<div class="sub">Cần giữ bao nhiêu cổ phiếu</div>
+<p>Con số này tuỳ vào 'độ nhạy' của quyền chọn với giá cổ phiếu — quyền chọn ăn theo giá nhanh hay chậm. Nếu quyền chọn nhích 40 đồng mỗi khi cổ phiếu nhích 100 đồng, bạn giữ cổ phiếu tương ứng để bù đúng phần đó. Giữ đúng liều, vị thế tổng hết chao đảo theo giá.</p>
+
+<div class="sub">Nhưng độ nhạy đó không đứng yên</div>
+<p>Đây là chỗ then chốt. Độ nhạy của quyền chọn <em>tự thay đổi</em> khi giá cổ phiếu đổi. Cổ phiếu lên, độ nhạy có thể thành 60 trên 100. Cổ phiếu xuống, có thể thành 20 trên 100. Liều cổ phiếu bạn giữ hôm qua giờ đã sai.</p>
+
+<div class="sub">Nên phải chỉnh đi chỉnh lại</div>
+<p>Vì liều đúng cứ trôi, bạn phải mua thêm hoặc bán bớt cổ phiếu liên tục cho khớp. Giá lên thì thường mua thêm, giá xuống thì bán bớt. Không có chuyện khoá một lần rồi để yên. Bọc rủi ro option là một việc làm hoài, không phải làm một phát.</p>
+
+<div class="sub">Vì sao bác nông dân thì khỏi chỉnh</div>
+<p>Vì rủi ro của bác thẳng đơ: giá xuống một đồng, bác mất đúng một đồng, luôn luôn. Độ nhạy không đổi nên khoá một lần là xong. Quyền chọn thì cong: độ nhạy đổi theo giá, nên bọc nó phải bám theo, chỉnh mãi.</p>
+  </section>
+
+  <section class="gaps">
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Chỗ vấp · Lỗ hổng</span><h2>Mấy chỗ nghe xuôi mà nghĩ kỹ chưa thông</h2></div>
+    </div>
+    <div class="gap-q"><span class="q">"Vì sao độ nhạy của quyền chọn lại thay đổi, còn của cổ phiếu thẳng thì không?"</span><p>Vì quyền chọn có cái phanh và cái trần mềm. Khi cổ phiếu rất thấp, quyền mua gần như vô dụng, giá nó hầu như không nhúc nhích theo — độ nhạy bé. Khi cổ phiếu rất cao, quyền mua chạy gần sát cổ phiếu — độ nhạy lớn. Ở giữa nó chuyển dần. Đường cong đó làm độ nhạy đổi.</p></div>
+<div class="gap-q"><span class="q">"Chỉnh liên tục thì tốn phí giao dịch — vậy phòng hộ động có thật sự có lời?"</span><p>Đây là cái giá thật, không giấu được. Mỗi lần mua bán đều mất phí, và chỉnh càng dày càng tốn. Thực tế người ta chỉnh theo nhịp hợp lý, chấp nhận bọc không hoàn hảo để đỡ phí. Phòng hộ động không miễn phí; nó đánh đổi phí giao dịch lấy việc chặn rủi ro giá.</p></div>
+<div class="gap-q"><span class="q">"Sao không đứng yên như chiến lược bán khi rớt, mua khi lên cho gọn?"</span><p>Kiểu 'thấy lên thì ôm, thấy xuống thì buông' nghe hợp lý nhưng bọc rất tệ. Quanh mức giá nhạy cảm, giá cứ lên xuống qua lại, bạn liên tục mua cao bán thấp, lỗ dồn. Delta hedging bám theo độ nhạy thật, mượt hơn hẳn kiểu bật tắt thô đó.</p></div>
+<div class="gap-q"><span class="q">"Bọc theo độ nhạy là xong hẳn rủi ro chưa?"</span><p>Chưa hẳn. Nó mới chặn rủi ro do giá nhích <em>nhỏ</em>. Khi giá nhảy một cú lớn, hoặc khi chính độ biến động đổi, vị thế vẫn lệch. Muốn chặt hơn phải bọc thêm các lớp nhạy khác, và những lớp đó cần dùng option khác, không thể dùng mỗi cổ phiếu.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví von &amp; ví dụ đời thường</span><h2>Neo vào thứ bạn đã biết</h2></div>
+    </div>
+    <div class="analogy-card"><span class="tag">Ví dụ trung tâm</span>
+<p>Nghĩ về <strong>giữ thăng bằng một cây gậy trên lòng bàn tay</strong>. Gậy nghiêng bên nào, tay bạn phải dịch theo bên đó để đỡ. Bạn không đặt tay một chỗ rồi kệ — làm thế gậy đổ ngay. Bạn phải chỉnh tay liên tục, nhỏ và đều, theo đúng cách gậy đang ngả.</p>
+<p>Bọc rủi ro quyền chọn y hệt. 'Cách gậy ngả' là độ nhạy của quyền chọn, luôn đổi. 'Tay dịch theo' là mua bán cổ phiếu cho khớp. Đứng yên là hỏng; phải bám theo và chỉnh hoài. Đó là lý do gọi là phòng hộ động.</p>
+<p class="limit"><b>Chỗ ví von này hỏng:</b> giữ gậy là phản xạ tức thời, gần như liên tục. Còn người phòng hộ chỉ chỉnh theo từng nhịp, vì mỗi lần mua bán đều tốn phí. Cái gậy cũng không có 'phí giao dịch' mỗi lần dịch tay, trong khi đó là ràng buộc lớn nhất của phòng hộ thật. Cây gậy bắt được ý 'phải bám theo và chỉnh hoài', nhưng bỏ mất chuyện chỉnh nhiều thì tốn kém.</p>
+</div>
+<p>Một hình ảnh khác: lái xe giữ làn trên đường gió mạnh. Gió đổi hướng, bạn xoay vô-lăng đỡ lại, rồi lại xoay tiếp khi gió đổi nữa. Không ai khoá cứng vô-lăng một góc rồi thả tay. Giữ đúng làn là một chuỗi chỉnh nhỏ liên tục, không phải một quyết định duy nhất.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Độ nhạy đang nói là delta; tốc độ delta tự đổi theo giá là <em>gamma</em>. Gamma lớn thì delta trôi nhanh, phải chỉnh dày hơn. Vì cổ phiếu có gamma và vega bằng 0, muốn trung hoà gamma hay vega phải dùng một option khác. Quan hệ ràng buộc: Θ + rSΔ + ½σ²S²Γ = rΠ cho một danh mục delta-neutral.</p>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">4</div>
+      <div class="step-meta"><span class="lbl">Kể lại gọn gàng</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Để bọc một quyền chọn, ta giữ cổ phiếu đúng theo độ nhạy của nó với giá. Nhưng độ nhạy đó tự đổi mỗi khi giá nhúc nhích, nên liều cổ phiếu đúng cứ trôi. Vì thế phải mua bán chỉnh lại hoài, như giữ thăng bằng cây gậy. Rủi ro thẳng thì khoá một lần là xong; rủi ro cong của option thì phải bám theo.</p>
+<p class="core">Bọc rủi ro một quyền chọn đã bán, <span>độ nhạy của option cứ trôi, nên phải chỉnh vị thế hoài chứ không khoá một lần.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã hiểu chưa?</h3>
+      <ol>
+        <li>Vì sao bọc rủi ro một quyền chọn phải chỉnh vị thế liên tục, trong khi bác nông dân khoá giá một lần là xong?</li>
+        <li>Vì sao độ nhạy của quyền chọn với giá cổ phiếu lại thay đổi khi giá thay đổi?</li>
+        <li>Đâu là cái giá thật của việc chỉnh vị thế liên tục, và người ta cân bằng nó ra sao?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nếu giải thích được cho bà ngoại hiểu, bạn mới thật sự hiểu.</p>
+  </footer>
+
+</div></div>
+<script>
+  var bar=document.getElementById('progress');
+  function upd(){var h=document.documentElement;var s=h.scrollTop||document.body.scrollTop;
+    var max=(h.scrollHeight-h.clientHeight)||1;bar.style.width=(s/max*100)+'%';}
+  window.addEventListener('scroll',upd,{passive:true});upd();
+  var io=new IntersectionObserver(function(es){es.forEach(function(e){
+    if(e.isIntersecting){e.target.style.animation='rise .7s cubic-bezier(.2,.7,.3,1) forwards';io.unobserve(e.target);}});},{threshold:.12});
+  document.querySelectorAll('section').forEach(function(s){s.style.opacity='0';io.observe(s);});
+</script>
+
+<script>
+(function(){
+  var tabs=[].slice.call(document.querySelectorAll('.tabbar .tab'));
+  var panels=[].slice.call(document.querySelectorAll('.concept-panel'));
+  function show(i){
+    tabs.forEach(function(t,j){t.classList.toggle('active',j===i);});
+    panels.forEach(function(p,j){
+      var on=(j===i); p.classList.toggle('active',on);
+      if(on){p.querySelectorAll('section').forEach(function(s){s.style.opacity='';s.style.animation='';});}
+    });
+    try{history.replaceState(null,'','#'+panels[i].id);}catch(e){}
+    window.scrollTo(0,0); window.dispatchEvent(new Event('scroll'));
+  }
+  tabs.forEach(function(t){t.addEventListener('click',function(){show(+t.getAttribute('data-i'));});});
+  var start=0; panels.forEach(function(p,j){if('#'+p.id===location.hash)start=j;});
+  show(start);
+})();
+</script>
+
+</body></html>

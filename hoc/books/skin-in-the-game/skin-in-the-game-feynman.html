@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="vi"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Skin in the Game — Hidden Asymmetries in Daily Life — Hiểu sâu theo Feynman</title>
+<style>
+  /* Design tokens shared with ebook-to-study-html (styles_v2.css) */
+  :root{
+    --bg:#fafaf7; --bg-elevated:#ffffff; --bg-soft:#f3f3ee;
+    --border:#e0e0d8; --border-soft:#ececea; --border-strong:#d2c8b6;
+    --ink:#1a1a1f; --ink-soft:#3f3f4a; --muted:#7a7a85;
+    --accent:#2f6fed; --accent-2:#2258c8; --gold:#0fb6d4; --gap:#2258c8;
+    --serif:"Fraunces",Georgia,"Iowan Old Style",serif;
+    --sans:"Geist",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    --mono:"Geist Mono","JetBrains Mono",Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:var(--sans);
+    font-size:19px;line-height:1.72;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}
+  .progress{position:fixed;top:0;left:0;height:3px;width:0;z-index:50;
+    background:linear-gradient(90deg,var(--gold),var(--accent));transition:width .08s linear}
+  .wrap{max-width:920px;margin:0 auto;padding:0 36px}
+  .rise{opacity:0;transform:translateY(14px);animation:rise .7s cubic-bezier(.2,.7,.3,1) forwards}
+  @keyframes rise{to{opacity:1;transform:none}}
+
+  header{padding:104px 0 60px;border-bottom:1px solid var(--border)}
+  .kicker{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.18em;
+    text-transform:uppercase;color:var(--accent);margin-bottom:26px}
+  h1{font-family:var(--serif);font-weight:600;font-size:clamp(42px,7.6vw,72px);
+    line-height:1.0;letter-spacing:-.022em;margin-bottom:28px;font-optical-sizing:auto;color:var(--ink)}
+  h1 em{font-style:italic;color:var(--accent)}
+  .core{font-family:var(--serif);font-style:italic;font-weight:400;
+    font-size:clamp(21px,3.6vw,27px);line-height:1.44;color:var(--ink-soft)}
+  .core span{font-style:normal;font-weight:600;color:var(--accent-2);
+    box-shadow:inset 0 -.5em 0 rgba(47,111,237,.16)}
+
+  /* ---- BƯỚC 0: ANCHOR (state the rule + plan before explaining) ---- */
+  .anchor .rule{font-family:var(--serif);font-size:19px;line-height:1.5;color:var(--ink);
+    background:var(--bg-soft);border-left:3px solid var(--accent);
+    padding:18px 24px;border-radius:0 4px 4px 0;margin:0}
+  .anchor .rule em{font-style:italic;color:var(--accent-2)}
+  .anchor .rule strong{color:var(--ink);font-weight:600}
+  .anchor .approach{color:var(--ink-soft)}
+
+  section{padding:72px 0;border-bottom:1px solid var(--border);position:relative}
+  .step-head{display:flex;align-items:flex-start;gap:22px;margin-bottom:34px}
+  .big-num{font-family:var(--serif);font-weight:700;font-size:62px;line-height:.8;
+    color:var(--border-strong);flex:none;font-optical-sizing:auto;letter-spacing:-.03em}
+  .step-meta{padding-top:4px}
+  .lbl{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--accent);display:block;margin-bottom:10px}
+  h2{font-family:var(--serif);font-weight:600;font-size:clamp(27px,4.4vw,37px);
+    line-height:1.12;letter-spacing:-.012em;color:var(--ink)}
+  h2 em{font-style:italic;color:var(--accent)}
+  p{margin-bottom:21px}
+  p:last-child{margin-bottom:0}
+  strong{font-weight:600;color:var(--ink)}
+  em{font-style:italic;color:var(--accent-2)}
+  .gloss{color:var(--muted);font-style:italic}
+
+  .lead::first-letter{font-family:var(--serif);font-weight:700;float:left;
+    font-size:74px;line-height:.74;padding:8px 12px 0 0;color:var(--accent)}
+
+  .sub{font-family:var(--serif);font-weight:600;font-size:17px;letter-spacing:.01em;
+    color:var(--ink);margin:34px 0 14px;display:flex;align-items:center;gap:11px}
+  .sub::before{content:"";width:18px;height:2px;background:var(--accent);flex:none;border-radius:2px}
+
+  .gaps{background:var(--bg-soft)}
+  .gaps .big-num{color:#e2d6b4}
+  .gaps .lbl{color:var(--gap)}
+  .gap-q{margin:0 0 30px;padding-left:24px;border-left:2px solid var(--border-strong)}
+  .gap-q:last-child{margin-bottom:0}
+  .gap-q .q{font-family:var(--serif);font-style:italic;font-weight:500;
+    font-size:22px;line-height:1.35;color:var(--gap);margin-bottom:12px;display:block}
+  .gap-q p:last-child{margin-bottom:0}
+
+  .analogy-card{border:1px solid #e8c876;border-radius:4px;padding:30px 32px;margin:8px 0 28px;
+    background:linear-gradient(135deg,#fef9ed 0%,#fdf3e0 100%)}
+  .analogy-card .tag{font-family:var(--mono);font-weight:600;font-size:11px;
+    letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin-bottom:16px;display:block}
+  .analogy-card p{color:#5a4810}
+  .analogy-card strong{color:var(--accent-2)}
+  .limit{font-size:17px;line-height:1.6;color:#5a4810;
+    border-top:1px solid #e8c876;padding-top:20px;margin-top:22px}
+  .limit b{color:var(--accent-2);font-weight:600;font-family:var(--serif)}
+
+  .retell{background:linear-gradient(180deg,var(--bg-soft) 0%,var(--bg) 100%);border-bottom:none}
+  .retell h2{color:var(--ink)}
+  .retell strong{color:var(--accent-2)}
+  .retell .core{margin-top:6px}
+  .testbox{border:1px solid var(--border);background:var(--bg-elevated);
+    border-radius:4px;padding:28px 32px;margin-top:40px;box-shadow:0 1px 2px rgba(0,0,0,.03)}
+  .testbox h3{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--accent);margin-bottom:20px}
+  .testbox ol{margin:0;padding-left:22px;counter-reset:t}
+  .testbox li{margin-bottom:16px;color:var(--ink-soft);padding-left:6px}
+  .testbox li:last-child{margin-bottom:0}
+
+  footer{text-align:center;padding:60px 0 88px}
+  footer .mark{font-family:var(--serif);font-weight:700;color:var(--accent);
+    font-size:26px;display:block;margin-bottom:14px}
+  footer p{font-family:var(--serif);font-style:italic;color:var(--muted);font-size:17px;max-width:380px;margin:0 auto}
+
+  @media(max-width:560px){
+    body{font-size:18px}
+    header{padding:70px 0 44px}
+    section{padding:52px 0}
+    .step-head{gap:16px}
+    .big-num{font-size:46px}
+    .lead::first-letter{font-size:60px}
+  }
+
+/* ===== FLAMINDI THEME OVERRIDE (dong bo trang chu flamindi.com) ===== */
+:root{
+  --accent:#2f6fed;--accent-2:#2258c8;--accent2:#2258c8;--gold:#0fb6d4;--cyan:#0fb6d4;--blue:#2f6fed;
+  --bg:#f7f9fe;--bg-elevated:#ffffff;--bg-card:#ffffff;--card:#ffffff;--bg-soft:#eef2fb;--soft:#eef2fb;
+  --border:#e4e9f2;--border-soft:#eef1f7;--border-strong:#cfd8e8;
+  --text:#1a2233;--text-soft:#4e5a74;--text-dim:#6b7691;
+  --ink:#1a2233;--ink-soft:#4e5a74;--muted:#6b7691;--soft-t:#4e5a74;--dim:#6b7691;
+  --serif:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+  --mono:ui-monospace,Menlo,Consolas,monospace;
+}
+body{background:radial-gradient(1200px 600px at 85% -10%,rgba(47,111,237,.14),transparent 60%),radial-gradient(1000px 640px at -10% 30%,rgba(15,182,212,.09),transparent 55%),linear-gradient(#f7f9fe,#edf0f8) fixed !important;}
+</style>
+<style>
+ .tabbar{position:fixed;top:0;left:0;right:0;width:100%;box-sizing:border-box;z-index:40;background:rgba(250,250,247,.93);
+   backdrop-filter:saturate(1.1) blur(8px);-webkit-backdrop-filter:saturate(1.1) blur(8px);
+   border-bottom:1px solid var(--border);display:flex;gap:6px;overflow-x:auto;
+   padding:10px max(36px,calc((100% - 992px)/2));scrollbar-width:thin}
+ .tabbar .tab{flex:0 0 auto;display:flex;align-items:baseline;gap:9px;cursor:pointer;
+   background:transparent;border:1px solid transparent;border-radius:999px;
+   padding:8px 17px;transition:.15s;white-space:nowrap;color:var(--muted)}
+ .tabbar .tab:hover{color:var(--ink);background:var(--bg-soft)}
+ .tabbar .tab.active{color:var(--accent-2);background:var(--bg-soft);border-color:var(--border-strong)}
+ .tabbar .tn{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.1em;color:var(--accent)}
+ .tabbar .tl{font-family:var(--serif);font-weight:500;font-size:16px}
+ body{padding-top:56px} .concept-panel{display:none}
+ .concept-panel.active{display:block}
+ .concept-panel header{padding-top:50px}
+ @media(max-width:560px){.tabbar .tl{max-width:48vw;overflow:hidden;text-overflow:ellipsis}}
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+<nav class="tabbar" aria-label="Các khái niệm"><button class="tab" data-i="0"><span class="tn">01</span><span class="tl">Luật thiểu số</span></button><button class="tab" data-i="1"><span class="tn">02</span><span class="tl">Rủi ro tuyệt chủng</span></button><button class="tab" data-i="2"><span class="tn">03</span><span class="tl">Bác sĩ không nên trông giống bác sĩ</span></button><button class="tab" data-i="3"><span class="tn">04</span><span class="tl">Via negativa</span></button></nav>
+<div class="concept-panel" id="c-luat-thieu-so"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Giải thích theo phương pháp Feynman</div>
+    <h1 class="rise" style="animation-delay:.08s">Luật thiểu số: vì sao một nhóm nhỏ cứng rắn áp luật lên số đông</h1>
+    <p class="core rise" style="animation-delay:.16s">Không phải đa số định hình lựa chọn — <span>mà một thiểu số nhỏ, không bao giờ chịu nhượng.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Điều cần hiểu &amp; cách tiếp cận</span><h2>Quy tắc: kẻ bất khoan dung nhất thắng</h2></div>
+    </div>
+    <div class="rule">Taleb (ch.2, <em>the most intolerant wins</em>): chỉ cần một <strong>thiểu số bất khoan dung</strong> đạt ngưỡng nhỏ — khoảng <strong>3-4% dân số</strong> — phân bố đều về không gian, là cả cộng đồng phải theo lựa chọn của họ. Điều kiện: đa số <em>linh hoạt</em> (chấp nhận được cả hai), còn thiểu số thì <em>một giọt vi phạm cũng loại</em>. Ông gọi đây là <em>mẹ của mọi bất đối xứng</em>.</div>
+    <div class="sub">Cách giải thích</div>
+    <div class="approach"><p>Chỗ vấp: 3% mà bắt 97% phải theo, nghe như phép toán sai. Cách làm ở đây: lấy chuyện đồ ăn kosher hay không-GMO, đi từ một đứa trẻ cứng đầu trong bữa cơm ra tới kệ siêu thị. Bạn sẽ thấy bất đối xứng một chiều tự làm hết việc, không cần ai thắng đa số.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Giải thích đơn giản</span><h2>Người ăn kiêng không nhượng, người thường thì nhượng được</h2></div>
+    </div>
+    <p class="lead">Người ăn kosher <em>không bao giờ</em> ăn đồ non-kosher. Nhưng người không ăn kosher thì vẫn ăn được đồ kosher — họ chẳng sao cả. Để ý cái lệch một chiều đó. Một bên cứng, một bên mềm. Toàn bộ luật thiểu số mọc ra từ đây.</p>
+
+<div class="sub">Nhà sản xuất chọn đường lười</div>
+<p>Bạn là chủ hãng nước ngọt. Làm một loại kosher thì cả người kosher lẫn người thường đều uống được. Làm hai dây chuyền thì tốn gấp đôi. Nên bạn làm tất cả thành kosher. Rẻ hơn, mà không mất ai.</p>
+
+<div class="sub">Nó lan từng nấc</div>
+<p>Một đứa con chỉ ăn non-GMO. Mẹ nấu non-GMO cho cả nhà, khỏi nấu hai nồi. Tiệc bốn nhà hàng xóm cũng chọn non-GMO cho tất cả, khỏi hỏi từng người. Rồi tới cửa hàng, tới nhà phân phối, tới cả chuỗi cung ứng.</p>
+
+<div class="sub">Hai điều kiện để nó chạy</div>
+<p>Một: thiểu số phải <strong>trộn đều</strong> khắp nơi, không co cụm một khu riêng. Hai: chi phí chiều theo phải <strong>nhỏ</strong>. Nếu làm kosher đắt gấp mười thì luật này tan. Nhờ hai điều kiện đó, 3-4% quyết cả kệ hàng.</p>
+  </section>
+
+  <section class="gaps">
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Chỗ vấp · Lỗ hổng</span><h2>Mấy chỗ nghe xuôi mà nghĩ kỹ chưa thông</h2></div>
+    </div>
+    <div class="gap-q"><span class="q">"3% mà thắng 97%? Toán kiểu gì vậy?"</span><p>Vì 97% kia không hề phản đối kosher — họ ăn được cả hai. Chỉ 3% là <em>phủ quyết</em> đồ non-kosher. Trong một lựa chọn chung, bên duy nhất nói 'không' sẽ định đoạt. Đa số không thua vì yếu, họ 'thua' vì họ dễ tính.</p></div>
+<div class="gap-q"><span class="q">"Vậy thiểu số nào cũng áp được cả đám à?"</span><p>Không. Phải hội đủ hai điều kiện. Thiểu số trộn đều khắp nơi, và chi phí chiều theo nhỏ. Nếu họ sống tách trong một khu riêng, hoặc yêu cầu của họ đắt gấp bội, thì luật thiểu số không kích hoạt.</p></div>
+<div class="gap-q"><span class="q">"Cơ chế này tốt hay xấu?"</span><p>Bản thân nó trung tính — chỉ là một cỗ máy. Cùng cơ chế đó lan truyền cả điều hay lẫn điều dở. Nó giúp một chuẩn an toàn phổ cập, nhưng cũng giúp một niềm tin bất khoan dung bóp nghẹt các niềm tin ôn hòa qua nhiều thế kỷ.</p></div>
+<div class="gap-q"><span class="q">"Thế nó luôn nuốt trọn cả xã hội sao?"</span><p>Không nhất thiết — và đây là chỗ tinh tế. Nếu gộp tất cả vào một khối, thiểu số lan ra toàn quốc. Nhưng trong một liên bang phân quyền, vài bang vượt ngưỡng, vài bang không, nên sự đa dạng được giữ. Chia nhỏ đơn vị là cách chặn nó lan hết.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví von &amp; ví dụ đời thường</span><h2>Neo vào thứ bạn đã biết</h2></div>
+    </div>
+    <div class="analogy-card"><span class="tag">Ví dụ trung tâm</span>
+<p>Nghĩ về một <strong>bữa tiệc nướng</strong> có một người ăn chay. Chủ tiệc biết vậy, bèn làm hết thành món chay: người ăn chay ăn được, mà người ăn mặn cũng ăn tạm được. Khỏi phải nấu hai loại. Chỉ một người 'không nhượng' đã kéo cả bàn tiệc sang chay — không phải vì số đông thích chay, mà vì chay là lựa chọn <em>không ai phủ quyết</em>.</p>
+<p class="limit"><b>Chỗ ví von này hỏng:</b> tiệc nướng chỉ chạy vì làm món chay <em>rẻ và dễ</em> ngang món mặn. Nếu món chay đắt gấp mười, hoặc người ăn chay ngồi riêng một phòng, chủ tiệc sẽ làm hai loại và luật thiểu số tắt ngóm. Ví von này đúng khi chi phí chiều theo nhỏ và mọi người trộn đều — đúng hai điều kiện của quy tắc. Đừng suy ra 'thiểu số nào cũng luôn thắng'.</p>
+</div>
+<p>Taleb viết những dòng này trong một McDonald's ở ga Milan, đông nghẹt người Ý. Vì sao, khi pizza ngon ở ngay góc phố? Vì trong nhóm đi ăn, chỉ cần một người phủ quyết quán lạ là cả nhóm dạt sang chỗ an toàn. McDonald's không thắng nhờ ngon — nó thắng nhờ <em>không bị ai veto</em>.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Cơ chế toán học mượn từ vật lý: <em>renormalization group</em> (nhóm tái chuẩn hóa) — xem quy luật đổi ra sao khi nhìn ở các quy mô khác nhau. Nhà vật lý Serge Galam đưa nó vào khoa học xã hội. Cùng cơ chế giải thích vì sao một lệnh bán chưa tới 0,2% vốn hóa có thể làm sập gần 10% thị trường: chợ phản ứng theo người <em>quyết liệt nhất</em>, không theo trung bình người tham gia.</p>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">4</div>
+      <div class="step-meta"><span class="lbl">Kể lại gọn gàng</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Một thiểu số nhỏ mà không bao giờ nhượng, trộn đều khắp nơi, có thể bắt cả số đông theo mình — miễn chi phí chiều theo nhỏ. Vì đa số linh hoạt không phủ quyết, chỉ thiểu số phủ quyết. Nhà sản xuất chọn đường lười: làm một loại vừa lòng bên cứng. Nhìn trung bình mà tưởng là ý đa số là nhìn nhầm.</p>
+<p class="core">Không phải đa số định hình lựa chọn — <span>chỉ bên không bao giờ nhượng mới định đoạt lựa chọn chung.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã hiểu chưa?</h3>
+      <ol>
+        <li>Vì sao chỉ 3-4% người ăn kosher lại đủ khiến gần như mọi nước ngọt đều thành kosher?</li>
+        <li>Hai điều kiện nào phải có thì luật thiểu số mới kích hoạt?</li>
+        <li>Vì sao phân quyền theo liên bang lại chặn được luật thiểu số lan ra toàn quốc?</li>
+        <li>McDonald's ở ga Milan 'thắng nhờ không bị veto' nghĩa là gì?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nếu giải thích được cho bà ngoại hiểu, bạn mới thật sự hiểu.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-rui-ro-tuyet-chung"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Giải thích theo phương pháp Feynman</div>
+    <h1 class="rise" style="animation-delay:.08s">Ergodicity: vì sao 'kỳ vọng dương' vẫn có thể khiến bạn phá sản</h1>
+    <p class="core rise" style="animation-delay:.16s">100 người chơi một ngày <span>không giống một người chơi 100 ngày — khi có cửa tử.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Điều cần hiểu &amp; cách tiếp cận</span><h2>Quy tắc: có cửa tử thì trung bình đám đông không cứu được bạn</h2></div>
+    </div>
+    <div class="rule">Taleb (ch.19, theo Ole Peters &amp; Murray Gell-Mann): một tình huống là <strong>không ergodic</strong> khi xác suất quan sát trong quá khứ <em>không</em> áp được cho tương lai — vì có một <em>absorbing barrier</em> (rào hấp thụ): một khi chạm vào thì không thoát ra. Gọi rào đó là <em>ruin</em> (phá sản, tuyệt chủng). Hệ quả sắc: <strong>nếu có khả năng ruin, mọi phân tích lời–lỗ đều vô nghĩa</strong>. Trung bình của 100 người trong một ngày khác hẳn số phận một người qua 100 ngày.</div>
+    <div class="sub">Cách giải thích</div>
+    <div class="approach"><p>Chỗ vấp: trung bình nói bạn thắng, vậy sao vẫn có thể trắng tay? Cách làm ở đây: đưa cùng một sòng bài vào hai cách chơi — 100 người một ngày, và một người 100 ngày. Rồi chỉ ra chỗ khác chết người: khi có một ngày 'hết game', chuỗi của bạn đứt hẳn.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Giải thích đơn giản</span><h2>Cùng sòng bài, hai cách chơi, hai số phận</h2></div>
+    </div>
+    <p class="lead">Cho 100 người vào sòng bài trong một ngày. Vài người thắng, vài người thua, chừng một người cháy túi. Cuối ngày bạn đếm ví mọi người và tính được 'lợi thế' của sòng. Người thứ 28 cháy túi? Người thứ 29 chẳng hề hấn gì, vẫn chơi tiếp.</p>
+
+<div class="sub">Giờ đổi sang một người, một trăm ngày</div>
+<p>Anh họ bạn vào sòng 100 ngày liền, cùng số vốn. Đến ngày 28 anh cháy túi. Hỏi: có ngày 29 không? Không. Không còn tiền thì không còn ván. Trò chơi của anh dừng vĩnh viễn ở đó.</p>
+
+<div class="sub">Con số 1% không thuộc về bạn</div>
+<p>Ở đám đông, tỉ lệ cháy túi là 1%, và người cháy không kéo người khác theo. Ở một người qua thời gian, cháy túi một lần là hết. Xác suất phá sản cuối cùng của anh không phải 1% — nó tiến tới 100% nếu cứ chơi mãi.</p>
+
+<div class="sub">Cái rào không quay lại được</div>
+<p>Chỗ 'hết tiền, hết game' đó là một <em>rào hấp thụ</em>: chạm vào là không thoát ra. Có nó thì quá khứ êm đẹp chẳng nói gì về tương lai. Một cú thua kiểu này xóa sạch mọi cái được trước đó.</p>
+  </section>
+
+  <section class="gaps">
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Chỗ vấp · Lỗ hổng</span><h2>Mấy chỗ nghe xuôi mà nghĩ kỹ chưa thông</h2></div>
+    </div>
+    <div class="gap-q"><span class="q">"Kỳ vọng dương mà vẫn thua sạch? Sai ở đâu?"</span><p>Trung bình được tính trên những người vẫn còn chơi. Nhưng bạn chỉ là <em>một</em> người, đi qua thời gian. Một lần chạm ruin là chuỗi của bạn đứt — không có ngày mai để 'trung bình' gỡ lại. Con số đám đông không áp cho một cá nhân có cửa tử.</p></div>
+<div class="gap-q"><span class="q">"Ru-lét Nga thắng 83%, chơi đi chứ?"</span><p>Chơi một phát thì 5/6 ôm tiền về, nghe tuyệt. Nhưng cứ chơi đi chơi lại, bạn kết thúc trong nghĩa địa. Lợi tức kỳ vọng của <em>bạn</em> không tính được, vì có một nhánh xóa sổ mọi nhánh sau. Đây cũng là lỗi của nhiều nghiên cứu: cho cược một lần rồi suy ra cả đời.</p></div>
+<div class="gap-q"><span class="q">"Vậy phải tránh mọi rủi ro cho chắc?"</span><p>Không. Bạn có thể yêu rủi ro mà vẫn ghét ruin. Chìa khóa là chặn phần thua sao cho không một cú nào xóa sạch. Có vô số cách kiếm tiền không dính rủi ro đuôi. Nhận cược khi thua thì đau nhưng còn sống; né cược khi thua là hết.</p></div>
+<div class="gap-q"><span class="q">"Làm sao biết một tình huống có 'cửa tử' hay không?"</span><p>Hỏi đúng một câu: ở đây có điểm nào chạm vào là không quay lại được không? Nếu có — mất sạch vốn, chết, mất uy tín vĩnh viễn — thì trung bình quá khứ vô dụng. Có ruin là dấu hiệu phải bỏ hẳn lối tính lời–lỗ thông thường.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví von &amp; ví dụ đời thường</span><h2>Neo vào thứ bạn đã biết</h2></div>
+    </div>
+    <div class="analogy-card"><span class="tag">Ví dụ trung tâm</span>
+<p>Nghĩ về việc <strong>lội qua một con sông theo độ sâu trung bình</strong>. Người ta bảo sông sâu trung bình chỉ tới hông, nghe an toàn. Nhưng ở giữa dòng có một hố sâu ngập đầu, mà bạn không biết bơi. 'Trung bình tới hông' chẳng cứu bạn — chỉ cần một bước lọt hố là xong. Cái chết đuối không có 'trung bình' để chia lại.</p>
+<p class="limit"><b>Chỗ ví von này hỏng:</b> con sông bạn còn có thể quay đầu lại khi thấy nước sâu. Ruin thật — phá sản, chết, mất sạch — thì <em>không</em> quay lại được, nên nó còn nghiệt hơn con sông. Và cái hố trong sông có thể nhìn thấy; rủi ro ruin thật thường giấu ở cái đuôi hiếm, không lộ ra khi nhìn 'trung bình'. Đừng nghĩ chỉ cần cẩn thận là thấy trước hố.</p>
+</div>
+<p>Quỹ đầu tư báo cáo 'lợi suất thị trường dài hạn' theo kiểu đám đông — trung bình trên nhiều người. Nhưng bạn là một cá nhân, có tiền hữu hạn, có thể ốm, nghỉ hưu, ly hôn. Bạn sống trong thời gian, không trong đám đông. Hai con số không bằng nhau — và lẫn chúng là sai lầm kéo dài 250 năm.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Trung bình trên nhiều người cùng lúc gọi là <em>ensemble probability</em>; số phận một người qua thời gian gọi là <em>time probability</em>. Chúng chỉ bằng nhau khi hệ <em>ergodic</em> — không có rào hấp thụ. Có ruin thì hai con số tách hẳn. Nhà vật lý Ole Peters chỉ ra điều này; những người có skin in the game — Kelly, Thorp, Shannon — đã hiểu bằng trực giác từ lâu.</p>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">4</div>
+      <div class="step-meta"><span class="lbl">Kể lại gọn gàng</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Trung bình của 100 người trong một ngày khác số phận một người qua 100 ngày, khi có một cửa tử không quay lại. Chạm ruin một lần là chuỗi đứt, mọi cái được trước đó thành vô nghĩa. Nên trước khi tin 'kỳ vọng dương', hãy hỏi: ở đây có điểm nào mất là hết không? Có thì bỏ lối tính lời–lỗ.</p>
+<p class="core">100 người chơi một ngày <span>có cửa tử thì phải sống sót trước, tính lời lãi sau.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã hiểu chưa?</h3>
+      <ol>
+        <li>Vì sao 'người thứ 28 cháy túi' trong đám đông không sao, nhưng 'ngày thứ 28 cháy túi' của một người lại là dấu chấm hết?</li>
+        <li>Ru-lét Nga thắng 83% mỗi phát — vì sao lợi tức kỳ vọng của bạn vẫn 'không tính được'?</li>
+        <li>Chỉ bằng một câu hỏi, làm sao biết một tình huống có 'rào hấp thụ' hay không?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nếu giải thích được cho bà ngoại hiểu, bạn mới thật sự hiểu.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-bac-si-khong-nen-trong-giong-bac-si"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Giải thích theo phương pháp Feynman</div>
+    <h1 class="rise" style="animation-delay:.08s">Bác sĩ giỏi không nên trông giống bác sĩ</h1>
+    <p class="core rise" style="animation-delay:.16s">Giữa hai bác sĩ ngang tài, <span>hãy chọn người trông ít giống bác sĩ nhất.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Điều cần hiểu &amp; cách tiếp cận</span><h2>Quy tắc: đã thành công mà không giống vai là tín hiệu mạnh</h2></div>
+    </div>
+    <div class="rule">Taleb (ch.9): với điều kiện <em>đã thành công trong nghề</em>, người <strong>không</strong> trông giống vai của mình là tín hiệu mạnh về năng lực. Vì họ đã vượt qua một định kiến lớn về hình ảnh; muốn trụ được bất chấp thiệt thòi đó, tài thật phải đủ mạnh để bù lại. <em>Skin in the game</em> — tiếp xúc trực tiếp với thực tế — là bộ lọc <em>mù với vẻ ngoài</em>, lọc ra kẻ bất tài theo cách phỏng vấn hình thức không làm được.</div>
+    <div class="sub">Cách giải thích</div>
+    <div class="approach"><p>Chỗ vấp: chẳng phải người bóng bẩy, bằng cấp đầy tường mới đáng tin hơn sao? Cách làm ở đây: đặt cạnh nhau hai bác sĩ ngang cấp, một trông chuẩn mực, một trông như anh hàng thịt. Rồi lần theo cái bộ lọc âm thầm đã cho phép anh hàng thịt trụ lại tới hôm nay.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Giải thích đơn giản</span><h2>Anh hàng thịt và ông bác sĩ chỉn chu</h2></div>
+    </div>
+    <p class="lead">Bạn chọn giữa hai bác sĩ phẫu thuật cùng cấp. Người thứ nhất: kính gọng bạc, tay thanh mảnh, nói năng chỉn chu, bằng cấp treo kín tường. Người thứ hai: trông như anh hàng thịt, giọng thô, một cái răng vàng, chẳng khoe bằng gì. Taleb chọn anh hàng thịt — mọi lần.</p>
+
+<div class="sub">Vì sao lại chọn người trông kém 'chuẩn'</div>
+<p>Cả hai đã leo tới cùng một cấp. Nhưng người trông giống bác sĩ được hình ảnh nâng đỡ suốt đường đi. Người trông như hàng thịt thì bị hình ảnh kéo lùi mà <em>vẫn</em> tới đích. Muốn thế, tài thật của anh phải mạnh hơn để bù.</p>
+
+<div class="sub">Vẻ ngoài là một cơn gió ngược</div>
+<p>Ai cũng vô thức tin người trông đúng vai. Nên trông đúng vai là một lợi thế miễn phí. Thành công mà không có lợi thế đó nghĩa là bạn đã thắng ngược gió. Cơn gió ngược ấy chính là bằng chứng.</p>
+
+<div class="sub">Nơi không có bộ lọc thật</div>
+<p>Ở những nghề thiếu bộ lọc hậu quả, phần đông biết đủ jargon, diễn đúng vai, thuộc lòng các chi tiết bề mặt — mà mù tịt về cái cốt. Vẻ ngoài thế chỗ cho thực chất. Đó là lúc mẹo 'chọn anh hàng thịt' phát huy mạnh nhất.</p>
+  </section>
+
+  <section class="gaps">
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Chỗ vấp · Lỗ hổng</span><h2>Mấy chỗ nghe xuôi mà nghĩ kỹ chưa thông</h2></div>
+    </div>
+    <div class="gap-q"><span class="q">"Chọn người trông kém chuyên nghiệp — nghe liều quá?"</span><p>Bạn không chọn theo vẻ ngoài. Bạn chọn dựa trên một sự thật: anh ta đã thành công <em>dù</em> bị hình ảnh kéo lùi. Cùng một cấp bậc, tức cùng vượt qua bộ lọc kết quả, nhưng anh làm được mà thiếu cả lợi thế hình ảnh. Đó là điểm cộng, không phải điểm trừ.</p></div>
+<div class="gap-q"><span class="q">"Vậy cứ ai lôi thôi là giỏi à?"</span><p>Không. Quy tắc cần chữ 'đã thành công' làm bản lề. Anh hàng thịt kia <em>đã</em> có thành tích, đã lên tới cấp đó. Một người xa lạ ăn mặc luộm thuộm ngoài đường thì không nói lên gì cả. Thiếu bộ lọc thành công đứng trước, mẹo này vô nghĩa.</p></div>
+<div class="gap-q"><span class="q">"Thế kẻ trộm trông không giống kẻ trộm thì sao?"</span><p>Đúng, quy tắc chạy ngược lại y hệt. Kẻ lừa khéo thì trông <em>rất</em> đáng tin, chỉn chu, mượt mà — đó là cái bẫy. Còn những kẻ trông đúng kiểu tội phạm thường đang ngồi tù. Vẻ ngoài đáng tin, khi không có gì bảo chứng, lại là dấu hiệu để dè chừng.</p></div>
+<div class="gap-q"><span class="q">"Khi nào mẹo này KHÔNG dùng được?"</span><p>Ở nghề có bộ lọc hậu quả cứng — nâng tạ, giao dịch thật, chữa ca nặng — thì khỏi cần đoán qua vẻ ngoài, cứ nhìn kết quả. Mẹo 'chọn anh hàng thịt' chỉ đắt giá ở những chỗ vẻ ngoài <em>có thể</em> thay cho thực chất: tư vấn, dự báo, diễn thuyết.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví von &amp; ví dụ đời thường</span><h2>Neo vào thứ bạn đã biết</h2></div>
+    </div>
+    <div class="analogy-card"><span class="tag">Ví dụ trung tâm</span>
+<p>Nghĩ về việc <strong>chọn quán ăn để đặt cỗ</strong>. Một bên là bà cụ nấu trong gian bếp lem luốc, tạp dề dính dầu, quán đông suốt hai mươi năm. Một bên là đầu bếp lên hình, đồng phục thẳng nếp, bếp bóng lộn, mới mở. Nếu cả hai <em>đều</em> đông khách, hãy cược vào bà cụ. Bà giữ được khách bất chấp cái bếp xấu, nghĩa là món phải ngon thật.</p>
+<p class="limit"><b>Chỗ ví von này hỏng:</b> nghề nấu ăn có sẵn một bộ lọc trực tiếp — khách nếm rồi quay lại hay không. Nên ở đây vẻ ngoài vốn đã ít quan trọng. Ở những nghề <em>không</em> có phép nếm ấy — tư vấn chiến lược, dự báo vĩ mô — tín hiệu 'không giống vai' còn mạnh hơn nhiều. Ở đó chẳng có gì khác để bấu víu ngoài hình ảnh. Ví von quán ăn vì thế chỉ là bản nhẹ của quy tắc.</p>
+</div>
+<p>Một anh chàng làm giàu nhờ buôn <em>green lumber</em> mà không biết đó là gỗ tươi vừa cưa, tưởng là gỗ sơn xanh. Người kể chuyện — thuộc mọi chi tiết về sản phẩm — thì phá sản. Cái bạn <strong>cần biết</strong> ngoài đời không trùng với cái bạn <strong>nói trơn tru</strong> được. Người khó hiểu, nói lúng búng, nhưng thành tích sạch, thường mới là tay cự phách.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Cái bẫy ở đây là <em>halo effect</em> (hiệu ứng hào quang): một nét bề mặt đẹp khiến ta suy ra các nét chìm cũng đẹp — bằng Harvard suy ra tư duy sâu, áo blouse trắng suy ra chữa được bệnh. Rộng hơn là <em>scientism</em>: tỉ lệ giữa cái <em>trông</em> có vẻ khoa học và cái thật sự khoa học. Hệ luận tuyển dụng của Taleb: thuê tay giao dịch giỏi mà bạn hiểu <em>ít nhất</em>, vì cái diễn được thành câu chuyện trơn tru thường là bẫy.</p>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">4</div>
+      <div class="step-meta"><span class="lbl">Kể lại gọn gàng</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Khi hai người đã cùng thành công, người trông ít giống vai lại đáng tin hơn. Vì anh ta thắng ngược gió hình ảnh, nên tài thật phải mạnh hơn. Vẻ ngoài đúng vai là lợi thế miễn phí; thành công mà thiếu nó là bằng chứng năng lực. Mẹo này đắt nhất ở nghề thiếu bộ lọc hậu quả, nơi hình thức hay thế chỗ thực chất.</p>
+<p class="core">Giữa hai bác sĩ ngang tài, <span>đã thành công mà không giống vai — đó là tài thật thắng ngược gió.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã hiểu chưa?</h3>
+      <ol>
+        <li>Vì sao 'thành công mà trông không giống vai' lại là bằng chứng năng lực, chứ không phải điểm trừ?</li>
+        <li>Quy tắc này cần điều kiện 'đã thành công' — bỏ điều kiện đó thì hỏng ở đâu?</li>
+        <li>Vì sao ở nghề có bộ lọc hậu quả cứng (nâng tạ, giao dịch thật) thì mẹo 'chọn anh hàng thịt' lại ít cần đến?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nếu giải thích được cho bà ngoại hiểu, bạn mới thật sự hiểu.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-via-negativa"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Giải thích theo phương pháp Feynman</div>
+    <h1 class="rise" style="animation-delay:.08s">Via negativa: vì sao 'đừng làm' mạnh hơn 'hãy làm'</h1>
+    <p class="core rise" style="animation-delay:.16s">Ta biết cái xấu <span>chắc hơn cái tốt — nên bớt đi an toàn hơn thêm vào.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Điều cần hiểu &amp; cách tiếp cận</span><h2>Quy tắc: quy tắc bạc bền hơn quy tắc vàng</h2></div>
+    </div>
+    <div class="rule">Taleb (Prologue 1.6): <strong>Quy tắc Bạc</strong> — <em>đừng đối xử với người khác theo cách bạn không muốn bị đối xử</em> — bền hơn Quy tắc Vàng (<em>hãy đối xử với người khác như bạn muốn được đối xử</em>). Vì ta hiểu cái <strong>xấu</strong> rõ hơn cái tốt rất nhiều. Đây là một dạng <em>via negativa</em> (hành động bằng cách bớt đi): gạt bỏ cái sai thì chắc và ít lỗi hơn thêm vào cái 'tốt' do mình tự định.</div>
+    <div class="sub">Cách giải thích</div>
+    <div class="approach"><p>Chỗ vấp: Quy tắc Vàng nghe cao đẹp hơn, sao bản phủ định lại mạnh hơn? Cách làm ở đây: đặt hai quy tắc cạnh nhau, tưởng như chỉ là một câu đảo chiều. Rồi chỉ ra chỗ chúng rẽ đôi: một bên cho bạn quyền áp cái tốt lên người khác, một bên chỉ ngăn bạn gây hại.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Giải thích đơn giản</span><h2>Hai quy tắc nghe giống nhau mà không giống nhau</h2></div>
+    </div>
+    <p class="lead">Quy tắc Vàng: hãy đối xử với người khác như cách bạn muốn họ đối xử với mình. Quy tắc Bạc: đừng đối xử với người khác theo cách bạn không muốn bị đối xử. Nghe như cùng một câu, chỉ đảo chiều. Nhưng hai câu này dẫn tới hai thế giới khác nhau.</p>
+
+<div class="sub">Chỗ hai câu rẽ đôi</div>
+<p>Quy tắc Vàng cho bạn quyền tự quyết cái gì là 'tốt', rồi áp nó lên người khác. Dễ trượt thành áp đặt. Quy tắc Bạc chỉ cấm bạn gây hại — bạn lo việc của mình, không định đoạt điều tốt thay ai.</p>
+
+<div class="sub">Vì sao bản phủ định chắc hơn</div>
+<p>Ta biết cái xấu rõ hơn cái tốt rất nhiều. Điều gây hại thì dễ chỉ ra và ít bàn cãi. Còn 'điều tốt cho người khác' thì mỗi người một ý, dễ sai. Nên gạt bỏ cái hại đã biết chắc hơn là thêm vào cái tốt phỏng đoán.</p>
+
+<div class="sub">Đây là via negativa</div>
+<p>Người thợ cắt tóc của Taleb chứng minh điều này: sửa bằng cách <em>bớt đi</em> ít hỏng hơn thêm vào. Trong một hệ rối, trừ cái sai thì tác dụng rõ; thêm cái mới thì kéo theo tác dụng phụ khó lường. Bớt đi thường khôn hơn thêm vào.</p>
+  </section>
+
+  <section class="gaps">
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Chỗ vấp · Lỗ hổng</span><h2>Mấy chỗ nghe xuôi mà nghĩ kỹ chưa thông</h2></div>
+    </div>
+    <div class="gap-q"><span class="q">"Hai quy tắc chỉ là một, đảo chiều thôi mà?"</span><p>Không. Bản khẳng định <em>cho phép</em> bạn ra tay lên người khác theo ý mình về cái tốt. Bản phủ định chỉ <em>kìm</em> bạn lại, cấm gây hại. Một câu mở rộng quyền lực của bạn, một câu giới hạn nó. Khác nhau ở chính chỗ đó.</p></div>
+<div class="gap-q"><span class="q">"Chẳng lẽ đừng bao giờ làm điều tốt cho ai?"</span><p>Vẫn làm được, nhưng khiêm tốn: mời, đừng ép; đề nghị, đừng áp. Trước hết hãy bỏ đi những cái hại rõ ràng. Cái trừu tượng và phổ quát hay thu hút những kẻ tự cho mình là chính nghĩa — đúng đám hay 'giúp' người khác bằng cách áp đặt.</p></div>
+<div class="gap-q"><span class="q">"Cứ bớt đi thì làm sao tiến bộ được?"</span><p>Trong hệ phức tạp, bớt đi <em>chính là</em> tiến bộ. Bỏ thuốc lá, giảm nợ, dẹp một quy tắc tồi — đều là gạt bỏ cái làm hệ dễ vỡ. Cái đó chắc ăn hơn nhồi thêm một mẹo khôn mới mà chẳng lường hết hệ lụy.</p></div>
+<div class="gap-q"><span class="q">"Làm sao biết khi nào nên thêm, khi nào nên bớt?"</span><p>Nhìn độ chắc chắn của hiểu biết. Ở chỗ mù mờ, phức tạp, tác dụng phụ khi 'thêm' rất khó đoán, nên bỏ cái hại đã biết là an toàn hơn. Ở ca rõ ràng và cấp bách thì hành động chủ động mới đúng. Via negativa là thiên hướng cho vùng bất định, không phải lệnh cấm hành động.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví von &amp; ví dụ đời thường</span><h2>Neo vào thứ bạn đã biết</h2></div>
+    </div>
+    <div class="analogy-card"><span class="tag">Ví dụ trung tâm</span>
+<p>Nghĩ về một <strong>người gần như khỏe mạnh đi khám</strong>. Cách giúp chắc ăn nhất thường là <em>bớt đi</em>: ngủ đủ, bỏ bớt đường, nghỉ ngơi. Gỡ một cái hại đã biết thì hầu như luôn có lợi. Còn kê thêm một loại thuốc mạnh vào người gần khỏe lại rước thêm tác dụng phụ mà chẳng thêm bao lợi. Với người gần ổn, làm ít lại là làm đúng.</p>
+<p class="limit"><b>Chỗ ví von này hỏng:</b> với một người <em>bệnh nặng thật</em> — nhà đang cháy, khối u ác — thì can thiệp mạnh mới đúng. Lúc đó 'bớt đi' là tắc trách. Via negativa là thiên hướng cho ca gần khỏe và cho vùng mù mờ, không phải lệnh cấm hành động ở mọi nơi. Đẩy nó thành 'đừng bao giờ ra tay' là hiểu sai — đúng ca nặng, chủ động vẫn là ân nhân.</p>
+</div>
+<p>Quy tắc Bạc còn áp cho cả quốc gia. Isocrates từ thế kỷ V trước Công nguyên: hãy đối xử với nước yếu như bạn muốn nước mạnh đối xử với mình. Cùng tinh thần với luật Hammurabi cổ. Ngay cả việc biên tập cũng là via negativa: bài văn hay lên nhờ <em>bỏ chữ thừa</em>, không phải nhồi thêm chữ.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Taleb gọi Quy tắc Bạc là <em>Negative Golden Rule</em>. Ông bác mệnh lệnh phổ quát của Kant — 'hãy hành xử theo châm ngôn bạn mong thành luật phổ quát' — vì con người là động vật cục bộ, nhạy với quy mô: cái nhỏ không phải cái lớn, cái cụ thể không phải cái trừu tượng. Nguyên tắc thầy thuốc <em>primum non nocere</em> (trước hết, đừng gây hại) cũng chính là via negativa.</p>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">4</div>
+      <div class="step-meta"><span class="lbl">Kể lại gọn gàng</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Quy tắc Bạc — 'đừng làm điều bạn không muốn bị làm' — bền hơn Quy tắc Vàng, vì ta biết cái xấu chắc hơn cái tốt. Bản khẳng định cho bạn quyền áp cái tốt lên người khác; bản phủ định chỉ ngăn bạn gây hại. Đó là via negativa: gạt bỏ cái sai chắc và ít lỗi hơn thêm vào cái tốt phỏng đoán — trừ ca nặng thật.</p>
+<p class="core">Ta biết cái xấu <span>bỏ cái hại đã biết chắc hơn thêm cái tốt còn phải đoán.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã hiểu chưa?</h3>
+      <ol>
+        <li>Quy tắc Vàng và Quy tắc Bạc nghe như đảo chiều của nhau — chúng thật sự rẽ đôi ở đâu?</li>
+        <li>Vì sao 'bớt đi cái hại' lại chắc ăn hơn 'thêm vào cái tốt' trong một hệ phức tạp?</li>
+        <li>Via negativa hỏng ở đâu nếu đem áp cho một người bệnh nặng thật sự?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nếu giải thích được cho bà ngoại hiểu, bạn mới thật sự hiểu.</p>
+  </footer>
+
+</div></div>
+<script>
+  var bar=document.getElementById('progress');
+  function upd(){var h=document.documentElement;var s=h.scrollTop||document.body.scrollTop;
+    var max=(h.scrollHeight-h.clientHeight)||1;bar.style.width=(s/max*100)+'%';}
+  window.addEventListener('scroll',upd,{passive:true});upd();
+  var io=new IntersectionObserver(function(es){es.forEach(function(e){
+    if(e.isIntersecting){e.target.style.animation='rise .7s cubic-bezier(.2,.7,.3,1) forwards';io.unobserve(e.target);}});},{threshold:.12});
+  document.querySelectorAll('section').forEach(function(s){s.style.opacity='0';io.observe(s);});
+</script>
+
+<script>
+(function(){
+  var tabs=[].slice.call(document.querySelectorAll('.tabbar .tab'));
+  var panels=[].slice.call(document.querySelectorAll('.concept-panel'));
+  function show(i){
+    tabs.forEach(function(t,j){t.classList.toggle('active',j===i);});
+    panels.forEach(function(p,j){
+      var on=(j===i); p.classList.toggle('active',on);
+      if(on){p.querySelectorAll('section').forEach(function(s){s.style.opacity='';s.style.animation='';});}
+    });
+    try{history.replaceState(null,'','#'+panels[i].id);}catch(e){}
+    window.scrollTo(0,0); window.dispatchEvent(new Event('scroll'));
+  }
+  tabs.forEach(function(t){t.addEventListener('click',function(){show(+t.getAttribute('data-i'));});});
+  var start=0; panels.forEach(function(p,j){if('#'+p.id===location.hash)start=j;});
+  show(start);
+})();
+</script>
+
+</body></html>

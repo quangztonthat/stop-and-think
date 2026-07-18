@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="vi"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Margin of Safety — Biên An Toàn (Seth Klarman) — Hiểu sâu theo Feynman</title>
+<style>
+  /* Design tokens shared with ebook-to-study-html (styles_v2.css) */
+  :root{
+    --bg:#fafaf7; --bg-elevated:#ffffff; --bg-soft:#f3f3ee;
+    --border:#e0e0d8; --border-soft:#ececea; --border-strong:#d2c8b6;
+    --ink:#1a1a1f; --ink-soft:#3f3f4a; --muted:#7a7a85;
+    --accent:#2f6fed; --accent-2:#2258c8; --gold:#0fb6d4; --gap:#2258c8;
+    --serif:"Fraunces",Georgia,"Iowan Old Style",serif;
+    --sans:"Geist",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    --mono:"Geist Mono","JetBrains Mono",Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:var(--sans);
+    font-size:19px;line-height:1.72;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}
+  .progress{position:fixed;top:0;left:0;height:3px;width:0;z-index:50;
+    background:linear-gradient(90deg,var(--gold),var(--accent));transition:width .08s linear}
+  .wrap{max-width:920px;margin:0 auto;padding:0 36px}
+  .rise{opacity:0;transform:translateY(14px);animation:rise .7s cubic-bezier(.2,.7,.3,1) forwards}
+  @keyframes rise{to{opacity:1;transform:none}}
+
+  header{padding:104px 0 60px;border-bottom:1px solid var(--border)}
+  .kicker{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.18em;
+    text-transform:uppercase;color:var(--accent);margin-bottom:26px}
+  h1{font-family:var(--serif);font-weight:600;font-size:clamp(42px,7.6vw,72px);
+    line-height:1.0;letter-spacing:-.022em;margin-bottom:28px;font-optical-sizing:auto;color:var(--ink)}
+  h1 em{font-style:italic;color:var(--accent)}
+  .core{font-family:var(--serif);font-style:italic;font-weight:400;
+    font-size:clamp(21px,3.6vw,27px);line-height:1.44;color:var(--ink-soft)}
+  .core span{font-style:normal;font-weight:600;color:var(--accent-2);
+    box-shadow:inset 0 -.5em 0 rgba(47,111,237,.16)}
+
+  /* ---- BƯỚC 0: ANCHOR (state the rule + plan before explaining) ---- */
+  .anchor .rule{font-family:var(--serif);font-size:19px;line-height:1.5;color:var(--ink);
+    background:var(--bg-soft);border-left:3px solid var(--accent);
+    padding:18px 24px;border-radius:0 4px 4px 0;margin:0}
+  .anchor .rule em{font-style:italic;color:var(--accent-2)}
+  .anchor .rule strong{color:var(--ink);font-weight:600}
+  .anchor .approach{color:var(--ink-soft)}
+
+  section{padding:72px 0;border-bottom:1px solid var(--border);position:relative}
+  .step-head{display:flex;align-items:flex-start;gap:22px;margin-bottom:34px}
+  .big-num{font-family:var(--serif);font-weight:700;font-size:62px;line-height:.8;
+    color:var(--border-strong);flex:none;font-optical-sizing:auto;letter-spacing:-.03em}
+  .step-meta{padding-top:4px}
+  .lbl{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--accent);display:block;margin-bottom:10px}
+  h2{font-family:var(--serif);font-weight:600;font-size:clamp(27px,4.4vw,37px);
+    line-height:1.12;letter-spacing:-.012em;color:var(--ink)}
+  h2 em{font-style:italic;color:var(--accent)}
+  p{margin-bottom:21px}
+  p:last-child{margin-bottom:0}
+  strong{font-weight:600;color:var(--ink)}
+  em{font-style:italic;color:var(--accent-2)}
+  .gloss{color:var(--muted);font-style:italic}
+
+  .lead::first-letter{font-family:var(--serif);font-weight:700;float:left;
+    font-size:74px;line-height:.74;padding:8px 12px 0 0;color:var(--accent)}
+
+  .sub{font-family:var(--serif);font-weight:600;font-size:17px;letter-spacing:.01em;
+    color:var(--ink);margin:34px 0 14px;display:flex;align-items:center;gap:11px}
+  .sub::before{content:"";width:18px;height:2px;background:var(--accent);flex:none;border-radius:2px}
+
+  .gaps{background:var(--bg-soft)}
+  .gaps .big-num{color:#e2d6b4}
+  .gaps .lbl{color:var(--gap)}
+  .gap-q{margin:0 0 30px;padding-left:24px;border-left:2px solid var(--border-strong)}
+  .gap-q:last-child{margin-bottom:0}
+  .gap-q .q{font-family:var(--serif);font-style:italic;font-weight:500;
+    font-size:22px;line-height:1.35;color:var(--gap);margin-bottom:12px;display:block}
+  .gap-q p:last-child{margin-bottom:0}
+
+  .analogy-card{border:1px solid #e8c876;border-radius:4px;padding:30px 32px;margin:8px 0 28px;
+    background:linear-gradient(135deg,#fef9ed 0%,#fdf3e0 100%)}
+  .analogy-card .tag{font-family:var(--mono);font-weight:600;font-size:11px;
+    letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin-bottom:16px;display:block}
+  .analogy-card p{color:#5a4810}
+  .analogy-card strong{color:var(--accent-2)}
+  .limit{font-size:17px;line-height:1.6;color:#5a4810;
+    border-top:1px solid #e8c876;padding-top:20px;margin-top:22px}
+  .limit b{color:var(--accent-2);font-weight:600;font-family:var(--serif)}
+
+  .retell{background:linear-gradient(180deg,var(--bg-soft) 0%,var(--bg) 100%);border-bottom:none}
+  .retell h2{color:var(--ink)}
+  .retell strong{color:var(--accent-2)}
+  .retell .core{margin-top:6px}
+  .testbox{border:1px solid var(--border);background:var(--bg-elevated);
+    border-radius:4px;padding:28px 32px;margin-top:40px;box-shadow:0 1px 2px rgba(0,0,0,.03)}
+  .testbox h3{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--accent);margin-bottom:20px}
+  .testbox ol{margin:0;padding-left:22px;counter-reset:t}
+  .testbox li{margin-bottom:16px;color:var(--ink-soft);padding-left:6px}
+  .testbox li:last-child{margin-bottom:0}
+
+  footer{text-align:center;padding:60px 0 88px}
+  footer .mark{font-family:var(--serif);font-weight:700;color:var(--accent);
+    font-size:26px;display:block;margin-bottom:14px}
+  footer p{font-family:var(--serif);font-style:italic;color:var(--muted);font-size:17px;max-width:380px;margin:0 auto}
+
+  @media(max-width:560px){
+    body{font-size:18px}
+    header{padding:70px 0 44px}
+    section{padding:52px 0}
+    .step-head{gap:16px}
+    .big-num{font-size:46px}
+    .lead::first-letter{font-size:60px}
+  }
+
+/* ===== FLAMINDI THEME OVERRIDE (dong bo trang chu flamindi.com) ===== */
+:root{
+  --accent:#2f6fed;--accent-2:#2258c8;--accent2:#2258c8;--gold:#0fb6d4;--cyan:#0fb6d4;--blue:#2f6fed;
+  --bg:#f7f9fe;--bg-elevated:#ffffff;--bg-card:#ffffff;--card:#ffffff;--bg-soft:#eef2fb;--soft:#eef2fb;
+  --border:#e4e9f2;--border-soft:#eef1f7;--border-strong:#cfd8e8;
+  --text:#1a2233;--text-soft:#4e5a74;--text-dim:#6b7691;
+  --ink:#1a2233;--ink-soft:#4e5a74;--muted:#6b7691;--soft-t:#4e5a74;--dim:#6b7691;
+  --serif:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+  --mono:ui-monospace,Menlo,Consolas,monospace;
+}
+body{background:radial-gradient(1200px 600px at 85% -10%,rgba(47,111,237,.14),transparent 60%),radial-gradient(1000px 640px at -10% 30%,rgba(15,182,212,.09),transparent 55%),linear-gradient(#f7f9fe,#edf0f8) fixed !important;}
+</style>
+<style>
+ .tabbar{position:fixed;top:0;left:0;right:0;width:100%;box-sizing:border-box;z-index:40;background:rgba(250,250,247,.93);
+   backdrop-filter:saturate(1.1) blur(8px);-webkit-backdrop-filter:saturate(1.1) blur(8px);
+   border-bottom:1px solid var(--border);display:flex;gap:6px;overflow-x:auto;
+   padding:10px max(36px,calc((100% - 992px)/2));scrollbar-width:thin}
+ .tabbar .tab{flex:0 0 auto;display:flex;align-items:baseline;gap:9px;cursor:pointer;
+   background:transparent;border:1px solid transparent;border-radius:999px;
+   padding:8px 17px;transition:.15s;white-space:nowrap;color:var(--muted)}
+ .tabbar .tab:hover{color:var(--ink);background:var(--bg-soft)}
+ .tabbar .tab.active{color:var(--accent-2);background:var(--bg-soft);border-color:var(--border-strong)}
+ .tabbar .tn{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.1em;color:var(--accent)}
+ .tabbar .tl{font-family:var(--serif);font-weight:500;font-size:16px}
+ body{padding-top:56px} .concept-panel{display:none}
+ .concept-panel.active{display:block}
+ .concept-panel header{padding-top:50px}
+ @media(max-width:560px){.tabbar .tl{max-width:48vw;overflow:hidden;text-overflow:ellipsis}}
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+<nav class="tabbar" aria-label="Các khái niệm"><button class="tab" data-i="0"><span class="tn">01</span><span class="tl">Phòng thủ thắng tấn công</span></button><button class="tab" data-i="1"><span class="tn">02</span><span class="tl">Mr. Market không hiệu quả</span></button><button class="tab" data-i="2"><span class="tn">03</span><span class="tl">Rủi ro không phải beta</span></button><button class="tab" data-i="3"><span class="tn">04</span><span class="tl">Biên an toàn phải lớn</span></button></nav>
+<div class="concept-panel" id="c-phong-thu-thang-tan-cong"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Giải thích theo phương pháp Feynman</div>
+    <h1 class="rise" style="animation-delay:.08s">Vì sao ‘không mất tiền’ lại thắng ‘kiếm lời to’ về dài hạn</h1>
+    <p class="core rise" style="animation-delay:.16s">Kiếm đậm mà có một cú ngã <span>thua kiếm đều mà không bao giờ sập.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Điều cần hiểu &amp; cách tiếp cận</span><h2>Quy tắc: tránh thua lỗ là con đường chắc nhất tới kết cục có lời</h2></div>
+    </div>
+    <div class="rule">Klarman (t3 §3.1) dựng cả triết lý trên quy tắc của Buffett: quy tắc một ‘đừng mất tiền’, quy tắc hai ‘đừng quên quy tắc một’. Tránh thua lỗ là cách <strong>chắc chắn nhất</strong> để đảm bảo một kết cục có lời. Vì lãi kép khiêm tốn qua nhiều năm cho kết quả kinh ngạc, nhưng <em>một</em> cú lỗ lớn có thể xóa sạch thành quả nhiều năm.</div>
+    <div class="sub">Cách giải thích</div>
+    <div class="approach"><p>Chỗ vấp: ai cũng nghĩ muốn giàu thì phải ‘tấn công’ — săn những cú lời thật đậm. Cách làm ở đây: lấy hai người, một đánh chắc một đánh liều, cho chạy mười năm rồi cộng tiền. Bạn sẽ thấy một con số âm cắt ngang chuỗi lãi kép tàn khốc thế nào.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Giải thích đơn giản</span><h2>Hai người, mười năm, ai nhiều tiền hơn?</h2></div>
+    </div>
+    <p class="lead">Hai người cùng bỏ vốn như nhau. Người chắc kiếm đều đặn, năm nào cũng dương, không đột phá. Người liều có những năm lời rất đậm, nhưng thi thoảng dính một năm lỗ nặng. Ai giàu hơn sau mười năm? Trực giác reo ‘người liều’. Trực giác sai.</p>
+
+<div class="sub">Vì sao một số âm phá tất cả</div>
+<p>Tiền của bạn lăn như quả cầu tuyết: năm sau đắp lên năm trước. Một năm lỗ nặng không chỉ mất phần năm đó. Nó ăn vào cả cái nền mà những năm sau lẽ ra đắp tiếp lên. Cú ngã cắt đứt đà lăn.</p>
+
+<div class="sub">Mất càng sâu, leo lại càng dốc</div>
+<p>Mất một nửa vốn không phải cần lời lại 50% là hòa. Bạn phải lời tới 100% mới về chốn cũ. Mất 20% chỉ cần gỡ 25%. Nhưng mất 50% thì phải nhân đôi phần còn lại. Hố càng sâu, thang leo ra càng dài.</p>
+
+<div class="sub">Nên phòng thủ mới là tấn công thật</div>
+<p>Người giữ mình không bao giờ sập sẽ để lãi kép làm việc không nghỉ. Người thắng đậm rồi ngã một phen phải quay lại vạch xuất phát. Về dài hạn, tránh cú lỗ lớn đẻ ra nhiều tiền hơn ráng thắng cú lời lớn.</p>
+  </section>
+
+  <section class="gaps">
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Chỗ vấp · Lỗ hổng</span><h2>Mấy chỗ nghe xuôi mà nghĩ kỹ chưa thông</h2></div>
+    </div>
+    <div class="gap-q"><span class="q">"Phòng thủ thắng — vậy sao gần như ai cũng lao đi săn cú lời to?"</span><p>Vì cú lời to kể được thành chuyện, cho cảm giác thắng ngay. Còn ‘không mất tiền’ thì nhạt, chẳng có gì khoe. Đám đông chạy theo cái sướng trước mắt và sự an toàn khi đi cùng số đông. Cái giá của lối đó chỉ hiện ra vào năm sụp đổ.</p></div>
+<div class="gap-q"><span class="q">"Một cú thắng thật đậm bù lại một cú thua đậm không được sao?"</span><p>Đây là chỗ bất đối xứng. Thua và thắng không cân nhau. Mất một nửa cần gấp đôi phần còn lại mới hòa, không phải một nửa. Nên một cú thua sâu ‘nặng’ hơn hẳn một cú thắng cùng cỡ. Cộng lại qua thời gian, phe thua thắng thế.</p></div>
+<div class="gap-q"><span class="q">"Giữ mình quá kỹ, ôm tiền mặt chờ, chẳng phải cũng là một cái giá sao?"</span><p>Đúng, và đây là chỗ sách thành thật. Chờ đợi có chi phí: tiền mặt lời ít, bạn bỏ lỡ vài đợt tăng. Nhưng đó là mất cơ hội, không phải mất vốn. Klarman chọn chịu mất cơ hội để tránh mất vốn — vì cái sau mới giết bạn.</p></div>
+<div class="gap-q"><span class="q">"Vậy phòng thủ chỉ là nói kiểu hoa mỹ cho ‘nhát gan’?"</span><p>Không. Nhát gan là né mọi rủi ro, kể cả cú đáng nhận. Phòng thủ ở đây sắc hơn: vẫn ra tay, nhưng chỉ khi được trả xứng và khi một cú xui không thể xóa sạch mình. Đó là kỷ luật để <em>sống sót đủ lâu</em> cho lãi kép thắng, không phải sợ hãi.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví von &amp; ví dụ đời thường</span><h2>Neo vào thứ bạn đã biết</h2></div>
+    </div>
+    <div class="analogy-card"><span class="tag">Ví dụ trung tâm</span>
+<p>Nghĩ về một tay đua đường dài băng qua sa mạc. Một người phóng hết ga mỗi chặng, dẫn đầu ngoạn mục — nhưng ép máy tới mức có ngày nổ lốp giữa cát, nằm lại. Người kia giữ tốc độ vừa phải, không bao giờ để xe hỏng, cứ thế lăn bánh đều. Ai về đích trước? Người không bao giờ phải dừng. Trong một cuộc đua đủ dài, <em>không hỏng xe</em> đánh bại <em>chạy nhanh nhất</em>.</p>
+<p class="limit"><b>Chỗ ví von này hỏng:</b> đua xe có vạch đích cố định, còn đầu tư thì lăn mãi không có ngày về. Điều đó lại làm ý này <em>mạnh hơn</em>: cuộc đua càng dài, một lần ‘nổ lốp’ càng đắt, vì lãi kép bị cắt có ít thời gian gỡ hơn. Đừng hiểu thành ‘cứ chạy chậm nhất là thắng’ — vấn đề là đừng hỏng xe, không phải bò thật chậm.</p>
+</div>
+<p>Klarman đưa con số cụ thể. Người kiếm đều 16% mỗi năm suốt mười năm rốt cuộc giàu hơn người kiếm 20% mỗi năm trong chín năm rồi mất 15% năm thứ mười. Chỉ một năm âm đã nuốt trọn cái lợi ‘nhỉnh hơn 4% mỗi năm’ của cả chín năm trước.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Cái làm phòng thủ thắng là <em>tính nhân</em> của lãi kép: kết quả các năm nhân với nhau, không cộng. Một thừa số nhỏ hơn 1 (năm lỗ) kéo tụt cả tích, và không đối xứng với một thừa số lớn hơn 1 cùng biên độ. Đây cũng là gốc của việc Klarman đo lợi nhuận <em>tuyệt đối</em> thay vì so với đám đông: bạn không tiêu được ‘hiệu suất tương đối’.</p>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">4</div>
+      <div class="step-meta"><span class="lbl">Kể lại gọn gàng</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Tiền lăn như cầu tuyết, năm sau đắp lên năm trước. Một cú lỗ lớn không chỉ mất phần năm đó, nó cắt đứt đà và xóa thành quả nhiều năm. Mà mất thì bất đối xứng: mất một nửa phải gấp đôi mới hòa. Nên người không bao giờ sập, để lãi kép chạy không nghỉ, cuối cùng vượt người thắng đậm rồi ngã. Phòng thủ mới là tấn công thật.</p>
+<p class="core">Kiếm đậm mà có một cú ngã <span>đừng để một cú lỗ lớn cắt đứt đà lãi kép — sống sót là thắng.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã hiểu chưa?</h3>
+      <ol>
+        <li>Vì sao một năm lỗ nặng lại xóa được thành quả của nhiều năm lãi đều?</li>
+        <li>Vì sao mất 50% vốn cần lời tới 100% mới hòa, chứ không phải 50%?</li>
+        <li>‘Phòng thủ’ ở đây khác ‘nhát gan né mọi rủi ro’ ở điểm nào?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nếu giải thích được cho bà ngoại hiểu, bạn mới thật sự hiểu.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-mr-market-khong-hieu-qua"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Giải thích theo phương pháp Feynman</div>
+    <h1 class="rise" style="animation-delay:.08s">Vì sao ‘thị trường luôn đúng giá’ là một lầm tưởng</h1>
+    <p class="core rise" style="animation-delay:.16s">Nếu thị trường luôn đúng giá, <span>thì món hời không thể tồn tại — nhưng nó có tồn tại.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Điều cần hiểu &amp; cách tiếp cận</span><h2>Quy tắc: thị trường KHÔNG hiệu quả — hãy tận dụng Mr. Market, đừng nghe theo</h2></div>
+    </div>
+    <div class="rule">Graham hình dung thị trường là một ông <strong>Mr. Market</strong> mỗi ngày sẵn lòng mua hoặc bán ở mức giá ông tự đặt — hôm lạc quan trả trên trời, hôm bi quan bán rẻ mạt, và ông thường <em>phi lý</em> (t1 §1.3). Klarman bác thẳng <em>giả thuyết thị trường hiệu quả</em> ở dạng bán-mạnh và mạnh: phân tích kỷ luật <strong>vẫn tìm được</strong> chứng khoán định giá lệch (t3 §3.7). Bằng chứng: chín ‘siêu nhà đầu tư’ của Graham, danh mục độc lập, đều thắng lớn qua thời gian dài.</div>
+    <div class="sub">Cách giải thích</div>
+    <div class="approach"><p>Chỗ vấp: nếu hàng triệu người thông minh đang mua bán, lẽ ra giá đã luôn đúng, còn đâu món hời cho bạn? Cách làm ở đây: dựng lại Mr. Market thành một người hàng xóm khùng gõ cửa mỗi sáng. Rồi tách rõ hai câu hỏi — ông ta <em>chào giá</em>, chứ không <em>định giá trị</em> giùm bạn.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Giải thích đơn giản</span><h2>Ông hàng xóm khùng gõ cửa mỗi sáng</h2></div>
+    </div>
+    <p class="lead">Tưởng tượng bạn góp vốn một cửa hàng với một ông hàng xóm. Mỗi sáng ông gõ cửa, hét một cái giá: hôm nay ông sẽ mua phần của bạn, hoặc bán thêm phần của ông, ở đúng giá đó. Có hôm ông vui, hét giá trên trời. Có hôm ông rầu, bán tống bán tháo.</p>
+
+<div class="sub">Bạn có để tâm trạng ông quyết giùm không?</div>
+<p>Ông hàng xóm không biết gì hơn bạn về cửa hàng. Ông chỉ đang lên xuống cảm xúc. Nếu bạn để tiếng hét của ông bảo bạn cửa hàng đáng bao nhiêu, bạn giao tay lái cho một người khùng. Cửa hàng vẫn thế; chỉ tâm trạng ông đổi.</p>
+
+<div class="sub">Cách chơi đúng: dùng ông, đừng nghe ông</div>
+<p>Ngày ông rầu, hét giá rẻ mạt, bạn mua thêm. Ngày ông phấn khích, trả giá điên rồ, bạn bán cho ông. Ông trở thành người phục vụ bạn, không phải người dẫn đường. Muốn vậy, bạn phải tự biết cửa hàng đáng bao nhiêu — bằng cách của riêng bạn.</p>
+
+<div class="sub">Vì sao ‘thị trường luôn đúng’ là sai</div>
+<p>Có người bảo giá thị trường đã gộp hết mọi thông tin, nên luôn đúng. Nhưng nếu thế, ông hàng xóm đâu có những ngày điên. Thực tế ông có. Và những ngày đó — khi giá rời xa giá trị — chính là lúc người tỉnh kiếm tiền.</p>
+  </section>
+
+  <section class="gaps">
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Chỗ vấp · Lỗ hổng</span><h2>Mấy chỗ nghe xuôi mà nghĩ kỹ chưa thông</h2></div>
+    </div>
+    <div class="gap-q"><span class="q">"Nếu món hời có thật, sao đám đông thông minh không vồ hết ngay?"</span><p>Vì phần lớn không thật sự tự định giá. Họ nhìn nhau, chạy theo tâm trạng, bị buộc mua bán vì đủ thứ lý do ngoài giá trị. Đúng lúc đáng mua nhất — mọi thứ trông tệ nhất — là lúc họ sợ nhất. Món hời tồn tại chính vì số người dám tự phán xét rất ít.</p></div>
+<div class="gap-q"><span class="q">"Giáo sư bảo không ai thắng nổi thị trường lâu dài mà?"</span><p>Klarman chỉ vào chín đệ tử của Graham. Danh mục họ khác nhau, ít trùng mã, mà đều thắng đậm suốt thời gian dài. Điểm chung duy nhất: đều mua dưới giá trị. Quá nhiều thành công độc lập như vậy không thể là may rủi — và phe ‘thị trường hiệu quả’ chưa bao giờ phản bác thỏa đáng.</p></div>
+<div class="gap-q"><span class="q">"Vậy phần nào của ‘thị trường hiệu quả’ cũng đúng chứ?"</span><p>Có, và cần thành thật chỗ này. Dạng ‘yếu’ — giá quá khứ không đoán được giá tương lai — thì Klarman đồng ý: đọc đồ thị kỹ thuật đúng là phí thời gian. Ông chỉ bác dạng mạnh hơn: rằng phân tích cơ bản cũng vô dụng. Không phải mọi lối tìm lợi thế đều chết, chỉ vài lối thôi.</p></div>
+<div class="gap-q"><span class="q">"Cả một thị trường cùng nghĩ một hướng — chẳng lẽ họ ngu hơn tôi?"</span><p>Không phải chuyện ngu hay khôn, mà là <em>bị cuốn</em>. Đám đông giỏi phản ánh tâm trạng chung, dở ở việc giữ cái đầu lạnh khi tất cả cùng tham hoặc cùng sợ. Bạn không cần thông minh hơn họ. Bạn chỉ cần không hùa theo đúng lúc họ mất bình tĩnh.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví von &amp; ví dụ đời thường</span><h2>Neo vào thứ bạn đã biết</h2></div>
+    </div>
+    <div class="analogy-card"><span class="tag">Ví dụ trung tâm</span>
+<p>Bạn có một căn nhà đang ở. Hình dung một người môi giới đứng trước cửa, mỗi sáng lại hét một giá mới ông sẵn sàng mua nhà bạn. Sáng nắng đẹp ông phấn khích hô gấp đôi; sáng mưa dầm ông rầu rĩ hô một nửa. Căn nhà của bạn có thật sự đổi giá trị theo thời tiết của ông không? Không. Bạn cứ sống trong nhà, và chỉ bán khi ông hô một con số ngon lành đến lố bịch.</p>
+<p class="limit"><b>Chỗ ví von này hỏng:</b> căn nhà thật <em>không</em> có ông môi giới nào hô giá mỗi ngày — bạn dễ phớt lờ. Cổ phiếu thì có bảng giá nhấp nháy từng giây, réo gọi cảm xúc bạn liên tục, nên khó lờ hơn nhiều. Và ví von này chỉ nói về <em>giá</em>; nó không giúp bạn biết căn nhà đáng bao nhiêu — phần đó bạn vẫn phải tự làm.</p>
+</div>
+<p>Klarman kể quỹ Spain Fund bị đẩy lên hơn gấp đôi giá trị tài sản ròng năm 1989, rồi vài tháng sau rơi về đúng giá trị. Danh mục quỹ y nguyên suốt thời gian đó — chỉ có tâm trạng ‘ông hàng xóm’ chạy lên rồi chạy xuống. Đúng ngày ông phấn khích nhất là ngày bán cho ông có lời nhất.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Giả thuyết thị trường hiệu quả có ba dạng: yếu (giá quá khứ vô dụng — Klarman đồng ý), bán-mạnh (mọi tin công khai đã vào giá — ông bác), mạnh (không tin nào giúp ích — ông bác). Nghịch lý: càng nhiều người tin thị trường hiệu quả rồi bỏ nghiên cứu, thị trường càng <em>kém</em> hiệu quả — để lại cơ hội cho số ít còn chịu đào.</p>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">4</div>
+      <div class="step-meta"><span class="lbl">Kể lại gọn gàng</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Coi thị trường là một ông hàng xóm khùng gõ cửa mỗi sáng, hét một giá theo tâm trạng. Ông không biết gì hơn bạn. Ngày ông rầu bán rẻ thì mua, ngày ông phấn khích trả điên thì bán — dùng ông, đừng nghe ông. Muốn vậy phải tự biết giá trị. Vì ông thường phi lý, ‘thị trường luôn đúng giá’ là lầm tưởng, và món hời có thật.</p>
+<p class="core">Nếu thị trường luôn đúng giá, <span>thị trường chào giá theo tâm trạng, không định giá trị giùm bạn.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã hiểu chưa?</h3>
+      <ol>
+        <li>Vì sao món hời vẫn tồn tại dù có hàng triệu người thông minh đang mua bán?</li>
+        <li>Chín ‘siêu nhà đầu tư’ của Graham bác lại điều gì, và bằng cách nào?</li>
+        <li>Dạng nào của ‘thị trường hiệu quả’ mà Klarman thừa nhận là đúng?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nếu giải thích được cho bà ngoại hiểu, bạn mới thật sự hiểu.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-rui-ro-khong-phai-beta"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Giải thích theo phương pháp Feynman</div>
+    <h1 class="rise" style="animation-delay:.08s">Rủi ro không phải là giá nhấp nhô — mà là mất vốn vĩnh viễn</h1>
+    <p class="core rise" style="animation-delay:.16s">Một cổ phiếu nhảy giá mạnh <span>chưa chắc rủi ro hơn một cổ phiếu đứng im.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Điều cần hiểu &amp; cách tiếp cận</span><h2>Quy tắc: rủi ro là xác suất và mức độ mất vốn, không phải độ dao động giá</h2></div>
+    </div>
+    <div class="rule">Klarman (t3 §3.8) bác <em>beta</em> — thước đo rủi ro của nhà trường — vì nó chỉ nhìn dao động giá quá khứ, bỏ qua nền tảng kinh doanh và <strong>mức giá</strong>: như thể IBM ở 50 đô-la không an toàn hơn IBM ở 100 đô-la. Với ông, rủi ro thật là <strong>xác suất và mức độ của tổn thất vĩnh viễn</strong>. Biến động giá tạm thời chỉ hại người <em>buộc phải bán</em>; ai không bị ép bán thì nó vô hại.</div>
+    <div class="sub">Cách giải thích</div>
+    <div class="approach"><p>Chỗ vấp: trường lớp dạy ‘càng nhảy giá càng rủi ro’, nghe rất khoa học vì đo được bằng con số. Cách làm ở đây: đặt cùng một cổ phiếu ở hai mức giá, rồi hỏi cái nào rủi ro hơn. Rồi tách ‘giá nhấp nhô’ khỏi ‘mất tiền thật’ — hai thứ hoàn toàn khác nhau.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Giải thích đơn giản</span><h2>Cùng một công ty, hai mức giá, cái nào rủi ro hơn?</h2></div>
+    </div>
+    <p class="lead">Một công ty tốt, cổ phiếu đang 100 đồng. Ít lâu sau nó rớt còn 50 đồng, dù công ty y nguyên. Trường lớp bảo: nó vừa nhảy giá mạnh, nên nó ‘rủi ro’. Nhưng khoan — mua ở 50 lẽ ra phải <em>an toàn hơn</em> mua ở 100 mới đúng chứ?</p>
+
+<div class="sub">Thước đo beta của nhà trường</div>
+<p>Nó chỉ đếm một thứ: giá trong quá khứ nhấp nhô tới đâu. Nhấp nhô nhiều thì bị gọi là rủi ro cao. Nó không hề nhìn công ty làm ăn ra sao, cũng không nhìn bạn mua ở giá nào. Nó coi cùng một cổ phiếu ở 50 và ở 100 rủi ro y hệt — thậm chí ở 50 còn bị chấm ‘rủi ro hơn’ vì vừa rớt mạnh.</p>
+
+<div class="sub">Rủi ro thật là mất tiền, không phải giá lắc</div>
+<p>Với Klarman, rủi ro là khả năng <em>mất vốn vĩnh viễn</em> — tiền đi không về. Nó tùy vào công ty làm ăn thế nào và bạn trả giá bao nhiêu. Giá lắc lên xuống trên bảng điện chỉ là tiếng ồn, chừng nào bạn chưa bán.</p>
+
+<div class="sub">Khi nào giá lắc mới thật sự hại</div>
+<p>Chỉ khi bạn <em>buộc phải bán</em> đúng lúc giá đang thấp. Nếu bạn vay nợ mua, hay cần tiền gấp, cú lắc ép bạn bán đáy — lúc đó lắc thành lỗ thật. Mẹo là sắp xếp để bán khi mình <em>muốn</em>, không phải khi mình <em>buộc</em>.</p>
+  </section>
+
+  <section class="gaps">
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Chỗ vấp · Lỗ hổng</span><h2>Mấy chỗ nghe xuôi mà nghĩ kỹ chưa thông</h2></div>
+    </div>
+    <div class="gap-q"><span class="q">"Nếu rủi ro không phải giá nhấp nhô, thì nó là gì?"</span><p>Là khả năng mất tiền và không lấy lại được — mất vốn vĩnh viễn. Nó gồm hai phần: <em>xác suất</em> mất bao nhiêu phần, và <em>mức độ</em> mất nặng cỡ nào. Một công ty làm ăn bết bát mua giá đắt thì rủi ro cao, dù giá nó có đứng im ru trên bảng.</p></div>
+<div class="gap-q"><span class="q">"Nhưng giá lắc mạnh rõ ràng làm tôi thấy bất an mà?"</span><p>Bất an là cảm giác, không phải mất mát. Chừng nào bạn không bán, cú rớt chỉ là con số đỏ trên màn hình, chưa thành tiền mất. Nó chỉ hóa lỗ thật nếu bạn bán ngay lúc đó. Cảm giác rủi ro và rủi ro thật là hai thứ khác nhau.</p></div>
+<div class="gap-q"><span class="q">"Vậy độ dao động không đo được gì thật à — hoàn toàn vô dụng?"</span><p>Không hẳn vô hại với tất cả. Với người vay nợ mua, hay quỹ có thể bị khách rút tiền bất ngờ, cú lắc <em>có thể</em> ép bán đáy và biến thành lỗ vĩnh viễn. Vậy nên vấn đề không phải lắc, mà là bạn có bị đặt vào thế buộc phải bán hay không. Đừng vay tới mức một cú lắc là gục.</p></div>
+<div class="gap-q"><span class="q">"Sao cả giới học thuật lại đo rủi ro bằng một con số đơn giản vậy?"</span><p>Vì dao động giá quá khứ có sẵn, gọn, dễ cho vào công thức. Còn ‘công ty này làm ăn ra sao, giá này đắt hay rẻ’ thì phải phán xét, không nhét vừa một con số. Cái gì đo được dễ thì được ưa dùng — kể cả khi nó đo nhầm thứ.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví von &amp; ví dụ đời thường</span><h2>Neo vào thứ bạn đã biết</h2></div>
+    </div>
+    <div class="analogy-card"><span class="tag">Ví dụ trung tâm</span>
+<p>Hai căn nhà y hệt trên cùng con phố, cùng chất lượng. Căn A có một tấm bảng điện trước cửa, nhấp nháy đổi ‘giá chào’ mỗi phút, lên xuống loạn xạ. Căn B không có bảng nào, im lìm. Beta sẽ chấm căn A ‘rủi ro hơn’ vì con số của nó nhảy nhiều. Nhưng hai căn nhà giống hệt nhau! Cái bảng nhấp nháy không làm căn A tệ đi. Nó chỉ làm bạn <em>lo</em> hơn.</p>
+<p class="limit"><b>Chỗ ví von này hỏng:</b> giả sử bạn mua căn A bằng tiền vay. Chủ nợ nhìn tấm bảng, và mỗi lần giá rớt lại đòi thêm thế chấp. Khi đó cái nhấp nháy <em>có thể</em> ép bạn bán gấp — dao động thành lỗ thật. Nên ví von này chỉ đúng khi bạn không bị ép bán. Đừng suy ra ‘dao động luôn vô hại’; nó vô hại với người đứng vững, chết người với người bị dồn.</p>
+</div>
+<p>Klarman lật thẳng: beta coi như IBM ở 50 đô-la không an toàn hơn IBM ở 100 đô-la, và giả định tiềm năng tăng với rủi ro giảm bằng nhau. Cả hai đều vô lý. Mua rẻ hơn thì biên an toàn dày hơn, tức rủi ro <em>thấp</em> hơn — ngược hẳn điều beta ngụ ý khi giá vừa rớt.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Beta còn giả định nhà đầu tư không thể tự tác động tới rủi ro của mình — trong khi thực tế người nắm đủ lớn có thể biểu quyết, giành quyền kiểm soát, ép tái cơ cấu. Klarman phân biệt <em>biến động giá tạm thời</em> với <em>suy giảm giá trị vĩnh viễn</em>: chỉ cái sau mới là rủi ro thật, và giữ một phần tiền mặt giúp bạn không bao giờ rơi vào thế buộc phải bán đáy.</p>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">4</div>
+      <div class="step-meta"><span class="lbl">Kể lại gọn gàng</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Beta đo giá nhấp nhô trong quá khứ và gọi đó là rủi ro. Nhưng nó bỏ qua công ty làm ăn ra sao và bạn mua ở giá nào — coi IBM ở 50 và ở 100 rủi ro y hệt. Rủi ro thật là mất vốn vĩnh viễn, tùy nền tảng và giá mua. Giá lắc chỉ là tiếng ồn, trừ khi bạn bị buộc bán đáy. Nên hãy sắp xếp để bán khi mình muốn, không phải khi mình buộc.</p>
+<p class="core">Một cổ phiếu nhảy giá mạnh <span>rủi ro là mất vốn không về, không phải giá lắc trên bảng.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã hiểu chưa?</h3>
+      <ol>
+        <li>Vì sao cùng một cổ phiếu, mua ở 50 lại an toàn hơn mua ở 100, dù beta nói ngược lại?</li>
+        <li>Khi nào một cú giá rớt mạnh mới thật sự biến thành khoản lỗ?</li>
+        <li>Rủi ro thật, theo Klarman, gồm hai thành phần nào?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nếu giải thích được cho bà ngoại hiểu, bạn mới thật sự hiểu.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-bien-an-toan-phai-lon"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Giải thích theo phương pháp Feynman</div>
+    <h1 class="rise" style="animation-delay:.08s">Vì sao phải đòi đệm LỚN — chứ không chỉ một chút cho có</h1>
+    <p class="core rise" style="animation-delay:.16s">Bạn tính nó đáng 1 đô-la — <span>vậy vì sao vẫn từ chối trả 90 xu?</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Điều cần hiểu &amp; cách tiếp cận</span><h2>Quy tắc: tương lai bất định, nên câu trả lời duy nhất là đòi chiết khấu lớn</h2></div>
+    </div>
+    <div class="rule">Klarman: giá trị doanh nghiệp <strong>không phải một con số</strong> mà là một <em>khoảng</em>, và để tính nó bạn buộc phải dự báo một tương lai <strong>không thể dự báo đáng tin</strong> (t4 §4.1, §4.3). Câu trả lời duy nhất cho việc phải dự báo điều bất khả là <strong>thận trọng</strong>: chỉ mua ở mức chiết khấu lớn so với giá trị ước tính. Biên an toàn phải đủ lớn để sai lầm, xui rủi và biến động cực đoan không gây mất vốn (t3 §3.4).</div>
+    <div class="sub">Cách giải thích</div>
+    <div class="approach"><p>Chỗ vấp: nếu tôi đã phân tích cẩn thận, sao còn phải đòi đệm to — chẳng phải thế là bỏ tiền trên bàn? Cách làm ở đây: cho thấy con số ‘1 đô-la’ của bạn thật ra là một khoảng lung lay. Rồi mượn hình ảnh người kỹ sư xây cầu, để thấy vì sao đệm phải lớn đúng lúc bạn không chắc.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Giải thích đơn giản</span><h2>Vì sao không trả 90 xu cho thứ bạn tính đáng 1 đô-la?</h2></div>
+    </div>
+    <p class="lead">Bạn tính kỹ, ra kết luận một doanh nghiệp đáng 1 đô-la một cổ phần. Có người chào 90 xu. Nghe thì vẫn hời — sao Klarman lại bảo từ chối, đợi tới khi nào có giá 50 xu? Vì con số ‘1 đô-la’ của bạn không chắc như bạn tưởng.</p>
+
+<div class="sub">‘1 đô-la’ thật ra là một khoảng lung lay</div>
+<p>Để ra con số đó, bạn phải đoán tương lai: doanh thu, chi phí, lãi suất nhiều năm tới. Không ai đoán đúng những thứ đó. Nên ‘1 đô-la’ thật ra là ‘đâu đó giữa 70 xu và 1,3 đô-la’. Bản thân cái mốc đã run rồi.</p>
+
+<div class="sub">Trả 90 xu: đệm mỏng dính</div>
+<p>Nếu bạn trả 90 xu mà giá trị thật hóa ra chỉ 80 xu, bạn lỗ. Chỉ cần bạn hơi lạc quan, hoặc công ty gặp một cú xui, là đệm bay sạch. Đệm mỏng không chịu nổi cả sai số của chính phép tính, nói gì tới xui rủi bên ngoài.</p>
+
+<div class="sub">Trả 50 xu: đệm đủ dày để sai mà không chết</div>
+<p>Trả 50 xu cho thứ bạn tính đáng 1 đô-la, bạn còn cả một khoảng rộng. Tính sai 20% ư? Vẫn hời. Công ty vấp một phen ư? Vẫn không mất vốn. Đệm càng dày, bạn càng được phép sai — mà tương lai thì chắc chắn có chỗ bạn sai.</p>
+  </section>
+
+  <section class="gaps">
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Chỗ vấp · Lỗ hổng</span><h2>Mấy chỗ nghe xuôi mà nghĩ kỹ chưa thông</h2></div>
+    </div>
+    <div class="gap-q"><span class="q">"Tôi phân tích rất kỹ rồi — sao vẫn không được tin con số của mình?"</span><p>Vì kỹ tới đâu bạn vẫn đang đoán một tương lai không ai đoán nổi. Phân tích tốt thu hẹp khoảng, chứ không xóa được nó. Klarman gọi việc tin một con số chính xác là ‘độ chính xác giả’: rác đưa vào thì rác lấy ra, dù công thức có đẹp cỡ nào.</p></div>
+<div class="gap-q"><span class="q">"Đòi đệm lớn thế thì bỏ lỡ gần hết cơ hội còn gì?"</span><p>Đúng, và đó là cái giá cố ý trả. Klarman ví như cầu thủ bóng chày: cứ để hàng trăm cú ném trôi qua, chỉ vung gậy vào đúng cú ngon. Bỏ lỡ nhiều món không sao — bạn không bị tính ‘strike’. Chỉ cần vài cú đúng, và mỗi cú đều có đệm dày.</p></div>
+<div class="gap-q"><span class="q">"Đệm bao nhiêu mới là ‘đủ lớn’? Có con số cố định không?"</span><p>Không có con số vàng. Đây là chỗ sách thành thật: nó tùy mức bạn <em>không chắc</em>. Doanh nghiệp càng khó đoán, tài sản càng mong manh, tương lai càng mù, thì đòi đệm càng dày. Càng ít chắc chắn, càng để nhiều cú ném trôi qua. Bất định lớn đổi lấy chiết khấu lớn.</p></div>
+<div class="gap-q"><span class="q">"Nghe cứ như chỉ là ‘nhát’ và bỏ tiền trên bàn?"</span><p>Ngược lại. Bỏ ‘lỡ’ một món chỉ mất cơ hội; trả đắt một món có thể mất vốn. Đệm lớn không phải sợ hãi, nó là thừa nhận thẳng rằng mình có thể sai và tương lai thì mù. Trả ít hơn thứ mình tin nó đáng — đó là cách khôn ngoan để sống sót qua cái mình không lường được.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví von &amp; ví dụ đời thường</span><h2>Neo vào thứ bạn đã biết</h2></div>
+    </div>
+    <div class="analogy-card"><span class="tag">Ví dụ trung tâm</span>
+<p>Một kỹ sư xây cây cầu cho xe tải nặng 30 tấn qua. Ông có xây nó chịu đúng 30 tấn không? Không đời nào. Ông xây cho nó gánh được 100 tấn. Vì sao? Vì ông không chắc tuyệt đối về chất thép, về cơn lũ, về chiếc xe quá tải lẻn qua, về vết nứt thời gian. Khoảng dư từ 30 lên 100 chính là biên an toàn: chỗ cho mọi thứ ông <em>không</em> lường trước.</p>
+<p class="limit"><b>Chỗ ví von này hỏng:</b> kỹ sư biết khá rõ tải trọng cây cầu phải chịu — ông tính đệm từ những con số đo được. Nhà đầu tư thì đối mặt một tương lai <em>thật sự</em> mù, không đo trước được. Điều đó khiến đệm phải lớn hơn cả mức kỹ sư cần. Nó phải phòng cả những cú bạn còn chưa hình dung ra, không chỉ sai số đã biết.</p>
+</div>
+<p>Klarman đưa cổ phiếu Esco ở giá 3 đô-la, trong khi riêng giá trị sổ sách hữu hình đã hơn 25 đô-la và net-net working capital hơn 15 đô-la. Các cách định giá thận trọng đều ra con số cao hơn 3 rất nhiều. Điều hay là ông <em>không cần biết chính xác</em> Esco đáng bao nhiêu — đệm quá dày nên gần như mọi kết cục đều cho lời.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Klarman khuyên định giá bằng nhiều cách (giá trị hoạt động liên tục, giá trị thanh lý, giá trị thị trường chứng khoán); khi chúng phân kỳ, nghiêng về con số <em>thấp</em>. Dự báo lạc quan đặt bạn lên cành cây chênh vênh — gần như mọi thứ phải đúng. Dự báo thận trọng dễ đạt hoặc vượt, rồi chỉ mua ở chiết khấu lớn so với giá trị suy ra từ đó. Đệm lớn bù cho cả cái bạn biết mình không biết lẫn cái bạn không biết là mình không biết.</p>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">4</div>
+      <div class="step-meta"><span class="lbl">Kể lại gọn gàng</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Con số ‘nó đáng 1 đô-la’ thật ra là một khoảng lung lay, vì bạn phải đoán một tương lai không ai đoán nổi. Trả 90 xu thì đệm mỏng dính, một sai số nhỏ là bay. Trả 50 xu thì bạn được phép sai mà vẫn không mất vốn. Đệm phải lớn, và càng mù mờ càng phải lớn hơn — như cây cầu cho xe 30 tấn được xây để chịu 100 tấn.</p>
+<p class="core">Bạn tính nó đáng 1 đô-la — <span>tương lai càng mù, đệm càng phải dày — thận trọng là câu trả lời duy nhất.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã hiểu chưa?</h3>
+      <ol>
+        <li>Vì sao con số ‘doanh nghiệp này đáng 1 đô-la’ lại là một khoảng chứ không phải một điểm?</li>
+        <li>Vì sao ‘đòi đệm lớn’ không phải là nhát gan hay bỏ tiền trên bàn?</li>
+        <li>Cây cầu 30 tấn xây để chịu 100 tấn minh họa điều gì về biên an toàn khi tương lai bất định?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nếu giải thích được cho bà ngoại hiểu, bạn mới thật sự hiểu.</p>
+  </footer>
+
+</div></div>
+<script>
+  var bar=document.getElementById('progress');
+  function upd(){var h=document.documentElement;var s=h.scrollTop||document.body.scrollTop;
+    var max=(h.scrollHeight-h.clientHeight)||1;bar.style.width=(s/max*100)+'%';}
+  window.addEventListener('scroll',upd,{passive:true});upd();
+  var io=new IntersectionObserver(function(es){es.forEach(function(e){
+    if(e.isIntersecting){e.target.style.animation='rise .7s cubic-bezier(.2,.7,.3,1) forwards';io.unobserve(e.target);}});},{threshold:.12});
+  document.querySelectorAll('section').forEach(function(s){s.style.opacity='0';io.observe(s);});
+</script>
+
+<script>
+(function(){
+  var tabs=[].slice.call(document.querySelectorAll('.tabbar .tab'));
+  var panels=[].slice.call(document.querySelectorAll('.concept-panel'));
+  function show(i){
+    tabs.forEach(function(t,j){t.classList.toggle('active',j===i);});
+    panels.forEach(function(p,j){
+      var on=(j===i); p.classList.toggle('active',on);
+      if(on){p.querySelectorAll('section').forEach(function(s){s.style.opacity='';s.style.animation='';});}
+    });
+    try{history.replaceState(null,'','#'+panels[i].id);}catch(e){}
+    window.scrollTo(0,0); window.dispatchEvent(new Event('scroll'));
+  }
+  tabs.forEach(function(t){t.addEventListener('click',function(){show(+t.getAttribute('data-i'));});});
+  var start=0; panels.forEach(function(p,j){if('#'+p.id===location.hash)start=j;});
+  show(start);
+})();
+</script>
+
+</body></html>

@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="vi"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>How Big Things Get Done — Nền tảng, hiểu từ gốc</title>
+<style>
+  /* Design tokens shared with ebook-to-study-html + feynman-from-study (styles_v2.css) */
+  :root{
+    --bg:#fafaf7; --bg-elevated:#ffffff; --bg-soft:#f3f3ee;
+    --border:#e0e0d8; --border-soft:#ececea; --border-strong:#d2c8b6;
+    --ink:#1a1a1f; --ink-soft:#3f3f4a; --muted:#7a7a85;
+    --accent:#2f6fed; --accent-2:#2258c8; --gold:#0fb6d4; --bridge:#5a6b4f;
+    --serif:"Fraunces",Georgia,"Iowan Old Style",serif;
+    --sans:"Geist",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    --mono:"Geist Mono","JetBrains Mono",Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:var(--sans);
+    font-size:19px;line-height:1.72;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}
+  .progress{position:fixed;top:0;left:0;height:3px;width:0;z-index:50;
+    background:linear-gradient(90deg,var(--gold),var(--accent));transition:width .08s linear}
+  .wrap{max-width:920px;margin:0 auto;padding:0 36px}
+  .rise{opacity:0;transform:translateY(14px);animation:rise .7s cubic-bezier(.2,.7,.3,1) forwards}
+  @keyframes rise{to{opacity:1;transform:none}}
+
+  header{padding:104px 0 60px;border-bottom:1px solid var(--border)}
+  .kicker{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.18em;
+    text-transform:uppercase;color:var(--accent);margin-bottom:26px}
+  h1{font-family:var(--serif);font-weight:600;font-size:clamp(42px,7.6vw,72px);
+    line-height:1.0;letter-spacing:-.022em;margin-bottom:28px;font-optical-sizing:auto;color:var(--ink)}
+  h1 em{font-style:italic;color:var(--accent)}
+  .core{font-family:var(--serif);font-style:italic;font-weight:400;
+    font-size:clamp(21px,3.6vw,27px);line-height:1.44;color:var(--ink-soft)}
+  .core span{font-style:normal;font-weight:600;color:var(--accent-2);
+    box-shadow:inset 0 -.5em 0 rgba(47,111,237,.16)}
+
+  /* ---- BƯỚC 0: ĐỊNH VỊ (what it is + why it's the foundation) ---- */
+  .anchor .rule{font-family:var(--serif);font-size:19px;line-height:1.5;color:var(--ink);
+    background:var(--bg-soft);border-left:3px solid var(--accent);
+    padding:18px 24px;border-radius:0 4px 4px 0;margin:0}
+  .anchor .rule em{font-style:italic;color:var(--accent-2)}
+  .anchor .rule strong{color:var(--ink);font-weight:600}
+  .anchor .why{color:var(--ink-soft)}
+
+  section{padding:72px 0;border-bottom:1px solid var(--border);position:relative}
+  .step-head{display:flex;align-items:flex-start;gap:22px;margin-bottom:34px}
+  .big-num{font-family:var(--serif);font-weight:700;font-size:62px;line-height:.8;
+    color:var(--border-strong);flex:none;font-optical-sizing:auto;letter-spacing:-.03em}
+  .step-meta{padding-top:4px}
+  .lbl{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--accent);display:block;margin-bottom:10px}
+  h2{font-family:var(--serif);font-weight:600;font-size:clamp(27px,4.4vw,37px);
+    line-height:1.12;letter-spacing:-.012em;color:var(--ink)}
+  h2 em{font-style:italic;color:var(--accent)}
+  p{margin-bottom:21px}
+  p:last-child{margin-bottom:0}
+  strong{font-weight:600;color:var(--ink)}
+  em{font-style:italic;color:var(--accent-2)}
+  .gloss{color:var(--muted);font-style:italic}
+
+  .lead::first-letter{font-family:var(--serif);font-weight:700;float:left;
+    font-size:74px;line-height:.74;padding:8px 12px 0 0;color:var(--accent)}
+
+  .sub{font-family:var(--serif);font-weight:600;font-size:17px;letter-spacing:.01em;
+    color:var(--ink);margin:34px 0 14px;display:flex;align-items:center;gap:11px}
+  .sub::before{content:"";width:18px;height:2px;background:var(--accent);flex:none;border-radius:2px}
+
+  /* ---- BƯỚC 1: VẤN ĐỀ (why it exists) ---- */
+  .problem{background:var(--bg-soft)}
+  .problem .big-num{color:#e2d6b4}
+
+  /* ---- BƯỚC 3: VÍ DỤ (concrete worked example) ---- */
+  .example-card{border:1px solid #e8c876;border-radius:4px;padding:30px 32px;margin:8px 0 28px;
+    background:linear-gradient(135deg,#fef9ed 0%,#fdf3e0 100%)}
+  .example-card .tag{font-family:var(--mono);font-weight:600;font-size:11px;
+    letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin-bottom:16px;display:block}
+  .example-card p{color:#5a4810}
+  .example-card strong{color:var(--accent-2)}
+  .example-card p:last-child{margin-bottom:0}
+
+  /* ---- DỄ NHẦM (optional clarify / boundaries) ---- */
+  .clarify{background:var(--bg-soft)}
+  .clarify .big-num{color:#d8cdb2}
+  .mix-q{margin:0 0 30px;padding-left:24px;border-left:2px solid var(--border-strong)}
+  .mix-q:last-child{margin-bottom:0}
+  .mix-q .q{font-family:var(--serif);font-style:italic;font-weight:500;
+    font-size:22px;line-height:1.35;color:var(--accent-2);margin-bottom:12px;display:block}
+  .mix-q p:last-child{margin-bottom:0}
+
+  /* ---- NỐI TIẾP (bridge to the harder concepts) ---- */
+  .bridge .big-num{color:#bcc7b2}
+  .bridge .lbl{color:var(--bridge)}
+  .bridge-card{border-left:3px solid var(--bridge);background:#f4f6f1;
+    padding:22px 26px;border-radius:0 4px 4px 0;margin-top:6px}
+  .bridge-card p:last-child{margin-bottom:0}
+  .bridge-card strong{color:#42513a}
+
+  /* ---- KỂ LẠI GỌN (refined retell) ---- */
+  .retell{background:linear-gradient(180deg,var(--bg-soft) 0%,var(--bg) 100%);border-bottom:none}
+  .retell h2{color:var(--ink)}
+  .retell strong{color:var(--accent-2)}
+  .retell .core{margin-top:6px}
+  .testbox{border:1px solid var(--border);background:var(--bg-elevated);
+    border-radius:4px;padding:28px 32px;margin-top:40px;box-shadow:0 1px 2px rgba(0,0,0,.03)}
+  .testbox h3{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--accent);margin-bottom:20px}
+  .testbox ol{margin:0;padding-left:22px;counter-reset:t}
+  .testbox li{margin-bottom:16px;color:var(--ink-soft);padding-left:6px}
+  .testbox li:last-child{margin-bottom:0}
+
+  footer{text-align:center;padding:60px 0 88px}
+  footer .mark{font-family:var(--serif);font-weight:700;color:var(--accent);
+    font-size:26px;display:block;margin-bottom:14px}
+  footer p{font-family:var(--serif);font-style:italic;color:var(--muted);font-size:17px;max-width:400px;margin:0 auto}
+
+  @media(max-width:560px){
+    body{font-size:18px}
+    header{padding:70px 0 44px}
+    section{padding:52px 0}
+    .step-head{gap:16px}
+    .big-num{font-size:46px}
+    .lead::first-letter{font-size:60px}
+  }
+
+/* ===== FLAMINDI THEME OVERRIDE (dong bo trang chu flamindi.com) ===== */
+:root{
+  --accent:#2f6fed;--accent-2:#2258c8;--accent2:#2258c8;--gold:#0fb6d4;--cyan:#0fb6d4;--blue:#2f6fed;
+  --bg:#f7f9fe;--bg-elevated:#ffffff;--bg-card:#ffffff;--card:#ffffff;--bg-soft:#eef2fb;--soft:#eef2fb;
+  --border:#e4e9f2;--border-soft:#eef1f7;--border-strong:#cfd8e8;
+  --text:#1a2233;--text-soft:#4e5a74;--text-dim:#6b7691;
+  --ink:#1a2233;--ink-soft:#4e5a74;--muted:#6b7691;--soft-t:#4e5a74;--dim:#6b7691;
+  --serif:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+  --mono:ui-monospace,Menlo,Consolas,monospace;
+}
+body{background:radial-gradient(1200px 600px at 85% -10%,rgba(47,111,237,.14),transparent 60%),radial-gradient(1000px 640px at -10% 30%,rgba(15,182,212,.09),transparent 55%),linear-gradient(#f7f9fe,#edf0f8) fixed !important;}
+</style>
+<style>
+ .tabbar{position:fixed;top:0;left:0;right:0;width:100%;box-sizing:border-box;z-index:40;background:rgba(250,250,247,.93);
+   backdrop-filter:saturate(1.1) blur(8px);-webkit-backdrop-filter:saturate(1.1) blur(8px);
+   border-bottom:1px solid var(--border);display:flex;gap:6px;overflow-x:auto;
+   padding:10px max(36px,calc((100% - 992px)/2));scrollbar-width:thin}
+ .tabbar .tab{flex:0 0 auto;display:flex;align-items:baseline;gap:9px;cursor:pointer;
+   background:transparent;border:1px solid transparent;border-radius:999px;
+   padding:8px 17px;transition:.15s;white-space:nowrap;color:var(--muted)}
+ .tabbar .tab:hover{color:var(--ink);background:var(--bg-soft)}
+ .tabbar .tab.active{color:var(--accent-2);background:var(--bg-soft);border-color:var(--border-strong)}
+ .tabbar .tn{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.1em;color:var(--accent)}
+ .tabbar .tl{font-family:var(--serif);font-weight:500;font-size:16px}
+ body{padding-top:56px} .concept-panel{display:none}
+ .concept-panel.active{display:block}
+ .concept-panel header{padding-top:50px}
+ @media(max-width:560px){.tabbar .tl{max-width:48vw;overflow:hidden;text-overflow:ellipsis}}
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+<nav class="tabbar" aria-label="Các khái niệm nền"><button class="tab" data-i="0"><span class="tn">01</span><span class="tl">Nghĩ chậm, làm nhanh</span></button><button class="tab" data-i="1"><span class="tn">02</span><span class="tl">Đuôi dày</span></button><button class="tab" data-i="2"><span class="tn">03</span><span class="tl">Ước tính lạc quan</span></button><button class="tab" data-i="3"><span class="tn">04</span><span class="tl">Xây bằng Lego</span></button></nav>
+<div class="concept-panel" id="c-nghi-cham-lam-nhanh"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Nền tảng · hiểu từ gốc</div>
+    <h1 class="rise" style="animation-delay:.08s">Nghĩ chậm rồi làm nhanh: hai pha, hai luật chơi ngược nhau</h1>
+    <p class="core rise" style="animation-delay:.16s">Cả cuốn sách gói trong một câu: <span>dồn giờ vào khâu bàn giấy, rồi thi công thật gọn.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Định vị · nó là gì &amp; vì sao học trước</span><h2>Nguyên tắc nền: Think slow, act fast</h2></div>
+    </div>
+    <div class="rule">Luận điểm trung tâm của Flyvbjerg — <strong>Think slow, act fast</strong> (nghĩ chậm, làm nhanh). Dự án thành công dồn thời gian vào <em>planning</em> (lập kế hoạch) và <em>design</em> (thiết kế), rồi mới thực thi nhanh và kỷ luật. Ông tách một dự án làm hai pha: <em>planning</em> — cảng an toàn, làm trên giấy và máy tính, sửa sai rất rẻ; và <em>delivery</em> (thi công) — biển bão, tiền lớn đổ ra, sai một cái là vỡ. Trên 16.000+ dự án, chỉ <strong>0.5%</strong> giao đúng cả chi phí, thời gian lẫn lợi ích.</div>
+    <div class="sub">Vì sao đây là nền</div>
+    <div class="why"><p>Đây là viên gạch dưới cùng của cả cuốn. Mọi lời khuyên sau — nhìn ra ngoài, xây bằng Lego, cắt đuôi rủi ro — chỉ là cách để nghĩ chậm hơn hoặc làm nhanh hơn. Chưa nắm hai pha này, các chương sau nghe như mẹo rời rạc. Nắm rồi, chúng xâu thành một chuỗi.</p></div>
+  </section>
+
+  <section class="problem">
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Vấn đề nó sinh ra để giải quyết</span><h2>Trực giác bảo 'cứ xây đi, kế hoạch hoàn thiện dần'</h2></div>
+    </div>
+    <p class="lead">Bạn sắp sửa lại căn bếp, hay mở một startup. Trực giác mách: cứ bắt tay vào làm, vừa làm vừa chỉnh kế hoạch. Nghe rất hợp lý và hăng hái. Nhưng dữ liệu 16.000 dự án nói trực giác đó sai, và sai rất đắt.</p>
+
+<p>Vấn đề nằm ở chỗ này. Hai pha của một dự án có luật chơi ngược nhau. Một pha sai thì rẻ, một pha sai thì chết. Đối xử với chúng như nhau là cội nguồn của thất bại.</p>
+
+<div class="sub">Vì sao vội xây lại nguy</div>
+<p>Trên giấy, đổi một bức tường chỉ tốn cục tẩy. Ngoài công trường, đổi bức tường đó tốn cả đống tiền và mấy tuần. Vội xây tức là mang cái sai từ pha rẻ sang pha đắt để sửa. Nên phải biết pha nào là pha nào trước đã.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Mô hình đơn giản · cách nó chạy</span><h2>Một pha để phạm sai lầm, một pha để chạy thật nhanh</h2></div>
+    </div>
+    <p>Mô hình chỉ có hai ô, hỏi đúng một câu: sai ở đây rẻ hay đắt?</p>
+
+<div class="sub">Pha 1 — Bàn giấy: cảng an toàn</div>
+<p>Làm trên máy tính, bản vẽ, mô hình. Thử đủ kiểu, hỏng thì làm lại, gần như miễn phí. Pixar dành nhiều năm ở đây vì 'chi phí lặp lại rất thấp'. Đây là chỗ để phạm mọi sai lầm cho hết.</p>
+
+<div class="sub">Pha 2 — Thi công: biển bão</div>
+<p>Tiền lớn đổ ra, người và máy đắt tiền phơi mình. Ed Catmull của Pixar nói: 'sản xuất là nơi chi phí bùng nổ'. Một cú sốc ở đây — dịch bệnh, tai nạn, đình trệ — đều thành thảm họa.</p>
+
+<div class="sub">Toán cơ bản: dồn giờ vào pha rẻ</div>
+<p>Vậy chiến lược tự lộ ra. Kéo dài pha rẻ để moi hết cái sai ra khi sửa còn nhẹ. Rồi rút gọn pha đắt để bớt phơi mình trước rủi ro. Đúng như câu 'có năm phút chặt cây thì dành ba phút mài rìu'.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví dụ cụ thể</span><h2>Pixar lặp tám lần trước khi vẽ thật</h2></div>
+    </div>
+    <div class="example-card"><span class="tag">Cách làm đúng</span>
+<p>Một phim Pixar bắt đầu từ một câu: 'một con chuột Pháp mê nấu ăn'. Rồi thành bản tóm 12 trang, rồi kịch bản, rồi bản vẽ thô cả phim. Mỗi bản đưa cho đồng nghiệp xem, chê, sửa. Họ lặp như thế khoảng <strong>tám lần</strong>.</p>
+<p>Chỉ tới bản thứ chín, khi câu chuyện đã chắc, họ mới bắt đầu làm hoạt hình thật — pha đắt. Mọi cái sai đã bị bắt và sửa lúc còn rẻ. Nên khi 'act fast', gần như không còn gì để vỡ.</p>
+</div>
+<p>Trái ngược là California High-Speed Rail: phê duyệt vội năm 2008 với 33 tỷ đô, thi công lê thê. Chi phí bò lên 43, rồi 68, rồi hơn 100 tỷ — một 'chuyến tàu đi tới hư không'. Vội ở pha bàn giấy, rồi kẹt cứng ở pha thi công.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Khi không thể làm nửa cái nhà chọc trời để thử, Flyvbjerg đề xuất <em>Maximum Virtual Product</em> — dựng một bản mô phỏng siêu thực để lặp trước khi xây. Bản 'digital twin' bằng phần mềm CATIA của Gehry, hay storyboard video của Pixar, đều là cách kéo dài pha rẻ tới cực hạn.</p>
+  </section>
+
+  <section class="clarify">
+    <div class="step-head">
+      <div class="big-num">≠</div>
+      <div class="step-meta"><span class="lbl">Dễ nhầm · ranh giới</span><h2>Đừng nhầm 'nghĩ chậm' với chần chừ</h2></div>
+    </div>
+    <div class="mix-q"><span class="q">"Dồn giờ vào kế hoạch — vậy chẳng phải là trì hoãn, lười khởi động sao?"</span><p>Ngược lại. Nghĩ chậm là làm việc cật lực trên bản vẽ: thử, kiểm, sửa, lặp lại. Nó khác hẳn ngồi im hay né việc. Flyvbjerg cảnh báo cái bệnh 'ngại nghĩ' — thấy đi thi công thì 'năng suất' hơn ngồi lập kế hoạch. Nhưng lập kế hoạch <em>chính là</em> làm việc trên dự án.</p></div>
+<div class="mix-q"><span class="q">"Vậy 'act fast' nghĩa là cứ ẩu cho nhanh à?"</span><p>Không. Nhanh ở đây là gọn và kỷ luật, nhờ đã tính hết ở pha giấy. Càng bàn giấy kỹ, thi công càng ít vấp, nên càng nhanh. Nhanh không phải do cắt bước, mà do không còn bước nào phải sửa.</p></div>
+  </section>
+
+  <section class="bridge">
+    <div class="step-head">
+      <div class="big-num">→</div>
+      <div class="step-meta"><span class="lbl">Nối tiếp · nó dẫn tới đâu</span><h2>Nghịch lý: chậm lại sao lại về đích nhanh hơn?</h2></div>
+    </div>
+    <div class="bridge-card"><p>Tới đây bạn có thể gật đầu về hai pha, nhưng vẫn thấy cấn một chỗ. Dồn thêm giờ vào kế hoạch nghe như <em>lâu hơn</em>, chứ sao lại giúp <em>xong sớm hơn</em>? Nghe như trái toán.</p>
+<p>Đó đúng là trang khó <strong>'Chậm mà nhanh'</strong>. Ở đó ta mổ chỗ nghịch lý. Vì sao một pha thi công dài lại mời gọi tai họa? Và vì sao sửa trên giấy lại rút ngắn cả dự án? Hiểu nền hai pha này rồi, trang đó hết rối.</p></div>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">✦</div>
+      <div class="step-meta"><span class="lbl">Kể lại trong một hơi</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Một dự án có hai pha. Bàn giấy thì rẻ và an toàn: cứ phạm hết sai lầm ở đây. Thi công thì đắt và nguy: một cú sốc là vỡ. Nên dồn giờ vào pha rẻ để moi hết cái sai, rồi thi công thật gọn. Nghĩ chậm, làm nhanh.</p>
+<p class="core">Cả cuốn sách gói trong một câu: <span>sai trên giấy tốn cục tẩy, sai ngoài công trường tốn cả gia tài.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã nắm nền chưa?</h3>
+      <ol>
+        <li>Vì sao 'cứ xây đi, kế hoạch hoàn thiện dần' lại là công thức thất bại, dù nghe rất hăng hái?</li>
+        <li>Hai pha planning và delivery khác nhau ở điểm cốt lõi nào, và điều đó dẫn tới chiến lược gì?</li>
+        <li>Vì sao 'nghĩ chậm' không phải là trì hoãn, mà thật ra là đang làm việc trên dự án?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nền vững thì cái khó tự nhẹ đi. Hiểu từ gốc, không học vẹt.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-duoi-day"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Nền tảng · hiểu từ gốc</div>
+    <h1 class="rise" style="animation-delay:.08s">Đuôi dày: vì sao dự phòng 15% vẫn không cứu nổi bạn</h1>
+    <p class="core rise" style="animation-delay:.16s">Rủi ro dự án không phải đường cong chuông — <span>nó là đuôi dày, nơi cú vượt không dừng ở 20% mà tới 400%.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Định vị · nó là gì &amp; vì sao học trước</span><h2>Nền tảng: Iron Law và phân phối đuôi dày</h2></div>
+    </div>
+    <div class="rule">Hai ý gắn liền. <strong>Iron Law of Megaprojects</strong> (Quy luật Sắt): dự án lớn 'vượt ngân sách, vượt thời gian, dưới lợi ích — lặp đi lặp lại'. Chỉ <strong>0.5%</strong> trên 16.000+ dự án giao đúng cả ba. Vì sao? Vì chi phí dự án theo <em>fat-tailed distribution</em> (phân phối đuôi dày): các cú vượt cực lớn xảy ra thường xuyên hơn nhiều so với đường cong chuông. Ngành IT có 18% dự án rơi vào 'đuôi', và trong đuôi mức vượt trung bình là <strong>447%</strong>.</div>
+    <div class="sub">Vì sao đây là nền</div>
+    <div class="why"><p>Nền này quyết định độ lớn của canh bạc. Nếu rủi ro chỉ là vượt 10-20%, một phần dự phòng nhỏ là đủ. Nhưng vì đuôi dày, một dự án có thể vượt 200%, 400%, tới 978% (nhà Quốc hội Scotland). Chưa thấy điều này, bạn sẽ lập kế hoạch chống một đường cong không tồn tại. Thấy rồi, bạn hiểu vì sao phải nhìn ra ngoài và cắt đuôi.</p></div>
+  </section>
+
+  <section class="problem">
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Vấn đề nó sinh ra để giải quyết</span><h2>Ai cũng cộng 15% dự phòng — sao vẫn cháy túi?</h2></div>
+    </div>
+    <p class="lead">Bạn lập ngân sách rồi cộng thêm 15% cho chắc, y như mọi người vẫn làm. Vậy mà dự án vẫn vượt xa con số đó. Không phải bạn tính ẩu. Vấn đề nằm ở hình dạng của rủi ro, chứ không ở phần trăm bạn cộng thêm.</p>
+
+<p>Phần dự phòng 15% được sinh ra cho một thế giới mà cực đoan rất hiếm. Nhưng dự án không sống trong thế giới đó. Nó sống ở nơi cực đoan là chuyện thường.</p>
+
+<div class="sub">Hai thế giới rủi ro khác hẳn nhau</div>
+<p>Có nơi mọi kết quả xúm quanh mức trung bình, cú lớn nhất chỉ nhỉnh chút. Có nơi cú lớn nhất lớn gấp trăm, gấp nghìn lần. Mang thói quen của nơi thứ nhất sang nơi thứ hai, bạn tưởng mình an toàn — ngay trước cú vượt khổng lồ.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Mô hình đơn giản · cách nó chạy</span><h2>Đường cong chuông so với đuôi dày</h2></div>
+    </div>
+    <p>Hỏi đúng một câu: cực đoan ở đây hiếm hay thường, nhỏ hay khổng lồ?</p>
+
+<div class="sub">Thế giới đường cong chuông</div>
+<p>Lấy chiều cao người. Hầu hết quanh mức trung bình; người cao nhất chỉ khoảng 1,6 lần trung bình. Không ai cao gấp mười. Ở đây, cộng thêm 10-15% dự phòng là đủ chắn mọi bất ngờ.</p>
+
+<div class="sub">Thế giới đuôi dày</div>
+<p>Giờ lấy tài sản. Người giàu nhất có gấp <strong>ba triệu lần</strong> mức trung bình. Nếu chiều cao mà giống tài sản, người cao nhất sẽ cao mấy nghìn cây số. Chi phí dự án nằm ở thế giới này, không phải thế giới chiều cao.</p>
+
+<div class="sub">Vì sao đuôi dày ăn thủng dự phòng</div>
+<p>Trong đuôi dày, cú vượt không dừng ở 20%. Nó có thể là 200%, 400%, hơn nữa. Một phần dự phòng nhỏ chắn được sóng lăn tăn, nhưng không chắn nổi con sóng thần trong đuôi. Đó là lý do 15% thất thủ.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví dụ cụ thể</span><h2>Chiều cao và tài sản, đặt cạnh nhau</h2></div>
+    </div>
+    <div class="example-card"><span class="tag">Con số</span>
+<p><strong>Chiều cao</strong>: mọi người xúm quanh trung bình, cực đoan bé tí. Trung bình cộng thêm chút dự phòng là xong. Đây là đường cong chuông.</p>
+<p><strong>Tài sản</strong>: gần như ai cũng ít, nhưng vài người có gấp hàng triệu lần. Một cá nhân đủ sức kéo lệch cả trung bình. Đây là đuôi dày — và chi phí dự án hành xử đúng như tài sản.</p>
+<p>Thử đặt sai chỗ mà xem. Bạn ước 'dự án tới' bằng cách lấy trung bình quá khứ như thể nó là chiều cao. Bạn sẽ trật xa, vì cú lớn nhất chưa nằm trong mẫu của bạn.</p>
+</div>
+<p>Vài cú đuôi có thật: nhà Quốc hội Scotland vượt 978%, Thế vận hội Montreal vượt 720%, đường sắt California phình từ 33 tỷ lên hơn 100 tỷ đô. Không phải xui hiếm gặp — đó là dáng vẻ bình thường của đuôi dày.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Flyvbjerg thêm phép ẩn dụ <em>Window of Doom</em> (cửa sổ định mệnh): thời lượng dự án như một cửa sổ, càng kéo dài càng mở rộng, và <em>black swan</em> (thiên nga đen — biến cố hiếm, hậu quả cực lớn) càng dễ lọt vào. Vì thế 'hoàn thành nhanh' chính là hình thức cuối cùng của việc phòng thiên nga đen.</p>
+  </section>
+
+  <section class="clarify">
+    <div class="step-head">
+      <div class="big-num">≠</div>
+      <div class="step-meta"><span class="lbl">Dễ nhầm · ranh giới</span><h2>Đừng nhầm đuôi dày với 'chỉ là rủi ro nhiều hơn'</h2></div>
+    </div>
+    <div class="mix-q"><span class="q">"Đuôi dày chẳng qua là nhiều rủi ro hơn thôi phải không?"</span><p>Khác biệt không nằm ở nhiều hay ít, mà ở <em>hình dạng</em>. Ở đường cong chuông, rủi ro trải đều, không cú nào lật bàn. Ở đuôi dày, gần như toàn bộ rủi ro dồn vào vài cú hiếm mà khổng lồ. Cùng một mức 'nguy', hai hình dạng đòi hai cách phòng khác nhau.</p></div>
+<div class="mix-q"><span class="q">"Vậy cứ lấy con số trung bình quá khứ làm mốc là ổn chứ?"</span><p>Đây mới là bẫy. Trong đuôi dày, cú quyết định thường <em>chưa</em> có trong dữ liệu bạn cầm. Trung bình vì thế không đứng yên — thêm một cú đuôi là nó nhảy. Con số trung bình đơn lẻ ru ngủ bạn ngay trước cú lớn.</p></div>
+  </section>
+
+  <section class="bridge">
+    <div class="step-head">
+      <div class="big-num">→</div>
+      <div class="step-meta"><span class="lbl">Nối tiếp · nó dẫn tới đâu</span><h2>Nếu trung bình không đứng yên, thì tính kiểu gì?</h2></div>
+    </div>
+    <div class="bridge-card"><p>Nền này để lại một câu hỏi gai góc. Nếu vài cú khổng lồ kéo lệch mọi thứ, thì con số trung bình còn nghĩa gì? Và nếu nó vô nghĩa, ta lập kế hoạch dựa vào cái gì?</p>
+<p>Đó là trang khó <strong>'Trung bình vô nghĩa'</strong>. Ở đó ta mổ chỗ ngược đời. Vì sao trong đuôi dày, càng gom dữ liệu càng dễ tự tin nhầm? Và vì sao phải dự báo theo dạng rủi ro thay vì một con số? Nắm đuôi dày trước, trang đó sáng ra.</p></div>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">✦</div>
+      <div class="step-meta"><span class="lbl">Kể lại trong một hơi</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Rủi ro dự án không phải đường cong chuông, nơi cực đoan hiếm và nhỏ. Nó là đuôi dày: cực đoan thường xuyên và khổng lồ, như tài sản chứ không như chiều cao. Nên cú vượt có thể là 400%, không phải 15%. Một phần dự phòng nhỏ chắn sóng lăn tăn, không chắn nổi sóng thần.</p>
+<p class="core">Rủi ro dự án không phải đường cong chuông — <span>cực đoan ở đây thường và khổng lồ — dự phòng 15% chắn nhầm loại sóng.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã nắm nền chưa?</h3>
+      <ol>
+        <li>Vì sao cộng thêm 15% dự phòng vẫn không cứu nổi một dự án đuôi dày?</li>
+        <li>Chiều cao và tài sản khác nhau ở đâu, và chi phí dự án giống cái nào?</li>
+        <li>Vì sao con số trung bình quá khứ lại là cái bẫy trong thế giới đuôi dày?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nền vững thì cái khó tự nhẹ đi. Hiểu từ gốc, không học vẹt.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-uoc-tinh-lac-quan"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Nền tảng · hiểu từ gốc</div>
+    <h1 class="rise" style="animation-delay:.08s">Vì sao con số của chính bạn luôn quá màu hồng</h1>
+    <p class="core rise" style="animation-delay:.16s">Ước tính từ trong đầu bạn <span>chỉ vẽ ra kịch bản đẹp nhất, rồi gọi đó là dự đoán.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Định vị · nó là gì &amp; vì sao học trước</span><h2>Nền tảng: Planning Fallacy và góc nhìn từ trong</h2></div>
+    </div>
+    <div class="rule">Một thiên kiến Kahneman và Tversky đặt tên — <strong>planning fallacy</strong> (ngụy biện lập kế hoạch): người ta đều đặn ước thiếu thời gian và chi phí. Gốc của nó là <em>optimism bias</em> (thiên kiến lạc quan) cộng <em>inside view</em> (góc nhìn từ trong): bạn nhìn chăm chú vào dự án của <em>mình</em> và tưởng tượng nó chạy trơn tru. Bằng chứng: khi sinh viên nói chắc 99% sẽ xong đúng hạn, chỉ <strong>45%</strong> thực sự xong.</div>
+    <div class="sub">Vì sao đây là nền</div>
+    <div class="why"><p>Đây là chẩn đoán căn bệnh. Chưa hiểu vì sao con số tự bạn nghĩ ra luôn lệch về phía đẹp, bạn sẽ không thấy cần một liều thuốc. Nền này dựng lên nhu cầu cho cả kỹ thuật quan trọng nhất của cuốn sách: thôi nhìn vào trong, quay ra nhìn dự án của người khác.</p></div>
+  </section>
+
+  <section class="problem">
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Vấn đề nó sinh ra để giải quyết</span><h2>Định hai ngày, mất năm ngày — và lần sau vẫn thế</h2></div>
+    </div>
+    <p class="lead">Bạn định viết xong báo cáo trong hai ngày. Hóa ra mất năm ngày. Lần sau, dù đã 'rút kinh nghiệm', bạn vẫn cứ trễ. Kỳ lạ ở chỗ: biết rõ mình hay ước thiếu, bạn vẫn ước thiếu. Vì sao cái đầu lại ngoan cố màu hồng đến vậy?</p>
+
+<p>Vấn đề nằm ở chỗ bạn đứng để nhìn. Khi ước tính, bạn nhìn từ bên trong dự án của mình. Và từ chỗ đó, bạn chỉ thấy được một phần sự thật — phần đẹp.</p>
+
+<div class="sub">Trong đầu, mọi thứ chạy trơn</div>
+<p>Khi tưởng tượng mình làm việc, bạn hình dung một mạch liền không vấp. Bạn không hình dung ra cuộc gọi cắt ngang, cơn bệnh, khủng hoảng gia đình. Nên cái bạn gọi là 'ước tính tốt nhất' thật ra là 'kịch bản đẹp nhất'.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Mô hình đơn giản · cách nó chạy</span><h2>Bạn mô phỏng con đường phẳng, quên hết ổ gà</h2></div>
+    </div>
+    <p>Cơ chế có ba mảnh, cùng kéo con số về phía đẹp.</p>
+
+<div class="sub">Mảnh một: chỉ thấy kịch bản đẹp nhất</div>
+<p>Kịch bản đẹp nhất là kịch bản không có gì xen ngang. Nó là kịch bản duy nhất không bị xáo trộn, nên hầu như không bao giờ là kết quả thật. Bạn lấy nó làm mốc, rồi ngạc nhiên khi đời không chiều.</p>
+
+<div class="sub">Mảnh hai: bị neo vào điểm xuất phát</div>
+<p>Con số đầu tiên nảy ra trong đầu kéo ghì mọi ước tính sau về phía nó, dù nó vô lý. Kahneman gọi đây là <em>neo</em>. Nghe một con số thấp, bạn đoán thấp theo, gần như không cưỡng được.</p>
+
+<div class="sub">Mảnh ba: đôi khi còn có người cố tình bẻ số</div>
+<p>Trên dự án lớn, ngoài lạc quan thật thà còn có bẻ số có chủ ý. Một cựu thị trưởng San Francisco nói thẳng: nếu ai cũng biết chi phí thật từ đầu, sẽ chẳng gì được duyệt. Lạc quan là tự lừa; bẻ số là lừa người khác.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví dụ cụ thể</span><h2>99% chắc chắn, 45% về đích</h2></div>
+    </div>
+    <div class="example-card"><span class="tag">Bằng chứng</span>
+<p>Người ta hỏi một nhóm sinh viên: bao giờ bạn xong luận văn? Rồi hỏi tiếp: nếu mọi thứ trơn tru nhất thì bao giờ, và nếu xấu nhất thì bao giờ. Khi họ nói chắc <strong>99%</strong> sẽ xong đúng hạn mình đặt, chỉ <strong>45%</strong> thực sự làm được.</p>
+<p>Đáng chú ý hơn: rất nhiều người xong còn muộn hơn cả cái mốc 'xấu nhất' họ tự đưa ra. Cái đầu không chỉ lạc quan ở kịch bản đẹp — nó lạc quan cả khi đang cố tưởng tượng điều tệ.</p>
+</div>
+<p>Đời thường hơn: một cặp ở Brooklyn định sửa bếp hết 170 nghìn đô. Mười tám tháng sau, hóa đơn cuối là 800 nghìn. Lỗi không ở thợ. Lỗi ở chỗ họ nhìn dự án của mình từ bên trong, và không chịu nhìn ra hàng nghìn ca sửa bếp khác đã dính đúng cái bẫy.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Flyvbjerg tranh luận với Kahneman về hai động lực. Với quyết định nhỏ, <em>psychology</em> (tâm lý — lạc quan) chiếm ưu thế. Với siêu dự án, <em>power</em> (quyền lực) và <em>strategic misrepresentation</em> (xuyên tạc chiến lược) mới là chính. Hai lực cộng hưởng: tâm lý làm số hồng, quyền lực cố tình giữ nó hồng.</p>
+  </section>
+
+  <section class="clarify">
+    <div class="step-head">
+      <div class="big-num">≠</div>
+      <div class="step-meta"><span class="lbl">Dễ nhầm · ranh giới</span><h2>Đừng nhầm lạc quan với nói dối</h2></div>
+    </div>
+    <div class="mix-q"><span class="q">"Ước thiếu là do lạc quan, hay do cố tình khai gian?"</span><p>Có thể là cả hai, nhưng khác nhau. Lạc quan là tự lừa mình thật lòng — bạn tin con số đẹp. Bẻ số là cố ý khai thấp để dự án được duyệt. Cái đầu vô tội hơn, cái sau có chủ đích. Ở dự án lớn, hai cái thường chồng lên nhau.</p></div>
+<div class="mix-q"><span class="q">"'Ước tính tốt nhất' của tôi khác 'kịch bản đẹp nhất' chỗ nào?"</span><p>Đáng lẽ chúng phải khác, nhưng trong đầu bạn chúng trùng nhau. 'Tốt nhất' nên là mức khả dĩ nhất, đã tính cả trục trặc. Nhưng khi mô phỏng trong đầu, bạn bỏ quên trục trặc, nên 'tốt nhất' tụt xuống thành 'đẹp nhất'. Đó chính là cái bẫy.</p></div>
+  </section>
+
+  <section class="bridge">
+    <div class="step-head">
+      <div class="big-num">→</div>
+      <div class="step-meta"><span class="lbl">Nối tiếp · nó dẫn tới đâu</span><h2>Bệnh đã rõ — nhưng thuốc lại nghe phản trực giác</h2></div>
+    </div>
+    <div class="bridge-card"><p>Giờ bạn thấy vì sao con số tự nghĩ luôn màu hồng: bạn nhìn từ bên trong. Liều thuốc thì đơn giản đến khó tin. Thôi nhìn vào dự án của mình, quay ra nhìn hàng chục dự án tương tự của người khác, rồi lấy con số của họ.</p>
+<p>Nhưng khoan, điều đó nghe vô lý. Dự án của bạn đâu giống ai, sao con số người lạ lại đoán trúng dự án bạn? Chính chỗ vô lý đó là trang khó <strong>'Nhìn ra ngoài'</strong>. Nắm căn bệnh này rồi, bạn sẽ thấy vì sao thuốc lại công hiệu.</p></div>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">✦</div>
+      <div class="step-meta"><span class="lbl">Kể lại trong một hơi</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Con số bạn tự nghĩ ra luôn quá đẹp, vì bạn nhìn dự án từ bên trong. Trong đầu, mọi thứ chạy trơn: bạn quên ổ gà, cuộc gọi, khủng hoảng. Nên 'ước tính tốt nhất' tụt thành 'kịch bản đẹp nhất'. Thêm cái neo và đôi khi cả bẻ số cố ý, con số càng lệch.</p>
+<p class="core">Ước tính từ trong đầu bạn <span>nhìn từ trong, bạn chỉ mô phỏng con đường phẳng và quên sạch ổ gà.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã nắm nền chưa?</h3>
+      <ol>
+        <li>Vì sao dù biết rõ mình hay ước thiếu, bạn vẫn cứ tiếp tục ước thiếu?</li>
+        <li>'Kịch bản đẹp nhất' khác 'ước tính tốt nhất' ra sao, và vì sao trong đầu chúng lại trùng nhau?</li>
+        <li>Lạc quan và bẻ số cố ý khác nhau chỗ nào, và vì sao dự án lớn hay dính cả hai?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nền vững thì cái khó tự nhẹ đi. Hiểu từ gốc, không học vẹt.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-xay-bang-lego"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Nền tảng · hiểu từ gốc</div>
+    <h1 class="rise" style="animation-delay:.08s">Xây bằng Lego: cái lớn dựng tốt nhất từ cái nhỏ lặp lại</h1>
+    <p class="core rise" style="animation-delay:.16s">Muốn xây cái khổng lồ, <span>đừng đúc một khối liền — hãy tìm viên gạch nhỏ rồi ghép lại.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Định vị · nó là gì &amp; vì sao học trước</span><h2>Nền tảng: Modularity và câu hỏi 'Lego của bạn là gì?'</h2></div>
+    </div>
+    <div class="rule"><strong>Modularity</strong> (tính module): xây vật lớn từ nhiều đơn vị nhỏ giống nhau, lặp lại — như xếp Lego. Trong bộ dữ liệu của Flyvbjerg, hầu hết loại dự án đều đuôi dày, <em>trừ năm loại</em>: điện mặt trời, truyền tải điện, điện gió, đường ống, đường bộ. Điểm chung: tất cả đều <em>modular</em>. Câu hỏi trung tâm ông đặt cho mọi lãnh đạo dự án: <em>'What's your Lego?'</em> — viên gạch nhỏ nào bạn lặp lại được?</div>
+    <div class="sub">Vì sao đây là nền</div>
+    <div class="why"><p>Đây là công cụ để 'act fast' mà không vỡ. Ba nền kia lo phần nghĩ và phần đo rủi ro; nền này lo phần <em>làm</em>. Nó cũng là đòn bẩy cho thách thức khí hậu: muốn nhân điện gió lên 11 lần, điện mặt trời 20 lần, chỉ có đường lặp lại cái nhỏ. Chưa nắm Lego, bạn không có cách thi công nào cắt được đuôi dày.</p></div>
+  </section>
+
+  <section class="problem">
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Vấn đề nó sinh ra để giải quyết</span><h2>Một khối khổng lồ đúc liền: nghe hoành tráng, hóa ra bẫy</h2></div>
+    </div>
+    <p class="lead">Bạn phải xây một thứ thật lớn. Trực giác mách: làm một công trình độc nhất, hoành tráng, một khối liền. Nghe thật kêu. Nhưng một khối khổng lồ đúc liền lại gánh đủ thứ tật chết người, mà cái nhỏ lặp lại thì tránh được.</p>
+
+<p>Vấn đề là 'một khối liền' đồng nghĩa với 'chưa ai làm bao giờ'. Không có bản mẫu, không thử được, sai là sai cả cục.</p>
+
+<div class="sub">Hai kiểu xây, hai số phận</div>
+<p>Một khối khổng lồ thì đặt riêng, quá đắt để thử, ít kinh nghiệm, được ăn cả ngã về không. Nhiều cái nhỏ lặp lại thì làm xong một cái là học được một cái, rồi làm cái sau tốt hơn. Cùng một tham vọng, hai con đường ngược nhau.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Mô hình đơn giản · cách nó chạy</span><h2>Tìm viên gạch, làm một cái, học, rồi ghép lên</h2></div>
+    </div>
+    <p>Quy tắc gọn: tìm đơn vị nhỏ lặp lại được, rồi ghép nó lên tới quy mô cần.</p>
+
+<div class="sub">Viên gạch là gì</div>
+<p>Là phần nhỏ nhất bạn làm đi làm lại, mỗi lần khôn hơn một chút. Tế bào mặt trời ghép thành tấm, tấm ghép thành dãy, dãy ghép thành cả cánh đồng điện. Một tua-bin gió gồm chân, trụ, buồng máy, cánh — rồi dựng lặp lại.</p>
+
+<div class="sub">Vì sao sự lặp lại có sức mạnh</div>
+<p>Mỗi lần làm là một lần học. Học tạo ra đường cong đi lên: cái sau nhanh hơn, rẻ hơn, ít lỗi hơn cái trước. Hỏng một viên thì rẻ và sửa được ngay. Thất bại thành nhỏ và lặp lại được, thay vì thành thảm họa.</p>
+
+<div class="sub">Mỗi viên tạo giá trị ngay</div>
+<p>Xây xong một trường là dùng được một trường, không phải chờ cả nghìn cái xong. Tiền và ích lợi về sớm, rủi ro rải mỏng. Đó là vì sao năm loại dự án modular thoát khỏi đuôi dày.</p>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví dụ cụ thể</span><h2>20.000 trường Nepal so với lò Monju</h2></div>
+    </div>
+    <div class="example-card"><span class="tag">Bài toán</span>
+<p><strong>Trường học Nepal</strong>: viên gạch là một phòng học. Xây một cái, học, xây cái tiếp. Họ dựng 20.000 trường ở vùng núi xa, <strong>đúng ngân sách, sớm 8 năm</strong>. Trường còn đứng vững qua động đất 2015.</p>
+<p><strong>Lò phản ứng Monju (Nhật)</strong>: một khối khổng lồ đặt riêng, chưa ai làm. Cháy, hỏng, sửa, hoãn hết lần này lần khác. Kết cục sau mấy chục năm: <strong>0 kilowatt điện</strong>, hơn 15 tỷ đô đã chi, còn 30 năm tháo dỡ.</p>
+</div>
+<p>Viên gạch ở khắp nơi, và thường bất ngờ. Thùng container thép giống hệt nhau đã tạo ra toàn cầu hóa. Tàu điện ngầm Madrid lặp một mẫu ga và một đoạn hầm, xong 131 km với nửa chi phí và gấp đôi tốc độ ngành. Vệ tinh nhỏ, nhà máy Tesla — cùng một trò ghép Lego.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Flyvbjerg gọi đây là <em>scale-free scalability</em>, mượn ý <em>fractal</em> của Mandelbrot: một đàn chim vẫn là đàn dù 50 hay 5.000 con. Mô hình Lego giữ nguyên đặc tính ở mọi quy mô, nên mở từ một tới vô cực mà không phải thiết kế lại. Đây là lý do ông coi modularity là 'đòn bẩy văn minh', không chỉ mẹo quản lý.</p>
+  </section>
+
+  <section class="clarify">
+    <div class="step-head">
+      <div class="big-num">≠</div>
+      <div class="step-meta"><span class="lbl">Dễ nhầm · ranh giới</span><h2>Đừng nhầm modular với 'rẻ tiền và xấu'</h2></div>
+    </div>
+    <div class="mix-q"><span class="q">"Xây theo module thì cứ tạm bợ, xấu xí như nhà lắp ghép phải không?"</span><p>Không bắt buộc. Nhà lắp sẵn Sears bán 70.000 bộ, nhiều căn vẫn đẹp và đứng vững sau hơn trăm năm. Khách sạn Marriott ở Manhattan lắp từ phòng đúc sẵn mà vẫn là tháp thanh lịch. Trụ sở Apple ghép từ các 'pod' lặp lại. Module là cách xây, không phải mức sang hèn.</p></div>
+<div class="mix-q"><span class="q">"Vậy cứ chẻ nhỏ dự án nào cũng được à?"</span><p>Không phải chẻ bừa. Viên gạch phải là đơn vị <em>giống nhau</em>, lặp lại để tích lũy học tập. Chẻ một khối liền thành các mảnh khác nhau, mỗi mảnh làm một kiểu, thì chẳng học được gì. Cái quý là sự lặp lại, không phải chỉ là nhỏ.</p></div>
+  </section>
+
+  <section class="bridge">
+    <div class="step-head">
+      <div class="big-num">→</div>
+      <div class="step-meta"><span class="lbl">Nối tiếp · nó dẫn tới đâu</span><h2>Vì sao nhiều cái nhỏ lại thắng một cái lớn?</h2></div>
+    </div>
+    <div class="bridge-card"><p>Bạn đã thấy Lego là gì và ghép ra sao. Nhưng còn một chỗ sâu chưa mổ: vì sao <em>bản thân</em> việc chia nhỏ và lặp lại đơn vị lại an toàn hơn hẳn, chứ không chỉ 'dễ quản' hơn? Vì sao một khối lớn càng làm càng khó, còn cái nhỏ càng làm càng dễ?</p>
+<p>Đó là trang khó <strong>'Nhỏ mà lặp lại'</strong>. Ở đó ta mổ cơ chế: học ngược chiều ở khối lớn, đường cong học tập ở cái nhỏ, và vì sao đuôi dày sợ Lego. Nắm nền Lego này trước, trang đó hết rối.</p></div>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">✦</div>
+      <div class="step-meta"><span class="lbl">Kể lại trong một hơi</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Muốn xây cái khổng lồ, đừng đúc một khối liền. Tìm viên gạch nhỏ lặp lại được, làm một cái, học, rồi ghép lên. Mỗi lần làm là một lần học, nên cái sau rẻ và chắc hơn. Hỏng một viên thì rẻ; hỏng cả khối thì thảm họa. Trường Nepal thắng, lò Monju thua.</p>
+<p class="core">Muốn xây cái khổng lồ, <span>cái lớn dựng tốt nhất từ cái nhỏ lặp lại — hãy hỏi 'Lego của bạn là gì?'</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã nắm nền chưa?</h3>
+      <ol>
+        <li>Vì sao 'một khối khổng lồ đúc liền' lại gánh nhiều tật chết người hơn 'nhiều cái nhỏ lặp lại'?</li>
+        <li>Điều gì biến sự lặp lại thành lợi thế, và vì sao chẻ nhỏ bừa lại không có lợi thế đó?</li>
+        <li>Vì sao năm loại dự án modular lại thoát khỏi phân phối đuôi dày?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nền vững thì cái khó tự nhẹ đi. Hiểu từ gốc, không học vẹt.</p>
+  </footer>
+
+</div></div>
+<script>
+  var bar=document.getElementById('progress');
+  function upd(){var h=document.documentElement;var s=h.scrollTop||document.body.scrollTop;
+    var max=(h.scrollHeight-h.clientHeight)||1;bar.style.width=(s/max*100)+'%';}
+  window.addEventListener('scroll',upd,{passive:true});upd();
+  var io=new IntersectionObserver(function(es){es.forEach(function(e){
+    if(e.isIntersecting){e.target.style.animation='rise .7s cubic-bezier(.2,.7,.3,1) forwards';io.unobserve(e.target);}});},{threshold:.12});
+  document.querySelectorAll('section').forEach(function(s){s.style.opacity='0';io.observe(s);});
+</script>
+
+<script>
+(function(){
+  var tabs=[].slice.call(document.querySelectorAll('.tabbar .tab'));
+  var panels=[].slice.call(document.querySelectorAll('.concept-panel'));
+  function show(i){
+    tabs.forEach(function(t,j){t.classList.toggle('active',j===i);});
+    panels.forEach(function(p,j){
+      var on=(j===i); p.classList.toggle('active',on);
+      if(on){p.querySelectorAll('section').forEach(function(s){s.style.opacity='';s.style.animation='';});}
+    });
+    try{history.replaceState(null,'','#'+panels[i].id);}catch(e){}
+    window.scrollTo(0,0); window.dispatchEvent(new Event('scroll'));
+  }
+  tabs.forEach(function(t){t.addEventListener('click',function(){show(+t.getAttribute('data-i'));});});
+  var start=0; panels.forEach(function(p,j){if('#'+p.id===location.hash)start=j;});
+  show(start);
+})();
+</script>
+
+</body></html>

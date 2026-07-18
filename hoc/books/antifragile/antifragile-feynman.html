@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="vi"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Antifragile — Những Thứ Hưởng Lợi Từ Hỗn Loạn — Hiểu sâu theo Feynman</title>
+<style>
+  /* Design tokens shared with ebook-to-study-html (styles_v2.css) */
+  :root{
+    --bg:#fafaf7; --bg-elevated:#ffffff; --bg-soft:#f3f3ee;
+    --border:#e0e0d8; --border-soft:#ececea; --border-strong:#d2c8b6;
+    --ink:#1a1a1f; --ink-soft:#3f3f4a; --muted:#7a7a85;
+    --accent:#2f6fed; --accent-2:#2258c8; --gold:#0fb6d4; --gap:#2258c8;
+    --serif:"Fraunces",Georgia,"Iowan Old Style",serif;
+    --sans:"Geist",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    --mono:"Geist Mono","JetBrains Mono",Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:var(--sans);
+    font-size:19px;line-height:1.72;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}
+  .progress{position:fixed;top:0;left:0;height:3px;width:0;z-index:50;
+    background:linear-gradient(90deg,var(--gold),var(--accent));transition:width .08s linear}
+  .wrap{max-width:920px;margin:0 auto;padding:0 36px}
+  .rise{opacity:0;transform:translateY(14px);animation:rise .7s cubic-bezier(.2,.7,.3,1) forwards}
+  @keyframes rise{to{opacity:1;transform:none}}
+
+  header{padding:104px 0 60px;border-bottom:1px solid var(--border)}
+  .kicker{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.18em;
+    text-transform:uppercase;color:var(--accent);margin-bottom:26px}
+  h1{font-family:var(--serif);font-weight:600;font-size:clamp(42px,7.6vw,72px);
+    line-height:1.0;letter-spacing:-.022em;margin-bottom:28px;font-optical-sizing:auto;color:var(--ink)}
+  h1 em{font-style:italic;color:var(--accent)}
+  .core{font-family:var(--serif);font-style:italic;font-weight:400;
+    font-size:clamp(21px,3.6vw,27px);line-height:1.44;color:var(--ink-soft)}
+  .core span{font-style:normal;font-weight:600;color:var(--accent-2);
+    box-shadow:inset 0 -.5em 0 rgba(47,111,237,.16)}
+
+  /* ---- BƯỚC 0: ANCHOR (state the rule + plan before explaining) ---- */
+  .anchor .rule{font-family:var(--serif);font-size:19px;line-height:1.5;color:var(--ink);
+    background:var(--bg-soft);border-left:3px solid var(--accent);
+    padding:18px 24px;border-radius:0 4px 4px 0;margin:0}
+  .anchor .rule em{font-style:italic;color:var(--accent-2)}
+  .anchor .rule strong{color:var(--ink);font-weight:600}
+  .anchor .approach{color:var(--ink-soft)}
+
+  section{padding:72px 0;border-bottom:1px solid var(--border);position:relative}
+  .step-head{display:flex;align-items:flex-start;gap:22px;margin-bottom:34px}
+  .big-num{font-family:var(--serif);font-weight:700;font-size:62px;line-height:.8;
+    color:var(--border-strong);flex:none;font-optical-sizing:auto;letter-spacing:-.03em}
+  .step-meta{padding-top:4px}
+  .lbl{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--accent);display:block;margin-bottom:10px}
+  h2{font-family:var(--serif);font-weight:600;font-size:clamp(27px,4.4vw,37px);
+    line-height:1.12;letter-spacing:-.012em;color:var(--ink)}
+  h2 em{font-style:italic;color:var(--accent)}
+  p{margin-bottom:21px}
+  p:last-child{margin-bottom:0}
+  strong{font-weight:600;color:var(--ink)}
+  em{font-style:italic;color:var(--accent-2)}
+  .gloss{color:var(--muted);font-style:italic}
+
+  .lead::first-letter{font-family:var(--serif);font-weight:700;float:left;
+    font-size:74px;line-height:.74;padding:8px 12px 0 0;color:var(--accent)}
+
+  .sub{font-family:var(--serif);font-weight:600;font-size:17px;letter-spacing:.01em;
+    color:var(--ink);margin:34px 0 14px;display:flex;align-items:center;gap:11px}
+  .sub::before{content:"";width:18px;height:2px;background:var(--accent);flex:none;border-radius:2px}
+
+  .gaps{background:var(--bg-soft)}
+  .gaps .big-num{color:#e2d6b4}
+  .gaps .lbl{color:var(--gap)}
+  .gap-q{margin:0 0 30px;padding-left:24px;border-left:2px solid var(--border-strong)}
+  .gap-q:last-child{margin-bottom:0}
+  .gap-q .q{font-family:var(--serif);font-style:italic;font-weight:500;
+    font-size:22px;line-height:1.35;color:var(--gap);margin-bottom:12px;display:block}
+  .gap-q p:last-child{margin-bottom:0}
+
+  .analogy-card{border:1px solid #e8c876;border-radius:4px;padding:30px 32px;margin:8px 0 28px;
+    background:linear-gradient(135deg,#fef9ed 0%,#fdf3e0 100%)}
+  .analogy-card .tag{font-family:var(--mono);font-weight:600;font-size:11px;
+    letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin-bottom:16px;display:block}
+  .analogy-card p{color:#5a4810}
+  .analogy-card strong{color:var(--accent-2)}
+  .limit{font-size:17px;line-height:1.6;color:#5a4810;
+    border-top:1px solid #e8c876;padding-top:20px;margin-top:22px}
+  .limit b{color:var(--accent-2);font-weight:600;font-family:var(--serif)}
+
+  .retell{background:linear-gradient(180deg,var(--bg-soft) 0%,var(--bg) 100%);border-bottom:none}
+  .retell h2{color:var(--ink)}
+  .retell strong{color:var(--accent-2)}
+  .retell .core{margin-top:6px}
+  .testbox{border:1px solid var(--border);background:var(--bg-elevated);
+    border-radius:4px;padding:28px 32px;margin-top:40px;box-shadow:0 1px 2px rgba(0,0,0,.03)}
+  .testbox h3{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--accent);margin-bottom:20px}
+  .testbox ol{margin:0;padding-left:22px;counter-reset:t}
+  .testbox li{margin-bottom:16px;color:var(--ink-soft);padding-left:6px}
+  .testbox li:last-child{margin-bottom:0}
+
+  footer{text-align:center;padding:60px 0 88px}
+  footer .mark{font-family:var(--serif);font-weight:700;color:var(--accent);
+    font-size:26px;display:block;margin-bottom:14px}
+  footer p{font-family:var(--serif);font-style:italic;color:var(--muted);font-size:17px;max-width:380px;margin:0 auto}
+
+  @media(max-width:560px){
+    body{font-size:18px}
+    header{padding:70px 0 44px}
+    section{padding:52px 0}
+    .step-head{gap:16px}
+    .big-num{font-size:46px}
+    .lead::first-letter{font-size:60px}
+  }
+
+/* ===== FLAMINDI THEME OVERRIDE (dong bo trang chu flamindi.com) ===== */
+:root{
+  --accent:#2f6fed;--accent-2:#2258c8;--accent2:#2258c8;--gold:#0fb6d4;--cyan:#0fb6d4;--blue:#2f6fed;
+  --bg:#f7f9fe;--bg-elevated:#ffffff;--bg-card:#ffffff;--card:#ffffff;--bg-soft:#eef2fb;--soft:#eef2fb;
+  --border:#e4e9f2;--border-soft:#eef1f7;--border-strong:#cfd8e8;
+  --text:#1a2233;--text-soft:#4e5a74;--text-dim:#6b7691;
+  --ink:#1a2233;--ink-soft:#4e5a74;--muted:#6b7691;--soft-t:#4e5a74;--dim:#6b7691;
+  --serif:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+  --mono:ui-monospace,Menlo,Consolas,monospace;
+}
+body{background:radial-gradient(1200px 600px at 85% -10%,rgba(47,111,237,.14),transparent 60%),radial-gradient(1000px 640px at -10% 30%,rgba(15,182,212,.09),transparent 55%),linear-gradient(#f7f9fe,#edf0f8) fixed !important;}
+</style>
+<style>
+ .tabbar{position:fixed;top:0;left:0;right:0;width:100%;box-sizing:border-box;z-index:40;background:rgba(250,250,247,.93);
+   backdrop-filter:saturate(1.1) blur(8px);-webkit-backdrop-filter:saturate(1.1) blur(8px);
+   border-bottom:1px solid var(--border);display:flex;gap:6px;overflow-x:auto;
+   padding:10px max(36px,calc((100% - 992px)/2));scrollbar-width:thin}
+ .tabbar .tab{flex:0 0 auto;display:flex;align-items:baseline;gap:9px;cursor:pointer;
+   background:transparent;border:1px solid transparent;border-radius:999px;
+   padding:8px 17px;transition:.15s;white-space:nowrap;color:var(--muted)}
+ .tabbar .tab:hover{color:var(--ink);background:var(--bg-soft)}
+ .tabbar .tab.active{color:var(--accent-2);background:var(--bg-soft);border-color:var(--border-strong)}
+ .tabbar .tn{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.1em;color:var(--accent)}
+ .tabbar .tl{font-family:var(--serif);font-weight:500;font-size:16px}
+ body{padding-top:56px} .concept-panel{display:none}
+ .concept-panel.active{display:block}
+ .concept-panel header{padding-top:50px}
+ @media(max-width:560px){.tabbar .tl{max-width:48vw;overflow:hidden;text-overflow:ellipsis}}
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+<nav class="tabbar" aria-label="Các khái niệm"><button class="tab" data-i="0"><span class="tn">01</span><span class="tl">Lồi và lõm</span></button><button class="tab" data-i="1"><span class="tn">02</span><span class="tl">Con gà tây</span></button><button class="tab" data-i="2"><span class="tn">03</span><span class="tl">Người chữa gây hại</span></button><button class="tab" data-i="3"><span class="tn">04</span><span class="tl">Hiệu ứng Lindy</span></button></nav>
+<div class="concept-panel" id="c-loi-va-lom"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Giải thích theo phương pháp Feynman</div>
+    <h1 class="rise" style="animation-delay:.08s">Vì sao biến động lại làm vài thứ mạnh lên — dù bạn không giỏi đoán</h1>
+    <p class="core rise" style="animation-delay:.16s">Có một hình dạng lời–lỗ khiến <span>biến động tự nó rót thêm tiền vào túi bạn.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Điều cần hiểu &amp; cách tiếp cận</span><h2>Quy tắc: lồi thì ăn biến động, lõm thì bị biến động ăn</h2></div>
+    </div>
+    <div class="rule">Taleb (ch.18–19, 'philosopher's stone'): với một quan hệ <strong>lồi</strong> (convex) — được thì tăng nhanh dần, mất thì chậm dần — <em>trung bình của các kết quả cao hơn kết quả của mức trung bình</em> (bất đẳng thức Jensen). Đó chính là antifragile: càng biến động, phần lời trội thêm ra, miễn phí. Quan hệ <strong>lõm</strong> (concave) thì ngược: biến động bào mòn.</div>
+    <div class="sub">Cách giải thích</div>
+    <div class="approach"><p>Chỗ vấp: làm sao 'chỉ nhờ dao động' mà tự nhiên có thêm tiền, không cần đoán trúng? Cách làm ở đây: lấy một trò xúc xắc mà tiền thưởng cong lên, rồi so hai cách chơi — một mức đều, một mức dao động. Bạn sẽ thấy dao động thắng, mà chẳng cần tài tiên tri nào.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Giải thích đơn giản</span><h2>Một trò xúc xắc mà tiền thưởng cong lên</h2></div>
+    </div>
+    <p class="lead">Tưởng tượng một trò chơi: gieo con xúc xắc, và tiền thưởng là <em>bình phương</em> số điểm. Ra 2 được 4 đồng. Ra 6 được 36 đồng. Để ý: nhảy từ 5 lên 6 (thêm 25 đồng) hơn hẳn nhảy từ 1 lên 2 (thêm 3 đồng). Càng lên cao, phần thưởng vọt nhanh hơn. Đó là một đường <em>cong lên</em>.</p>
+
+<div class="sub">Hai cách chơi cùng một trò</div>
+<p>Cách A: lúc nào cũng ra đúng mặt 3,5 (mức giữa). Thưởng là 3,5 bình phương, khoảng 12 đồng, đều đều.</p>
+<p>Cách B: khi ra 1 khi ra 6, lên xuống quanh mức giữa đó. Trung bình số điểm vẫn là 3,5. Nhưng trung bình <em>tiền thưởng</em> lại khoảng 15 đồng.</p>
+
+<div class="sub">Ba đồng đó ở đâu ra?</div>
+<p>Không ai bỏ thêm vào. Nó bật ra <strong>chỉ nhờ đường cong lên</strong>. Vì mỗi cú lên cao thưởng đậm, mỗi cú xuống thấp mất nhẹ, nên gộp lại phần lên thắng phần xuống. Dao động tự nó đẻ ra tiền.</p>
+
+<div class="sub">Lồi và lõm, hai số phận ngược nhau</div>
+<p>Đường cong lên gọi là <em>lồi</em>: dao động là bạn. Đường cong xuống gọi là <em>lõm</em>: mất thì vọt nhanh, được thì ì ạch, dao động là kẻ thù. Antifragile chỉ là một tên khác cho 'đang ở đường lồi'.</p>
+  </section>
+
+  <section class="gaps">
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Chỗ vấp · Lỗ hổng</span><h2>Mấy chỗ nghe xuôi mà nghĩ kỹ chưa thông</h2></div>
+    </div>
+    <div class="gap-q"><span class="q">"Trung bình điểm vẫn 3,5 mà — sao trung bình tiền lại khác?"</span><p>Vì bước từ điểm sang tiền không thẳng, nó cong. Trên đường cong lên, hai đầu 1 và 6 không bù trừ đều nhau. Đầu cao kéo tiền lên mạnh hơn đầu thấp kéo xuống. Nên bình quân tiền của các mặt sẽ cao hơn tiền của mặt bình quân.</p></div>
+<div class="gap-q"><span class="q">"Vậy tôi có thể đoán dở mà vẫn lời à?"</span><p>Đúng, và đây là chỗ ngược đời nhất. Trên đường lồi, bạn không cần đoán mặt nào ra. Chỉ cần phần thắng cong lên và phần thua bị chặn nhỏ. Càng nhiều dao động, phần trội càng lớn — kể cả khi bạn đoán tệ hơn tung đồng xu.</p></div>
+<div class="gap-q"><span class="q">"Nghe như phép màu. Có gì bù lại không?"</span><p>Có. Đường lồi thật sự đòi một điều: phần thua phải <em>bị chặn</em>, đừng để một cú xuống xoá sạch. Nếu ra mặt xấu mà mất luôn cả vốn thì hết chơi. Cong lên chỉ lời khi bạn còn sống để chơi ván sau. Vì thế phải chặn đáy trước.</p></div>
+<div class="gap-q"><span class="q">"Cái này liên quan gì tới đời thực, ngoài xúc xắc?"</span><p>Rất nhiều thứ có đường cong. Một cược mà mất tối đa là phí nhỏ, được thì bỏ ngỏ — đường lồi. Một khoản vay mà lời thì ít, sập thì mất cả chì lẫn chài — đường lõm. Nhận ra mình đang ở đường nào quan trọng hơn đoán tương lai.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví von &amp; ví dụ đời thường</span><h2>Neo vào thứ bạn đã biết</h2></div>
+    </div>
+    <div class="analogy-card"><span class="tag">Ví dụ trung tâm</span>
+<p>Nghĩ về <strong>đi tập tạ</strong>. Sức nặng dồn vào cơ là một 'cú sốc'. Đường đáp của cơ cong lên: một buổi nặng rồi nghỉ giúp cơ dày lên nhiều; chia nhỏ thành trăm lần nhấc vật nhẹ thì gần như chẳng thêm gì. Cùng tổng sức nặng, cách <em>dồn cục rồi nghỉ</em> thắng cách <em>rải đều</em>. Đó là đường lồi: cơ ăn được biến động.</p>
+<p class="limit"><b>Chỗ ví von này hỏng:</b> cơ bắp chỉ lồi <em>trong một khoảng</em>. Nhấc quá nặng hay không cho nghỉ thì đường gãy — rách cơ, chấn thương, thành lõm. Xúc xắc bình phương thì cong lên mãi, còn cơ thể có trần. Ngoài đời, hầu hết đường lồi đều có một ngưỡng, vượt qua là đổi dấu.</p>
+</div>
+<p>Ngược lại là <strong>lái xe đâm tường</strong>. Đâm 50 cây số một giờ hại hơn <em>rất nhiều</em> so với mười lần đâm 5 cây số một giờ. Cùng tổng tốc độ, cú lớn một phát tàn khốc hơn hẳn. Đó là đường lõm: cơ thể bị biến động ăn. Vì thế cái dễ vỡ sợ cú lớn, không sợ cú nhỏ gộp lại.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Tên toán học của 'trung bình kết quả cao hơn kết quả của trung bình' là <em>bất đẳng thức Jensen</em>. Phần trội đó gọi là <em>convexity bias</em>. Taleb dùng nó làm 'máy dò dễ vỡ': lay nhẹ một biến, đo xem thiệt hại tăng đều hay tăng vọt. Tăng vọt là lõm, là dễ vỡ — không cần mô hình rủi ro chính xác.</p>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">4</div>
+      <div class="step-meta"><span class="lbl">Kể lại gọn gàng</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Có những thứ mà đường lời–lỗ cong lên: được thì vọt nhanh, mất thì nhẹ. Với chúng, chỉ riêng việc dao động đã đẻ thêm tiền — không cần đoán trúng. Đó là lồi, là antifragile. Ngược lại là lõm: mất vọt nhanh, được ì ạch, biến động bào mòn. Điều kiện sống còn: chặn phần thua lại, đừng để một cú xoá sạch.</p>
+<p class="core">Có một hình dạng lời–lỗ khiến <span>lồi thì ăn biến động, lõm thì bị biến động ăn.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã hiểu chưa?</h3>
+      <ol>
+        <li>Cùng trung bình điểm 3,5, vì sao cách chơi 'lên xuống' lại được nhiều tiền hơn cách 'đều đều'?</li>
+        <li>Vì sao trên một đường lồi, bạn có thể đoán dở mà vẫn có lời?</li>
+        <li>Điều kiện bắt buộc để 'đường cong lên' thật sự sinh lời là gì?</li>
+        <li>Lái xe: vì sao một cú đâm mạnh hại hơn nhiều cú đâm nhẹ cùng tổng tốc độ?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nếu giải thích được cho bà ngoại hiểu, bạn mới thật sự hiểu.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-con-ga-tay"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Giải thích theo phương pháp Feynman</div>
+    <h1 class="rise" style="animation-delay:.08s">Con gà tây: vì sao chuỗi ngày càng tốt lại là điềm xấu</h1>
+    <p class="core rise" style="animation-delay:.16s">Chưa thấy tai hoạ <span>không có nghĩa là không có tai hoạ — có khi ngược lại.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Điều cần hiểu &amp; cách tiếp cận</span><h2>Quy tắc: vắng bằng chứng hại không phải bằng chứng vắng hại</h2></div>
+    </div>
+    <div class="rule">Taleb (ch.4, mượn từ Bertrand Russell): với một hệ dễ vỡ, <strong>chuỗi quá khứ êm đềm không phải bằng chứng an toàn</strong> — nó có thể chính là dấu hiệu rủi ro đang bị nén. Rủi ro sống ở cái đuôi tương lai chưa từng có trong mẫu. 'Chưa thấy hại' (absence of evidence) khác hẳn 'có bằng chứng là không hại' (evidence of absence).</div>
+    <div class="sub">Cách giải thích</div>
+    <div class="approach"><p>Chỗ vấp: dữ liệu càng dày, ta càng tự tin — sao lại sai? Cách làm ở đây: kể chuyện một con gà tây thu thập dữ liệu mỗi ngày, và đúng vào lúc nó tự tin nhất thì tai hoạ ập tới. Rồi chỉ ra: ngày 'an toàn nhất' và ngày 'nguy nhất' thật ra là cùng một ngày.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Giải thích đơn giản</span><h2>Một nghìn ngày được cho ăn</h2></div>
+    </div>
+    <p class="lead">Một con gà tây được cho ăn mỗi sáng. Ngày một, ngày hai, ngày trăm — sáng nào người nuôi cũng mang thức ăn tới. Con gà thu thập dữ liệu. Kết luận của nó ngày càng chắc: 'người nuôi yêu mình'. Đến ngày một nghìn, niềm tin ấy vững như bàn thạch.</p>
+
+<div class="sub">Ngày một nghìn lẻ một</div>
+<p>Hôm đó là ngày trước lễ Tạ ơn. Người nuôi tới, nhưng không mang thức ăn. Toàn bộ một nghìn ngày dữ liệu 'người nuôi yêu mình' vô dụng trong một khoảnh khắc. Con gà sai không phải vì thiếu dữ liệu — nó có cả nghìn điểm.</p>
+
+<div class="sub">Chỗ lật ngược</div>
+<p>Đây là điều rợn người. Ngày con gà thấy <em>an toàn nhất</em> — béo nhất, được chăm nhất, tự tin nhất — cũng chính là ngày nó <em>gần cái chết nhất</em>. Cái làm nó yên tâm chính là cái đang vỗ béo nó cho ngày cuối.</p>
+
+<div class="sub">Vì sao thêm dữ liệu lại phản đòn</div>
+<p>Với con gà, mỗi ngày êm không thêm hiểu biết — nó chỉ bơm thêm tự tin sai. Rủi ro không nằm trong nghìn ngày đã qua. Nó nằm ở cái đuôi: một ngày chưa từng xảy ra. Đường càng mượt càng ru ngủ.</p>
+  </section>
+
+  <section class="gaps">
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Chỗ vấp · Lỗ hổng</span><h2>Mấy chỗ nghe xuôi mà nghĩ kỹ chưa thông</h2></div>
+    </div>
+    <div class="gap-q"><span class="q">"Cả nghìn ngày dữ liệu mà vẫn sai — chẳng lẽ dữ liệu vô dụng?"</span><p>Không vô dụng ở mọi nơi. Trong miền 'không cú nào lớn', gom nhiều dữ liệu thì đo được khá đúng. Nhưng con gà sống trong miền mà cú quyết định dồn hết vào một ngày. Ở đó, dữ liệu quá khứ không chứa cái duy nhất quan trọng: ngày bị làm thịt.</p></div>
+<div class="gap-q"><span class="q">"Vậy chuỗi ngày êm luôn là điềm xấu à?"</span><p>Không phải luôn — chỉ khi thứ đó <em>dễ vỡ</em>. Một tảng đá cũng có chuỗi ngày êm, nhưng nó không giấu tai hoạ. Điềm xấu là khi cái êm che một cấu trúc có thể sập: nợ chồng chất, một nguồn thu duy nhất, một hệ bị nén. Êm cộng dễ vỡ mới đáng sợ.</p></div>
+<div class="gap-q"><span class="q">"Làm sao con gà biết mình là gà tây, không phải tảng đá?"</span><p>Không nhìn vào chuỗi ngày êm — nó giống nhau ở cả hai. Nhìn vào <em>hình dạng được–mất</em>. Hỏi: nếu một cú bất ngờ ập tới, mình mất nhẹ hay mất sạch? Mất sạch nghĩa là bạn đang là gà tây, dù hôm nay có béo tốt tới đâu.</p></div>
+<div class="gap-q"><span class="q">"Biết vậy thì làm được gì, nếu không đoán nổi ngày xấu?"</span><p>Đừng cố đoán ngày lễ Tạ ơn. Hãy đổi thế đứng: bớt phụ thuộc vào một nguồn duy nhất, chừa phần dự phòng, đừng vay tới mức một cú là gục. Không cần biết cú sốc có hình gì — chỉ cần sống sót được khi nó tới.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví von &amp; ví dụ đời thường</span><h2>Neo vào thứ bạn đã biết</h2></div>
+    </div>
+    <div class="analogy-card"><span class="tag">Ví dụ trung tâm</span>
+<p>Nghĩ về một <strong>nhân viên gắn bó hai mươi năm</strong> ở một công ty. Mỗi năm lương đều tăng, thưởng đều có. Hai mươi năm dữ liệu nói 'công ty cần mình'. Anh vay mua nhà lớn, tin vào dòng lương đó. Rồi một sáng công ty tái cơ cấu, cả phòng bị cho nghỉ. Hai mươi năm 'an toàn' bốc hơi trong một cuộc họp — đúng lúc anh phơi mình nhiều nhất.</p>
+<p class="limit"><b>Chỗ ví von này hỏng:</b> con gà tây <em>chắc chắn</em> bị làm thịt, số phận đã định. Người nhân viên thì không: nhiều người làm cả đời không bị sa thải. Ví von nói về <em>hình dạng rủi ro</em> (êm che dễ vỡ), không nói mọi chuỗi êm đều kết thúc thảm. Đừng biến nó thành 'ổn định nào cũng là bẫy'.</p>
+</div>
+<p>Một ví dụ ở tầm hệ thống: nền kinh tế được 'giữ ổn định' nhiều năm, không cho một cơn suy thoái nhỏ nào xảy ra. Bề mặt đẹp, ai cũng yên tâm vay và dùng đòn bẩy. Rồi một cú sập lớn cuốn sạch — vì biến động nhỏ bị nén bao năm đã dồn thành một cú. Chuỗi êm chính là lúc dễ vỡ đang tích lại.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Taleb gọi bẫy này là nhầm 'absence of evidence' với 'evidence of absence', và xếp nó vào 'Fourth Quadrant' — nơi vừa ở miền một-cú-nuốt-tất-cả, vừa phơi nhiễm đuôi cao. Ở ô đó, mô hình thống kê từ quá khứ nguy hiểm hơn là hữu ích; lối ra là giảm phơi nhiễm, không phải đo chính xác hơn.</p>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">4</div>
+      <div class="step-meta"><span class="lbl">Kể lại gọn gàng</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Một con gà tây thấy đời ngày càng tốt suốt nghìn ngày, rồi bị làm thịt vào ngày nó tự tin nhất. Chuỗi quá khứ êm không chứng minh an toàn; với thứ dễ vỡ, nó là dấu hiệu rủi ro đang bị nén. Đừng đoán ngày xấu. Hãy nhìn hình dạng được–mất, và đứng sao cho một cú bất ngờ không xoá sạch mình.</p>
+<p class="core">Chưa thấy tai hoạ <span>ngày thấy an toàn nhất có khi là ngày nguy nhất.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã hiểu chưa?</h3>
+      <ol>
+        <li>Con gà tây có cả nghìn ngày dữ liệu — vì sao nó vẫn sai hoàn toàn?</li>
+        <li>Vì sao chuỗi ngày êm chỉ đáng sợ khi đi kèm 'dễ vỡ'?</li>
+        <li>Không nhìn vào chuỗi ngày êm thì nhìn vào đâu để biết mình có phải 'gà tây' không?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nếu giải thích được cho bà ngoại hiểu, bạn mới thật sự hiểu.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-nguoi-chua-gay-hai"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Giải thích theo phương pháp Feynman</div>
+    <h1 class="rise" style="animation-delay:.08s">Người chữa gây hại: khi 'ra tay cho ổn' lại nuôi lớn tai hoạ</h1>
+    <p class="core rise" style="animation-delay:.16s">Đôi khi cách giúp tốt nhất <span>là đừng can thiệp — và đó là điều khó chấp nhận nhất.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Điều cần hiểu &amp; cách tiếp cận</span><h2>Quy tắc: can thiệp có cái giá ẩn, thường bị bỏ quên</h2></div>
+    </div>
+    <div class="rule">Taleb (ch.7, 21 — <em>iatrogenics</em>, gốc Hy Lạp 'do thầy thuốc gây ra'): mọi can thiệp đều có lợi <em>và</em> hại; khi cái hại bị giấu và trả chậm, người ta chỉ thấy phần lợi trước mắt và can thiệp quá tay. Nén biến động nhỏ để 'cho ổn' — nền kinh tế, cơ thể, khu rừng — thường nuôi lớn đúng cú sập mình muốn tránh. Gánh nặng chứng minh phải đặt lên tay người can thiệp.</div>
+    <div class="sub">Cách giải thích</div>
+    <div class="approach"><p>Chỗ vấp: 'làm gì đó' luôn có vẻ tốt hơn 'ngồi yên', nên không hành động bị coi là vô trách nhiệm. Cách làm ở đây: soi vào cái giá <em>ẩn</em> của can thiệp qua chuyện khu rừng và ông bác sĩ. Rồi tách 'ca thật sự cần' khỏi 'ca để yên thì hơn'.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Giải thích đơn giản</span><h2>Khu rừng bị cấm mọi đám cháy nhỏ</h2></div>
+    </div>
+    <p class="lead">Một khu rừng thi thoảng có đám cháy nhỏ. Nghe đáng sợ, nên người ta dập sạch mọi đám cháy, dù bé tí. Nhiều năm liền khu rừng trông an toàn, xanh tốt. Nhưng dưới tán, củi khô và lá mục cứ dồn lại, không gì dọn đi. Rồi một tia lửa châm vào đống củi tích cả chục năm — thành trận cháy nuốt cả cánh rừng.</p>
+
+<div class="sub">Cái giá không hiện ra ngay</div>
+<p>Đám cháy nhỏ có một việc thầm lặng: dọn bớt củi. Dập sạch chúng cho 'an toàn' thực ra là gom củi cho một trận lớn. Cái lợi (rừng đẹp lúc này) thấy ngay. Cái hại (trận cháy sau) trả chậm, nên bị bỏ quên.</p>
+
+<div class="sub">Cùng một khuôn với ông bác sĩ</div>
+<p>Chữa bệnh cũng có hai mặt. Với người bệnh nặng, thuốc cứu mạng — lợi áp đảo. Với người gần như khoẻ, cùng liều thuốc đó mang tác dụng phụ mà chẳng thêm bao lợi. Nhưng bác sĩ thấy 'kê đơn' an toàn hơn 'để yên', nên can thiệp cả vào chỗ không cần.</p>
+
+<div class="sub">Vì sao ta luôn nghiêng về 'ra tay'</div>
+<p>Ngồi yên mà có chuyện thì bị trách 'sao không làm gì'. Ra tay mà hỏng thì đổ cho xui. Phần thưởng lệch về phía hành động, nên ai cũng thích can thiệp. Còn cái giá ẩn khi can thiệp thừa thì không ai tính.</p>
+  </section>
+
+  <section class="gaps">
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Chỗ vấp · Lỗ hổng</span><h2>Mấy chỗ nghe xuôi mà nghĩ kỹ chưa thông</h2></div>
+    </div>
+    <div class="gap-q"><span class="q">"Chẳng lẽ đừng bao giờ can thiệp? Nghe vô trách nhiệm."</span><p>Không phải đừng bao giờ. Với ca nặng — bệnh hiểm, nhà đang cháy thật — can thiệp là bắt buộc, lợi áp đảo hại. Ý ở đây hẹp hơn: đừng can thiệp vào những chỗ gần khoẻ, gần ổn, chỉ để 'cho chắc'. Chỗ đó cái hại ẩn thường lớn hơn cái lợi mỏng.</p></div>
+<div class="gap-q"><span class="q">"Sao biết khi nào nên ra tay, khi nào nên để yên?"</span><p>Nhìn độ nặng. Lợi của can thiệp thường lớn dần theo mức nghiêm trọng, còn cái hại thì gần như cố định. Bệnh càng nặng, ra tay càng đáng. Gần khoẻ thì cán cân nghiêng về để yên. Cùng một liều thuốc, đúng người thì cứu, sai người thì hại.</p></div>
+<div class="gap-q"><span class="q">"Cái này chỉ đúng với rừng và y học thôi chứ?"</span><p>Không, nó lặp ở khắp nơi có người 'quản cho ổn'. Cố dập mọi biến động nhỏ của thị trường, cấm mọi xáo trộn xã hội, sửa mọi trục trặc nhỏ trong một hệ phức tạp — cùng một khuôn. Bề mặt êm hơn, bên dưới dồn một cú lớn.</p></div>
+<div class="gap-q"><span class="q">"'Không làm gì' thật ra cũng là một lựa chọn có rủi ro mà?"</span><p>Đúng, và đó là chỗ tinh tế. 'Để yên' không phải lười — nó là một quyết định, cân nhắc rằng cái hại của can thiệp lớn hơn. Cái ta chống là <em>can thiệp theo phản xạ</em>, làm cho có làm. Đôi khi trừ bớt cái thừa còn khôn hơn thêm vào cái mới.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví von &amp; ví dụ đời thường</span><h2>Neo vào thứ bạn đã biết</h2></div>
+    </div>
+    <div class="analogy-card"><span class="tag">Ví dụ trung tâm</span>
+<p>Nghĩ về việc <strong>cứ đụng là uống kháng sinh</strong> cho mỗi lần hắt hơi sổ mũi. Lần nào cũng thấy 'đỡ nhanh', nên yên tâm dùng tiếp. Nhưng mỗi lần uống thừa lại giết bớt vi khuẩn có lợi và luyện cho vi khuẩn xấu lì đòn hơn. Cái giá không hiện ra hôm nay — nó tới vào ngày kháng sinh không còn ăn thua với một bệnh thật sự nặng.</p>
+<p class="limit"><b>Chỗ ví von này hỏng:</b> kháng sinh khi cần thì cứu mạng thật, không phải thứ nên tránh. Ví von này nói về <em>dùng thừa</em> vào chỗ không cần, không phải bài xích thuốc. Đẩy nó thành 'thuốc men đều có hại' là hiểu sai — đúng ca nặng, đúng liều, can thiệp vẫn là ân nhân.</p>
+</div>
+<p>Cùng khuôn ở tầm lớn: một ngân hàng trung ương cố xoá mọi chu kỳ lên xuống của nền kinh tế. Nhiều năm trông ổn định mượt mà. Nhưng mỗi lần chặn một cơn suy thoái nhỏ là dồn thêm rủi ro ẩn, cho tới khi bung ra thành một cuộc khủng hoảng lớn. Ổn định ép buộc mua bằng một cú sập chậm.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Taleb nối iatrogenics với <em>via negativa</em>: trong hệ phức tạp, trừ bớt cái hại (bỏ thuốc lá, bớt đường, bớt nợ) thường chắc ăn hơn thêm cái mới, vì cái 'thêm vào' luôn kèm tác dụng phụ khó lường. Ông cũng gắn nó với nguyên tắc lợi ích lồi theo độ nặng: chỉ trị người rất bệnh, để yên người gần khoẻ.</p>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">4</div>
+      <div class="step-meta"><span class="lbl">Kể lại gọn gàng</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Mọi can thiệp có lợi và có hại; khi cái hại bị giấu và trả chậm, ta chỉ thấy lợi trước mắt nên ra tay quá tay. Dập mọi biến động nhỏ để 'cho ổn' thường nuôi lớn đúng cú sập mình sợ — như rừng cấm cháy nhỏ rồi cháy lớn. Trị mạnh tay ca nặng, để yên ca gần khoẻ. Đôi khi trừ bớt khôn hơn thêm vào.</p>
+<p class="core">Đôi khi cách giúp tốt nhất <span>dập sạch biến động nhỏ thường là nuôi một cú sập lớn.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã hiểu chưa?</h3>
+      <ol>
+        <li>Vì sao dập sạch mọi đám cháy rừng nhỏ lại dẫn tới một trận cháy lớn hơn?</li>
+        <li>Cùng một liều thuốc, vì sao nó cứu người bệnh nặng nhưng hại người gần khoẻ?</li>
+        <li>Vì sao con người luôn nghiêng về 'ra tay' hơn 'để yên', dù để yên có khi tốt hơn?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nếu giải thích được cho bà ngoại hiểu, bạn mới thật sự hiểu.</p>
+  </footer>
+
+</div></div><div class="concept-panel" id="c-hieu-ung-lindy"><div class="wrap">
+
+  <header>
+    <div class="kicker rise">Giải thích theo phương pháp Feynman</div>
+    <h1 class="rise" style="animation-delay:.08s">Hiệu ứng Lindy: vì sao thứ càng già lại càng 'trẻ'</h1>
+    <p class="core rise" style="animation-delay:.16s">Với ý tưởng và sách vở, <span>mỗi năm sống thêm lại kéo dài tuổi thọ mong đợi, chứ không rút ngắn.</span></p>
+  </header>
+
+  <section class="anchor">
+    <div class="step-head">
+      <div class="big-num">0</div>
+      <div class="step-meta"><span class="lbl">Điều cần hiểu &amp; cách tiếp cận</span><h2>Quy tắc: với thứ không hư hỏng, tuổi càng cao thì sống càng lâu</h2></div>
+    </div>
+    <div class="rule">Taleb (ch.20, <em>Lindy Effect</em>): với một thứ <strong>không hư hỏng hữu cơ</strong> (ý tưởng, sách, công nghệ) — khác cơ thể sống — mỗi năm tồn tại thêm lại <em>nhân đôi</em> tuổi thọ mong đợi còn lại. Sách sống 40 năm kỳ vọng sống thêm ~40 năm; văn bản 2000 năm kỳ vọng thêm ~2000 năm. Thời gian là bộ lọc dễ vỡ tối hậu.</div>
+    <div class="sub">Cách giải thích</div>
+    <div class="approach"><p>Chỗ vấp: với người, càng già thì càng gần cái chết — sao với sách lại ngược? Cách làm ở đây: tách hai loại 'già' bằng câu hỏi 'thứ này có hư theo tuổi không'. Rồi cho thấy với loại không hư, mỗi năm sống sót là một lá phiếu nữa cho sự bền.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">1</div>
+      <div class="step-meta"><span class="lbl">Giải thích đơn giản</span><h2>Cụ già, em bé, và cuốn sách cổ</h2></div>
+    </div>
+    <p class="lead">Hỏi nhanh: một cụ già tám mươi và một em bé, ai còn sống lâu hơn? Dĩ nhiên em bé. Với con người, càng nhiều tuổi thì càng ít năm phía trước. Giờ đổi câu hỏi: một cuốn sách in năm nay và một cuốn đã sống hai nghìn năm, cuốn nào còn được đọc lâu hơn? Câu trả lời ngược hẳn: cuốn hai nghìn tuổi.</p>
+
+<div class="sub">Hai loại 'già' khác nhau</div>
+<p>Cơ thể sống thì <em>hư theo tuổi</em>: máy móc mòn, tế bào già. Sống thêm một năm là mất thêm một năm. Nhưng ý tưởng, sách, công nghệ thì <em>không hư</em>. Chúng không có tuổi sinh học để mòn.</p>
+
+<div class="sub">Vì sao thứ không hư lại 'trẻ ra' theo tuổi</div>
+<p>Với thứ không hư, sống lâu là một <em>bằng chứng</em>. Mỗi năm nó còn được dùng là một lần nữa nó vượt qua bộ lọc thời gian: bao thứ cùng thời đã bị quên, nó thì không. Nên tuổi càng cao, càng có lý do tin nó sẽ còn ở lại.</p>
+
+<div class="sub">Thời gian là người kiểm tra dễ vỡ</div>
+<p>Cái dễ vỡ không sống nổi qua nhiều cú xóc của thời gian — nó rơi rụng. Cái trụ lại hai nghìn năm đã nuốt vô số khủng hoảng mà không vỡ. Vậy nên độ bền của một thứ không hư đo bằng chính số năm nó đã sống.</p>
+  </section>
+
+  <section class="gaps">
+    <div class="step-head">
+      <div class="big-num">2</div>
+      <div class="step-meta"><span class="lbl">Chỗ vấp · Lỗ hổng</span><h2>Mấy chỗ nghe xuôi mà nghĩ kỹ chưa thông</h2></div>
+    </div>
+    <div class="gap-q"><span class="q">"Nhân đôi tuổi thọ mãi mãi? Chẳng lẽ sách cổ bất tử?"</span><p>Không bất tử, chỉ là kỳ vọng. Lindy nói về <em>trung bình</em>, không phải bảo đảm cho từng cuốn. Một văn bản cổ vẫn có thể biến mất. Nhưng nếu phải cược, cược vào cái đã sống lâu thì thắng nhiều hơn. Đó là quy luật xác suất, không phải phép màu.</p></div>
+<div class="gap-q"><span class="q">"Vậy cái mới thì luôn kém bền à? Nghe bất công."</span><p>Không phải kém giá trị — chỉ là <em>chưa được kiểm chứng</em>. Cái mới chưa qua bộ lọc thời gian, nên ta chưa biết nó trụ được hay không. Phần lớn cái mới sẽ bị quên; vài cái sẽ thành cổ điển. Lúc này ta chưa biết nó thuộc nhóm nào.</p></div>
+<div class="gap-q"><span class="q">"Cái gì cũng áp Lindy được sao? Cả một ổ bánh mì?"</span><p>Không. Lindy chỉ áp cho thứ <em>không hư hỏng</em>: ý tưởng, câu chuyện, công cụ, thể chế. Bánh mì, cơ thể, một cái máy cụ thể thì hư theo tuổi — càng già càng gần hỏng. Hỏi 'thứ này có mòn theo thời gian không' để biết được phép dùng Lindy hay không.</p></div>
+<div class="gap-q"><span class="q">"Biết Lindy thì dùng vào việc gì?"</span><p>Nó là một cái la bàn chọn cái để tin và để học. Muốn biết ý nào đáng đọc, nghiêng về cái đã trụ lâu. Một cuốn vừa in chưa nói lên gì; một cuốn hai nghìn tuổi đã tự chứng minh. Nó cũng nhắc ta dè chừng 'sốt cái mới' chỉ vì nó mới.</p></div>
+  </section>
+
+  <section>
+    <div class="step-head">
+      <div class="big-num">3</div>
+      <div class="step-meta"><span class="lbl">Ví von &amp; ví dụ đời thường</span><h2>Neo vào thứ bạn đã biết</h2></div>
+    </div>
+    <div class="analogy-card"><span class="tag">Ví dụ trung tâm</span>
+<p>Nghĩ về <strong>một quán ăn trong phố</strong>. Một quán vừa khai trương tháng trước và một quán đã mở suốt bốn mươi năm — quán nào nhiều khả năng còn mở năm sau? Quán bốn mươi năm. Nó đã sống qua bao mùa ế, bao đối thủ, bao đổi thay khẩu vị mà vẫn đông. Mỗi năm trụ lại là một bằng chứng nó hợp với chỗ này. Quán mới thì chưa ai biết.</p>
+<p class="limit"><b>Chỗ ví von này hỏng:</b> quán ăn vẫn có phần 'hư hỏng' — chủ già đi, nhà xuống cấp, khu phố đổi. Nó không thuần 'không hư' như một ý tưởng hay cuốn sách. Nên tuổi của quán là chỉ dấu mạnh, nhưng không chắc như Lindy áp cho văn bản cổ. Dùng nó để ước lượng, đừng coi là luật sắt.</p>
+</div>
+<p>Rõ nhất là công nghệ đời thường. Cái ghế, con dao, ngọn lửa nấu ăn, bánh xe — sống hàng nghìn năm và gần như chắc chắn còn đây sau năm mươi năm nữa. Chiếc điện thoại đời mới nhất thì chưa chắc còn ai nhớ sau mười năm. Cái đã cũ mà vẫn dùng thường bền hơn cái vừa ra lò.</p>
+<div class="sub">Nâng một bậc — dành cho ai tò mò</div>
+<p>Phần này hơi nặng, bỏ qua vẫn hiểu cốt lõi. Taleb rút ra một mẹo đọc: ưu tiên sách đã sống lâu, dè chừng 'neomania' — mê cái mới chỉ vì nó mới. Ông cũng nối Lindy với 'lời tiên tri bằng phép trừ': đoán tương lai bằng cách bỏ đi những thứ dễ vỡ khỏi hiện tại, vì cái dễ vỡ sẽ bị thời gian loại, còn cái đã bền thì ở lại.</p>
+  </section>
+
+  <section class="retell">
+    <div class="step-head">
+      <div class="big-num">4</div>
+      <div class="step-meta"><span class="lbl">Kể lại gọn gàng</span><h2>Kể lại trong một hơi</h2></div>
+    </div>
+    <p>Với thứ không hư hỏng — ý tưởng, sách, công nghệ — càng già lại càng có khả năng sống lâu thêm, ngược hẳn cơ thể người. Lý do: mỗi năm trụ lại là một lần vượt bộ lọc thời gian, một bằng chứng về độ bền. Cái mới chưa qua thử thách nên chưa biết bền hay không. Muốn tin cái gì cho chắc, nghiêng về cái đã sống lâu.</p>
+<p class="core">Với ý tưởng và sách vở, <span>cái đã trụ lâu thường sẽ còn trụ lâu; thời gian là bộ lọc dễ vỡ.</span></p>
+    <div class="testbox">
+      <h3>Phép thử: bạn đã hiểu chưa?</h3>
+      <ol>
+        <li>Vì sao 'càng già càng sống lâu' đúng với cuốn sách nhưng sai với con người?</li>
+        <li>Làm sao biết một thứ có được phép áp hiệu ứng Lindy hay không?</li>
+        <li>Vì sao 'cái mới' không hẳn kém giá trị, nhưng vẫn đáng dè chừng hơn cái đã cũ?</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark">✶</span>
+    <p>Nếu giải thích được cho bà ngoại hiểu, bạn mới thật sự hiểu.</p>
+  </footer>
+
+</div></div>
+<script>
+  var bar=document.getElementById('progress');
+  function upd(){var h=document.documentElement;var s=h.scrollTop||document.body.scrollTop;
+    var max=(h.scrollHeight-h.clientHeight)||1;bar.style.width=(s/max*100)+'%';}
+  window.addEventListener('scroll',upd,{passive:true});upd();
+  var io=new IntersectionObserver(function(es){es.forEach(function(e){
+    if(e.isIntersecting){e.target.style.animation='rise .7s cubic-bezier(.2,.7,.3,1) forwards';io.unobserve(e.target);}});},{threshold:.12});
+  document.querySelectorAll('section').forEach(function(s){s.style.opacity='0';io.observe(s);});
+</script>
+
+<script>
+(function(){
+  var tabs=[].slice.call(document.querySelectorAll('.tabbar .tab'));
+  var panels=[].slice.call(document.querySelectorAll('.concept-panel'));
+  function show(i){
+    tabs.forEach(function(t,j){t.classList.toggle('active',j===i);});
+    panels.forEach(function(p,j){
+      var on=(j===i); p.classList.toggle('active',on);
+      if(on){p.querySelectorAll('section').forEach(function(s){s.style.opacity='';s.style.animation='';});}
+    });
+    try{history.replaceState(null,'','#'+panels[i].id);}catch(e){}
+    window.scrollTo(0,0); window.dispatchEvent(new Event('scroll'));
+  }
+  tabs.forEach(function(t){t.addEventListener('click',function(){show(+t.getAttribute('data-i'));});});
+  var start=0; panels.forEach(function(p,j){if('#'+p.id===location.hash)start=j;});
+  show(start);
+})();
+</script>
+
+</body></html>

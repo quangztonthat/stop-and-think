@@ -1,0 +1,912 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>IAS 27 — Separate Financial Statements · Hệ học</title>
+<style>
+/* ============================================================
+ * styles_v2.css — V2 illustration-rich template stylesheet (COMPLETE)
+ * ------------------------------------------------------------
+ * This is the FULL canonical stylesheet for the V2 build. Step 6
+ * inlines THIS file verbatim into the single-file standalone HTML
+ * (no external <link>). Do NOT regenerate CSS per build — keep one
+ * canonical copy here so every book renders identically. If you
+ * tweak the visual signature, edit it HERE and re-inline.
+ *
+ * Covers every class emitted by assets/render_block.py plus the
+ * page chrome (hero, sticky tab bar, chapter/section headers, ToC)
+ * and the Quiz tab (.quiz-meta sticky offset top:60px — see pitfall
+ * #11). The block-class reference table below documents the visual
+ * signature; the implementation follows.
+ * ============================================================ */
+
+/* ---- Block-class reference table (visual signature) ----
+ * .hero               — top banner: centered serif title + italic accent em
+ * .tabs-wrap .tabs .tab — sticky horizontal tab bar; backdrop blur, gold underline on active
+ * .ch-header .ch-eyebrow .ch-title .ch-intro — theme/chapter header; mono eyebrow + serif italic intro
+ * .section .section-num — numbered section; small mono section-num like `2.1`
+ * .concept            — gold left-border 3px
+ * .callout            — gold gradient highlight, icon top-right
+ * .warn               — red left-border 3px
+ * .tip                — green left-border 3px
+ * .quote              — italic blockquote, gold left-border, serif italic 18px
+ * .two-col            — grid 1fr 1fr with .col-card children
+ * .three-col          — grid repeat(3, 1fr); color via .col-red/.col-blue/.col-green/.col-purple/.col-gold
+ * .table-wrap + table — gold uppercase th + hover row highlight
+ * .deflist            — gold dt + soft dd in elevated card
+ * .process + .process-step — serif italic number in left margin (CSS counter)
+ * .diagram + .diagram-text — monospace, preserves whitespace
+ * .case .case-name .case-citation .case-body — serif italic name in gold, mono citation
+ * .mnemonic + .mn-*   — Synthesis-tab memory-hook card (gold gradient)
+ * .synth-theme        — per-theme section in Synthesis tab; serif h2 with gold underline
+ * .toc                — per-theme table of contents; gold links
+ * .quiz-meta .q-card .q-option — Quiz tab: sticky stat bar + question cards + clickable options
+ * ============================================================ */
+
+:root{
+  --bg:#fafaf7; --bg-elevated:#ffffff; --bg-card:#ffffff; --bg-soft:#f3f3ee;
+  --border:#e0e0d8; --border-soft:#ececea;
+  --text:#1a1a1f; --text-soft:#3f3f4a; --text-dim:#7a7a85;
+  --accent:#2f6fed; --accent-2:#2258c8; --gold:#0fb6d4;
+  --red:#c1342b; --green:#0a7a4f; --blue:#1e5fbf; --purple:#6c3fbf;
+  --serif:'Fraunces', Georgia, 'Iowan Old Style', serif;
+  --sans:'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --mono:'Geist Mono', 'JetBrains Mono', Consolas, monospace;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; font-family:var(--sans); font-size:16px; line-height:1.65;
+  color:var(--text); background:var(--bg);
+  -webkit-font-smoothing:antialiased;
+}
+em{font-style:italic; color:var(--accent-2)}
+strong{font-weight:600}
+a{color:var(--accent); text-decoration:none}
+a:hover{text-decoration:underline}
+
+/* Hero */
+.hero{
+  padding:80px 24px 50px; text-align:center; background:linear-gradient(180deg, var(--bg-soft) 0%, var(--bg) 100%);
+  border-bottom:1px solid var(--border-soft);
+}
+.hero h1{
+  font-family:var(--serif); font-size:54px; font-weight:500; margin:0 0 12px;
+  letter-spacing:-0.02em; line-height:1.05; color:var(--text);
+}
+.hero h1 em{font-style:italic; color:var(--accent)}
+.hero .subtitle{font-size:18px; color:var(--text-soft); max-width:680px; margin:0 auto; line-height:1.5}
+.hero .author{font-family:var(--mono); font-size:13px; color:var(--text-dim); margin-top:18px; letter-spacing:0.05em; text-transform:uppercase}
+
+/* Tabs */
+.tabs-wrap{
+  position:sticky; top:0; z-index:20;
+  background:rgba(250,250,247,0.92); backdrop-filter:blur(10px) saturate(120%);
+  border-bottom:1px solid var(--border-soft);
+}
+.tabs{
+  max-width:1100px; margin:0 auto; padding:0 24px;
+  display:flex; gap:4px; overflow-x:auto;
+}
+.tab{
+  flex-shrink:0; padding:18px 16px; cursor:pointer; font-size:14px; color:var(--text-soft);
+  border-bottom:3px solid transparent; transition:all 0.15s;
+  white-space:nowrap; font-weight:500;
+}
+.tab:hover{color:var(--accent)}
+.tab.active{color:var(--accent); border-bottom-color:var(--accent); font-weight:600}
+.tab .tab-num{font-family:var(--mono); font-size:11px; color:var(--text-dim); display:block; margin-bottom:2px; letter-spacing:0.08em}
+
+/* Container */
+.container{max-width:880px; margin:0 auto; padding:40px 24px 100px}
+
+/* Chapter header */
+.ch-header{margin-bottom:50px; padding-bottom:30px; border-bottom:1px solid var(--border-soft)}
+.ch-eyebrow{font-family:var(--mono); font-size:11px; color:var(--accent); letter-spacing:0.15em; text-transform:uppercase; margin-bottom:10px}
+.ch-title{font-family:var(--serif); font-size:42px; font-weight:500; margin:0 0 14px; letter-spacing:-0.02em; line-height:1.15}
+.ch-title em{font-style:italic; color:var(--accent)}
+.ch-intro{font-size:17px; color:var(--text-soft); line-height:1.6; margin:0}
+
+/* ToC */
+.toc{
+  background:var(--bg-soft); border-left:3px solid var(--accent);
+  padding:18px 24px; margin:30px 0 40px; border-radius:0 4px 4px 0;
+}
+.toc h3{font-family:var(--mono); font-size:12px; color:var(--accent); margin:0 0 10px; text-transform:uppercase; letter-spacing:0.1em}
+.toc ul{list-style:none; padding:0; margin:0}
+.toc li{padding:4px 0; font-size:14px}
+.toc li a{color:var(--text-soft)}
+.toc li a:hover{color:var(--accent)}
+
+/* Section */
+.section{margin:50px 0; position:relative}
+.section .section-num{
+  font-family:var(--mono); font-size:11px; color:var(--accent);
+  letter-spacing:0.1em; margin-bottom:6px;
+}
+.section h2{
+  font-family:var(--serif); font-size:30px; font-weight:500;
+  margin:0 0 24px; letter-spacing:-0.015em; line-height:1.2;
+}
+.section h2 em{font-style:italic; color:var(--accent)}
+
+/* Concept box */
+.concept{
+  background:var(--bg-elevated); border-left:3px solid var(--accent);
+  padding:24px 28px; margin:24px 0; border-radius:0 4px 4px 0;
+  box-shadow:0 1px 2px rgba(0,0,0,0.03);
+}
+.concept-label{font-family:var(--mono); font-size:11px; color:var(--accent); letter-spacing:0.1em; text-transform:uppercase; margin-bottom:6px}
+.concept-title{font-family:var(--serif); font-size:22px; font-weight:500; margin-bottom:10px; line-height:1.25}
+.concept p{margin:0; line-height:1.65}
+
+/* Callout */
+.callout{
+  background:linear-gradient(135deg, #fef9ed 0%, #fdf3e0 100%);
+  border:1px solid #e8c876; padding:22px 26px; margin:24px 0; border-radius:4px;
+  position:relative;
+}
+.callout::before{
+  content:'⚖'; position:absolute; top:14px; right:18px;
+  font-size:18px; color:var(--accent); opacity:0.5;
+}
+.callout-title{font-family:var(--serif); font-weight:600; font-size:18px; color:var(--accent-2); margin-bottom:8px}
+.callout p{margin:0; color:#5a4810}
+
+/* Warn */
+.warn{
+  background:#fef3f2; border-left:3px solid var(--red);
+  padding:18px 24px; margin:20px 0; border-radius:0 4px 4px 0;
+}
+.warn-title{font-family:var(--serif); font-weight:600; font-size:17px; color:var(--red); margin-bottom:6px}
+.warn p{margin:0}
+
+/* Tip */
+.tip{
+  background:#f0faf5; border-left:3px solid var(--green);
+  padding:18px 24px; margin:20px 0; border-radius:0 4px 4px 0;
+}
+.tip-title{font-family:var(--serif); font-weight:600; font-size:17px; color:var(--green); margin-bottom:6px}
+.tip p{margin:0}
+
+/* Quote */
+.quote{
+  font-family:var(--serif); font-style:italic; font-size:18px; line-height:1.55;
+  border-left:3px solid var(--accent); padding:14px 22px;
+  margin:24px 0; color:var(--text-soft);
+}
+
+/* Two-col */
+.two-col{display:grid; grid-template-columns:1fr 1fr; gap:18px; margin:24px 0}
+.col-card{
+  background:var(--bg-elevated); border:1px solid var(--border-soft);
+  padding:20px 22px; border-radius:4px;
+}
+.col-card h4{font-family:var(--serif); font-weight:500; font-size:18px; margin:0 0 10px; color:var(--text)}
+.col-card p{margin:0; font-size:15px; line-height:1.55}
+
+/* Three-col */
+.three-col{display:grid; grid-template-columns:repeat(3, 1fr); gap:14px; margin:24px 0}
+.three-col .col-card{padding:18px 18px; border-top:3px solid var(--gold)}
+.three-col .col-card.col-red{border-top-color:var(--red)}
+.three-col .col-card.col-blue{border-top-color:var(--blue)}
+.three-col .col-card.col-green{border-top-color:var(--green)}
+.three-col .col-card.col-purple{border-top-color:var(--purple)}
+.three-col .col-card.col-gold{border-top-color:var(--gold)}
+.col-label{font-family:var(--mono); font-size:10px; letter-spacing:0.12em; text-transform:uppercase; opacity:0.7; margin-bottom:4px}
+.col-name{font-family:var(--serif); font-style:italic; font-weight:500; font-size:17px; color:var(--accent-2); margin-bottom:8px}
+.three-col .col-card.col-red .col-name{color:var(--red)}
+.three-col .col-card.col-blue .col-name{color:var(--blue)}
+.three-col .col-card.col-green .col-name{color:var(--green)}
+.three-col .col-card.col-purple .col-name{color:var(--purple)}
+
+/* Table */
+.table-wrap{overflow-x:auto; margin:24px 0; border:1px solid var(--border-soft); border-radius:4px}
+.table-wrap table{width:100%; border-collapse:collapse; font-size:14px}
+.table-wrap th{
+  background:var(--bg-soft); font-family:var(--mono); font-size:11px; font-weight:600;
+  letter-spacing:0.05em; text-transform:uppercase; color:var(--accent);
+  padding:10px 14px; text-align:left; border-bottom:2px solid var(--border);
+}
+.table-wrap td{padding:11px 14px; border-bottom:1px solid var(--border-soft); vertical-align:top}
+.table-wrap tr:hover{background:var(--bg-soft)}
+.table-wrap tr:last-child td{border-bottom:none}
+
+/* Deflist */
+.deflist{
+  background:var(--bg-elevated); border:1px solid var(--border-soft);
+  padding:6px 24px; margin:24px 0; border-radius:4px;
+}
+.deflist dt{font-family:var(--serif); font-weight:600; color:var(--accent-2); margin-top:14px; font-size:16px}
+.deflist dt:first-child{margin-top:8px}
+.deflist dd{margin:4px 0 14px; color:var(--text-soft); line-height:1.55; font-size:15px}
+
+/* Process */
+.process{margin:24px 0; position:relative; padding-left:54px}
+.process-step{position:relative; margin-bottom:22px; padding-bottom:16px; border-bottom:1px dashed var(--border-soft); counter-increment:step}
+.process-step:last-child{border-bottom:none}
+.process-step::before{
+  content:counter(step);
+  position:absolute; left:-54px; top:-4px;
+  font-family:var(--serif); font-style:italic; font-size:28px; color:var(--accent); font-weight:500;
+  width:38px; text-align:right;
+}
+.process{counter-reset:step}
+.process-step-title{font-family:var(--serif); font-weight:600; font-size:18px; margin-bottom:5px; color:var(--text)}
+.process-step p{margin:0; line-height:1.55}
+
+/* Diagram */
+.diagram{margin:24px 0; padding:20px; background:var(--bg-soft); border:1px solid var(--border-soft); border-radius:4px; overflow-x:auto}
+.diagram-text{font-family:var(--mono); font-size:13px; line-height:1.5; color:var(--text); margin:0; white-space:pre}
+
+/* Case */
+.case{
+  background:var(--bg-elevated); border:1px solid var(--border-soft);
+  padding:22px 26px; margin:24px 0; border-radius:4px;
+  border-left:3px solid var(--gold);
+}
+.case-name{font-family:var(--serif); font-style:italic; font-weight:600; font-size:19px; color:var(--accent-2); margin-bottom:3px}
+.case-citation{font-family:var(--mono); font-size:11px; color:var(--text-dim); letter-spacing:0.05em; margin-bottom:12px}
+.case-body{line-height:1.6}
+
+/* Mnemonic + Synthesis */
+.synth-theme{margin:46px 0}
+.synth-theme>h2{font-family:var(--serif); font-size:26px; font-weight:500; margin:0 0 20px; padding-bottom:10px; border-bottom:2px solid var(--border)}
+.mnemonic{background:linear-gradient(135deg,#fbf6ec 0%,#f5ecd6 100%); border:1px solid #e8c876; border-radius:6px; padding:20px 24px; margin:22px 0}
+.mn-hook{font-family:var(--serif); font-style:italic; font-size:23px; color:var(--accent-2); line-height:1.3}
+.mn-for{font-family:var(--mono); font-size:11px; text-transform:uppercase; letter-spacing:0.08em; color:var(--text-dim); margin:4px 0 14px}
+.mn-breakdown{display:flex; flex-direction:column; gap:7px}
+.mn-row{display:flex; gap:14px; align-items:baseline}
+.mn-cue{font-family:var(--serif); font-weight:600; color:var(--accent); min-width:112px; flex-shrink:0}
+.mn-means{flex:1; font-size:15px; line-height:1.5}
+.mn-punch{margin-top:14px; padding-top:10px; border-top:1px dashed var(--border); font-style:italic; color:var(--text-soft); font-size:14px}
+@media (max-width:760px){.mn-row{flex-direction:column; gap:1px} .mn-cue{min-width:0}}
+
+/* === Quiz === */
+.quiz-meta{
+  position:sticky; top:60px; background:rgba(250,250,247,0.95); backdrop-filter:blur(8px);
+  padding:14px 20px; margin:-24px -20px 24px; border-bottom:1px solid var(--border-soft);
+  display:flex; gap:24px; align-items:center; z-index:10;
+  font-size:14px; flex-wrap:wrap;
+}
+.quiz-meta .stat{color:var(--text-soft)}
+.quiz-meta .stat strong{color:var(--text); font-family:var(--mono); font-size:15px}
+.quiz-meta button{
+  margin-left:auto; padding:8px 18px; background:transparent;
+  border:1px solid var(--border); color:var(--text-soft);
+  border-radius:4px; cursor:pointer; font-family:var(--sans); font-size:13px;
+  transition:all 0.15s;
+}
+.quiz-meta button:hover{background:var(--red); color:#fff; border-color:var(--red)}
+
+.quiz-theme{margin:40px 0}
+.quiz-theme>h2{
+  font-family:var(--serif); font-size:26px; font-weight:500;
+  margin:0 0 24px; padding-bottom:10px; border-bottom:2px solid var(--border);
+  color:var(--text);
+}
+.quiz-theme h2 em{font-style:italic}
+.quiz-chapter{margin:30px 0}
+.quiz-ch-title{
+  font-family:var(--mono); font-size:13px; color:var(--text-dim);
+  letter-spacing:0.05em; margin:0 0 14px; padding:8px 0;
+  border-bottom:1px dashed var(--border-soft);
+}
+
+.q-card{
+  background:var(--bg-elevated); border:1px solid var(--border-soft);
+  padding:22px 26px; margin:18px 0; border-radius:4px;
+  transition:border-color 0.15s;
+}
+.q-card.answered{border-color:var(--border)}
+.q-head{margin-bottom:10px}
+.q-num{font-family:var(--mono); font-size:12px; color:var(--text-soft); background:var(--bg-soft); padding:3px 8px; border-radius:3px; margin-right:8px}
+.q-topic{font-family:var(--mono); font-size:11px; color:var(--text-dim); letter-spacing:0.05em; text-transform:uppercase}
+.q-text{font-size:16px; line-height:1.6; margin-bottom:14px; color:var(--text)}
+.q-options{display:flex; flex-direction:column; gap:8px}
+.q-option{
+  display:flex; gap:12px; align-items:flex-start;
+  padding:10px 14px; border:1px solid var(--border-soft);
+  border-radius:4px; cursor:pointer; transition:all 0.12s;
+  font-size:15px; line-height:1.5;
+}
+.q-option:hover{background:var(--bg-soft); border-color:var(--text-dim)}
+.q-option.locked{cursor:default}
+.q-option.locked:hover{background:transparent}
+.q-option.correct{background:#e6f7ed; border-color:var(--green)}
+.q-option.incorrect{background:#fcebe9; border-color:var(--red)}
+.q-option .letter{
+  font-family:var(--mono); font-weight:600; font-size:13px;
+  background:var(--bg-soft); color:var(--text-soft);
+  width:26px; height:26px; display:flex; align-items:center; justify-content:center;
+  border-radius:50%; flex-shrink:0;
+}
+.q-option.correct .letter{background:var(--green); color:#fff}
+.q-option.incorrect .letter{background:var(--red); color:#fff}
+.q-option .opt-text{flex:1}
+.q-feedback{
+  margin-top:14px; padding:12px 16px; background:var(--bg-soft);
+  border-left:3px solid var(--text-dim); border-radius:0 4px 4px 0; font-size:14px; line-height:1.55;
+}
+.q-feedback .q-mark{font-family:var(--serif); font-weight:600; margin-right:6px}
+.q-feedback.correct .q-mark{color:var(--green)}
+.q-feedback.incorrect .q-mark{color:var(--red)}
+
+@media (max-width:760px){
+  .hero h1{font-size:36px}
+  .ch-title{font-size:30px}
+  .container{padding:24px 16px 80px}
+  .two-col, .three-col{grid-template-columns:1fr; gap:14px}
+  .process{padding-left:38px}
+  .process-step::before{left:-38px; font-size:22px}
+}
+
+/* ---- Visualize tab (SVG figures) ---- */
+.viz{margin:46px 0; padding-bottom:34px; border-bottom:1px solid var(--border-soft)}
+.viz:last-child{border-bottom:none}
+.viz-eyebrow{font-family:var(--mono); font-size:11px; color:var(--accent); letter-spacing:0.15em; text-transform:uppercase; margin-bottom:6px}
+.viz-title{font-family:var(--serif); font-size:25px; font-weight:500; margin:0 0 16px; line-height:1.2; letter-spacing:-0.01em}
+.viz-title em{font-style:italic; color:var(--accent)}
+.viz-frame{background:var(--bg-elevated); border:1px solid var(--border-soft); border-radius:6px; padding:18px 16px; overflow-x:auto; box-shadow:0 1px 2px rgba(0,0,0,0.03)}
+.viz-frame svg{display:block; width:100%; height:auto; max-width:780px; margin:0 auto}
+.viz-cap{font-size:14px; color:var(--text-soft); line-height:1.6; margin:14px 2px 0}
+.viz-take{margin-top:12px; padding:11px 16px; background:linear-gradient(135deg,#fbf6ec 0%,#f5ecd6 100%); border:1px solid #e8c876; border-radius:4px; font-size:14px; line-height:1.55; color:#5a4810}
+.viz-take::before{content:'➜ '; color:var(--accent); font-weight:700}
+@media (max-width:760px){ .viz-title{font-size:21px} .viz-frame{padding:12px 8px} }
+
+/* --- viz cross-link (figure <-> theory, no embed) --- */
+.viz-goto{margin-top:14px; display:inline-flex; align-items:center; gap:6px; font-family:var(--sans); font-size:13px; font-weight:500; color:var(--accent-2); background:var(--bg-soft); border:1px solid var(--border); border-radius:20px; padding:7px 16px; cursor:pointer; transition:all .15s}
+.viz-goto:hover{background:var(--accent); color:#fff; border-color:var(--accent)}
+.thy-fig-links{margin:-4px 0 14px}
+.thy-fig-link{display:inline-block; font-family:var(--mono); font-size:11px; font-weight:600; letter-spacing:0.03em; color:var(--accent-2); background:var(--bg-soft); border:1px solid var(--border); border-radius:14px; padding:3px 11px; margin-right:6px; cursor:pointer; transition:all .15s}
+.thy-fig-link:hover{background:var(--accent); color:#fff; border-color:var(--accent)}
+h2[id^="thy-"], h3[id^="thy-"]{scroll-margin-top:72px}
+.viz[id]{scroll-margin-top:72px}
+
+/* ============================================================
+ * Calculation tab — worked examples / interactive calculators /
+ * practice problems. Emitted by assets/calc.py (render_calc_panel).
+ * Shared verbatim with any host app that defines the same :root vars.
+ * ============================================================ */
+.calc-card{background:var(--bg-elevated); border:1px solid var(--border-soft); border-radius:6px; padding:24px 26px; margin:26px 0; box-shadow:0 1px 2px rgba(0,0,0,0.03)}
+.calc-card[id]{scroll-margin-top:72px}
+.calc-head{display:flex; align-items:center; gap:10px; margin-bottom:8px}
+.calc-num{font-family:var(--mono); font-size:12px; color:var(--accent); background:var(--bg-soft); padding:3px 9px; border-radius:3px}
+.calc-kind{font-family:var(--mono); font-size:10px; letter-spacing:0.1em; text-transform:uppercase; padding:3px 9px; border-radius:12px; font-weight:600}
+.calc-kind-worked{background:#eef3ed; color:var(--green)}
+.calc-kind-calculator{background:#e9eefb; color:var(--blue)}
+.calc-kind-practice{background:#faf2ec; color:var(--accent-2)}
+.calc-title{font-family:var(--serif); font-size:22px; font-weight:500; margin:0 0 8px; line-height:1.25}
+.calc-title em{font-style:italic; color:var(--accent)}
+.calc-intro{font-size:15px; color:var(--text-soft); line-height:1.6; margin:0 0 16px}
+.calc-given{margin:14px 0; border:1px solid var(--border-soft); border-radius:4px; overflow:hidden}
+.calc-given-h{font-family:var(--mono); font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:var(--accent); background:var(--bg-soft); padding:7px 14px}
+.calc-given table{width:100%; border-collapse:collapse; font-size:14px}
+.calc-given td{padding:8px 14px; border-top:1px solid var(--border-soft)}
+.calc-given-l{color:var(--text-soft)}
+.calc-given-v{font-family:var(--mono); text-align:right; color:var(--text); white-space:nowrap}
+.calc-steps{list-style:none; counter-reset:cstep; padding:0; margin:16px 0}
+.calc-step{position:relative; padding:10px 0 10px 40px; border-bottom:1px dashed var(--border-soft); counter-increment:cstep}
+.calc-step:last-child{border-bottom:none}
+.calc-step::before{content:counter(cstep); position:absolute; left:0; top:9px; width:26px; height:26px; border-radius:50%; background:var(--bg-soft); color:var(--accent-2); font-family:var(--mono); font-size:12px; font-weight:600; display:flex; align-items:center; justify-content:center}
+.calc-step-label{font-weight:600; font-size:14px; margin-bottom:4px}
+.calc-expr{font-family:var(--mono); font-size:14px; background:var(--bg-soft); border-left:3px solid var(--accent); padding:7px 12px; border-radius:0 4px 4px 0; margin:4px 0; overflow-x:auto; white-space:pre-wrap}
+.calc-note{font-size:13px; color:var(--text-dim); line-height:1.5; margin-top:4px}
+.calc-result{display:flex; align-items:center; justify-content:space-between; gap:14px; flex-wrap:wrap; margin-top:16px; padding:14px 18px; background:linear-gradient(135deg,#fbf6ec 0%,#f5ecd6 100%); border:1px solid #e8c876; border-radius:5px}
+.calc-result-label{font-family:var(--serif); font-weight:600; color:var(--accent-2); font-size:16px}
+.calc-result-val{font-family:var(--mono); font-size:20px; font-weight:600; color:var(--accent-2)}
+.calc-io{display:grid; grid-template-columns:1fr 1fr; gap:18px; margin:14px 0}
+.calc-inputs{display:flex; flex-direction:column; gap:10px}
+.calc-field{display:flex; flex-direction:column; gap:4px}
+.calc-field-label{font-size:13px; color:var(--text-soft); display:flex; justify-content:space-between; gap:8px}
+.calc-field input{font-family:var(--mono); font-size:15px; padding:9px 12px; border:1px solid var(--border); border-radius:4px; background:var(--bg); color:var(--text); width:100%}
+.calc-field input:focus{outline:none; border-color:var(--accent); box-shadow:0 0 0 2px rgba(47,111,237,0.15)}
+.calc-unit{font-family:var(--mono); font-size:11px; color:var(--text-dim)}
+.calc-outputs{display:flex; flex-direction:column; gap:8px; align-self:start; background:var(--bg-soft); border-radius:5px; padding:14px 16px}
+.calc-out-row{display:flex; align-items:baseline; justify-content:space-between; gap:10px; padding:5px 0; border-bottom:1px dashed var(--border)}
+.calc-out-row:last-child{border-bottom:none}
+.calc-out-label{font-size:13.5px; color:var(--text-soft)}
+.calc-out-val{font-family:var(--mono); font-size:16px; font-weight:600; color:var(--text)}
+.calc-out-emph .calc-out-label{color:var(--accent-2); font-weight:600}
+.calc-out-emph .calc-out-val{font-size:20px; color:var(--accent-2)}
+.calc-formula{font-size:13px; color:var(--text-dim); line-height:1.55; margin-top:6px; padding-top:10px; border-top:1px solid var(--border-soft)}
+.calc-formula em{color:var(--accent-2)}
+.calc-prompt{font-size:15.5px; line-height:1.6; margin:6px 0 14px}
+.calc-reveal{font-family:var(--sans); font-size:13px; font-weight:500; color:#fff; background:var(--accent); border:none; border-radius:4px; padding:9px 18px; cursor:pointer; transition:background 0.15s}
+.calc-reveal:hover{background:var(--accent-2)}
+.calc-solution{margin-top:16px; padding-top:6px; border-top:1px solid var(--border-soft)}
+.calc-take{margin-top:14px; padding:11px 16px; background:linear-gradient(135deg,#fbf6ec 0%,#f5ecd6 100%); border:1px solid #e8c876; border-radius:4px; font-size:14px; line-height:1.55; color:#5a4810}
+.calc-take::before{content:'\27A5  '; color:var(--accent); font-weight:700}
+.thy-calc-links{margin:-4px 0 14px}
+.thy-calc-link{display:inline-block; font-family:var(--mono); font-size:11px; font-weight:600; letter-spacing:0.03em; color:var(--blue); background:#eef2fc; border:1px solid #cdd9f5; border-radius:14px; padding:3px 11px; margin-right:6px; cursor:pointer; transition:all .15s}
+.thy-calc-link:hover{background:var(--blue); color:#fff; border-color:var(--blue)}
+@media (max-width:760px){ .calc-io{grid-template-columns:1fr} }
+
+
+/* ===== FLAMINDI THEME OVERRIDE (dong bo trang chu flamindi.com) ===== */
+:root{
+  --accent:#2f6fed;--accent-2:#2258c8;--accent2:#2258c8;--gold:#0fb6d4;--cyan:#0fb6d4;--blue:#2f6fed;
+  --bg:#f7f9fe;--bg-elevated:#ffffff;--bg-card:#ffffff;--card:#ffffff;--bg-soft:#eef2fb;--soft:#eef2fb;
+  --border:#e4e9f2;--border-soft:#eef1f7;--border-strong:#cfd8e8;
+  --text:#1a2233;--text-soft:#4e5a74;--text-dim:#6b7691;
+  --ink:#1a2233;--ink-soft:#4e5a74;--muted:#6b7691;--soft-t:#4e5a74;--dim:#6b7691;
+  --serif:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+  --mono:ui-monospace,Menlo,Consolas,monospace;
+}
+body{background:radial-gradient(1200px 600px at 85% -10%,rgba(47,111,237,.14),transparent 60%),radial-gradient(1000px 640px at -10% 30%,rgba(15,182,212,.09),transparent 55%),linear-gradient(#f7f9fe,#edf0f8) fixed !important;}
+</style>
+</head>
+<body>
+<div class="hero">
+  <h1>IAS 27 — <em>Separate</em> Financial Statements</h1>
+  <p class="subtitle">Báo cáo tài chính riêng · hệ học chủ động (V2): 3 chủ đề kiến thức · Tổng hợp mẹo nhớ · Quiz trắc nghiệm</p>
+  <div class="author">IFRS Foundation / IASB · ¶1–20 · bản 2011 (sửa đổi 2012 &amp; 2014)</div>
+</div>
+<div class="tabs-wrap"><div class="tabs"><div class="tab" data-tab="t1"><span class="tab-num">01</span>Phạm vi & Định nghĩa</div><div class="tab" data-tab="t2"><span class="tab-num">02</span>Hạch toán khoản đầu tư</div><div class="tab" data-tab="t3"><span class="tab-num">03</span>Thuyết minh & Chuyển tiếp</div><div class="tab" data-tab="synth"><span class="tab-num">TH</span>Tổng hợp</div><div class="tab" data-tab="quiz"><span class="tab-num">Q</span>Quiz</div></div></div>
+<div class="container">
+<div class="tab-panel" id="panel-t1">
+  <div class="ch-header">
+    <div class="ch-eyebrow">Chủ đề 01</div>
+    <h1 class="ch-title">Phạm vi <em>&</em> Định nghĩa</h1>
+    <p class="ch-intro">IAS 27 chỉ điều chỉnh <em>một</em> loại báo cáo: <em>báo cáo tài chính riêng</em> (separate financial statements — SFS). Nó không nói ai phải lập SFS, mà nói: <em>nếu</em> bạn lập SFS tuân thủ IFRS thì hạch toán khoản đầu tư vào công ty con, công ty liên doanh và công ty liên kết ra sao. Nguyên tắc hợp nhất (control) đã chuyển sang IFRS 10.</p>
+  </div>
+  <div class="toc"><h3>Trong chủ đề này</h3><ul><li><a href="#t1-s1">1.1 — Mục tiêu <em>của</em> chuẩn mực</a></li><li><a href="#t1-s2">1.2 — Phạm vi — <em>khi nào</em> áp dụng</a></li><li><a href="#t1-s3">1.3 — <em>Separate</em> financial statements là gì</a></li><li><a href="#t1-s4">1.4 — Phân biệt với <em>consolidated</em> financial statements</a></li><li><a href="#t1-s5">1.5 — Cái gì <em>KHÔNG</em> phải là separate FS</a></li><li><a href="#t1-s6">1.6 — Khi SFS là báo cáo <em>duy nhất</em></a></li><li><a href="#t1-s7">1.7 — Thuật ngữ định nghĩa ở <em>chuẩn khác</em></a></li></ul></div>
+  <div class="section" id="t1-s1"><div class="section-num">1.1</div><h2>Mục tiêu <em>của</em> chuẩn mực</h2><div class="concept"><div class="concept-label">Objective · ¶1</div><div class="concept-title">IAS 27 quy định về hạch toán và thuyết minh khoản đầu tư trong SFS</div><p>Mục tiêu của chuẩn mực là quy định các yêu cầu về <strong>hạch toán</strong> (accounting) và <strong>thuyết minh</strong> (disclosure) đối với khoản đầu tư vào <em>subsidiaries</em> (công ty con), <em>joint ventures</em> (công ty liên doanh) và <em>associates</em> (công ty liên kết) <strong>khi một đơn vị lập báo cáo tài chính riêng</strong> (separate financial statements).</p></div><div class="callout"><div class="callout-title">Đọc IAS 27 cùng bộ 'hợp nhất'</div><p>Từ bản sửa đổi tháng 5/2011, phần nguyên tắc <em>control</em> (kiểm soát) và việc lập báo cáo hợp nhất được tách sang <em>IFRS 10 Consolidated Financial Statements</em>. IAS 27 sau 2011 chỉ còn phần <em>separate financial statements</em>.</p></div></div><div class="section" id="t1-s2"><div class="section-num">1.2</div><h2>Phạm vi — <em>khi nào</em> áp dụng</h2><p>Chuẩn mực này được áp dụng khi hạch toán khoản đầu tư vào công ty con, công ty liên doanh và công ty liên kết <strong>khi một đơn vị lựa chọn, hoặc bị yêu cầu bởi quy định địa phương</strong> (local regulations), để trình bày báo cáo tài chính riêng (¶2).</p><div class="warn"><div class="warn-title">IAS 27 KHÔNG bắt buộc ai phải lập SFS</div><p>Chuẩn mực <strong>không quy định đơn vị nào phải lập</strong> báo cáo tài chính riêng (¶3). Nó chỉ áp dụng <strong>khi</strong> một đơn vị lập SFS mà báo cáo đó <strong>tuân thủ IFRS</strong>. Việc có phải lập hay không do luật/quy định địa phương quyết định, không phải do IAS 27.</p></div></div><div class="section" id="t1-s3"><div class="section-num">1.3</div><h2><em>Separate</em> financial statements là gì</h2><div class="concept"><div class="concept-label">Definition · ¶4</div><div class="concept-title">Báo cáo tài chính riêng — được quyền chọn cách đo lường khoản đầu tư</div><p><em>Separate financial statements</em> là báo cáo do một đơn vị trình bày, trong đó đơn vị <strong>có thể lựa chọn</strong> (tuân theo các yêu cầu của chuẩn mực này) để hạch toán khoản đầu tư vào công ty con, công ty liên doanh và công ty liên kết theo <strong>một trong ba cách</strong>: theo <em>cost</em> (giá gốc), theo <em>IFRS 9 Financial Instruments</em>, hoặc theo <em>equity method</em> (phương pháp vốn chủ sở hữu) như mô tả trong <em>IAS 28</em>.</p></div><p>SFS là báo cáo được trình bày <strong>bổ sung thêm</strong> (in addition to) — bổ sung cho báo cáo hợp nhất, hoặc bổ sung cho báo cáo của một nhà đầu tư không có công ty con nhưng có khoản đầu tư vào liên kết/liên doanh phải hạch toán theo equity method của IAS 28 — ngoại trừ các trường hợp ở ¶8–8A (¶6).</p></div><div class="section" id="t1-s4"><div class="section-num">1.4</div><h2>Phân biệt với <em>consolidated</em> financial statements</h2><div class="two-col"><div class="col-card"><h4>Consolidated FS (¶4)</h4><p>Báo cáo tài chính của một <em>group</em> (tập đoàn), trong đó tài sản, nợ phải trả, vốn chủ sở hữu, thu nhập, chi phí và dòng tiền của <strong>công ty mẹ và các công ty con</strong> được trình bày như của <strong>một thực thể kinh tế duy nhất</strong> (a single economic entity).</p></div><div class="col-card"><h4>Separate FS (¶4)</h4><p>Báo cáo do một đơn vị trình bày, trong đó khoản đầu tư được hạch toán theo <strong>giá gốc / IFRS 9 / equity method</strong> — <strong>không</strong> gộp từng dòng tài sản–nợ của công ty con vào.</p></div></div><div class="tip"><div class="tip-title">Mẹo phân biệt</div><p>Consolidated = 'nhìn xuyên qua' công ty con, gộp từng khoản mục. Separate = giữ công ty con như <strong>một khoản đầu tư duy nhất</strong> trên bảng cân đối, đo bằng 1 trong 3 cách.</p></div></div><div class="section" id="t1-s5"><div class="section-num">1.5</div><h2>Cái gì <em>KHÔNG</em> phải là separate FS</h2><div class="warn"><div class="warn-title">Không có sub/associate/JV thì không phải SFS</div><p>Báo cáo tài chính của một đơn vị <strong>không có</strong> công ty con, công ty liên kết hoặc phần vốn của bên liên doanh trong một liên doanh <strong>KHÔNG PHẢI</strong> là báo cáo tài chính riêng (¶7). Nói cách khác, một công ty 'độc lập' không có khoản đầu tư nào như vậy thì báo cáo của nó chỉ là báo cáo tài chính thông thường, không rơi vào IAS 27.</p></div><p>Điểm mấu chốt: khái niệm 'riêng' chỉ có nghĩa khi tồn tại <strong>ít nhất một</strong> khoản đầu tư vào sub / associate / JV để lựa chọn cách hạch toán.</p></div><div class="section" id="t1-s6"><div class="section-num">1.6</div><h2>Khi SFS là báo cáo <em>duy nhất</em></h2><dl class="deflist"><dt>¶8 — được miễn hợp nhất / miễn equity method</dt><dd>Một đơn vị được <strong>miễn</strong> theo ¶4(a) của IFRS 10 (miễn lập báo cáo hợp nhất) hoặc theo ¶17 của IAS 28 (miễn áp dụng equity method) <strong>có thể trình bày SFS như báo cáo tài chính duy nhất</strong> của mình.</dd><dt>¶8A — investment entity</dt><dd>Một <em>investment entity</em> (đơn vị đầu tư) bị yêu cầu áp dụng ngoại lệ không hợp nhất cho <strong>tất cả</strong> công ty con theo ¶31 của IFRS 10 — trong <strong>toàn bộ kỳ hiện tại và tất cả kỳ so sánh</strong> — thì trình bày SFS như báo cáo tài chính <strong>duy nhất</strong> của mình.</dd></dl><div class="callout"><div class="callout-title">Vì sao quan trọng</div><p>Thông thường SFS chỉ là báo cáo <em>bổ sung</em>. Nhưng ở ¶8 và ¶8A, SFS trở thành báo cáo <strong>duy nhất</strong> — đây là ngoại lệ cần nhớ, đặc biệt với investment entity.</p></div></div><div class="section" id="t1-s7"><div class="section-num">1.7</div><h2>Thuật ngữ định nghĩa ở <em>chuẩn khác</em></h2><p>IAS 27 <strong>mượn</strong> nhiều định nghĩa từ chuẩn khác (¶5): định nghĩa nằm trong Phụ lục A của IFRS 10, Phụ lục A của IFRS 11, và ¶3 của IAS 28.</p><div class="table-wrap"><table><thead><tr><th>Thuật ngữ</th><th>Nguồn định nghĩa</th></tr></thead><tbody><tr><td><em>associate</em>, <em>significant influence</em>, <em>equity method</em>, <em>joint venture</em></td><td>IAS 28 (và IFRS 11)</td></tr><tr><td><em>control of an investee</em>, <em>investment entity</em>, <em>group</em>, <em>parent</em>, <em>subsidiary</em></td><td>IFRS 10 (Phụ lục A)</td></tr><tr><td><em>joint control</em>, <em>joint venturer</em></td><td>IFRS 11 (Phụ lục A)</td></tr></tbody></table></div><div class="tip"><div class="tip-title">Ý nghĩa</div><p>IAS 27 chỉ tự định nghĩa <strong>hai</strong> thuật ngữ cốt lõi: <em>consolidated financial statements</em> và <em>separate financial statements</em> (¶4). Mọi thuật ngữ khác đều dẫn chiếu sang IFRS 10 / IFRS 11 / IAS 28.</p></div></div>
+</div><div class="tab-panel" id="panel-t2" style="display:none">
+  <div class="ch-header">
+    <div class="ch-eyebrow">Chủ đề 02</div>
+    <h1 class="ch-title">Hạch toán <em>khoản đầu tư</em></h1>
+    <p class="ch-intro">Trái tim của IAS 27: trong SFS, khoản đầu tư vào công ty con, liên doanh và liên kết được đo lường theo <strong>một trong ba cách</strong> — <em>cost</em>, <em>IFRS 9</em>, hoặc <em>equity method</em> — và phải áp dụng <strong>nhất quán cho từng nhóm</strong>. Cùng với đó là quy tắc cổ tức, xử lý khi thay đổi trạng thái <em>investment entity</em>, và tái cấu trúc tập đoàn.</p>
+  </div>
+  <div class="toc"><h3>Trong chủ đề này</h3><ul><li><a href="#t2-s1">2.1 — Nguyên tắc chung <em>(¶9)</em></a></li><li><a href="#t2-s2">2.2 — Ba lựa chọn đo lường <em>(¶10)</em></a></li><li><a href="#t2-s3">2.3 — Khi phân loại <em>held for sale</em> — IFRS 5</a></li><li><a href="#t2-s4">2.4 — Lựa chọn <em>FVTPL</em> được mang vào SFS <em>(¶11, ¶11A)</em></a></li><li><a href="#t2-s5">2.5 — Cổ tức <em>(¶12)</em></a></li><li><a href="#t2-s6">2.6 — Thay đổi trạng thái <em>investment entity</em> <em>(¶11B)</em></a></li><li><a href="#t2-s7">2.7 — Tái cấu trúc tập đoàn — lập <em>công ty mẹ mới</em> <em>(¶13–14)</em></a></li></ul></div>
+  <div class="section" id="t2-s1"><div class="section-num">2.1</div><h2>Nguyên tắc chung <em>(¶9)</em></h2><div class="concept"><div class="concept-label">Preparation · ¶9</div><div class="concept-title">SFS lập theo TẤT CẢ IFRS áp dụng, trừ ¶10</div><p>Báo cáo tài chính riêng phải được lập theo <strong>tất cả các IFRS áp dụng</strong> (all applicable IFRSs), <strong>ngoại trừ</strong> phần được quy định tại ¶10. Nghĩa là mọi chuẩn mực khác (ghi nhận doanh thu, tài sản, nợ...) vẫn áp dụng bình thường; chỉ riêng cách đo lường <em>khoản đầu tư vào sub/JV/associate</em> mới theo quy tắc đặc thù của ¶10.</p></div></div><div class="section" id="t2-s2"><div class="section-num">2.2</div><h2>Ba lựa chọn đo lường <em>(¶10)</em></h2><div class="three-col"><div class="col-card col-gold"><div class="col-label">Option (a)</div><div class="col-name">At cost</div><p>Theo <strong>giá gốc</strong> — nguyên giá khoản đầu tư.</p></div><div class="col-card col-blue"><div class="col-label">Option (b)</div><div class="col-name">IFRS 9</div><p>Theo <em>IFRS 9 Financial Instruments</em> — đo theo giá trị hợp lý (thường FVTPL hoặc FVOCI).</p></div><div class="col-card col-green"><div class="col-label">Option (c)</div><div class="col-name">Equity method</div><p>Theo <em>equity method</em> (phương pháp vốn chủ sở hữu) như mô tả trong <em>IAS 28</em>.</p></div></div><div class="warn"><div class="warn-title">Bắt buộc NHẤT QUÁN theo từng nhóm</div><p>Đơn vị phải <strong>áp dụng cùng một cách hạch toán cho từng nhóm (category) khoản đầu tư</strong> (¶10). Ví dụ: đã chọn cost cho các công ty con thì mọi công ty con dùng cost; nhưng có thể chọn cách khác cho nhóm associates. Không được 'nhặt' công ty con này cost, con kia equity method.</p></div><div class="callout"><div class="callout-title">Bối cảnh 2014</div><p>Lựa chọn <em>equity method</em> (c) được thêm vào ¶10 bởi bản sửa đổi <em>Equity Method in Separate Financial Statements</em> (tháng 8/2014). Trước đó chỉ có cost hoặc IFRS 9.</p></div></div><div class="section" id="t2-s3"><div class="section-num">2.3</div><h2>Khi phân loại <em>held for sale</em> — IFRS 5</h2><p>Khoản đầu tư hạch toán theo <strong>cost</strong> hoặc <strong>equity method</strong> phải chuyển sang áp dụng <em>IFRS 5 Non-current Assets Held for Sale and Discontinued Operations</em> khi được phân loại là <strong>nắm giữ để bán</strong> (held for sale) hoặc <strong>để phân phối</strong> (held for distribution), hoặc nằm trong nhóm thanh lý (disposal group) được phân loại như vậy (¶10).</p><div class="warn"><div class="warn-title">Ngoại lệ: khoản đo theo IFRS 9 KHÔNG đổi</div><p>Việc đo lường khoản đầu tư hạch toán theo <em>IFRS 9</em> <strong>không thay đổi</strong> trong tình huống held-for-sale (¶10). Chỉ khoản theo cost hoặc equity method mới chuyển sang IFRS 5.</p></div></div><div class="section" id="t2-s4"><div class="section-num">2.4</div><h2>Lựa chọn <em>FVTPL</em> được mang vào SFS <em>(¶11, ¶11A)</em></h2><dl class="deflist"><dt>¶11 — associates / joint ventures</dt><dd>Nếu đơn vị lựa chọn theo ¶18 của IAS 28 để đo khoản đầu tư vào liên kết/liên doanh theo <em>fair value through profit or loss</em> (FVTPL — giá trị hợp lý qua lãi/lỗ) theo IFRS 9, thì <strong>cũng phải</strong> hạch toán các khoản đó theo cùng cách trong SFS.</dd><dt>¶11A — subsidiary của investment entity</dt><dd>Nếu một công ty mẹ <strong>bị yêu cầu</strong> theo ¶31 của IFRS 10 phải đo khoản đầu tư vào công ty con theo FVTPL theo IFRS 9, thì <strong>cũng phải</strong> hạch toán khoản đầu tư vào công ty con đó theo cùng cách trong SFS.</dd></dl><div class="tip"><div class="tip-title">Nguyên tắc chung</div><p>Cách đo lường FVTPL đã áp dụng ở báo cáo hợp nhất/khác được <strong>kéo theo</strong> (carried into) báo cáo riêng một cách nhất quán — riêng không được 'chọn lại' khác đi.</p></div></div><div class="section" id="t2-s5"><div class="section-num">2.5</div><h2>Cổ tức <em>(¶12)</em></h2><div class="concept"><div class="concept-label">Dividends · ¶12</div><div class="concept-title">Ghi nhận khi quyền nhận cổ tức được xác lập</div><p>Cổ tức từ một công ty con, liên doanh hoặc liên kết được ghi nhận trong SFS <strong>khi quyền nhận cổ tức của đơn vị được xác lập</strong> (when the entity's right to receive the dividend is established).</p></div><div class="two-col"><div class="col-card"><h4>Mặc định: vào P/L</h4><p>Cổ tức được ghi nhận vào <strong>lãi hoặc lỗ</strong> (profit or loss).</p></div><div class="col-card"><h4>Ngoại lệ: nếu dùng equity method</h4><p><strong>Trừ khi</strong> đơn vị lựa chọn dùng <em>equity method</em> — khi đó cổ tức được ghi nhận là <strong>khoản giảm trừ giá trị ghi sổ của khoản đầu tư</strong> (reduction from the carrying amount of the investment), không vào P/L.</p></div></div><div class="warn"><div class="warn-title">Bẫy thường gặp</div><p>Đừng mặc định mọi cổ tức đều vào lãi/lỗ. Nếu khoản đầu tư đang đo theo equity method thì cổ tức <strong>giảm trừ carrying amount</strong> — vì lợi nhuận đã được ghi nhận qua equity pick-up rồi.</p></div></div><div class="section" id="t2-s6"><div class="section-num">2.6</div><h2>Thay đổi trạng thái <em>investment entity</em> <em>(¶11B)</em></h2><p>Khi công ty mẹ <strong>trở thành</strong> hoặc <strong>ngừng là</strong> một <em>investment entity</em>, nó hạch toán thay đổi <strong>kể từ ngày trạng thái thay đổi</strong> (¶11B).</p><div class="process"><div class="process-step"><div class="process-step-title">Ngừng là investment entity — ¶11B(a)</div><p>Hạch toán khoản đầu tư vào công ty con theo ¶10. Ngày thay đổi trạng thái là <strong>ngày mua giả định</strong> (deemed acquisition date); giá trị hợp lý của công ty con tại ngày đó là <strong>giá phí giả định đã chuyển giao</strong> (deemed consideration transferred) khi hạch toán theo ¶10.</p></div><div class="process-step"><div class="process-step-title">Trở thành investment entity — ¶11B(b)</div><p>Hạch toán khoản đầu tư vào công ty con theo <strong>FVTPL</strong> theo IFRS 9. Chênh lệch giữa giá trị ghi sổ trước đó và giá trị hợp lý tại ngày thay đổi được ghi nhận là <strong>lãi/lỗ trong P/L</strong>. Số lũy kế lãi/lỗ trước đây ghi trong <em>OCI</em> (other comprehensive income) được xử lý <strong>như thể đã thanh lý</strong> các công ty con đó tại ngày thay đổi.</p></div></div></div><div class="section" id="t2-s7"><div class="section-num">2.7</div><h2>Tái cấu trúc tập đoàn — lập <em>công ty mẹ mới</em> <em>(¶13–14)</em></h2><p>Khi công ty mẹ tái cấu trúc bằng cách lập một đơn vị mới làm công ty mẹ, thỏa <strong>đồng thời ba tiêu chí</strong> (¶13):</p><dl class="deflist"><dt>(a) Đổi cổ phần lấy kiểm soát</dt><dd>Công ty mẹ mới giành <em>control</em> đối với công ty mẹ cũ bằng cách <strong>phát hành công cụ vốn để đổi lấy</strong> công cụ vốn hiện hữu của công ty mẹ cũ.</dd><dt>(b) Tài sản & nợ không đổi</dt><dd>Tài sản và nợ phải trả của tập đoàn mới và tập đoàn cũ <strong>giống nhau ngay trước và ngay sau</strong> tái cấu trúc.</dd><dt>(c) Quyền lợi chủ sở hữu không đổi</dt><dd>Chủ sở hữu của công ty mẹ cũ giữ <strong>cùng quyền lợi tuyệt đối và tương đối</strong> trong tài sản thuần trước và sau tái cấu trúc.</dd></dl><div class="callout"><div class="callout-title">Hệ quả đo lường (¶13)</div><p>Nếu công ty mẹ mới hạch toán khoản đầu tư vào công ty mẹ cũ theo ¶10(a) — tức <strong>at cost</strong> — thì phải đo <em>cost</em> bằng <strong>giá trị ghi sổ phần vốn chủ sở hữu của mình</strong> trong công ty mẹ cũ tại ngày tái cấu trúc (không phải fair value).</p></div><div class="tip"><div class="tip-title">¶14 — mở rộng cho đơn vị không phải công ty mẹ</div><p>Một đơn vị <strong>không phải là công ty mẹ</strong> cũng có thể lập đơn vị mới làm công ty mẹ theo cùng tiêu chí ¶13; khi đó các dẫn chiếu 'công ty mẹ cũ'/'tập đoàn cũ' được đọc thành <strong>'đơn vị cũ'</strong> (original entity).</p></div></div>
+</div><div class="tab-panel" id="panel-t3" style="display:none">
+  <div class="ch-header">
+    <div class="ch-eyebrow">Chủ đề 03</div>
+    <h1 class="ch-title">Thuyết minh <em>&</em> Chuyển tiếp</h1>
+    <p class="ch-intro">SFS phải áp dụng <strong>mọi</strong> yêu cầu thuyết minh của IFRS, cộng thêm các yêu cầu riêng của ¶16–17 tùy theo <em>ai</em> đang lập báo cáo riêng. Phần cuối là ngày hiệu lực, quy tắc chuyển tiếp cho investment entity, và việc IAS 27 (2011) cùng IFRS 10 thay thế IAS 27 (2008).</p>
+  </div>
+  <div class="toc"><h3>Trong chủ đề này</h3><ul><li><a href="#t3-s1">3.1 — Nguyên tắc thuyết minh chung <em>(¶15)</em></a></li><li><a href="#t3-s2">3.2 — ¶16 — công ty mẹ dùng <em>miễn trừ hợp nhất</em></a></li><li><a href="#t3-s3">3.3 — ¶16A — <em>investment entity</em> lập SFS là báo cáo duy nhất</a></li><li><a href="#t3-s4">3.4 — ¶17 — công ty mẹ khác / nhà đầu tư có <em>ảnh hưởng</em></a></li><li><a href="#t3-s5">3.5 — So sánh <em>ba</em> tình huống thuyết minh</a></li><li><a href="#t3-s6">3.6 — Ngày hiệu lực & <em>IFRS 9 / IAS 39</em></a></li><li><a href="#t3-s7">3.7 — Thay thế IAS 27 (2008) & <em>lịch sử</em> <em>(¶20)</em></a></li></ul></div>
+  <div class="section" id="t3-s1"><div class="section-num">3.1</div><h2>Nguyên tắc thuyết minh chung <em>(¶15)</em></h2><div class="concept"><div class="concept-label">Disclosure · ¶15</div><div class="concept-title">Áp dụng mọi IFRS về thuyết minh, cộng ¶16–17</div><p>Khi thuyết minh trong SFS, đơn vị phải áp dụng <strong>tất cả các IFRS áp dụng</strong>, <strong>bao gồm cả</strong> các yêu cầu tại ¶16–17. Nói cách khác, ¶16–17 là phần <em>bổ sung</em> đặc thù cho báo cáo riêng, không thay thế các yêu cầu thuyết minh chung.</p></div></div><div class="section" id="t3-s2"><div class="section-num">3.2</div><h2>¶16 — công ty mẹ dùng <em>miễn trừ hợp nhất</em></h2><p>Áp dụng khi một công ty mẹ, theo ¶4(a) của IFRS 10, <strong>chọn không lập báo cáo hợp nhất</strong> và thay vào đó lập SFS. Khi đó phải thuyết minh (¶16):</p><dl class="deflist"><dt>(a) Bản chất & nơi lấy BCTC hợp nhất</dt><dd>Nêu rõ đây là <strong>báo cáo tài chính riêng</strong>; rằng <strong>miễn trừ hợp nhất đã được sử dụng</strong>; tên và <em>principal place of business</em> (địa điểm kinh doanh chính, và quốc gia thành lập nếu khác) của đơn vị có báo cáo hợp nhất tuân thủ IFRS phát hành công khai; và <strong>địa chỉ nơi có thể lấy</strong> báo cáo hợp nhất đó.</dd><dt>(b) Danh sách khoản đầu tư trọng yếu</dt><dd>Danh sách các khoản đầu tư trọng yếu vào sub/JV/associate, gồm: (i) <strong>tên</strong> investee; (ii) <strong>địa điểm kinh doanh chính</strong> (và quốc gia thành lập nếu khác); (iii) <strong>tỷ lệ sở hữu</strong> (và tỷ lệ quyền biểu quyết nếu khác).</dd><dt>(c) Phương pháp hạch toán</dt><dd>Mô tả <strong>phương pháp</strong> dùng để hạch toán các khoản đầu tư liệt kê ở (b).</dd></dl></div><div class="section" id="t3-s3"><div class="section-num">3.3</div><h2>¶16A — <em>investment entity</em> lập SFS là báo cáo duy nhất</h2><p>Khi một <em>investment entity</em> là công ty mẹ (không thuộc diện ¶16) lập SFS như <strong>báo cáo tài chính duy nhất</strong> theo ¶8A, nó phải thuyết minh <strong>sự việc đó</strong> (¶16A).</p><div class="callout"><div class="callout-title">Thêm thuyết minh theo IFRS 12</div><p>Investment entity còn phải trình bày các thuyết minh về <em>investment entities</em> theo yêu cầu của <em>IFRS 12 Disclosure of Interests in Other Entities</em>.</p></div></div><div class="section" id="t3-s4"><div class="section-num">3.4</div><h2>¶17 — công ty mẹ khác / nhà đầu tư có <em>ảnh hưởng</em></h2><p>Áp dụng cho công ty mẹ (không thuộc ¶16–16A) <strong>hoặc</strong> nhà đầu tư có <em>joint control</em> (đồng kiểm soát) hoặc <em>significant influence</em> (ảnh hưởng đáng kể) đối với một investee, khi lập SFS.</p><dl class="deflist"><dt>Nhận diện báo cáo liên quan</dt><dd>Phải <strong>chỉ rõ</strong> báo cáo tài chính lập theo IFRS 10, IFRS 11 hoặc IAS 28 mà SFS này liên quan tới.</dd><dt>(a) Bản chất & lý do</dt><dd>Nêu đây là báo cáo riêng và <strong>lý do lập</strong> nếu không do luật yêu cầu (the reasons why those statements are prepared if not required by law).</dd><dt>(b) & (c)</dt><dd>Danh sách khoản đầu tư trọng yếu (tên · địa điểm · tỷ lệ sở hữu/biểu quyết) và <strong>mô tả phương pháp hạch toán</strong> — giống ¶16(b),(c).</dd></dl></div><div class="section" id="t3-s5"><div class="section-num">3.5</div><h2>So sánh <em>ba</em> tình huống thuyết minh</h2><div class="table-wrap"><table><thead><tr><th>Đối tượng</th><th>Điều khoản</th><th>Điểm đặc thù</th></tr></thead><tbody><tr><td>Công ty mẹ dùng miễn trừ hợp nhất</td><td>¶16</td><td>Nêu đã dùng miễn trừ + <strong>nơi lấy BCTC hợp nhất</strong></td></tr><tr><td>Investment entity (SFS là báo cáo duy nhất)</td><td>¶16A</td><td>Nêu sự việc + thuyết minh <strong>IFRS 12</strong></td></tr><tr><td>Công ty mẹ khác / nhà đầu tư có joint control / significant influence</td><td>¶17</td><td><strong>Lý do lập</strong> nếu không do luật + nhận diện báo cáo IFRS 10/11/IAS 28 liên quan</td></tr></tbody></table></div><div class="tip"><div class="tip-title">Điểm chung của ¶16 và ¶17</div><p>Cả hai đều yêu cầu (b) <strong>danh sách khoản đầu tư trọng yếu</strong> (tên, địa điểm, tỷ lệ sở hữu/biểu quyết) và (c) <strong>mô tả phương pháp hạch toán</strong>. Khác nhau ở phần (a).</p></div></div><div class="section" id="t3-s6"><div class="section-num">3.6</div><h2>Ngày hiệu lực & <em>IFRS 9 / IAS 39</em></h2><div class="table-wrap"><table><thead><tr><th>Bản / sửa đổi</th><th>Áp dụng cho kỳ năm bắt đầu từ</th></tr></thead><tbody><tr><td>IAS 27 (2011) — bản gốc (¶18)</td><td>1 January 2013</td></tr><tr><td><em>Investment Entities</em> amendments (¶18A)</td><td>1 January 2014</td></tr><tr><td><em>Equity Method in Separate FS</em> (¶18J)</td><td>1 January 2016 — áp dụng hồi tố theo IAS 8</td></tr></tbody></table></div><p>Đều <strong>cho phép áp dụng sớm</strong> (earlier application permitted); nếu áp dụng sớm thì phải thuyết minh sự việc đó. Áp dụng sớm IAS 27 (2011) đòi hỏi áp dụng đồng thời IFRS 10, IFRS 11, IFRS 12 và IAS 28 (sửa đổi 2011).</p><div class="warn"><div class="warn-title">¶19 — chưa áp dụng IFRS 9 thì đọc là IAS 39</div><p>Nếu đơn vị áp dụng IAS 27 nhưng <strong>chưa áp dụng IFRS 9</strong>, mọi dẫn chiếu tới IFRS 9 phải được đọc là dẫn chiếu tới <em>IAS 39 Financial Instruments: Recognition and Measurement</em>.</p></div><div class="callout"><div class="callout-title">Chuyển tiếp cho investment entity (¶18C–18H)</div><p>Khi lần đầu áp dụng sửa đổi <em>Investment Entities</em>, cách xử lý khoản đầu tư vào công ty con phụ thuộc cơ sở đo lường trước đó:</p></div><dl class="deflist"><dt>¶18C — trước đây đo theo giá gốc</dt><dd>Investment entity trước đây đo công ty con theo giá gốc phải <strong>đo lại theo FVTPL như thể IFRS đã luôn có hiệu lực</strong>, điều chỉnh hồi tố kỳ liền trước và điều chỉnh lợi nhuận giữ lại đầu kỳ đó.</dd><dt>¶18D — trước đây đo theo FVOCI</dt><dd>Nếu trước đây đo công ty con theo <em>FVOCI</em> (giá trị hợp lý qua OCI) thì <strong>tiếp tục đo theo giá trị hợp lý</strong>; số lũy kế điều chỉnh giá trị hợp lý trong OCI được <strong>kết chuyển sang lợi nhuận giữ lại</strong> đầu kỳ liền trước.</dd><dt>¶18H — đã thoái vốn trước ngày áp dụng</dt><dd>Nếu investment entity đã <strong>thoái vốn hoặc mất quyền kiểm soát</strong> một công ty con <em>trước</em> ngày áp dụng lần đầu thì <strong>không bắt buộc</strong> điều chỉnh việc hạch toán trước đây cho khoản đó.</dd></dl></div><div class="section" id="t3-s7"><div class="section-num">3.7</div><h2>Thay thế IAS 27 (2008) & <em>lịch sử</em> <em>(¶20)</em></h2><div class="concept"><div class="concept-label">Withdrawal · ¶20</div><div class="concept-title">IAS 27 (2011) + IFRS 10 cùng thay thế IAS 27 (2008)</div><p>Chuẩn mực này được ban hành <strong>đồng thời với IFRS 10</strong>. Cùng nhau, hai IFRS này <strong>thay thế</strong> (supersede) IAS 27 <em>Consolidated and Separate Financial Statements</em> (bản sửa đổi 2008).</p></div><div class="process"><div class="process-step"><div class="process-step-title">2001 · thông qua bản gốc</div><p>IASB thông qua IAS 27 <em>Consolidated Financial Statements and Accounting for Investments in Subsidiaries</em> (gốc từ 1989), thay IAS 3.</p></div><div class="process-step"><div class="process-step-title">2003 · sửa đổi</div><p>Đổi tên thành <em>Consolidated and Separate Financial Statements</em>, tích hợp hướng dẫn từ SIC-12 và SIC-33.</p></div><div class="process-step"><div class="process-step-title">2008 · sửa đổi</div><p>Bổ sung hạch toán <em>non-controlling interests</em> (lợi ích không kiểm soát) và mất quyền kiểm soát công ty con.</p></div><div class="process-step"><div class="process-step-title">2011 · tách phần hợp nhất</div><p>Đổi tên thành <em>Separate Financial Statements</em>; nguyên tắc control và báo cáo hợp nhất chuyển sang IFRS 10.</p></div><div class="process-step"><div class="process-step-title">2012 & 2014 · hai sửa đổi lớn</div><p>2012: <em>Investment Entities</em> (thêm thuyết minh). 2014: <em>Equity Method in Separate FS</em> (cho phép equity method trong SFS).</p></div></div></div>
+</div>
+<div class="tab-panel" id="panel-synth" style="display:none">
+  <div class="ch-header">
+    <div class="ch-eyebrow">Tổng hợp &amp; mẹo nhớ</div>
+    <h1 class="ch-title">Tổng hợp <em>kiến thức</em></h1>
+    <p class="ch-intro">Mnemonic và các điểm phải nhớ, gom theo chủ đề — ôn nhanh trước khi làm Quiz.</p>
+  </div>
+  <section class="synth-theme"><h2>Chủ đề 01 — Phạm vi & Định nghĩa</h2><div class="mnemonic"><div class="mn-hook">Không con, không liên — chẳng <em>riêng</em></div><div class="mn-for">Khi nào KHÔNG phải separate financial statements (¶7)</div><div class="mn-breakdown"><div class="mn-row"><span class="mn-cue">Không con</span><span class="mn-means">Không có công ty con (<em>subsidiary</em>)</span></div><div class="mn-row"><span class="mn-cue">Không liên</span><span class="mn-means">Không có công ty liên kết (<em>associate</em>) hay phần vốn của bên liên doanh trong một liên doanh (<em>joint venture</em>)</span></div><div class="mn-row"><span class="mn-cue">Chẳng riêng</span><span class="mn-means">→ Báo cáo đó KHÔNG phải là separate financial statements</span></div></div><div class="mn-punch">Phải có ít nhất một khoản đầu tư sub/associate/JV thì mới có chuyện 'báo cáo riêng'.</div></div><div class="mnemonic"><div class="mn-hook">Miễn hợp nhất, hoặc là <em>ĐV đầu tư</em> — RIÊNG là DUY NHẤT</div><div class="mn-for">Khi SFS được phép là báo cáo tài chính DUY NHẤT (¶8, ¶8A)</div><div class="mn-breakdown"><div class="mn-row"><span class="mn-cue">Miễn (¶8)</span><span class="mn-means">Được miễn hợp nhất (IFRS 10 ¶4(a)) HOẶC miễn equity method (IAS 28 ¶17) → có thể lập SFS là báo cáo duy nhất</span></div><div class="mn-row"><span class="mn-cue">ĐV đầu tư (¶8A)</span><span class="mn-means"><em>Investment entity</em> áp dụng ngoại lệ không hợp nhất cho TẤT CẢ công ty con (IFRS 10 ¶31), suốt kỳ hiện tại + mọi kỳ so sánh</span></div><div class="mn-row"><span class="mn-cue">Duy nhất</span><span class="mn-means">→ Trình bày SFS như báo cáo tài chính duy nhất của mình</span></div></div></div><div class="warn"><div class="warn-title">IAS 27 không bắt buộc ai lập SFS</div><p>¶3: chuẩn mực <strong>không quy định đơn vị nào phải lập</strong> SFS; chỉ áp dụng KHI đơn vị lập SFS tuân thủ IFRS. Việc bắt buộc do <strong>local regulations</strong> quyết định.</p></div><dl class="deflist"><dt>Consolidated FS (¶4)</dt><dd>BCTC của một <em>group</em>: tài sản/nợ/vốn/thu nhập/chi phí/dòng tiền của mẹ + các con trình bày như <strong>một thực thể kinh tế duy nhất</strong>.</dd><dt>Separate FS (¶4)</dt><dd>Báo cáo mà đơn vị được <strong>chọn</strong> hạch toán khoản đầu tư theo <strong>cost / IFRS 9 / equity method (IAS 28)</strong>.</dd><dt>Chỉ 2 định nghĩa 'nhà'</dt><dd>IAS 27 chỉ tự định nghĩa consolidated FS & separate FS (¶4); còn lại mượn IFRS 10/11 + IAS 28 (¶5).</dd></dl></section><section class="synth-theme"><h2>Chủ đề 02 — Hạch toán khoản đầu tư</h2><div class="mnemonic"><div class="mn-hook">Giá gốc – IFRS 9 – Vốn chủ, <em>nhất quán</em> mỗi nhóm</div><div class="mn-for">Ba lựa chọn đo lường khoản đầu tư trong SFS + nguyên tắc nhất quán (¶10)</div><div class="mn-breakdown"><div class="mn-row"><span class="mn-cue">Giá gốc</span><span class="mn-means">(a) at cost</span></div><div class="mn-row"><span class="mn-cue">IFRS 9</span><span class="mn-means">(b) theo IFRS 9 (giá trị hợp lý)</span></div><div class="mn-row"><span class="mn-cue">Vốn chủ</span><span class="mn-means">(c) equity method theo IAS 28</span></div><div class="mn-row"><span class="mn-cue">Nhất quán</span><span class="mn-means">Áp dụng CÙNG một cách cho từng <em>category</em> (nhóm) khoản đầu tư</span></div></div><div class="mn-punch">Ba cửa để chọn, nhưng cả một nhóm phải cùng đi một cửa.</div></div><div class="mnemonic"><div class="mn-hook">Cổ tức vào <em>LÃI</em> — trừ khi equity thì <em>TRỪ VỐN</em></div><div class="mn-for">Ghi nhận cổ tức trong SFS (¶12)</div><div class="mn-breakdown"><div class="mn-row"><span class="mn-cue">Khi có quyền</span><span class="mn-means">Ghi nhận khi <strong>quyền nhận cổ tức được xác lập</strong></span></div><div class="mn-row"><span class="mn-cue">Vào lãi</span><span class="mn-means">Mặc định: ghi vào profit or loss</span></div><div class="mn-row"><span class="mn-cue">Trừ vốn</span><span class="mn-means">NẾU dùng equity method: ghi giảm <em>carrying amount</em> của khoản đầu tư (không vào P/L)</span></div></div></div><div class="mnemonic"><div class="mn-hook">Cost & Vốn chủ né sang <em>IFRS 5</em> — IFRS 9 đứng yên</div><div class="mn-for">Khi khoản đầu tư được phân loại held for sale/distribution (¶10)</div><div class="mn-breakdown"><div class="mn-row"><span class="mn-cue">Cost &amp; Vốn chủ</span><span class="mn-means">Khoản hạch toán theo cost hoặc equity method → chuyển sang <em>IFRS 5</em></span></div><div class="mn-row"><span class="mn-cue">IFRS 9 đứng yên</span><span class="mn-means">Khoản đo theo IFRS 9 → cách đo lường KHÔNG thay đổi</span></div></div></div><div class="mnemonic"><div class="mn-hook">Bỏ đầu tư → <em>MUA</em> giả định; Thành đầu tư → <em>BÁN</em> giả định</div><div class="mn-for">Thay đổi trạng thái investment entity (¶11B)</div><div class="mn-breakdown"><div class="mn-row"><span class="mn-cue">Ngừng là ĐV đầu tư</span><span class="mn-means">¶11B(a): hạch toán con theo ¶10; ngày đổi = <em>deemed acquisition date</em>; FV con = giá phí giả định đã chuyển giao</span></div><div class="mn-row"><span class="mn-cue">Trở thành ĐV đầu tư</span><span class="mn-means">¶11B(b): sang FVTPL; chênh lệch carrying amount vs FV → P/L; số OCI lũy kế xử lý như đã thanh lý con</span></div></div><div class="mn-punch">Rời 'câu lạc bộ đầu tư' = coi như vừa MUA con; gia nhập = coi như vừa BÁN con.</div></div><div class="warn"><div class="warn-title">Tái cấu trúc — cost = giá trị ghi sổ, KHÔNG phải fair value</div><p>¶13: khi lập công ty mẹ mới thỏa 3 tiêu chí và hạch toán theo ¶10(a) at cost, phải đo cost = <strong>giá trị ghi sổ phần vốn chủ sở hữu</strong> của mình trong công ty mẹ cũ tại ngày tái cấu trúc.</p></div></section><section class="synth-theme"><h2>Chủ đề 03 — Thuyết minh & Chuyển tiếp</h2><div class="mnemonic"><div class="mn-hook"><em>Tên – Nơi – Tỷ lệ</em>, rồi khai PHƯƠNG PHÁP</div><div class="mn-for">Danh sách khoản đầu tư trọng yếu — chung cho ¶16(b)/(c) và ¶17(b)/(c)</div><div class="mn-breakdown"><div class="mn-row"><span class="mn-cue">Tên</span><span class="mn-means">Tên của investee</span></div><div class="mn-row"><span class="mn-cue">Nơi</span><span class="mn-means">Địa điểm kinh doanh chính (và quốc gia thành lập nếu khác)</span></div><div class="mn-row"><span class="mn-cue">Tỷ lệ</span><span class="mn-means">Tỷ lệ sở hữu (và tỷ lệ quyền biểu quyết nếu khác)</span></div><div class="mn-row"><span class="mn-cue">Phương pháp</span><span class="mn-means">Mô tả phương pháp dùng để hạch toán các khoản đầu tư đó</span></div></div></div><div class="mnemonic"><div class="mn-hook">16 chỉ <em>NƠI LẤY</em>, 16A gọi <em>IFRS 12</em>, 17 nêu <em>LÝ DO</em></div><div class="mn-for">Điểm đặc thù phần (a) của ba tình huống thuyết minh (¶16, ¶16A, ¶17)</div><div class="mn-breakdown"><div class="mn-row"><span class="mn-cue">16 → Nơi lấy</span><span class="mn-means">Công ty mẹ dùng miễn trừ hợp nhất: nêu đã dùng miễn trừ + tên/địa chỉ nơi lấy BCTC hợp nhất tuân thủ IFRS</span></div><div class="mn-row"><span class="mn-cue">16A → IFRS 12</span><span class="mn-means">Investment entity lập SFS duy nhất: nêu sự việc + thuyết minh theo IFRS 12</span></div><div class="mn-row"><span class="mn-cue">17 → Lý do</span><span class="mn-means">Công ty mẹ khác / nhà đầu tư có joint control hoặc significant influence: nêu lý do lập nếu không do luật + nhận diện báo cáo IFRS 10/11/IAS 28 liên quan</span></div></div></div><div class="mnemonic"><div class="mn-hook">Nhớ <em>3–4–6</em>: gốc → đơn vị đầu tư → equity</div><div class="mn-for">Ba mốc ngày hiệu lực (kỳ năm bắt đầu từ 1/1)</div><div class="mn-breakdown"><div class="mn-row"><span class="mn-cue">201&#x27;3&#x27;</span><span class="mn-means">IAS 27 (2011) bản gốc — ¶18</span></div><div class="mn-row"><span class="mn-cue">201&#x27;4&#x27;</span><span class="mn-means"><em>Investment Entities</em> amendments — ¶18A</span></div><div class="mn-row"><span class="mn-cue">201&#x27;6&#x27;</span><span class="mn-means"><em>Equity Method in Separate FS</em> — ¶18J (hồi tố theo IAS 8)</span></div></div><div class="mn-punch">Cả ba đều cho phép áp dụng sớm.</div></div><div class="warn"><div class="warn-title">¶19 & ¶20 — hai điểm nhớ nhanh</div><p><strong>¶19:</strong> chưa áp dụng IFRS 9 thì đọc mọi dẫn chiếu 'IFRS 9' thành <em>IAS 39</em>. <strong>¶20:</strong> IAS 27 (2011) được ban hành đồng thời với IFRS 10, và <strong>hai IFRS này cùng thay thế</strong> IAS 27 (2008).</p></div></section>
+</div>
+<div class="tab-panel" id="panel-quiz" style="display:none">
+  <div class="ch-header">
+    <div class="ch-eyebrow">Trắc nghiệm ôn tập</div>
+    <h1 class="ch-title">Quiz — <em>68</em> câu hỏi</h1>
+    <p class="ch-intro">Bấm để chọn đáp án; phản hồi giải thích lý do. Tiến độ được lưu tự động trên trình duyệt.</p>
+  </div>
+  <div class="quiz-meta">
+    <span class="stat">Đã làm: <strong id="qDone">0</strong>/<strong id="qTotal">68</strong></span>
+    <span class="stat">Đúng: <strong id="qCorrect">0</strong></span>
+    <span class="stat">Tỷ lệ: <strong id="qPct">0%</strong></span>
+    <button id="resetQuiz">Làm lại từ đầu</button>
+  </div>
+  <div class="quiz-theme"><h2>Phạm vi <em>&</em> Định nghĩa</h2><div class="quiz-chapter"><h3 class="quiz-ch-title">ch1 — Objective & Scope (¶1–3, 8, 8A)</h3><div class="q-card" data-correct="0" data-q-id="ch1-0" data-answer="2">
+  <div class="q-head"><span class="q-num">Q1</span><span class="q-topic">Objective ¶1</span></div>
+  <div class="q-text">Mục tiêu của IAS 27 là gì?</div>
+  <div class="q-options"><div class="q-option" data-q="ch1-0" data-opt="0"><span class="letter">A</span><span class="opt-text">Quy định nguyên tắc kiểm soát (control) và các yêu cầu về lập báo cáo tài chính hợp nhất cho một tập đoàn, bao gồm cách xác định phạm vi hợp nhất và trình bày lợi ích không kiểm soát</span></div><div class="q-option" data-q="ch1-0" data-opt="1"><span class="letter">B</span><span class="opt-text">Quy định cách xác định ảnh hưởng đáng kể và áp dụng phương pháp vốn chủ sở hữu cho công ty liên kết</span></div><div class="q-option" data-q="ch1-0" data-opt="2"><span class="letter">C</span><span class="opt-text">Quy định các yêu cầu về hạch toán và thuyết minh đối với khoản đầu tư vào công ty con, liên doanh và liên kết khi đơn vị lập báo cáo tài chính riêng</span></div></div>
+  <div class="q-feedback" style="display:none"><strong class="q-mark"></strong> <span class="q-fb-text">¶1 nêu mục tiêu là quy định các yêu cầu hạch toán và thuyết minh cho khoản đầu tư vào subsidiaries, joint ventures và associates khi đơn vị lập separate financial statements. Lựa chọn về nguyên tắc kiểm soát và báo cáo hợp nhất thuộc IFRS 10; việc xác định ảnh hưởng đáng kể và equity method thuộc IAS 28 — cả hai đều không phải mục tiêu của IAS 27 sau bản 2011.</span></div>
+</div><div class="q-card" data-correct="0" data-q-id="ch1-1" data-answer="0">
+  <div class="q-head"><span class="q-num">Q2</span><span class="q-topic">Scope ¶2</span></div>
+  <div class="q-text">IAS 27 được áp dụng trong trường hợp nào?</div>
+  <div class="q-options"><div class="q-option" data-q="ch1-1" data-opt="0"><span class="letter">A</span><span class="opt-text">Khi đơn vị lựa chọn, hoặc bị quy định địa phương (local regulations) yêu cầu, trình bày báo cáo tài chính riêng</span></div><div class="q-option" data-q="ch1-1" data-opt="1"><span class="letter">B</span><span class="opt-text">Chỉ khi đơn vị bị IFRS bắt buộc phải lập báo cáo tài chính riêng</span></div><div class="q-option" data-q="ch1-1" data-opt="2"><span class="letter">C</span><span class="opt-text">Chỉ khi đơn vị đồng thời lập báo cáo tài chính hợp nhất theo IFRS 10 và trình bày báo cáo riêng như một phụ lục bắt buộc kèm theo</span></div></div>
+  <div class="q-feedback" style="display:none"><strong class="q-mark"></strong> <span class="q-fb-text">¶2 quy định chuẩn mực áp dụng khi hạch toán khoản đầu tư vào sub/JV/associate khi đơn vị 'lựa chọn, hoặc bị yêu cầu bởi quy định địa phương' để trình bày báo cáo riêng. Không phải IFRS bắt buộc lập SFS, và không đòi hỏi phải có báo cáo hợp nhất đi kèm — điều đó khiến hai phương án còn lại sai.</span></div>
+</div><div class="q-card" data-correct="0" data-q-id="ch1-2" data-answer="0">
+  <div class="q-head"><span class="q-num">Q3</span><span class="q-topic">Scope ¶3</span></div>
+  <div class="q-text">IAS 27 có quy định đơn vị nào bắt buộc phải lập báo cáo tài chính riêng không?</div>
+  <div class="q-options"><div class="q-option" data-q="ch1-2" data-opt="0"><span class="letter">A</span><span class="opt-text">Không; chuẩn mực không quy định đơn vị nào phải lập báo cáo tài chính riêng</span></div><div class="q-option" data-q="ch1-2" data-opt="1"><span class="letter">B</span><span class="opt-text">Có; mọi công ty mẹ đều bắt buộc phải lập báo cáo tài chính riêng</span></div><div class="q-option" data-q="ch1-2" data-opt="2"><span class="letter">C</span><span class="opt-text">Có; mọi đơn vị có khoản đầu tư vào công ty liên kết đều bắt buộc phải lập báo cáo tài chính riêng theo yêu cầu của IAS 28</span></div></div>
+  <div class="q-feedback" style="display:none"><strong class="q-mark"></strong> <span class="q-fb-text">¶3 nêu rõ chuẩn mực 'không quy định đơn vị nào phải lập báo cáo tài chính riêng' — việc bắt buộc là do luật/quy định địa phương. Vì vậy cả hai phương án khẳng định có sự bắt buộc từ chính IAS 27 đều sai; IAS 27 chỉ điều chỉnh cách hạch toán khi SFS đã được lập.</span></div>
+</div><div class="q-card" data-correct="0" data-q-id="ch1-3" data-answer="2">
+  <div class="q-head"><span class="q-num">Q4</span><span class="q-topic">Scope ¶3</span></div>
+  <div class="q-text">IAS 27 áp dụng cho báo cáo tài chính riêng khi báo cáo đó có đặc điểm nào?</div>
+  <div class="q-options"><div class="q-option" data-q="ch1-3" data-opt="0"><span class="letter">A</span><span class="opt-text">Khi báo cáo tài chính riêng được kiểm toán bởi một hãng kiểm toán độc lập</span></div><div class="q-option" data-q="ch1-3" data-opt="1"><span class="letter">B</span><span class="opt-text">Khi báo cáo tài chính riêng được nộp cho cơ quan quản lý thị trường chứng khoán</span></div><div class="q-option" data-q="ch1-3" data-opt="2"><span class="letter">C</span><span class="opt-text">Khi báo cáo tài chính riêng tuân thủ Chuẩn mực Báo cáo Tài chính Quốc tế (IFRS)</span></div></div>
+  <div class="q-feedback" style="display:none"><strong class="q-mark"></strong> <span class="q-fb-text">¶3 nêu chuẩn mực áp dụng khi đơn vị lập báo cáo tài chính riêng 'tuân thủ IFRS'. Yêu cầu kiểm toán độc lập hay việc nộp cho cơ quan quản lý là quy định của luật/thị trường, không phải điều kiện áp dụng IAS 27.</span></div>
+</div><div class="q-card" data-correct="0" data-q-id="ch1-4" data-answer="2">
+  <div class="q-head"><span class="q-num">Q5</span><span class="q-topic">Only FS ¶8</span></div>
+  <div class="q-text">Một công ty mẹ được miễn lập báo cáo hợp nhất theo ¶4(a) của IFRS 10. Theo IAS 27, công ty này có thể trình bày báo cáo nào?</div>
+  <div class="q-options"><div class="q-option" data-q="ch1-4" data-opt="0"><span class="letter">A</span><span class="opt-text">Vẫn phải lập báo cáo hợp nhất và trình bày báo cáo riêng như báo cáo bổ sung</span></div><div class="q-option" data-q="ch1-4" data-opt="1"><span class="letter">B</span><span class="opt-text">Phải áp dụng phương pháp vốn chủ sở hữu cho tất cả khoản đầu tư trong một báo cáo hợp nhất rút gọn</span></div><div class="q-option" data-q="ch1-4" data-opt="2"><span class="letter">C</span><span class="opt-text">Có thể trình bày báo cáo tài chính riêng như là báo cáo tài chính duy nhất của mình</span></div><div class="q-option" data-q="ch1-4" data-opt="3"><span class="letter">D</span><span class="opt-text">Không được phép lập báo cáo tài chính riêng vì đã sử dụng miễn trừ hợp nhất</span></div></div>
+  <div class="q-feedback" style="display:none"><strong class="q-mark"></strong> <span class="q-fb-text">¶8 cho phép đơn vị được miễn hợp nhất theo IFRS 10 ¶4(a) (hoặc miễn equity method theo IAS 28 ¶17) trình bày SFS như báo cáo tài chính duy nhất. Vì đã được miễn hợp nhất nên không còn nghĩa vụ lập báo cáo hợp nhất; chuẩn mực cũng không buộc chuyển toàn bộ sang equity method, và không hề cấm lập SFS.</span></div>
+</div><div class="q-card" data-correct="0" data-q-id="ch1-5" data-answer="2">
+  <div class="q-head"><span class="q-num">Q6</span><span class="q-topic">Only FS ¶8A</span></div>
+  <div class="q-text">Một investment entity áp dụng ngoại lệ không hợp nhất cho tất cả công ty con theo ¶31 của IFRS 10, xuyên suốt kỳ hiện tại và mọi kỳ so sánh. Đơn vị này trình bày báo cáo gì?</div>
+  <div class="q-options"><div class="q-option" data-q="ch1-5" data-opt="0"><span class="letter">A</span><span class="opt-text">Báo cáo hợp nhất cho các công ty con trọng yếu và báo cáo riêng cho phần còn lại</span></div><div class="q-option" data-q="ch1-5" data-opt="1"><span class="letter">B</span><span class="opt-text">Báo cáo hợp nhất đầy đủ vì ngoại lệ đầu tư không áp dụng cho báo cáo riêng</span></div><div class="q-option" data-q="ch1-5" data-opt="2"><span class="letter">C</span><span class="opt-text">Báo cáo tài chính riêng như là báo cáo tài chính duy nhất của mình</span></div><div class="q-option" data-q="ch1-5" data-opt="3"><span class="letter">D</span><span class="opt-text">Báo cáo tài chính riêng bổ sung bên cạnh một báo cáo hợp nhất bắt buộc</span></div></div>
+  <div class="q-feedback" style="display:none"><strong class="q-mark"></strong> <span class="q-fb-text">¶8A quy định một investment entity phải áp dụng ngoại lệ không hợp nhất cho tất cả công ty con (IFRS 10 ¶31) suốt kỳ hiện tại và mọi kỳ so sánh thì trình bày SFS như báo cáo tài chính duy nhất. Vì không hợp nhất bất kỳ công ty con nào nên các phương án đòi hỏi báo cáo hợp nhất đều sai.</span></div>
+</div><div class="q-card" data-correct="0" data-q-id="ch1-6" data-answer="2">
+  <div class="q-head"><span class="q-num">Q7</span><span class="q-topic">Only FS ¶8A</span></div>
+  <div class="q-text">Điều kiện thời gian nào trong ¶8A phải được thỏa để một investment entity trình bày SFS là báo cáo duy nhất?</div>
+  <div class="q-options"><div class="q-option" data-q="ch1-6" data-opt="0"><span class="letter">A</span><span class="opt-text">Áp dụng ngoại lệ không hợp nhất trong ít nhất kỳ báo cáo hiện tại</span></div><div class="q-option" data-q="ch1-6" data-opt="1"><span class="letter">B</span><span class="opt-text">Áp dụng ngoại lệ không hợp nhất kể từ ngày trở thành investment entity trở đi, không cần xét tới bất kỳ kỳ so sánh nào trước đó</span></div><div class="q-option" data-q="ch1-6" data-opt="2"><span class="letter">C</span><span class="opt-text">Áp dụng ngoại lệ không hợp nhất xuyên suốt kỳ hiện tại và tất cả các kỳ so sánh được trình bày</span></div><div class="q-option" data-q="ch1-6" data-opt="3"><span class="letter">D</span><span class="opt-text">Áp dụng ngoại lệ không hợp nhất trong ba năm tài chính liên tiếp gần nhất</span></div></div>
+  <div class="q-feedback" style="display:none"><strong class="q-mark"></strong> <span class="q-fb-text">¶8A đòi hỏi việc áp dụng ngoại lệ 'xuyên suốt kỳ hiện tại và tất cả các kỳ so sánh được trình bày'. Chỉ riêng kỳ hiện tại, chỉ kể từ ngày đổi trạng thái, hay một mốc ba năm cố định đều không đúng với câu chữ của chuẩn mực.</span></div>
+</div><div class="q-card" data-correct="0" data-q-id="ch1-7" data-answer="2">
+  <div class="q-head"><span class="q-num">Q8</span><span class="q-topic">Exemption routes ¶8</span></div>
+  <div class="q-text">¶8 nêu hai con đường để một đơn vị được phép trình bày SFS như báo cáo duy nhất. Hai con đường đó là gì?</div>
+  <div class="q-options"><div class="q-option" data-q="ch1-7" data-opt="0"><span class="letter">A</span><span class="opt-text">Được miễn hợp nhất theo IFRS 10 ¶4(a), hoặc được cơ quan quản lý địa phương cho phép trình bày báo cáo tài chính riêng thay thế</span></div><div class="q-option" data-q="ch1-7" data-opt="1"><span class="letter">B</span><span class="opt-text">Được cổ đông đa số chấp thuận, hoặc được miễn theo IFRS 12</span></div><div class="q-option" data-q="ch1-7" data-opt="2"><span class="letter">C</span><span class="opt-text">Được miễn hợp nhất theo IFRS 10 ¶4(a), hoặc được miễn áp dụng equity method theo IAS 28 ¶17</span></div><div class="q-option" data-q="ch1-7" data-opt="3"><span class="letter">D</span><span class="opt-text">Được miễn áp dụng IFRS 9, hoặc được miễn lập báo cáo lưu chuyển tiền tệ</span></div></div>
+  <div class="q-feedback" style="display:none"><strong class="q-mark"></strong> <span class="q-fb-text">¶8 nêu hai lối: đơn vị được miễn hợp nhất theo IFRS 10 ¶4(a), hoặc được miễn áp dụng equity method theo IAS 28 ¶17. Sự cho phép của cơ quan quản lý, chấp thuận cổ đông, hay miễn IFRS 9/IFRS 12 đều không phải điều kiện ¶8 đặt ra.</span></div>
+</div><div class="q-card" data-correct="0" data-q-id="ch1-8" data-answer="1">
+  <div class="q-head"><span class="q-num">Q9</span><span class="q-topic">Objective ¶1</span></div>
+  <div class="q-text">Mục tiêu của IAS 27 bao trùm những khía cạnh nào?</div>
+  <div class="q-options"><div class="q-option" data-q="ch1-8" data-opt="0"><span class="letter">A</span><span class="opt-text">Chỉ các yêu cầu về hạch toán (đo lường và ghi nhận) khoản đầu tư</span></div><div class="q-option" data-q="ch1-8" data-opt="1"><span class="letter">B</span><span class="opt-text">Cả các yêu cầu về hạch toán lẫn thuyết minh đối với khoản đầu tư</span></div><div class="q-option" data-q="ch1-8" data-opt="2"><span class="letter">C</span><span class="opt-text">Chỉ các yêu cầu về thuyết minh và trình bày trong báo cáo tài chính riêng</span></div></div>
+  <div class="q-feedback" style="display:none"><strong class="q-mark"></strong> <span class="q-fb-text">¶1 nêu mục tiêu là quy định 'các yêu cầu về hạch toán VÀ thuyết minh' cho khoản đầu tư vào sub/JV/associate trong SFS. Do đó chỉ nêu một trong hai khía cạnh là chưa đủ; chuẩn mực bao trùm cả hai.</span></div>
+</div><div class="q-card" data-correct="0" data-q-id="ch1-9" data-answer="2">
+  <div class="q-head"><span class="q-num">Q10</span><span class="q-topic">Scope ¶2–3</span></div>
+  <div class="q-text">Công ty M không bị luật bắt buộc lập báo cáo tài chính riêng, nhưng ban giám đốc tự nguyện quyết định lập một bộ SFS tuân thủ IFRS bên cạnh báo cáo hợp nhất. Nhận định nào đúng theo IAS 27?</div>
+  <div class="q-options"><div class="q-option" data-q="ch1-9" data-opt="0"><span class="letter">A</span><span class="opt-text">Vì luật không yêu cầu nên IAS 27 không áp dụng cho bộ SFS tự nguyện này</span></div><div class="q-option" data-q="ch1-9" data-opt="1"><span class="letter">B</span><span class="opt-text">IAS 27 chỉ áp dụng nếu cơ quan quản lý phê duyệt việc lập báo cáo riêng tự nguyện và đơn vị đã đăng ký áp dụng đầy đủ IFRS</span></div><div class="q-option" data-q="ch1-9" data-opt="2"><span class="letter">C</span><span class="opt-text">IAS 27 áp dụng cho bộ SFS đó vì đơn vị đã lựa chọn lập SFS tuân thủ IFRS, dù không bị bắt buộc</span></div></div>
+  <div class="q-feedback" style="display:none"><strong class="q-mark"></strong> <span class="q-fb-text">¶2 cho biết chuẩn mực áp dụng khi đơn vị 'lựa chọn, hoặc bị yêu cầu bởi quy định địa phương' trình bày SFS; ¶3 xác nhận nó áp dụng khi SFS tuân thủ IFRS. Việc luật không bắt buộc không loại trừ áp dụng — chính hành vi lựa chọn lập SFS tuân thủ IFRS đã kích hoạt IAS 27, không cần cơ quan quản lý phê duyệt.</span></div>
+</div></div><div class="quiz-chapter"><h3 class="quiz-ch-title">ch2 — Definitions (¶4–7)</h3><div class="q-card" data-correct="0" data-q-id="ch2-0" data-answer="1">
+  <div class="q-head"><span class="q-num">Q11</span><span class="q-topic">Consolidated FS ¶4</span></div>
+  <div class="q-text">Theo định nghĩa ¶4, báo cáo tài chính hợp nhất (consolidated financial statements) trình bày thông tin của mẹ và các con như thế nào?</div>
+  <div class="q-options"><div class="q-option" data-q="ch2-0" data-opt="0"><span class="letter">A</span><span class="opt-text">Như của từng pháp nhân riêng biệt được đặt cạnh nhau để so sánh</span></div><div class="q-option" data-q="ch2-0" data-opt="1"><span class="letter">B</span><span class="opt-text">Như của một thực thể kinh tế duy nhất (a single economic entity)</span></div><div class="q-option" data-q="ch2-0" data-opt="2"><span class="letter">C</span><span class="opt-text">Như của công ty mẹ, với các công ty con thể hiện bằng một dòng đầu tư duy nhất</span></div></div>
+  <div class="q-feedback" style="display:none"><strong class="q-mark"></strong> <span class="q-fb-text">¶4 định nghĩa consolidated FS là báo cáo của một group trong đó tài sản, nợ, vốn, thu nhập, chi phí và dòng tiền của mẹ và các con được trình bày 'như của một thực thể kinh tế duy nhất'. Việc thể hiện các con bằng một dòng đầu tư duy nhất chính là đặc trưng của báo cáo riêng, không phải hợp nhất.</span></div>
+</div><div class="q-card" data-correct="0" data-q-id="ch2-1" data-answer="0">
+  <div class="q-head"><span class="q-num">Q12</span><span class="q-topic">Separate FS ¶4</span></div>
+  <div class="q-text">Theo định nghĩa ¶4, trong báo cáo tài chính riêng, đơn vị được lựa chọn hạch toán khoản đầu tư theo những cách nào?</div>
+  <div class="q-options"><div class="q-option" data-q="ch2-1" data-opt="0"><span class="letter">A</span><span class="opt-text">Theo giá gốc, theo IFRS 9, hoặc theo phương pháp vốn chủ sở hữu (equity method) như mô tả trong IAS 28</span></div><div class="q-option" data-q="ch2-1" data-opt="1"><span class="letter">B</span><span class="opt-text">Theo giá gốc, hoặc theo IFRS 13 Fair Value Measurement</span></div><div class="q-option" data-q="ch2-1" data-opt="2"><span class="letter">C</span><span class="opt-text">Theo giá gốc, hoặc theo giá trị hợp lý qua thu nhập toàn diện khác (FVOCI) theo lựa chọn chính sách kế toán không thể hủy ngang</span></div></div>
+  <div class="q-feedback" style="display:none"><strong class="q-mark"></strong> <span class="q-fb-text">Định nghĩa separate FS ở ¶4 nêu ba cách: theo cost, theo IFRS 9, hoặc theo equity method (IAS 28). IFRS 13 chỉ hướng dẫn đo lường giá trị hợp lý chứ không phải một 'cách hạch toán khoản đầu tư' được liệt kê; nêu FVOCI như một lựa chọn tách riêng cũng không khớp câu chữ định nghĩa.</span></div>
+</div><div class="q-card" data-correct="0" data-q-id="ch2-2" data-answer="1">
+  <div class="q-head"><span class="q-num">Q13</span><span class="q-topic">Not SFS ¶7</span></div>
+  <div class="q-text">Báo cáo tài chính của một đơn vị KHÔNG có công ty con, công ty liên kết hay phần vốn của bên liên doanh trong một liên doanh thì được xem là gì?</div>
+  <div class="q-options"><div class="q-option" data-q="ch2-2" data-opt="0"><span class="letter">A</span><span class="opt-text">Là báo cáo tài chính riêng đơn giản hóa theo IAS 27</span></div><div class="q-option" data-q="ch2-2" data-opt="1"><span class="letter">B</span><span class="opt-text">KHÔNG phải là báo cáo tài chính riêng (separate financial statements)</span></div><div class="q-option" data-q="ch2-2" data-opt="2"><span class="letter">C</span><span class="opt-text">Là báo cáo tài chính hợp nhất rỗng, vì đơn vị không có bất kỳ công ty con nào để hợp nhất từng dòng</span></div></div>
+  <div class="q-feedback" style="display:none"><strong class="q-mark"></strong> <span class="q-fb-text">¶7 nêu rõ báo cáo của một đơn vị không có subsidiary, associate hay phần vốn liên doanh 'không phải là separate financial statements'. Vì thiếu bất kỳ khoản đầu tư nào để lựa chọn cách hạch toán, khái niệm 'riêng' không phát sinh; nó chỉ là báo cáo tài chính thông thường.</span></div>
+</div><div class="q-card" data-correct="0" data-q-id="ch2-3" data-answer="1">
+  <div class="q-head"><span class="q-num">Q14</span><span class="q-topic">Not SFS ¶7</span></div>
+  <div class="q-text">Công ty T là một doanh nghiệp độc lập, không nắm giữ bất kỳ công ty con, liên kết hay liên doanh nào. Báo cáo tài chính của T được phân loại ra sao theo IAS 27?</div>
+  <div class="q-options"><div class="q-option" data-q="ch2-3" data-opt="0"><span class="letter">A</span><span class="opt-text">Là báo cáo tài chính riêng, nên T bắt buộc phải chọn hạch toán theo cost, IFRS 9 hoặc equity method như IAS 28 mô tả</span></div><div class="q-option" data-q="ch2-3" data-opt="1"><span class="letter">B</span><span class="opt-text">Không phải báo cáo tài chính riêng; T không thuộc phạm vi định nghĩa SFS của IAS 27</span></div><div class="q-option" data-q="ch2-3" data-opt="2"><span class="letter">C</span><span class="opt-text">Là báo cáo tài chính hợp nhất một thành viên</span></div><div class="q-option" data-q="ch2-3" data-opt="3"><span class="letter">D</span><span class="opt-text">Là báo cáo tài chính riêng chỉ khi T tự nguyện tuyên bố như vậy</span></div></div>
+  <div class="q-feedback" style="display:none"><strong class="q-mark"></strong> <span class="q-fb-text">Theo ¶7, một đơn vị không có sub/associate/JV thì báo cáo của nó không phải SFS. Không có khoản đầu tư nào để áp dụng ba cách đo lường, nên T không thể 'chọn' cost/IFRS 9/equity method, và việc tự tuyên bố cũng không biến báo cáo thành SFS.</span></div>
+</div><div class="q-card" data-correct="0" data-q-id="ch2-4" data-answer="1">
+  <div class="q-head"><span class="q-num">Q15</span><span class="q-topic">In addition to ¶6</span></div>
+  <div class="q-text">Theo ¶6, báo cáo tài chính riêng thường được trình bày trong mối quan hệ nào với báo cáo khác?</div>
+  <div class="q-options"><div class="q-option" data-q="ch2-4" data-opt="0"><span class="letter">A</span><span class="opt-text">Trình bày THAY THẾ hoàn toàn cho báo cáo tài chính hợp nhất, khiến đơn vị không còn nghĩa vụ lập báo cáo hợp nhất cho tập đoàn nữa</span></div><div class="q-option" data-q="ch2-4" data-opt="1"><span class="letter">B</span><span class="opt-text">Trình bày BỔ SUNG THÊM (in addition to) báo cáo hợp nhất, hoặc bổ sung cho báo cáo của nhà đầu tư áp dụng equity method</span></div><div class="q-option" data-q="ch2-4" data-opt="2"><span class="letter">C</span><span class="opt-text">Trình bày gộp chung vào một cột phụ trong báo cáo hợp nhất</span></div></div>
+  <div class="q-feedback" style="display:none"><strong class="q-mark"></strong> <span class="q-fb-text">¶6 mô tả SFS là báo cáo trình bày 'bổ sung thêm' cho báo cáo hợp nhất, hoặc bổ sung cho báo cáo của một nhà đầu tư có khoản đầu tư vào liên kết/liên doanh phải hạch toán theo equity method — trừ các trường hợp ¶8–8A. Nó là báo cáo song song, không thay thế và không phải một cột phụ của báo cáo hợp nhất.</span></div>
+</div><div class="q-card" data-correct="0" data-q-id="ch2-5" data-answer="2">
+  <div class="q-head"><span class="q-num">Q16</span><span class="q-topic">Borrowed terms ¶5</span></div>
+  <div class="q-text">Đơn vị cần tra định nghĩa 'significant influence' (ảnh hưởng đáng kể). Theo ¶5, định nghĩa này nằm ở đâu?</div>
+  <div class="q-options"><div class="q-option" data-q="ch2-5" data-opt="0"><span class="letter">A</span><span class="opt-text">Trong chính IAS 27, phần Definitions</span></div><div class="q-option" data-q="ch2-5" data-opt="1"><span class="letter">B</span><span class="opt-text">Trong IFRS 10 Consolidated Financial Statements, Phụ lục A (phần các định nghĩa dùng chung cho bộ chuẩn mực hợp nhất)</span></div><div class="q-option" data-q="ch2-5" data-opt="2"><span class="letter">C</span><span class="opt-text">Trong IAS 28 Investments in Associates and Joint Ventures (¶3)</span></div><div class="q-option" data-q="ch2-5" data-opt="3"><span class="letter">D</span><span class="opt-text">Trong IFRS 12 Disclosure of Interests in Other Entities</span></div></div>
+  <div class="q-feedback" style="display:none"><strong class="q-mark"></strong> <span class="q-fb-text">¶5 dẫn chiếu các định nghĩa như associate, equity method và significant influence sang IAS 28 (¶3). IAS 27 không tự định nghĩa các thuật ngữ này; IFRS 10 định nghĩa control/investment entity/parent/subsidiary, còn IFRS 12 là chuẩn mực về thuyết minh, không chứa định nghĩa significant influence.</span></div>
+</div><div class="q-card" data-correct="0" data-q-id="ch2-6" data-answer="1">
+  <div class="q-head"><span class="q-num">Q17</span><span class="q-topic">Borrowed terms ¶5</span></div>
+  <div class="q-text">Định nghĩa 'control of an investee' và 'investment entity' được ¶5 dẫn chiếu tới chuẩn mực nào?</div>
+  <div class="q-options"><div class="q-option" data-q="ch2-6" data-opt="0"><span class="letter">A</span><span class="opt-text">IAS 28, phần định nghĩa về ảnh hưởng đáng kể (significant influence) và phương pháp vốn chủ sở hữu</span></div><div class="q-option" data-q="ch2-6" data-opt="1"><span class="letter">B</span><span class="opt-text">IFRS 10 Consolidated Financial Statements, Phụ lục A</span></div><div class="q-option" data-q="ch2-6" data-opt="2"><span class="letter">C</span><span class="opt-text">IFRS 11 Joint Arrangements, Phụ lục A</span></div><div class="q-option" data-q="ch2-6" data-opt="3"><span class="letter">D</span><span class="opt-text">IAS 27, phần Definitions ¶4</span></div></div>
+  <div class="q-feedback" style="display:none"><strong class="q-mark"></strong> <span class="q-fb-text">¶5 dẫn chiếu control of an investee, investment entity, group, parent và subsidiary sang Phụ lục A của IFRS 10. IFRS 11 định nghĩa joint control và joint venturer; IAS 28 định nghĩa associate/significant influence/equity method; còn ¶4 của IAS 27 chỉ tự định nghĩa consolidated FS và separate FS.</span></div>
+</div><div class="q-card" data-correct="0" data-q-id="ch2-7" data-answer="2">
+  <div class="q-head"><span class="q-num">Q18</span><span class="q-topic">Own definitions ¶4</span></div>
+  <div class="q-text">IAS 27 TỰ định nghĩa (không mượn từ chuẩn khác) hai thuật ngữ nào?</div>
+  <div class="q-options"><div class="q-option" data-q="ch2-7" data-opt="0"><span class="letter">A</span><span class="opt-text">'Control of an investee' và 'significant influence' — hai thuật ngữ nền tảng về quyền chi phối một investee</span></div><div class="q-option" data-q="ch2-7" data-opt="1"><span class="letter">B</span><span class="opt-text">'Subsidiary' và 'associate'</span></div><div class="q-option" data-q="ch2-7" data-opt="2"><span class="letter">C</span><span class="opt-text">'Consolidated financial statements' và 'separate financial statements'</span></div></div>
+  <div class="q-feedback" style="display:none"><strong class="q-mark"></strong> <span class="q-fb-text">¶4 là nơi IAS 27 tự đặt hai định nghĩa: consolidated FS và separate FS. Các thuật ngữ như control of an investee, significant influence, subsidiary và associate được ¶5 dẫn chiếu sang IFRS 10/11 và IAS 28, nên không phải do IAS 27 tự định nghĩa.</span></div>
+</div><div class="q-card" data-correct="0" data-q-id="ch2-8" data-answer="0">
+  <div class="q-head"><span class="q-num">Q19</span><span class="q-topic">In addition to ¶6</span></div>
+  <div class="q-text">Nhà đầu tư N không có công ty con nhưng có khoản đầu tư vào công ty liên kết, được IAS 28 yêu cầu hạch toán theo equity method. N lập thêm một bộ báo cáo trong đó đo khoản đầu tư đó theo cost. Bộ báo cáo thêm này là gì theo ¶6?</div>
+  <div class="q-options"><div class="q-option" data-q="ch2-8" data-opt="0"><span class="letter">A</span><span class="opt-text">Là báo cáo tài chính riêng, được trình bày bổ sung cho báo cáo áp dụng equity method của N</span></div><div class="q-option" data-q="ch2-8" data-opt="1"><span class="letter">B</span><span class="opt-text">Không phải báo cáo tài chính riêng, vì N không có công ty con mà chỉ nắm giữ khoản đầu tư vào công ty liên kết</span></div><div class="q-option" data-q="ch2-8" data-opt="2"><span class="letter">C</span><span class="opt-text">Là báo cáo tài chính hợp nhất vì có khoản đầu tư vào liên kết</span></div><div class="q-option" data-q="ch2-8" data-opt="3"><span class="letter">D</span><span class="opt-text">Là báo cáo quản trị nội bộ, nằm ngoài phạm vi IFRS</span></div></div>
+  <div class="q-feedback" style="display:none"><strong class="q-mark"></strong> <span class="q-fb-text">¶6 nêu SFS có thể là báo cáo trình bày bổ sung cho báo cáo của một nhà đầu tư không có công ty con nhưng có khoản đầu tư vào liên kết/liên doanh phải áp dụng equity method theo IAS 28. Không cần có công ty con để phát sinh SFS; có khoản đầu tư vào liên kết là đủ, và bộ thêm này vẫn thuộc IFRS.</span></div>
+</div><div class="q-card" data-correct="0" data-q-id="ch2-9" data-answer="3">
+  <div class="q-head"><span class="q-num">Q20</span><span class="q-topic">Separate FS ¶4</span></div>
+  <div class="q-text">Trong báo cáo tài chính riêng, công ty mẹ P quyết định đo khoản đầu tư vào một công ty con theo giá gốc. Lựa chọn này có phù hợp định nghĩa SFS ở ¶4 không?</div>
+  <div class="q-options"><div class="q-option" data-q="ch2-9" data-opt="0"><span class="letter">A</span><span class="opt-text">Không; SFS bắt buộc phải đo mọi khoản đầu tư theo giá trị hợp lý theo IFRS 9</span></div><div class="q-option" data-q="ch2-9" data-opt="1"><span class="letter">B</span><span class="opt-text">Không; công ty con luôn phải được hợp nhất từng dòng, không được đo theo giá gốc</span></div><div class="q-option" data-q="ch2-9" data-opt="2"><span class="letter">C</span><span class="opt-text">Chỉ phù hợp nếu công ty con đó được phân loại là nắm giữ để bán</span></div><div class="q-option" data-q="ch2-9" data-opt="3"><span class="letter">D</span><span class="opt-text">Phù hợp; giá gốc là một trong ba cách hạch toán mà định nghĩa SFS cho phép</span></div></div>
+  <div class="q-feedback" style="display:none"><strong class="q-mark"></strong> <span class="q-fb-text">Định nghĩa ¶4 cho phép hạch toán khoản đầu tư trong SFS theo cost, IFRS 9 hoặc equity method — nên đo theo giá gốc là hợp lệ. SFS không buộc dùng giá trị hợp lý cho mọi khoản, và việc hợp nhất từng dòng là đặc trưng của báo cáo hợp nhất chứ không phải SFS; việc chọn cost không phụ thuộc phân loại held for sale.</span></div>
+</div><div class="q-card" data-correct="0" data-q-id="ch2-10" data-answer="0">
+  <div class="q-head"><span class="q-num">Q21</span><span class="q-topic">Consolidated vs separate</span></div>
+  <div class="q-text">Tập đoàn G gồm mẹ M và công ty con S. M lập cả báo cáo hợp nhất lẫn một bộ báo cáo trong đó S được thể hiện bằng một khoản đầu tư đo theo equity method. Cách phân loại nào đúng theo các định nghĩa của IAS 27?</div>
+  <div class="q-options"><div class="q-option" data-q="ch2-10" data-opt="0"><span class="letter">A</span><span class="opt-text">Bộ hợp nhất trình bày mẹ và con như một thực thể kinh tế duy nhất; bộ còn lại là báo cáo tài chính riêng, trong đó S là một khoản đầu tư đo theo equity method</span></div><div class="q-option" data-q="ch2-10" data-opt="1"><span class="letter">B</span><span class="opt-text">Cả hai bộ đều là báo cáo hợp nhất, khác nhau ở phương pháp trình bày</span></div><div class="q-option" data-q="ch2-10" data-opt="2"><span class="letter">C</span><span class="opt-text">Bộ đo theo equity method là báo cáo hợp nhất; bộ gộp từng dòng là báo cáo riêng</span></div></div>
+  <div class="q-feedback" style="display:none"><strong class="q-mark"></strong> <span class="q-fb-text">Theo ¶4, báo cáo hợp nhất trình bày mẹ và con 'như một thực thể kinh tế duy nhất' (gộp từng dòng), còn báo cáo riêng thể hiện công ty con như một khoản đầu tư đo theo cost/IFRS 9/equity method. Do đó bộ đo S theo equity method chính là SFS, và không thể coi cả hai đều là báo cáo hợp nhất; phương án đảo ngược hai khái niệm là sai.</span></div>
+</div></div></div><div class="quiz-theme"><h2>Hạch toán <em>khoản đầu tư</em></h2><div class="quiz-chapter"><h3 class="quiz-ch-title">ch3 — Measurement of investments (¶9–11)</h3><div class="q-card" data-correct="0" data-q-id="ch3-0" data-answer="0">
+  <div class="q-head"><span class="q-num">Q22</span><span class="q-topic">General rule ¶9</span></div>
+  <div class="q-text">Theo ¶9, báo cáo tài chính riêng phải được lập như thế nào?</div>
+  <div class="q-options"><div class="q-option" data-q="ch3-0" data-opt="0"><span class="letter">A</span><span class="opt-text">Theo tất cả các IFRS áp dụng, ngoại trừ phần được quy định tại ¶10</span></div><div class="q-option" data-q="ch3-0" data-opt="1"><span class="letter">B</span><span class="opt-text">Chỉ theo các quy định riêng của IAS 27, không cần áp dụng các IFRS khác</span></div><div class="q-option" data-q="ch3-0" data-opt="2"><span class="letter">C</span><span class="opt-text">Theo IFRS 10 và IFRS 11, với IAS 27 chỉ bổ sung phần thuyết minh</span></div></div>
+  <div class="q-feedback" style="display:none"><strong class="q-mark"></strong> <span class="q-fb-text">¶9 yêu cầu SFS được lập 'theo tất cả các IFRS áp dụng, ngoại trừ như quy định tại ¶10'. Nghĩa là mọi chuẩn mực khác vẫn áp dụng bình thường; chỉ riêng cách đo lường khoản đầu tư vào sub/JV/associate mới theo quy tắc đặc thù của ¶10, chứ không phải IAS 27 thay thế toàn bộ.</span></div>
+</div><div class="q-card" data-correct="0" data-q-id="ch3-1" data-answer="1">
+  <div class="q-head"><span class="q-num">Q23</span><span class="q-topic">Three options ¶10</span></div>
+  <div class="q-text">¶10 cho phép hạch toán khoản đầu tư vào sub/JV/associate trong SFS theo những cách nào?</div>
+  <div class="q-options"><div class="q-option" data-q="ch3-1" data-opt="0"><span class="letter">A</span><span class="opt-text">Chỉ theo giá gốc hoặc theo giá trị hợp lý theo IFRS 9</span></div><div class="q-option" data-q="ch3-1" data-opt="1"><span class="letter">B</span><span class="opt-text">Theo giá gốc; theo IFRS 9; hoặc theo phương pháp vốn chủ sở hữu (equity method) như mô tả trong IAS 28</span></div><div class="q-option" data-q="ch3-1" data-opt="2"><span class="letter">C</span><span class="opt-text">Theo giá gốc; theo IFRS 13 Fair Value Measurement; hoặc theo phương pháp mua (acquisition method) như quy định tại IFRS 3</span></div></div>
+  <div class="q-feedback" style="display:none"><strong class="q-mark"></strong> <span class="q-fb-text">¶10 liệt kê ba lựa chọn: (a) at cost; (b) theo IFRS 9; (c) equity method theo IAS 28. Chỉ nêu cost và IFRS 9 là thiếu lựa chọn equity method (được bổ sung năm 2014); còn IFRS 13 và phương pháp mua không phải cách đo khoản đầu tư mà ¶10 đưa ra.</span></div>
+</div><div class="q-card" data-correct="0" data-q-id="ch3-2" data-answer="0">
+  <div class="q-head"><span class="q-num">Q24</span><span class="q-topic">Consistency ¶10</span></div>
+  <div class="q-text">Về tính nhất quán, ¶10 yêu cầu đơn vị áp dụng cách hạch toán như thế nào?</div>
+  <div class="q-options"><div class="q-option" data-q="ch3-2" data-opt="0"><span class="letter">A</span><span class="opt-text">Áp dụng cùng một cách hạch toán cho từng nhóm (category) khoản đầu tư</span></div><div class="q-option" data-q="ch3-2" data-opt="1"><span class="letter">B</span><span class="opt-text">Áp dụng một cách hạch toán duy nhất cho toàn bộ mọi khoản đầu tư, không phân nhóm</span></div><div class="q-option" data-q="ch3-2" data-opt="2"><span class="letter">C</span><span class="opt-text">Được tự do đổi cách hạch toán cho từng khoản đầu tư riêng lẻ mỗi kỳ</span></div></div>
+  <div class="q-feedback" style="display:none"><strong class="q-mark"></strong> <span class="q-fb-text">¶10 yêu cầu 'áp dụng cùng một cách hạch toán cho từng nhóm khoản đầu tư'. Chuẩn mực không buộc dùng một cách duy nhất cho tất cả các nhóm (có thể chọn khác nhau giữa subs, JV, associates), nhưng cũng không cho phép tùy tiện đổi cách cho từng khoản riêng lẻ trong cùng nhóm.</span></div>
+</div><div class="q-card" data-correct="0" data-q-id="ch3-3" data-answer="3">
+  <div class="q-head"><span class="q-num">Q25</span><span class="q-topic">Consistency ¶10</span></div>
+  <div class="q-text">Công ty mẹ P đo tất cả khoản đầu tư vào công ty con theo giá gốc. P có bắt buộc phải đo các khoản đầu tư vào công ty liên kết cũng theo giá gốc không?</div>
+  <div class="q-options"><div class="q-option" data-q="ch3-3" data-opt="0"><span class="letter">A</span><span class="opt-text">Có; một khi đã chọn giá gốc cho một nhóm thì mọi khoản đầu tư ở tất cả các nhóm khác cũng bắt buộc phải theo giá gốc</span></div><div class="q-option" data-q="ch3-3" data-opt="1"><span class="letter">B</span><span class="opt-text">Có; giá gốc là cách đo mặc định bắt buộc cho mọi khoản đầu tư trong SFS</span></div><div class="q-option" data-q="ch3-3" data-opt="2"><span class="letter">C</span><span class="opt-text">Không; P bắt buộc phải đo khoản đầu tư vào liên kết theo equity method</span></div><div class="q-option" data-q="ch3-3" data-opt="3"><span class="letter">D</span><span class="opt-text">Không bắt buộc; yêu cầu nhất quán áp dụng trong từng nhóm, nên nhóm liên kết có thể chọn cách khác</span></div></div>
+  <div class="q-feedback" style="display:none"><strong class="q-mark"></strong> <span class="q-fb-text">¶10 đòi hỏi nhất quán 'cho từng nhóm (category)' — nên nhóm công ty con dùng giá gốc không buộc nhóm liên kết cũng dùng giá gốc; nhóm liên kết có thể chọn IFRS 9 hoặc equity method. Không có quy định giá gốc là mặc định bắt buộc, cũng không buộc liên kết phải theo equity method trong SFS.</span></div>
+</div><div class="q-card" data-correct="0" data-q-id="ch3-4" data-answer="1">
+  <div class="q-head"><span class="q-num">Q26</span><span class="q-topic">Held for sale ¶10</span></div>
+  <div class="q-text">Một khoản đầu tư vào công ty con đang được đo theo giá gốc bị phân loại là nắm giữ để bán. Theo ¶10, khoản này được hạch toán ra sao?</div>
+  <div class="q-options"><div class="q-option" data-q="ch3-4" data-opt="0"><span class="letter">A</span><span class="opt-text">Tiếp tục đo theo giá gốc cho tới khi hoàn tất việc bán</span></div><div class="q-option" data-q="ch3-4" data-opt="1"><span class="letter">B</span><span class="opt-text">Hạch toán theo IFRS 5 Non-current Assets Held for Sale and Discontinued Operations</span></div><div class="q-option" data-q="ch3-4" data-opt="2"><span class="letter">C</span><span class="opt-text">Bắt buộc chuyển sang đo theo giá trị hợp lý qua lãi/lỗ (FVTPL) theo IFRS 9 kể từ ngày được phân loại nắm giữ để bán</span></div><div class="q-option" data-q="ch3-4" data-opt="3"><span class="letter">D</span><span class="opt-text">Ghi giảm ngay toàn bộ về giá trị bằng không cho tới khi bán xong</span></div></div>
+  <div class="q-feedback" style="display:none"><strong class="q-mark"></strong> <span class="q-fb-text">¶10 quy định khoản đầu tư đo theo cost hoặc equity method phải chuyển sang hạch toán theo IFRS 5 khi được phân loại là held for sale (hoặc held for distribution). Không tiếp tục giữ giá gốc, không tự động sang FVTPL theo IFRS 9, và IFRS 5 không yêu cầu ghi giảm về không mà đo theo giá trị ghi sổ thấp hơn so với giá trị hợp lý trừ chi phí bán.</span></div>
+</div><div class="q-card" data-correct="0" data-q-id="ch3-5" data-answer="0">
+  <div class="q-head"><span class="q-num">Q27</span><span class="q-topic">Held for sale ¶10</span></div>
+  <div class="q-text">Một khoản đầu tư đang được đo theo IFRS 9 bị phân loại là nắm giữ để bán. Việc đo lường khoản này thay đổi thế nào theo ¶10?</div>
+  <div class="q-options"><div class="q-option" data-q="ch3-5" data-opt="0"><span class="letter">A</span><span class="opt-text">Việc đo lường không thay đổi; khoản đầu tư đo theo IFRS 9 vẫn giữ nguyên cách đo</span></div><div class="q-option" data-q="ch3-5" data-opt="1"><span class="letter">B</span><span class="opt-text">Phải chuyển sang hạch toán theo IFRS 5 giống như đối với khoản đầu tư đo theo giá gốc hoặc theo equity method</span></div><div class="q-option" data-q="ch3-5" data-opt="2"><span class="letter">C</span><span class="opt-text">Phải chuyển sang đo theo giá gốc trong thời gian nắm giữ để bán</span></div><div class="q-option" data-q="ch3-5" data-opt="3"><span class="letter">D</span><span class="opt-text">Phải áp dụng equity method cho tới khi hoàn tất việc bán</span></div></div>
+  <div class="q-feedback" style="display:none"><strong class="q-mark"></strong> <span class="q-fb-text">¶10 nêu rõ 'việc đo lường khoản đầu tư hạch toán theo IFRS 9 không thay đổi' trong tình huống held for sale. Chỉ khoản đo theo cost hoặc equity method mới chuyển sang IFRS 5; do đó khoản theo IFRS 9 không sang IFRS 5, không sang cost và không sang equity method.</span></div>
+</div><div class="q-card" data-correct="0" data-q-id="ch3-6" data-answer="1">
+  <div class="q-head"><span class="q-num">Q28</span><span class="q-topic">FVTPL election ¶11</span></div>
+  <div class="q-text">Nếu đơn vị lựa chọn theo ¶18 của IAS 28 để đo khoản đầu tư vào liên kết/liên doanh theo giá trị hợp lý qua lãi/lỗ (FVTPL) theo IFRS 9, thì trong báo cáo riêng đơn vị phải làm gì (¶11)?</div>
+  <div class="q-options"><div class="q-option" data-q="ch3-6" data-opt="0"><span class="letter">A</span><span class="opt-text">Được tự do chọn lại giá gốc cho các khoản đầu tư đó trong báo cáo tài chính riêng nhằm đơn giản hóa việc trình bày</span></div><div class="q-option" data-q="ch3-6" data-opt="1"><span class="letter">B</span><span class="opt-text">Cũng phải hạch toán các khoản đầu tư đó theo cùng cách (FVTPL) trong báo cáo tài chính riêng</span></div><div class="q-option" data-q="ch3-6" data-opt="2"><span class="letter">C</span><span class="opt-text">Phải chuyển các khoản đó sang equity method trong báo cáo tài chính riêng</span></div></div>
+  <div class="q-feedback" style="display:none"><strong class="q-mark"></strong> <span class="q-fb-text">¶11 yêu cầu nếu đã chọn đo liên kết/liên doanh theo FVTPL (IAS 28 ¶18) thì 'cũng phải hạch toán các khoản đó theo cùng cách trong SFS'. Đây là nguyên tắc kéo cách đo lường vào báo cáo riêng một cách nhất quán, nên không được chọn lại cost hay chuyển sang equity method cho các khoản này.</span></div>
+</div><div class="q-card" data-correct="0" data-q-id="ch3-7" data-answer="3">
+  <div class="q-head"><span class="q-num">Q29</span><span class="q-topic">FVTPL election ¶11</span></div>
+  <div class="q-text">Quỹ đầu tư Q, theo ¶18 của IAS 28, đo các khoản đầu tư vào công ty liên kết theo FVTPL. Khi lập báo cáo tài chính riêng, Q phải xử lý các khoản này thế nào?</div>
+  <div class="q-options"><div class="q-option" data-q="ch3-7" data-opt="0"><span class="letter">A</span><span class="opt-text">Đo theo giá gốc để đơn giản hóa báo cáo riêng</span></div><div class="q-option" data-q="ch3-7" data-opt="1"><span class="letter">B</span><span class="opt-text">Đo theo equity method vì báo cáo riêng luôn ưu tiên equity method</span></div><div class="q-option" data-q="ch3-7" data-opt="2"><span class="letter">C</span><span class="opt-text">Đo theo IFRS 5 vì các khoản này được coi là nắm giữ để bán</span></div><div class="q-option" data-q="ch3-7" data-opt="3"><span class="letter">D</span><span class="opt-text">Đo theo cùng cách FVTPL như đã áp dụng theo IAS 28</span></div></div>
+  <div class="q-feedback" style="display:none"><strong class="q-mark"></strong> <span class="q-fb-text">Theo ¶11, khi đã chọn FVTPL cho liên kết/liên doanh theo IAS 28 ¶18, đơn vị phải áp dụng cùng cách đó trong SFS. Vì vậy Q không được đổi sang cost hay equity method; IFRS 5 chỉ liên quan khi khoản đầu tư được phân loại nắm giữ để bán, không phải tình huống ở đây.</span></div>
+</div><div class="q-card" data-correct="0" data-q-id="ch3-8" data-answer="0">
+  <div class="q-head"><span class="q-num">Q30</span><span class="q-topic">Held for distribution ¶10</span></div>
+  <div class="q-text">Ngoài 'nắm giữ để bán', tình huống phân loại nào khác cũng khiến khoản đầu tư đo theo giá gốc/equity method phải áp dụng IFRS 5 theo ¶10?</div>
+  <div class="q-options"><div class="q-option" data-q="ch3-8" data-opt="0"><span class="letter">A</span><span class="opt-text">Khi khoản đầu tư được phân loại là nắm giữ để phân phối cho chủ sở hữu (held for distribution)</span></div><div class="q-option" data-q="ch3-8" data-opt="1"><span class="letter">B</span><span class="opt-text">Khi khoản đầu tư được đem cầm cố làm tài sản bảo đảm cho một khoản vay ngân hàng dài hạn trong kỳ báo cáo</span></div><div class="q-option" data-q="ch3-8" data-opt="2"><span class="letter">C</span><span class="opt-text">Khi khoản đầu tư bị suy giảm giá trị theo IAS 36</span></div><div class="q-option" data-q="ch3-8" data-opt="3"><span class="letter">D</span><span class="opt-text">Khi công ty con phát hành thêm cổ phần pha loãng tỷ lệ sở hữu</span></div></div>
+  <div class="q-feedback" style="display:none"><strong class="q-mark"></strong> <span class="q-fb-text">¶10 nêu khoản đầu tư đo theo cost hoặc equity method phải hạch toán theo IFRS 5 khi được phân loại là held for sale HOẶC held for distribution (hoặc nằm trong disposal group như vậy). Việc cầm cố, suy giảm giá trị theo IAS 36, hay bị pha loãng không phải điều kiện kích hoạt IFRS 5 mà ¶10 đề cập.</span></div>
+</div><div class="q-card" data-correct="0" data-q-id="ch3-9" data-answer="0">
+  <div class="q-head"><span class="q-num">Q31</span><span class="q-topic">¶9–11 combined</span></div>
+  <div class="q-text">Công ty mẹ P chọn đo tất cả khoản đầu tư vào công ty con theo equity method trong báo cáo tài chính riêng. Trong kỳ, một công ty con bị phân loại là nắm giữ để bán. Nhận định nào đúng theo ¶9–10?</div>
+  <div class="q-options"><div class="q-option" data-q="ch3-9" data-opt="0"><span class="letter">A</span><span class="opt-text">P phải áp dụng equity method nhất quán cho cả nhóm công ty con, và khoản đầu tư bị phân loại nắm giữ để bán chuyển sang hạch toán theo IFRS 5</span></div><div class="q-option" data-q="ch3-9" data-opt="1"><span class="letter">B</span><span class="opt-text">P được phép đo mỗi công ty con theo một cách khác nhau; khoản nắm giữ để bán vẫn giữ equity method</span></div><div class="q-option" data-q="ch3-9" data-opt="2"><span class="letter">C</span><span class="opt-text">Vì đã chọn equity method nên P không cần áp dụng IFRS 5 cho khoản nắm giữ để bán</span></div></div>
+  <div class="q-feedback" style="display:none"><strong class="q-mark"></strong> <span class="q-fb-text">¶10 buộc áp dụng cùng cách hạch toán cho cả nhóm công ty con (nhất quán theo category), nên không được để mỗi con một kiểu. Đồng thời, khoản đo theo equity method khi bị phân loại nắm giữ để bán phải chuyển sang IFRS 5 — do đó việc bỏ qua IFRS 5 là sai.</span></div>
+</div></div><div class="quiz-chapter"><h3 class="quiz-ch-title">ch4 — Investment entities, dividends & reorganisations (¶11A–14)</h3><div class="q-card" data-correct="0" data-q-id="ch4-0" data-answer="2">
+  <div class="q-head"><span class="q-num">Q32</span><span class="q-topic">FVTPL subsidiary ¶11A</span></div>
+  <div class="q-text">Nếu một công ty mẹ bị yêu cầu theo ¶31 của IFRS 10 phải đo khoản đầu tư vào công ty con theo FVTPL theo IFRS 9, thì trong báo cáo riêng công ty mẹ phải làm gì (¶11A)?</div>
+  <div class="q-options"><div class="q-option" data-q="ch4-0" data-opt="0"><span class="letter">A</span><span class="opt-text">Được chọn hạch toán khoản đầu tư vào công ty con đó theo giá gốc hoặc theo equity method trong báo cáo tài chính riêng</span></div><div class="q-option" data-q="ch4-0" data-opt="1"><span class="letter">B</span><span class="opt-text">Phải hợp nhất công ty con đó theo từng dòng trong báo cáo tài chính riêng</span></div><div class="q-option" data-q="ch4-0" data-opt="2"><span class="letter">C</span><span class="opt-text">Cũng phải hạch toán khoản đầu tư vào công ty con đó theo cùng cách (FVTPL) trong báo cáo tài chính riêng</span></div></div>
+  <div class="q-feedback" style="display:none"><strong class="q-mark"></strong> <span class="q-fb-text">¶11A yêu cầu nếu công ty mẹ bị buộc đo công ty con theo FVTPL theo IFRS 10 ¶31 thì 'cũng phải hạch toán khoản đầu tư đó theo cùng cách trong SFS'. Vì vậy không được đổi sang giá gốc; và báo cáo riêng không hợp nhất từng dòng — đó là đặc trưng của báo cáo hợp nhất.</span></div>
+</div><div class="q-card" data-correct="0" data-q-id="ch4-1" data-answer="2">
+  <div class="q-head"><span class="q-num">Q33</span><span class="q-topic">Dividend timing ¶12</span></div>
+  <div class="q-text">Cổ tức từ một công ty con, liên doanh hoặc liên kết được ghi nhận trong báo cáo tài chính riêng vào thời điểm nào (¶12)?</div>
+  <div class="q-options"><div class="q-option" data-q="ch4-1" data-opt="0"><span class="letter">A</span><span class="opt-text">Khi công ty con thực tế chuyển tiền vào tài khoản của đơn vị</span></div><div class="q-option" data-q="ch4-1" data-opt="1"><span class="letter">B</span><span class="opt-text">Khi kết thúc kỳ kế toán, theo cơ sở dồn tích đều đặn</span></div><div class="q-option" data-q="ch4-1" data-opt="2"><span class="letter">C</span><span class="opt-text">Khi quyền nhận cổ tức của đơn vị được xác lập</span></div></div>
+  <div class="q-feedback" style="display:none"><strong class="q-mark"></strong> <span class="q-fb-text">¶12 quy định cổ tức được ghi nhận 'khi quyền nhận cổ tức được xác lập' (right to receive is established). Đây không phải thời điểm dòng tiền thực thu, cũng không phải phân bổ đều theo kỳ — điểm mấu chốt là thời điểm phát sinh quyền nhận.</span></div>
+</div><div class="q-card" data-correct="0" data-q-id="ch4-2" data-answer="1">
+  <div class="q-head"><span class="q-num">Q34</span><span class="q-topic">Dividend classification ¶12</span></div>
+  <div class="q-text">Theo ¶12, cổ tức được ghi nhận vào đâu, và ngoại lệ là gì?</div>
+  <div class="q-options"><div class="q-option" data-q="ch4-2" data-opt="0"><span class="letter">A</span><span class="opt-text">Luôn ghi giảm giá trị ghi sổ của khoản đầu tư, không có ngoại lệ</span></div><div class="q-option" data-q="ch4-2" data-opt="1"><span class="letter">B</span><span class="opt-text">Ghi vào lãi hoặc lỗ, trừ khi đơn vị dùng equity method thì ghi giảm giá trị ghi sổ của khoản đầu tư</span></div><div class="q-option" data-q="ch4-2" data-opt="2"><span class="letter">C</span><span class="opt-text">Luôn ghi vào thu nhập toàn diện khác (OCI), trừ khi khoản đầu tư được đo theo giá gốc thì ghi thẳng vào lãi hoặc lỗ</span></div></div>
+  <div class="q-feedback" style="display:none"><strong class="q-mark"></strong> <span class="q-fb-text">¶12 nêu cổ tức được ghi nhận vào profit or loss, 'trừ khi' đơn vị dùng equity method — khi đó cổ tức ghi giảm carrying amount của khoản đầu tư. Vì vậy nó không luôn giảm carrying amount, và không ghi vào OCI theo quy định này.</span></div>
+</div><div class="q-card" data-correct="0" data-q-id="ch4-3" data-answer="0">
+  <div class="q-head"><span class="q-num">Q35</span><span class="q-topic">Dividend equity method ¶12</span></div>
+  <div class="q-text">Công ty A đo khoản đầu tư vào công ty liên kết theo equity method trong báo cáo tài chính riêng, và nhận được một khoản cổ tức. Cổ tức này được xử lý ra sao theo ¶12?</div>
+  <div class="q-options"><div class="q-option" data-q="ch4-3" data-opt="0"><span class="letter">A</span><span class="opt-text">Ghi giảm giá trị ghi sổ (carrying amount) của khoản đầu tư</span></div><div class="q-option" data-q="ch4-3" data-opt="1"><span class="letter">B</span><span class="opt-text">Ghi toàn bộ vào lãi hoặc lỗ như thu nhập tài chính</span></div><div class="q-option" data-q="ch4-3" data-opt="2"><span class="letter">C</span><span class="opt-text">Ghi vào thu nhập toàn diện khác và chuyển sang lãi/lỗ khi thoái vốn</span></div><div class="q-option" data-q="ch4-3" data-opt="3"><span class="letter">D</span><span class="opt-text">Ghi tăng giá trị ghi sổ của khoản đầu tư</span></div></div>
+  <div class="q-feedback" style="display:none"><strong class="q-mark"></strong> <span class="q-fb-text">Theo ¶12, khi dùng equity method, cổ tức nhận được ghi giảm carrying amount của khoản đầu tư (không vào P/L), vì phần lợi nhuận tương ứng đã được ghi nhận qua equity pick-up. Do đó không ghi vào lãi/lỗ, không qua OCI, và chắc chắn không làm tăng giá trị ghi sổ.</span></div>
+</div><div class="q-card" data-correct="0" data-q-id="ch4-4" data-answer="2">
+  <div class="q-head"><span class="q-num">Q36</span><span class="q-topic">Dividend cost method ¶12</span></div>
+  <div class="q-text">Công ty B đo khoản đầu tư vào một công ty con theo giá gốc trong báo cáo tài chính riêng và nhận cổ tức từ công ty con đó. Xử lý nào phù hợp ¶12?</div>
+  <div class="q-options"><div class="q-option" data-q="ch4-4" data-opt="0"><span class="letter">A</span><span class="opt-text">Ghi giảm trực tiếp giá trị ghi sổ của khoản đầu tư đo theo giá gốc trong kỳ nhận được cổ tức</span></div><div class="q-option" data-q="ch4-4" data-opt="1"><span class="letter">B</span><span class="opt-text">Hoãn ghi nhận cho tới khi thoái vốn khoản đầu tư</span></div><div class="q-option" data-q="ch4-4" data-opt="2"><span class="letter">C</span><span class="opt-text">Ghi nhận cổ tức vào lãi hoặc lỗ khi quyền nhận được xác lập</span></div><div class="q-option" data-q="ch4-4" data-opt="3"><span class="letter">D</span><span class="opt-text">Phân bổ cổ tức đều trong suốt kỳ nắm giữ</span></div></div>
+  <div class="q-feedback" style="display:none"><strong class="q-mark"></strong> <span class="q-fb-text">Ngoại lệ ghi giảm carrying amount ở ¶12 chỉ áp dụng khi dùng equity method. Với khoản đo theo giá gốc, cổ tức được ghi vào lãi hoặc lỗ khi quyền nhận được xác lập — không giảm carrying amount, không hoãn tới khi thoái vốn, cũng không phân bổ đều.</span></div>
+</div><div class="q-card" data-correct="0" data-q-id="ch4-5" data-answer="0">
+  <div class="q-head"><span class="q-num">Q37</span><span class="q-topic">Ceasing IE ¶11B(a)</span></div>
+  <div class="q-text">Khi một công ty mẹ NGỪNG là investment entity, ¶11B(a) coi ngày thay đổi trạng thái là gì?</div>
+  <div class="q-options"><div class="q-option" data-q="ch4-5" data-opt="0"><span class="letter">A</span><span class="opt-text">Ngày mua giả định (deemed acquisition date)</span></div><div class="q-option" data-q="ch4-5" data-opt="1"><span class="letter">B</span><span class="opt-text">Ngày lập báo cáo tài chính gần nhất trước đó</span></div><div class="q-option" data-q="ch4-5" data-opt="2"><span class="letter">C</span><span class="opt-text">Ngày đầu tiên của kỳ so sánh sớm nhất được trình bày</span></div></div>
+  <div class="q-feedback" style="display:none"><strong class="q-mark"></strong> <span class="q-fb-text">¶11B(a) quy định khi ngừng là investment entity, đơn vị hạch toán khoản đầu tư vào công ty con theo ¶10, và ngày thay đổi trạng thái là 'deemed acquisition date'. Đây không phải ngày lập báo cáo gần nhất hay ngày đầu kỳ so sánh.</span></div>
+</div><div class="q-card" data-correct="0" data-q-id="ch4-6" data-answer="1">
+  <div class="q-head"><span class="q-num">Q38</span><span class="q-topic">Ceasing IE ¶11B(a)</span></div>
+  <div class="q-text">Công ty mẹ M ngừng là investment entity. Theo ¶11B(a), giá trị hợp lý của công ty con tại ngày mua giả định đóng vai trò gì?</div>
+  <div class="q-options"><div class="q-option" data-q="ch4-6" data-opt="0"><span class="letter">A</span><span class="opt-text">Là mức giá trần dùng để ghi giảm giá trị khoản đầu tư về không trong kỳ chuyển đổi trạng thái đầu tư</span></div><div class="q-option" data-q="ch4-6" data-opt="1"><span class="letter">B</span><span class="opt-text">Là giá phí giả định đã chuyển giao (deemed consideration transferred) khi hạch toán theo ¶10</span></div><div class="q-option" data-q="ch4-6" data-opt="2"><span class="letter">C</span><span class="opt-text">Là số dư OCI được kết chuyển sang lợi nhuận giữ lại</span></div><div class="q-option" data-q="ch4-6" data-opt="3"><span class="letter">D</span><span class="opt-text">Là cơ sở tính cổ tức phải thu trong kỳ chuyển đổi</span></div></div>
+  <div class="q-feedback" style="display:none"><strong class="q-mark"></strong> <span class="q-fb-text">¶11B(a) nêu giá trị hợp lý của công ty con tại deemed acquisition date là 'giá phí giả định đã chuyển giao' khi hạch toán khoản đầu tư theo ¶10. Nó không phải mức trần ghi giảm về không, không phải số OCI kết chuyển (đó là tình huống ¶11B(b)), và không phải cơ sở tính cổ tức.</span></div>
+</div><div class="q-card" data-correct="0" data-q-id="ch4-7" data-answer="0">
+  <div class="q-head"><span class="q-num">Q39</span><span class="q-topic">Becoming IE ¶11B(b)</span></div>
+  <div class="q-text">Khi một công ty mẹ TRỞ THÀNH investment entity, ¶11B(b) yêu cầu đo khoản đầu tư vào công ty con thế nào, và chênh lệch ghi vào đâu?</div>
+  <div class="q-options"><div class="q-option" data-q="ch4-7" data-opt="0"><span class="letter">A</span><span class="opt-text">Đo theo FVTPL theo IFRS 9; chênh lệch giữa giá trị ghi sổ trước đó và giá trị hợp lý ghi vào lãi hoặc lỗ</span></div><div class="q-option" data-q="ch4-7" data-opt="1"><span class="letter">B</span><span class="opt-text">Đo theo giá gốc; chênh lệch ghi vào thu nhập toàn diện khác</span></div><div class="q-option" data-q="ch4-7" data-opt="2"><span class="letter">C</span><span class="opt-text">Đo theo equity method như IAS 28; chênh lệch giữa giá trị ghi sổ và giá trị hợp lý ghi trực tiếp vào lợi nhuận giữ lại</span></div></div>
+  <div class="q-feedback" style="display:none"><strong class="q-mark"></strong> <span class="q-fb-text">¶11B(b) yêu cầu khi trở thành investment entity, đo khoản đầu tư vào công ty con theo FVTPL theo IFRS 9, và chênh lệch giữa carrying amount trước đó với fair value tại ngày đổi trạng thái ghi nhận là lãi/lỗ trong P/L. Do đó không giữ giá gốc hay equity method, và chênh lệch không đi thẳng vào OCI hay lợi nhuận giữ lại.</span></div>
+</div><div class="q-card" data-correct="0" data-q-id="ch4-8" data-answer="1">
+  <div class="q-head"><span class="q-num">Q40</span><span class="q-topic">Becoming IE ¶11B(b)</span></div>
+  <div class="q-text">Khi công ty mẹ trở thành investment entity, số lũy kế lãi/lỗ trước đây đã ghi trong OCI liên quan các công ty con được xử lý ra sao theo ¶11B(b)?</div>
+  <div class="q-options"><div class="q-option" data-q="ch4-8" data-opt="0"><span class="letter">A</span><span class="opt-text">Giữ nguyên số dư trong OCI cho tới khi đơn vị thực sự thoái vốn hoặc mất quyền kiểm soát công ty con đó</span></div><div class="q-option" data-q="ch4-8" data-opt="1"><span class="letter">B</span><span class="opt-text">Xử lý như thể investment entity đã thanh lý các công ty con đó tại ngày thay đổi trạng thái</span></div><div class="q-option" data-q="ch4-8" data-opt="2"><span class="letter">C</span><span class="opt-text">Kết chuyển thẳng sang giá trị ghi sổ của khoản đầu tư mới</span></div><div class="q-option" data-q="ch4-8" data-opt="3"><span class="letter">D</span><span class="opt-text">Ghi giảm trực tiếp vào giá phí giả định đã chuyển giao</span></div></div>
+  <div class="q-feedback" style="display:none"><strong class="q-mark"></strong> <span class="q-fb-text">¶11B(b) quy định số lũy kế lãi/lỗ trước đây trong OCI đối với các công ty con được xử lý 'như thể đã thanh lý' các công ty con đó tại ngày thay đổi trạng thái. Vì vậy nó không được giữ lại trong OCI, không kết chuyển vào giá trị khoản đầu tư, và không giảm vào giá phí giả định (khái niệm của tình huống ngừng là IE).</span></div>
+</div><div class="q-card" data-correct="0" data-q-id="ch4-9" data-answer="1">
+  <div class="q-head"><span class="q-num">Q41</span><span class="q-topic">Reorganisation ¶13(a)</span></div>
+  <div class="q-text">Trong tái cấu trúc lập công ty mẹ mới (¶13), tiêu chí (a) yêu cầu công ty mẹ mới giành quyền kiểm soát công ty mẹ cũ bằng cách nào?</div>
+  <div class="q-options"><div class="q-option" data-q="ch4-9" data-opt="0"><span class="letter">A</span><span class="opt-text">Bằng cách trả tiền mặt để mua lại toàn bộ cổ phần của công ty mẹ cũ</span></div><div class="q-option" data-q="ch4-9" data-opt="1"><span class="letter">B</span><span class="opt-text">Bằng cách phát hành công cụ vốn để đổi lấy công cụ vốn hiện hữu của công ty mẹ cũ</span></div><div class="q-option" data-q="ch4-9" data-opt="2"><span class="letter">C</span><span class="opt-text">Bằng cách nhận chuyển nhượng toàn bộ tài sản thuần từ công ty mẹ cũ theo giá trị hợp lý xác định tại ngày tái cấu trúc</span></div></div>
+  <div class="q-feedback" style="display:none"><strong class="q-mark"></strong> <span class="q-fb-text">¶13(a) yêu cầu công ty mẹ mới giành control 'bằng cách phát hành công cụ vốn để đổi lấy công cụ vốn hiện hữu' của công ty mẹ cũ. Đây là hoán đổi cổ phần, không phải mua bằng tiền mặt hay nhận chuyển nhượng tài sản thuần theo giá trị hợp lý.</span></div>
+</div><div class="q-card" data-correct="0" data-q-id="ch4-10" data-answer="2">
+  <div class="q-head"><span class="q-num">Q42</span><span class="q-topic">Reorganisation cost ¶13</span></div>
+  <div class="q-text">Công ty mẹ mới N (thỏa các tiêu chí ¶13) hạch toán khoản đầu tư vào công ty mẹ cũ theo ¶10(a) — tức theo giá gốc. Theo ¶13, N đo 'cost' của khoản đầu tư này bằng gì?</div>
+  <div class="q-options"><div class="q-option" data-q="ch4-10" data-opt="0"><span class="letter">A</span><span class="opt-text">Bằng giá trị hợp lý của toàn bộ công ty mẹ cũ được xác định lại tại ngày thực hiện tái cấu trúc doanh nghiệp</span></div><div class="q-option" data-q="ch4-10" data-opt="1"><span class="letter">B</span><span class="opt-text">Bằng mệnh giá công cụ vốn mà N phát hành để hoán đổi</span></div><div class="q-option" data-q="ch4-10" data-opt="2"><span class="letter">C</span><span class="opt-text">Bằng giá trị ghi sổ phần vốn chủ sở hữu của mình trong công ty mẹ cũ tại ngày tái cấu trúc</span></div><div class="q-option" data-q="ch4-10" data-opt="3"><span class="letter">D</span><span class="opt-text">Bằng giá trị thị trường của cổ phần N ngay sau khi niêm yết</span></div></div>
+  <div class="q-feedback" style="display:none"><strong class="q-mark"></strong> <span class="q-fb-text">¶13 quy định công ty mẹ mới đo cost 'bằng giá trị ghi sổ phần vốn chủ sở hữu của mình trong công ty mẹ cũ tại ngày tái cấu trúc' — tức theo carrying amount, không phải fair value. Do đó dùng giá trị hợp lý, mệnh giá công cụ vốn hay giá thị trường của cổ phần đều sai với câu chữ chuẩn mực.</span></div>
+</div><div class="q-card" data-correct="0" data-q-id="ch4-11" data-answer="1">
+  <div class="q-head"><span class="q-num">Q43</span><span class="q-topic">Reorganisation criteria ¶13(c)</span></div>
+  <div class="q-text">Một trong ba tiêu chí ở ¶13 liên quan đến quyền lợi của chủ sở hữu. Tiêu chí (c) đòi hỏi điều gì?</div>
+  <div class="q-options"><div class="q-option" data-q="ch4-11" data-opt="0"><span class="letter">A</span><span class="opt-text">Chủ sở hữu công ty mẹ cũ phải bán bớt một phần quyền lợi để tạo thanh khoản</span></div><div class="q-option" data-q="ch4-11" data-opt="1"><span class="letter">B</span><span class="opt-text">Chủ sở hữu công ty mẹ cũ giữ cùng quyền lợi tuyệt đối và tương đối trong tài sản thuần trước và sau tái cấu trúc</span></div><div class="q-option" data-q="ch4-11" data-opt="2"><span class="letter">C</span><span class="opt-text">Chủ sở hữu mới phải nắm ít nhất đa số quyền biểu quyết của tập đoàn mới</span></div><div class="q-option" data-q="ch4-11" data-opt="3"><span class="letter">D</span><span class="opt-text">Chủ sở hữu công ty mẹ cũ được nhận một khoản cổ tức đặc biệt bằng đúng phần chênh lệch giá trị hợp lý phát sinh khi tái cấu trúc</span></div></div>
+  <div class="q-feedback" style="display:none"><strong class="q-mark"></strong> <span class="q-fb-text">¶13(c) yêu cầu chủ sở hữu của công ty mẹ cũ 'giữ cùng quyền lợi tuyệt đối và tương đối trong tài sản thuần' của tập đoàn cũ và mới, ngay trước và sau tái cấu trúc. Việc bán bớt quyền lợi, đưa vào cổ đông mới nắm đa số, hay chi cổ tức đặc biệt đều mâu thuẫn với yêu cầu 'không đổi quyền lợi'.</span></div>
+</div><div class="q-card" data-correct="0" data-q-id="ch4-12" data-answer="1">
+  <div class="q-head"><span class="q-num">Q44</span><span class="q-topic">Reorganisation ¶13–14</span></div>
+  <div class="q-text">Đơn vị E (không phải là công ty mẹ, không có công ty con) lập một đơn vị mới H làm 'công ty mẹ' của mình bằng cách hoán đổi toàn bộ công cụ vốn, giữ nguyên tài sản–nợ và quyền lợi chủ sở hữu. H hạch toán khoản đầu tư vào E theo giá gốc. Nhận định nào đúng theo ¶13–14?</div>
+  <div class="q-options"><div class="q-option" data-q="ch4-12" data-opt="0"><span class="letter">A</span><span class="opt-text">¶13 chỉ áp dụng cho công ty mẹ có công ty con, nên giao dịch của E–H nằm ngoài phạm vi ¶13–14</span></div><div class="q-option" data-q="ch4-12" data-opt="1"><span class="letter">B</span><span class="opt-text">Theo ¶14, các yêu cầu của ¶13 áp dụng tương tự; H đo cost bằng giá trị ghi sổ phần vốn chủ sở hữu của mình trong E, với 'công ty mẹ cũ' được đọc thành 'đơn vị cũ'</span></div><div class="q-option" data-q="ch4-12" data-opt="2"><span class="letter">C</span><span class="opt-text">H phải đo khoản đầu tư vào E theo giá trị hợp lý tại ngày tái cấu trúc vì E không phải công ty mẹ</span></div></div>
+  <div class="q-feedback" style="display:none"><strong class="q-mark"></strong> <span class="q-fb-text">¶14 mở rộng ¶13 cho cả đơn vị không phải công ty mẹ: các yêu cầu áp dụng tương tự, và các dẫn chiếu 'công ty mẹ cũ'/'tập đoàn cũ' được đọc thành 'đơn vị cũ'. Do đó giao dịch E–H không nằm ngoài phạm vi, và H vẫn đo cost theo carrying amount phần vốn chủ sở hữu của mình trong E, không phải theo fair value.</span></div>
+</div></div></div><div class="quiz-theme"><h2>Thuyết minh <em>&</em> Chuyển tiếp</h2><div class="quiz-chapter"><h3 class="quiz-ch-title">ch5 — Disclosure (¶15–17)</h3><div class="q-card" data-correct="0" data-q-id="ch5-0" data-answer="2">
+  <div class="q-head"><span class="q-num">Q45</span><span class="q-topic">General disclosure ¶15</span></div>
+  <div class="q-text">Theo ¶15, khi thuyết minh trong báo cáo tài chính riêng, đơn vị phải áp dụng gì?</div>
+  <div class="q-options"><div class="q-option" data-q="ch5-0" data-opt="0"><span class="letter">A</span><span class="opt-text">Chỉ các yêu cầu thuyết minh riêng tại ¶16–17, miễn trừ các IFRS khác</span></div><div class="q-option" data-q="ch5-0" data-opt="1"><span class="letter">B</span><span class="opt-text">Chỉ các yêu cầu thuyết minh của IFRS 12, thay cho các IFRS khác</span></div><div class="q-option" data-q="ch5-0" data-opt="2"><span class="letter">C</span><span class="opt-text">Tất cả các IFRS áp dụng, bao gồm cả các yêu cầu tại ¶16–17</span></div></div>
+  <div class="q-feedback" style="display:none"><strong class="q-mark"></strong> <span class="q-fb-text">¶15 yêu cầu đơn vị áp dụng 'tất cả các IFRS áp dụng khi thuyết minh trong SFS, bao gồm cả ¶16–17'. Các yêu cầu ¶16–17 là bổ sung chứ không thay thế; và IFRS 12 chỉ là một phần trong tổng thể thuyết minh, không thay cho mọi IFRS khác.</span></div>
+</div><div class="q-card" data-correct="0" data-q-id="ch5-1" data-answer="2">
+  <div class="q-head"><span class="q-num">Q46</span><span class="q-topic">Parent using exemption ¶16</span></div>
+  <div class="q-text">¶16 áp dụng cho trường hợp nào?</div>
+  <div class="q-options"><div class="q-option" data-q="ch5-1" data-opt="0"><span class="letter">A</span><span class="opt-text">Khi bất kỳ nhà đầu tư nào có ảnh hưởng đáng kể đối với một công ty liên kết tự nguyện lập báo cáo tài chính riêng của mình</span></div><div class="q-option" data-q="ch5-1" data-opt="1"><span class="letter">B</span><span class="opt-text">Khi một investment entity lập báo cáo hợp nhất cho các công ty con dịch vụ</span></div><div class="q-option" data-q="ch5-1" data-opt="2"><span class="letter">C</span><span class="opt-text">Khi công ty mẹ, theo ¶4(a) của IFRS 10, chọn không lập báo cáo hợp nhất và thay vào đó lập báo cáo tài chính riêng</span></div></div>
+  <div class="q-feedback" style="display:none"><strong class="q-mark"></strong> <span class="q-fb-text">¶16 áp dụng khi công ty mẹ dùng miễn trừ theo IFRS 10 ¶4(a) — chọn không lập báo cáo hợp nhất và thay bằng SFS. Trường hợp nhà đầu tư có significant influence thuộc ¶17; còn investment entity lập SFS duy nhất thuộc ¶16A, không phải ¶16.</span></div>
+</div><div class="q-card" data-correct="0" data-q-id="ch5-2" data-answer="3">
+  <div class="q-head"><span class="q-num">Q47</span><span class="q-topic">Disclosure ¶16(a)</span></div>
+  <div class="q-text">Công ty mẹ P dùng miễn trừ hợp nhất và lập báo cáo tài chính riêng. Theo ¶16(a), thông tin nào sau đây P phải thuyết minh?</div>
+  <div class="q-options"><div class="q-option" data-q="ch5-2" data-opt="0"><span class="letter">A</span><span class="opt-text">Dự báo lợi nhuận hợp nhất của tập đoàn cho ba năm tới</span></div><div class="q-option" data-q="ch5-2" data-opt="1"><span class="letter">B</span><span class="opt-text">Danh sách toàn bộ các giao dịch nội bộ giữa các công ty trong tập đoàn phát sinh trong kỳ báo cáo hiện tại và kỳ trước</span></div><div class="q-option" data-q="ch5-2" data-opt="2"><span class="letter">C</span><span class="opt-text">Giá trị hợp lý của từng công ty con tại ngày báo cáo</span></div><div class="q-option" data-q="ch5-2" data-opt="3"><span class="letter">D</span><span class="opt-text">Địa chỉ nơi có thể lấy được báo cáo hợp nhất (tuân thủ IFRS) của đơn vị đã lập báo cáo hợp nhất công khai</span></div></div>
+  <div class="q-feedback" style="display:none"><strong class="q-mark"></strong> <span class="q-fb-text">¶16(a) yêu cầu thuyết minh, cùng nhiều nội dung khác, 'địa chỉ nơi có thể lấy được' báo cáo hợp nhất tuân thủ IFRS phát hành công khai của đơn vị liên quan, kèm tên và địa điểm kinh doanh chính. Dự báo lợi nhuận, danh sách giao dịch nội bộ hay giá trị hợp lý từng công ty con không nằm trong yêu cầu ¶16(a).</span></div>
+</div><div class="q-card" data-correct="0" data-q-id="ch5-3" data-answer="2">
+  <div class="q-head"><span class="q-num">Q48</span><span class="q-topic">Disclosure list ¶16(b)</span></div>
+  <div class="q-text">Danh sách khoản đầu tư trọng yếu theo ¶16(b) phải gồm những thông tin nào cho mỗi investee?</div>
+  <div class="q-options"><div class="q-option" data-q="ch5-3" data-opt="0"><span class="letter">A</span><span class="opt-text">Tên; doanh thu và lợi nhuận sau thuế; số lượng nhân viên của investee</span></div><div class="q-option" data-q="ch5-3" data-opt="1"><span class="letter">B</span><span class="opt-text">Tên investee; giá trị hợp lý, giá trị ghi sổ và mức suy giảm giá trị của từng khoản đầu tư tại ngày kết thúc kỳ báo cáo</span></div><div class="q-option" data-q="ch5-3" data-opt="2"><span class="letter">C</span><span class="opt-text">Tên; địa điểm kinh doanh chính (và quốc gia thành lập nếu khác); tỷ lệ sở hữu (và tỷ lệ quyền biểu quyết nếu khác)</span></div></div>
+  <div class="q-feedback" style="display:none"><strong class="q-mark"></strong> <span class="q-fb-text">¶16(b) yêu cầu với mỗi khoản đầu tư trọng yếu nêu (i) tên, (ii) địa điểm kinh doanh chính (và quốc gia thành lập nếu khác), (iii) tỷ lệ sở hữu (và tỷ lệ quyền biểu quyết nếu khác). Doanh thu/lợi nhuận/nhân sự hay giá trị hợp lý/giá trị ghi sổ không phải nội dung bắt buộc của danh sách này.</span></div>
+</div><div class="q-card" data-correct="0" data-q-id="ch5-4" data-answer="0">
+  <div class="q-head"><span class="q-num">Q49</span><span class="q-topic">Disclosure ¶16(b)(iii)</span></div>
+  <div class="q-text">Trong danh sách khoản đầu tư trọng yếu, khi nào đơn vị phải thuyết minh cả tỷ lệ quyền biểu quyết bên cạnh tỷ lệ sở hữu (¶16(b)(iii))?</div>
+  <div class="q-options"><div class="q-option" data-q="ch5-4" data-opt="0"><span class="letter">A</span><span class="opt-text">Khi tỷ lệ quyền biểu quyết KHÁC với tỷ lệ sở hữu</span></div><div class="q-option" data-q="ch5-4" data-opt="1"><span class="letter">B</span><span class="opt-text">Trong mọi trường hợp, bất kể tỷ lệ có bằng nhau hay không</span></div><div class="q-option" data-q="ch5-4" data-opt="2"><span class="letter">C</span><span class="opt-text">Chỉ khi tỷ lệ sở hữu vượt quá 50%</span></div><div class="q-option" data-q="ch5-4" data-opt="3"><span class="letter">D</span><span class="opt-text">Chỉ khi investee là công ty niêm yết</span></div></div>
+  <div class="q-feedback" style="display:none"><strong class="q-mark"></strong> <span class="q-fb-text">¶16(b)(iii) yêu cầu nêu tỷ lệ sở hữu 'và tỷ lệ quyền biểu quyết nếu khác'. Nghĩa là chỉ khi hai tỷ lệ khác nhau mới cần nêu thêm quyền biểu quyết; ngưỡng 50% hay việc niêm yết không phải điều kiện kích hoạt yêu cầu này.</span></div>
+</div><div class="q-card" data-correct="0" data-q-id="ch5-5" data-answer="0">
+  <div class="q-head"><span class="q-num">Q50</span><span class="q-topic">Disclosure method ¶16(c)</span></div>
+  <div class="q-text">Ngoài danh sách khoản đầu tư, ¶16(c) còn yêu cầu thuyết minh điều gì?</div>
+  <div class="q-options"><div class="q-option" data-q="ch5-5" data-opt="0"><span class="letter">A</span><span class="opt-text">Mô tả phương pháp dùng để hạch toán các khoản đầu tư đã liệt kê</span></div><div class="q-option" data-q="ch5-5" data-opt="1"><span class="letter">B</span><span class="opt-text">Lý do lựa chọn từng công ty con cụ thể để đưa vào phạm vi hợp nhất của tập đoàn</span></div><div class="q-option" data-q="ch5-5" data-opt="2"><span class="letter">C</span><span class="opt-text">Kế hoạch thoái vốn dự kiến cho từng khoản đầu tư</span></div></div>
+  <div class="q-feedback" style="display:none"><strong class="q-mark"></strong> <span class="q-fb-text">¶16(c) yêu cầu 'mô tả phương pháp dùng để hạch toán các khoản đầu tư' liệt kê ở (b) — ví dụ cost, IFRS 9 hay equity method. Lý do chọn công ty con hay kế hoạch thoái vốn không phải nội dung ¶16(c) đòi hỏi.</span></div>
+</div><div class="q-card" data-correct="0" data-q-id="ch5-6" data-answer="1">
+  <div class="q-head"><span class="q-num">Q51</span><span class="q-topic">Investment entity ¶16A</span></div>
+  <div class="q-text">Khi một investment entity là công ty mẹ lập báo cáo tài chính riêng như báo cáo duy nhất theo ¶8A, ¶16A yêu cầu gì?</div>
+  <div class="q-options"><div class="q-option" data-q="ch5-6" data-opt="0"><span class="letter">A</span><span class="opt-text">Lập thêm một bộ báo cáo hợp nhất rút gọn cho các công ty con trọng yếu</span></div><div class="q-option" data-q="ch5-6" data-opt="1"><span class="letter">B</span><span class="opt-text">Thuyết minh sự việc đó, và trình bày các thuyết minh về investment entity theo yêu cầu của IFRS 12</span></div><div class="q-option" data-q="ch5-6" data-opt="2"><span class="letter">C</span><span class="opt-text">Chuyển toàn bộ khoản đầu tư vào công ty con sang đo theo equity method nhằm tăng tính minh bạch cho người sử dụng báo cáo</span></div></div>
+  <div class="q-feedback" style="display:none"><strong class="q-mark"></strong> <span class="q-fb-text">¶16A yêu cầu investment entity lập SFS duy nhất phải thuyết minh sự việc đó và trình bày các thuyết minh về investment entities theo IFRS 12. Chuẩn mực không buộc lập báo cáo hợp nhất rút gọn hay chuyển sang equity method — trái lại, investment entity không hợp nhất công ty con.</span></div>
+</div><div class="q-card" data-correct="0" data-q-id="ch5-7" data-answer="1">
+  <div class="q-head"><span class="q-num">Q52</span><span class="q-topic">Investment entity ¶16A</span></div>
+  <div class="q-text">Investment entity Q lập báo cáo tài chính riêng là báo cáo duy nhất. Ngoài việc nêu sự việc này, Q phải trình bày bộ thuyết minh nào?</div>
+  <div class="q-options"><div class="q-option" data-q="ch5-7" data-opt="0"><span class="letter">A</span><span class="opt-text">Các thuyết minh về hợp nhất kinh doanh theo IFRS 3</span></div><div class="q-option" data-q="ch5-7" data-opt="1"><span class="letter">B</span><span class="opt-text">Các thuyết minh về investment entities theo IFRS 12 Disclosure of Interests in Other Entities</span></div><div class="q-option" data-q="ch5-7" data-opt="2"><span class="letter">C</span><span class="opt-text">Các thuyết minh về công cụ tài chính theo IFRS 7 Financial Instruments: Disclosures, thay cho mọi thuyết minh khác</span></div><div class="q-option" data-q="ch5-7" data-opt="3"><span class="letter">D</span><span class="opt-text">Các thuyết minh về đo lường giá trị hợp lý theo IFRS 13, thay cho IFRS 12</span></div></div>
+  <div class="q-feedback" style="display:none"><strong class="q-mark"></strong> <span class="q-fb-text">¶16A dẫn chiếu tới các thuyết minh về investment entities theo IFRS 12. IFRS 3 (hợp nhất kinh doanh), IFRS 7 hay IFRS 13 có thể áp dụng ở nơi khác nhưng không phải bộ thuyết minh mà ¶16A yêu cầu, và không thay thế IFRS 12.</span></div>
+</div><div class="q-card" data-correct="0" data-q-id="ch5-8" data-answer="1">
+  <div class="q-head"><span class="q-num">Q53</span><span class="q-topic">Disclosure ¶17(a)</span></div>
+  <div class="q-text">¶17(a) yêu cầu công ty mẹ khác hoặc nhà đầu tư có joint control/significant influence thuyết minh điều gì khi lập báo cáo tài chính riêng?</div>
+  <div class="q-options"><div class="q-option" data-q="ch5-8" data-opt="0"><span class="letter">A</span><span class="opt-text">Cam kết sẽ lập báo cáo hợp nhất trong kỳ kế tiếp</span></div><div class="q-option" data-q="ch5-8" data-opt="1"><span class="letter">B</span><span class="opt-text">Sự việc đây là báo cáo tài chính riêng, và lý do lập báo cáo nếu không do luật yêu cầu</span></div><div class="q-option" data-q="ch5-8" data-opt="2"><span class="letter">C</span><span class="opt-text">Danh sách các ngân hàng và tổ chức tín dụng đang cung cấp khoản vay cho từng investee trọng yếu của đơn vị</span></div></div>
+  <div class="q-feedback" style="display:none"><strong class="q-mark"></strong> <span class="q-fb-text">¶17(a) yêu cầu nêu sự việc rằng đây là separate financial statements và 'lý do lập nếu không do luật yêu cầu'. Không có yêu cầu cam kết lập hợp nhất kỳ sau hay công bố danh sách ngân hàng tài trợ cho investee.</span></div>
+</div><div class="q-card" data-correct="0" data-q-id="ch5-9" data-answer="3">
+  <div class="q-head"><span class="q-num">Q54</span><span class="q-topic">Disclosure ¶17</span></div>
+  <div class="q-text">Nhà đầu tư R có ảnh hưởng đáng kể (significant influence) đối với một công ty liên kết và lập báo cáo tài chính riêng. Theo ¶17, ngoài danh sách đầu tư và phương pháp, R còn phải làm gì?</div>
+  <div class="q-options"><div class="q-option" data-q="ch5-9" data-opt="0"><span class="letter">A</span><span class="opt-text">Đính kèm bản sao báo cáo tài chính đầy đủ đã được kiểm toán của công ty liên kết vào báo cáo tài chính riêng của R</span></div><div class="q-option" data-q="ch5-9" data-opt="1"><span class="letter">B</span><span class="opt-text">Công bố giá mua ban đầu và mọi lần điều chỉnh giá của khoản đầu tư</span></div><div class="q-option" data-q="ch5-9" data-opt="2"><span class="letter">C</span><span class="opt-text">Trình bày báo cáo hợp nhất của công ty liên kết như phụ lục</span></div><div class="q-option" data-q="ch5-9" data-opt="3"><span class="letter">D</span><span class="opt-text">Chỉ rõ báo cáo tài chính lập theo IFRS 10, IFRS 11 hoặc IAS 28 mà báo cáo riêng này liên quan tới</span></div></div>
+  <div class="q-feedback" style="display:none"><strong class="q-mark"></strong> <span class="q-fb-text">¶17 yêu cầu công ty mẹ khác hoặc nhà đầu tư có joint control/significant influence phải 'chỉ rõ báo cáo tài chính lập theo IFRS 10, IFRS 11 hoặc IAS 28 mà báo cáo riêng liên quan tới'. Chuẩn mực không buộc đính kèm báo cáo của investee, công bố lịch sử giá mua, hay trình bày báo cáo hợp nhất của investee.</span></div>
+</div><div class="q-card" data-correct="0" data-q-id="ch5-10" data-answer="0">
+  <div class="q-head"><span class="q-num">Q55</span><span class="q-topic">¶16 vs ¶17</span></div>
+  <div class="q-text">Một nhà đầu tư chỉ có ảnh hưởng đáng kể đối với các công ty liên kết (không có công ty con và không dùng miễn trừ hợp nhất) khi lập báo cáo riêng thì áp dụng điều khoản thuyết minh nào?</div>
+  <div class="q-options"><div class="q-option" data-q="ch5-10" data-opt="0"><span class="letter">A</span><span class="opt-text">¶17, dành cho nhà đầu tư có joint control hoặc significant influence (và công ty mẹ không thuộc ¶16–16A)</span></div><div class="q-option" data-q="ch5-10" data-opt="1"><span class="letter">B</span><span class="opt-text">¶16, vì mọi báo cáo tài chính riêng đều theo ¶16</span></div><div class="q-option" data-q="ch5-10" data-opt="2"><span class="letter">C</span><span class="opt-text">¶16A, vì bất kỳ ai có khoản đầu tư đều là investment entity</span></div><div class="q-option" data-q="ch5-10" data-opt="3"><span class="letter">D</span><span class="opt-text">Không điều khoản nào áp dụng; nhà đầu tư chỉ có ảnh hưởng đáng kể được miễn hoàn toàn nghĩa vụ thuyết minh trong báo cáo riêng</span></div></div>
+  <div class="q-feedback" style="display:none"><strong class="q-mark"></strong> <span class="q-fb-text">¶16 chỉ dành cho công ty mẹ dùng miễn trừ hợp nhất; ¶16A cho investment entity. Nhà đầu tư chỉ có significant influence rơi vào ¶17 (áp dụng cho công ty mẹ không thuộc ¶16–16A hoặc nhà đầu tư có joint control/significant influence). Không có chuyện được miễn hoàn toàn thuyết minh.</span></div>
+</div><div class="q-card" data-correct="0" data-q-id="ch5-11" data-answer="0">
+  <div class="q-head"><span class="q-num">Q56</span><span class="q-topic">Disclosure ¶16</span></div>
+  <div class="q-text">Công ty mẹ P dùng miễn trừ hợp nhất theo IFRS 10 ¶4(a) và lập báo cáo tài chính riêng. Bộ thuyết minh nào sau đây phù hợp đầy đủ với ¶16?</div>
+  <div class="q-options"><div class="q-option" data-q="ch5-11" data-opt="0"><span class="letter">A</span><span class="opt-text">Nêu đây là báo cáo riêng và đã dùng miễn trừ hợp nhất; tên, địa điểm kinh doanh chính (và quốc gia thành lập nếu khác) và địa chỉ lấy báo cáo hợp nhất công khai; danh sách khoản đầu tư trọng yếu (tên, địa điểm, tỷ lệ sở hữu/biểu quyết); và mô tả phương pháp hạch toán</span></div><div class="q-option" data-q="ch5-11" data-opt="1"><span class="letter">B</span><span class="opt-text">Chỉ cần nêu rằng đây là báo cáo tài chính riêng, không cần thông tin về báo cáo hợp nhất của đơn vị khác</span></div><div class="q-option" data-q="ch5-11" data-opt="2"><span class="letter">C</span><span class="opt-text">Nêu đây là báo cáo riêng và lý do lập nếu không do luật, kèm chỉ dẫn tới báo cáo lập theo IAS 28 liên quan</span></div></div>
+  <div class="q-feedback" style="display:none"><strong class="q-mark"></strong> <span class="q-fb-text">¶16 yêu cầu bộ thuyết minh gồm (a) sự việc là SFS + đã dùng miễn trừ + tên/địa điểm/địa chỉ lấy báo cáo hợp nhất công khai, (b) danh sách khoản đầu tư trọng yếu với tên/địa điểm/tỷ lệ, và (c) mô tả phương pháp hạch toán. Phương án nêu 'lý do lập nếu không do luật' và 'chỉ dẫn tới báo cáo IAS 28' thực chất là nội dung của ¶17, không phải ¶16; và việc bỏ qua thông tin về báo cáo hợp nhất là thiếu sót.</span></div>
+</div></div><div class="quiz-chapter"><h3 class="quiz-ch-title">ch6 — Effective date, transition & withdrawal (¶18–20 + history)</h3><div class="q-card" data-correct="0" data-q-id="ch6-0" data-answer="2">
+  <div class="q-head"><span class="q-num">Q57</span><span class="q-topic">Effective date ¶18</span></div>
+  <div class="q-text">Theo ¶18, IAS 27 (bản 2011) được áp dụng cho các kỳ năm bắt đầu từ khi nào?</div>
+  <div class="q-options"><div class="q-option" data-q="ch6-0" data-opt="0"><span class="letter">A</span><span class="opt-text">1 January 2011</span></div><div class="q-option" data-q="ch6-0" data-opt="1"><span class="letter">B</span><span class="opt-text">1 January 2015</span></div><div class="q-option" data-q="ch6-0" data-opt="2"><span class="letter">C</span><span class="opt-text">1 January 2013</span></div></div>
+  <div class="q-feedback" style="display:none"><strong class="q-mark"></strong> <span class="q-fb-text">¶18 quy định đơn vị áp dụng chuẩn mực cho các kỳ năm bắt đầu vào hoặc sau 1 January 2013, và cho phép áp dụng sớm. Năm 2011 là năm ban hành bản sửa đổi, còn 2015 không phải mốc hiệu lực nào của chuẩn mực này.</span></div>
+</div><div class="q-card" data-correct="0" data-q-id="ch6-1" data-answer="0">
+  <div class="q-head"><span class="q-num">Q58</span><span class="q-topic">Effective date ¶18A</span></div>
+  <div class="q-text">Các sửa đổi 'Investment Entities' (¶18A) được áp dụng cho các kỳ năm bắt đầu từ khi nào?</div>
+  <div class="q-options"><div class="q-option" data-q="ch6-1" data-opt="0"><span class="letter">A</span><span class="opt-text">1 January 2014</span></div><div class="q-option" data-q="ch6-1" data-opt="1"><span class="letter">B</span><span class="opt-text">1 January 2013</span></div><div class="q-option" data-q="ch6-1" data-opt="2"><span class="letter">C</span><span class="opt-text">1 January 2016</span></div></div>
+  <div class="q-feedback" style="display:none"><strong class="q-mark"></strong> <span class="q-fb-text">¶18A nêu các sửa đổi Investment Entities (ban hành 10/2012) áp dụng cho kỳ năm bắt đầu vào hoặc sau 1 January 2014, cho phép áp dụng sớm. 2013 là mốc của bản gốc IAS 27 (2011); 2016 là mốc của sửa đổi Equity Method.</span></div>
+</div><div class="q-card" data-correct="0" data-q-id="ch6-2" data-answer="2">
+  <div class="q-head"><span class="q-num">Q59</span><span class="q-topic">Effective date ¶18J</span></div>
+  <div class="q-text">Các sửa đổi 'Equity Method in Separate Financial Statements' (¶18J) áp dụng từ khi nào và theo cách nào?</div>
+  <div class="q-options"><div class="q-option" data-q="ch6-2" data-opt="0"><span class="letter">A</span><span class="opt-text">Từ 1 January 2013, áp dụng phi hồi tố</span></div><div class="q-option" data-q="ch6-2" data-opt="1"><span class="letter">B</span><span class="opt-text">Từ 1 January 2014, chỉ áp dụng cho kỳ tương lai</span></div><div class="q-option" data-q="ch6-2" data-opt="2"><span class="letter">C</span><span class="opt-text">Từ 1 January 2016, áp dụng hồi tố theo IAS 8</span></div></div>
+  <div class="q-feedback" style="display:none"><strong class="q-mark"></strong> <span class="q-fb-text">¶18J quy định các sửa đổi Equity Method (ban hành 8/2014) áp dụng cho kỳ năm bắt đầu vào hoặc sau 1 January 2016, hồi tố theo IAS 8, và cho phép áp dụng sớm. Không phải mốc 2013/2014 và không phải phi hồi tố hay chỉ áp dụng tương lai.</span></div>
+</div><div class="q-card" data-correct="0" data-q-id="ch6-3" data-answer="2">
+  <div class="q-head"><span class="q-num">Q60</span><span class="q-topic">IFRS 9 / IAS 39 ¶19</span></div>
+  <div class="q-text">Nếu đơn vị áp dụng IAS 27 nhưng CHƯA áp dụng IFRS 9, thì mọi dẫn chiếu tới IFRS 9 được đọc là gì (¶19)?</div>
+  <div class="q-options"><div class="q-option" data-q="ch6-3" data-opt="0"><span class="letter">A</span><span class="opt-text">Được đọc là dẫn chiếu tới IFRS 7 Financial Instruments: Disclosures cho tới khi đơn vị áp dụng IFRS 9</span></div><div class="q-option" data-q="ch6-3" data-opt="1"><span class="letter">B</span><span class="opt-text">Được bỏ qua cho tới khi đơn vị áp dụng IFRS 9</span></div><div class="q-option" data-q="ch6-3" data-opt="2"><span class="letter">C</span><span class="opt-text">Được đọc là dẫn chiếu tới IAS 39 Financial Instruments: Recognition and Measurement</span></div></div>
+  <div class="q-feedback" style="display:none"><strong class="q-mark"></strong> <span class="q-fb-text">¶19 quy định nếu chưa áp dụng IFRS 9 thì mọi dẫn chiếu 'IFRS 9' được đọc là dẫn chiếu tới IAS 39. IFRS 7 là chuẩn mực về thuyết minh công cụ tài chính, không thay thế ở đây; và các dẫn chiếu không được bỏ qua mà phải đọc theo IAS 39.</span></div>
+</div><div class="q-card" data-correct="0" data-q-id="ch6-4" data-answer="0">
+  <div class="q-head"><span class="q-num">Q61</span><span class="q-topic">Withdrawal ¶20</span></div>
+  <div class="q-text">Theo ¶20, IAS 27 (2011) và IFRS 10 cùng nhau thay thế chuẩn mực nào?</div>
+  <div class="q-options"><div class="q-option" data-q="ch6-4" data-opt="0"><span class="letter">A</span><span class="opt-text">IAS 27 Consolidated and Separate Financial Statements (bản sửa đổi 2008)</span></div><div class="q-option" data-q="ch6-4" data-opt="1"><span class="letter">B</span><span class="opt-text">IAS 28 Investments in Associates and Joint Ventures (bản được sửa đổi năm 2011)</span></div><div class="q-option" data-q="ch6-4" data-opt="2"><span class="letter">C</span><span class="opt-text">IAS 31 Interests in Joint Ventures</span></div></div>
+  <div class="q-feedback" style="display:none"><strong class="q-mark"></strong> <span class="q-fb-text">¶20 nêu chuẩn mực này được ban hành đồng thời với IFRS 10, và hai IFRS cùng nhau thay thế IAS 27 Consolidated and Separate Financial Statements (bản 2008). IAS 28 vẫn tồn tại (được sửa đổi), và IAS 31 bị thay bởi IFRS 11 chứ không phải bởi IAS 27/IFRS 10.</span></div>
+</div><div class="q-card" data-correct="0" data-q-id="ch6-5" data-answer="3">
+  <div class="q-head"><span class="q-num">Q62</span><span class="q-topic">Early application ¶18</span></div>
+  <div class="q-text">Công ty X muốn áp dụng IAS 27 (2011) sớm hơn ngày hiệu lực bắt buộc. Theo ¶18, điều kiện đi kèm là gì?</div>
+  <div class="q-options"><div class="q-option" data-q="ch6-5" data-opt="0"><span class="letter">A</span><span class="opt-text">Không có điều kiện kèm theo nào; đơn vị có thể áp dụng sớm riêng IAS 27 một cách hoàn toàn độc lập với các chuẩn mực khác</span></div><div class="q-option" data-q="ch6-5" data-opt="1"><span class="letter">B</span><span class="opt-text">Phải được cơ quan quản lý phê duyệt và lập lại báo cáo của năm năm trước</span></div><div class="q-option" data-q="ch6-5" data-opt="2"><span class="letter">C</span><span class="opt-text">Phải chuyển toàn bộ khoản đầu tư sang đo theo giá trị hợp lý</span></div><div class="q-option" data-q="ch6-5" data-opt="3"><span class="letter">D</span><span class="opt-text">Phải thuyết minh việc áp dụng sớm và áp dụng đồng thời IFRS 10, IFRS 11, IFRS 12 và IAS 28 (sửa đổi 2011)</span></div></div>
+  <div class="q-feedback" style="display:none"><strong class="q-mark"></strong> <span class="q-fb-text">¶18 cho phép áp dụng sớm nhưng nếu làm vậy thì phải thuyết minh sự việc và áp dụng đồng thời IFRS 10, IFRS 11, IFRS 12 và IAS 28 (sửa đổi 2011). Do đó không thể áp dụng IAS 27 sớm một cách độc lập; và chuẩn mực không đòi hỏi phê duyệt cơ quan quản lý hay đo lại toàn bộ theo giá trị hợp lý.</span></div>
+</div><div class="q-card" data-correct="0" data-q-id="ch6-6" data-answer="0">
+  <div class="q-head"><span class="q-num">Q63</span><span class="q-topic">IFRS 9 / IAS 39 ¶19</span></div>
+  <div class="q-text">Trong sổ tay kế toán, IAS 27 tham chiếu 'đo theo IFRS 9'. Công ty Y hiện vẫn áp dụng IAS 39. Theo ¶19, Y hiểu tham chiếu này thế nào?</div>
+  <div class="q-options"><div class="q-option" data-q="ch6-6" data-opt="0"><span class="letter">A</span><span class="opt-text">Đọc tham chiếu 'IFRS 9' thành 'IAS 39' và đo theo IAS 39</span></div><div class="q-option" data-q="ch6-6" data-opt="1"><span class="letter">B</span><span class="opt-text">Bỏ trống mục đo lường vì IFRS 9 chưa được Y áp dụng</span></div><div class="q-option" data-q="ch6-6" data-opt="2"><span class="letter">C</span><span class="opt-text">Bắt buộc áp dụng IFRS 9 ngay để tuân thủ IAS 27</span></div><div class="q-option" data-q="ch6-6" data-opt="3"><span class="letter">D</span><span class="opt-text">Đo theo IFRS 13 Fair Value Measurement để thay thế cho mọi tham chiếu tới IFRS 9</span></div></div>
+  <div class="q-feedback" style="display:none"><strong class="q-mark"></strong> <span class="q-fb-text">¶19 cho phép đơn vị chưa áp dụng IFRS 9 đọc mọi dẫn chiếu IFRS 9 thành IAS 39. Vì vậy Y không bỏ trống, không bị buộc áp dụng IFRS 9 ngay, và IFRS 13 (đo lường giá trị hợp lý) không phải thứ thay thế cho tham chiếu IFRS 9 ở đây.</span></div>
+</div><div class="q-card" data-correct="0" data-q-id="ch6-7" data-answer="2">
+  <div class="q-head"><span class="q-num">Q64</span><span class="q-topic">History 2011</span></div>
+  <div class="q-text">Bản sửa đổi IAS 27 tháng 5/2011 (đổi tên thành 'Separate Financial Statements') đã chuyển nội dung nào sang IFRS 10?</div>
+  <div class="q-options"><div class="q-option" data-q="ch6-7" data-opt="0"><span class="letter">A</span><span class="opt-text">Định nghĩa về ảnh hưởng đáng kể và phương pháp vốn chủ sở hữu áp dụng cho công ty liên kết</span></div><div class="q-option" data-q="ch6-7" data-opt="1"><span class="letter">B</span><span class="opt-text">Các yêu cầu thuyết minh về lợi ích trong đơn vị khác</span></div><div class="q-option" data-q="ch6-7" data-opt="2"><span class="letter">C</span><span class="opt-text">Nguyên tắc kiểm soát (control) và các yêu cầu lập báo cáo tài chính hợp nhất</span></div></div>
+  <div class="q-feedback" style="display:none"><strong class="q-mark"></strong> <span class="q-fb-text">Phần lịch sử nêu IFRS 10 'giải quyết nguyên tắc control và các yêu cầu liên quan tới lập báo cáo hợp nhất', tách khỏi IAS 27 từ 2011. Ảnh hưởng đáng kể/equity method thuộc IAS 28, còn thuyết minh về lợi ích trong đơn vị khác thuộc IFRS 12.</span></div>
+</div><div class="q-card" data-correct="0" data-q-id="ch6-8" data-answer="1">
+  <div class="q-head"><span class="q-num">Q65</span><span class="q-topic">History 2014</span></div>
+  <div class="q-text">Sửa đổi tháng 8/2014 ('Equity Method in Separate Financial Statements') cho phép điều gì?</div>
+  <div class="q-options"><div class="q-option" data-q="ch6-8" data-opt="0"><span class="letter">A</span><span class="opt-text">Cho phép bỏ hoàn toàn việc lập báo cáo tài chính riêng</span></div><div class="q-option" data-q="ch6-8" data-opt="1"><span class="letter">B</span><span class="opt-text">Cho phép dùng phương pháp vốn chủ sở hữu (equity method) để hạch toán khoản đầu tư vào công ty con, liên doanh và liên kết trong báo cáo tài chính riêng</span></div><div class="q-option" data-q="ch6-8" data-opt="2"><span class="letter">C</span><span class="opt-text">Cho phép hợp nhất từng phần các công ty con trọng yếu vào báo cáo tài chính riêng, đồng thời đo các công ty con còn lại theo giá gốc hoặc theo IFRS 9 tùy lựa chọn của đơn vị</span></div></div>
+  <div class="q-feedback" style="display:none"><strong class="q-mark"></strong> <span class="q-fb-text">Phần lịch sử nêu sửa đổi 2014 'cho phép đơn vị dùng equity method để hạch toán khoản đầu tư vào công ty con, liên doanh và liên kết trong báo cáo riêng'. Nó không bãi bỏ SFS và không tạo ra cơ chế hợp nhất từng phần trong báo cáo riêng.</span></div>
+</div><div class="q-card" data-correct="0" data-q-id="ch6-9" data-answer="3">
+  <div class="q-head"><span class="q-num">Q66</span><span class="q-topic">Transition ¶18C</span></div>
+  <div class="q-text">Tại ngày áp dụng lần đầu các sửa đổi Investment Entities, một investment entity trước đây đo khoản đầu tư vào công ty con theo giá gốc. Theo ¶18C, đơn vị phải làm gì?</div>
+  <div class="q-options"><div class="q-option" data-q="ch6-9" data-opt="0"><span class="letter">A</span><span class="opt-text">Tiếp tục đo theo giá gốc và áp dụng phi hồi tố cho kỳ tương lai</span></div><div class="q-option" data-q="ch6-9" data-opt="1"><span class="letter">B</span><span class="opt-text">Hợp nhất công ty con đó theo từng dòng kể từ ngày áp dụng lần đầu</span></div><div class="q-option" data-q="ch6-9" data-opt="2"><span class="letter">C</span><span class="opt-text">Chuyển khoản đầu tư vào công ty con sang đo theo equity method và ghi toàn bộ chênh lệch phát sinh vào thu nhập toàn diện khác (OCI)</span></div><div class="q-option" data-q="ch6-9" data-opt="3"><span class="letter">D</span><span class="opt-text">Đo lại khoản đầu tư đó theo FVTPL như thể các yêu cầu của IFRS đã luôn có hiệu lực, và điều chỉnh hồi tố kỳ liền trước</span></div></div>
+  <div class="q-feedback" style="display:none"><strong class="q-mark"></strong> <span class="q-fb-text">¶18C yêu cầu investment entity trước đây đo công ty con theo giá gốc phải đo lại theo FVTPL 'như thể các yêu cầu của IFRS đã luôn có hiệu lực', và điều chỉnh hồi tố kỳ liền trước (điều chỉnh lợi nhuận giữ lại đầu kỳ đó). Do đó không giữ giá gốc, không hợp nhất, và không chuyển sang equity method với chênh lệch vào OCI.</span></div>
+</div><div class="q-card" data-correct="0" data-q-id="ch6-10" data-answer="0">
+  <div class="q-head"><span class="q-num">Q67</span><span class="q-topic">Transition ¶18H</span></div>
+  <div class="q-text">Trước ngày áp dụng lần đầu các sửa đổi Investment Entities, một investment entity đã thoái vốn (hoặc mất quyền kiểm soát) một công ty con. Theo ¶18H, đơn vị có phải điều chỉnh hồi tố cho khoản đầu tư đó không?</div>
+  <div class="q-options"><div class="q-option" data-q="ch6-10" data-opt="0"><span class="letter">A</span><span class="opt-text">Không bắt buộc phải điều chỉnh việc hạch toán trước đây cho khoản đầu tư đó</span></div><div class="q-option" data-q="ch6-10" data-opt="1"><span class="letter">B</span><span class="opt-text">Có; phải đo lại hồi tố theo FVTPL cho tất cả các công ty con đã thoái vốn trước ngày áp dụng lần đầu</span></div><div class="q-option" data-q="ch6-10" data-opt="2"><span class="letter">C</span><span class="opt-text">Có; phải khôi phục công ty con vào báo cáo và hợp nhất lại</span></div><div class="q-option" data-q="ch6-10" data-opt="3"><span class="letter">D</span><span class="opt-text">Không; nhưng phải ghi nhận lại toàn bộ lãi/lỗ thoái vốn vào OCI</span></div></div>
+  <div class="q-feedback" style="display:none"><strong class="q-mark"></strong> <span class="q-fb-text">¶18H nêu nếu investment entity đã thoái vốn hoặc mất quyền kiểm soát một công ty con trước ngày áp dụng lần đầu thì 'không bắt buộc phải điều chỉnh' việc hạch toán trước đây cho khoản đó. Vì vậy không phải đo lại hồi tố, không khôi phục để hợp nhất lại, và không ghi lại lãi/lỗ thoái vốn vào OCI.</span></div>
+</div><div class="q-card" data-correct="0" data-q-id="ch6-11" data-answer="1">
+  <div class="q-head"><span class="q-num">Q68</span><span class="q-topic">Transition & withdrawal ¶18–20</span></div>
+  <div class="q-text">Công ty Z lần đầu áp dụng IAS 27 (2011) cho kỳ năm 2013, và là một investment entity trước đây đo công ty con theo giá trị hợp lý qua OCI (FVOCI). Nhận định nào phù hợp với ¶18D và ¶20?</div>
+  <div class="q-options"><div class="q-option" data-q="ch6-11" data-opt="0"><span class="letter">A</span><span class="opt-text">Z phải chuyển công ty con về đo theo giá gốc, và IAS 27 (2008) vẫn tiếp tục hiệu lực song song</span></div><div class="q-option" data-q="ch6-11" data-opt="1"><span class="letter">B</span><span class="opt-text">Z tiếp tục đo công ty con theo giá trị hợp lý, kết chuyển số lũy kế điều chỉnh giá trị hợp lý trong OCI sang lợi nhuận giữ lại đầu kỳ liền trước; đồng thời IAS 27 (2011) cùng IFRS 10 đã thay thế IAS 27 (2008)</span></div><div class="q-option" data-q="ch6-11" data-opt="2"><span class="letter">C</span><span class="opt-text">Z phải hợp nhất công ty con theo từng dòng, và IAS 27 (2008) chỉ bị thay thế bởi riêng IFRS 10</span></div></div>
+  <div class="q-feedback" style="display:none"><strong class="q-mark"></strong> <span class="q-fb-text">¶18D quy định investment entity trước đây đo công ty con theo FVOCI thì tiếp tục đo theo giá trị hợp lý, và số lũy kế điều chỉnh giá trị hợp lý trong OCI được kết chuyển sang lợi nhuận giữ lại đầu kỳ liền trước. ¶20 khẳng định IAS 27 (2011) cùng IFRS 10 thay thế IAS 27 (2008) — nên bản 2008 không còn hiệu lực song song và việc thay thế không phải do riêng IFRS 10.</span></div>
+</div></div></div>
+</div>
+</div>
+<script>
+
+(function(){
+  var SLUG="ias-27-separate-financial-statements";
+  var KEY=SLUG+"_answers";
+  function store(){ try{return JSON.parse(localStorage.getItem(KEY))||{};}catch(e){return{};} }
+  function save(o){ try{localStorage.setItem(KEY,JSON.stringify(o));}catch(e){} }
+
+  // Tabs
+  var tabs=document.querySelectorAll('.tab');
+  function showTab(name){
+    document.querySelectorAll('.tab-panel').forEach(function(p){p.style.display='none';});
+    var el=document.getElementById('panel-'+name); if(el) el.style.display='block';
+    tabs.forEach(function(t){ t.classList.toggle('active', t.getAttribute('data-tab')===name); });
+    window.scrollTo(0,0);
+  }
+  tabs.forEach(function(t){ t.addEventListener('click',function(){ showTab(t.getAttribute('data-tab')); }); });
+  if(tabs.length) tabs[0].classList.add('active');
+
+  // Quiz
+  function markCard(card, chosen){
+    var ans=parseInt(card.getAttribute('data-answer'),10);
+    var opts=card.querySelectorAll('.q-option');
+    opts.forEach(function(o){
+      o.classList.add('locked');
+      var idx=parseInt(o.getAttribute('data-opt'),10);
+      if(idx===ans) o.classList.add('correct');
+      if(idx===chosen && chosen!==ans) o.classList.add('incorrect');
+    });
+    var fb=card.querySelector('.q-feedback');
+    var correct=(chosen===ans);
+    card.setAttribute('data-correct', correct?'1':'0');
+    card.classList.add('answered');
+    if(fb){
+      fb.style.display='block';
+      fb.classList.add(correct?'correct':'incorrect');
+      var mk=fb.querySelector('.q-mark'); if(mk) mk.textContent=correct?'Đúng.':'Chưa đúng.';
+    }
+  }
+  function updateStats(){
+    var cards=document.querySelectorAll('.q-card');
+    var done=0,correct=0;
+    cards.forEach(function(c){ if(c.classList.contains('answered')){done++; if(c.getAttribute('data-correct')==='1')correct++;} });
+    var d=document.getElementById('qDone'), cc=document.getElementById('qCorrect'), pc=document.getElementById('qPct');
+    if(d)d.textContent=done; if(cc)cc.textContent=correct;
+    if(pc)pc.textContent=(done?Math.round(correct/done*100):0)+'%';
+  }
+  document.querySelectorAll('.q-option').forEach(function(o){
+    o.addEventListener('click',function(){
+      var card=o.closest('.q-card');
+      if(card.classList.contains('answered')) return;
+      var chosen=parseInt(o.getAttribute('data-opt'),10);
+      markCard(card, chosen);
+      var s=store(); s[card.getAttribute('data-q-id')]=chosen; save(s);
+      updateStats();
+    });
+  });
+  // Restore
+  (function(){
+    var s=store();
+    document.querySelectorAll('.q-card').forEach(function(card){
+      var qid=card.getAttribute('data-q-id');
+      if(s.hasOwnProperty(qid)) markCard(card, s[qid]);
+    });
+    updateStats();
+  })();
+  var rb=document.getElementById('resetQuiz');
+  if(rb) rb.addEventListener('click',function(){
+    if(!confirm('Xóa toàn bộ tiến độ Quiz?')) return;
+    try{localStorage.removeItem(KEY);}catch(e){}
+    location.reload();
+  });
+})();
+
+</script>
+</body>
+</html>
