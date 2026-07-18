@@ -49,6 +49,50 @@ code { background: #f1f3f5; padding: 1px 6px; border-radius: 3px; font-family: m
 </style>
 </head>
 <body>
+<!-- hoc-darkmode -->
+<style id="hoc-dark-css">
+html[data-theme="dark"] body{
+  background:
+    radial-gradient(1200px 600px at 85% -10%,rgba(47,111,237,.20),transparent 60%),
+    radial-gradient(1000px 640px at -10% 30%,rgba(15,182,212,.12),transparent 55%),
+    linear-gradient(#0e1524,#0a0f1b) fixed !important;
+  color:#e8edf7 !important;
+}
+html[data-theme="dark"] #hocPW button{background:#161f30 !important;color:#e8edf7 !important;border-color:#33405e !important}
+html[data-theme="dark"] #hocPW button.done{background:#2f9e6b !important;color:#fff !important;border-color:#2f9e6b !important}
+#hocTheme{position:fixed;left:14px;bottom:14px;z-index:100000;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}
+#hocTheme button{width:42px;height:42px;display:inline-flex;align-items:center;justify-content:center;font-size:18px;line-height:1;border:1px solid #d7deea;background:#fff;color:#1a2233;border-radius:999px;cursor:pointer;box-shadow:0 6px 22px -8px rgba(23,32,56,.45);transition:transform .15s,box-shadow .15s}
+#hocTheme button:hover{transform:translateY(-2px)}
+html[data-theme="dark"] #hocTheme button{background:#161f30;color:#ffd66b;border-color:#33405e;box-shadow:0 8px 26px -10px rgba(0,0,0,.7)}
+
+html[data-theme="dark"] h1{color:#86a9ff}
+html[data-theme="dark"] h2{color:#5b8cff;border-bottom-color:#26314a}
+html[data-theme="dark"] .source{color:#8a97af}
+html[data-theme="dark"] .nav-link{color:#5b8cff}
+html[data-theme="dark"] .stage{background:#161f30;box-shadow:0 1px 3px rgba(0,0,0,.45)}
+html[data-theme="dark"] .stage-label{background:#3a6fe0}
+html[data-theme="dark"] .hook-question{background:#241f10;color:#dfe8fb;border-left-color:#faad14}
+html[data-theme="dark"] .info-panel{background:#111a28;border-color:#26314a}
+html[data-theme="dark"] .move-display{color:#86a9ff}
+html[data-theme="dark"] .commentary{color:#b7c2d8}
+html[data-theme="dark"] .info-box{background:#161f30;border-color:#26314a;color:#e8edf7}
+html[data-theme="dark"] .info-box.win{background:#10261a;border-color:#1f7a4d;color:#34d399}
+html[data-theme="dark"] .self-test{background:#241f10;border-color:#faad14}
+html[data-theme="dark"] .self-test-question{color:#e6c98a}
+html[data-theme="dark"] .quiz{background:#101b2e}
+html[data-theme="dark"] .quiz-q{color:#86a9ff}
+html[data-theme="dark"] .quiz-option{background:#161f30;border-color:#2c3850;color:#e8edf7}
+html[data-theme="dark"] .quiz-option.correct{background:#10261a;border-color:#34d399;color:#34d399}
+html[data-theme="dark"] .quiz-option.wrong{background:#2a1416;border-color:#f2696b;color:#f2696b}
+html[data-theme="dark"] .quiz-explain{color:#9aa6be}
+html[data-theme="dark"] .feedback.correct{background:#10261a;color:#34d399}
+html[data-theme="dark"] .feedback.wrong{background:#2a1416;color:#f2696b}
+html[data-theme="dark"] code{background:#1c2536;color:#e8edf7}
+html[data-theme="dark"] .progress-bar{background:#26314a}
+html[data-theme="dark"] .reveal-btn,html[data-theme="dark"] .controls button{background:#3a6fe0}
+</style>
+<script>(function(){try{var K='hoc:theme',s=null;try{s=localStorage.getItem(K)}catch(e){}var d=window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches;document.documentElement.setAttribute('data-theme',s||(d?'dark':'light'))}catch(e){}})();</script>
+
 
 <h1>Bài 2 — Tượng sai màu + tốt h = Hòa (góc h)</h1>
 <div class="source">
@@ -239,5 +283,6 @@ body{background:radial-gradient(1200px 600px at 85% -10%,rgba(47,111,237,.14),tr
 </style>
 <div id="hocPW"><button type="button" id="hocPWb">…</button></div>
 <script>(function(){var PKEY='hoc:progress:v1',API='/api/hoc/progress';var id=location.pathname.replace(/^\/hoc\//,'').replace(/\/+$/,'').replace(/\.html$/,'');function L(){try{return JSON.parse(localStorage.getItem(PKEY)||'{}')}catch(e){return{}}}function S(p){try{localStorage.setItem(PKEY,JSON.stringify(p))}catch(e){}}var prog=L();var b=document.getElementById('hocPWb');function R(){var d=prog[id]===2;b.className=d?'done':'';b.textContent=d?'✓ Đã học xong':'Đánh dấu đã học';}b.addEventListener('click',function(){prog[id]=prog[id]===2?0:2;if(!prog[id])delete prog[id];S(prog);R();try{fetch(API,{method:'PUT',headers:{'content-type':'application/json'},credentials:'include',body:JSON.stringify({data:prog})}).catch(function(){})}catch(e){}});R();try{fetch(API,{credentials:'include'}).then(function(r){return r.ok?r.json():null}).then(function(j){if(j&&j.data&&typeof j.data==='object'){prog=j.data;S(prog);R();}}).catch(function(){})}catch(e){}})();</script>
+<div id="hocTheme"><button type="button" id="hocThemeBtn" aria-label="Chế độ sáng/tối" title="Chế độ sáng/tối">🌙</button></div><script>(function(){var K='hoc:theme',r=document.documentElement,b=document.getElementById('hocThemeBtn');function c(){return r.getAttribute('data-theme')==='dark'?'dark':'light'}function render(){b.textContent=c()==='dark'?'☀️':'🌙'}b.addEventListener('click',function(){var n=c()==='dark'?'light':'dark';r.setAttribute('data-theme',n);try{localStorage.setItem(K,n)}catch(e){}render()});render()})();</script>
 </body>
 </html>
