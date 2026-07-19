@@ -1,0 +1,1917 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tennis nhập môn — Cầm vợt, footwork, cách đánh & các thể loại cú</title>
+<style>
+  :root{
+    --bg:#0d1117; --panel:#161b22; --panel2:#1c2430; --line:#2b3444;
+    --ink:#e6edf3; --muted:#9aa7b6; --dim:#6b7684; --glow:#152230;
+    --me:#4aa3ff; --mate:#7ee0b8; --opp:#ff6b6b; --opp2:#ffa94d;
+    --attack:#ff5d5d; --defend:#4db1ff; --ball:#d7f24a;
+    --acc:#d7f24a; --acc2:#8ec7ff; --good:#57d38c; --bad:#ff7a7a; --warn:#ffb454;
+    --navbg:rgba(13,17,23,.82); --h1a:#fff; --h1b:#8ec7ff; --h1c:#d7f24a;
+    --shadow:0 8px 30px rgba(0,0,0,.4);
+    --radius:14px;
+  }
+  html[data-theme="light"]{
+    --bg:#eef2f7; --panel:#ffffff; --panel2:#f1f5fa; --line:#d5dee9;
+    --ink:#182430; --muted:#4f5c6b; --dim:#8894a3; --glow:#d3e2f5;
+    --me:#2a7fd6; --mate:#1fa87a; --opp:#e0463c; --opp2:#e08a1e;
+    --attack:#e0463c; --defend:#2a7fd6; --ball:#7f9410;
+    --acc:#6f8410; --acc2:#1b6fc0; --good:#1f9d57; --bad:#d64545; --warn:#c07f12;
+    --navbg:rgba(255,255,255,.85); --h1a:#1b6fc0; --h1b:#2aa3ff; --h1c:#6f8410;
+    --shadow:0 8px 24px rgba(30,50,80,.14);
+  }
+  html[data-theme="light"] .pill.atk{color:#c0392b}
+  html[data-theme="light"] .pill.def{color:#1f6fb2}
+  html[data-theme="light"] .pill.neu{color:#6f7d00}
+  html[data-theme="light"] .node .resp{color:#5f6d00}
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0; background:radial-gradient(1200px 600px at 50% -10%,var(--glow),var(--bg)) fixed;
+    color:var(--ink); font-family:"Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif;
+    line-height:1.62; font-size:16px; transition:background .3s,color .3s;
+  }
+  .wrap{max-width:1120px; margin:0 auto; padding:0 18px 80px}
+  header.hero{ text-align:center; padding:46px 18px 26px; }
+  header.hero .kick{color:var(--acc); font-weight:700; letter-spacing:2px; font-size:13px; text-transform:uppercase}
+  header.hero h1{
+    font-size:clamp(26px,4.6vw,44px); margin:.25em 0 .2em; line-height:1.12;
+    background:linear-gradient(120deg,var(--h1a),var(--h1b) 55%,var(--h1c));
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+  header.hero p{color:var(--muted); max-width:760px; margin:.2em auto 0; font-size:17px}
+
+  nav.tabs{
+    position:sticky; top:0; z-index:30; display:flex; flex-wrap:wrap; gap:6px; justify-content:center;
+    padding:12px 8px; margin:14px 0 22px;
+    background:var(--navbg); backdrop-filter:blur(10px);
+    border:1px solid var(--line); border-radius:16px;
+  }
+  nav.tabs button{
+    background:transparent; border:1px solid transparent; color:var(--muted);
+    padding:8px 13px; border-radius:10px; font-size:13.5px; font-weight:600; cursor:pointer; transition:.15s;
+  }
+  nav.tabs button:hover{color:var(--ink); background:var(--panel2)}
+  nav.tabs button.active{color:#0d1117; background:linear-gradient(120deg,#8ec7ff,#d7f24a); border-color:transparent}
+
+  section.tab{display:none; animation:fade .3s ease}
+  section.tab.show{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+  h2.sec{font-size:26px; margin:8px 0 6px; display:flex; align-items:center; gap:10px}
+  h2.sec .dot{width:10px;height:24px;border-radius:4px;background:linear-gradient(180deg,#8ec7ff,#d7f24a)}
+  .lead{color:var(--muted); font-size:16.5px; margin:0 0 20px; max-width:860px}
+
+  .card{ background:var(--panel); border:1px solid var(--line); border-radius:var(--radius); padding:20px 22px; margin:16px 0; }
+  .card h3{margin:.1em 0 .4em; font-size:19px}
+  .card h3 .em{color:var(--acc)}
+  .grid{display:grid; gap:16px}
+  @media(min-width:780px){ .grid.c2{grid-template-columns:1fr 1fr} .grid.c3{grid-template-columns:1fr 1fr 1fr} }
+
+  .courtwrap{display:flex; flex-wrap:wrap; gap:22px; align-items:flex-start}
+  .courtbox{flex:0 0 auto; text-align:center}
+  .courtbox svg{display:block; margin:0 auto; border-radius:12px; box-shadow:var(--shadow)}
+
+  .themebtn{
+    position:fixed; top:14px; right:14px; z-index:60; display:inline-flex; align-items:center; gap:7px;
+    background:var(--panel); color:var(--ink); border:1px solid var(--line);
+    padding:8px 13px; border-radius:999px; font-size:13.5px; font-weight:700; cursor:pointer;
+    box-shadow:var(--shadow); transition:.15s;
+  }
+  .themebtn:hover{border-color:var(--acc); transform:translateY(-1px)}
+  .themebtn .ic{font-size:15px; line-height:1}
+  @media(max-width:640px){ .themebtn span.lbl{display:none} .themebtn{padding:9px 11px} }
+  .courtcap{color:var(--muted); font-size:13.5px; margin-top:8px; max-width:300px}
+  .courtnote{flex:1 1 300px; min-width:270px}
+
+  .legend{display:flex; flex-wrap:wrap; gap:14px; margin:6px 0 4px; font-size:13.5px; color:var(--muted)}
+  .legend span{display:inline-flex; align-items:center; gap:7px}
+  .swatch{width:14px;height:14px;border-radius:50%; display:inline-block; border:2px solid rgba(255,255,255,.25)}
+
+  ul.clean{list-style:none; padding:0; margin:10px 0}
+  ul.clean li{position:relative; padding:6px 0 6px 26px; border-bottom:1px dashed var(--line)}
+  ul.clean li:last-child{border-bottom:0}
+  ul.clean li::before{content:"▸"; position:absolute; left:4px; top:6px; color:var(--acc)}
+  ul.clean li b{color:var(--ink)}
+
+  ol.steps{margin:10px 0; padding-left:0; counter-reset:st; list-style:none}
+  ol.steps li{position:relative; padding:8px 0 8px 40px; border-bottom:1px dashed var(--line)}
+  ol.steps li:last-child{border-bottom:0}
+  ol.steps li::before{counter-increment:st; content:counter(st); position:absolute; left:0; top:8px;
+    width:26px;height:26px;border-radius:50%; background:linear-gradient(120deg,#8ec7ff,#d7f24a); color:#0d1117;
+    font-weight:800; display:flex; align-items:center; justify-content:center; font-size:14px}
+  ol.steps li b{color:var(--ink)}
+
+  .pill{display:inline-block; padding:2px 10px; border-radius:999px; font-size:12.5px; font-weight:700; letter-spacing:.3px}
+  .pill.atk{background:rgba(255,93,93,.16); color:#ff9c9c; border:1px solid rgba(255,93,93,.4)}
+  .pill.def{background:rgba(77,177,255,.15); color:#8ec7ff; border:1px solid rgba(77,177,255,.4)}
+  .pill.neu{background:rgba(215,242,74,.14); color:#e4f27b; border:1px solid rgba(215,242,74,.4)}
+
+  table.tbl{width:100%; border-collapse:collapse; margin:12px 0; font-size:14.5px}
+  table.tbl th,table.tbl td{border:1px solid var(--line); padding:10px 12px; text-align:left; vertical-align:top; overflow-wrap:anywhere}
+  table.tbl th{background:var(--panel2); color:var(--ink); font-size:13px; text-transform:uppercase; letter-spacing:.5px}
+  table.tbl td b{color:var(--acc)}
+  table.tbl td .em2{color:var(--acc2)}
+
+  .split2{display:grid; gap:14px}
+  @media(min-width:720px){ .split2{grid-template-columns:1fr 1fr} }
+  .good-box,.bad-box{border-radius:12px; padding:14px 16px; border:1px solid}
+  .good-box{background:rgba(87,211,140,.07); border-color:rgba(87,211,140,.35)}
+  .bad-box{background:rgba(255,122,122,.07); border-color:rgba(255,122,122,.35)}
+  .good-box h4{margin:0 0 6px; color:var(--good)}
+  .bad-box h4{margin:0 0 6px; color:var(--bad)}
+  .good-box ul,.bad-box ul{margin:6px 0 0; padding-left:18px}
+  .good-box li,.bad-box li{margin:4px 0}
+
+  .dont{border-color:rgba(255,122,122,.45)}
+  .dont h3{color:var(--bad)}
+  .mrow{margin:8px 0; font-size:14.8px}
+  .mrow .lb{font-weight:800; margin-right:5px}
+  .fix{background:rgba(87,211,140,.09); border:1px solid rgba(87,211,140,.32); border-radius:9px; padding:9px 12px; margin-top:10px; font-size:14.8px}
+  .fix .lb{color:var(--good); font-weight:800; margin-right:5px}
+
+  .kbd{background:var(--panel2); border:1px solid var(--line); border-bottom-width:2px; border-radius:6px; padding:1px 7px; font-size:13px}
+  .callout{border-left:4px solid var(--acc); background:var(--panel2); padding:12px 16px; border-radius:0 10px 10px 0; margin:14px 0; color:var(--muted)}
+  .callout b{color:var(--ink)}
+  .num{display:inline-flex; width:26px;height:26px; border-radius:50%; background:linear-gradient(120deg,#8ec7ff,#d7f24a); color:#0d1117; font-weight:800; align-items:center; justify-content:center; font-size:14px; margin-right:8px}
+  footer{color:var(--dim); text-align:center; font-size:13px; margin-top:40px; padding-top:20px; border-top:1px solid var(--line)}
+  .tag{font-size:12px; color:var(--dim)}
+
+  /* grip picker */
+  .gpick{display:flex; flex-wrap:wrap; gap:8px; margin:12px 0 6px}
+  .gpick button{background:var(--panel2); border:1px solid var(--line); color:var(--ink); cursor:pointer;
+    padding:9px 14px; border-radius:10px; font-weight:600; font-size:14px; transition:.15s}
+  .gpick button:hover{border-color:var(--acc)}
+  .gpick button.active{background:linear-gradient(120deg,#8ec7ff,#d7f24a); color:#0d1117; border-color:transparent}
+  .gpanel{display:none} .gpanel.show{display:block; animation:fade .3s}
+
+  /* decision tree */
+  .shotpicker{display:flex; flex-wrap:wrap; gap:8px; margin:12px 0 18px}
+  .shotpicker button{background:var(--panel2); border:1px solid var(--line); color:var(--ink); cursor:pointer;
+    padding:9px 15px; border-radius:10px; font-weight:600; font-size:14px; transition:.15s}
+  .shotpicker button:hover{border-color:var(--acc)}
+  .shotpicker button.active{background:linear-gradient(120deg,#ff5d5d,#d7f24a); color:#0d1117; border-color:transparent}
+  .tree{display:none} .tree.show{display:block; animation:fade .3s}
+  .branch{border-left:3px solid var(--line); margin:8px 0 8px 8px; padding:2px 0 2px 16px}
+  .node{background:var(--panel2); border:1px solid var(--line); border-radius:12px; padding:12px 14px; margin:8px 0}
+  .node .resp{color:var(--acc); font-weight:700; font-size:14.5px}
+  .node .act{color:var(--ink); margin-top:3px}
+  .node .why{color:var(--muted); font-size:13.5px; margin-top:4px}
+  .node.win{border-color:rgba(87,211,140,.5)}
+  .node.risk{border-color:rgba(255,180,84,.5)}
+</style>
+</head>
+<body>
+<button class="themebtn" id="themebtn" aria-label="Đổi giao diện sáng/tối">
+  <span class="ic" id="themeic">☀️</span><span class="lbl" id="themelbl">Sáng</span>
+</button>
+<div class="wrap">
+<header class="hero">
+  <div class="kick">🎾 Tennis · Nhập môn</div>
+  <h1>Tennis cho người mới bắt đầu</h1>
+  <p>Tài liệu cho người <b>chưa từng hoặc mới cầm vợt</b>. Trọng tâm là <b>nền tảng làm đúng ngay từ đầu</b>: cách <b>cầm vợt</b> (hệ 8 cạnh bevel), <b>tư thế &amp; footwork</b>, <b>cách đánh</b> từng cú, và <b>toàn bộ các thể loại cú</b> — biết mỗi cú là gì, cầm vợt nào, đánh thế nào và khi nào dùng.</p>
+</header>
+
+<nav class="tabs" id="tabs">
+  <button data-t="overview" class="active">Bắt đầu ở đây</button>
+  <button data-t="grip">Cầm vợt (bevel)</button>
+  <button data-t="stance">Tư thế &amp; Footwork</button>
+  <button data-t="ground">Cú thuận &amp; trái</button>
+  <button data-t="serve">Giao &amp; trả giao</button>
+  <button data-t="netplay">Volley &amp; smash</button>
+  <button data-t="catalog">Toàn bộ thể loại cú</button>
+  <button data-t="decide">Chọn cú &amp; tư duy</button>
+  <button data-t="tactics">Điểm rơi &amp; chiến thuật</button>
+  <button data-t="mistakes">Lỗi thường gặp</button>
+  <button data-t="train">Lộ trình luyện</button>
+</nav>
+
+<!-- ================= OVERVIEW ================= -->
+<section class="tab show" id="overview">
+  <h2 class="sec"><span class="dot"></span>Bắt đầu ở đây — sân, điểm số &amp; 3 nguyên lý</h2>
+  <p class="lead">Trước khi tập cú đánh, cần biết mình đang đứng ở đâu, tính điểm ra sao, và ba nguyên lý xuyên suốt của tennis. Người mới chỉ cần nắm chắc mấy điều dưới đây là chơi được.</p>
+
+  <div class="card">
+    <h3>Bản đồ sân &amp; tên các vùng cần nhớ</h3>
+    <div class="courtwrap">
+      <div class="courtbox" id="c_court_map"></div>
+      <div class="courtnote">
+        <p>Sân đơn rộng <b>8,23 m</b>, sân đôi rộng <b>10,97 m</b>, dài <b>23,77 m</b>. Lưới cao <b>0,914 m</b> ở giữa, <b>1,07 m</b> ở hai cột. Vạch giao bóng cách lưới <b>6,40 m</b>.</p>
+        <ul class="clean">
+          <li><b>Baseline (vạch cuối sân)</b> — nơi bạn đứng đánh bóng nảy (groundstroke) &amp; giao bóng.</li>
+          <li><b>Ô giao bóng (service box)</b> — bóng giao phải rơi vào ô chéo bên kia.</li>
+          <li><b>Vạch giữa &amp; điểm giữa (T)</b> — mốc để ngắm giao bóng và định vị.</li>
+          <li><b>"Đất chết" (no-man's-land)</b> — vùng giữa vạch giao và baseline; <b>đừng đứng lì ở đây</b>, dễ bị bóng nảy vào chân.</li>
+          <li><b>Vùng lưới</b> — nơi đánh volley (đánh bóng trước khi nảy) để kết thúc.</li>
+        </ul>
+        <div class="legend">
+          <span><i class="swatch" style="background:var(--me)"></i> Tôi</span>
+          <span><i class="swatch" style="background:var(--opp)"></i> Đối thủ</span>
+          <span><i class="swatch" style="background:var(--ball)"></i> Bóng</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout"><b>Cách đọc các sơ đồ SÂN trong trang:</b> mọi sơ đồ sân được vẽ <b>nhìn phối cảnh từ sau lưng bạn</b> — nửa <b>gần (dưới)</b> là sân của bạn, nửa <b>xa (trên)</b> là sân đối thủ, vạch ngang ở giữa là <b>lưới</b>. Chấm <span style="color:var(--me)"><b>xanh dương = bạn</b></span>, chấm <span style="color:var(--opp)"><b>đỏ = đối thủ</b></span>, chấm <b style="color:#b3c400">vàng = bóng</b>, mũi tên = hướng bóng/di chuyển, dấu <b style="color:#ff5d5d">◎ đỏ</b> = điểm ngắm.</div>
+
+  <div class="grid c3">
+    <div class="card">
+      <h3><span class="num">1</span>Đưa bóng qua lưới <span class="em">nhiều lần hơn</span> đối thủ</h3>
+      <p>Ở trình mới, <b>phần lớn điểm đến từ lỗi tự đánh hỏng</b>, không phải từ cú ăn điểm. Mục tiêu số 1: bóng <b>qua lưới và trong sân</b>. Đánh chắc thắng đánh mạnh.</p>
+    </div>
+    <div class="card">
+      <h3><span class="num">2</span>Về <span class="em">tư thế chờ</span> sau mỗi cú</h3>
+      <p>Đánh xong không đứng ngắm — <b>bật về giữa baseline</b>, chân nhún nhẹ (split-step) đúng lúc đối thủ chạm bóng. Tennis là môn của <b>di chuyển</b>, không phải đứng một chỗ vung tay.</p>
+    </div>
+    <div class="card">
+      <h3><span class="num">3</span>Chuẩn bị <span class="em">sớm</span>: xoay vai, lùi vợt ngay</h3>
+      <p>Vừa đọc được bóng sang bên nào là <b>xoay người &amp; đưa vợt ra sau ngay</b>, rồi mới bước tới. Trễ nhịp chuẩn bị là lỗi lớn nhất của người mới — đánh vội, mất điểm chạm.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Cách tính điểm (rất gọn cho người mới)</h3>
+    <table class="tbl">
+      <tr><th>Cấp</th><th>Cách đếm</th><th>Thắng khi</th></tr>
+      <tr><td><b>Điểm (point)</b></td><td>0 → 15 → 30 → 40 → thắng game. Hoà 40–40 gọi là <b>deuce</b>, phải hơn 2 điểm liên tiếp.</td><td>Đối thủ đánh hỏng / bóng ngoài / không đỡ được.</td></tr>
+      <tr><td><b>Game</b></td><td>Thắng đủ điểm như trên. Một người <b>giao bóng suốt cả game</b>, hết game đổi người giao.</td><td>Đủ 4 điểm (và hơn 2).</td></tr>
+      <tr><td><b>Set</b></td><td>Ai tới <b>6 game trước</b> (và hơn đối thủ ≥2 game). 6–6 thường đánh <b>tie-break</b> tới 7 điểm.</td><td>Thắng 6 game (hơn 2), hoặc thắng tie-break.</td></tr>
+      <tr><td><b>Trận (match)</b></td><td>Thường <b>thắng 2/3 set</b>.</td><td>Đủ số set.</td></tr>
+    </table>
+    <p class="tag">Luật bóng: mỗi bên chỉ được để bóng nảy <b>tối đa 1 lần</b> rồi phải đánh trả; giao bóng có <b>2 lần</b> (giao hỏng lần 1 = "fault/lỗi", hỏng cả 2 = mất điểm = "double fault"). Bóng chạm vạch = <b>tính trong sân</b>.</p>
+  </div>
+
+  <div class="card">
+    <h3>Từ điển bỏ túi — gặp từ lạ thì tra ở đây</h3>
+    <p class="lead" style="margin:0 0 10px">Tennis có nhiều từ tiếng Anh sẽ lặp lại suốt trang. Không cần thuộc — cứ quay lại đây tra. Sắp theo nhóm.</p>
+    <div class="grid c2">
+      <div>
+        <table class="tbl">
+          <tr><th>Từ</th><th>Nghĩa đơn giản</th></tr>
+          <tr><td><b>Groundstroke</b></td><td>Cú đánh bóng <b>sau khi bóng đã nảy 1 lần</b> (forehand/backhand từ cuối sân).</td></tr>
+          <tr><td><b>Forehand</b> (thuận tay)</td><td>Đánh bóng ở bên <b>tay thuận</b>, lòng bàn tay hướng về phía bóng.</td></tr>
+          <tr><td><b>Backhand</b> (trái tay)</td><td>Đánh bóng ở <b>bên kia người</b> (mu bàn tay hướng về bóng).</td></tr>
+          <tr><td><b>Serve</b> (giao bóng)</td><td>Cú <b>tự tung bóng và đánh</b> để bắt đầu mỗi điểm.</td></tr>
+          <tr><td><b>Return</b> (trả giao)</td><td>Cú <b>đỡ quả giao</b> của đối thủ.</td></tr>
+          <tr><td><b>Volley</b></td><td>Đánh bóng khi bóng <b>CHƯA nảy</b> (thường ở gần lưới).</td></tr>
+          <tr><td><b>Rally</b></td><td>Loạt bóng <b>qua lại liên tục</b> giữa hai bên.</td></tr>
+          <tr><td><b>Ace</b></td><td>Quả giao <b>ăn điểm luôn</b>, đối thủ không chạm được.</td></tr>
+          <tr><td><b>Let</b></td><td>Giao <b>chạm lưới nhưng vẫn vào ô</b> → giao lại, không mất lần.</td></tr>
+          <tr><td><b>Fault / Double fault</b></td><td>Giao hỏng; <b>hỏng cả 2 lần</b> = mất điểm.</td></tr>
+        </table>
+      </div>
+      <div>
+        <table class="tbl">
+          <tr><th>Từ</th><th>Nghĩa đơn giản</th></tr>
+          <tr><td><b>Topspin</b> (xoáy lên)</td><td>Bóng <b>xoáy tới trước</b>, vồng qua lưới rồi cắm xuống, nảy cao.</td></tr>
+          <tr><td><b>Slice / backspin</b> (cắt)</td><td>Bóng <b>xoáy ngược</b>, trôi thấp, nảy thấp lết.</td></tr>
+          <tr><td><b>Flat</b> (phẳng)</td><td>Bóng <b>không xoáy</b>, đi nhanh &amp; thẳng.</td></tr>
+          <tr><td><b>Split-step</b></td><td>Cú <b>nhún tách nhẹ hai chân</b> đúng lúc đối thủ chạm bóng, để bật đi ngay.</td></tr>
+          <tr><td><b>Grip</b></td><td><b>Cách cầm cán vợt</b> (Continental, Eastern…).</td></tr>
+          <tr><td><b>Bevel</b></td><td>Một trong <b>8 mặt phẳng của cán vợt</b>, dùng để định vị cách cầm.</td></tr>
+          <tr><td><b>Baseline</b></td><td><b>Vạch cuối sân</b> — nơi đứng đánh &amp; giao.</td></tr>
+          <tr><td><b>Deuce / Ad</b></td><td>Tên hai bên sân khi giao (phải = deuce, trái = ad). "Deuce" cũng là <b>tỉ số 40–40</b>.</td></tr>
+          <tr><td><b>Lob</b></td><td>Đánh bóng <b>vồng cao qua đầu</b> người đứng lưới.</td></tr>
+          <tr><td><b>Drop shot</b> (bỏ nhỏ)</td><td>Đánh nhẹ cho bóng <b>rơi ngay sau lưới</b>.</td></tr>
+          <tr><td><b>Approach / Passing</b></td><td><b>Approach</b> = cú đánh trên đà tiến lên lưới. <b>Passing</b> = đánh xuyên qua bên người đang ở lưới.</td></tr>
+          <tr><td><b>Pronation</b></td><td>Động tác <b>lật/xoay cẳng tay</b> (như vặn tay nắm cửa) khi giao bóng — tạo tốc độ, đỡ chấn thương.</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout"><b>Cách dùng trang này:</b> đọc lần lượt các tab từ trái sang phải. Hai tab quan trọng nhất cho người mới là <b>"Cầm vợt"</b> và <b>"Tư thế &amp; Footwork"</b> — sai hai thứ này thì mọi cú đánh về sau đều lệch. Tab <b>"Toàn bộ thể loại cú"</b> là bảng tra: mỗi cú là gì, cầm vợt nào, khi nào dùng. <b>Gặp từ tiếng Anh lạ</b> (rally, volley, deuce…) → quay lại <b>"Từ điển bỏ túi"</b> ngay phía trên.</div>
+</section>
+
+<!-- ================= GRIP ================= -->
+<section class="tab" id="grip">
+  <h2 class="sec"><span class="dot"></span>Cầm vợt — hệ 8 cạnh (bevel) &amp; từng kiểu grip</h2>
+  <p class="lead">Cán vợt tennis có <b>8 mặt phẳng gọi là "bevel"</b> (cạnh), đánh số 1–8. Mỗi kiểu cầm vợt = đặt <b>khớp đốt đầu ngón trỏ</b> (và gót bàn tay) lên một bevel khác nhau. Hiểu hệ bevel là hiểu <b>toàn bộ</b> cách cầm vợt — thay vì học vẹt từng cú.</p>
+
+  <div class="card">
+    <h3>Đọc hệ bevel thế nào?</h3>
+    <div class="courtwrap">
+      <div class="courtbox" id="g_bevel_map"><div class="courtcap">Nhìn thẳng vào <b>đít cán vợt</b> (butt cap), vợt dựng đứng nghiêng như khi chuẩn bị giao bóng. Số cho <b>người thuận tay phải</b>.</div></div>
+      <div class="courtnote">
+        <ul class="clean">
+          <li>Cầm vợt <b>dựng đứng, cạnh vợt hướng xuống đất</b> (như sắp giao bóng), rồi nhìn vào đít cán.</li>
+          <li><b>Bevel 1</b> ở trên cùng, đánh số <b>theo chiều kim đồng hồ</b> (với người thuận tay phải): 1 trên → 2 trên-phải → 3 phải → … → 8 trên-trái.</li>
+          <li>Mốc quan trọng: đặt <b>khớp đốt đầu ngón trỏ</b> (chỗ ngón trỏ gập lại) lên bevel nào → ra kiểu cầm đó.</li>
+          <li><b>Người thuận tay trái:</b> soi gương — đánh số ngược lại (1 trên, rồi ngược chiều kim đồng hồ).</li>
+        </ul>
+        <p class="tag">Mẹo tìm nhanh Continental: cầm vợt như <b>cầm búa</b> đi đóng đinh — đó chính là grip Continental (bevel 2).</p>
+      </div>
+    </div>
+  </div>
+
+  <h3 style="font-size:21px;margin:24px 0 6px">Bấm từng kiểu cầm để xem bevel &amp; công dụng</h3>
+  <div class="gpick" id="gpick">
+    <button data-g="conti" class="active">Continental (2)</button>
+    <button data-g="eastfh">Eastern thuận (3)</button>
+    <button data-g="semiwest">Semi-Western (4)</button>
+    <button data-g="west">Western (5)</button>
+    <button data-g="eastbh">Eastern trái (1)</button>
+    <button data-g="twobh">Trái 2 tay</button>
+  </div>
+
+  <div class="gpanel show" id="gp_conti">
+    <div class="card">
+      <div class="courtwrap">
+        <div class="courtbox" id="g_conti"><div class="courtcap">Khớp ngón trỏ trên <b>bevel 2</b> — "cầm như cầm búa"</div></div>
+        <div class="courtnote">
+          <h3 style="margin-top:0">Continental — grip "vạn năng" của người mới <span class="pill neu">học đầu tiên</span></h3>
+          <p>Khớp ngón trỏ &amp; gót tay trên <b>bevel 2</b>. Mặt vợt hơi mở. Đây là grip <b>dùng cho nhiều cú nhất</b> — nên tập thành phản xạ.</p>
+          <ul class="clean">
+            <li><b>Dùng cho:</b> giao bóng, volley (cả thuận &amp; trái), smash trên đầu, cú <b>slice</b> (cắt), bỏ nhỏ (drop), và đỡ những quả gấp.</li>
+            <li><b>Ưu:</b> một grip xử được nhiều cú, không phải đổi tay khi lên lưới; mặt vợt mở tự nhiên giúp bóng qua lưới.</li>
+            <li><b>Nhược:</b> đánh <b>groundstroke thuận tay có topspin thì yếu</b> — nên forehand chính không dùng Continental.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="gpanel" id="gp_eastfh">
+    <div class="card">
+      <div class="courtwrap">
+        <div class="courtbox" id="g_eastfh"><div class="courtcap">Khớp ngón trỏ trên <b>bevel 3</b> — "bắt tay với cán vợt"</div></div>
+        <div class="courtnote">
+          <h3 style="margin-top:0">Eastern thuận tay — forehand dễ học nhất <span class="pill neu">forehand cho người mới</span></h3>
+          <p>Khớp ngón trỏ trên <b>bevel 3</b>. Cách tìm: đặt lòng bàn tay áp phẳng lên mặt vợt rồi trượt xuống cán — như <b>"bắt tay" với cán vợt</b>.</p>
+          <ul class="clean">
+            <li><b>Dùng cho:</b> cú <b>thuận tay (forehand)</b> cơ bản. Mặt vợt vuông tự nhiên khi chạm bóng.</li>
+            <li><b>Ưu:</b> dễ căn mặt vợt, đánh được cả bóng <b>phẳng lẫn topspin nhẹ</b>; tốt cho bóng thấp &amp; ngang hông. Lý tưởng để <b>bắt đầu</b>.</li>
+            <li><b>Nhược:</b> khó tạo topspin nhiều để trị bóng nảy cao ngang vai.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="gpanel" id="gp_semiwest">
+    <div class="card">
+      <div class="courtwrap">
+        <div class="courtbox" id="g_semiwest"><div class="courtcap">Khớp ngón trỏ trên <b>bevel 4</b> — grip forehand hiện đại phổ biến</div></div>
+        <div class="courtnote">
+          <h3 style="margin-top:0">Semi-Western — forehand nhiều topspin <span class="pill atk">nâng cấp forehand</span></h3>
+          <p>Khớp ngón trỏ trên <b>bevel 4</b>. Mặt vợt hơi úp xuống → khi quét từ dưới lên tạo <b>topspin</b> (bóng xoáy tới, vồng qua lưới rồi cắm xuống trong sân).</p>
+          <ul class="clean">
+            <li><b>Dùng cho:</b> forehand hiện đại; đa số tay vợt chuyên nghiệp dùng grip này hoặc quanh đây.</li>
+            <li><b>Ưu:</b> tạo <b>topspin khoẻ</b> → đánh mạnh vẫn vào sân; trị tốt bóng nảy cao (ngang vai).</li>
+            <li><b>Nhược:</b> bóng <b>thấp sát đất khó xử</b> hơn; người mới dễ đánh bóng dính lưới nếu chưa quen quét lên. Nên chuyển sang sau khi vững Eastern.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="gpanel" id="gp_west">
+    <div class="card">
+      <div class="courtwrap">
+        <div class="courtbox" id="g_west"><div class="courtcap">Khớp ngón trỏ trên <b>bevel 5</b> — topspin cực đại, nâng cao</div></div>
+        <div class="courtnote">
+          <h3 style="margin-top:0">Western — topspin tối đa <span class="pill atk">nâng cao</span></h3>
+          <p>Khớp ngón trỏ trên <b>bevel 5</b> (gần như cầm vợt nằm ngang, nhặt vợt dưới đất lên). Tạo <b>rất nhiều topspin</b>.</p>
+          <ul class="clean">
+            <li><b>Dùng cho:</b> forehand xoáy nặng, hợp mặt sân đất nện &amp; bóng nảy cao.</li>
+            <li><b>Ưu:</b> xoáy khủng, đánh cực nặng vẫn kiểm soát; trị bóng nảy trên vai rất tốt.</li>
+            <li><b>Nhược:</b> bóng thấp &amp; slice rất khó; đổi grip khi lên lưới chậm. <b>Không khuyến nghị cho người mới.</b></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="gpanel" id="gp_eastbh">
+    <div class="card">
+      <div class="courtwrap">
+        <div class="courtbox" id="g_eastbh"><div class="courtcap">Khớp ngón trỏ trên <b>bevel 1</b> — trái tay một tay</div></div>
+        <div class="courtnote">
+          <h3 style="margin-top:0">Eastern trái tay — cho trái tay <b>một tay</b> <span class="pill neu">1 tay</span></h3>
+          <p>Khớp ngón trỏ trên <b>bevel 1</b> (mặt trên cán). Ngón cái thường tì chéo sau cán để đỡ lực. Dùng cho người đánh <b>trái tay một tay</b>.</p>
+          <ul class="clean">
+            <li><b>Dùng cho:</b> cú trái tay một tay (topspin hoặc phẳng).</li>
+            <li><b>Ưu:</b> tầm với xa, đẹp, linh hoạt đổi sang slice.</li>
+            <li><b>Nhược:</b> khó với người mới &amp; trị bóng nảy cao kém. Đa số người mới nên đánh <b>trái tay hai tay</b> (ổn định hơn) — xem thẻ kế bên.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="gpanel" id="gp_twobh">
+    <div class="card">
+      <div class="courtwrap">
+        <div class="courtbox" id="g_twobh"><div class="courtcap">Tay thuận: Continental (bevel 2) · Tay không thuận đặt trên như một forehand nhỏ</div></div>
+        <div class="courtnote">
+          <h3 style="margin-top:0">Trái tay <b>hai tay</b> — khuyến nghị cho người mới <span class="pill neu">dễ &amp; ổn định</span></h3>
+          <p>Hai tay cầm sát nhau: <b>tay thuận (phải)</b> ở dưới cầm kiểu <b>Continental (bevel 2)</b>; <b>tay không thuận (trái)</b> đặt phía trên, cầm như một <b>Eastern forehand của tay trái</b>. Tay trái là tay "đẩy lực" chính.</p>
+          <ul class="clean">
+            <li><b>Ưu:</b> hai tay giữ vợt <b>rất vững</b>, dễ căn mặt vợt, tạo topspin tốt, trị bóng nảy cao ổn. <b>Dễ học nhất cho trái tay.</b></li>
+            <li><b>Nhược:</b> tầm với ngắn hơn một tay; phải xoay người nhiều hơn.</li>
+            <li><b>Mẹo:</b> nghĩ về nó như "cú forehand của tay trái, có tay phải hỗ trợ".</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Bảng tra nhanh: cú nào → cầm vợt nào (người thuận tay phải)</h3>
+    <table class="tbl">
+      <tr><th>Cú đánh</th><th>Grip nên dùng</th><th>Bevel</th><th>Ghi chú cho người mới</th></tr>
+      <tr><td><b>Forehand (thuận tay)</b></td><td>Eastern → Semi-Western</td><td>3 → 4</td><td>Bắt đầu Eastern, khi quen quét topspin thì dịch sang Semi-Western.</td></tr>
+      <tr><td><b>Backhand 2 tay (trái tay)</b></td><td>Tay dưới Continental + tay trên Eastern-trái</td><td>2 + (3 của tay trái)</td><td>Lựa chọn ổn định nhất cho người mới.</td></tr>
+      <tr><td><b>Backhand 1 tay</b></td><td>Eastern backhand</td><td>1</td><td>Khó hơn, để sau.</td></tr>
+      <tr><td><b>Giao bóng (serve)</b></td><td>Continental</td><td>2</td><td>Bắt buộc để tạo được slice/kick &amp; pronation.</td></tr>
+      <tr><td><b>Volley (thuận &amp; trái)</b></td><td>Continental</td><td>2</td><td>Một grip cho cả hai bên → phản xạ nhanh ở lưới.</td></tr>
+      <tr><td><b>Smash trên đầu</b></td><td>Continental</td><td>2</td><td>Giống động tác giao bóng.</td></tr>
+      <tr><td><b>Slice (cắt) &amp; drop shot</b></td><td>Continental</td><td>2</td><td>Mặt vợt mở để cắt dưới bóng.</td></tr>
+    </table>
+    <p class="tag">Nhìn bảng thấy ngay: <b>Continental (bevel 2)</b> xuất hiện nhiều nhất → là grip đáng tập thành phản xạ số một. Forehand là cú duy nhất người mới nên đổi sang grip khác (Eastern/Semi-Western).</p>
+  </div>
+
+  <div class="card">
+    <h3>Ba lỗi cầm vợt kinh điển của người mới</h3>
+    <div class="split2">
+      <div class="bad-box"><h4>Sai</h4><ul>
+        <li><b>Cầm quá chặt</b> suốt cả cú → cứng tay, mất cảm giác, dễ đau cổ tay/khuỷu.</li>
+        <li><b>Dùng Continental để đánh forehand</b> → mặt vợt mở, bóng bay dài ra ngoài, không có topspin.</li>
+        <li><b>Cầm vợt kiểu "cái chảo"</b> (bevel 5+ ngay từ đầu) → không đỡ nổi bóng thấp, sai mặt vợt.</li>
+      </ul></div>
+      <div class="good-box"><h4>Đúng</h4><ul>
+        <li>Cầm <b>lỏng vừa (3–4/10)</b>, chỉ <b>siết nhẹ lúc chạm bóng</b>.</li>
+        <li>Forehand dùng <b>Eastern (bevel 3)</b>, "bắt tay" với cán vợt.</li>
+        <li>Có <b>miếng đệm lòng bàn tay chạm đít cán</b> — đừng cầm hụt lên trên hay thò ngón ra ngoài.</li>
+      </ul></div>
+    </div>
+    <p class="tag">Bài tập: tập <b>đổi grip Eastern ↔ Continental</b> bằng cách xoay nhẹ vợt trong lòng bàn tay (tay không thuận đỡ ở cổ vợt) cho tới khi thành phản xạ — đây là kỹ năng nền cho việc chuyển giữa forehand và lên lưới/giao bóng.</p>
+  </div>
+
+  <div class="card">
+    <h3>Cỡ cán (grip size) &amp; quấn cán — chọn đúng để không đau tay</h3>
+    <div class="split2">
+      <div class="good-box"><h4>Cách thử cỡ cán vừa tay</h4><ul>
+        <li>Cầm vợt kiểu Eastern forehand. Nhét <b>ngón trỏ tay kia vào khe hở</b> giữa các đầu ngón tay và gốc lòng bàn tay.</li>
+        <li>Vừa <b>lọt một ngón trỏ</b> = cỡ đúng. Không lọt = cán <b>nhỏ quá</b> (dễ xoay/vặn cổ tay). Thừa nhiều = cán <b>to quá</b> (khó đổi grip, mỏi tay).</li>
+        <li>Cỡ cán ghi trên vợt: <b>L0–L5</b> (khoảng 4 đến 4⅝ inch). Người Việt tay vừa thường <b>L1–L3</b>; chưa chắc thì chọn <b>nhỏ hơn một cỡ</b> rồi quấn thêm overgrip cho vừa.</li>
+      </ul></div>
+      <div class="good-box"><h4>Quấn cán &amp; độ bám</h4><ul>
+        <li><b>Overgrip</b> (cuốn ngoài) là lớp mỏng để tăng bám &amp; thấm mồ hôi — <b>thay khi trơn/nhẵn</b>, rẻ và dễ tự quấn.</li>
+        <li>Quấn <b>chồng mép ~½</b>, từ đít cán lên, không để hở nền cán.</li>
+        <li>Tay ra nhiều mồ hôi → dùng overgrip <b>khô (dry)</b>; tay khô → loại <b>dính (tacky)</b>.</li>
+        <li>Cầm <b>lỏng vừa</b> quan trọng hơn grip xịn — siết chặt cả buổi là nguyên nhân số 1 gây <b>đau khuỷu (tennis elbow)</b>.</li>
+      </ul></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= STANCE / FOOTWORK ================= -->
+<section class="tab" id="stance">
+  <h2 class="sec"><span class="dot"></span>Tư thế &amp; Footwork — phần người mới hay bỏ quên</h2>
+  <p class="lead">90% "đánh hỏng" của người mới thực ra là <b>lỗi chân</b>: tới bóng trễ, đứng sai khoảng cách, không thăng bằng. Đánh đẹp bắt đầu từ <b>đưa cơ thể tới đúng chỗ, đúng lúc</b>. Phần này đi từ tư thế chờ → split-step → các thế chân → di chuyển &amp; hồi vị.</p>
+
+  <div class="grid c2">
+    <div class="card">
+      <div class="courtbox" id="f_ready" style="text-align:center"><div class="courtcap">Tư thế chờ (ready position) ở giữa baseline</div></div>
+      <h3 style="margin-top:12px">1 · Tư thế chờ (ready position)</h3>
+      <ul class="clean">
+        <li>Đứng <b>giữa baseline</b>, chân rộng hơn vai, <b>gối chùng</b>, người hơi đổ về trước.</li>
+        <li>Vợt <b>đưa trước bụng</b>, tay không thuận đỡ ở cổ vợt (giữ grip trung tính).</li>
+        <li>Trọng tâm dồn <b>nửa trước bàn chân</b>, gót hơi nhấc — sẵn sàng bật đi bất cứ hướng nào.</li>
+        <li>Mắt nhìn vợt &amp; bóng của đối thủ để <b>đọc hướng sớm</b>.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="courtbox" id="f_split" style="text-align:center"><div class="courtcap">Split-step: nhún nhẹ hai chân đúng lúc đối thủ chạm bóng</div></div>
+      <h3 style="margin-top:12px">2 · Split-step (bước nhún) — kỹ năng chân số 1</h3>
+      <ul class="clean">
+        <li><b>Ngay khi đối thủ sắp chạm bóng</b>, nhún nhẹ nhảy tách hai chân, tiếp đất bằng nửa trước bàn chân.</li>
+        <li>Cú nhún này "nạp lò xo" cho chân → bật được sang trái/phải <b>ngay lập tức</b>.</li>
+        <li>Không split-step = luôn xuất phát <b>trễ nửa giây</b>, tới bóng vội. Đây là bí quyết đơn giản nhất giúp người mới tiến bộ nhanh.</li>
+      </ul>
+    </div>
+  </div>
+
+  <h3 style="font-size:21px;margin:26px 0 6px">3 · Ba thế chân khi đánh groundstroke</h3>
+  <p class="lead" style="margin-bottom:10px">Sau khi tới bóng, bàn chân đặt thế nào so với hướng đánh. Người mới nên học <b>thế trung tính (neutral)</b> trước vì dễ căn nhất.</p>
+  <div class="grid c3">
+    <div class="card">
+      <div class="courtbox" id="f_neutral" style="text-align:center"><div class="courtcap">Neutral / closed — bước chân trước vuông góc hướng đánh</div></div>
+      <h3 style="margin-top:10px">Trung tính (neutral)</h3>
+      <p>Bước <b>chân trước</b> (chân trái với forehand tay phải) hướng về phía lưới, vai xoay ngang. <b>Dễ căn lực &amp; điểm chạm nhất</b> — học đầu tiên. Dùng khi có thời gian.</p>
+    </div>
+    <div class="card">
+      <div class="courtbox" id="f_open" style="text-align:center"><div class="courtcap">Open — hai chân song song baseline, xoay hông</div></div>
+      <h3 style="margin-top:10px">Mở (open stance)</h3>
+      <p>Hai chân gần song song với baseline, xoay <b>hông &amp; thân</b> để lấy lực. Dùng khi bóng <b>tới nhanh / bị kéo rộng</b>, không kịp bước chân trước. Hồi vị nhanh hơn. Phổ biến ở forehand hiện đại.</p>
+    </div>
+    <div class="card">
+      <div class="courtbox" id="f_semiopen" style="text-align:center"><div class="courtcap">Semi-open — trung gian, rất hay dùng</div></div>
+      <h3 style="margin-top:10px">Bán mở (semi-open)</h3>
+      <p>Nằm giữa hai thế trên — chân trước hé mở. <b>Cân bằng giữa lực &amp; tốc độ hồi vị</b>, nên là thế forehand dùng nhiều nhất khi đã quen.</p>
+    </div>
+  </div>
+  <div class="callout"><b>Nguyên tắc chung:</b> dù thế nào, luôn <b>chạm bóng ở phía trước thân</b> (không để bóng tới ngang/sau người), và <b>đạp chân dồn lực từ đất lên</b> — lực đánh đi từ chân → hông → vai → tay, không phải chỉ vung tay.<br><span class="tag">Ba sơ đồ trên chỉ cho biết <b>bàn chân</b> &amp; <b>chỗ điểm chạm</b> (chấm vàng). Còn <b>vợt gặp bóng ở đâu, cao bao nhiêu, góc mặt vợt thế nào</b> → xem tab <b>"Cú thuận &amp; trái"</b>, mục <b>"Đúng lúc chạm bóng"</b>.</span></div>
+
+  <h3 style="font-size:21px;margin:26px 0 6px">4 · Di chuyển tới bóng &amp; hồi vị (recovery)</h3>
+  <div class="grid c2">
+    <div class="card">
+      <div class="courtbox" id="f_move" style="text-align:center"><div class="courtcap">Bước lớn để tới gần + bước nhỏ điều chỉnh trước khi đánh</div></div>
+      <h3 style="margin-top:12px">Tới bóng: bước lớn rồi bước nhỏ</h3>
+      <ul class="clean">
+        <li><b>Bước lớn (sải chân/chạy)</b> để ăn khoảng cách tới vùng bóng rơi.</li>
+        <li><b>Bước nhỏ điều chỉnh (adjustment steps)</b> ngay trước khi đánh để căn đúng khoảng cách với bóng — <b>không quá gần, không phải với</b>.</li>
+        <li>Bóng gần: dùng <b>side-step</b> (bước ngang, không vắt chéo chân) để giữ mặt hướng lưới.</li>
+        <li>Bóng xa: <b>chạy chéo</b>, tới nơi thì xoay vai chuẩn bị.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="courtbox" id="f_recover" style="text-align:center"><div class="courtcap">Đánh xong bóng rộng → bật chéo về gần giữa sân</div></div>
+      <h3 style="margin-top:12px">Hồi vị: về giữa sau mỗi cú</h3>
+      <ul class="clean">
+        <li>Đánh xong, <b>đẩy mạnh chân ngoài</b> để bật về hướng giữa baseline.</li>
+        <li>Về tới nơi thì <b>split-step</b> lại, chuẩn bị cú tiếp theo.</li>
+        <li>Điểm hồi vị không phải luôn là "chính giữa" mà là <b>điểm giữa của các đường trả có thể có</b> của đối thủ.</li>
+        <li><b>Đừng đứng lại ngắm cú vừa đánh</b> — đó là thói quen xấu số 1 khiến bị đánh vào chỗ trống.</li>
+      </ul>
+    </div>
+  </div>
+
+  <h3 style="font-size:21px;margin:26px 0 6px">5 · Các kiểu bước di chuyển cần biết</h3>
+  <div class="grid c2">
+    <div class="card">
+      <div class="courtbox" id="f_patterns" style="text-align:center"><div class="courtcap">Bóng gần: side-step (xanh, không vắt chân) · Bóng xa: cross-step chạy (cam)</div></div>
+      <ul class="clean" style="margin-top:10px">
+        <li><b>Side-step / shuffle (bước ngang):</b> hai chân <b>không vắt chéo</b>, trượt ngang giữ mặt hướng lưới. Dùng cho <b>khoảng cách gần</b> &amp; khi hồi vị — luôn sẵn sàng đổi hướng.</li>
+        <li><b>Cross-step (bước vắt chéo) / chạy:</b> vắt chân sau qua để <b>ăn khoảng cách xa</b> nhanh; tới nơi thì xoay vai chuẩn bị. Dùng khi bị kéo <b>rộng</b>.</li>
+        <li><b>Bước rượt (crossover) lùi sau:</b> khi bị đẩy ra sau/đỡ smash — xoay nghiêng, vắt chân, <b>không giật lùi thẳng</b> (dễ ngã).</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">"Load &amp; explode" — nạp rồi bung</h3>
+      <ul class="clean">
+        <li><b>Nạp (load):</b> khi tới bóng, dồn trọng tâm xuống <b>chân ngoài</b>, gối chùng — như nén lò xo.</li>
+        <li><b>Bung (explode):</b> đạp bật chân đó để <b>xoay hông &amp; đẩy lực</b> vào cú đánh, rồi lấy chính lực đó bật hồi vị.</li>
+        <li><b>Số bước nhỏ cuối cùng</b> quyết định chất lượng cú: bước dư một nhịp để căn đúng khoảng cách hơn là với hụt.</li>
+        <li>Luôn <b>tiếp đất bằng nửa trước bàn chân</b>, gót hơi nhấc — không "đóng đế" cả bàn chân xuống sàn.</li>
+      </ul>
+      <p class="tag">Tự kiểm: nếu sau cú đánh bạn <b>mất thăng bằng, phải bước thừa để đứng lại</b> → cú đó chân chưa ổn, không phải tay.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Footwork khi lên lưới &amp; đỡ giao</h3>
+    <table class="tbl">
+      <tr><th>Tình huống</th><th>Chân làm gì</th></tr>
+      <tr><td><b>Lên lưới đánh volley</b></td><td>Split-step khi đối thủ chạm bóng, rồi <b>bước chân đối diện tay đánh</b> chéo tới bóng (forehand volley → bước chân trái), đánh trong lúc bước tới.</td></tr>
+      <tr><td><b>Đỡ smash trên đầu</b></td><td>Xoay người, <b>bước lùi bằng bước bên (side-step) hoặc cross-over</b>, giữ mặt nghiêng, mắt theo bóng — không lùi kiểu giật lùi thẳng dễ ngã.</td></tr>
+      <tr><td><b>Chờ trả giao</b></td><td>Đứng sau baseline góc ô giao, <b>split-step đúng lúc người giao chạm bóng</b>, bật sang bên bóng tới.</td></tr>
+      <tr><td><b>Bóng nảy quá gần người</b></td><td>Lỗi khoảng cách — <b>bước lùi nhanh một bước</b> để lấy lại khoảng đánh thay vì gập tay đánh sát người.</td></tr>
+    </table>
+  </div>
+</section>
+
+<!-- ================= GROUNDSTROKES ================= -->
+<section class="tab" id="ground">
+  <h2 class="sec"><span class="dot"></span>Cú thuận tay &amp; trái tay — hai cú xương sống</h2>
+  <p class="lead"><b>Groundstroke</b> = cú đánh bóng <b>sau khi bóng đã nảy một lần</b>, thường từ cuối sân. Forehand (thuận tay) và backhand (trái tay) chiếm ~80% số cú trong một trận. Làm đúng hai cú này là làm chủ tennis nền tảng.</p>
+
+  <div class="card">
+    <div class="callout" style="margin-top:0"><b>Cách đọc hình CẮT NGANG (nhìn từ bên hông):</b> vạch đứng ở giữa là <b>lưới</b>; bên <b>trái</b> là sân bạn, bên <b>phải</b> là sân đối thủ; đường cong màu là <b>đường bay của bóng</b>, chấm vàng là <b>chỗ bóng rơi/nảy</b>. Các hình quỹ đạo, giao bóng, smash… trong trang đều đọc kiểu này.</div>
+    <div class="courtwrap">
+      <div class="courtbox" id="gs_arcs"><div class="courtcap">Ba kiểu bóng: topspin vồng &amp; cắm xuống (vàng) · phẳng nhanh (đỏ) · slice trôi thấp (xanh)</div></div>
+      <div class="courtnote">
+        <h3 style="margin-top:0">Ba kiểu đường bóng cần phân biệt</h3>
+        <ul class="clean">
+          <li><b style="color:var(--acc)">Topspin</b> — quét vợt <b>từ dưới lên</b>, bóng xoáy tới, <b>vồng cao qua lưới an toàn rồi cắm xuống</b> trong sân. Đây là kiểu bóng an toàn &amp; chủ lực nên tập.</li>
+          <li><b style="color:var(--opp)">Phẳng (flat)</b> — đánh xuyên qua bóng, đi <b>nhanh &amp; thẳng</b> nhưng <b>ít dung sai</b> (qua lưới sát, dễ ra ngoài). Dùng khi có bóng ngon để tấn công.</li>
+          <li><b style="color:var(--defend)">Slice (cắt)</b> — cắt <b>từ trên xuống dưới bóng</b>, bóng xoáy ngược, <b>trôi thấp, nảy thấp</b>. Dùng để đổi nhịp, đỡ bóng khó, thủ.</li>
+        </ul>
+        <p class="tag">Người mới nên xây <b>topspin nhẹ</b> làm nền: nó tha thứ lỗi nhất (qua lưới cao mà vẫn vào sân).</p>
+      </div>
+    </div>
+    <div class="courtwrap" style="justify-content:center;gap:16px;margin-top:6px">
+      <div class="courtbox" id="dg_topspin"></div>
+      <div class="courtbox" id="dg_spin"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Nguyên lý chung của MỌI cú đánh bóng nảy</h3>
+    <div class="grid c2">
+      <div>
+        <h4 style="margin:.2em 0 .3em;color:var(--acc)">Bốn pha của một cú đánh</h4>
+        <ol class="steps">
+          <li><b>Chuẩn bị (preparation):</b> đọc bóng → xoay vai/hông đưa vợt ra sau <b>ngay</b>, chân bắt đầu di chuyển.</li>
+          <li><b>Vung tới (forward swing):</b> đạp chân, thả vợt xuống thấp rồi quét tới trước.</li>
+          <li><b>Chạm bóng (contact):</b> ở <b>phía trước thân</b>, siết grip đúng lúc chạm, mắt "khoá" điểm chạm.</li>
+          <li><b>Theo đà (follow-through):</b> vợt đi hết đà qua vai đối diện; kết thúc thăng bằng rồi hồi vị.</li>
+        </ol>
+      </div>
+      <div>
+        <h4 style="margin:.2em 0 .3em;color:var(--acc2)">Chuỗi động lực — lực đi từ ĐẤT lên</h4>
+        <p style="margin:.2em 0 .6em">Cú đánh mạnh &amp; nhẹ nhàng không đến từ cánh tay, mà từ chuỗi: <b>chân đạp đất → xoay hông → xoay thân/vai → cánh tay → cổ tay</b>. Người mới chỉ "vung tay" nên vừa yếu vừa mỏi.</p>
+        <h4 style="margin:.6em 0 .3em;color:var(--acc2)">Điểm chạm theo "đồng hồ"</h4>
+        <p style="margin:.2em 0 0">Tưởng tượng mặt đồng hồ trước mặt: forehand chạm bóng quãng <b>3–4 giờ</b> (bên phải, trước thân); backhand quãng <b>8–9 giờ</b>. Chạm <b>quá muộn (sau người)</b> là lỗi phổ biến khiến bóng loạn hướng.</p>
+      </div>
+    </div>
+    <div class="courtbox" id="dg_clock" style="text-align:center;margin-top:6px"></div>
+    <p class="tag">Ba biến số bạn điều khiển ở mỗi cú: <b>góc mặt vợt</b> (bóng cao/thấp), <b>đường vung</b> (thấp→cao = topspin; cao→thấp = slice), và <b>lực</b> (60–70% là đủ cho người mới).</p>
+  </div>
+
+  <div class="card">
+    <h3>Đúng lúc chạm bóng — vị trí, độ cao &amp; GÓC MẶT VỢT</h3>
+    <p style="margin:.2em 0 .6em">Sơ đồ "ba thế chân" chỉ cho biết <b>bàn chân đặt đâu</b> và <b>điểm chạm nằm phía trước người</b> (chấm vàng). Còn đây là <b>chính khoảnh khắc vợt gặp bóng</b>: chạm ở đâu, cao bao nhiêu, và mặt vợt nghiêng thế nào — thứ quyết định bóng đi kiểu gì.</p>
+    <div class="courtwrap" style="justify-content:center;gap:16px">
+      <div class="courtbox" id="dg_contactpt"></div>
+      <div class="courtbox" id="dg_face"></div>
+    </div>
+    <div class="grid c2" style="margin-top:6px">
+      <div>
+        <h4 style="margin:.2em 0 .3em;color:var(--acc2)">Vị trí &amp; độ cao (hình trái)</h4>
+        <ul class="clean">
+          <li><b>Phía TRƯỚC chân trước</b> — không để bóng tới ngang/sau người mới đánh.</li>
+          <li>Độ cao dễ nhất: <b>ngang eo–hông</b>. Bóng cao hơn thì để nó rơi xuống tầm này rồi đánh.</li>
+          <li><b>Tay duỗi thoải mái</b> — không gập sát người, cũng không với căng hết cỡ.</li>
+          <li>Mắt "khoá" điểm chạm, <b>siết grip đúng lúc chạm</b>.</li>
+        </ul>
+      </div>
+      <div>
+        <h4 style="margin:.2em 0 .3em;color:var(--acc)">Góc mặt vợt (hình phải)</h4>
+        <p style="margin:.2em 0 0">Vợt <b>không "đập vuông góc"</b> vào bóng như bóng bàn — mà <b>"quét/đưa" qua bóng</b> theo hướng mũi tên xanh. <b>Góc mặt vợt + hướng vung</b> cùng quyết định loại bóng &amp; độ xoáy.</p>
+      </div>
+    </div>
+    <table class="tbl">
+      <tr><th>Loại bóng</th><th>Mặt vợt lúc chạm</th><th>Hướng vung</th><th>Kết quả</th></tr>
+      <tr><td><b>Topspin</b></td><td>Dựng, <b>hơi úp</b> (khép nhẹ)</td><td>Thấp → cao (quét lên sau bóng)</td><td>Xoáy tới, vồng qua lưới, cắm xuống.</td></tr>
+      <tr><td><b>Phẳng (flat)</b></td><td><b>Vuông</b> (thẳng đứng)</td><td>Thẳng, xuyên qua bóng</td><td>Nhanh, thẳng, ít xoáy — ít dung sai.</td></tr>
+      <tr><td><b>Slice</b></td><td><b>Ngửa</b> (mở)</td><td>Cao → thấp (cắt dưới bóng)</td><td>Xoáy ngược, trôi phẳng, nảy thấp.</td></tr>
+    </table>
+    <p class="tag"><b>Tự sửa theo bóng:</b> bóng hay <b>bay dài ra ngoài</b> → mặt vợt đang <b>ngửa quá</b> lúc chạm (khép lại một chút); bóng hay <b>dính lưới</b> → mặt vợt <b>úp quá</b> hoặc bạn <b>chạm bóng quá thấp/quá muộn</b> (đón sớm hơn, cao hơn).</p>
+  </div>
+
+  <div class="card">
+    <h3>Forehand (thuận tay) — 6 bước làm đúng</h3>
+    <div class="courtbox" id="fig_fh" style="text-align:center;margin-bottom:14px"></div>
+    <div class="courtwrap">
+      <div class="courtbox" id="gs_fh_contact"><div class="courtcap">Điểm chạm ở phía TRƯỚC thân, ngang eo–hông</div></div>
+      <div class="courtnote">
+        <ol class="steps">
+          <li><b>Grip:</b> Eastern (bevel 3), sau nâng lên Semi-Western (4) để thêm topspin.</li>
+          <li><b>Chuẩn bị sớm:</b> vừa thấy bóng sang phải là <b>xoay vai, đưa vợt ra sau</b> (unit turn), tay không thuận chỉ về hướng bóng.</li>
+          <li><b>Bước chân:</b> tới bóng, đặt thế neutral/semi-open, <b>gối chùng</b>, trọng tâm sẵn để đạp lên.</li>
+          <li><b>Vung lên từ dưới:</b> hạ đầu vợt <b>thấp hơn bóng</b> rồi quét <b>từ dưới lên trước</b> (low-to-high) để tạo topspin.</li>
+          <li><b>Điểm chạm:</b> <b>phía trước thân</b>, ngang eo–hông, tay duỗi thoải mái; siết grip lúc chạm.</li>
+          <li><b>Theo đà (follow-through):</b> vợt đi lên <b>qua vai đối diện</b>, kết thúc thăng bằng rồi hồi vị.</li>
+        </ol>
+      </div>
+    </div>
+    <p class="tag">Câu thần chú forehand: <b>"xoay sớm – thấp lên cao – chạm phía trước – kết thúc qua vai".</b></p>
+  </div>
+
+  <div class="card">
+    <h3>Backhand (trái tay) hai tay — 6 bước</h3>
+    <div class="courtbox" id="fig_bh" style="text-align:center;margin-bottom:14px"></div>
+    <div class="courtwrap">
+      <div class="courtbox" id="gs_bh_contact"><div class="courtcap">Hai tay giữ vợt, xoay vai nhiều, chạm bóng phía trước</div></div>
+      <div class="courtnote">
+        <ol class="steps">
+          <li><b>Grip:</b> tay phải Continental (2) ở dưới, tay trái Eastern-forehand ở trên.</li>
+          <li><b>Xoay vai nhiều:</b> trái tay cần <b>xoay thân nhiều hơn</b> forehand — lưng gần như hướng một phần về lưới lúc lùi vợt.</li>
+          <li><b>Bước chân:</b> thường bước <b>chân phải</b> (chân thuận) tới, thế neutral cho vững.</li>
+          <li><b>Tay trái dẫn lực:</b> nghĩ như đánh <b>forehand bằng tay trái</b>; tay phải giữ &amp; hướng.</li>
+          <li><b>Chạm phía trước, quét lên:</b> low-to-high tạo topspin, chạm bóng trước thân.</li>
+          <li><b>Kết thúc:</b> hai tay đưa vợt lên qua vai phải, giữ thăng bằng, hồi vị.</li>
+        </ol>
+      </div>
+    </div>
+    <p class="tag">Trái tay hai tay ổn định vì hai tay khoá mặt vợt — người mới ít bị "xoè mặt vợt" như một tay.</p>
+  </div>
+
+  <div class="card">
+    <h3>Backhand (trái tay) <b>một tay</b> — nếu bạn chọn kiểu này</h3>
+    <div class="courtwrap">
+      <div class="courtbox" id="gs_bh1_contact"><div class="courtcap">Một tay: chạm bóng XA phía trước hơn, vai gần như quay về lưới lúc lùi vợt</div></div>
+      <div class="courtnote">
+        <ol class="steps">
+          <li><b>Grip:</b> Eastern backhand (bevel 1); <b>ngón cái tì chéo sau cán</b> để chống lực.</li>
+          <li><b>Xoay vai thật nhiều:</b> lùi vợt là <b>lưng vai hướng gần về lưới</b> — nhiều hơn cả forehand.</li>
+          <li><b>Tay không thuận giữ cổ vợt</b> lúc chuẩn bị, rồi <b>kéo ra sau giữ thăng bằng</b> khi vung.</li>
+          <li><b>Bước chân trước (chân phải)</b> tới, thế neutral cho vững — một tay cần điểm tựa chắc.</li>
+          <li><b>Chạm bóng XA phía trước</b> (xa hơn hai tay), tay <b>duỗi gần thẳng</b>, quét thấp→cao.</li>
+          <li><b>Theo đà:</b> tay đánh &amp; tay kia <b>banh ra hai phía</b> như cánh, ngực mở, giữ thăng bằng.</li>
+        </ol>
+        <p class="tag">Một tay đẹp, tầm với xa, đổi sang slice rất mượt — nhưng <b>khó ổn định &amp; trị bóng nảy cao kém</b>. Người mới nếu ngại có thể theo hai tay trước, học một tay sau.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Slice (cắt) — cú bổ trợ ai cũng nên có</h3>
+    <div class="courtwrap">
+      <div class="courtbox" id="gs_slice"><div class="courtcap">Cắt từ trên xuống dưới bóng, mặt vợt mở → bóng trôi phẳng, nảy thấp lết</div></div>
+      <div class="courtnote">
+        <ol class="steps">
+          <li><b>Grip Continental (bevel 2)</b> — mặt vợt mở tự nhiên để cắt dưới bóng.</li>
+          <li><b>Chuẩn bị cao:</b> đưa vợt lên <b>cao ngang vai</b>, mặt vợt hơi ngửa.</li>
+          <li><b>Cắt trên → dưới:</b> đưa vợt <b>từ cao xuống thấp</b> xuyên qua mặt sau–dưới bóng, tạo xoáy ngược.</li>
+          <li><b>Chạm phía trước, giữ vững cổ tay:</b> không lật, "đưa" bóng đi chứ không đập.</li>
+          <li><b>Theo đà dài &amp; thấp về phía trước;</b> giữ người thấp, đầu yên.</li>
+        </ol>
+        <div class="split2" style="margin-top:8px">
+          <div class="good-box"><h4>Dùng slice khi</h4><ul>
+            <li>Bóng <b>thấp/khó</b>, không kịp quét topspin.</li>
+            <li><b>Đổi nhịp</b>, làm chậm trận, phá nhịp đối thủ.</li>
+            <li>Cú <b>approach</b> tiến lên lưới (slice sâu, bóng lết khó đánh).</li>
+            <li>Trái tay bị bóng nảy <b>cao ngang vai</b> — slice cứu dễ hơn.</li>
+          </ul></div>
+          <div class="bad-box"><h4>Tránh</h4><ul>
+            <li>Slice <b>nổi cao</b> giữa sân → mời đối thủ tấn công.</li>
+            <li>Vung <b>bập xuống</b> quá mạnh → bóng cắm lưới hoặc bay dài.</li>
+            <li>Dùng slice thay hẳn topspin vì "dễ hơn" — sẽ thiếu vũ khí tấn công.</li>
+          </ul></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Topspin, phẳng hay slice — chọn thế nào?</h3>
+    <table class="tbl">
+      <tr><th>Kiểu</th><th>Vung vợt</th><th>Đường bóng</th><th>Người mới dùng khi</th></tr>
+      <tr><td><b>Topspin</b></td><td>Thấp → cao, quét lên mặt sau bóng</td><td>Vồng cao qua lưới, cắm xuống, nảy <b>cao</b></td><td>Mặc định — an toàn nhất, cú nền.</td></tr>
+      <tr><td><b>Phẳng (flat)</b></td><td>Xuyên thẳng qua bóng</td><td>Nhanh, thẳng, qua lưới sát, nảy vừa</td><td>Có bóng cao ngon, muốn tấn công dứt điểm.</td></tr>
+      <tr><td><b>Slice (cắt)</b></td><td>Cao → thấp, cắt dưới bóng</td><td>Trôi phẳng, nảy <b>thấp lết</b></td><td>Đỡ bóng khó/thấp, đổi nhịp, thủ, lên lưới.</td></tr>
+    </table>
+    <p class="tag">Slice dùng grip <b>Continental (2)</b>; topspin/phẳng dùng grip forehand/backhand tương ứng. Tập <b>topspin trước</b>, slice là kỹ năng bổ trợ học sau.</p>
+  </div>
+</section>
+
+<!-- ================= SERVE ================= -->
+<section class="tab" id="serve">
+  <h2 class="sec"><span class="dot"></span>Giao bóng &amp; trả giao — cú duy nhất bạn hoàn toàn chủ động</h2>
+  <p class="lead">Giao bóng là cú <b>duy nhất</b> không phụ thuộc bóng đối thủ — bạn tự tung, tự đánh. Vì thế nó đáng tập kỹ. Người mới nên đặt mục tiêu: <b>giao vào ô đều đặn</b> trước, mạnh &amp; xoáy tính sau.</p>
+
+  <div class="card">
+    <div class="courtwrap">
+      <div class="courtbox" id="s_serve_court"><div class="courtcap">Đứng cạnh điểm giữa (T) · giao chéo vào ô · 3 điểm ngắm: T, thân người, rộng</div></div>
+      <div class="courtnote">
+        <h3 style="margin-top:0">Luật &amp; vị trí giao</h3>
+        <ul class="clean">
+          <li>Đứng <b>sau baseline</b>, cạnh điểm giữa; giao <b>chéo</b> sang ô giao đối diện.</li>
+          <li>Điểm đầu game giao từ <b>bên phải (deuce)</b>, điểm sau từ <b>bên trái (ad)</b>, luân phiên.</li>
+          <li>Có <b>2 lần giao</b>: lần 1 đánh mạnh hơn; hỏng thì lần 2 <b>chắc chắn</b> (đừng đánh liều để tránh double fault).</li>
+          <li>Ba điểm ngắm trong ô: <b>T (giữa)</b>, <b>vào thân người</b>, <b>rộng (kéo đối thủ ra biên)</b>.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Kỹ thuật giao bóng — 6 bước</h3>
+    <div class="courtbox" id="fig_serve" style="text-align:center;margin-bottom:14px"></div>
+    <div class="courtwrap">
+      <div class="courtbox" id="s_toss"><div class="courtcap">Tung bóng lên cao, hơi chếch phía trước; chạm bóng ở tay duỗi thẳng, cao nhất</div></div>
+      <div class="courtnote">
+        <ol class="steps">
+          <li><b>Grip Continental (2):</b> bắt buộc — mới tạo được pronation (xoay cẳng tay) &amp; xoáy. Đừng giao bằng grip forehand.</li>
+          <li><b>Tư thế:</b> đứng nghiêng, chân trước chỉ về cột lưới, trọng tâm dồn chân sau.</li>
+          <li><b>Tung bóng (toss):</b> tay thẳng đưa bóng lên, <b>thả</b> ở tầm mắt; bóng lên cao <b>hơi chếch trước</b> vào sân. Toss ổn định = nửa thành công.</li>
+          <li><b>Tư thế "cúp" (trophy):</b> cùng lúc tung, vợt đưa ra sau &amp; lên như <b>gãi lưng</b>, khuỷu cao.</li>
+          <li><b>Vươn &amp; chạm:</b> <b>duỗi thẳng tay lên</b> đánh bóng ở <b>điểm cao nhất</b> phía trước; cổ tay &amp; cẳng tay <b>xoay (pronate)</b> qua bóng.</li>
+          <li><b>Theo đà vào sân:</b> vợt xuống phía người thuận, chân sau bước vào sân, hồi về tư thế chờ.</li>
+        </ol>
+      </div>
+    </div>
+    <p class="tag">Người mới hay sai ở <b>toss</b> (tung lệch → phải rướn/gập) và <b>không vươn cao</b> (đánh bóng khi tay còn co → bóng dính lưới). Tập <b>tung bóng cho chuẩn</b> riêng 20 quả mỗi buổi.</p>
+    <div class="callout" style="margin-bottom:0"><b>"Pronation" là gì (nói kiểu đời thường):</b> lúc vươn lên chạm bóng, bạn <b>lật cẳng tay &amp; cổ tay ra ngoài</b> — giống động tác <b>vặn tay nắm cửa</b> hay <b>"vẫy chào"</b> nhanh. Nhờ vậy <b>cạnh vợt dẫn lên bóng rồi mặt vợt mới úp qua</b>, cho tốc độ &amp; xoáy mà <b>không phải gồng cứng</b>. Người mới <b>chưa cần cố tạo pronation</b> — cứ <b>vươn cao thả lỏng đánh bóng ở điểm cao nhất</b>, để tay xoay tự nhiên; siết cứng cổ tay là hỏng &amp; dễ đau.</div>
+  </div>
+
+  <div class="card">
+    <div class="courtwrap">
+      <div class="courtbox" id="s_serve_types"><div class="courtcap">Flat (đỏ, thẳng nhanh) · Slice (xanh, cong &amp; nảy thấp) · Kick (vàng, vồng &amp; nảy cao)</div></div>
+      <div class="courtnote">
+        <h3 style="margin-top:0">Ba loại giao bóng</h3>
+        <table class="tbl">
+          <tr><th>Loại</th><th>Đặc điểm</th><th>Khi nào</th></tr>
+          <tr><td><b>Phẳng (flat)</b></td><td>Nhanh, thẳng, mạnh nhất nhưng ít dung sai.</td><td>Giao 1, khi cần ăn điểm nhanh.</td></tr>
+          <tr><td><b>Slice</b></td><td>Xoáy ngang, bóng <b>cong &amp; nảy thấp lệch</b>, kéo đối thủ ra ngoài.</td><td>Giao 1 hoặc 2; mở góc sân.</td></tr>
+          <tr><td><b>Kick (topspin)</b></td><td>Vồng cao qua lưới an toàn, <b>nảy cao vọt lên</b> — rất an toàn.</td><td><b>Giao 2 lý tưởng</b> vì ít lỗi.</td></tr>
+        </table>
+        <p class="tag">Cả ba đều cần grip <b>Continental</b>. Người mới: tập giao <b>phẳng/nhẹ vào ô</b> cho đều, rồi học <b>slice</b>, cuối cùng mới <b>kick</b> cho giao 2.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="courtwrap">
+      <div class="courtbox" id="s_return"><div class="courtcap">Đứng đỡ giao: sau baseline, chếch theo ô giao; split-step khi người giao chạm bóng</div></div>
+      <div class="courtnote">
+        <h3 style="margin-top:0">Trả giao (return)</h3>
+        <div class="split2">
+          <div class="good-box"><h4>Nên</h4><ul>
+            <li>Đứng <b>sau baseline</b>, chếch về phía ô giao; grip sẵn ở giữa (dễ đổi thuận/trái).</li>
+            <li><b>Split-step</b> đúng lúc người giao chạm bóng.</li>
+            <li>Với giao mạnh: <b>vung ngắn gọn</b> (block), đưa bóng <b>sâu vào giữa sân</b> cho an toàn.</li>
+            <li>Với giao 2 (yếu hơn): <b>bước vào tấn công</b>, đánh sâu &amp; chéo.</li>
+          </ul></div>
+          <div class="bad-box"><h4>Tránh</h4><ul>
+            <li>Vung tay dài như groundstroke với giao nhanh → trễ nhịp.</li>
+            <li>Đứng thẳng chân, vợt thấp, không split-step.</li>
+            <li>Cố ăn điểm ngay quả trả — mục tiêu trước hết là <b>đưa bóng vào sân sâu</b>.</li>
+          </ul></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= NET PLAY ================= -->
+<section class="tab" id="netplay">
+  <h2 class="sec"><span class="dot"></span>Lên lưới — Volley, Half-volley &amp; Smash</h2>
+  <p class="lead">Ở lưới, bạn đánh bóng <b>trước khi nó nảy</b> (volley) để cắt ngắn thời gian của đối thủ &amp; kết thúc điểm. Tất cả cú ở lưới đều dùng grip <b>Continental</b> — một grip cho cả hai bên, khỏi đổi tay.</p>
+
+  <div class="card">
+    <div class="courtbox" id="fig_volley" style="text-align:center;margin-bottom:14px"></div>
+    <div class="courtwrap">
+      <div class="courtbox" id="n_volley"><div class="courtcap">Đứng trong ô giao, vợt trước mặt, "chặn" bóng chéo xuống hai góc</div></div>
+      <div class="courtnote">
+        <h3 style="margin-top:0">Volley (đánh bóng chưa nảy) — 5 điểm cốt lõi</h3>
+        <ul class="clean">
+          <li><b>Grip Continental (2)</b> cho cả forehand &amp; backhand volley.</li>
+          <li><b>Không vung tay</b> — đây là cú <b>"chặn/đấm ngắn"</b> (punch), vợt đi từ trước mặt tới bóng, backswing rất nhỏ.</li>
+          <li><b>Chạm bóng phía trước &amp; cao</b>, mặt vợt hơi mở, cổ tay <b>khoá chắc</b>.</li>
+          <li><b>Bước chân đối diện tới</b> lúc đánh (forehand volley → bước chân trái) để dồn người vào bóng.</li>
+          <li>Ngắm <b>sâu hoặc chéo xuống góc</b>; volley thấp thì chỉ cần đưa bóng <b>sâu &amp; an toàn</b>.</li>
+        </ul>
+        <p class="tag">Câu thần chú volley: <b>"thấy bóng – chặn ngắn – bước vào – mặt vợt chắc".</b> Vung dài là lỗi lớn nhất.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid c2">
+    <div class="card">
+      <div class="courtbox" id="n_smash" style="text-align:center"><div class="courtcap">Smash: xoay nghiêng, chỉ tay không thuận vào bóng, đánh như giao bóng</div></div>
+      <h3 style="margin-top:12px">Smash trên đầu (overhead)</h3>
+      <ul class="clean">
+        <li>Khi đối thủ <b>lốp bóng cao</b>, đây là cú dứt điểm. Động tác <b>giống hệt giao bóng</b>.</li>
+        <li>Grip <b>Continental</b>; <b>xoay nghiêng ngay</b>, đưa vợt ra sau kiểu "gãi lưng".</li>
+        <li><b>Tay không thuận chỉ vào bóng</b> để căn &amp; giữ thăng bằng; di chuyển bằng bước bên để bóng ở <b>trước mặt</b>.</li>
+        <li>Vươn cao đánh ở điểm cao nhất, đánh <b>chắc chứ không cần hết lực</b> — đa số smash hỏng do lấy đà quá tay.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="courtbox" id="n_half" style="text-align:center"><div class="courtcap">Half-volley: bóng vừa chạm đất là đánh ngay, vợt thấp sát đất</div></div>
+      <h3 style="margin-top:12px">Half-volley (nửa volley) &amp; approach</h3>
+      <ul class="clean">
+        <li><b>Half-volley:</b> đánh bóng <b>ngay khi vừa nảy</b> (khi bị kẹt ở giữa sân). Grip Continental, <b>hạ thấp người</b>, mặt vợt gần đất, đưa bóng nhẹ &amp; sâu — cú chống chế.</li>
+        <li><b>Approach shot:</b> cú đánh <b>trên đà tiến lên lưới</b> — thường <b>slice sâu</b> vào góc rồi theo lên. Đánh <b>trong lúc chạy tới</b>, không dừng hẳn.</li>
+        <li>Nguyên tắc lên lưới: chỉ lên khi có <b>bóng ngắn/ngon</b> để ép; lên rồi thì <b>split-step</b> trước khi đối thủ đánh.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="callout"><b>Vì sao lên lưới đáng học dù mới:</b> nó rèn <b>phản xạ, cảm giác vợt &amp; sự tự tin</b>. Ngay cả khi bạn định chơi cuối sân là chính, biết volley chắc giúp bạn dứt điểm những quả bóng ngắn thay vì bỏ lỡ.</div>
+</section>
+
+<!-- ================= CATALOG ================= -->
+<section class="tab" id="catalog">
+  <h2 class="sec"><span class="dot"></span>Toàn bộ thể loại cú đánh — bảng tra tổng hợp</h2>
+  <p class="lead">Đây là <b>danh mục đầy đủ</b> các cú trong tennis: mỗi cú là gì, cầm vợt nào, khó dễ ra sao, và khi nào dùng. Dùng như từ điển tra cứu. Nhóm theo: cú nền tảng → cú ở lưới → cú đặc biệt.</p>
+
+  <div class="card">
+    <div class="courtwrap">
+      <div class="courtbox" id="cat_arcs"><div class="courtcap">Quỹ đạo tiêu biểu: lob (vàng cao) · topspin drive (cam) · slice trôi thấp (xanh) · drop shot (đỏ, ngắn sát lưới)</div></div>
+      <div class="courtnote">
+        <h3 style="margin-top:0">Đọc quỹ đạo</h3>
+        <p>Hình cắt ngang cho thấy độ cao &amp; độ sâu của các nhóm cú. Cùng một mặt sân, cú <b>vồng cao</b> (topspin/lob) an toàn hơn qua lưới; cú <b>phẳng/thấp</b> (flat/slice/drop) hiểm hơn nhưng ít dung sai hoặc ngắn.</p>
+        <ul class="clean">
+          <li><b style="color:var(--acc)">Lob</b>: vồng thật cao qua đầu người ở lưới.</li>
+          <li><b style="color:var(--opp2)">Topspin drive</b>: vồng vừa, cắm sâu cuối sân.</li>
+          <li><b style="color:var(--defend)">Slice</b>: trôi phẳng, nảy thấp.</li>
+          <li><b style="color:var(--opp)">Drop shot</b>: chạm nhẹ, rơi ngay sau lưới.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>① Cú nền tảng (từ cuối sân)</h3>
+    <table class="tbl">
+      <tr><th>Cú</th><th>Là gì</th><th>Grip</th><th>Khi nào dùng</th><th>Độ khó</th></tr>
+      <tr><td><b>Forehand</b></td><td>Đánh thuận tay sau khi bóng nảy.</td><td>Eastern/Semi-West (3–4)</td><td>Cú chủ lực, dùng nhiều nhất.</td><td class="em2">Cơ bản</td></tr>
+      <tr><td><b>Backhand 2 tay</b></td><td>Trái tay, hai tay giữ vợt.</td><td>Cont + Eastern-trái</td><td>Bên trái người; ổn định.</td><td class="em2">Cơ bản</td></tr>
+      <tr><td><b>Backhand 1 tay</b></td><td>Trái tay một tay, tầm với xa.</td><td>Eastern-BH (1)</td><td>Người thích linh hoạt/slice.</td><td>Khó</td></tr>
+      <tr><td><b>Topspin drive</b></td><td>Groundstroke xoáy tới, cắm sâu.</td><td>theo forehand/backhand</td><td>Đánh chắc &amp; sâu, cú nền.</td><td class="em2">Cơ bản</td></tr>
+      <tr><td><b>Flat drive</b></td><td>Đánh phẳng, nhanh, thẳng.</td><td>theo forehand/backhand</td><td>Có bóng ngon, tấn công.</td><td>Trung bình</td></tr>
+      <tr><td><b>Slice (cắt)</b></td><td>Cắt dưới bóng, xoáy ngược, nảy thấp.</td><td>Continental (2)</td><td>Đổi nhịp, thủ, bóng khó.</td><td>Trung bình</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <h3>② Cú giao &amp; trả</h3>
+    <table class="tbl">
+      <tr><th>Cú</th><th>Là gì</th><th>Grip</th><th>Khi nào dùng</th><th>Độ khó</th></tr>
+      <tr><td><b>Serve phẳng</b></td><td>Giao thẳng nhanh, mạnh nhất.</td><td>Continental (2)</td><td>Giao 1 tấn công.</td><td>Trung bình</td></tr>
+      <tr><td><b>Serve slice</b></td><td>Giao xoáy ngang, cong &amp; nảy lệch.</td><td>Continental (2)</td><td>Mở góc, kéo đối thủ ra.</td><td>Khó</td></tr>
+      <tr><td><b>Serve kick</b></td><td>Giao topspin vồng cao, nảy vọt.</td><td>Continental (2)</td><td>Giao 2 an toàn.</td><td>Khó</td></tr>
+      <tr><td><b>Return (trả giao)</b></td><td>Đỡ giao, đưa bóng sâu vào sân.</td><td>tuỳ bên bóng tới</td><td>Mỗi lần đối thủ giao.</td><td class="em2">Cơ bản</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <h3>③ Cú ở lưới &amp; trên cao</h3>
+    <table class="tbl">
+      <tr><th>Cú</th><th>Là gì</th><th>Grip</th><th>Khi nào dùng</th><th>Độ khó</th></tr>
+      <tr><td><b>Volley thuận/trái</b></td><td>Đánh bóng <b>chưa nảy</b> ở lưới, chặn ngắn.</td><td>Continental (2)</td><td>Ở lưới, dứt điểm nhanh.</td><td>Trung bình</td></tr>
+      <tr><td><b>Half-volley</b></td><td>Đánh ngay khi bóng vừa chạm đất.</td><td>Continental (2)</td><td>Bị kẹt giữa sân, chống chế.</td><td>Khó</td></tr>
+      <tr><td><b>Overhead / Smash</b></td><td>Đập bóng cao trên đầu như giao bóng.</td><td>Continental (2)</td><td>Đối thủ lốp cao — dứt điểm.</td><td>Trung bình</td></tr>
+      <tr><td><b>Drop volley</b></td><td>Volley chạm nhẹ cho bóng chết sát lưới.</td><td>Continental (2)</td><td>Đối thủ ở sâu cuối sân.</td><td>Khó</td></tr>
+      <tr><td><b>Approach shot</b></td><td>Cú đánh trên đà tiến lên lưới (thường slice sâu).</td><td>Continental (2)</td><td>Có bóng ngắn, muốn lên lưới.</td><td>Trung bình</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <h3>④ Cú đặc biệt / chiến thuật</h3>
+    <table class="tbl">
+      <tr><th>Cú</th><th>Là gì</th><th>Grip</th><th>Khi nào dùng</th><th>Độ khó</th></tr>
+      <tr><td><b>Lob (bỏ cao)</b></td><td>Đánh vồng thật cao qua đầu người ở lưới.</td><td>tuỳ cú (topspin/slice)</td><td>Đối thủ áp sát lưới; thủ hoặc phản công.</td><td>Trung bình</td></tr>
+      <tr><td><b>Drop shot (bỏ nhỏ)</b></td><td>Cắt nhẹ cho bóng rơi ngay sau lưới, chết nhanh.</td><td>Continental (2)</td><td>Đối thủ đứng sâu sau baseline.</td><td>Khó</td></tr>
+      <tr><td><b>Passing shot</b></td><td>Đánh xuyên qua bên người đang lên lưới.</td><td>theo forehand/backhand</td><td>Đối thủ lên lưới, đánh né tầm với.</td><td>Trung bình</td></tr>
+      <tr><td><b>Swinging volley</b></td><td>Volley có vung như groundstroke với bóng nổi cao.</td><td>forehand grip</td><td>Bóng nổi lơ lửng, tấn công sớm.</td><td>Khó</td></tr>
+      <tr><td><b>Tweener / cú khó</b></td><td>Đánh xuyên hạ bộ khi bị lốp qua đầu (biểu diễn).</td><td>—</td><td>Chạy đuổi bóng lốp, quay lưng.</td><td>Rất khó</td></tr>
+    </table>
+    <p class="tag">Người mới nên ưu tiên theo thứ tự: <b>Forehand → Backhand → Serve phẳng → Return → Volley → Smash</b>. Các cú "đặc biệt" (drop, lob, passing) học sau khi cú nền đã chắc.</p>
+  </div>
+</section>
+
+<!-- ================= DECIDE ================= -->
+<section class="tab" id="decide">
+  <h2 class="sec"><span class="dot"></span>Chọn cú &amp; nghĩ trước một quả</h2>
+  <p class="lead">Biết các cú là một chuyện; biết <b>khi nào đánh cú nào &amp; điều gì xảy ra tiếp</b> mới là chơi tennis. Chọn một tình huống bạn vừa gặp, xem nên làm gì và đối thủ sẽ trả ra sao. Tập <b>nghĩ trước 1 quả</b>.</p>
+
+  <div class="shotpicker" id="shotpicker">
+    <button data-s="serve" class="active">Tôi vừa GIAO bóng</button>
+    <button data-s="deep">Tôi đánh SÂU (rally)</button>
+    <button data-s="short">Tôi có BÓNG NGẮN</button>
+    <button data-s="wide">Tôi bị KÉO RỘNG</button>
+    <button data-s="oppnet">Đối thủ LÊN LƯỚI</button>
+  </div>
+
+  <div class="tree show" id="t_serve">
+    <div class="card">
+      <h3>Sau khi giao bóng — tôi đang <span class="pill neu">chủ động</span></h3>
+      <p class="tag">Giao xong <b>đứng vững sau baseline, split-step</b> ngay khi đối thủ chạm bóng trả. Ba khả năng:</p>
+      <div class="branch">
+        <div class="node win"><div class="resp">Đối thủ trả bóng yếu, nổi giữa sân</div>
+          <div class="act">→ Bước vào <b>forehand/backhand tấn công sâu &amp; chéo</b> vào điểm yếu (thường trái tay). Quả giao mạnh vừa tạo ra cơ hội này.</div>
+          <div class="why">Người mới trả giao hay nổi bóng — chực sẵn để "ăn" quả thứ hai.</div></div>
+        <div class="node"><div class="resp">Đối thủ trả sâu, chắc</div>
+          <div class="act">→ Vào <b>rally kiên nhẫn</b>: đánh chéo sâu có topspin, chờ bóng ngắn để tấn công. Đừng cố ăn ngay.</div>
+          <div class="why">Trả tốt thì thế cân bằng — thắng bằng bền bỉ, không bằng liều.</div></div>
+        <div class="node risk"><div class="resp">Giao 1 hỏng → phải giao 2</div>
+          <div class="act">→ Giao 2 <b>chắc chắn</b> (kick/slice nhẹ, vào ô), chấp nhận nhẹ hơn. <b>Tuyệt đối tránh double fault</b>.</div>
+          <div class="why">Mất điểm vì double fault là mất "không công" — tệ nhất trong tennis.</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tree" id="t_deep">
+    <div class="card">
+      <h3>Sau khi đánh sâu trong rally — <span class="pill neu">giằng co cuối sân</span></h3>
+      <p class="tag">Đánh sâu xong <b>hồi vị về giữa &amp; split-step</b>. Bóng sâu ép đối thủ, giờ đọc quả trả:</p>
+      <div class="branch">
+        <div class="node win"><div class="resp">Đối thủ trả NGẮN (bóng rơi trong sân, nông)</div>
+          <div class="act">→ <b>Bước vào tấn công</b>: đánh mạnh sâu vào góc, hoặc <b>approach + lên lưới</b>. Đây là quả mở điểm.</div>
+          <div class="why">Bóng ngắn = lời mời tấn công. Người mới hay bỏ lỡ vì đứng lì cuối sân.</div></div>
+        <div class="node"><div class="resp">Đối thủ trả sâu lại</div>
+          <div class="act">→ Tiếp tục <b>chéo sâu, kiên nhẫn</b>; ép dần vào trái tay để họ hụt hơi/đánh hỏng.</div>
+          <div class="why">Ai đánh sâu ổn định hơn sẽ được quả ngắn để dứt điểm.</div></div>
+        <div class="node risk"><div class="resp">Đối thủ đổi hướng đánh dọc dây</div>
+          <div class="act">→ Đọc sớm, <b>chạy chéo bằng cross-step</b>, đỡ an toàn sâu; nếu bị ép thì <b>slice sâu</b> để có thời gian về.</div>
+          <div class="why">Đổi hướng làm bạn phải chạy xa — ưu tiên đưa bóng vào sân, đừng cố đánh đẹp khi mất thế.</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tree" id="t_short">
+    <div class="card">
+      <h3>Khi có bóng ngắn — <span class="pill atk">cơ hội tấn công</span></h3>
+      <p class="tag">Bóng đối thủ rơi nông. <b>Bước vào</b>, quyết định nhanh — đây là lúc dễ ăn điểm nhất.</p>
+      <div class="branch">
+        <div class="node win"><div class="resp">Bóng đủ cao &amp; ngon</div>
+          <div class="act">→ <b>Đánh mạnh sâu vào góc trống</b> (chéo hoặc dọc dây), rồi <b>theo lên lưới</b> để bắt quả trả yếu.</div>
+          <div class="why">Bóng cao ngắn là quả tấn công tiêu chuẩn — đừng đánh nhẹ trả về giữa.</div></div>
+        <div class="node"><div class="resp">Bóng thấp/khó nhưng vẫn ngắn</div>
+          <div class="act">→ <b>Approach bằng slice sâu</b> vào góc (bóng lết khó đánh) rồi lên lưới, split-step chờ passing.</div>
+          <div class="why">Slice giữ bóng thấp, cho bạn thời gian tiến lên.</div></div>
+        <div class="node risk"><div class="resp">Đối thủ đứng lùi sâu sau baseline</div>
+          <div class="act">→ Cân nhắc <b>drop shot (bỏ nhỏ)</b> cho bóng chết sát lưới — họ ở xa không kịp lên.</div>
+          <div class="why">Drop chỉ hiệu quả khi đối thủ ở xa; drop non/cao khi họ gần = bị vụt chết.</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tree" id="t_wide">
+    <div class="card">
+      <h3>Khi bị kéo rộng — <span class="pill def">phòng thủ, ưu tiên sống sót</span></h3>
+      <p class="tag">Bạn phải chạy xa ra biên. Mục tiêu số 1: <b>đưa bóng vào sân &amp; có thời gian về</b>, không phải ăn điểm.</p>
+      <div class="branch">
+        <div class="node win"><div class="resp">Kịp tới bóng, còn thăng bằng</div>
+          <div class="act">→ Đánh <b>chéo sâu</b> (đường an toàn, kéo đối thủ ngược lại) rồi <b>chạy chéo về giữa</b> ngay.</div>
+          <div class="why">Chéo sâu cho bạn nhiều thời gian hồi vị nhất; đừng đánh dọc dây mạo hiểm khi đang chạy.</div></div>
+        <div class="node"><div class="resp">Tới bóng muộn, với xa</div>
+          <div class="act">→ <b>Slice sâu &amp; cao</b> hoặc <b>lob</b> để "mua thời gian" về vị trí; chấp nhận thế thủ.</div>
+          <div class="why">Bóng cao/sâu bay lâu = bạn có thời gian về giữa trước quả tiếp.</div></div>
+        <div class="node risk"><div class="resp">Cố đánh winner khi đang chạy</div>
+          <div class="act">→ ⚠️ <b>Đừng.</b> Đây là lỗi chọn cú của người mới — đánh mạnh dọc dây khi mất thăng bằng → hỏng hoặc để hở nửa sân.</div>
+          <div class="why">Từ thế xấu, một cú an toàn thắng một cú đẹp mạo hiểm.</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tree" id="t_oppnet">
+    <div class="card">
+      <h3>Khi đối thủ lên lưới — <span class="pill neu">phải xuyên hoặc vượt qua họ</span></h3>
+      <p class="tag">Đối thủ áp sát lưới chực volley. Ba lựa chọn, đọc vị trí của họ:</p>
+      <div class="branch">
+        <div class="node win"><div class="resp">Họ đứng lệch một bên</div>
+          <div class="act">→ <b>Passing shot</b>: đánh xuyên qua <b>bên trống</b> (thường dọc dây), thấp qua lưới.</div>
+          <div class="why">Bóng thấp buộc họ volley từ dưới lên — khó dứt điểm, dễ nổi cho bạn.</div></div>
+        <div class="node"><div class="resp">Họ áp SÁT lưới</div>
+          <div class="act">→ <b>Lob (bỏ cao)</b> qua đầu ra sau; tốt nhất là <b>lob topspin</b> cắm xuống nhanh.</div>
+          <div class="why">Áp sát lưới thì sau lưng trống — lob buộc họ lùi, mất thế công.</div></div>
+        <div class="node risk"><div class="resp">Bạn cuống, đánh thẳng vào người họ</div>
+          <div class="act">→ ⚠️ Trừ khi cố tình <b>đánh vào thân</b> (cũng là một cách), đánh ngang tầm với của họ = bị <b>volley chết</b> ngay.</div>
+          <div class="why">Người ở lưới mạnh nhất trong tầm với — luôn đánh <b>né sang bên</b> hoặc <b>qua đầu</b>.</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout"><b>Thói quen vàng:</b> trước mỗi cú, chớp nhoáng tự hỏi <i>"đánh xong bóng đi đâu, mình đứng đâu, đối thủ trả mạnh nhất vào đâu?"</i>. Chỉ cần nghĩ trước <b>một quả</b> thôi đã hơn hẳn phần lớn người mới chỉ "thấy bóng là vụt".</div>
+</section>
+
+<!-- ================= TACTICS ================= -->
+<section class="tab" id="tactics">
+  <h2 class="sec"><span class="dot"></span>Điểm rơi &amp; chiến thuật cơ bản</h2>
+  <p class="lead">Người mới không cần chiến thuật phức tạp. Chỉ cần nắm <b>vài quy tắc điểm rơi an toàn</b> là đã thắng phần lớn đối thủ cùng trình — vì họ tự đánh hỏng trước.</p>
+
+  <div class="card">
+    <div class="courtwrap">
+      <div class="courtbox" id="t_cross"><div class="courtcap">Đánh chéo (vàng) an toàn hơn: lưới thấp hơn ở giữa &amp; sân dài hơn. Dọc dây (đỏ) hiểm nhưng rủi ro.</div></div>
+      <div class="courtnote">
+        <h3 style="margin-top:0">Quy tắc 1 — Ưu tiên đánh CHÉO (cross-court)</h3>
+        <ul class="clean">
+          <li>Đường chéo <b>dài hơn</b> đường dọc → nhiều chỗ rơi hơn, ít ra ngoài.</li>
+          <li>Lưới <b>thấp ở giữa (0,914 m)</b>, cao ở hai cột → đánh chéo qua giữa lưới an toàn hơn.</li>
+          <li>Đánh chéo giúp bạn <b>hồi vị dễ</b> (đối thủ khó bẻ ngược góc).</li>
+          <li><b>Dọc dây (down-the-line)</b> chỉ dùng để đổi hướng bất ngờ khi có bóng ngon — rủi ro hơn.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="courtwrap">
+      <div class="courtbox" id="t_deepzone"><div class="courtcap">Ngắm sâu — vùng an toàn cách baseline ~1–2 m, không ngắm sát vạch</div></div>
+      <div class="courtnote">
+        <h3 style="margin-top:0">Quy tắc 2 — Đánh SÂU &amp; qua lưới có dung sai</h3>
+        <ul class="clean">
+          <li>Ngắm bóng rơi <b>sâu (~1–2 m trước baseline)</b> → đẩy đối thủ ra sau, họ khó tấn công.</li>
+          <li><b>Cho bóng qua lưới cao ~0,5–1 m</b> (dùng topspin) thay vì cố lướt sát mép — sát mép là mời bóng dính lưới.</li>
+          <li>Đừng ngắm sát vạch: ngắm <b>vào trong vạch một chút</b>, chấp nhận biên an toàn.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid c2">
+    <div class="card">
+      <h3><span class="pill neu">3</span> Ép vào điểm yếu</h3>
+      <ul class="clean">
+        <li>Đa số người mới <b>trái tay yếu hơn</b> → dồn bóng sâu vào trái tay đối thủ.</li>
+        <li>Kéo đối thủ <b>ra rộng một bên</b> rồi đánh vào <b>khoảng trống bên kia</b>.</li>
+        <li>Đối thủ ngại di chuyển lên–xuống → xen <b>bóng sâu</b> và <b>bóng ngắn (drop)</b>.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3><span class="pill neu">4</span> Kỷ luật &amp; kiên nhẫn</h3>
+      <ul class="clean">
+        <li><b>Bóng qua lưới nhiều lần</b> thắng bóng đẹp đánh hỏng — nhất là ở trình mới.</li>
+        <li>Giao 1 hỏng thì giao 2 <b>chắc</b>, chấp nhận nhẹ hơn để tránh double fault.</li>
+        <li>Chọn <b>1 mục tiêu mỗi cú</b> (sâu/chéo/vào trái tay) thay vì đánh vu vơ.</li>
+        <li>Sau mỗi điểm, hỏi <b>"mình mất điểm vì đánh vội hay đứng sai?"</b> để sửa.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="callout"><b>Chiến thuật một câu cho người mới:</b> <i>giao vào ô → đánh chéo sâu có topspin → về giữa split-step → lặp lại, kiên nhẫn hơn đối thủ.</i> Chỉ vậy thôi đã đủ để chơi những trận đầu tiên rất ổn.</div>
+</section>
+
+<!-- ================= MISTAKES ================= -->
+<section class="tab" id="mistakes">
+  <h2 class="sec"><span class="dot"></span>Lỗi thường gặp của người mới &amp; cách sửa</h2>
+  <p class="lead">Sửa đúng mấy lỗi dưới đây là tiến bộ nhanh hơn tập thêm giờ. Đa số lỗi "đánh hỏng" đến từ <b>chân &amp; chuẩn bị</b>, không phải từ tay.</p>
+
+  <div class="card">
+    <table class="tbl">
+      <tr><th>Lỗi</th><th>Hậu quả</th><th>Cách sửa</th></tr>
+      <tr><td><b>Chuẩn bị trễ</b> (đợi bóng tới mới lùi vợt)</td><td>Đánh vội, chạm bóng sau người, bóng loạn</td><td><b>Xoay vai &amp; đưa vợt ra sau ngay</b> khi đọc được hướng bóng.</td></tr>
+      <tr><td><b>Không split-step</b></td><td>Xuất phát trễ, luôn tới bóng muộn</td><td>Nhún nhẹ đúng lúc đối thủ chạm bóng — biến thành phản xạ.</td></tr>
+      <tr><td><b>Chạm bóng quá gần / ngang người</b></td><td>Gập tay, không có lực, mặt vợt loạn</td><td>Bước điều chỉnh để <b>chạm bóng phía trước</b>, cách người một tầm tay thoải mái.</td></tr>
+      <tr><td><b>Cầm vợt quá chặt</b></td><td>Cứng tay, đau khuỷu, mất cảm giác</td><td>Cầm lỏng vừa, <b>siết nhẹ lúc chạm</b>.</td></tr>
+      <tr><td><b>Chỉ vung tay, không dùng chân/hông</b></td><td>Yếu lực, sai nhịp</td><td>Đạp chân → xoay hông → mới tới tay. Lực đi từ đất lên.</td></tr>
+      <tr><td><b>Cố đánh mạnh mọi quả</b></td><td>Bóng ra ngoài/dính lưới liên tục</td><td>Đánh <b>60–70% lực</b> có topspin, ưu tiên vào sân &amp; sâu.</td></tr>
+      <tr><td><b>Đánh xong đứng ngắm</b></td><td>Bị đánh vào chỗ trống</td><td><b>Bật về giữa</b> &amp; split-step ngay sau cú đánh.</td></tr>
+      <tr><td><b>Đứng lì ở "đất chết"</b> (giữa sân)</td><td>Bóng nảy vào chân, phải half-volley</td><td>Đứng <b>sau baseline</b> khi thủ, hoặc <b>lên hẳn lưới</b> khi công — đừng đứng giữa.</td></tr>
+      <tr><td><b>Toss giao bóng lệch</b></td><td>Phải rướn/gập, giao không ổn định</td><td>Tập <b>tung bóng chuẩn</b> riêng; toss hơi chếch trước, cao quá đầu.</td></tr>
+      <tr><td><b>Giao 2 đánh liều như giao 1</b></td><td>Double fault, mất điểm không</td><td>Giao 2 <b>chắc chắn</b> (kick/slice nhẹ), chấp nhận nhẹ hơn.</td></tr>
+    </table>
+  </div>
+
+  <div class="callout"><b>Tự soi mình nhanh:</b> quay video một buổi đánh bằng điện thoại đặt sau lưng. Bạn sẽ thấy ngay hai thứ: có <b>xoay vai sớm</b> không, và có <b>bật về giữa</b> sau mỗi cú không. Sửa hai thứ đó trước.</div>
+</section>
+
+<!-- ================= TRAIN ================= -->
+<section class="tab" id="train">
+  <h2 class="sec"><span class="dot"></span>Lộ trình luyện từ con số 0</h2>
+  <p class="lead">Thứ tự học có ích hơn tập bừa. Dưới đây là lộ trình gợi ý — mỗi giai đoạn chỉ chuyển tiếp khi cú trước đã <b>tương đối ổn định</b> (đưa bóng vào sân đều).</p>
+
+  <div class="grid c2">
+    <div class="card">
+      <h3>Giai đoạn 1 — Làm quen (tuần đầu)</h3>
+      <ul class="clean">
+        <li><b>Cầm vợt đúng:</b> Eastern forehand &amp; Continental; tập đổi qua lại.</li>
+        <li><b>Cảm giác bóng:</b> tâng bóng lên/xuống bằng mặt vợt; đập bóng xuống đất đều.</li>
+        <li><b>Tư thế chờ &amp; split-step</b> không bóng (shadow).</li>
+        <li><b>Forehand nhẹ</b> với người tung bóng tay, tập chạm bóng phía trước.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Giai đoạn 2 — Groundstroke (vài tuần)</h3>
+      <ul class="clean">
+        <li><b>Forehand &amp; backhand</b> đánh qua lại (rally) chậm, đếm số lần liên tục qua lưới.</li>
+        <li>Thêm <b>topspin nhẹ</b> (low-to-high), ngắm qua lưới cao vào sân.</li>
+        <li><b>Footwork:</b> bước điều chỉnh, hồi vị về giữa sau mỗi cú.</li>
+        <li>Mục tiêu: rally <b>10 quả liên tục</b> không hỏng.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Giai đoạn 3 — Giao bóng &amp; lưới</h3>
+      <ul class="clean">
+        <li><b>Toss chuẩn</b> (20 quả/buổi), rồi giao phẳng nhẹ vào ô.</li>
+        <li><b>Volley</b> ở lưới với người tung — chặn ngắn, mặt vợt chắc.</li>
+        <li><b>Smash</b> nhẹ với bóng lốp cao.</li>
+        <li>Ghép <b>giao → vào ô → rally</b> thành điểm thật.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Giai đoạn 4 — Chơi điểm &amp; mở rộng</h3>
+      <ul class="clean">
+        <li>Chơi <b>điểm thật</b>, áp quy tắc: chéo &amp; sâu, kiên nhẫn.</li>
+        <li>Học <b>slice</b> (đỡ bóng khó), <b>drop &amp; lob</b> khi cú nền đã chắc.</li>
+        <li>Nâng forehand lên <b>Semi-Western</b> nếu muốn thêm topspin.</li>
+        <li>Ghi lại lỗi lặp sau mỗi buổi để sửa có trọng tâm.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Bài tập tự tập không cần đối thủ</h3>
+    <table class="tbl">
+      <tr><th>Bài</th><th>Cách làm</th><th>Rèn gì</th></tr>
+      <tr><td><b>Đánh tường</b></td><td>Đánh forehand/backhand vào tường, giữ bóng liên tục.</td><td>Nhịp, cảm giác, chuẩn bị sớm.</td></tr>
+      <tr><td><b>Shadow swing</b></td><td>Vung cú đánh trước gương, không bóng, chú ý xoay vai &amp; kết thúc.</td><td>Kỹ thuật động tác, cơ nhớ.</td></tr>
+      <tr><td><b>Tung &amp; bắt (toss)</b></td><td>Chỉ tung bóng giao rồi bắt lại, kiểm tra bóng rơi đúng điểm.</td><td>Toss ổn định cho serve.</td></tr>
+      <tr><td><b>Split-step theo tín hiệu</b></td><td>Người tập vẫy tay trái/phải, bạn split-step rồi bật đúng hướng.</td><td>Phản xạ chân.</td></tr>
+      <tr><td><b>Rổ bóng (basket)</b></td><td>Đánh liên tục một rổ bóng vào một mục tiêu (ô sâu/góc).</td><td>Điểm rơi, độ đều.</td></tr>
+    </table>
+  </div>
+
+  <div class="callout"><b>Tổng kết một câu:</b> tennis nhập môn giỏi = <b>cầm vợt đúng</b> + <b>chân tới bóng đúng lúc</b> + <b>chuẩn bị sớm, chạm bóng phía trước</b> + <b>đưa bóng qua lưới chéo &amp; sâu, kiên nhẫn</b>. Cú đánh mạnh và cú đặc biệt để dành cho sau — nền vững thì mọi thứ khác lên nhanh.</div>
+</section>
+
+<footer>
+  🎾 Tennis nhập môn · trang tự học một-file · mở bằng bất kỳ trình duyệt nào.<br>
+  <span class="tag">Bấm các tab ở trên · tab "Cầm vợt" có thể bấm từng kiểu grip để xem bevel &amp; công dụng.</span>
+</footer>
+</div>
+
+<script>
+/* ================= TENNIS COURT ENGINE (perspective) ================= */
+const CW = 10.97, CL = 23.77;            // doubles court metres
+const NET = CL/2, SVC = 6.40, SGL = 1.37; // net at centre, service line dist, singles inset
+const esc = s => (s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;");
+/* one-point perspective: y=0 = far (opponent, narrow/high), y=CL = near (my baseline, wide/low) */
+const VW=300, VH=470, CX=150, HWmax=128, TY=30, BY=440, PERSP=0.9;
+const INVF=1/(1+PERSP), INVDEN=1-INVF;
+const invAt = ym => 1/(1+PERSP*(1-ym/CL));
+function proj(xm,ym){ const inv=invAt(ym), u=(xm/CW)*2-1;
+  return [ CX+u*HWmax*inv, TY+(BY-TY)*((inv-INVF)/INVDEN) ]; }
+const px=(xm,ym)=>proj(xm,ym)[0], py=(xm,ym)=>proj(xm,ym)[1];
+const P2=(x,y)=>{const p=proj(x,y);return p[0].toFixed(1)+','+p[1].toFixed(1);};
+
+function courtBase(){
+  const L="#eef5fa";
+  const seg=(x1,y1,x2,y2,w,op)=>{const a=proj(x1,y1),b=proj(x2,y2);
+    return `<line x1="${a[0].toFixed(1)}" y1="${a[1].toFixed(1)}" x2="${b[0].toFixed(1)}" y2="${b[1].toFixed(1)}" stroke="${L}" stroke-width="${w}" opacity="${op}" stroke-linecap="round"/>`;};
+  const poly=(pts,attr)=>`<polygon points="${pts.map(p=>P2(p[0],p[1])).join(' ')}" ${attr}/>`;
+  const court=[[0,0],[CW,0],[CW,CL],[0,CL]];
+  let s="";
+  // soft drop shadow under the mat
+  s+=`<polygon points="${court.map(p=>{const q=proj(p[0],p[1]);return (q[0]).toFixed(1)+','+(q[1]+7).toFixed(1);}).join(' ')}" fill="#000" opacity=".33" filter="url(#soft)"/>`;
+  // green surround
+  s+=poly([[-0.6,-0.45],[CW+0.6,-0.45],[CW+0.6,CL+0.45],[-0.6,CL+0.45]],`fill="url(#surG)" stroke="#0b3b52" stroke-width="1"`);
+  // court surface + sheen (hard-court blue)
+  s+=poly(court,`fill="url(#cg)"`);
+  s+=poly(court,`fill="url(#sheen)"`);
+  // singles sidelines (full length)
+  s+=seg(SGL,0,SGL,CL,1.5,.8); s+=seg(CW-SGL,0,CW-SGL,CL,1.5,.8);
+  // service lines (between singles sidelines)
+  s+=seg(SGL,NET-SVC,CW-SGL,NET-SVC,1.6,.9); s+=seg(SGL,NET+SVC,CW-SGL,NET+SVC,1.6,.9);
+  // centre service line
+  s+=seg(CW/2,NET-SVC,CW/2,NET+SVC,1.4,.8);
+  // centre marks on baselines
+  s+=seg(CW/2,0,CW/2,0.55,1.6,.85); s+=seg(CW/2,CL-0.55,CW/2,CL,1.6,.85);
+  // outer boundary (bright)
+  s+=poly(court,`fill="none" stroke="${L}" stroke-width="2.4" stroke-linejoin="round"`);
+  // net: shadow band + mesh + tape + posts
+  s+=poly([[0,NET-0.13],[CW,NET-0.13],[CW,NET+0.13],[0,NET+0.13]],`fill="#000" opacity=".16"`);
+  s+=poly([[-0.05,NET-0.1],[CW+0.05,NET-0.1],[CW+0.05,NET+0.1],[-0.05,NET+0.1]],`fill="url(#netpat)" opacity=".92"`);
+  s+=seg(-0.05,NET,CW+0.05,NET,2.4,1);
+  [[0,NET],[CW,NET]].forEach(pp=>{const q=proj(pp[0],pp[1]);
+    s+=`<circle cx="${q[0].toFixed(1)}" cy="${q[1].toFixed(1)}" r="3" fill="#f4f8fb" stroke="#0b3b52" stroke-width="1"/>`;});
+  return s;
+}
+
+function zoneRect(m1,mt,mw,mh,color,label){
+  const c=[[m1,mt],[m1+mw,mt],[m1+mw,mt+mh],[m1,mt+mh]].map(p=>proj(p[0],p[1]));
+  const pts=c.map(p=>p[0].toFixed(1)+','+p[1].toFixed(1)).join(' ');
+  let s=`<polygon points="${pts}" fill="${color}" opacity=".2"/>`;
+  s+=`<polygon points="${pts}" fill="none" stroke="${color}" stroke-width="1.5" stroke-dasharray="6 4" opacity=".9"/>`;
+  if(label){
+    const cx=(c[0][0]+c[1][0]+c[2][0]+c[3][0])/4, cy=(c[0][1]+c[1][1]+c[2][1]+c[3][1])/4;
+    const w=label.length*6.3+14;
+    s+=`<rect x="${(cx-w/2).toFixed(1)}" y="${(cy-9.5).toFixed(1)}" width="${w.toFixed(1)}" height="18" rx="9" fill="#0d1117" opacity=".55"/>`;
+    s+=`<text x="${cx.toFixed(1)}" y="${(cy+4).toFixed(1)}" fill="#fff" font-size="10.5" font-weight="700" text-anchor="middle">${esc(label)}</text>`;
+  }
+  return s;
+}
+
+function player(mX,mY,team,label){
+  const raw = team==="me"?"#3d9bff":team==="mate"?"#37d39b":team==="opp"?"#ff5a5a":"#ff9e3d";
+  const dk  = team==="me"?"#0a2f52":team==="mate"?"#0a3f2e":team==="opp"?"#4a0f0f":"#4a2a08";
+  const [X,Y]=proj(mX,mY), inv=invAt(mY), r=9+5.5*inv;
+  let s=`<ellipse cx="${X.toFixed(1)}" cy="${(Y+r*0.62).toFixed(1)}" rx="${(r*0.92).toFixed(1)}" ry="${(r*0.32).toFixed(1)}" fill="#000" opacity=".28" filter="url(#soft)"/>`;
+  s+=`<circle cx="${X.toFixed(1)}" cy="${Y.toFixed(1)}" r="${r.toFixed(1)}" fill="${raw}" stroke="#0d1117" stroke-width="2"/>`;
+  s+=`<ellipse cx="${X.toFixed(1)}" cy="${(Y-r*0.36).toFixed(1)}" rx="${(r*0.6).toFixed(1)}" ry="${(r*0.42).toFixed(1)}" fill="#fff" opacity=".22"/>`;
+  if(label){ s+=`<text x="${X.toFixed(1)}" y="${(Y+r*0.36).toFixed(1)}" fill="#fff" font-size="${(8.4+3*inv).toFixed(1)}" font-weight="800" text-anchor="middle" style="paint-order:stroke;stroke:${dk};stroke-width:2.6px">${esc(label)}</text>`;}
+  return s;
+}
+
+function arrow(m1x,m1y,m2x,m2y,color,dash){
+  const a=proj(m1x,m1y), b=proj(m2x,m2y), d=dash?`stroke-dasharray="7 6"`:"";
+  let s=`<line x1="${a[0].toFixed(1)}" y1="${a[1].toFixed(1)}" x2="${b[0].toFixed(1)}" y2="${b[1].toFixed(1)}" stroke="#0d1117" stroke-width="4.8" opacity=".22" ${d} stroke-linecap="round"/>`;
+  s+=`<line x1="${a[0].toFixed(1)}" y1="${a[1].toFixed(1)}" x2="${b[0].toFixed(1)}" y2="${b[1].toFixed(1)}" stroke="${color}" stroke-width="2.8" ${d} marker-end="url(#ah-${color.replace('#','')})" stroke-linecap="round"/>`;
+  return s;
+}
+function targetMark(mX,mY,num){
+  const c="#ff3b3b", [X,Y]=proj(mX,mY);
+  let s=`<circle cx="${X.toFixed(1)}" cy="${Y.toFixed(1)}" r="13" fill="${c}" opacity=".18"/>`;
+  s+=`<circle cx="${X.toFixed(1)}" cy="${Y.toFixed(1)}" r="9" fill="none" stroke="#fff" stroke-width="3.6"/>`;
+  s+=`<circle cx="${X.toFixed(1)}" cy="${Y.toFixed(1)}" r="9" fill="none" stroke="${c}" stroke-width="2"/>`;
+  s+=`<circle cx="${X.toFixed(1)}" cy="${Y.toFixed(1)}" r="2.6" fill="${c}"/>`;
+  if(num){ s+=`<circle cx="${(X+12).toFixed(1)}" cy="${(Y-12).toFixed(1)}" r="9" fill="${c}" stroke="#fff" stroke-width="1.6"/>`;
+    s+=`<text x="${(X+12).toFixed(1)}" y="${(Y-12+4).toFixed(1)}" fill="#fff" font-size="12" font-weight="800" text-anchor="middle">${num}</text>`;}
+  return s;
+}
+function shotArrow(x1,y1,x2,y2){
+  const a=proj(x1,y1), b=proj(x2,y2);
+  return `<line x1="${a[0].toFixed(1)}" y1="${a[1].toFixed(1)}" x2="${b[0].toFixed(1)}" y2="${b[1].toFixed(1)}" stroke="#ff3b3b" stroke-width="2" stroke-dasharray="5 5" opacity=".55" stroke-linecap="round"/>`;
+}
+function ballDot(mX,mY){ const [X,Y]=proj(mX,mY), inv=invAt(mY), r=(4+2.5*inv);
+  let s=`<ellipse cx="${X.toFixed(1)}" cy="${(Y+r*0.7).toFixed(1)}" rx="${(r*0.8).toFixed(1)}" ry="${(r*0.3).toFixed(1)}" fill="#000" opacity=".25" filter="url(#soft)"/>`;
+  s+=`<circle cx="${X.toFixed(1)}" cy="${Y.toFixed(1)}" r="${r.toFixed(1)}" fill="#d7f24a" stroke="#5a6b12" stroke-width="1"/>`;
+  s+=`<path d="M ${(X-r).toFixed(1)} ${(Y-r*0.3).toFixed(1)} Q ${X.toFixed(1)} ${(Y+r*0.2).toFixed(1)} ${(X+r).toFixed(1)} ${(Y-r*0.3).toFixed(1)}" fill="none" stroke="#fff" stroke-width=".8" opacity=".8"/>`;
+  return s;
+}
+
+let _uid=0;
+function svg(inner, arrowColors, w){
+  const u=(++_uid);
+  const defs=`
+   <defs>
+    <linearGradient id="cg${u}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1f6fae"/><stop offset="1" stop-color="#155a8f"/></linearGradient>
+    <linearGradient id="surG${u}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#13704e"/><stop offset="1" stop-color="#0d5238"/></linearGradient>
+    <radialGradient id="sheen${u}" cx="50%" cy="15%" r="82%"><stop offset="0" stop-color="#ffffff" stop-opacity=".18"/><stop offset="58%" stop-color="#ffffff" stop-opacity="0"/></radialGradient>
+    <pattern id="netpat${u}" width="5.5" height="5.5" patternUnits="userSpaceOnUse"><path d="M0 0 L5.5 0 M0 2.75 L5.5 2.75 M0 0 L0 5.5 M2.75 0 L2.75 5.5" stroke="#fff" stroke-width=".45" opacity=".55"/></pattern>
+    <filter id="soft${u}" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="2.6"/></filter>
+    ${(arrowColors||[]).map(c=>`<marker id="ah${u}-${c.replace('#','')}" markerWidth="11" markerHeight="11" refX="8" refY="5.5" orient="auto"><path d="M0 0.5 L11 5.5 L0 10.5 L3 5.5 z" fill="${c}"/></marker>`).join("")}
+   </defs>`;
+  const body=inner.replace(/#cg\b/g,`#cg${u}`).replace(/#surG\b/g,`#surG${u}`).replace(/#sheen\b/g,`#sheen${u}`).replace(/#netpat\b/g,`#netpat${u}`).replace(/#soft\b/g,`#soft${u}`).replace(/#ah-/g,`#ah${u}-`);
+  const W=w||262;
+  return `<svg viewBox="0 0 ${VW} ${VH}" width="${W}" height="${Math.round(W*VH/VW)}" xmlns="http://www.w3.org/2000/svg">${defs}${body}</svg>`;
+}
+function placement(hitter, targets, opp){
+  let s=courtBase();
+  (opp||[[CW/2,3.0]]).forEach(o=> s+=player(o[0],o[1],"opp",""));
+  targets.forEach(t=> s+=shotArrow(hitter[0],hitter[1],t.x,t.y));
+  s+=player(hitter[0],hitter[1], hitter[3]||"me", hitter[2]||"Tôi");
+  targets.forEach(t=> s+=targetMark(t.x,t.y,t.n));
+  return svg(s,[]);
+}
+const RED="#ff5d5d", BLUE="#4db1ff", YEL="#d7f24a", GRN="#57d38c", ORA="#ff9e3d";
+
+/* ================= GRIP OCTAGON ENGINE ================= */
+function grip(highlight, marker){
+  const cx=112, cy=112, R=82, VWg=224, VHg=224;
+  const norm=k=>(90-(k-1)*45);                 // outward normal angle (deg) of bevel k
+  const pt=(deg,rad)=>[cx+rad*Math.cos(deg*Math.PI/180), cy-rad*Math.sin(deg*Math.PI/180)];
+  const hi=(Array.isArray(highlight)?highlight:[highlight]).filter(x=>x);
+  let s=`<rect x="0" y="0" width="${VWg}" height="${VHg}" rx="14" fill="url(#gbg)"/>`;
+  // octagon outline
+  let verts=[];
+  for(let k=1;k<=8;k++){ verts.push(pt(norm(k)-22.5,R)); }
+  const vp=verts.map(p=>p[0].toFixed(1)+','+p[1].toFixed(1)).join(' ');
+  // highlighted wedges
+  hi.forEach(k=>{ const a=pt(norm(k)+22.5,R), b=pt(norm(k)-22.5,R);
+    s+=`<polygon points="${cx},${cy} ${a[0].toFixed(1)},${a[1].toFixed(1)} ${b[0].toFixed(1)},${b[1].toFixed(1)}" fill="#d7f24a" opacity=".85"/>`;});
+  s+=`<polygon points="${vp}" fill="#243041" opacity=".55"/>`;
+  s+=`<polygon points="${vp}" fill="none" stroke="#cfe0ef" stroke-width="2.4" stroke-linejoin="round"/>`;
+  // inner ring hint (grip core)
+  s+=`<circle cx="${cx}" cy="${cy}" r="26" fill="#0d1117" opacity=".35"/>`;
+  s+=`<circle cx="${cx}" cy="${cy}" r="26" fill="none" stroke="#5b6b7d" stroke-width="1" stroke-dasharray="3 3"/>`;
+  // bevel edges (spokes) + numbers
+  for(let k=1;k<=8;k++){
+    const va=pt(norm(k)-22.5,R);
+    s+=`<line x1="${cx}" y1="${cy}" x2="${va[0].toFixed(1)}" y2="${va[1].toFixed(1)}" stroke="#3a475a" stroke-width="1" opacity=".6"/>`;
+    const lp=pt(norm(k), R*0.6);
+    const on=hi.indexOf(k)>=0;
+    s+=`<text x="${lp[0].toFixed(1)}" y="${(lp[1]+4).toFixed(1)}" fill="${on?'#0d1117':'#e6edf3'}" font-size="15" font-weight="800" text-anchor="middle">${k}</text>`;
+  }
+  // top label
+  s+=`<text x="${cx}" y="16" fill="#9fb3c8" font-size="10.5" font-weight="700" text-anchor="middle">↑ bevel 1 (mặt trên) · nhìn vào đít cán</text>`;
+  // index-knuckle marker on a bevel
+  if(marker){ const mp=pt(norm(marker), R*0.95);
+    s+=`<circle cx="${mp[0].toFixed(1)}" cy="${mp[1].toFixed(1)}" r="7.5" fill="#ff5d5d" stroke="#fff" stroke-width="2"/>`;
+    const tp=pt(norm(marker), R*1.06);
+    // place caption outside, clamp within view
+    let tx=Math.max(38,Math.min(VWg-38,tp[0])), ty=Math.max(30,Math.min(VHg-10,tp[1]));
+    s+=`<text x="${tx.toFixed(1)}" y="${ty.toFixed(1)}" fill="#ffb0b0" font-size="10" font-weight="800" text-anchor="middle" style="paint-order:stroke;stroke:#0d1117;stroke-width:2.6px">khớp ngón trỏ</text>`;
+  }
+  const u=(++_uid);
+  const defs=`<defs><linearGradient id="gbg${u}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#161d27"/><stop offset="1" stop-color="#0f141c"/></linearGradient></defs>`;
+  const bodyg=s.replace(/#gbg\b/g,`#gbg${u}`);
+  return `<svg viewBox="0 0 ${VWg} ${VHg}" width="230" height="230" xmlns="http://www.w3.org/2000/svg">${defs}${bodyg}</svg>`;
+}
+
+/* ================= SIDE-VIEW TRAJECTORY ENGINE ================= */
+const SVW=320, SVH=176, GND=140, NETX=160, NETTOP=108;
+let _svid=0;
+function sideSvg(inner, colors){
+  const u=(++_svid);
+  const defs=`<defs>
+    <linearGradient id="sky${u}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#173a54"/><stop offset="1" stop-color="#0d2233"/></linearGradient>
+    <linearGradient id="grd${u}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#12664a"/><stop offset="1" stop-color="#0a3d2a"/></linearGradient>
+    <pattern id="netv${u}" width="4" height="4" patternUnits="userSpaceOnUse"><path d="M0 0 L4 0 M0 2 L4 2 M0 0 L0 4 M2 0 L2 4" stroke="#fff" stroke-width=".4" opacity=".5"/></pattern>
+    <filter id="ssoft${u}" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="1.8"/></filter>
+    ${(colors||[]).map(c=>`<marker id="sah${u}-${c.replace('#','')}" markerWidth="11" markerHeight="11" refX="8" refY="5.5" orient="auto"><path d="M0 0.5 L11 5.5 L0 10.5 L3 5.5 z" fill="${c}"/></marker>`).join('')}
+  </defs>`;
+  const body=inner.replace(/#sky\b/g,`#sky${u}`).replace(/#grd\b/g,`#grd${u}`).replace(/#netv\b/g,`#netv${u}`).replace(/#ssoft\b/g,`#ssoft${u}`).replace(/#sah-/g,`#sah${u}-`);
+  return `<svg viewBox="0 0 ${SVW} ${SVH}" width="320" height="${Math.round(320*SVH/SVW)}" xmlns="http://www.w3.org/2000/svg">${defs}${body}</svg>`;
+}
+function svBase(myLabel,oppLabel){
+  let s=`<rect x="0" y="0" width="${SVW}" height="${SVH}" rx="12" fill="url(#sky)"/>`;
+  s+=`<rect x="0" y="${GND}" width="${SVW}" height="${SVH-GND}" fill="url(#grd)"/>`;
+  s+=`<line x1="0" y1="${GND}" x2="${SVW}" y2="${GND}" stroke="#eaf3ee" stroke-width="1.4" opacity=".5"/>`;
+  // baseline ticks
+  s+=`<line x1="26" y1="${GND-3}" x2="26" y2="${GND+3}" stroke="#cfe0d6" stroke-width="2" opacity=".7"/>`;
+  s+=`<line x1="${SVW-26}" y1="${GND-3}" x2="${SVW-26}" y2="${GND+3}" stroke="#cfe0d6" stroke-width="2" opacity=".7"/>`;
+  // net
+  s+=`<ellipse cx="${NETX}" cy="${GND}" rx="9" ry="2.4" fill="#000" opacity=".3" filter="url(#ssoft)"/>`;
+  s+=`<rect x="${NETX-3}" y="${NETTOP}" width="6" height="${GND-NETTOP}" fill="url(#netv)" opacity=".92"/>`;
+  s+=`<rect x="${NETX-4.5}" y="${NETTOP-2.5}" width="9" height="4.5" rx="2" fill="#f4f8fb"/>`;
+  s+=`<text x="14" y="${SVH-8}" fill="#c4d0dc" font-size="10" font-weight="800">◀ ${esc(myLabel||'Sân tôi')}</text>`;
+  s+=`<text x="${SVW-14}" y="${SVH-8}" fill="#c4d0dc" font-size="10" font-weight="800" text-anchor="end">${esc(oppLabel||'Sân đối thủ')} ▶</text>`;
+  return s;
+}
+function svPath(d,color,dash){ const dd=dash?`stroke-dasharray="5 4"`:"";
+  let s=`<path d="${d}" fill="none" stroke="#0d1117" stroke-width="4.2" opacity=".2" ${dd} stroke-linecap="round"/>`;
+  s+=`<path d="${d}" fill="none" stroke="${color}" stroke-width="2.6" ${dd} marker-end="url(#sah-${color.replace('#','')})" stroke-linecap="round"/>`;
+  return s; }
+function svBall(x,y){
+  let s=`<ellipse cx="${x}" cy="${y+6}" rx="4" ry="1.5" fill="#000" opacity=".22" filter="url(#ssoft)"/>`;
+  s+=`<circle cx="${x}" cy="${y}" r="3.3" fill="#d7f24a" stroke="#5a6b12" stroke-width=".8"/>`;
+  return s; }
+function svT(x,y,color,str,size,anchor){ return `<text x="${x}" y="${y}" fill="${color}" font-size="${size||8.5}" font-weight="700" text-anchor="${anchor||'middle'}">${esc(str)}</text>`; }
+
+/* ---------- top-down FEET diagram (stance) ---------- */
+function feet(kind){
+  const W=224,H=180; let s=`<rect x="0" y="0" width="${W}" height="${H}" rx="14" fill="url(#fbg)"/>`;
+  // net direction indicator (up = towards net)
+  s+=`<text x="${W/2}" y="18" fill="#8ec7ff" font-size="10" font-weight="800" text-anchor="middle">↑ hướng LƯỚI</text>`;
+  s+=`<line x1="20" y1="150" x2="${W-20}" y2="150" stroke="#4a586b" stroke-width="1.4" stroke-dasharray="5 4" opacity=".7"/>`;
+  s+=`<text x="${W-22}" y="164" fill="#6b7684" font-size="9" text-anchor="end">baseline</text>`;
+  // incoming ball from upper-right
+  const foot=(x,y,rot,c)=>`<g transform="translate(${x},${y}) rotate(${rot})"><ellipse cx="0" cy="0" rx="10" ry="17" fill="${c}" stroke="#0d1117" stroke-width="1.6"/><ellipse cx="0" cy="-9" rx="7" ry="7" fill="${c}" stroke="#0d1117" stroke-width="1.2"/></g>`;
+  // ball path arrow (from opponent, upper area, towards player)
+  s+=`<path d="M ${W-30} 40 Q 150 70 118 96" fill="none" stroke="#d7f24a" stroke-width="2.4" marker-end="url(#fah)" stroke-linecap="round"/>`;
+  s+=`<circle cx="${W-30}" cy="40" r="4" fill="#d7f24a" stroke="#5a6b12" stroke-width="1"/>`;
+  let back,front,cap;
+  if(kind==="neutral"){ // shoulders sideways, front foot stepping toward net
+    back=foot(96,120,10,"#3d9bff"); front=foot(120,86,4,"#37d39b");
+    cap="Chân trước bước về lưới · vai xoay ngang";
+  } else if(kind==="open"){ // both feet parallel to baseline
+    back=foot(92,116,88,"#3d9bff"); front=foot(132,116,90,"#37d39b");
+    cap="Hai chân ~song song baseline · xoay hông";
+  } else { // semi-open
+    back=foot(94,120,55,"#3d9bff"); front=foot(126,100,30,"#37d39b");
+    cap="Bán mở · chân trước hé mở";
+  }
+  s+=back+front;
+  s+=`<circle cx="120" cy="96" r="5" fill="#d7f24a" stroke="#5a6b12" stroke-width="1"/>`;
+  s+=`<text x="120" y="88" fill="#e4f27b" font-size="8.5" font-weight="700" text-anchor="middle">chạm bóng phía trước</text>`;
+  s+=`<text x="${W/2}" y="${H-6}" fill="#9fb3c8" font-size="9" font-weight="600" text-anchor="middle">${esc(cap)}</text>`;
+  const u=(++_uid);
+  const defs=`<defs><linearGradient id="fbg${u}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#161d27"/><stop offset="1" stop-color="#0f141c"/></linearGradient><marker id="fah${u}" markerWidth="10" markerHeight="10" refX="7" refY="5" orient="auto"><path d="M0 1 L10 5 L0 9 L2.5 5 z" fill="#d7f24a"/></marker></defs>`;
+  return `<svg viewBox="0 0 ${W} ${H}" width="230" height="${Math.round(230*H/W)}" xmlns="http://www.w3.org/2000/svg">${defs}${s.replace(/#fbg\b/g,'#fbg'+u).replace(/#fah\b/g,'#fah'+u)}</svg>`;
+}
+
+/* ================= DIAGRAM DEFINITIONS ================= */
+function d_court_map(){
+  let s=courtBase();
+  s+=zoneRect(SGL,NET-SVC,CW-2*SGL,SVC-0.1,YEL,"ô giao bóng");
+  s+=zoneRect(SGL,NET+2.0,CW-2*SGL,3.6,RED,"đất chết");
+  s+=player(CW/2,21.2,"me","Tôi");
+  s+=player(CW/2,2.6,"opp","Đối");
+  s+=ballDot(CW/2-1.2,8.0);
+  return svg(s,[]);
+}
+
+/* grips */
+function g_bevel_map(){ return grip([],null); }
+function g_conti(){ return grip(2,2); }
+function g_eastfh(){ return grip(3,3); }
+function g_semiwest(){ return grip(4,4); }
+function g_west(){ return grip(5,5); }
+function g_eastbh(){ return grip(1,1); }
+function g_twobh(){ return grip([2,3],2); }
+
+/* footwork / stance */
+function f_ready(){ let s=courtBase();
+  s+=zoneRect(CW/2-1.6,CL-1.2,3.2,1.0,BLUE,"");
+  s+=player(CW/2,21.4,"me","Chờ");
+  s+=arrow(CW/2,21.4,SGL+0.6,17.0,BLUE,true);
+  s+=arrow(CW/2,21.4,CW-SGL-0.6,17.0,BLUE,true);
+  s+=`<text x="${px(CW/2,23.2).toFixed(1)}" y="${py(CW/2,23.2).toFixed(1)}" fill="#9ecbff" font-size="10.5" font-weight="800" text-anchor="middle" style="paint-order:stroke;stroke:#0d1117;stroke-width:2.4px">giữa baseline</text>`;
+  return svg(s,[BLUE]); }
+function f_split(){ let s=courtBase();
+  s+=player(CW/2,21.2,"me","Nhún");
+  s+=player(CW/2,2.6,"opp","Đối");
+  s+=ballDot(CW/2,4.4);
+  s+=`<text x="${px(CW/2,4.0).toFixed(1)}" y="${py(CW/2,4.0).toFixed(1)-8}" fill="#e4f27b" font-size="10" font-weight="800" text-anchor="middle" style="paint-order:stroke;stroke:#0d1117;stroke-width:2.4px">đối thủ CHẠM bóng</text>`;
+  s+=arrow(CW/2,21.2,CW/2-0.02,19.6,YEL,false);
+  s+=`<text x="${px(CW/2,18.7).toFixed(1)}" y="${py(CW/2,18.7).toFixed(1)}" fill="#e4f27b" font-size="10" font-weight="800" text-anchor="middle" style="paint-order:stroke;stroke:#0d1117;stroke-width:2.4px">→ nhún tách chân</text>`;
+  return svg(s,[YEL]); }
+function f_neutral(){ return feet("neutral"); }
+function f_open(){ return feet("open"); }
+function f_semiopen(){ return feet("semiopen"); }
+function f_move(){ let s=courtBase();
+  s+=player(CW/2,21.0,"me","");
+  s+=ballDot(CW-SGL-0.8,15.5);
+  s+=arrow(CW/2,21.0,CW-SGL-1.3,16.6,BLUE,false);
+  s+=`<text x="${px(2.0,19.0).toFixed(1)}" y="${py(2.0,19.0).toFixed(1)}" fill="#9ecbff" font-size="10" font-weight="800" text-anchor="middle" style="paint-order:stroke;stroke:#0d1117;stroke-width:2.4px">bước lớn tới</text>`;
+  s+=`<text x="${px(CW-2.4,14.2).toFixed(1)}" y="${py(CW-2.4,14.2).toFixed(1)}" fill="#d7f24a" font-size="9.5" font-weight="800" text-anchor="middle" style="paint-order:stroke;stroke:#0d1117;stroke-width:2.4px">bước nhỏ căn</text>`;
+  return svg(s,[BLUE]); }
+function f_recover(){ let s=courtBase();
+  s+=player(CW-SGL-0.8,20.4,"me","Đánh");
+  s+=arrow(CW-SGL-0.8,20.4,CW/2,21.2,GRN,true);
+  s+=ballDot(CW-SGL-0.8,17.8);
+  s+=`<text x="${px(CW/2-0.4,22.9).toFixed(1)}" y="${py(CW/2-0.4,22.9).toFixed(1)}" fill="#7ee0b8" font-size="10" font-weight="800" text-anchor="middle" style="paint-order:stroke;stroke:#0d1117;stroke-width:2.4px">bật chéo về giữa</text>`;
+  return svg(s,[GRN]); }
+
+/* groundstrokes side-view */
+function gs_arcs(){ let s=svBase("Tôi","Đối thủ");
+  // topspin: high clearance, dips, bounces high
+  s+=svPath(`M 34 120 Q ${NETX} 40 250 108`,"#d7f24a",false); s+=svBall(250,108);
+  // flat: fast low straight-ish
+  s+=svPath(`M 30 118 Q ${NETX} 92 262 118`,"#ff5d5d",false); s+=svBall(262,118);
+  // slice: floats, stays low after
+  s+=svPath(`M 30 116 Q ${NETX} 96 236 128`,"#4db1ff",true); s+=svBall(236,128);
+  s+=svT(96,44,"#d7f24a","topspin",8.5);
+  s+=svT(250,102,"#ff9c9c","flat",8);
+  s+=svT(224,138,"#9ecbff","slice",8);
+  return sideSvg(s,["#d7f24a","#ff5d5d","#4db1ff"]); }
+function gs_fh_contact(){ let s=svBase();
+  s+=svPath(`M 40 124 Q ${NETX-8} 44 250 110`,"#d7f24a",false); s+=svBall(250,110);
+  s+=`<circle cx="70" cy="112" r="6" fill="none" stroke="#d7f24a" stroke-width="2"/>`;
+  s+=svT(70,98,"#d7f24a","chạm phía TRƯỚC, ngang eo",8);
+  s+=svT(150,60,"#e4f27b","quét thấp → cao (topspin)",8);
+  return sideSvg(s,["#d7f24a"]); }
+function gs_bh_contact(){ let s=svBase();
+  s+=svPath(`M 40 124 Q ${NETX-8} 46 250 112`,"#8ec7ff",false); s+=svBall(250,112);
+  s+=`<circle cx="72" cy="112" r="6" fill="none" stroke="#8ec7ff" stroke-width="2"/>`;
+  s+=svT(74,98,"#8ec7ff","hai tay · chạm phía trước",8);
+  s+=svT(150,62,"#bcd8f5","xoay vai nhiều hơn forehand",8);
+  return sideSvg(s,["#8ec7ff"]); }
+
+/* serve */
+function s_serve_court(){ let s=courtBase();
+  s+=zoneRect(SGL,NET-SVC,(CW-2*SGL)/2,SVC-0.1,YEL,"ô giao chéo");
+  s+=player(CW/2+0.7,22.6,"me","Giao");
+  s+=shotArrow(CW/2+0.7,22.6,SGL+0.7,7.0);
+  s+=shotArrow(CW/2+0.7,22.6,CW/2-0.5,6.5);
+  s+=shotArrow(CW/2+0.7,22.6,2.4,6.6);
+  s+=targetMark(CW/2-0.5,6.5,1);
+  s+=targetMark(2.4,6.6,2);
+  s+=targetMark(SGL+0.7,7.0,3);
+  s+=`<text x="${px(CW/2-0.5,5.3).toFixed(1)}" y="${py(CW/2-0.5,5.3).toFixed(1)}" fill="#ffb0b0" font-size="9" font-weight="800" text-anchor="middle" style="paint-order:stroke;stroke:#0d1117;stroke-width:2.2px">1 T · 2 thân · 3 rộng</text>`;
+  return svg(s,[]); }
+function s_toss(){ let s=svBase("Tôi","");
+  // toss up and contact high & forward
+  s+=svPath(`M 60 130 Q 74 40 84 34`,"#8ec7ff",false);
+  s+=svBall(86,32);
+  s+=`<circle cx="86" cy="32" r="7" fill="none" stroke="#d7f24a" stroke-width="2"/>`;
+  s+=svT(120,30,"#e4f27b","chạm ở tay DUỖI THẲNG, cao nhất",8,"start");
+  s+=svPath(`M 88 34 Q 150 70 250 120`,"#ff5d5d",false); s+=svBall(250,120);
+  s+=svT(60,146,"#9ecbff","tung hơi chếch trước",8,"start");
+  return sideSvg(s,["#8ec7ff","#ff5d5d"]); }
+function s_serve_types(){ let s=svBase("Tôi","Đối thủ");
+  s+=svPath(`M 40 34 Q 150 66 250 120`,"#ff5d5d",false); s+=svBall(250,120);
+  s+=svPath(`M 40 36 Q 150 60 226 118`,"#4db1ff",true);
+  s+=svPath(`M 40 38 L ${NETX} 74 Q 210 96 208 60`,"#d7f24a",false); s+=svBall(208,60);
+  s+=svT(250,132,"#ff9c9c","flat",8);
+  s+=svT(214,128,"#9ecbff","slice",8);
+  s+=svT(196,50,"#e4f27b","kick (nảy cao)",8);
+  return sideSvg(s,["#ff5d5d","#4db1ff","#d7f24a"]); }
+function s_return(){ let s=courtBase();
+  s+=player(SGL+0.5,23.0,"me","Trả");
+  s+=player(CW/2+0.7,1.4,"opp","Giao");
+  s+=arrow(CW/2+0.7,1.4,SGL+0.9,7.0,ORA,false);
+  s+=ballDot(3.0,10.0);
+  s+=arrow(SGL+0.5,23.0,SGL+0.2,20.4,YEL,false);
+  s+=`<text x="${px(CW-2.6,21.0).toFixed(1)}" y="${py(CW-2.6,21.0).toFixed(1)}" fill="#e4f27b" font-size="9.5" font-weight="800" text-anchor="middle" style="paint-order:stroke;stroke:#0d1117;stroke-width:2.2px">split-step</text>`;
+  return svg(s,[ORA,YEL]); }
+
+/* net play */
+function n_volley(){ let s=courtBase();
+  s+=zoneRect(SGL,NET+0.3,CW-2*SGL,SVC-0.4,YEL,"vùng lưới của tôi");
+  s+=player(CW/2,15.4,"me","Lưới");
+  s+=player(CW/2,2.6,"opp","");
+  s+=shotArrow(CW/2,15.4,SGL+0.8,6.0);
+  s+=shotArrow(CW/2,15.4,CW-SGL-0.8,6.0);
+  s+=targetMark(SGL+0.8,6.0,1);
+  s+=targetMark(CW-SGL-0.8,6.0,2);
+  return svg(s,[]); }
+function n_smash(){ let s=svBase("Tôi","Đối thủ");
+  // opponent lobs high, I smash down
+  s+=svPath(`M 250 122 Q 150 20 66 40`,"#ff9e3d",true);
+  s+=`<circle cx="70" cy="40" r="7" fill="none" stroke="#d7f24a" stroke-width="2"/>`;
+  s+=svPath(`M 72 42 Q 130 78 236 128`,"#ff5d5d",false); s+=svBall(236,128);
+  s+=svT(70,26,"#ffd0a0","đối thủ LỐP cao",8);
+  s+=svT(190,140,"#ff9c9c","đập xuống như giao bóng",8);
+  return sideSvg(s,["#ff9e3d","#ff5d5d"]); }
+function n_half(){ let s=svBase("Tôi","");
+  s+=svPath(`M 40 132 L 96 150`,"#ff5d5d",true);
+  s+=svBall(98,150);
+  s+=svPath(`M 100 150 Q 150 120 250 122`,"#57d38c",false); s+=svBall(250,122);
+  s+=`<circle cx="98" cy="150" r="6" fill="none" stroke="#57d38c" stroke-width="2"/>`;
+  s+=svT(120,140,"#8ce3b6","đánh NGAY khi vừa nảy",8,"start");
+  return sideSvg(s,["#ff5d5d","#57d38c"]); }
+
+/* catalog side-view */
+function cat_arcs(){ let s=svBase("Tôi","Đối thủ");
+  s+=svPath(`M 30 128 Q ${NETX} 8 236 96`,"#d7f24a",false); s+=svBall(236,96);    // lob
+  s+=svPath(`M 30 126 Q ${NETX} 46 254 108`,"#ff9e3d",false); s+=svBall(254,108); // topspin drive
+  s+=svPath(`M 30 122 Q ${NETX} 96 240 128`,"#4db1ff",true);  s+=svBall(240,128); // slice
+  s+=svPath(`M 30 124 Q 120 108 176 132`,"#ff5d5d",false); s+=svBall(176,132);    // drop
+  s+=svT(96,26,"#e4f27b","lob",8);
+  s+=svT(252,100,"#ffd0a0","topspin",8);
+  s+=svT(232,138,"#9ecbff","slice",8);
+  s+=svT(176,146,"#ff9c9c","drop",8);
+  return sideSvg(s,["#d7f24a","#ff9e3d","#4db1ff","#ff5d5d"]); }
+
+/* tactics */
+function t_cross(){ let s=courtBase();
+  s+=player(SGL+1.0,21.2,"me","Tôi");
+  s+=player(CW-SGL-1.0,2.8,"opp","");
+  s+=arrow(SGL+1.0,21.2,CW-SGL-1.2,3.8,YEL,false);      // cross
+  s+=arrow(SGL+1.0,21.2,SGL+0.6,3.6,RED,true);          // down the line
+  s+=`<text x="${px(CW-2.6,7.0).toFixed(1)}" y="${py(CW-2.6,7.0).toFixed(1)}" fill="#e4f27b" font-size="10" font-weight="800" text-anchor="middle" style="paint-order:stroke;stroke:#0d1117;stroke-width:2.4px">chéo (an toàn)</text>`;
+  s+=`<text x="${px(SGL+0.9,11.0).toFixed(1)}" y="${py(SGL+0.9,11.0).toFixed(1)}" fill="#ffb0b0" font-size="10" font-weight="800" text-anchor="middle" style="paint-order:stroke;stroke:#0d1117;stroke-width:2.4px">dọc dây</text>`;
+  return svg(s,[YEL,RED]); }
+function t_deepzone(){ let s=courtBase();
+  s+=zoneRect(SGL,1.4,CW-2*SGL,2.4,GRN,"ngắm SÂU (an toàn)");
+  s+=zoneRect(SGL,NET-SVC-0.1,CW-2*SGL,2.4,RED,"nông = bị tấn công");
+  s+=player(CW/2,21.2,"me","Tôi");
+  s+=player(CW/2,2.8,"opp","");
+  s+=arrow(CW/2,21.2,CW/2-0.6,2.6,GRN,false);
+  return svg(s,[GRN]); }
+
+/* ================= BODY-FIGURE (pictogram) ENGINE ================= */
+let _figid=0;
+function _seg(a,b,w,ref){return `<line x1="${a[0].toFixed(1)}" y1="${a[1].toFixed(1)}" x2="${b[0].toFixed(1)}" y2="${b[1].toFixed(1)}" stroke="${ref}" stroke-width="${w}" stroke-linecap="round"/>`;}
+function _joint(p,r,ref){return `<circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="${r}" fill="${ref}"/>`;}
+function _racket(hand,tip,rc){
+  const ang=Math.atan2(tip[1]-hand[1],tip[0]-hand[0])*180/Math.PI;
+  let s=_seg(hand,[(hand[0]+tip[0])/2,(hand[1]+tip[1])/2],4.5,rc);
+  s+=`<g transform="translate(${tip[0].toFixed(1)},${tip[1].toFixed(1)}) rotate(${ang.toFixed(1)})"><ellipse rx="12.5" ry="9" fill="${rc}" opacity=".18"/><ellipse rx="12.5" ry="9" fill="none" stroke="${rc}" stroke-width="3"/><line x1="-9" y1="0" x2="9" y2="0" stroke="${rc}" stroke-width=".5" opacity=".6"/><line x1="0" y1="-6.5" x2="0" y2="6.5" stroke="${rc}" stroke-width=".5" opacity=".6"/></g>`;
+  return s;
+}
+function _hi(a,b,w){return `<line x1="${a[0].toFixed(1)}" y1="${(a[1]-w*0.28).toFixed(1)}" x2="${b[0].toFixed(1)}" y2="${(b[1]-w*0.28).toFixed(1)}" stroke="#ffffff" stroke-width="${(w*0.28).toFixed(1)}" stroke-linecap="round" opacity=".2"/>`;}
+/* 3D-render-style FACELESS player: gradient-shaded limbs give rounded volume, no face */
+function _fig(J,P,rc){
+  const gy=Math.max(J.footL[1],J.footR[1])+2;
+  let s=`<ellipse cx="${J.hip[0].toFixed(1)}" cy="${gy.toFixed(1)}" rx="24" ry="4.4" fill="#000" opacity=".28" filter="${P.blur}"/>`;
+  const arm=(sh,el,ha)=>{ const mx=sh[0]+(el[0]-sh[0])*0.42, my=sh[1]+(el[1]-sh[1])*0.42;
+    return _seg(sh,[mx,my],9,P.shirt)+_seg([mx,my],el,8,P.skin)+_seg(el,ha,7,P.skin)+_joint(el,4,P.skin)+_hi([mx,my],el,8); };
+  const leg=(kn,ft)=>_seg(J.hip,kn,14,P.shorts)+_seg(kn,ft,10.5,P.skin)+_joint(kn,5,P.skin)+_hi(kn,ft,10.5)
+    +`<ellipse cx="${ft[0].toFixed(1)}" cy="${ft[1].toFixed(1)}" rx="8" ry="3.6" fill="${P.shoe}"/><ellipse cx="${(ft[0]-1).toFixed(1)}" cy="${(ft[1]-1.6).toFixed(1)}" rx="5" ry="1.6" fill="#fff" opacity=".55"/>`;
+  s+=leg(J.kneeR,J.footR)+leg(J.kneeL,J.footL);
+  s+=_joint(J.hip,9.5,P.shorts);
+  s+=_seg(J.hip,J.neck,18,P.shirt)+_hi(J.hip,J.neck,18);
+  s+=_joint(J.neck,10.5,P.shirt);
+  s+=arm(J.neck,J.elbowB,J.handB);
+  s+=_racket(J.handA,J.racketTip,rc);
+  s+=arm(J.neck,J.elbowA,J.handA);
+  const hr=J.hr||12;
+  s+=_seg(J.neck,[J.head[0],J.head[1]+hr-2],7,P.skin);
+  s+=`<circle cx="${J.head[0].toFixed(1)}" cy="${J.head[1].toFixed(1)}" r="${hr}" fill="${P.skin}"/>`;
+  s+=`<path d="M ${(J.head[0]-hr).toFixed(1)} ${(J.head[1]+1).toFixed(1)} a ${hr} ${hr} 0 0 1 ${(2*hr).toFixed(1)} 0 q ${(-hr*0.55).toFixed(1)} ${(-hr*0.5).toFixed(1)} ${(-hr).toFixed(1)} ${(-hr*0.42).toFixed(1)} q ${(-hr*0.45).toFixed(1)} ${(-hr*0.08).toFixed(1)} ${(-hr).toFixed(1)} ${(hr*0.42).toFixed(1)} Z" fill="${P.hair}"/>`;
+  s+=`<ellipse cx="${(J.head[0]-hr*0.32).toFixed(1)}" cy="${(J.head[1]-hr*0.18).toFixed(1)}" rx="${(hr*0.42).toFixed(1)}" ry="${(hr*0.5).toFixed(1)}" fill="#fff" opacity=".18"/>`;
+  return s;
+}
+function strip(title,poses,shirt,rc,ballAt){
+  const N=poses.length, W=N*120, H=208, u=(++_figid);
+  const maxw=Math.min(840,W);
+  const lite=(hex,f)=>{const n=parseInt(hex.slice(1),16);const r=Math.min(255,(n>>16)+f),g=Math.min(255,((n>>8)&255)+f),b=Math.min(255,(n&255)+f);return '#'+((1<<24)+(r<<16)+(g<<8)+b).toString(16).slice(1);};
+  const grad=(id,c1,c2)=>`<linearGradient id="${id}${u}" x1="0" y1="0" x2="0.35" y2="1"><stop offset="0" stop-color="${c1}"/><stop offset="1" stop-color="${c2}"/></linearGradient>`;
+  let s=`<svg viewBox="0 0 ${W} ${H}" width="100%" style="max-width:${maxw}px;height:auto;display:block;margin:0 auto" xmlns="http://www.w3.org/2000/svg">`;
+  s+=`<defs><linearGradient id="fs${u}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#141d29"/><stop offset="1" stop-color="#0f151d"/></linearGradient>`
+    +grad('skinG','#f4cda8','#cf8f66')+grad('shortsG','#3f4c6e','#222a41')+grad('shirtG',lite(shirt,44),shirt)
+    +`<filter id="blur${u}" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="1.6"/></filter></defs>`;
+  const P={skin:`url(#skinG${u})`,shirt:`url(#shirtG${u})`,shorts:`url(#shortsG${u})`,shoe:'#eef2f6',hair:'#3a2a1e',blur:`url(#blur${u})`};
+  s+=`<rect x="0" y="0" width="${W}" height="${H}" rx="14" fill="url(#fs${u})"/>`;
+  s+=`<text x="14" y="23" fill="#d7f24a" font-size="13" font-weight="800">${esc(title)}</text>`;
+  poses.forEach((p,i)=>{
+    s+=`<g transform="translate(${i*120},22)">`;
+    s+=`<line x1="10" y1="154" x2="110" y2="154" stroke="#31445a" stroke-width="1.4"/>`;
+    if(i<N-1) s+=`<text x="113" y="94" fill="#42586f" font-size="20" font-weight="700">&#8594;</text>`;
+    s+=_fig(p.J,P,rc);
+    if(ballAt&&ballAt[i]){ const bx=ballAt[i][0],by=ballAt[i][1];
+      s+=`<line x1="${bx-11}" y1="${by-4}" x2="${bx-2}" y2="${by}" stroke="#d7f24a" stroke-width="1.8" opacity=".5"/>`;
+      s+=`<circle cx="${bx}" cy="${by}" r="5" fill="#d7f24a" stroke="#5a6b12" stroke-width="1"/>`;
+      s+=`<ellipse cx="${bx-1.5}" cy="${by-1.5}" rx="1.6" ry="2" fill="#fff" opacity=".5"/>`; }
+    s+=`<circle cx="18" cy="152" r="9.5" fill="${rc}"/><text x="18" y="156" fill="#0d1117" font-size="11" font-weight="800" text-anchor="middle">${i+1}</text>`;
+    s+=`<text x="60" y="184" fill="#9fb3c8" font-size="7.9" font-weight="600" text-anchor="middle">${esc(p.cap)}</text>`;
+    s+=`</g>`;
+  });
+  return s+`</svg>`;
+}
+const _FH=[
+ {cap:"1 · Chuẩn bị: xoay vai, lùi vợt", J:{head:[54,26],neck:[58,44],hip:[60,94],kneeL:[52,122],footL:[44,152],kneeR:[74,120],footR:[86,151],elbowB:[46,58],handB:[34,62],elbowA:[70,62],handA:[80,78],racketTip:[93,94]}},
+ {cap:"2 · Vung: thấp → cao", J:{head:[57,25],neck:[60,44],hip:[60,94],kneeL:[50,122],footL:[42,152],kneeR:[74,120],footR:[88,151],elbowB:[50,56],handB:[42,46],elbowA:[64,66],handA:[72,78],racketTip:[66,96]}},
+ {cap:"3 · Chạm phía TRƯỚC", J:{head:[60,25],neck:[62,44],hip:[60,93],kneeL:[50,122],footL:[42,152],kneeR:[76,118],footR:[90,150],elbowB:[54,56],handB:[46,46],elbowA:[80,56],handA:[94,60],racketTip:[107,52]}},
+ {cap:"4 · Theo đà (qua vai kia)", J:{head:[58,25],neck:[60,44],hip:[60,94],kneeL:[52,122],footL:[44,152],kneeR:[74,120],footR:[86,151],elbowB:[52,58],handB:[44,52],elbowA:[52,42],handA:[40,30],racketTip:[27,19]}},
+];
+const _BH=[
+ {cap:"1 · Xoay vai NHIỀU, lùi vợt", J:{head:[54,24],neck:[57,40],hip:[60,92],kneeL:[50,120],footL:[42,151],kneeR:[74,118],footR:[86,150],elbowB:[50,58],handB:[44,72],elbowA:[54,58],handA:[46,72],racketTip:[33,86]}},
+ {cap:"2 · Kéo vợt xuống & tới", J:{head:[56,23],neck:[59,40],hip:[60,92],kneeL:[50,120],footL:[42,151],kneeR:[74,117],footR:[88,150],elbowB:[58,60],handB:[54,74],elbowA:[62,60],handA:[56,74],racketTip:[48,92]}},
+ {cap:"3 · Chạm phía TRƯỚC", J:{head:[60,23],neck:[62,40],hip:[60,91],kneeL:[50,120],footL:[42,151],kneeR:[76,116],footR:[90,149],elbowB:[74,56],handB:[80,60],elbowA:[76,56],handA:[82,60],racketTip:[95,56]}},
+ {cap:"4 · Kết thúc cao (bên phải)", J:{head:[58,23],neck:[60,40],hip:[60,92],kneeL:[52,120],footL:[44,151],kneeR:[74,118],footR:[86,150],elbowB:[70,46],handB:[74,42],elbowA:[72,46],handA:[76,42],racketTip:[90,30]}},
+];
+const _SV=[
+ {cap:"1 · Đứng nghiêng, bóng & vợt", J:{head:[54,28],neck:[58,46],hip:[60,96],kneeL:[52,124],footL:[44,153],kneeR:[74,122],footR:[86,152],elbowB:[64,60],handB:[70,74],elbowA:[62,60],handA:[66,74],racketTip:[80,78]}},
+ {cap:"2 · Tư thế 'cúp' (trophy)", J:{head:[56,28],neck:[59,46],hip:[60,96],kneeL:[52,124],footL:[44,153],kneeR:[74,122],footR:[86,152],elbowB:[50,28],handB:[47,14],elbowA:[74,44],handA:[80,56],racketTip:[82,72]}},
+ {cap:"3 · Vươn CAO, chạm bóng", J:{head:[58,28],neck:[60,46],hip:[60,95],kneeL:[54,124],footL:[46,153],kneeR:[74,120],footR:[84,152],elbowB:[55,36],handB:[50,46],elbowA:[64,25],handA:[68,11],racketTip:[72,-2]}},
+ {cap:"4 · Theo đà, vào sân", J:{head:[62,30],neck:[62,48],hip:[60,96],kneeL:[54,124],footL:[46,153],kneeR:[78,116],footR:[92,151],elbowB:[56,54],handB:[52,60],elbowA:[50,56],handA:[40,66],racketTip:[28,80]}},
+];
+const _VO=[
+ {cap:"1 · Sẵn ở lưới, vợt trước mặt", J:{head:[58,26],neck:[60,42],hip:[60,92],kneeL:[52,118],footL:[46,150],kneeR:[70,118],footR:[80,150],elbowB:[54,54],handB:[62,58],elbowA:[66,54],handA:[64,58],racketTip:[66,40]}},
+ {cap:"2 · Forehand volley (chặn)", J:{head:[60,25],neck:[62,42],hip:[60,92],kneeL:[50,120],footL:[42,151],kneeR:[76,116],footR:[90,149],elbowB:[56,52],handB:[50,52],elbowA:[78,50],handA:[90,50],racketTip:[100,40]}},
+ {cap:"3 · Backhand volley (chắc)", J:{head:[60,25],neck:[62,42],hip:[60,92],kneeL:[50,120],footL:[42,151],kneeR:[76,116],footR:[90,149],elbowB:[74,50],handB:[84,48],elbowA:[76,52],handA:[86,48],racketTip:[98,38]}},
+];
+function fig_fh(){ return strip("FOREHAND (thuận tay) — 4 pha", _FH, "#2f7fd6", "#d7f24a", [null,null,[108,52],null]); }
+function fig_bh(){ return strip("BACKHAND 2 TAY (trái tay) — 4 pha", _BH, "#2fa877", "#d7f24a", [null,null,[97,56],null]); }
+function fig_serve(){ return strip("GIAO BÓNG (serve) — 4 pha", _SV, "#e5732b", "#d7f24a", [[72,74],[47,10],[72,-2],null]); }
+function fig_volley(){ return strip("VOLLEY ở lưới — 3 pha", _VO, "#7d54c9", "#d7f24a", [null,[102,42],[100,40]]); }
+
+/* ---- contact clock (top-down) ---- */
+function dg_clock(){
+  const W=284,H=250,cx=142,cy=134,R=86, u=(++_figid);
+  let s=`<svg viewBox="0 0 ${W} ${H}" width="100%" style="max-width:284px;height:auto;display:block;margin:0 auto" xmlns="http://www.w3.org/2000/svg">`;
+  s+=`<rect width="${W}" height="${H}" rx="14" fill="#121a24"/>`;
+  s+=`<text x="${cx}" y="20" fill="#8ec7ff" font-size="11" font-weight="800" text-anchor="middle">&#8593; hướng LƯỚI</text>`;
+  s+=`<path d="M ${cx-R} ${cy} A ${R} ${R} 0 0 1 ${cx+R} ${cy} Z" fill="#d7f24a" opacity=".06"/>`;
+  const wedge=(a1,a2,col)=>{const p1=[cx+R*Math.cos(a1*Math.PI/180),cy+R*Math.sin(a1*Math.PI/180)],p2=[cx+R*Math.cos(a2*Math.PI/180),cy+R*Math.sin(a2*Math.PI/180)];
+    return `<path d="M ${cx} ${cy} L ${p1[0].toFixed(1)} ${p1[1].toFixed(1)} A ${R} ${R} 0 0 1 ${p2[0].toFixed(1)} ${p2[1].toFixed(1)} Z" fill="${col}" opacity=".3"/>`;};
+  s+=wedge(-58,-14,"#4aa3ff");
+  s+=wedge(-166,-122,"#ff9e3d");
+  s+=`<circle cx="${cx}" cy="${cy}" r="${R}" fill="none" stroke="#3a4b60" stroke-width="1.5"/>`;
+  [["12",-90],["3",0],["6",90],["9",180]].forEach(a=>{ const x=cx+(R-13)*Math.cos(a[1]*Math.PI/180),y=cy+(R-13)*Math.sin(a[1]*Math.PI/180);
+    s+=`<text x="${x.toFixed(1)}" y="${(y+4).toFixed(1)}" fill="#6b7d92" font-size="11" font-weight="700" text-anchor="middle">${a[0]}</text>`;});
+  s+=`<circle cx="${cx}" cy="${cy}" r="9" fill="#e6edf3" stroke="#0d1117" stroke-width="2"/>`;
+  const bx1=cx+(R-6)*Math.cos(-36*Math.PI/180),by1=cy+(R-6)*Math.sin(-36*Math.PI/180);
+  const bx2=cx+(R-6)*Math.cos(-144*Math.PI/180),by2=cy+(R-6)*Math.sin(-144*Math.PI/180);
+  s+=`<circle cx="${bx1.toFixed(1)}" cy="${by1.toFixed(1)}" r="5" fill="#d7f24a" stroke="#5a6b12" stroke-width="1"/>`;
+  s+=`<circle cx="${bx2.toFixed(1)}" cy="${by2.toFixed(1)}" r="5" fill="#d7f24a" stroke="#5a6b12" stroke-width="1"/>`;
+  s+=`<text x="${cx+50}" y="${cy-64}" fill="#9ecbff" font-size="9.5" font-weight="800" text-anchor="middle">Forehand ~3h</text>`;
+  s+=`<text x="${cx-50}" y="${cy-64}" fill="#ffd0a0" font-size="9.5" font-weight="800" text-anchor="middle">Backhand ~9h</text>`;
+  s+=`<text x="${cx}" y="${H-12}" fill="#9fb3c8" font-size="9.3" font-weight="600" text-anchor="middle">Chạm ở NỬA TRƯỚC (phía lưới), không để sau người</text>`;
+  return s+`</svg>`;
+}
+/* ---- topspin loop ---- */
+function dg_topspin(){
+  const W=320,H=196, u=(++_figid);
+  let s=`<svg viewBox="0 0 ${W} ${H}" width="100%" style="max-width:320px;height:auto;display:block;margin:0 auto" xmlns="http://www.w3.org/2000/svg">`;
+  s+=`<rect width="${W}" height="${H}" rx="14" fill="#121a24"/>`;
+  s+=`<text x="12" y="20" fill="#d7f24a" font-size="12" font-weight="800">Vòng vung topspin: THẤP &#8594; CAO</text>`;
+  s+=`<line x1="0" y1="166" x2="${W}" y2="166" stroke="#31445a" stroke-width="1.4"/>`;
+  s+=`<circle cx="60" cy="118" r="7" fill="#e6edf3"/><line x1="60" y1="125" x2="60" y2="150" stroke="#e6edf3" stroke-width="6" stroke-linecap="round"/>`;
+  s+=`<path d="M 66 150 C 90 156 116 150 128 118" fill="none" stroke="#4aa3ff" stroke-width="3" marker-end="url(#tah${u})" stroke-linecap="round"/>`;
+  s+=`<circle cx="128" cy="118" r="6" fill="#d7f24a" stroke="#5a6b12" stroke-width="1.4"/>`;
+  s+=`<text x="122" y="104" fill="#e4f27b" font-size="9" font-weight="800" text-anchor="middle">chạm</text>`;
+  s+=`<line x1="136" y1="122" x2="150" y2="94" stroke="#57d38c" stroke-width="2.4" marker-end="url(#tah2${u})"/>`;
+  s+=`<text x="166" y="90" fill="#8ce3b6" font-size="9" font-weight="700">"chải" lên</text>`;
+  s+=`<path d="M 134 116 Q 224 56 300 116" fill="none" stroke="#d7f24a" stroke-width="2.4" stroke-dasharray="5 4"/>`;
+  s+=`<circle cx="300" cy="116" r="4.5" fill="#d7f24a" stroke="#5a6b12" stroke-width="1"/>`;
+  s+=`<text x="214" y="52" fill="#e4f27b" font-size="9" font-weight="700" text-anchor="middle">vồng &amp; cắm xuống</text>`;
+  s+=`<defs><marker id="tah${u}" markerWidth="9" markerHeight="9" refX="6" refY="4.5" orient="auto"><path d="M0 1 L9 4.5 L0 8 z" fill="#4aa3ff"/></marker><marker id="tah2${u}" markerWidth="9" markerHeight="9" refX="6" refY="4.5" orient="auto"><path d="M0 1 L9 4.5 L0 8 z" fill="#57d38c"/></marker></defs>`;
+  return s+`</svg>`;
+}
+/* ---- spin & bounce ---- */
+function dg_spin(){
+  const W=320,H=236, u=(++_figid);
+  let s=`<svg viewBox="0 0 ${W} ${H}" width="100%" style="max-width:320px;height:auto;display:block;margin:0 auto" xmlns="http://www.w3.org/2000/svg">`;
+  s+=`<rect width="${W}" height="${H}" rx="14" fill="#121a24"/>`;
+  s+=`<text x="12" y="20" fill="#d7f24a" font-size="12" font-weight="800">Xoáy quyết định độ NẢY</text>`;
+  // topspin row
+  s+=`<text x="86" y="44" fill="#8ec7ff" font-size="10" font-weight="800">Topspin &#8594; nảy CAO vọt</text>`;
+  s+=`<circle cx="40" cy="40" r="8" fill="none" stroke="#4aa3ff" stroke-width="1.6"/><path d="M47 36 a8 8 0 0 1 -6 12" fill="none" stroke="#4aa3ff" stroke-width="1.6" marker-end="url(#sbA${u})"/>`;
+  s+=`<line x1="20" y1="96" x2="300" y2="96" stroke="#31445a" stroke-width="1.2"/>`;
+  s+=`<path d="M46 62 Q 96 90 128 96" fill="none" stroke="#4aa3ff" stroke-width="2.2"/>`;
+  s+=`<circle cx="128" cy="96" r="3" fill="#fff"/>`;
+  s+=`<path d="M128 96 Q 176 44 250 70" fill="none" stroke="#4aa3ff" stroke-width="2.2" stroke-dasharray="4 3" marker-end="url(#sbA${u})"/>`;
+  // slice row
+  s+=`<text x="86" y="140" fill="#ffd0a0" font-size="10" font-weight="800">Slice &#8594; nảy THẤP, lết</text>`;
+  s+=`<circle cx="40" cy="136" r="8" fill="none" stroke="#ff9e3d" stroke-width="1.6"/><path d="M33 132 a8 8 0 0 0 6 12" fill="none" stroke="#ff9e3d" stroke-width="1.6" marker-end="url(#sbB${u})"/>`;
+  s+=`<line x1="20" y1="192" x2="300" y2="192" stroke="#31445a" stroke-width="1.2"/>`;
+  s+=`<path d="M46 158 Q 96 186 128 192" fill="none" stroke="#ff9e3d" stroke-width="2.2"/>`;
+  s+=`<circle cx="128" cy="192" r="3" fill="#fff"/>`;
+  s+=`<path d="M128 192 Q 190 186 262 190" fill="none" stroke="#ff9e3d" stroke-width="2.2" stroke-dasharray="4 3" marker-end="url(#sbB${u})"/>`;
+  s+=`<text x="20" y="224" fill="#9fb3c8" font-size="9.3" font-weight="600">Bóng phẳng: nảy VỪA, đi thẳng &amp; nhanh (không xoáy).</text>`;
+  s+=`<defs><marker id="sbA${u}" markerWidth="8" markerHeight="8" refX="5" refY="4" orient="auto"><path d="M0 1 L8 4 L0 7 z" fill="#4aa3ff"/></marker><marker id="sbB${u}" markerWidth="8" markerHeight="8" refX="5" refY="4" orient="auto"><path d="M0 1 L8 4 L0 7 z" fill="#ff9e3d"/></marker></defs>`;
+  return s+`</svg>`;
+}
+
+/* racket face seen edge-on as a bold line, tilted by deg (0=vertical, neg=closed, pos=open) */
+function _rface(cx,cy,deg,rc){
+  return `<g transform="translate(${cx},${cy}) rotate(${deg})">`
+    +`<line x1="0" y1="-23" x2="0" y2="23" stroke="${rc}" stroke-width="5.5" stroke-linecap="round"/>`
+    +`<line x1="0" y1="23" x2="-3" y2="40" stroke="${rc}" stroke-width="4" stroke-linecap="round"/>`
+    +`</g>`;
+}
+function dg_face(){
+  const W=364,H=200,u=(++_figid), SW="#57d38c";
+  const cols=[
+    {t:"Topspin",c:"#4aa3ff",tilt:-15,sw:[[-22,22],[0,-24]],face:"hơi ÚP",curl:"topspin"},
+    {t:"Phẳng",c:"#d7f24a",tilt:0,sw:[[-26,2],[-4,2]],face:"VUÔNG",curl:null},
+    {t:"Slice",c:"#ff9e3d",tilt:24,sw:[[-18,-22],[2,16]],face:"NGỬA",curl:"back"},
+  ];
+  let s=`<svg viewBox="0 0 ${W} ${H}" width="100%" style="max-width:364px;height:auto;display:block;margin:0 auto" xmlns="http://www.w3.org/2000/svg">`;
+  s+=`<rect width="${W}" height="${H}" rx="14" fill="#121a24"/>`;
+  s+=`<text x="12" y="20" fill="#d7f24a" font-size="12" font-weight="800">Góc MẶT VỢT lúc chạm &#8594; loại bóng</text>`;
+  const defs=[`<marker id="fasw${u}" markerWidth="10" markerHeight="10" refX="6" refY="5" orient="auto"><path d="M0 1 L10 5 L0 9 L2.5 5 z" fill="${SW}"/></marker>`,
+              `<marker id="fc${u}" markerWidth="8" markerHeight="8" refX="5" refY="4" orient="auto"><path d="M0 1 L8 4 L0 7 z" fill="#d7f24a"/></marker>`];
+  cols.forEach((o,i)=>{
+    const cx=i*120+66, cy=100;
+    if(i<2) s+=`<line x1="${cx+58}" y1="38" x2="${cx+58}" y2="150" stroke="#28323f" stroke-width="1"/>`;
+    s+=`<text x="${cx}" y="40" fill="${o.c}" font-size="12" font-weight="800" text-anchor="middle">${o.t}</text>`;
+    const a=[cx+o.sw[0][0],cy+o.sw[0][1]], b=[cx+o.sw[1][0],cy+o.sw[1][1]];
+    s+=`<line x1="${a[0]}" y1="${a[1]}" x2="${b[0]}" y2="${b[1]}" stroke="${SW}" stroke-width="3.2" marker-end="url(#fasw${u})" stroke-linecap="round"/>`;
+    s+=_rface(cx-2,cy,o.tilt,o.c);
+    s+=`<circle cx="${cx+18}" cy="${cy}" r="8" fill="#d7f24a" stroke="#5a6b12" stroke-width="1.2"/>`;
+    if(o.curl==="topspin") s+=`<path d="M ${cx+18} ${cy-11} a 11 11 0 0 1 9 5" fill="none" stroke="#c9d24a" stroke-width="1.6" marker-end="url(#fc${u})"/>`;
+    if(o.curl==="back") s+=`<path d="M ${cx+18} ${cy-11} a 11 11 0 0 0 -9 5" fill="none" stroke="#c9d24a" stroke-width="1.6" marker-end="url(#fc${u})"/>`;
+    s+=`<text x="${cx}" y="168" fill="${o.c}" font-size="10" font-weight="800" text-anchor="middle">mặt vợt ${o.face}</text>`;
+  });
+  s+=`<defs>${defs.join('')}</defs>`;
+  s+=`<text x="${W/2}" y="190" fill="#8ea3b8" font-size="8.6" text-anchor="middle">▬ mặt vợt (màu) · <tspan fill="#8ce3b6">&#8594; hướng vung (xanh)</tspan> · <tspan fill="#d7f24a">&#9679; bóng</tspan> — vợt "quét/đưa" qua bóng</text>`;
+  return s+`</svg>`;
+}
+function dg_contactpt(){
+  const W=320,H=212,u=(++_figid),GY=180, b="#4aa3ff",rc="#d7f24a";
+  let s=`<svg viewBox="0 0 ${W} ${H}" width="100%" style="max-width:320px;height:auto;display:block;margin:0 auto" xmlns="http://www.w3.org/2000/svg">`;
+  s+=`<rect width="${W}" height="${H}" rx="14" fill="#121a24"/>`;
+  s+=`<text x="12" y="20" fill="#d7f24a" font-size="12" font-weight="800">Điểm chạm: PHÍA TRƯỚC &amp; ngang eo</text>`;
+  s+=`<line x1="0" y1="${GY}" x2="${W}" y2="${GY}" stroke="#31445a" stroke-width="1.4"/>`;
+  s+=`<text x="${W-10}" y="${GY-5}" fill="#6b7d92" font-size="9" text-anchor="end">&#8594; lưới</text>`;
+  const bone=(a,d,w)=>`<line x1="${a[0]}" y1="${a[1]}" x2="${d[0]}" y2="${d[1]}" stroke="${b}" stroke-width="${w}" stroke-linecap="round"/>`;
+  const hip=[92,110],neck=[90,66],hand=[150,104];
+  s+=`<ellipse cx="92" cy="${GY}" rx="26" ry="4.5" fill="#000" opacity=".22"/>`;
+  s+=bone(hip,[80,146],10)+bone([80,146],[74,GY],8);
+  s+=bone(hip,[104,146],10)+bone([104,146],[112,GY],8);
+  s+=bone(hip,neck,12);
+  s+=`<circle cx="86" cy="52" r="12" fill="${b}"/>`;
+  s+=bone(neck,[80,84],7)+bone([80,84],[76,98],6);
+  s+=bone(neck,[122,84],8)+bone([122,84],hand,6.5);
+  s+=`<g transform="translate(162,102)"><ellipse rx="5" ry="20" fill="${rc}" opacity=".18"/><ellipse rx="5" ry="20" fill="none" stroke="${rc}" stroke-width="3"/></g>`;
+  s+=bone(hand,[160,104],4);
+  s+=`<circle cx="176" cy="102" r="8" fill="${rc}" stroke="#5a6b12" stroke-width="1.2"/>`;
+  s+=`<line x1="112" y1="${GY}" x2="112" y2="60" stroke="#57d38c" stroke-width="1.2" stroke-dasharray="4 3"/>`;
+  s+=`<text x="112" y="52" fill="#8ce3b6" font-size="8.5" font-weight="700" text-anchor="middle">chân trước</text>`;
+  s+=`<line x1="112" y1="150" x2="176" y2="150" stroke="#57d38c" stroke-width="1.4" marker-end="url(#cp${u})"/>`;
+  s+=`<text x="150" y="163" fill="#8ce3b6" font-size="8.3" font-weight="700" text-anchor="middle">phía TRƯỚC</text>`;
+  s+=`<line x1="176" y1="102" x2="250" y2="102" stroke="#42586f" stroke-width="1" stroke-dasharray="3 3"/>`;
+  s+=`<text x="250" y="99" fill="#9fb3c8" font-size="8.5" font-weight="700" text-anchor="end">ngang eo/hông</text>`;
+  s+=`<text x="128" y="78" fill="#e4f27b" font-size="8.5" font-weight="700" text-anchor="middle">tay duỗi thoải mái</text>`;
+  s+=`<defs><marker id="cp${u}" markerWidth="9" markerHeight="9" refX="6" refY="4.5" orient="auto"><path d="M0 1 L9 4.5 L0 8 z" fill="#57d38c"/></marker></defs>`;
+  s+=`<text x="${W/2}" y="204" fill="#6b7d92" font-size="8.3" text-anchor="middle">Đừng để bóng tới ngang/sau người mới đánh — sẽ mất lực &amp; loạn hướng</text>`;
+  return s+`</svg>`;
+}
+
+function gs_bh1_contact(){ let s=svBase();
+  s+=svPath(`M 40 124 Q ${NETX-8} 48 250 112`,"#8ec7ff",false); s+=svBall(250,112);
+  s+=`<circle cx="60" cy="114" r="6" fill="none" stroke="#8ec7ff" stroke-width="2"/>`;
+  s+=svT(64,100,"#8ec7ff","chạm XA phía trước (một tay)",8,"start");
+  s+=svT(150,64,"#bcd8f5","xoay vai rất nhiều · tay duỗi thẳng",8);
+  return sideSvg(s,["#8ec7ff"]); }
+function gs_slice(){ let s=svBase("Tôi","Đối thủ");
+  s+=svPath(`M 44 70 Q 96 104 ${NETX} 100`,"#d7f24a",false);          // high prep, cut down
+  s+=svPath(`M ${NETX} 100 Q 210 108 244 128`,"#4db1ff",false); s+=svBall(244,128); // floats low
+  s+=`<circle cx="52" cy="72" r="6" fill="none" stroke="#d7f24a" stroke-width="2"/>`;
+  s+=svT(70,60,"#e4f27b","chuẩn bị CAO",8,"start");
+  s+=svT(150,150,"#9ecbff","cắt trên→dưới · bóng trôi thấp, nảy lết",8);
+  return sideSvg(s,["#d7f24a","#4db1ff"]); }
+function f_patterns(){ let s=courtBase();
+  s+=player(CW/2,20.6,"me","");
+  s+=arrow(CW/2,20.6,CW/2+2.2,20.4,BLUE,false);      // side-step near
+  s+=arrow(CW/2,20.6,CW-SGL-0.6,17.6,ORA,true);      // cross-step far
+  s+=ballDot(CW-SGL-0.8,16.4);
+  s+=`<text x="${px(CW/2+2.4,22.2).toFixed(1)}" y="${py(CW/2+2.4,22.2).toFixed(1)}" fill="#9ecbff" font-size="9.5" font-weight="800" text-anchor="middle" style="paint-order:stroke;stroke:#0d1117;stroke-width:2.2px">side-step</text>`;
+  s+=`<text x="${px(CW-2.2,15.0).toFixed(1)}" y="${py(CW-2.2,15.0).toFixed(1)}" fill="#ffd0a0" font-size="9.5" font-weight="800" text-anchor="middle" style="paint-order:stroke;stroke:#0d1117;stroke-width:2.2px">cross-step</text>`;
+  return svg(s,[BLUE,ORA]); }
+
+const DIAGS={
+  c_court_map:d_court_map,
+  fig_fh:fig_fh, fig_bh:fig_bh, fig_serve:fig_serve, fig_volley:fig_volley,
+  dg_clock:dg_clock, dg_topspin:dg_topspin, dg_spin:dg_spin, dg_face:dg_face, dg_contactpt:dg_contactpt,
+  gs_bh1_contact:gs_bh1_contact, gs_slice:gs_slice, f_patterns:f_patterns,
+  g_bevel_map:g_bevel_map, g_conti:g_conti, g_eastfh:g_eastfh, g_semiwest:g_semiwest,
+  g_west:g_west, g_eastbh:g_eastbh, g_twobh:g_twobh,
+  f_ready:f_ready, f_split:f_split, f_neutral:f_neutral, f_open:f_open, f_semiopen:f_semiopen,
+  f_move:f_move, f_recover:f_recover,
+  gs_arcs:gs_arcs, gs_fh_contact:gs_fh_contact, gs_bh_contact:gs_bh_contact,
+  s_serve_court:s_serve_court, s_toss:s_toss, s_serve_types:s_serve_types, s_return:s_return,
+  n_volley:n_volley, n_smash:n_smash, n_half:n_half,
+  cat_arcs:cat_arcs, t_cross:t_cross, t_deepzone:t_deepzone
+};
+Object.keys(DIAGS).forEach(id=>{ const el=document.getElementById(id); if(el) el.insertAdjacentHTML("afterbegin", DIAGS[id]()); });
+
+/* ---------- tabs ---------- */
+const tabs=document.querySelectorAll("#tabs button");
+tabs.forEach(b=>b.addEventListener("click",()=>{
+  tabs.forEach(x=>x.classList.remove("active")); b.classList.add("active");
+  document.querySelectorAll("section.tab").forEach(sx=>sx.classList.remove("show"));
+  document.getElementById(b.dataset.t).classList.add("show");
+  window.scrollTo({top:0,behavior:"smooth"});
+}));
+
+/* ---------- grip picker ---------- */
+const gp=document.querySelectorAll("#gpick button");
+gp.forEach(b=>b.addEventListener("click",()=>{
+  gp.forEach(x=>x.classList.remove("active")); b.classList.add("active");
+  document.querySelectorAll(".gpanel").forEach(p=>p.classList.remove("show"));
+  document.getElementById("gp_"+b.dataset.g).classList.add("show");
+}));
+
+/* ---------- decision tree picker ---------- */
+const sp=document.querySelectorAll("#shotpicker button");
+sp.forEach(b=>b.addEventListener("click",()=>{
+  sp.forEach(x=>x.classList.remove("active")); b.classList.add("active");
+  document.querySelectorAll(".tree").forEach(t=>t.classList.remove("show"));
+  document.getElementById("t_"+b.dataset.s).classList.add("show");
+}));
+
+/* ---------- theme toggle ---------- */
+(function(){
+  const root=document.documentElement, btn=document.getElementById("themebtn");
+  const ic=document.getElementById("themeic"), lbl=document.getElementById("themelbl");
+  function store(v){ try{ localStorage.setItem("tntheme",v); }catch(e){} }
+  function read(){ try{ return localStorage.getItem("tntheme"); }catch(e){ return null; } }
+  function apply(t){ root.setAttribute("data-theme",t);
+    if(t==="light"){ ic.textContent="🌙"; lbl.textContent="Tối"; } else { ic.textContent="☀️"; lbl.textContent="Sáng"; } }
+  let saved=read();
+  if(!saved){ saved=(window.matchMedia&&window.matchMedia("(prefers-color-scheme: light)").matches)?"light":"dark"; }
+  apply(saved);
+  btn.addEventListener("click",()=>{ const next=root.getAttribute("data-theme")==="light"?"dark":"light"; apply(next); store(next); });
+})();
+</script>
+</body>
+</html>
