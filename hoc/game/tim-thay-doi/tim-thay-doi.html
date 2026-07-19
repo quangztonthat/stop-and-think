@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"/>
+<meta name="theme-color" content="#0b1020"/>
+<title>Tìm thay đổi — bắt khác biệt sau cú chớp mắt</title>
+<script>try{document.documentElement.dataset.theme=localStorage.getItem('game:theme')||'dark'}catch(e){document.documentElement.dataset.theme='dark'}</script>
+<style>
+:root{
+  --bg:#0b1020; --card:#151d33; --card-2:#1a2340; --inset:#0f1628;
+  --ink:#e9eef9; --ink-soft:#98a3bb; --ink-dim:#5f6b85;
+  --line:#27314f; --line-soft:#1d2742; --good:#34d399; --bad:#f87171;
+  --mc:#c084fc; --mc2:#34d399;
+  --radius:20px; --shadow:0 1px 2px rgba(0,0,0,.35),0 12px 32px rgba(0,0,0,.38);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+button,input,select{font-family:inherit}
+html{-webkit-text-size-adjust:100%}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+  background:
+    radial-gradient(1100px 560px at 88% -12%, color-mix(in srgb,var(--mc) 13%,transparent), transparent 60%),
+    radial-gradient(900px 620px at -12% 26%, color-mix(in srgb,var(--mc2) 10%,transparent), transparent 55%),
+    linear-gradient(180deg,#0e1428 0%, var(--bg) 100%);
+  background-attachment:fixed;
+  color:var(--ink);line-height:1.5;min-height:100vh;display:flex;flex-direction:column}
+main{flex:1;width:100%;max-width:760px;margin:0 auto;padding:0 20px 40px}
+.num{font-variant-numeric:tabular-nums}
+header{position:sticky;top:0;z-index:10;background:rgba(11,16,32,.78);backdrop-filter:blur(10px);border-bottom:1px solid var(--line-soft)}
+.hd-in{max-width:760px;margin:0 auto;padding:11px 20px;display:flex;align-items:center;gap:14px}
+.logo{font-weight:800;font-size:18px;letter-spacing:-.02em;display:flex;align-items:center;gap:11px}
+.logo-ic{width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg,var(--mc),var(--mc2));display:flex;align-items:center;justify-content:center;font-size:22px;flex:none;box-shadow:0 4px 16px color-mix(in srgb,var(--mc) 45%,transparent)}
+.logo small{display:block;font-size:11px;font-weight:600;color:var(--ink-soft)}
+.hd-sp{flex:1}
+.theme-btn{border:1px solid var(--line);background:var(--card);color:var(--ink);width:38px;height:38px;border-radius:999px;cursor:pointer;font-size:16px;flex:none;line-height:1;padding:0}
+.nav-btn{border:1px solid var(--line);background:var(--card);color:var(--ink);padding:9px 16px;border-radius:999px;font-size:14px;font-weight:600;cursor:pointer;text-decoration:none;display:inline-block}
+.nav-btn:hover{border-color:var(--mc)}
+.nav-btn.active{background:linear-gradient(135deg,var(--mc),var(--mc2));color:#0b1020;border-color:transparent}
+.screen{display:none;animation:fadeIn .18s ease}
+.screen.on{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+.hero{padding:34px 0 10px}
+.hero h1{font-size:clamp(29px,5.4vw,42px);letter-spacing:-.03em;background:linear-gradient(92deg,var(--ink) 35%,var(--mc) 78%,var(--mc2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero p{color:var(--ink-soft);margin-top:9px;max-width:640px;font-size:16.5px}
+.stat-row{display:flex;gap:12px;margin-top:22px;flex-wrap:wrap}
+.stat-card{border:1px solid var(--line);border-radius:14px;padding:14px 20px 14px 22px;background:linear-gradient(160deg,var(--card),var(--card-2));min-width:120px;position:relative;overflow:hidden;box-shadow:var(--shadow)}
+.stat-card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--sc,var(--mc))}
+.stat-card:nth-child(1){--sc:var(--mc)}
+.stat-card:nth-child(2){--sc:#fbbf24}
+.stat-card:nth-child(3){--sc:#38bdf8}
+.stat-card b{display:block;font-size:28px;letter-spacing:-.02em;color:var(--sc,var(--mc))}
+.stat-card span{font-size:13px;color:var(--ink-soft);font-weight:600}
+.lv-adjust{position:absolute;right:10px;top:12px;display:flex;gap:5px}
+.lv-adjust button{width:30px;height:30px;border-radius:9px;border:1px solid var(--line);background:var(--inset);color:var(--ink);font-size:17px;font-weight:800;cursor:pointer;line-height:1}
+.lv-adjust button:hover{border-color:var(--mc);color:var(--mc)}
+.btn{border:1px solid var(--line);border-radius:14px;padding:13px 24px;font-size:16px;font-weight:700;cursor:pointer;background:var(--card);color:var(--ink)}
+.btn.primary{background:linear-gradient(135deg,var(--mc),var(--mc2));border-color:transparent;color:#0b1020;font-size:17.5px;padding:15px 34px;box-shadow:0 8px 26px color-mix(in srgb,var(--mc) 38%,transparent)}
+.btn:hover{filter:brightness(1.08)}
+.start-row{margin-top:26px;display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--card)}
+.seg button{border:none;background:transparent;padding:10px 16px;font-size:14.5px;font-weight:600;cursor:pointer;color:var(--ink-soft)}
+.seg button+button{border-left:1px solid var(--line-soft)}
+.seg button.on{background:linear-gradient(135deg,var(--mc),var(--mc2));color:#0b1020}
+.howto{margin-top:30px;border:1px solid var(--line);border-left:4px solid var(--mc);border-radius:var(--radius);padding:20px 22px;background:var(--card);font-size:15.5px;color:var(--ink-soft);max-width:640px}
+.howto b{color:var(--mc)}
+.hist{margin-top:26px;border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;background:var(--card)}
+.hist table{width:100%;border-collapse:collapse;font-size:14.5px}
+.hist th{background:var(--inset);text-align:left;padding:10px 14px;font-size:12.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-soft)}
+.hist td{padding:10px 14px;border-top:1px solid var(--line-soft)}
+.hist .r{text-align:right}
+.empty{padding:26px;text-align:center;color:var(--ink-soft);font-size:15px}
+/* play */
+.play-hud{display:flex;align-items:center;gap:12px;padding:16px 0 8px;flex-wrap:wrap}
+.hud-item{font-size:14.5px;color:var(--ink-soft);font-weight:600}
+.hud-item b{font-size:20px;color:var(--ink)}
+.hud-streak{font-size:15px;font-weight:800;color:#fbbf24}
+.lv-badge{font-size:13px;font-weight:800;padding:4px 12px;border-radius:999px;color:var(--mc);background:color-mix(in srgb,var(--mc) 14%,transparent);border:1px solid color-mix(in srgb,var(--mc) 38%,transparent)}
+.hud-sp{flex:1}
+.btn-quit{border:1px solid var(--line);background:var(--card);border-radius:999px;padding:8px 15px;font-size:13.5px;font-weight:600;cursor:pointer;color:var(--ink-soft)}
+.btn-quit:hover{color:var(--bad);border-color:var(--bad)}
+.round-bar{height:6px;border-radius:99px;background:var(--inset);overflow:hidden;flex:1}
+.round-bar i{display:block;height:100%;background:linear-gradient(90deg,var(--mc),var(--mc2));border-radius:99px}
+.timebox{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.clock{font-size:14.5px;font-weight:800;color:var(--ink-soft);min-width:38px;text-align:right}
+.phase-note{text-align:center;font-size:15px;font-weight:800;letter-spacing:.04em;color:var(--ink-soft);margin-bottom:10px;min-height:24px}
+.phase-note.pick{color:var(--mc)}
+.board-wrap{border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow);background:linear-gradient(165deg,#141b31,#0e1526);padding:12px;user-select:none;-webkit-user-select:none}
+.cgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.cslot{aspect-ratio:1;border-radius:12px;display:flex;align-items:center;justify-content:center}
+.citem{width:100%;height:100%;border:1.5px solid #2c3757;border-radius:12px;background:#101830;cursor:pointer;font-size:clamp(26px,7vw,44px);line-height:1;transition:border-color .08s,transform .08s;touch-action:manipulation;padding:0}
+.citem:active{transform:scale(.96)}
+.citem.hidden-sym{color:transparent !important}
+.citem.ok{border-color:var(--good);box-shadow:0 0 16px color-mix(in srgb,var(--good) 45%,transparent)}
+.citem.bad{border-color:var(--bad);box-shadow:0 0 16px color-mix(in srgb,var(--bad) 40%,transparent)}
+.board-feed{text-align:center;min-height:26px;margin-top:10px;font-size:16px;font-weight:800}
+.board-feed.ok{color:var(--good)} .board-feed.no{color:var(--bad)}
+.play-hint{text-align:center;font-size:14px;color:var(--ink-dim);margin-top:8px}
+/* result */
+.res-wrap{max-width:520px;margin:40px auto 0;text-align:center}
+.res-mode{font-size:15.5px;font-weight:700;color:var(--ink-soft)}
+.res-score{font-size:clamp(56px,13vw,84px);font-weight:800;letter-spacing:-.04em;line-height:1.05;background:linear-gradient(92deg,var(--ink) 20%,var(--mc) 70%,var(--mc2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.res-note{margin-top:6px;font-size:15.5px;font-weight:700;color:var(--mc);min-height:22px}
+.res-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:26px}
+.res-cell{border:1px solid var(--line);border-radius:14px;padding:14px 8px;background:linear-gradient(160deg,var(--card),var(--card-2))}
+.res-cell b{display:block;font-size:24px;letter-spacing:-.02em;color:var(--mc)}
+.res-cell span{font-size:12.5px;color:var(--ink-soft);font-weight:600}
+.res-actions{display:flex;gap:10px;justify-content:center;margin-top:26px}
+footer{border-top:1px solid var(--line-soft);padding:16px 20px calc(16px + env(safe-area-inset-bottom));text-align:center;font-size:12px;color:var(--ink-dim)}
+button{touch-action:manipulation}
+/* ---------- mobile (iPhone) ---------- */
+@media (max-width:480px){
+  main{padding:0 8px 28px;padding-left:max(8px,env(safe-area-inset-left));padding-right:max(8px,env(safe-area-inset-right))}
+  .hd-in{padding:7px 10px;gap:6px}
+  .logo{font-size:14px;gap:7px;min-width:0;overflow:hidden}
+  .logo > span:last-child{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+  .logo-ic{width:32px;height:32px;font-size:16px;border-radius:9px}
+  .logo small{display:none}
+  .nav-btn{padding:7px 10px;font-size:12.5px;white-space:nowrap}
+  .theme-btn{width:32px;height:32px;font-size:14px}
+  .hero{padding:16px 0 6px}
+  .hero p{font-size:14.5px;margin-top:6px}
+  .stat-row{gap:8px;margin-top:14px}
+  .stat-card{padding:10px 12px;min-width:calc(50% - 4px);flex:1}
+  .stat-card b{font-size:22px}
+  .start-row{margin-top:18px;gap:10px}
+  .btn.primary{width:100%;padding:14px 20px}
+  .howto{padding:14px 16px;font-size:14px;margin-top:20px}
+  .play-hud{gap:7px;padding:10px 0 6px}
+  .hud-item{font-size:12.5px}
+  .hud-item b{font-size:16px}
+  .board-wrap{padding:8px;border-radius:14px}
+  .cgrid{gap:7px}
+  .play-hint{font-size:12.5px;margin-top:6px}
+  .res-grid{gap:8px}
+}
+/* ---------- dark/light mode (persist chung key game:theme) ---------- */
+html[data-theme="light"]{
+  --bg:#edf0f8; --card:#ffffff; --card-2:#f3f5fb; --inset:#e7ebf5;
+  --ink:#1a2233; --ink-soft:#4e5a74; --ink-dim:#7b869e;
+  --line:#cfd8e8; --line-soft:#dfe5f1;
+  --shadow:0 1px 2px rgba(23,32,56,.06),0 12px 32px rgba(23,32,56,.10);
+}
+html[data-theme="light"] body{
+  background:
+    radial-gradient(1100px 560px at 88% -12%, color-mix(in srgb,var(--mc) 11%,transparent), transparent 60%),
+    radial-gradient(900px 620px at -12% 26%, color-mix(in srgb,var(--mc2) 8%,transparent), transparent 55%),
+    linear-gradient(180deg,#f7f9fe 0%, #edf0f8 100%);
+  background-attachment:fixed;
+}
+html[data-theme="light"] header{background:rgba(247,249,254,.85)}
+/* sân giữ tối (màu hình tuned cho nền tối) */
+html[data-theme="light"] .board-wrap{background:linear-gradient(165deg,#141b31,#0e1526);border-color:#27314f}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="hd-in">
+    <div class="logo"><span class="logo-ic">🕵️</span><span>Tìm thay đổi<small>change blindness · trí nhớ hình ảnh</small></span></div>
+    <div class="hd-sp"></div>
+    <button class="theme-btn" id="themeBtn" title="Đổi giao diện sáng/tối">☀️</button>
+    <a class="nav-btn" href="../index.html">⌂ Bộ game</a>
+    <button class="nav-btn active" id="nav-home">Trang chủ</button>
+  </div>
+</header>
+
+<main>
+
+<section class="screen on" id="screen-home">
+  <div class="hero">
+    <h1>Chớp mắt một cái — cái gì vừa đổi?</h1>
+    <p>Não người <b>mù thay đổi</b> một cách đáng kinh ngạc: chỉ cần màn hình chớp 1/3 giây là bạn không thấy một vật vừa đổi màu ngay trước mắt. Game này rèn <b>chụp ảnh khung cảnh trong đầu</b> rồi so — kỹ năng quan sát nền tảng cho mọi môn cần để ý chi tiết.</p>
+  </div>
+  <div class="stat-row">
+    <div class="stat-card"><b class="num" id="st-lv">1</b><span>Level (1–12)</span>
+      <div class="lv-adjust"><button id="lv-dn">−</button><button id="lv-up">+</button></div>
+    </div>
+    <div class="stat-card"><b class="num" id="st-best">0</b><span>Điểm cao nhất (level này)</span></div>
+    <div class="stat-card"><b class="num" id="st-rounds">0</b><span>Vòng đã chơi</span></div>
+  </div>
+  <div class="start-row">
+    <button class="btn primary" id="btn-start">▶ Chơi</button>
+    <span class="seg" id="seg-dur"><button data-v="60">1′</button><button data-v="120">2′</button><button data-v="180">3′</button></span>
+    <span class="seg" id="seg-sound"><button data-v="1">🔊</button><button data-v="0">🔇</button></span>
+  </div>
+  <div class="howto">
+    <b>Luật:</b> nhìn kỹ các hình trong lúc <b>GHI NHỚ</b> → màn chớp tối 1/3 giây → hình hiện lại nhưng <b>ĐÚNG MỘT ô đã đổi</b> (màu hoặc hình) — chạm ô đó trong 5 giây. Level cao: nhiều hình hơn, xem ngắn hơn, thay đổi tinh vi hơn (màu na ná, hình gần giống). Đúng liên tiếp 3+ được ×1,5 điểm 🔥.
+  </div>
+  <div class="hist" id="home-hist"></div>
+</section>
+
+<section class="screen" id="screen-play">
+  <div class="play-hud">
+    <span class="lv-badge" id="hud-lv">Lv 1</span>
+    <span class="hud-item">Điểm <b class="num" id="hud-score">0</b></span>
+    <span class="hud-item">Đúng <b class="num" id="hud-count">0/0</b></span>
+    <span class="hud-streak" id="hud-streak"></span>
+    <div class="hud-sp"></div>
+    <button class="btn-quit" id="btn-quit">Kết thúc</button>
+  </div>
+  <div class="timebox">
+    <div class="round-bar"><i id="round-fill" style="width:100%"></i></div>
+    <span class="clock num" id="round-clock">2:00</span>
+  </div>
+  <div class="phase-note" id="phase-note">GHI NHỚ…</div>
+  <div class="board-wrap"><div class="cgrid" id="cgrid"></div></div>
+  <div class="board-feed" id="board-feed"></div>
+  <div class="play-hint">Chụp cả khung cảnh trong đầu — đừng dán mắt vào một hình</div>
+</section>
+
+<section class="screen" id="screen-result">
+  <div class="res-wrap">
+    <div class="res-mode" id="res-mode"></div>
+    <div class="res-score num" id="res-score">0</div>
+    <div class="res-note" id="res-note"></div>
+    <div class="res-grid">
+      <div class="res-cell"><b class="num" id="res-count"></b><span>Đúng</span></div>
+      <div class="res-cell"><b class="num" id="res-acc"></b><span>Chính xác</span></div>
+      <div class="res-cell"><b class="num" id="res-lv"></b><span>Level</span></div>
+    </div>
+    <div class="res-actions">
+      <button class="btn primary" id="btn-again">Chơi lại</button>
+      <button class="btn" id="btn-home">Trang chủ</button>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>Tìm thay đổi (change detection) · quan sát &amp; trí nhớ hình ảnh · Build v1 · 2026-07-12 · dữ liệu lưu trong trình duyệt của bạn</footer>
+
+<script id="gen">
+"use strict";
+/* ================================================================
+   ===GEN-START===  Logic thuần: bảng level, sinh lượt change-detection
+   Lượt: hiện n hình (studyMs) -> che 350ms -> hiện lại với ĐÚNG 1 ô đổi
+   (màu hoặc hình). near = đổi "tinh vi": sang màu/hình LÂN CẬN trong vòng.
+   ================================================================ */
+const MAXLV = 12;
+const SHAPES = ["●", "■", "▲", "◆", "★", "✚"];
+const COLORS = ["#f87171", "#fb923c", "#fbbf24", "#34d399", "#38bdf8", "#c084fc"]; // vòng màu — lân cận = ±1
+const GRID_SLOTS = 16; // lưới 4×4
+// n: số hình · studyMs: thời gian ghi nhớ · pNear: xác suất đổi tinh vi (lân cận)
+const LEVELS = [
+  { n: 4,  studyMs: 2400, pNear: 0 },
+  { n: 5,  studyMs: 2200, pNear: 0 },
+  { n: 5,  studyMs: 2000, pNear: 0.20 },
+  { n: 6,  studyMs: 1900, pNear: 0.25 },
+  { n: 6,  studyMs: 1800, pNear: 0.30 },
+  { n: 7,  studyMs: 1700, pNear: 0.35 },
+  { n: 8,  studyMs: 1600, pNear: 0.40 },
+  { n: 8,  studyMs: 1500, pNear: 0.45 },
+  { n: 9,  studyMs: 1400, pNear: 0.50 },
+  { n: 10, studyMs: 1300, pNear: 0.55 },
+  { n: 11, studyMs: 1200, pNear: 0.60 },
+  { n: 12, studyMs: 1100, pNear: 0.65 },
+];
+function genTrial(lv, rnd = Math.random) {
+  const c = LEVELS[Math.min(MAXLV, Math.max(1, lv)) - 1];
+  // chọn n vị trí khác nhau trong 16 ô (Fisher–Yates prefix)
+  const pos = Array.from({ length: GRID_SLOTS }, (_, i) => i);
+  for (let i = GRID_SLOTS - 1; i > 0; i--) {
+    const j = Math.min(i, Math.floor(rnd() * (i + 1)));
+    [pos[i], pos[j]] = [pos[j], pos[i]];
+  }
+  const cells = pos.slice(0, c.n).map((p) => ({
+    pos: p,
+    s: Math.min(SHAPES.length - 1, Math.floor(rnd() * SHAPES.length)),
+    c: Math.min(COLORS.length - 1, Math.floor(rnd() * COLORS.length)),
+  }));
+  const changedIdx = Math.min(c.n - 1, Math.floor(rnd() * c.n));
+  const near = rnd() < c.pNear;
+  const byColor = rnd() < 0.5;
+  const old = cells[changedIdx];
+  // offset quanh giá trị cũ — luôn ≠ cũ, không vòng lặp: near = ±1, far = +2..len-2
+  const len = byColor ? COLORS.length : SHAPES.length;
+  const off = near ? (rnd() < 0.5 ? 1 : len - 1)
+                   : 2 + Math.min(len - 4, Math.floor(rnd() * (len - 3)));
+  const after = byColor ? { s: old.s, c: (old.c + off) % len } : { s: (old.s + off) % len, c: old.c };
+  return { lv, n: c.n, studyMs: c.studyMs, cells, changedIdx, after, near, byColor };
+}
+// Điểm: đúng = 12×lv, trả lời nhanh (≤2s) +50%, streak ≥3 ×1.5
+function scorePick(lv, rtMs, streak) {
+  return Math.round(12 * lv * (rtMs <= 2000 ? 1.5 : 1) * (streak >= 3 ? 1.5 : 1));
+}
+// Staircase: đúng nhanh +1 · đúng chậm +0.6 · sai/hết giờ −1.5
+function progDelta(hit, rtMs) { return hit ? (rtMs <= 2000 ? 1 : 0.6) : -1.5; }
+/* ===GEN-END=== */
+if (typeof module !== "undefined" && module.exports)
+  module.exports = { MAXLV, SHAPES, COLORS, GRID_SLOTS, LEVELS, genTrial, scorePick, progDelta };
+</script>
+
+<script id="app">
+"use strict";
+(() => {
+  const KEY = "tim-thay-doi:v1";
+  const $ = (id) => document.getElementById(id);
+  const load = () => {
+    try { const s = JSON.parse(localStorage.getItem(KEY)); if (s && s.v === 1) return s; } catch (e) {}
+    return { v: 1, settings: { dur: 120, sound: true }, lv: 1, prog: 0, rounds: [] };
+  };
+  const store = load();
+  const save = () => { try { localStorage.setItem(KEY, JSON.stringify(store)); } catch (e) {} };
+  const todayStr = () => { const d = new Date(); return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0"); };
+  const fmt = (s) => Math.floor(s / 60) + ":" + String(Math.floor(s % 60)).padStart(2, "0");
+  const BLANK_MS = 350, ANSWER_MS = 5000;
+
+  let audioCtx = null, audioOut = null;
+  function audioDest() {
+    audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+    if (!audioOut) {
+      try { audioOut = audioCtx.createDynamicsCompressor(); audioOut.threshold.value = -18; audioOut.knee.value = 24; audioOut.ratio.value = 6; audioOut.connect(audioCtx.destination); }
+      catch (e) { audioOut = audioCtx.destination; }
+    }
+    if (audioCtx.state === "suspended") { try { audioCtx.resume(); } catch (e) {} }
+    return audioOut;
+  }
+  function beep(f, dur, vol) {
+    if (!store.settings.sound) return;
+    try {
+      const out = audioDest(), t = audioCtx.currentTime;
+      const o = audioCtx.createOscillator(), g = audioCtx.createGain();
+      o.frequency.value = f; o.type = "sine";
+      g.gain.setValueAtTime(0.0001, t);
+      g.gain.exponentialRampToValueAtTime(vol, t + 0.015);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + dur / 1000);
+      o.connect(g); g.connect(out); o.start(t); o.stop(t + dur / 1000 + 0.03);
+    } catch (e) {}
+  }
+
+  const screens = { home: $("screen-home"), play: $("screen-play"), result: $("screen-result") };
+  function show(k) { Object.entries(screens).forEach(([n, el]) => el.classList.toggle("on", n === k)); }
+
+  function renderHome() {
+    $("st-lv").textContent = store.lv;
+    const mine = store.rounds.filter((r) => r.lv === store.lv);
+    $("st-best").textContent = mine.length ? Math.max(...mine.map((r) => r.s)) : 0;
+    $("st-rounds").textContent = store.rounds.length;
+    document.querySelectorAll("#seg-dur button").forEach((b) => b.classList.toggle("on", +b.dataset.v === store.settings.dur));
+    document.querySelectorAll("#seg-sound button").forEach((b) => b.classList.toggle("on", !!+b.dataset.v === store.settings.sound));
+    const rows = store.rounds.slice(-8).reverse().map((r) =>
+      `<tr><td>${r.d}</td><td>Lv ${r.lv}</td><td class="r num">${r.hit}/${r.tr}</td><td class="r num"><b>${r.s}</b></td></tr>`).join("");
+    $("home-hist").innerHTML = rows
+      ? `<table><tr><th>Ngày</th><th>Level</th><th class="r">Đúng</th><th class="r">Điểm</th></tr>${rows}</table>`
+      : `<div class="empty">Chưa có vòng nào — bấm ▶ Chơi để bắt đầu 🕵️</div>`;
+  }
+
+  /* ---------- vòng chơi ---------- */
+  let game = null, trial = null, phase = "idle", tPick = 0, timers = [], clockId = null;
+  const clearTimers = () => { timers.forEach(clearTimeout); timers = []; };
+  const later = (fn, ms) => timers.push(setTimeout(fn, ms));
+
+  function startRound() {
+    game = { over: false, score: 0, hits: 0, trials: 0, streak: 0, lvStart: store.lv,
+             endAt: Date.now() + store.settings.dur * 1000 };
+    $("hud-score").textContent = "0"; $("hud-count").textContent = "0/0"; $("hud-streak").textContent = "";
+    show("play");
+    clearInterval(clockId);
+    clockId = setInterval(() => {
+      if (!game || game.over) return;
+      const left = Math.max(0, game.endAt - Date.now());
+      $("round-clock").textContent = fmt(left / 1000);
+      $("round-fill").style.width = (left / (store.settings.dur * 1000) * 100) + "%";
+      if (left <= 0) endRound();
+    }, 100);
+    nextTrial();
+  }
+
+  function renderCells(mutated) {
+    const grid = $("cgrid");
+    grid.innerHTML = "";
+    for (let p = 0; p < 16; p++) {
+      const slot = document.createElement("div");
+      slot.className = "cslot";
+      const idx = trial.cells.findIndex((c) => c.pos === p);
+      if (idx >= 0) {
+        const cell = trial.cells[idx];
+        const view = mutated && idx === trial.changedIdx ? trial.after : cell;
+        const b = document.createElement("button");
+        b.className = "citem";
+        b.textContent = SHAPES[view.s];
+        b.style.color = COLORS[view.c];
+        b.dataset.idx = idx;
+        b.addEventListener("pointerdown", (e) => { e.preventDefault(); pick(idx, b); });
+        slot.appendChild(b);
+      }
+      grid.appendChild(slot);
+    }
+  }
+
+  function nextTrial() {
+    if (!game || game.over) return;
+    clearTimers();
+    trial = genTrial(store.lv);
+    phase = "study";
+    $("hud-lv").textContent = "Lv " + store.lv;
+    $("board-feed").textContent = ""; $("board-feed").className = "board-feed";
+    $("phase-note").textContent = "GHI NHỚ…"; $("phase-note").className = "phase-note";
+    renderCells(false);
+    later(() => {                                            // che: ẩn ký hiệu, giữ khung (chớp mắt)
+      phase = "blank";
+      document.querySelectorAll(".citem").forEach((el) => el.classList.add("hidden-sym"));
+      later(() => {
+        phase = "pick"; tPick = performance.now();
+        $("phase-note").textContent = "Ô NÀO VỪA ĐỔI?"; $("phase-note").className = "phase-note pick";
+        renderCells(true);
+        beep(660, 50, 0.06);
+        later(() => { if (phase === "pick") resolve(false, -1, ANSWER_MS); }, ANSWER_MS);
+      }, BLANK_MS);
+    }, trial.studyMs);
+  }
+
+  function pick(idx, el) {
+    if (!game || game.over || phase !== "pick") return;
+    const rt = performance.now() - tPick;
+    resolve(idx === trial.changedIdx, idx, rt, el);
+  }
+
+  function resolve(hit, idx, rt, el) {
+    if (phase === "feedback") return;
+    clearTimers();
+    phase = "feedback";
+    game.trials++;
+    // lộ đáp án: ô đã đổi viền xanh; chọn nhầm viền đỏ
+    const items = document.querySelectorAll(".citem");
+    items.forEach((b) => { if (+b.dataset.idx === trial.changedIdx) b.classList.add("ok"); });
+    if (!hit && el) el.classList.add("bad");
+    const f = $("board-feed");
+    if (hit) {
+      game.hits++; game.streak++;
+      const pts = scorePick(store.lv, rt, game.streak);
+      game.score += pts;
+      f.textContent = `+${pts} · ${(rt / 1000).toFixed(1)}s`;
+      f.className = "board-feed ok";
+      beep(880, 100, 0.09);
+    } else {
+      game.streak = 0;
+      const what = trial.byColor ? "đổi MÀU" : "đổi HÌNH";
+      f.textContent = (idx < 0 ? "🐌 Hết giờ — " : "❌ Trượt — ") + `ô viền xanh vừa ${what}${trial.near ? " (tinh vi)" : ""}`;
+      f.className = "board-feed no";
+      beep(220, 150, 0.09);
+    }
+    store.prog = (store.prog || 0) + progDelta(hit, rt);
+    if (store.prog >= 3 && store.lv < MAXLV) { store.lv++; store.prog = 0; }
+    else if (store.prog <= -3 && store.lv > 1) { store.lv--; store.prog = 0; }
+    save();
+    $("hud-score").textContent = game.score;
+    $("hud-count").textContent = game.hits + "/" + game.trials;
+    $("hud-streak").textContent = game.streak >= 3 ? "🔥 " + game.streak : "";
+    later(nextTrial, 1300);
+  }
+
+  function endRound() {
+    if (!game || game.over) return;
+    game.over = true;
+    clearTimers(); clearInterval(clockId); clockId = null;
+    store.rounds.push({ d: todayStr(), ts: Date.now(), s: game.score, hit: game.hits, tr: game.trials, lv: game.lvStart });
+    if (store.rounds.length > 60) store.rounds = store.rounds.slice(-60);
+    save();
+    $("res-mode").textContent = "Tìm thay đổi · " + store.settings.dur / 60 + " phút";
+    $("res-score").textContent = game.score;
+    $("res-note").textContent = store.lv > game.lvStart ? "🚀 Lên Level " + store.lv + "!" : store.lv < game.lvStart ? "Hạ về Level " + store.lv : "";
+    $("res-count").textContent = game.hits + "/" + game.trials;
+    $("res-acc").textContent = game.trials ? Math.round(100 * game.hits / game.trials) + "%" : "—";
+    $("res-lv").textContent = game.lvStart === store.lv ? "Lv " + store.lv : "Lv " + game.lvStart + " → " + store.lv;
+    beep(880, 200, 0.1); setTimeout(() => beep(1175, 260, 0.1), 220);
+    show("result");
+  }
+
+  $("btn-start").addEventListener("click", startRound);
+  $("btn-again").addEventListener("click", startRound);
+  $("btn-quit").addEventListener("click", endRound);
+  $("btn-home").addEventListener("click", () => { renderHome(); show("home"); });
+  $("nav-home").addEventListener("click", () => { if (game && !game.over) endRound(); renderHome(); show("home"); });
+  $("lv-up").addEventListener("click", () => { if (store.lv < MAXLV) { store.lv++; store.prog = 0; save(); renderHome(); } });
+  $("lv-dn").addEventListener("click", () => { if (store.lv > 1) { store.lv--; store.prog = 0; save(); renderHome(); } });
+  document.querySelectorAll("#seg-dur button").forEach((b) =>
+    b.addEventListener("click", () => { store.settings.dur = +b.dataset.v; save(); renderHome(); }));
+  document.querySelectorAll("#seg-sound button").forEach((b) =>
+    b.addEventListener("click", () => { store.settings.sound = !!+b.dataset.v; save(); renderHome(); }));
+
+  renderHome();
+})();
+</script>
+<script>
+(function () {
+  var KEY = 'game:theme', root = document.documentElement;
+  function icon() {
+    var b = document.getElementById('themeBtn');
+    if (b) b.textContent = root.dataset.theme === 'light' ? '🌙' : '☀️';
+  }
+  var b = document.getElementById('themeBtn');
+  if (b) {
+    icon();
+    b.addEventListener('click', function () {
+      var t = root.dataset.theme === 'light' ? 'dark' : 'light';
+      root.dataset.theme = t;
+      try { localStorage.setItem(KEY, t); } catch (e) {}
+      var m = document.querySelector('meta[name="theme-color"]');
+      if (m) m.content = t === 'light' ? '#eef1f8' : '#0b1020';
+      icon();
+    });
+  }
+})();
+</script>
+</body>
+</html>

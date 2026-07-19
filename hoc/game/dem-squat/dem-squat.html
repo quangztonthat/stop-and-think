@@ -1,0 +1,1302 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Phòng tập webcam — đếm rep, giữ tư thế, phản xạ</title>
+<script>try{document.documentElement.dataset.theme=localStorage.getItem('game:theme')||'dark'}catch(e){document.documentElement.dataset.theme='dark'}</script>
+<style>
+:root{
+  --bg:#0b101c; --panel:#1a2233; --panel2:#141b2b; --text:#e8edf7; --dim:#8a94ad;
+  --accent:#4ade80; --accent2:#38bdf8; --warn:#fbbf24; --bad:#f87171; --line:#2a3550;
+}
+*{box-sizing:border-box; margin:0; padding:0;}
+button, input, select{font-family:inherit;}  /* button không tự kế thừa font trang — thiếu là chữ nút rơi về Arial */
+body{
+  background:
+    radial-gradient(1100px 700px at 85% -10%, rgba(56,189,248,.13), transparent 60%),
+    radial-gradient(900px 650px at -10% 110%, rgba(74,222,128,.10), transparent 60%),
+    var(--bg);
+  color:var(--text); font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif; min-height:100vh;
+  display:flex; flex-direction:column; align-items:center; padding:18px 16px;
+}
+h1{font-size:1.45rem; margin-bottom:8px; background:linear-gradient(90deg,#4ade80,#38bdf8); -webkit-background-clip:text; background-clip:text; color:transparent; letter-spacing:.01em;}
+.steps{display:flex; align-items:center; gap:8px; flex-wrap:wrap; justify-content:center; margin-bottom:14px;}
+.step{display:inline-flex; align-items:center; gap:8px; background:linear-gradient(180deg, rgba(30,40,62,.9), rgba(20,27,43,.9)); border:1px solid var(--line); border-radius:999px; padding:6px 14px 6px 6px; font-size:.82rem; font-weight:600; color:var(--text);}
+.step b{display:inline-flex; align-items:center; justify-content:center; width:24px; height:24px; border-radius:50%; background:linear-gradient(135deg,#4ade80,#38bdf8); color:#0b2513; font-size:.8rem;}
+.s-arrow{color:var(--dim); font-weight:800; font-size:1rem;}
+.s-badge{font-size:.74rem; color:var(--dim); border:1px dashed var(--line); border-radius:999px; padding:5px 12px;}
+.day-row{display:flex; align-items:baseline; gap:10px; padding:6px 2px; border-bottom:1px dashed rgba(42,53,80,.6); font-size:.88rem;}
+.day-row:last-child{border-bottom:none;}
+.d-name{flex:1; min-width:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+.d-sets{color:var(--dim); font-size:.8rem;}
+.d-sets i{color:var(--accent2); font-style:normal;}
+.d-total{font-weight:800; color:var(--accent); white-space:nowrap;}
+#dayTotalBadge{color:var(--dim); font-weight:400; font-size:.78rem;}
+.tab-row{display:grid; grid-template-columns:1fr 1fr; gap:7px; margin-bottom:10px;}
+.tab-row > .tab{display:flex; align-items:center; justify-content:space-between; text-align:left; padding:9px 13px; border-radius:11px;}
+.tab-row > .tab:last-child:nth-child(odd){grid-column:span 2;}
+.tab{display:inline-flex; align-items:center; gap:6px; padding:5px 11px; border-radius:999px; border:1px solid var(--line); background:var(--panel2); color:var(--dim); font-size:.76rem; font-weight:700; cursor:pointer; transition:border-color .15s, color .15s;}
+.tab:hover{border-color:var(--accent2); color:var(--text);}
+.tab i{font-style:normal; font-size:.66rem; font-weight:800; background:rgba(232,237,247,.13); border-radius:999px; padding:1px 7px; line-height:1.5;}
+.tab.active{background:linear-gradient(135deg,#38bdf8,#0ea5e9); color:#062334; border-color:transparent;}
+.tab.active i{background:rgba(6,35,52,.28); color:#e8f7ff;}
+.seg{display:flex; border:1px solid var(--line); border-radius:11px; overflow:hidden; background:var(--panel2); margin-bottom:10px;}
+.seg .tab{flex:1; justify-content:center; border:none; border-radius:0; background:transparent; padding:8px 6px;}
+.seg .tab:not(:last-child){border-right:1px solid var(--line);}
+.seg .tab.active{background:linear-gradient(135deg,#fbbf24,#f59e0b); color:#3a2a00;}
+.ex-list{display:flex; flex-direction:column; gap:6px; max-height:340px; overflow-y:auto; padding-right:5px; scrollbar-width:thin; scrollbar-color:#2a3550 transparent;}
+.ex-list::-webkit-scrollbar{width:8px;}
+.ex-list::-webkit-scrollbar-track{background:transparent;}
+.ex-list::-webkit-scrollbar-thumb{background:var(--line); border-radius:99px;}
+.ex-list::-webkit-scrollbar-thumb:hover{background:var(--accent2);}
+.ex-item{display:flex; align-items:center; gap:9px; padding:5px 8px 5px 5px; background:var(--panel2); border:1.5px solid var(--line); border-radius:11px; cursor:pointer; color:var(--text); font:inherit; text-align:left; transition:border-color .15s, box-shadow .15s;}
+.ex-item:hover{border-color:var(--accent2);}
+.ex-item.active{border-color:var(--accent); box-shadow:0 0 12px rgba(74,222,128,.25);}
+.ex-item .mini{width:58px; height:42px; border-radius:8px; overflow:hidden; flex:none; background:linear-gradient(135deg,#1d2a45,#141b2b); display:flex; align-items:center; justify-content:center;}
+.ex-item .mini img{width:100%; height:100%; object-fit:cover; display:block;}
+.mini-emoji{font-size:1.45rem;}
+.ex-item .n{flex:1; font-size:.8rem; font-weight:700; line-height:1.3; min-width:0;}
+.ex-item.active .n{color:var(--accent);}
+.db-tag{font-size:.7rem; color:var(--warn); flex:none;}
+#exMeta{color:var(--dim); font-size:.78rem; margin-top:8px;}
+#exMeta b{color:var(--accent2);}
+.wrap{display:flex; gap:16px; flex-wrap:wrap; justify-content:center; align-items:flex-start; width:100%; max-width:1340px;}
+.guide{display:flex; flex-direction:column; gap:12px; width:300px; max-width:100%;}
+.g-head{font-weight:800; font-size:.95rem; margin-bottom:10px; color:var(--accent2); letter-spacing:.02em;}
+#photoWrap{display:grid; grid-template-columns:1fr; gap:10px;}
+#photoWrap.hidden{display:none;}
+.ph{margin:0;}
+.ph img{width:100%; aspect-ratio:4/3; object-fit:cover; border-radius:12px; border:2px solid var(--line); display:block; transition:border-color .2s, box-shadow .2s;}
+.ph.active img{border-color:var(--accent); box-shadow:0 0 18px rgba(74,222,128,.25);}
+.ph figcaption{font-size:.78rem; color:var(--dim); padding:5px 2px 0; line-height:1.35;}
+.ph.active figcaption{color:var(--accent); font-weight:700;}
+.credit{font-size:.68rem; color:var(--dim); opacity:.75; margin-top:10px;}
+.cam-box{position:relative; background:var(--panel2); border:1px solid var(--line); border-radius:18px; overflow:hidden; width:640px; max-width:100%; aspect-ratio:4/3; box-shadow:0 14px 40px rgba(0,0,0,.45);}
+.cam-box video{display:none;}
+.cam-box canvas{width:100%; height:100%; display:block;}
+#overlayMsg{position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:12px; text-align:center; padding:24px; background:rgba(15,20,32,.88); font-size:1rem; color:var(--dim);}
+#overlayMsg.hidden{display:none;}
+#overlayMsg .big{font-size:2.2rem;}
+.side{display:flex; flex-direction:column; gap:12px; width:340px; max-width:100%;}
+.card{background:linear-gradient(180deg, rgba(30,40,62,.85), rgba(20,27,43,.85)); border:1px solid var(--line); border-radius:18px; padding:14px 16px; box-shadow:0 8px 26px rgba(0,0,0,.35);}
+.count-row{display:flex; align-items:baseline; gap:10px;}
+#repCount{font-size:4.6rem; font-weight:800; line-height:1; background:linear-gradient(180deg,#4ade80,#16a34a); -webkit-background-clip:text; background-clip:text; color:transparent; transition:transform .12s;}
+#repCount.pulse{transform:scale(1.18);}
+.count-row .lbl{color:var(--dim); font-size:1rem;}
+.stat-grid{display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:10px;}
+.stat{background:var(--panel2); border-radius:10px; padding:8px 10px;}
+.stat .k{color:var(--dim); font-size:.72rem; text-transform:uppercase; letter-spacing:.04em;}
+.stat .v{font-size:1.25rem; font-weight:700;}
+#stateTag{display:inline-block; padding:2px 10px; border-radius:999px; font-weight:700; font-size:.95rem; background:var(--panel2);}
+#stateTag.up{color:var(--accent2);} #stateTag.down{color:var(--warn);} #stateTag.hold{color:var(--accent);} #stateTag.none{color:var(--dim);}
+.bar-wrap{height:10px; background:var(--panel2); border-radius:999px; overflow:hidden; margin-top:8px;}
+#depthBar{height:100%; width:0%; background:linear-gradient(90deg,var(--accent2),var(--accent)); border-radius:999px; transition:width .1s;}
+#tipLine{color:var(--dim); font-size:.8rem; margin-top:8px; line-height:1.4;}
+.btns{display:flex; gap:8px; flex-wrap:wrap;}
+button{flex:1; min-width:96px; padding:11px 10px; border:none; border-radius:11px; font-size:.95rem; font-weight:700; cursor:pointer; background:var(--panel2); color:var(--text); border:1px solid var(--line); transition:filter .15s, transform .05s;}
+button:not(:disabled):hover{filter:brightness(1.15);}
+button:not(:disabled):active{transform:scale(.98);}
+button.primary{background:linear-gradient(135deg,#4ade80,#22c55e); color:#0b2513; border:none;}
+button.blue{background:linear-gradient(135deg,#38bdf8,#0ea5e9); color:#062334; border:none;}
+button:disabled{opacity:.45; cursor:default;}
+button.armed{background:var(--bad); color:#fff; border:none;}
+.sets{display:flex; gap:6px; flex-wrap:wrap; margin-top:8px; min-height:28px;}
+.set-chip{background:var(--panel2); border:1px solid var(--line); border-radius:999px; padding:3px 12px; font-weight:700; font-size:.9rem;}
+.set-chip span{color:var(--dim); font-weight:400; font-size:.75rem;}
+#exportOut{width:100%; margin-top:8px; background:var(--panel2); color:var(--accent); border:1px solid var(--line); border-radius:10px; padding:8px; font-family:Consolas,monospace; font-size:.78rem; min-height:64px; display:none; white-space:pre-wrap; word-break:break-all;}
+#exportOut.show{display:block;}
+.hint{color:var(--dim); font-size:.78rem; margin-top:6px; line-height:1.45;}
+#todaySummary{color:var(--dim); font-size:.82rem; margin-top:8px; line-height:1.5;}
+#todaySummary b{color:var(--text);}
+label.chk{display:flex; align-items:center; gap:6px; font-size:.85rem; color:var(--dim); cursor:pointer;}
+#status{font-size:.82rem; color:var(--dim); margin-top:10px; text-align:center; min-height:1.2em;}
+.demo-block{display:flex; align-items:center; gap:10px; margin-top:10px; background:var(--panel2); border:1px solid var(--line); border-radius:10px; padding:8px;}
+.demo-block canvas{flex:none; border-radius:8px;}
+#demoLbl{font-size:.8rem; line-height:1.4; font-weight:700;}
+#demoLbl.ok{color:var(--accent);} #demoLbl.warn{color:var(--warn);} #demoLbl.bad{color:var(--bad);}
+.demo-block.hidden{display:none;}
+footer{margin-top:16px; color:var(--dim); font-size:.72rem;}
+/* ---------- mobile (iPhone): camera + bảng đếm lên đầu, picker bài xuống dưới ---------- */
+html{-webkit-text-size-adjust:100%}
+button,.tab,.ex-item{touch-action:manipulation}
+@media (max-width:640px){
+  body{padding:12px 10px calc(14px + env(safe-area-inset-bottom));padding-left:max(10px,env(safe-area-inset-left));padding-right:max(10px,env(safe-area-inset-right))}
+  h1{font-size:1.15rem;margin-bottom:6px}
+  .steps{gap:6px;margin-bottom:10px}
+  .step{font-size:.72rem;padding:4px 10px 4px 4px}
+  .s-badge{display:none}
+  .wrap{gap:10px}
+  .cam-box{order:1;width:100%}
+  .side{order:2;width:100%}
+  .guide{order:3;width:100%}
+  #photoWrap{grid-template-columns:1fr 1fr;gap:8px}
+  .ph figcaption{font-size:.7rem}
+  .ex-list{max-height:250px}
+  #repCount{font-size:3.6rem}
+  button{min-height:44px}
+}
+
+/* ---------- dark/light mode (nút đổi theme — persist chung key game:theme cho cả bộ) ---------- */
+.theme-btn{position:fixed;top:calc(10px + env(safe-area-inset-top));right:calc(12px + env(safe-area-inset-right));z-index:80;border:1px solid var(--line);background:var(--panel2);color:var(--text);width:38px;height:38px;min-width:0;border-radius:999px;cursor:pointer;font-size:16px;font-family:inherit;line-height:1;padding:0;flex:none}
+html[data-theme="light"]{--bg:#eef1f8; --panel:#ffffff; --panel2:#e9edf7; --text:#1a2233; --dim:#5b6579; --line:#cfd8e8;}
+html[data-theme="light"] body{background:radial-gradient(1100px 700px at 85% -10%, rgba(56,189,248,.12), transparent 60%),radial-gradient(900px 650px at -10% 110%, rgba(74,222,128,.10), transparent 60%),var(--bg)}
+html[data-theme="light"] .card{background:#ffffff;box-shadow:0 8px 26px rgba(23,32,56,.10)}
+html[data-theme="light"] .step{background:#ffffff}
+</style>
+</head>
+<body>
+<button class="theme-btn" id="themeBtn" title="Đổi giao diện sáng/tối">☀️</button>
+<h1>🏋️ Phòng tập webcam</h1>
+<div class="steps">
+  <span class="step"><b>1</b> Chọn nhóm cơ &amp; bài</span>
+  <span class="s-arrow">›</span>
+  <span class="step"><b>2</b> Tập theo ảnh mẫu</span>
+  <span class="s-arrow">›</span>
+  <span class="step"><b>3</b> AI đếm — cuối ngày gửi 1 lần</span>
+  <span class="s-badge">🔒 Xử lý tại máy, hình không rời trình duyệt</span>
+</div>
+
+<div class="wrap">
+  <aside class="guide">
+    <div class="card">
+      <div class="g-head">Chọn bài tập</div>
+      <div class="tab-row" id="groupRow"></div>
+      <div class="seg" id="equipRow"></div>
+      <div class="ex-list" id="exRow"></div>
+    </div>
+    <div class="card">
+      <div class="g-head">📸 Tư thế mẫu — người thật</div>
+      <div id="photoWrap">
+        <figure class="ph" id="fig0"><img id="photo0" alt="Tư thế bắt đầu"><figcaption id="cap0">① Vào thế</figcaption></figure>
+        <figure class="ph" id="fig1"><img id="photo1" alt="Tư thế gắng sức"><figcaption id="cap1">② Gắng sức</figcaption></figure>
+      </div>
+      <div class="demo-block" id="demoFallback"><canvas id="demoSmall" width="120" height="94"></canvas><div id="demoLbl"></div></div>
+      <div id="exMeta"></div>
+      <div id="tipLine"></div>
+      <div class="credit" id="photoCredit">Ảnh mẫu: Free Exercise DB (public domain), lưu sẵn trong máy</div>
+    </div>
+  </aside>
+
+  <div class="cam-box">
+    <video id="video" playsinline></video>
+    <canvas id="canvas" width="640" height="480"></canvas>
+    <div id="overlayMsg">
+      <div class="big">📷</div>
+      <div id="overlayText">Chọn bài tập rồi bấm «Bật camera».<br>Lần đầu cần internet để tải model MoveNet (~3&nbsp;MB), các lần sau trình duyệt dùng cache.</div>
+    </div>
+  </div>
+
+  <div class="side">
+    <div class="card">
+      <div class="count-row"><div id="repCount">0</div><div class="lbl" id="countLbl">cái<br>set này</div></div>
+      <div class="bar-wrap"><div id="depthBar"></div></div>
+      <div class="stat-grid">
+        <div class="stat"><div class="k" id="metricLbl">Góc khớp</div><div class="v"><span id="kneeAngle">–</span></div></div>
+        <div class="stat"><div class="k">Trạng thái</div><div class="v"><span id="stateTag" class="none">–</span></div></div>
+        <div class="stat"><div class="k" id="extraLbl">Sâu nhất rep</div><div class="v"><span id="minAngle">–</span></div></div>
+        <div class="stat"><div class="k">Hôm nay (bài này)</div><div class="v" id="todayTotal">0</div></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="btns">
+        <button id="btnCam" class="primary">Bật camera</button>
+        <button id="btnSet" disabled>Chốt set</button>
+        <button id="btnReset">Reset</button>
+      </div>
+      <div class="sets" id="setsRow"></div>
+      <div style="font-size:.78rem;color:var(--dim);margin:8px 0 4px">🗣️ Giọng đọc số <span style="opacity:.75">(English đọc rõ hơn nếu giọng Việt lỗi)</span></div>
+      <div class="seg" id="voiceRow" style="margin-bottom:0"></div>
+    </div>
+
+    <div class="card">
+      <div class="g-head">📒 Nhật ký hôm nay <span id="dayTotalBadge"></span></div>
+      <div id="dayLog"></div>
+      <div class="btns" style="margin-top:10px">
+        <button id="btnSync" class="blue">🔄 Sync vào Nhật ký chung</button>
+      </div>
+      <div class="hint">Số liệu tự cộng dồn cả ngày (đóng/mở lại trang không mất). Tập xong bấm Sync — dữ liệu dồn về <b>⌂ Bộ game › Nhật ký tập hôm nay</b>, copy MỘT chỗ ở đó. Bấm Sync lại thoải mái, không bị trùng.</div>
+    </div>
+
+    <div id="status"></div>
+  </div>
+</div>
+
+<footer>dem-squat · Build v17 · 2026-07-13 · MoveNet Lightning (TensorFlow.js) — 30 bài / 6 nhóm cơ · giọng đọc EN/VI · ảnh người thật (Free Exercise DB, public domain) · nhật ký ngày gửi 1 lần</footer>
+
+<script id="pure-logic">
+'use strict';
+// ==== Logic thuần (unit-test được bằng node, không đụng DOM) ====
+// MoveNet 17 keypoint: 0 mũi, 5/6 vai, 7/8 khuỷu, 9/10 cổ tay, 11/12 hông, 13/14 gối, 15/16 cổ chân (trái/phải).
+
+// Góc tại điểm b (độ) tạo bởi 3 điểm a-b-c; null nếu suy biến.
+function jointAngle(a, b, c) {
+  const v1x = a.x - b.x, v1y = a.y - b.y, v2x = c.x - b.x, v2y = c.y - b.y;
+  const m = Math.hypot(v1x, v1y) * Math.hypot(v2x, v2y);
+  if (!m) return null;
+  const cos = Math.min(1, Math.max(-1, (v1x * v2x + v1y * v2y) / m));
+  return Math.acos(cos) * 180 / Math.PI;
+}
+
+// Góc tại keypoint bI của bộ ba (aI, bI, cI); null nếu thiếu điểm hoặc score thấp.
+function tripleAngle(kp, aI, bI, cI, minScore) {
+  const a = kp[aI], b = kp[bI], c = kp[cI];
+  if (!a || !b || !c) return null;
+  const s = Math.min(a.score, b.score, c.score);
+  if (!(s >= minScore)) return null;
+  const angle = jointAngle(a, b, c);
+  return angle == null ? null : { angle, score: s };
+}
+const legAngle = tripleAngle; // alias giữ tương thích test v1
+
+// Chọn bên (trái/phải) có keypoint rõ hơn; null nếu cả 2 bên đều mờ.
+function sideAngle(kp, aL, bL, cL, aR, bR, cR, minScore = 0.3) {
+  const L = tripleAngle(kp, aL, bL, cL, minScore);
+  const R = tripleAngle(kp, aR, bR, cR, minScore);
+  if (L && R) return L.score >= R.score ? { ...L, side: 'left' } : { ...R, side: 'right' };
+  return L ? { ...L, side: 'left' } : R ? { ...R, side: 'right' } : null;
+}
+const pickLeg = (kp, minScore = 0.3) => sideAngle(kp, 11, 13, 15, 12, 14, 16, minScore);
+
+// ---- Tín hiệu cho bài đếm rep: giá trị THẤP = pha gắng sức (xuống/gập/lên gối/tay quá đầu) ----
+const SIGNALS = {
+  // góc gối (hông-gối-cổ chân): đứng ~175°, squat sâu ~90°
+  squat: kp => sideAngle(kp, 11, 13, 15, 12, 14, 16, 0.3),
+  // góc khuỷu (vai-khuỷu-cổ tay): duỗi ~175°, hạ sâu ~90°
+  pushup: kp => sideAngle(kp, 5, 7, 9, 6, 8, 10, 0.25),
+  // góc thân-đùi tại hông (vai-hông-gối): nằm ~140°+, gập lên <85°
+  situp: kp => sideAngle(kp, 5, 11, 13, 6, 12, 14, 0.25),
+  // jumping jack: góc dạng tay tại vai (hông-vai-cổ tay), lấy 180° trừ đi để
+  // "tay quá đầu" thành giá trị THẤP; cần cả 2 tay nếu thấy đủ (min 2 bên)
+  jack: kp => {
+    const L = tripleAngle(kp, 11, 5, 9, 0.3), R = tripleAngle(kp, 12, 6, 10, 0.3);
+    if (!L && !R) return null;
+    if (L && R) return { angle: 180 - Math.min(L.angle, R.angle), score: Math.min(L.score, R.score), side: 'both' };
+    const one = L || R;
+    return { angle: 180 - one.angle, score: one.score, side: L ? 'left' : 'right' };
+  },
+  // nâng cao gối / leo núi: góc gập hông (vai-hông-gối) bên NHỎ hơn — gối nào đang kéo thì góc bên đó nhỏ
+  highknee: kp => {
+    const L = tripleAngle(kp, 5, 11, 13, 0.3), R = tripleAngle(kp, 6, 12, 14, 0.3);
+    if (!L && !R) return null;
+    if (L && R) {
+      const m = L.angle <= R.angle ? L : R;
+      return { angle: m.angle, score: Math.min(L.score, R.score), side: L.angle <= R.angle ? 'left' : 'right' };
+    }
+    const one = L || R;
+    return { angle: one.angle, score: one.score, side: L ? 'left' : 'right' };
+  },
+  // đẩy (vai/ngực): giá trị = 180 − góc khuỷu, CHỈ khi cổ tay ở TRÊN vai trong khung hình
+  // (buông tay xuôi thân → null, không đếm nhầm). Cả 2 tay thấy được thì cả 2 phải duỗi hết (lấy max).
+  press: kp => {
+    const arm = (sI, eI, wI) => {
+      const s = kp[sI], e = kp[eI], w = kp[wI];
+      if (!s || !e || !w) return null;
+      const sc = Math.min(s.score, e.score, w.score);
+      if (!(sc >= 0.3)) return null;
+      if (w.y >= s.y) return null;
+      const a = jointAngle(s, e, w);
+      return a == null ? null : { angle: 180 - a, score: sc };
+    };
+    const L = arm(5, 7, 9), R = arm(6, 8, 10);
+    if (!L && !R) return null;
+    if (L && R) return { angle: Math.max(L.angle, R.angle), score: Math.min(L.score, R.score), side: 'both' };
+    const one = L || R;
+    return { angle: one.angle, score: one.score, side: L ? 'left' : 'right' };
+  },
+  // đẩy hông (glute bridge): 180 − góc vai-hông-gối — nằm co gối là góc nhỏ, đẩy hông lên thân thẳng là góc lớn
+  bridge: kp => {
+    const s = SIGNALS.situp(kp);
+    return s ? { angle: 180 - s.angle, score: s.score, side: s.side } : null;
+  },
+};
+
+// ---- Điều kiện cho bài GIỮ tư thế: {ok, detail...} | null nếu không thấy người ----
+const CHECKS = {
+  // plank: vai-hông-cổ chân thẳng hàng (>=150°) VÀ thân nằm ngang (<=40° so với mặt sàn)
+  plank: (kp, minScore = 0.25) => {
+    const line = sideAngle(kp, 5, 11, 15, 6, 12, 16, minScore);
+    if (!line) return null;
+    const [sI, aI] = line.side === 'left' ? [5, 15] : [6, 16];
+    const s = kp[sI], a = kp[aI];
+    const horiz = Math.atan2(Math.abs(s.y - a.y), Math.abs(s.x - a.x)) * 180 / Math.PI;
+    const straight = line.angle >= 150, flat = horiz <= 40;
+    return { ok: straight && flat, straight, flat, angle: Math.round(line.angle), score: line.score };
+  },
+  // ngồi tường: gối 65–115° VÀ thân trên thẳng đứng (lệch ngang vai-hông ≤ 45% chiều cao thân)
+  wallsit: (kp, minScore = 0.25) => {
+    const leg = sideAngle(kp, 11, 13, 15, 12, 14, 16, minScore);
+    if (!leg) return null;
+    const [sI, hI] = leg.side === 'left' ? [5, 11] : [6, 12];
+    const s = kp[sI], h = kp[hI];
+    if (!s || !h || Math.min(s.score, h.score) < minScore) return null;
+    const upright = Math.abs(s.x - h.x) <= 0.45 * Math.abs(s.y - h.y);
+    const kneeOk = leg.angle >= 65 && leg.angle <= 115;
+    return { ok: kneeOk && upright, angle: Math.round(leg.angle), upright, score: leg.score };
+  },
+  // thăng bằng 1 chân: 2 cổ chân lệch cao độ > 22% chiều dài chân (đã nhấc hẳn 1 bàn chân)
+  balance: (kp, minScore = 0.3) => {
+    const la = kp[15], ra = kp[16], lh = kp[11], rh = kp[12];
+    if (!la || !ra || !lh || !rh) return null;
+    const s = Math.min(la.score, ra.score, lh.score, rh.score);
+    if (!(s >= minScore)) return null;
+    const legLen = Math.max(Math.hypot(lh.x - la.x, lh.y - la.y), Math.hypot(rh.x - ra.x, rh.y - ra.y));
+    if (!legLen) return null;
+    const lift = Math.abs(la.y - ra.y) / legLen;
+    return { ok: lift > 0.22, lift: Math.round(lift * 100), score: s };
+  },
+};
+
+// ---- Nhóm cơ & dụng cụ ----
+const GROUPS = [
+  { id: 'chan',   name: 'Chân & Mông',          emoji: '🦵' },
+  { id: 'nguc',   name: 'Ngực & Tay',           emoji: '💪' },
+  { id: 'vai',    name: 'Vai & Lưng',           emoji: '🏹' },
+  { id: 'bung',   name: 'Bụng & Core',          emoji: '🔥' },
+  { id: 'cardio', name: 'Cardio toàn thân',     emoji: '⚡' },
+  { id: 'khac',   name: 'Thăng bằng · Dẻo · Phản xạ', emoji: '🎯' },
+];
+const EQUIP_NAME = { none: '🤸 Không tạ', db: '🏋️ Tạ đơn' };
+
+// ---- Danh mục bài tập (demo: id động tác mẫu dùng chung nếu khác id bài) ----
+// act: chữ hiện ở ô Trạng thái khi vào pha gắng sức.
+const EXERCISES = [
+  // ===== CHÂN & MÔNG =====
+  { id: 'squat',       name: 'Squat',             emoji: '🏋️', group: 'chan', equip: 'none', type: 'rep', signal: 'squat',    downTh: 105, upTh: 155, needFrames: 3, act: 'XUỐNG',      unit: 'cái', category: 'strength', tip: 'Đứng chéo/ngang camera, thấy rõ hông–gối–cổ chân. Xuống tới gối ≤105° rồi đứng thẳng.' },
+  { id: 'jumpsquat',   name: 'Squat bật nhảy',    emoji: '🦘', group: 'chan', equip: 'none', type: 'rep', signal: 'squat',    downTh: 110, upTh: 155, needFrames: 2, act: 'XUỐNG',      unit: 'cái', category: 'cardio',   tip: 'Như squat nhưng bật nhảy khi đứng lên, tiếp đất nhẹ gối hơi chùng. Đứng chéo/ngang camera.', demo: 'squat', caps: ['Đứng thẳng — gối ≥155°', 'Xuống sâu rồi BẬT NHẢY — gối ≤110°'] },
+  { id: 'lunge',       name: 'Lunge (chùng chân)', emoji: '🚶', group: 'chan', equip: 'none', type: 'rep', signal: 'squat',   downTh: 110, upTh: 160, needFrames: 3, act: 'CHÙNG XUỐNG', unit: 'cái', category: 'strength', tip: 'Đứng ngang camera, bước 1 chân lên trước, hạ tới gối trước ~90°. Đổi chân giữa các set.' },
+  { id: 'sumosquat',   name: 'Sumo squat',        emoji: '🐸', group: 'chan', equip: 'none', type: 'rep', signal: 'squat',    downTh: 110, upTh: 160, needFrames: 3, act: 'XUỐNG',      unit: 'cái', category: 'strength', tip: 'CHÍNH DIỆN camera, chân rộng hơn vai, mũi chân mở. Xuống sâu, gối mở theo hướng mũi chân. (Ảnh mẫu cầm tạ — plié squat; không tạ động tác y hệt.)' },
+  { id: 'gobletsquat', name: 'Goblet squat',      emoji: '🏆', group: 'chan', equip: 'db',   type: 'rep', signal: 'squat',    downTh: 105, upTh: 155, needFrames: 3, act: 'XUỐNG',      unit: 'cái', category: 'strength', tip: 'Ôm 1 tạ đơn trước ngực bằng 2 tay, squat như thường. Đứng chéo/ngang camera.', demo: 'squat' },
+  { id: 'dblunge',     name: 'Lunge tạ đơn',      emoji: '🥾', group: 'chan', equip: 'db',   type: 'rep', signal: 'squat',    downTh: 110, upTh: 160, needFrames: 3, act: 'CHÙNG XUỐNG', unit: 'cái', category: 'strength', tip: 'Mỗi tay 1 tạ buông dọc thân, chùng chân như lunge thường. Đứng ngang camera.', demo: 'lunge' },
+  { id: 'rdl',         name: 'Romanian deadlift', emoji: '🙇', group: 'chan', equip: 'db',   type: 'rep', signal: 'situp',    downTh: 110, upTh: 160, needFrames: 3, act: 'GẬP HÔNG',   unit: 'cái', category: 'strength', tip: '2 tay cầm tạ trước đùi, gập hông đẩy mông ra sau, lưng THẲNG, gối gần thẳng. Đứng ngang camera.' },
+  { id: 'sidelunge',   name: 'Chùng chân ngang (side lunge)', emoji: '↔️', group: 'chan', equip: 'none', type: 'rep', signal: 'squat', downTh: 110, upTh: 160, needFrames: 3, act: 'CHÙNG SANG', unit: 'cái', category: 'strength', tip: 'CHÍNH DIỆN camera, bước rộng sang ngang, dồn trọng tâm 1 chân, chân kia duỗi thẳng. Đổi bên giữa các set.' },
+  { id: 'bridge',      name: 'Đẩy hông (glute bridge)', emoji: '🌉', group: 'chan', equip: 'none', type: 'rep', signal: 'bridge', downTh: 25, upTh: 50, needFrames: 3, act: 'ĐẨY HÔNG LÊN', unit: 'cái', category: 'strength', tip: 'Nằm ngửa co gối, đứng ngang camera. Đẩy hông lên tới vai–hông–gối thẳng hàng rồi hạ.' },
+  { id: 'wallsit',     name: 'Ngồi tường (wall sit)', emoji: '🪑', group: 'chan', equip: 'none', type: 'hold', check: 'wallsit', unit: 'giây', category: 'strength', tip: 'Tựa lưng vào tường, đùi song song sàn (gối ~90°), đứng ngang camera. Nhổm dậy hay trượt xuống là đồng hồ dừng.' },
+  // ===== NGỰC & TAY =====
+  { id: 'pushup',      name: 'Chống đẩy',         emoji: '💪', group: 'nguc', equip: 'none', type: 'rep', signal: 'pushup',   downTh: 95,  upTh: 150, needFrames: 3, act: 'XUỐNG',      unit: 'cái', category: 'strength', tip: 'Quay NGANG người với camera, đặt máy thấp gần sàn. Hạ tới khuỷu ≤95° rồi duỗi thẳng tay.' },
+  { id: 'kneepushup',  name: 'Chống đẩy gối',     emoji: '🧎', group: 'nguc', equip: 'none', type: 'rep', signal: 'pushup',   downTh: 100, upTh: 150, needFrames: 3, act: 'XUỐNG',      unit: 'cái', category: 'strength', tip: 'Như chống đẩy nhưng gối chạm sàn — bản nhẹ cho người mới. Máy thấp, quay ngang.', demo: 'pushup', caps: ['Gối chạm sàn, tay duỗi — khuỷu ≥150°', 'Hạ sâu — khuỷu ≤100°'] },
+  { id: 'floorpress',  name: 'Đẩy ngực sàn',      emoji: '🛏️', group: 'nguc', equip: 'db',   type: 'rep', signal: 'press',    downTh: 35,  upTh: 75,  needFrames: 3, act: 'ĐẨY LÊN',    unit: 'cái', category: 'strength', tip: 'Nằm ngửa trên sàn cầm 2 tạ, đứng ngang camera. Đẩy tạ thẳng lên rồi hạ tới khuỷu chạm sàn.' },
+  { id: 'curl',        name: 'Cuốn tay trước (biceps)', emoji: '🦾', group: 'nguc', equip: 'db', type: 'rep', signal: 'pushup', downTh: 60, upTh: 150, needFrames: 3, act: 'CUỐN LÊN',  unit: 'cái', category: 'strength', tip: 'Đứng ngang camera, khuỷu sát thân. Cuốn tạ lên tới khuỷu ≤60° rồi duỗi hẳn xuống.' },
+  { id: 'hammercurl',  name: 'Hammer curl', emoji: '🔨', group: 'nguc', equip: 'db', type: 'rep', signal: 'pushup', downTh: 60, upTh: 150, needFrames: 3, act: 'CUỐN LÊN', unit: 'cái', category: 'strength', tip: 'Như cuốn biceps nhưng lòng bàn tay úp vào thân (cầm tạ dọc). Đứng ngang camera, khuỷu sát thân.', demo: 'curl' },
+  { id: 'triceps',     name: 'Duỗi tay sau đầu (triceps)', emoji: '🙌', group: 'nguc', equip: 'db', type: 'rep', signal: 'pushup', downTh: 95, upTh: 150, needFrames: 3, act: 'HẠ SAU ĐẦU', unit: 'cái', category: 'strength', tip: 'Cầm tạ 2 tay duỗi trên đầu, đứng ngang camera. Hạ tạ sau đầu tới khuỷu ≤95° rồi duỗi thẳng lại.' },
+  // ===== VAI & LƯNG =====
+  { id: 'press',       name: 'Đẩy vai (shoulder press)', emoji: '🆙', group: 'vai', equip: 'db', type: 'rep', signal: 'press', downTh: 35, upTh: 110, needFrames: 3, act: 'ĐẨY LÊN',   unit: 'cái', category: 'strength', tip: 'CHÍNH DIỆN camera, tạ ngang vai. Đẩy thẳng 2 tay qua đầu. Cổ tay phải cao hơn vai máy mới đếm.' },
+  { id: 'latraise',    name: 'Dang tay ngang (lateral raise)', emoji: '✈️', group: 'vai', equip: 'db', type: 'rep', signal: 'jack', downTh: 100, upTh: 140, needFrames: 3, act: 'DANG TAY', unit: 'cái', category: 'strength', tip: 'CHÍNH DIỆN camera. Dang 2 tay cầm tạ ngang tới ngang vai rồi hạ từ từ, không vung đà.' },
+  { id: 'row',         name: 'Kéo tạ cúi người (row)', emoji: '🚣', group: 'vai', equip: 'db', type: 'rep', signal: 'pushup', downTh: 90, upTh: 150, needFrames: 3, act: 'KÉO VỀ HÔNG', unit: 'cái', category: 'strength', tip: 'Cúi người ~45°, lưng thẳng, đứng ngang camera. Kéo tạ về phía hông, siết bả vai, rồi duỗi tay.' },
+  // ===== BỤNG & CORE =====
+  { id: 'situp',       name: 'Gập bụng',          emoji: '🌙', group: 'bung', equip: 'none', type: 'rep', signal: 'situp',    downTh: 85,  upTh: 125, needFrames: 3, act: 'GẬP LÊN',    unit: 'cái', category: 'strength', tip: 'Nằm NGANG với camera, co gối. Gập lên tới khi thân–đùi ≤85° rồi hạ về.' },
+  { id: 'legraise',    name: 'Nâng chân (leg raise)', emoji: '🦵', group: 'bung', equip: 'none', type: 'rep', signal: 'situp', downTh: 110, upTh: 150, needFrames: 3, act: 'NÂNG CHÂN',  unit: 'cái', category: 'strength', tip: 'Nằm ngửa thẳng chân, đứng ngang camera. Nâng 2 chân lên ~90° rồi hạ chậm, lưng ép sàn.' },
+  { id: 'mtclimber',   name: 'Leo núi (mountain climber)', emoji: '⛰️', group: 'bung', equip: 'none', type: 'rep', signal: 'highknee', downTh: 110, upTh: 150, needFrames: 2, act: 'GỐI VÀO', unit: 'cái', category: 'cardio', tip: 'Thế plank tay thẳng, quay ngang camera. Kéo gối về ngực luân phiên, nhịp nhanh (2 chân đếm chung).' },
+  { id: 'plank',       name: 'Plank',             emoji: '🧱', group: 'bung', equip: 'none', type: 'hold', check: 'plank',    unit: 'giây', category: 'strength', tip: 'Quay ngang, máy thấp. Giữ vai–hông–cổ chân thẳng hàng — tụt/nhô hông là đồng hồ DỪNG.' },
+  { id: 'sideplank',   name: 'Plank nghiêng',     emoji: '🧗', group: 'bung', equip: 'none', type: 'hold', check: 'plank',    unit: 'giây', category: 'strength', tip: 'Nghiêng người chống 1 khuỷu, thân thẳng, máy thấp. Hông tụt là đồng hồ dừng. Đổi bên giữa các set.' },
+  // ===== CARDIO TOÀN THÂN =====
+  { id: 'jack',        name: 'Jumping jack',      emoji: '⭐', group: 'cardio', equip: 'none', type: 'rep', signal: 'jack',   downTh: 40,  upTh: 130, needFrames: 2, act: 'BẬT',        unit: 'cái', category: 'cardio', tip: 'Đứng CHÍNH DIỆN, lùi ra để thấy đủ 2 tay. Vung tay quá đầu rồi hạ về sát thân = 1 cái.' },
+  { id: 'highknee',    name: 'Nâng cao gối',      emoji: '🏃', group: 'cardio', equip: 'none', type: 'rep', signal: 'highknee', downTh: 115, upTh: 150, needFrames: 2, act: 'GỐI LÊN',  unit: 'cái', category: 'cardio', tip: 'Chính diện hoặc chéo. Mỗi lần gối nâng vượt hông tính 1 (hai chân đếm chung).' },
+  // ===== THĂNG BẰNG & PHẢN XẠ =====
+  { id: 'balance',     name: 'Thăng bằng 1 chân', emoji: '🦩', group: 'khac', equip: 'none', type: 'hold', check: 'balance',  unit: 'giây', category: 'mobility', tip: 'Chính diện, thấy đủ 2 chân. Nhấc hẳn 1 bàn chân lên — hạ xuống là đồng hồ dừng. Đổi chân giữa các set.' },
+  { id: 'toetouch',    name: 'Gập người chạm mũi chân', emoji: '🙆', group: 'khac', equip: 'none', type: 'rep', signal: 'situp', downTh: 90, upTh: 160, needFrames: 3, act: 'GẬP XUỐNG', unit: 'cái', category: 'mobility', tip: 'Đứng ngang camera, chân thẳng, gập hông cúi chạm mũi chân rồi đứng thẳng dậy. Kéo giãn nhẹ nhàng, không giật.' },
+  { id: 'target',      name: 'Chạm mục tiêu',     emoji: '🎯', group: 'khac', equip: 'none', type: 'target', durationSec: 60, unit: 'điểm', category: 'sport',    tip: 'Lùi ra để 2 cổ tay trong khung. Bấm «Bắt đầu 60s» rồi vươn tay chạm vòng tròn càng nhanh càng tốt.' },
+  { id: 'footwork',    name: 'Footwork 4 góc',    emoji: '👟', group: 'khac', equip: 'none', type: 'target', durationSec: 60, joints: [15, 16], zones: [[14, 78], [86, 78], [8, 52], [92, 52]], zoneR: 58, unit: 'điểm', category: 'sport', tip: 'Lùi ra thấy đủ 2 CHÂN. Ô nào sáng thì bước chân tới chạm rồi về giữa — bài bước chân cầu lông.' },
+];
+const EXERCISE_BY_ID = Object.fromEntries(EXERCISES.map(e => [e.id, e]));
+
+// Ảnh người thật (Free Exercise DB, public domain) lưu tại img/<key>-0.jpg (vào thế) và -1.jpg
+// (gắng sức). 1 = ảnh riêng theo id; chuỗi = dùng chung ảnh bài khác. Bài không có ảnh
+// (jack, highknee, balance, target) rơi về hình người-que.
+const PHOTOS = {
+  squat: 1, jumpsquat: 1, lunge: 1, sumosquat: 1, gobletsquat: 1, dblunge: 1, rdl: 1, bridge: 1,
+  pushup: 1, kneepushup: 'pushup', floorpress: 1, curl: 1, hammercurl: 1, triceps: 1,
+  press: 1, latraise: 1, row: 1,
+  situp: 1, legraise: 1, mtclimber: 1, plank: 1, sideplank: 1, toetouch: 1,
+};
+for (const ex of EXERCISES) {
+  const p = PHOTOS[ex.id];
+  if (p) ex.photoKey = p === 1 ? ex.id : p;
+}
+
+// ---- Động tác mẫu: hình người que 2 pha cho từng bài (toạ độ 0..100) ----
+// Pha 0 = nghỉ/chuẩn bị, pha 1 = pha gắng sức. Toạ độ được unit test bằng CHÍNH
+// công thức góc của máy đếm (SIGNALS/CHECKS) để hình mẫu khớp ngưỡng thật.
+// view 'side': head/sh/el/wr/hip/kn/an — view 'front': head + shL..anR 2 bên.
+// tone: 'ok' (xanh, đang gắng sức đúng) | 'warn' (vàng) | 'bad' (đỏ, tư thế sai).
+const DEMOS = {
+  squat: { view: 'side', frames: [
+    { label: 'Đứng thẳng — gối ≥155°', tone: 'warn', pts: { head: [48,10], sh: [48,24], el: [50,34], wr: [51,43], hip: [48,52], kn: [48,72], an: [48,92] } },
+    { label: 'Xuống sâu — gối ≤105°', tone: 'ok', pts: { head: [58,34], sh: [56,44], el: [64,50], wr: [70,54], hip: [44,64], kn: [60,74], an: [48,92] } },
+  ] },
+  pushup: { view: 'side', frames: [
+    { label: 'Duỗi thẳng tay — khuỷu ≥150°', tone: 'warn', pts: { head: [14,58], sh: [24,62], el: [26,74], wr: [27,86], hip: [48,70], kn: [64,76], an: [82,84] } },
+    { label: 'Hạ sâu — khuỷu ≤95°', tone: 'ok', pts: { head: [12,74], sh: [22,78], el: [30,84], wr: [27,88], hip: [48,82], kn: [64,84], an: [82,86] } },
+  ] },
+  situp: { view: 'side', frames: [
+    { label: 'Nằm co gối — thân-đùi ≥125°', tone: 'warn', pts: { head: [16,88], sh: [26,88], el: [32,84], wr: [38,80], hip: [52,86], kn: [66,68], an: [80,86] } },
+    { label: 'Gập lên — thân-đùi ≤85°', tone: 'ok', pts: { head: [38,62], sh: [44,68], el: [48,66], wr: [52,62], hip: [52,86], kn: [66,68], an: [80,86] } },
+  ] },
+  jack: { view: 'front', frames: [
+    { label: 'Tay xuôi, chân khép', tone: 'warn', pts: { head: [50,8], shL: [44,20], shR: [56,20], elL: [42,31], elR: [58,31], wrL: [41,42], wrR: [59,42], hipL: [46,48], hipR: [54,48], knL: [46,69], knR: [54,69], anL: [46,90], anR: [54,90] } },
+    { label: 'Bật — 2 tay quá đầu, chân rộng', tone: 'ok', pts: { head: [50,8], shL: [44,20], shR: [56,20], elL: [37,12], elR: [63,12], wrL: [41,3], wrR: [59,3], hipL: [46,48], hipR: [54,48], knL: [40,68], knR: [60,68], anL: [34,88], anR: [66,88] } },
+  ] },
+  highknee: { view: 'front', frames: [
+    { label: 'Chạy tại chỗ…', tone: 'warn', pts: { head: [50,8], shL: [44,20], shR: [56,20], elL: [42,30], elR: [58,30], wrL: [44,38], wrR: [56,38], hipL: [46,48], hipR: [54,48], knL: [46,69], knR: [54,69], anL: [46,90], anR: [54,90] } },
+    { label: 'Gối nâng ngang hông!', tone: 'ok', pts: { head: [50,8], shL: [44,20], shR: [56,20], elL: [42,26], elR: [58,34], wrL: [45,18], wrR: [55,44], hipL: [46,48], hipR: [54,48], knL: [50,44], knR: [54,69], anL: [50,60], anR: [54,90] } },
+  ] },
+  plank: { view: 'side', frames: [
+    { label: 'ĐÚNG: vai–hông–cổ chân thẳng — đồng hồ chạy', tone: 'ok', pts: { head: [12,62], sh: [24,64], el: [24,80], wr: [34,80], hip: [48,70], kn: [64,74], an: [82,80] } },
+    { label: 'SAI: tụt hông — đồng hồ DỪNG', tone: 'bad', pts: { head: [12,62], sh: [24,64], el: [24,80], wr: [34,80], hip: [48,80], kn: [64,80], an: [82,80] } },
+  ] },
+  balance: { view: 'front', frames: [
+    { label: 'Dang tay, nhấc 1 bàn chân…', tone: 'warn', pts: { head: [50,8], shL: [44,20], shR: [56,20], elL: [38,26], elR: [62,26], wrL: [31,24], wrR: [69,24], hipL: [46,48], hipR: [54,48], knL: [46,69], knR: [54,69], anL: [46,90], anR: [54,90] } },
+    { label: 'GIỮ YÊN — chân không chạm đất', tone: 'ok', pts: { head: [50,8], shL: [44,20], shR: [56,20], elL: [38,26], elR: [62,26], wrL: [31,24], wrR: [69,24], hipL: [46,48], hipR: [54,48], knL: [43,64], knR: [54,69], anL: [47,74], anR: [54,90] } },
+  ] },
+  target: { view: 'front', frames: [
+    { label: 'Vòng tròn hiện ngẫu nhiên…', tone: 'warn', target: [78,22], pts: { head: [50,10], shL: [44,22], shR: [56,22], elL: [42,33], elR: [58,33], wrL: [41,44], wrR: [59,44], hipL: [46,50], hipR: [54,50], knL: [46,70], knR: [54,70], anL: [46,90], anR: [54,90] } },
+    { label: 'Vươn cổ tay chạm vòng!', tone: 'ok', target: [78,22], pts: { head: [50,10], shL: [44,22], shR: [56,22], elL: [42,33], elR: [66,26], wrL: [41,44], wrR: [77,22], hipL: [46,50], hipR: [54,50], knL: [46,70], knR: [54,70], anL: [46,90], anR: [54,90] } },
+  ] },
+  lunge: { view: 'side', frames: [
+    { label: 'Đứng thẳng, bước 1 chân lên', tone: 'warn', pts: { head: [48,10], sh: [48,24], el: [50,34], wr: [51,43], hip: [48,52], kn: [48,72], an: [48,92] } },
+    { label: 'Chùng xuống — gối trước ~90°', tone: 'ok', pts: { head: [42,26], sh: [42,36], el: [46,44], wr: [48,52], hip: [42,64], kn: [58,64], an: [58,84] } },
+  ] },
+  sumosquat: { view: 'front', frames: [
+    { label: 'Chân rộng hơn vai, mũi chân mở', tone: 'warn', pts: { head: [50,8], shL: [44,20], shR: [56,20], elL: [44,30], elR: [56,30], wrL: [48,36], wrR: [52,36], hipL: [46,48], hipR: [54,48], knL: [44,70], knR: [56,70], anL: [42,90], anR: [58,90] } },
+    { label: 'Xuống sâu — gối mở theo mũi chân', tone: 'ok', pts: { head: [50,20], shL: [44,32], shR: [56,32], elL: [44,38], elR: [56,38], wrL: [48,44], wrR: [52,44], hipL: [44,56], hipR: [56,56], knL: [34,62], knR: [66,62], anL: [40,86], anR: [60,86] } },
+  ] },
+  rdl: { view: 'side', frames: [
+    { label: 'Đứng thẳng, tạ trước đùi', tone: 'warn', pts: { head: [48,10], sh: [48,24], el: [52,36], wr: [52,46], hip: [48,52], kn: [48,72], an: [48,92] } },
+    { label: 'Gập hông, lưng THẲNG, gối gần thẳng', tone: 'ok', pts: { head: [72,44], sh: [66,50], el: [62,60], wr: [58,70], hip: [46,58], kn: [48,76], an: [48,92] } },
+  ] },
+  bridge: { view: 'side', frames: [
+    { label: 'Nằm ngửa, co gối', tone: 'warn', pts: { head: [16,80], sh: [24,84], el: [30,88], wr: [38,88], hip: [46,84], kn: [56,64], an: [60,86] } },
+    { label: 'Đẩy hông lên — vai–hông–gối thẳng', tone: 'ok', pts: { head: [16,80], sh: [24,84], el: [30,88], wr: [38,88], hip: [46,62], kn: [60,56], an: [64,80] } },
+  ] },
+  floorpress: { view: 'side', frames: [
+    { label: 'Hạ tạ — khuỷu chạm sàn', tone: 'warn', pts: { head: [34,84], sh: [46,82], el: [54,74], wr: [48,66], hip: [66,84], kn: [78,70], an: [82,88] } },
+    { label: 'Đẩy thẳng tay lên', tone: 'ok', pts: { head: [34,84], sh: [46,82], el: [48,66], wr: [50,50], hip: [66,84], kn: [78,70], an: [82,88] } },
+  ] },
+  curl: { view: 'side', frames: [
+    { label: 'Duỗi tay — khuỷu ≥150°', tone: 'warn', pts: { head: [48,10], sh: [48,24], el: [50,38], wr: [51,50], hip: [48,52], kn: [48,72], an: [48,92] } },
+    { label: 'Cuốn tạ lên — khuỷu ≤60°', tone: 'ok', pts: { head: [48,10], sh: [48,24], el: [50,38], wr: [44,28], hip: [48,52], kn: [48,72], an: [48,92] } },
+  ] },
+  triceps: { view: 'side', frames: [
+    { label: 'Tạ duỗi thẳng trên đầu', tone: 'warn', pts: { head: [48,12], sh: [48,24], el: [50,14], wr: [51,4], hip: [48,52], kn: [48,72], an: [48,92] } },
+    { label: 'Hạ tạ sau đầu — khuỷu ≤95°', tone: 'ok', pts: { head: [48,12], sh: [48,24], el: [50,14], wr: [60,18], hip: [48,52], kn: [48,72], an: [48,92] } },
+  ] },
+  press: { view: 'front', frames: [
+    { label: 'Tạ ngang vai (rack)', tone: 'warn', pts: { head: [50,8], shL: [44,20], shR: [56,20], elL: [37,26], elR: [63,26], wrL: [37,13], wrR: [63,13], hipL: [46,48], hipR: [54,48], knL: [46,69], knR: [54,69], anL: [46,90], anR: [54,90] } },
+    { label: 'Đẩy thẳng 2 tay qua đầu', tone: 'ok', pts: { head: [50,8], shL: [44,20], shR: [56,20], elL: [40,10], elR: [60,10], wrL: [38,2], wrR: [62,2], hipL: [46,48], hipR: [54,48], knL: [46,69], knR: [54,69], anL: [46,90], anR: [54,90] } },
+  ] },
+  latraise: { view: 'front', frames: [
+    { label: 'Tay xuôi thân, cầm tạ', tone: 'warn', pts: { head: [50,8], shL: [44,20], shR: [56,20], elL: [42,31], elR: [58,31], wrL: [41,42], wrR: [59,42], hipL: [46,48], hipR: [54,48], knL: [46,69], knR: [54,69], anL: [46,90], anR: [54,90] } },
+    { label: 'Dang ngang tới ngang vai (~90°)', tone: 'ok', pts: { head: [50,8], shL: [44,20], shR: [56,20], elL: [33,20], elR: [67,20], wrL: [24,20], wrR: [76,20], hipL: [46,48], hipR: [54,48], knL: [46,69], knR: [54,69], anL: [46,90], anR: [54,90] } },
+  ] },
+  row: { view: 'side', frames: [
+    { label: 'Cúi ~45°, lưng thẳng, tay duỗi', tone: 'warn', pts: { head: [72,44], sh: [66,50], el: [66,62], wr: [66,74], hip: [46,58], kn: [48,78], an: [48,92] } },
+    { label: 'Kéo tạ về hông — siết bả vai', tone: 'ok', pts: { head: [72,44], sh: [66,50], el: [70,60], wr: [62,58], hip: [46,58], kn: [48,78], an: [48,92] } },
+  ] },
+  legraise: { view: 'side', frames: [
+    { label: 'Nằm thẳng chân, lưng ép sàn', tone: 'warn', pts: { head: [14,86], sh: [24,86], el: [30,88], wr: [36,90], hip: [48,86], kn: [66,86], an: [80,86] } },
+    { label: 'Nâng chân lên ~90°', tone: 'ok', pts: { head: [14,86], sh: [24,86], el: [30,88], wr: [36,90], hip: [48,86], kn: [52,62], an: [54,46] } },
+  ] },
+  mtclimber: { view: 'side', frames: [
+    { label: 'Thế plank tay thẳng', tone: 'warn', pts: { head: [14,58], sh: [24,62], el: [26,74], wr: [27,86], hip: [48,70], kn: [64,76], an: [82,84] } },
+    { label: 'Kéo gối về ngực!', tone: 'ok', pts: { head: [14,58], sh: [24,62], el: [26,74], wr: [27,86], hip: [48,70], kn: [36,72], an: [40,84] } },
+  ] },
+  wallsit: { view: 'side', frames: [
+    { label: 'ĐÚNG: lưng tựa tường, đùi song song sàn — đồng hồ chạy', tone: 'ok', pts: { head: [38,32], sh: [40,40], el: [42,50], wr: [44,58], hip: [40,62], kn: [56,64], an: [56,86] } },
+    { label: 'SAI: nhổm dậy — đồng hồ DỪNG', tone: 'bad', pts: { head: [38,20], sh: [40,28], el: [42,38], wr: [44,46], hip: [42,50], kn: [50,60], an: [52,86] } },
+  ] },
+  sidelunge: { view: 'front', frames: [
+    { label: 'Đứng thẳng, chân rộng', tone: 'warn', pts: { head: [46,24], shL: [40,36], shR: [52,36], elL: [38,44], elR: [54,44], wrL: [42,50], wrR: [50,50], hipL: [46,48], hipR: [54,48], knL: [46,69], knR: [54,69], anL: [46,90], anR: [54,90] } },
+    { label: 'Chùng sang 1 bên — gối trụ ≤110°', tone: 'ok', pts: { head: [46,40], shL: [40,50], shR: [52,50], elL: [38,56], elR: [54,56], wrL: [42,60], wrR: [50,60], hipL: [42,64], hipR: [50,64], knL: [32,66], knR: [64,70], anL: [30,86], anR: [76,78] } },
+  ] },
+  toetouch: { view: 'side', frames: [
+    { label: 'Đứng thẳng, chân thẳng', tone: 'warn', pts: { head: [48,10], sh: [48,24], el: [50,34], wr: [51,43], hip: [48,52], kn: [48,72], an: [48,92] } },
+    { label: 'Gập hông, tay chạm mũi chân — ≤90°', tone: 'ok', pts: { head: [64,66], sh: [58,58], el: [56,68], wr: [52,78], hip: [46,54], kn: [48,74], an: [48,92] } },
+  ] },
+  footwork: { view: 'front', frames: [
+    { label: 'Ô nào sáng thì bước tới…', tone: 'warn', target: [14,78], pts: { head: [50,10], shL: [44,22], shR: [56,22], elL: [42,33], elR: [58,33], wrL: [41,44], wrR: [59,44], hipL: [46,50], hipR: [54,50], knL: [46,70], knR: [54,70], anL: [46,90], anR: [54,90] } },
+    { label: 'Bước chân chạm ô, rồi về giữa!', tone: 'ok', target: [14,78], pts: { head: [52,14], shL: [46,26], shR: [58,26], elL: [44,37], elR: [60,37], wrL: [43,48], wrR: [61,48], hipL: [48,52], hipR: [56,52], knL: [34,64], knR: [58,72], anL: [16,78], anR: [58,92] } },
+  ] },
+  sideplank: { view: 'side', frames: [
+    { label: 'ĐÚNG: thân thẳng nghiêng — đồng hồ chạy', tone: 'ok', pts: { head: [22,54], sh: [30,60], el: [30,74], wr: [31,86], hip: [48,68], kn: [59,73], an: [70,78] } },
+    { label: 'SAI: tụt hông — đồng hồ DỪNG', tone: 'bad', pts: { head: [22,54], sh: [30,60], el: [30,74], wr: [31,86], hip: [48,78], kn: [59,78], an: [70,78] } },
+  ] },
+};
+
+// Nội suy demo tại thời điểm t (ms từ lúc bắt đầu): ping-pong pha 0 -> 1 -> 0,
+// chu kỳ 2600ms, giữ nguyên ~25% thời gian ở mỗi đầu cho dễ nhìn.
+// Trả {pts: toạ độ đã nội suy, phase: 0|1 (pha đang thể hiện, đổi ở giữa hành trình)}.
+function demoFrameAt(demo, t) {
+  const cyc = ((t % 2600) + 2600) % 2600 / 2600;
+  const raw = cyc < 0.5 ? cyc * 2 : (1 - cyc) * 2;
+  const p = Math.min(1, Math.max(0, (raw - 0.25) / 0.5));
+  const [a, b] = demo.frames;
+  const pts = {};
+  for (const k of Object.keys(a.pts))
+    pts[k] = [a.pts[k][0] + (b.pts[k][0] - a.pts[k][0]) * p, a.pts[k][1] + (b.pts[k][1] - a.pts[k][1]) * p];
+  return { pts, phase: p >= 0.5 ? 1 : 0 };
+}
+
+// Làm mượt góc (exponential moving average) để đỡ rung.
+class Ema {
+  constructor(alpha = 0.5) { this.alpha = alpha; this.v = null; }
+  push(x) {
+    if (x == null || !isFinite(x)) return this.v;
+    this.v = this.v == null ? x : this.alpha * x + (1 - this.alpha) * this.v;
+    return this.v;
+  }
+  reset() { this.v = null; }
+}
+
+// State machine đếm rep: up -> down (góc <= downTh) -> up (góc >= upTh) = 1 rep.
+// Chuyển trạng thái cần needFrames khung LIÊN TIẾP vượt ngưỡng (debounce).
+// Chỉ đếm khi pha xuống xuất phát từ thế đứng ĐÃ QUAN SÁT (chống rep ảo lúc bật camera).
+class RepCounter {
+  constructor(opts = {}) {
+    this.downTh = opts.downTh ?? 105;
+    this.upTh = opts.upTh ?? 155;
+    this.minScore = opts.minScore ?? 0.2;
+    this.needFrames = opts.needFrames ?? 3;
+    this.reset();
+  }
+  reset() {
+    this.state = 'up'; this.count = 0;
+    this._pending = null; this._streak = 0;
+    this.minAngleInRep = null; this.lastRepMinAngle = null;
+    this._confirmedUp = false;
+    this._downFromUp = false;
+  }
+  push(angle, score = 1) {
+    if (angle == null || !isFinite(angle) || score < this.minScore) {
+      this._pending = null; this._streak = 0;
+      return false;
+    }
+    if (this.state === 'up' && angle >= this.upTh) this._confirmedUp = true;
+    if (this.state === 'down' && this.minAngleInRep != null)
+      this.minAngleInRep = Math.min(this.minAngleInRep, angle);
+    const target = angle <= this.downTh ? 'down' : angle >= this.upTh ? 'up' : null;
+    if (target === null || target === this.state) { this._pending = null; this._streak = 0; return false; }
+    if (target !== this._pending) { this._pending = target; this._streak = 1; }
+    else this._streak++;
+    if (this._streak < this.needFrames) return false;
+    this.state = target; this._pending = null; this._streak = 0;
+    if (target === 'down') {
+      this._downFromUp = this._confirmedUp;
+      this.minAngleInRep = angle;
+      return false;
+    }
+    this._confirmedUp = true;
+    if (!this._downFromUp) { this.minAngleInRep = null; return false; }
+    this.count++;
+    this.lastRepMinAngle = this.minAngleInRep == null ? null : Math.round(this.minAngleInRep);
+    this.minAngleInRep = null;
+    return true;
+  }
+}
+
+// Đồng hồ giữ tư thế: cộng dt khi điều kiện đạt; đứt quãng ngắn (< graceMs) không mất "active"
+// nhưng thời gian đứt KHÔNG được cộng. Khung dt bất thường (tab ẩn) bị chặn trần 500ms.
+class HoldTimer {
+  constructor(opts = {}) { this.graceMs = opts.graceMs ?? 700; this.reset(); }
+  reset() { this.ms = 0; this._badMs = 0; this.active = false; }
+  push(ok, dt) {
+    if (!isFinite(dt) || dt < 0) dt = 0;
+    if (dt > 500) dt = 500;
+    if (ok) { this.active = true; this._badMs = 0; this.ms += dt; }
+    else if (this.active) {
+      this._badMs += dt;
+      if (this._badMs >= this.graceMs) { this.active = false; this._badMs = 0; }
+    }
+    return this.ms;
+  }
+  get seconds() { return Math.floor(this.ms / 1000); }
+}
+
+// Store v1 (history[date] = [reps...] chỉ squat) -> v2 (history[date] = {exId: [set...]})
+function migrateStore(raw) {
+  const s = raw && typeof raw === 'object' ? raw : {};
+  const h = s.history && typeof s.history === 'object' ? s.history : {};
+  for (const d of Object.keys(h))
+    if (Array.isArray(h[d])) h[d] = { squat: h[d] };
+  return { history: h };
+}
+
+// Sinh list entry đúng format skill fitness-log từ record 1 ngày {exId: [set...]}.
+// set = number (rep/giây/điểm) hoặc {n, ms} với bài target.
+function buildExportEntries(dayRecord, dateStr) {
+  const out = [];
+  if (!dayRecord || typeof dayRecord !== 'object') return out;
+  for (const ex of EXERCISES) {
+    const sets = Array.isArray(dayRecord[ex.id]) ? dayRecord[ex.id] : [];
+    for (const s of sets) {
+      if (ex.type === 'hold') {
+        const sec = Number(s);
+        if (Number.isFinite(sec) && sec > 0)
+          out.push({ activity: ex.name, duration_min: Math.round(sec / 60 * 100) / 100, date: dateStr, category: ex.category, note: `${sec} giây, webcam (dem-squat)` });
+      } else if (ex.type === 'target') {
+        const n = s && typeof s === 'object' ? Number(s.n) : Number(s);
+        const ms = s && typeof s === 'object' && Number.isFinite(s.ms) ? `, phản xạ TB ${Math.round(s.ms)} ms` : '';
+        if (Number.isFinite(n) && n > 0)
+          out.push({ activity: ex.name, reps: n, date: dateStr, category: ex.category, note: `webcam 60 giây${ms} (dem-squat)` });
+      } else {
+        const n = Number(s);
+        if (Number.isFinite(n) && n > 0)
+          out.push({ activity: ex.name, reps: n, date: dateStr, category: ex.category, note: 'webcam tự đếm (dem-squat)' });
+      }
+    }
+  }
+  return out;
+}
+
+// Tóm tắt 1 ngày thành CHỮ để dán chat: "Squat 12+15 cái · Plank 75 giây · …"
+function buildDayText(dayRecord) {
+  const parts = [];
+  if (!dayRecord || typeof dayRecord !== 'object') return '';
+  for (const ex of EXERCISES) {
+    const sets = Array.isArray(dayRecord[ex.id]) ? dayRecord[ex.id] : [];
+    const nums = sets.map(s => (s && typeof s === 'object' ? Number(s.n) : Number(s)))
+      .filter(n => Number.isFinite(n) && n > 0);
+    if (!nums.length) continue;
+    parts.push(`${ex.name} ${nums.join('+')} ${ex.unit}`);
+  }
+  return parts.join(' · ');
+}
+
+// Tóm tắt 1 ngày cho UI: [{id, name, emoji, total, unit}] — chỉ bài có khối lượng > 0.
+function summarizeDay(dayRecord) {
+  const out = [];
+  if (!dayRecord || typeof dayRecord !== 'object') return out;
+  for (const ex of EXERCISES) {
+    const sets = Array.isArray(dayRecord[ex.id]) ? dayRecord[ex.id] : [];
+    const total = sets.reduce((a, s) => {
+      const n = s && typeof s === 'object' ? Number(s.n) : Number(s);
+      return a + (Number.isFinite(n) && n > 0 ? n : 0);
+    }, 0);
+    if (total > 0) out.push({ id: ex.id, name: ex.name, emoji: ex.emoji, total, unit: ex.unit });
+  }
+  return out;
+}
+
+if (typeof module !== 'undefined' && module.exports)
+  module.exports = { jointAngle, tripleAngle, legAngle, sideAngle, pickLeg, SIGNALS, CHECKS, GROUPS, EQUIP_NAME, EXERCISES, EXERCISE_BY_ID, PHOTOS, DEMOS, demoFrameAt, Ema, RepCounter, HoldTimer, migrateStore, buildExportEntries, buildDayText, summarizeDay };
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.22.0/dist/tf.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/pose-detection@2.1.3/dist/pose-detection.min.js"></script>
+
+<script id="app">
+'use strict';
+(() => {
+  const LS_KEY = 'dem-squat:v1';
+  const $ = id => document.getElementById(id);
+  const video = $('video'), canvas = $('canvas'), ctx = canvas.getContext('2d');
+  const els = {
+    rep: $('repCount'), countLbl: $('countLbl'), metric: $('kneeAngle'), metricLbl: $('metricLbl'),
+    state: $('stateTag'), extra: $('minAngle'), extraLbl: $('extraLbl'),
+    today: $('todayTotal'), depth: $('depthBar'), sets: $('setsRow'), status: $('status'),
+    overlay: $('overlayMsg'), overlayText: $('overlayText'), tip: $('tipLine'),
+    btnCam: $('btnCam'), btnSet: $('btnSet'), btnReset: $('btnReset'), btnSync: $('btnSync'),
+    voiceRow: $('voiceRow'), exRow: $('exRow'),
+    dayLog: $('dayLog'), dayTotalBadge: $('dayTotalBadge'),
+    demoSmall: $('demoSmall'), demoLbl: $('demoLbl'), demoFallback: $('demoFallback'),
+    photoWrap: $('photoWrap'), fig0: $('fig0'), fig1: $('fig1'), photo0: $('photo0'), photo1: $('photo1'),
+    cap0: $('cap0'), cap1: $('cap1'), photoCredit: $('photoCredit'),
+    groupRow: $('groupRow'), equipRow: $('equipRow'), exMeta: $('exMeta'),
+  };
+  let curGroup = 'all', curEquip = 'all';
+
+  // ---- trạng thái ----
+  let ex = EXERCISES[0];
+  let counter = new RepCounter(ex);
+  const ema = new Ema(0.5);
+  const hold = new HoldTimer();
+  const target = { running: false, endsAt: 0, hits: 0, times: [], cur: null, bornAt: 0, nextAt: 0, lastZone: -1 };
+  let detector = null, running = false, rafId = null, resetArmed = 0, lastT = 0, lastSpokenSec = 0;
+
+  // ---- lưu / đọc localStorage ----
+  const todayStr = () => {
+    const d = new Date();
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+  };
+  function loadStore() {
+    try { return migrateStore(JSON.parse(localStorage.getItem(LS_KEY))); }
+    catch { return { history: {} }; }
+  }
+  function saveStore() { try { localStorage.setItem(LS_KEY, JSON.stringify(store)); } catch {} }
+  let store = loadStore();
+  const todayRec = () => store.history[todayStr()] || (store.history[todayStr()] = {});
+  const todaySets = exId => { const r = todayRec(); return r[exId] || (r[exId] = []); };
+
+  // ---- UI ----
+  function liveCount() {
+    return ex.type === 'rep' ? counter.count : ex.type === 'hold' ? hold.seconds : target.hits;
+  }
+  function renderSets() {
+    const sets = todaySets(ex.id);
+    els.sets.innerHTML = sets.map((s, i) => {
+      const n = s && typeof s === 'object' ? s.n : s;
+      return `<div class="set-chip">${n}${ex.type === 'hold' ? 's' : ''} <span>set ${i + 1}</span></div>`;
+    }).join('');
+    const total = sets.reduce((a, s) => a + (s && typeof s === 'object' ? s.n : s), 0) + liveCount();
+    els.today.textContent = total + (ex.type === 'hold' ? 's' : '');
+    els.btnSet.disabled = ex.type === 'target' ? (target.running || !running) : liveCount() === 0;
+    renderDayLog();
+  }
+  function renderDayLog() {
+    const rec = todayRec();
+    const rows = [];
+    for (const e of EXERCISES) {
+      const nums = (rec[e.id] || []).map(s => (s && typeof s === 'object' ? s.n : s))
+        .filter(n => Number.isFinite(n) && n > 0);
+      const live = e.id === ex.id ? liveCount() : 0;
+      if (!nums.length && !live) continue;
+      const setsTxt = nums.join(' + ') + (live ? (nums.length ? ' + ' : '') + `<i>${live}…</i>` : '');
+      const total = nums.reduce((a, b) => a + b, 0) + live;
+      rows.push(`<div class="day-row"><span class="d-name">${e.emoji} ${e.name}</span><span class="d-sets">${setsTxt}</span><span class="d-total">${total} ${e.unit}</span></div>`);
+    }
+    els.dayLog.innerHTML = rows.length ? rows.join('')
+      : '<div class="hint">Chưa có set nào hôm nay — chọn bài và tập thôi 💪</div>';
+    els.dayTotalBadge.textContent = rows.length ? `· ${rows.length} bài` : '';
+  }
+  // record hôm nay + set đang tập dở (dùng chung cho cả 2 nút copy)
+  function recWithPending() {
+    const rec = JSON.parse(JSON.stringify(todayRec()));
+    if (ex.type === 'rep' && counter.count > 0) (rec[ex.id] = rec[ex.id] || []).push(counter.count);
+    if (ex.type === 'hold' && hold.seconds > 0) (rec[ex.id] = rec[ex.id] || []).push(hold.seconds);
+    return rec;
+  }
+  function renderFilters() {
+    const gTabs = [{ id: 'all', name: 'Tất cả', emoji: '📋' }, ...GROUPS].map(g => {
+      const n = g.id === 'all' ? EXERCISES.length : EXERCISES.filter(e => e.group === g.id).length;
+      return `<button class="tab${curGroup === g.id ? ' active' : ''}" data-group="${g.id}"><span>${g.name}</span><i>${n}</i></button>`;
+    }).join('');
+    els.groupRow.innerHTML = gTabs;
+    // nhãn TAB tĩnh không emoji (EQUIP_NAME gốc giữ nguyên cho meta/export)
+    els.equipRow.innerHTML = [['all', 'Tất cả'], ['none', 'Không tạ'], ['db', 'Tạ đơn']]
+      .map(([id, name]) => `<button class="tab${curEquip === id ? ' active' : ''}" data-equip="${id}">${name}</button>`).join('');
+  }
+  function filteredExercises() {
+    return EXERCISES.filter(e =>
+      (curGroup === 'all' || e.group === curGroup) && (curEquip === 'all' || e.equip === curEquip));
+  }
+  function renderExRow() {
+    const list = filteredExercises();
+    els.exRow.innerHTML = list.length
+      ? list.map(e => {
+          const short = e.name.replace(/\s*\(.+\)$/, '');
+          const thumb = e.photoKey
+            ? `<img src="img/${e.photoKey}-0.jpg" alt="" loading="lazy">`
+            : `<span class="mini-emoji">${e.emoji}</span>`;
+          return `<button class="ex-item${e.id === ex.id ? ' active' : ''}" data-ex="${e.id}" title="${e.name}">` +
+            `<span class="mini">${thumb}</span><span class="n">${short}</span>` +
+            (e.equip === 'db' ? '<span class="db-tag">🏋️ TẠ</span>' : '') + `</button>`;
+        }).join('')
+      : '<div class="hint">Không có bài khớp bộ lọc — đổi bộ lọc dụng cụ.</div>';
+  }
+  function applyGuide() {
+    const demo = DEMOS[ex.demo || ex.id];
+    if (ex.photoKey) {
+      els.photoWrap.classList.remove('hidden');
+      els.demoFallback.classList.add('hidden');
+      els.photoCredit.style.display = '';
+      els.photo0.src = `img/${ex.photoKey}-0.jpg`;
+      els.photo1.src = `img/${ex.photoKey}-1.jpg`;
+      const caps = ex.caps || (ex.type === 'hold'
+        ? ['Vào thế', 'Giữ đúng — đồng hồ chạy']
+        : [demo.frames[0].label, demo.frames[1].label]);
+      els.cap0.textContent = '① ' + caps[0];
+      els.cap1.textContent = '② ' + caps[1];
+    } else {
+      els.photoWrap.classList.add('hidden');
+      els.demoFallback.classList.remove('hidden');
+      els.photoCredit.style.display = 'none';
+    }
+  }
+  function applyExUI() {
+    const g = GROUPS.find(g => g.id === ex.group);
+    els.exMeta.innerHTML = `${g.emoji} <b>${g.name}</b> · ${EQUIP_NAME[ex.equip]}${ex.type === 'hold' ? ' · giữ tư thế' : ex.type === 'target' ? ' · trò chơi 60s' : ''}`;
+    els.countLbl.innerHTML = `${ex.unit}<br>set này`;
+    els.tip.textContent = '💡 ' + ex.tip;
+    applyGuide();
+    if (ex.type === 'rep') { els.metricLbl.textContent = 'Góc khớp'; els.extraLbl.textContent = 'Sâu nhất rep'; }
+    else if (ex.type === 'hold') {
+      const HOLD_METRIC = { plank: 'Độ thẳng thân', balance: 'Độ nhấc chân', wallsit: 'Góc gối' };
+      els.metricLbl.textContent = HOLD_METRIC[ex.check] || 'Chỉ số';
+      els.extraLbl.textContent = 'Tổng ms giữ';
+    }
+    else { els.metricLbl.textContent = 'Còn lại'; els.extraLbl.textContent = 'Phản xạ TB'; }
+    els.btnSet.textContent = ex.type === 'target' ? 'Bắt đầu 60s' : 'Chốt set';
+    els.rep.textContent = liveCount();
+    els.metric.textContent = '–'; els.extra.textContent = '–';
+    els.state.textContent = '–'; els.state.className = 'none';
+    els.depth.style.width = '0%';
+  }
+  function setStatus(msg) { els.status.textContent = msg; }
+  function showOverlay(html) { els.overlayText.innerHTML = html; els.overlay.classList.remove('hidden'); }
+  function hideOverlay() { els.overlay.classList.add('hidden'); }
+
+  // ---- âm thanh + giọng ----
+  // Envelope attack/release BẮT BUỘC: oscillator bật/tắt thẳng đứng sẽ "bụp/tách" (tiếng vỡ Quang báo);
+  // compressor cuối chuỗi chống clip khi beep đè lên giọng đếm.
+  let audioCtx = null, audioOut = null;
+  function audioDest() {
+    audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+    if (!audioOut) {
+      try {
+        audioOut = audioCtx.createDynamicsCompressor();
+        audioOut.threshold.value = -18; audioOut.knee.value = 24; audioOut.ratio.value = 6;
+        audioOut.connect(audioCtx.destination);
+      } catch { audioOut = audioCtx.destination; }
+    }
+    if (audioCtx.state === 'suspended') { try { audioCtx.resume(); } catch {} }
+    return audioOut;
+  }
+  function beep(freq = 880) {
+    try {
+      const out = audioDest(), t = audioCtx.currentTime;
+      const o = audioCtx.createOscillator(), g = audioCtx.createGain();
+      o.type = 'sine'; o.frequency.value = freq;
+      g.gain.setValueAtTime(0.0001, t);
+      g.gain.exponentialRampToValueAtTime(0.12, t + 0.018);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + 0.09);
+      o.connect(g); g.connect(out);
+      o.start(t); o.stop(t + 0.12);
+    } catch {}
+  }
+  // giọng đọc: en (mặc định, đọc số rõ) | vi | off
+  let voiceMode = (() => { try { return localStorage.getItem('dem-squat:voice') || 'en'; } catch { return 'en'; } })();
+  if (!['en', 'vi', 'off'].includes(voiceMode)) voiceMode = 'en';
+  // Chấm điểm giọng: KHÔNG lấy giọng đầu tiên (thường là giọng robot đời cũ) — ưu tiên giọng neural/xịn của máy.
+  function rankVoice(v, pref) {
+    if (!v || !v.lang || !v.lang.toLowerCase().startsWith(pref)) return -1;
+    const n = (v.name || '').toLowerCase();
+    let s = 0;
+    if (/natural|neural/.test(n)) s += 8;   // Microsoft ... Natural (Windows/Edge)
+    if (/enhanced|premium/.test(n)) s += 7; // giọng nâng cao iOS (nếu máy đã tải)
+    if (/siri/.test(n)) s += 6;
+    if (/google/.test(n)) s += 5;           // giọng Google trên Chrome/Android
+    if (v.localService) s += 1;             // đỡ trễ khi mất mạng
+    return s;
+  }
+  function pickVoice(pref) {
+    try {
+      let best = null, bs = -1;
+      for (const v of speechSynthesis.getVoices() || []) { const s = rankVoice(v, pref); if (s > bs) { bs = s; best = v; } }
+      return best;
+    } catch { return null; }
+  }
+  try { speechSynthesis.getVoices(); } catch {}   // kích danh sách giọng nạp sớm (getVoices nạp bất đồng bộ)
+  function speak(text) {
+    if (voiceMode === 'off' || !window.speechSynthesis) return;
+    try {
+      speechSynthesis.cancel();
+      const u = new SpeechSynthesisUtterance(String(text));
+      u.lang = voiceMode === 'vi' ? 'vi-VN' : 'en-US';
+      const v = pickVoice(voiceMode === 'vi' ? 'vi' : 'en');
+      if (v) u.voice = v;
+      u.rate = 1.1; u.pitch = 1;              // đếm rep cần nhanh hơn nói chuyện chút, nhưng 1.2 nghe robot
+      speechSynthesis.speak(u);
+    } catch {}
+  }
+  const bi = (viText, enText) => voiceMode === 'vi' ? viText : enText;
+  function renderVoice() {
+    els.voiceRow.innerHTML = [['off', '🔇 Tắt'], ['en', '🇬🇧 English'], ['vi', '🇻🇳 Việt']]
+      .map(([id, name]) => `<button class="tab${voiceMode === id ? ' active' : ''}" data-voice="${id}">${name}</button>`).join('');
+  }
+  els.voiceRow.addEventListener('click', e => {
+    const b = e.target.closest('[data-voice]');
+    if (!b) return;
+    voiceMode = b.dataset.voice;
+    try { localStorage.setItem('dem-squat:voice', voiceMode); } catch {}
+    renderVoice();
+    if (voiceMode !== 'off') speak(bi('Đã chọn giọng Việt', 'English voice selected'));
+  });
+
+  // ---- chốt set / ghi số liệu ----
+  function commitCurrent(silent) {
+    let val = null;
+    if (ex.type === 'rep' && counter.count > 0) val = counter.count;
+    else if (ex.type === 'hold' && hold.seconds > 0) val = hold.seconds;
+    if (val != null) {
+      todaySets(ex.id).push(val);
+      saveStore();
+      if (!silent) setStatus(`Đã chốt set ${ex.name}: ${val} ${ex.unit}. Nghỉ chút rồi làm tiếp 💪`);
+    }
+    counter = new RepCounter(ex); ema.reset(); hold.reset(); lastSpokenSec = 0;
+    els.rep.textContent = '0'; els.extra.textContent = '–';
+    renderSets();
+  }
+
+  // ---- chuyển bài tập ----
+  function switchEx(id) {
+    if (id === ex.id) return;
+    if (target.running) { setStatus('Đang trong lượt 60s — hết giờ mới đổi bài được.'); return; }
+    commitCurrent(true);                 // tiến độ dở dang tự chốt, không mất
+    ex = EXERCISE_BY_ID[id];
+    counter = new RepCounter(ex); ema.reset(); hold.reset();
+    target.running = false; target.cur = null; target.hits = 0; target.times = [];
+    lastSpokenSec = 0;
+    demoT0 = performance.now();       // demo mẫu chạy lại từ pha nghỉ
+    renderFilters(); renderExRow(); applyExUI(); renderSets();
+    renderDemo();                     // cập nhật hình + nhãn NGAY, không đợi rAF
+    setStatus('');
+  }
+  els.exRow.addEventListener('click', e => {
+    const b = e.target.closest('[data-ex]');
+    if (b) switchEx(b.dataset.ex);
+  });
+  els.groupRow.addEventListener('click', e => {
+    const b = e.target.closest('[data-group]');
+    if (b) { curGroup = b.dataset.group; renderFilters(); renderExRow(); }
+  });
+  els.equipRow.addEventListener('click', e => {
+    const b = e.target.closest('[data-equip]');
+    if (b) { curEquip = b.dataset.equip; renderFilters(); renderExRow(); }
+  });
+
+  // ---- demo động tác mẫu (hình người que, chạy liên tục cho bài đang chọn) ----
+  const DEMO_PAIRS = {
+    side: [['head','sh'],['sh','el'],['el','wr'],['sh','hip'],['hip','kn'],['kn','an']],
+    front: [['shL','shR'],['hipL','hipR'],['shL','hipL'],['shR','hipR'],['shL','elL'],['elL','wrL'],
+            ['shR','elR'],['elR','wrR'],['hipL','knL'],['knL','anL'],['hipR','knR'],['knR','anR']],
+  };
+  const TONE_COLOR = { ok: '#4ade80', warn: '#fbbf24', bad: '#f87171' };
+  let demoT0 = performance.now();
+  function drawDemo(cv, demo, frame) {
+    const c = cv.getContext('2d');
+    const w = cv.width, h = cv.height, sx = w / 100, sy = h / 100;
+    const cur = demo.frames[frame.phase];
+    const color = TONE_COLOR[cur.tone] || TONE_COLOR.warn;
+    c.clearRect(0, 0, w, h);
+    c.fillStyle = 'rgba(20,27,43,.92)'; c.fillRect(0, 0, w, h);
+    if (cur.target) {
+      c.beginPath(); c.arc(cur.target[0] * sx, cur.target[1] * sy, 9 * Math.min(sx, sy), 0, Math.PI * 2);
+      c.fillStyle = 'rgba(251,191,36,.25)'; c.fill();
+      c.lineWidth = Math.max(2, 2.5 * sx); c.strokeStyle = '#fbbf24'; c.stroke();
+    }
+    c.lineWidth = Math.max(2.5, 3.2 * sx); c.lineCap = 'round'; c.strokeStyle = color;
+    for (const [p1, p2] of DEMO_PAIRS[demo.view]) {
+      const a = frame.pts[p1], b = frame.pts[p2];
+      if (!a || !b) continue;
+      c.beginPath(); c.moveTo(a[0] * sx, a[1] * sy); c.lineTo(b[0] * sx, b[1] * sy); c.stroke();
+    }
+    if (demo.view === 'front') {                 // cổ: đầu nối trung điểm 2 vai
+      const hd = frame.pts.head, m = [(frame.pts.shL[0] + frame.pts.shR[0]) / 2, (frame.pts.shL[1] + frame.pts.shR[1]) / 2];
+      c.beginPath(); c.moveTo(hd[0] * sx, hd[1] * sy); c.lineTo(m[0] * sx, m[1] * sy); c.stroke();
+    }
+    const hd = frame.pts.head;
+    c.beginPath(); c.arc(hd[0] * sx, hd[1] * sy, 5 * Math.min(sx, sy), 0, Math.PI * 2);
+    c.fillStyle = color; c.fill();
+    return cur;
+  }
+  function renderDemo() {
+    const demo = DEMOS[ex.demo || ex.id];
+    if (!demo) return;
+    const frame = demoFrameAt(demo, performance.now() - demoT0);
+    if (ex.photoKey) {           // ảnh người thật: tô sáng pha đang đến lượt theo nhịp
+      els.fig0.classList.toggle('active', frame.phase === 0);
+      els.fig1.classList.toggle('active', frame.phase === 1);
+      return;
+    }
+    drawDemo(els.demoSmall, demo, frame);
+    const lblTxt = demo.frames[frame.phase].label, tone = demo.frames[frame.phase].tone;
+    if (els.demoLbl.textContent !== lblTxt) { els.demoLbl.textContent = lblTxt; els.demoLbl.className = tone; }
+  }
+  function demoLoop() { renderDemo(); requestAnimationFrame(demoLoop); }
+
+  // ---- vẽ ----
+  const PAIRS = [[11,13],[13,15],[12,14],[14,16],[11,12],[5,11],[6,12],[5,6],[5,7],[7,9],[6,8],[8,10]];
+  const HL_BY_SIGNAL = { squat: [13,14], pushup: [7,8], situp: [11,12], jack: [9,10], highknee: [13,14], press: [9,10], bridge: [11,12] };
+  const HL_BY_CHECK = { plank: [11,12], balance: [15,16], wallsit: [13,14] };
+  const highlightsFor = e => e.type === 'rep' ? HL_BY_SIGNAL[e.signal] : e.type === 'hold' ? HL_BY_CHECK[e.check] : [9,10];
+  function draw(pose, extraDraw) {
+    const w = canvas.width, h = canvas.height;
+    ctx.save();
+    ctx.translate(w, 0); ctx.scale(-1, 1);      // soi gương cho tự nhiên
+    ctx.drawImage(video, 0, 0, w, h);
+    if (pose) {
+      const kp = pose.keypoints;
+      ctx.lineWidth = 3; ctx.strokeStyle = 'rgba(56,189,248,.85)';
+      for (const [a, b] of PAIRS) {
+        if (kp[a] && kp[b] && kp[a].score > 0.3 && kp[b].score > 0.3) {
+          ctx.beginPath(); ctx.moveTo(kp[a].x, kp[a].y); ctx.lineTo(kp[b].x, kp[b].y); ctx.stroke();
+        }
+      }
+      for (const p of kp) if (p.score > 0.3) {
+        ctx.beginPath(); ctx.arc(p.x, p.y, 4, 0, Math.PI * 2);
+        ctx.fillStyle = '#4ade80'; ctx.fill();
+      }
+      for (const i of highlightsFor(ex) || []) {
+        const p = kp[i];
+        if (p && p.score > 0.3) {
+          ctx.beginPath(); ctx.arc(p.x, p.y, 9, 0, Math.PI * 2);
+          ctx.strokeStyle = '#fbbf24'; ctx.lineWidth = 3; ctx.stroke();
+        }
+      }
+    }
+    if (extraDraw) extraDraw();                  // vẫn trong hệ toạ độ video (đã mirror)
+    ctx.restore();
+  }
+
+  // ---- bài phản xạ: chạm mục tiêu ----
+  const T_RADIUS = 46, T_MARGIN = 70;
+  const tRadius = () => ex.zoneR || T_RADIUS;   // footwork dùng ô to hơn cho bàn chân
+  function spawnTarget(now) {
+    if (ex.zones) {                              // ô cố định (footwork): chọn ô khác ô trước
+      let i;
+      do { i = Math.floor(Math.random() * ex.zones.length); }
+      while (ex.zones.length > 1 && i === target.lastZone);
+      target.lastZone = i;
+      target.cur = { x: ex.zones[i][0] / 100 * canvas.width, y: ex.zones[i][1] / 100 * canvas.height };
+    } else {
+      target.cur = {
+        x: T_MARGIN + Math.random() * (canvas.width - 2 * T_MARGIN),
+        y: T_MARGIN + Math.random() * (canvas.height - 2 * T_MARGIN),
+      };
+    }
+    target.bornAt = now;
+  }
+  function targetFrame(kp, now) {
+    if (!target.running) return;
+    if (now >= target.endsAt) {                  // hết giờ -> tự chốt set
+      target.running = false;
+      const avg = target.times.length ? target.times.reduce((a, b) => a + b, 0) / target.times.length : null;
+      if (target.hits > 0) {
+        todaySets(ex.id).push(avg != null ? { n: target.hits, ms: Math.round(avg) } : { n: target.hits });
+        saveStore();
+      }
+      setStatus(`Hết giờ! ${target.hits} điểm${avg != null ? `, phản xạ trung bình ${Math.round(avg)} ms` : ''}.`);
+      speak(bi(`Hết giờ. ${target.hits} điểm`, `Time's up. ${target.hits} points`));
+      target.cur = null;
+      renderSets();
+      return;
+    }
+    if (!target.cur && now >= target.nextAt) spawnTarget(now);
+    if (target.cur && kp) {
+      for (const i of ex.joints || [9, 10]) {
+        const p = kp[i];
+        if (p && p.score > 0.3 && Math.hypot(p.x - target.cur.x, p.y - target.cur.y) <= tRadius() + 6) {
+          target.hits++;
+          target.times.push(now - target.bornAt);
+          target.cur = null;
+          target.nextAt = now + 450;
+          beep(1200);
+          els.rep.classList.add('pulse');
+          setTimeout(() => els.rep.classList.remove('pulse'), 130);
+          break;
+        }
+      }
+    }
+    const left = Math.max(0, (target.endsAt - now) / 1000);
+    els.rep.textContent = target.hits;
+    els.metric.textContent = left.toFixed(0) + 's';
+    const avg = target.times.length ? Math.round(target.times.reduce((a, b) => a + b, 0) / target.times.length) : null;
+    els.extra.textContent = avg != null ? avg + ' ms' : '–';
+    els.state.textContent = 'ĐANG CHƠI'; els.state.className = 'hold';
+    els.depth.style.width = (left / (ex.durationSec || 60) * 100) + '%';
+  }
+  function drawTarget() {
+    const r = tRadius();
+    if (ex.zones)                                // vẽ mờ cả 4 ô để biết vị trí sân
+      for (const z of ex.zones) {
+        ctx.beginPath(); ctx.arc(z[0] / 100 * canvas.width, z[1] / 100 * canvas.height, r, 0, Math.PI * 2);
+        ctx.lineWidth = 2; ctx.strokeStyle = 'rgba(251,191,36,.3)'; ctx.stroke();
+      }
+    if (!target.cur) return;
+    ctx.beginPath(); ctx.arc(target.cur.x, target.cur.y, r, 0, Math.PI * 2);
+    ctx.fillStyle = 'rgba(251,191,36,.25)'; ctx.fill();
+    ctx.lineWidth = 4; ctx.strokeStyle = '#fbbf24'; ctx.stroke();
+    ctx.beginPath(); ctx.arc(target.cur.x, target.cur.y, 6, 0, Math.PI * 2);
+    ctx.fillStyle = '#fbbf24'; ctx.fill();
+  }
+
+  // ---- khung hình cho bài rep / hold ----
+  function repFrame(kp) {
+    const sig = kp ? SIGNALS[ex.signal](kp) : null;
+    const smooth = sig ? ema.push(sig.angle) : null;
+    const gotRep = counter.push(smooth, sig ? sig.score : 0);
+    els.metric.textContent = smooth == null ? '–' : Math.round(smooth) + '°';
+    if (!sig) { els.state.textContent = 'không thấy người'; els.state.className = 'none'; }
+    else if (counter.state === 'down') { els.state.textContent = ex.act || 'XUỐNG'; els.state.className = 'down'; }
+    else { els.state.textContent = 'SẴN SÀNG'; els.state.className = 'up'; }
+    const pct = smooth == null ? 0 : Math.min(100, Math.max(0, (ex.upTh + 15 - smooth) / (ex.upTh + 15 - (ex.downTh - 15)) * 100));
+    els.depth.style.width = pct + '%';
+    if (gotRep) {
+      els.rep.textContent = counter.count;
+      els.rep.classList.add('pulse');
+      setTimeout(() => els.rep.classList.remove('pulse'), 130);
+      if (counter.lastRepMinAngle != null) els.extra.textContent = counter.lastRepMinAngle + '°';
+      beep(); speak(counter.count);
+      renderSets();
+    }
+  }
+  function holdFrame(kp, dt) {
+    const chk = kp ? CHECKS[ex.check](kp) : null;
+    const ok = !!(chk && chk.ok);
+    hold.push(ok, dt);
+    const sec = hold.seconds;
+    els.rep.textContent = sec;
+    els.metric.textContent = chk == null ? '–' : ex.check === 'balance' ? chk.lift + '%' : chk.angle + '°';
+    els.extra.textContent = Math.round(hold.ms) + '';
+    if (chk == null) { els.state.textContent = 'không thấy người'; els.state.className = 'none'; }
+    else if (ok) { els.state.textContent = 'ĐANG GIỮ'; els.state.className = 'hold'; }
+    else { els.state.textContent = hold.active ? 'CHỈNH LẠI!' : 'CHƯA VÀO THẾ'; els.state.className = hold.active ? 'down' : 'none'; }
+    els.depth.style.width = ok ? '100%' : '0%';
+    if (ok && sec > 0 && sec % 15 === 0 && sec !== lastSpokenSec) { lastSpokenSec = sec; speak(bi(`${sec} giây`, `${sec} seconds`)); }
+    if (sec !== +els.today.textContent) renderSets();
+  }
+
+  // ---- vòng lặp chính ----
+  async function loop() {
+    if (!running) return;
+    const now = performance.now();
+    const dt = lastT ? now - lastT : 0;
+    lastT = now;
+    let pose = null;
+    try { const poses = await detector.estimatePoses(video); pose = poses[0] || null; } catch {}
+    const kp = pose ? pose.keypoints : null;
+    if (ex.type === 'rep') repFrame(kp);
+    else if (ex.type === 'hold') holdFrame(kp, dt);
+    else targetFrame(kp, now);
+    draw(pose, ex.type === 'target' ? drawTarget : null);
+    rafId = requestAnimationFrame(loop);
+  }
+
+  // ---- camera + model ----
+  async function start() {
+    els.btnCam.disabled = true;
+    try {
+      if (!detector) {
+        showOverlay('Đang tải model MoveNet…');
+        setStatus('Đang tải TensorFlow.js + MoveNet (cần internet lần đầu)…');
+        if (typeof poseDetection === 'undefined' || typeof tf === 'undefined')
+          throw new Error('offline-lib');
+        await tf.ready();
+        detector = await poseDetection.createDetector(
+          poseDetection.SupportedModels.MoveNet,
+          { modelType: poseDetection.movenet.modelType.SINGLEPOSE_LIGHTNING });
+      }
+      showOverlay('Đang xin quyền camera…');
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: { width: { ideal: 640 }, height: { ideal: 480 }, facingMode: 'user' }, audio: false });
+      video.srcObject = stream;
+      await video.play();
+      canvas.width = video.videoWidth || 640;
+      canvas.height = video.videoHeight || 480;
+      hideOverlay();
+      setStatus('Đang chạy — model xử lý tại máy, không gửi hình đi đâu.');
+      running = true; lastT = 0;
+      els.btnCam.textContent = 'Tạm dừng';
+      renderSets();
+      loop();
+    } catch (e) {
+      const msg = e && e.message === 'offline-lib'
+        ? 'Không tải được thư viện TensorFlow.js — kiểm tra internet rồi tải lại trang (lần đầu cần mạng, sau đó có cache).'
+        : (e && (e.name === 'NotAllowedError' || e.name === 'PermissionDeniedError'))
+          ? 'Trình duyệt chưa cấp được camera. Thử theo thứ tự: (1) TẢI LẠI TRANG sau khi đổi quyền; (2) icon 🔒 cạnh địa chỉ → Camera → Cho phép; (3) Windows: Settings → Privacy & security → Camera → bật “Camera access” và cho phép trình duyệt (Windows chặn ở đây thì Allow trong trình duyệt cũng vô ích).'
+          : (e && e.name === 'NotFoundError')
+            ? 'Không tìm thấy webcam trên máy.'
+            : 'Lỗi khởi động: ' + (e && (e.message || e.name) || 'không rõ') + '. Nếu đang offline, cần internet lần đầu để tải model.';
+      showOverlay('⚠️ ' + msg);
+      setStatus('');
+    }
+    els.btnCam.disabled = false;
+  }
+  function pause() {
+    running = false;
+    if (rafId) cancelAnimationFrame(rafId);
+    if (video.srcObject) { video.srcObject.getTracks().forEach(t => t.stop()); video.srcObject = null; }
+    if (target.running) { target.running = false; target.cur = null; setStatus('Đã dừng giữa lượt 60s — lượt này không tính.'); }
+    els.btnCam.textContent = 'Bật camera';
+    showOverlay('Đã tạm dừng. Bấm «Bật camera» để tiếp tục — số đếm vẫn giữ nguyên.');
+    renderSets();
+  }
+  els.btnCam.addEventListener('click', () => running ? pause() : start());
+
+  // ---- chốt set / bắt đầu lượt ----
+  els.btnSet.addEventListener('click', () => {
+    if (ex.type === 'target') {
+      if (!running || target.running) return;
+      target.running = true; target.hits = 0; target.times = []; target.cur = null;
+      const now = performance.now();
+      target.endsAt = now + (ex.durationSec || 60) * 1000;
+      target.nextAt = now + 800;
+      setStatus(ex.joints && ex.joints[0] === 15
+        ? 'Bắt đầu! Bước chân chạm ô sáng rồi về giữa.'
+        : 'Bắt đầu! Chạm các vòng tròn bằng cổ tay.');
+      speak(bi('Bắt đầu', 'Go'));
+      renderSets();
+      return;
+    }
+    commitCurrent(false);
+  });
+
+  // Reset cần bấm 2 lần (không dùng confirm() — chặn luồng)
+  els.btnReset.addEventListener('click', () => {
+    if (resetArmed && Date.now() - resetArmed < 2500) {
+      counter = new RepCounter(ex); ema.reset(); hold.reset();
+      target.running = false; target.cur = null; target.hits = 0; target.times = [];
+      store.history[todayStr()] = {};
+      saveStore();
+      els.rep.textContent = '0'; els.extra.textContent = '–';
+      renderSets();
+      els.btnReset.textContent = 'Reset'; els.btnReset.classList.remove('armed');
+      resetArmed = 0;
+      setStatus('Đã xoá toàn bộ số liệu hôm nay.');
+    } else {
+      resetArmed = Date.now();
+      els.btnReset.textContent = 'Bấm lần nữa để xoá'; els.btnReset.classList.add('armed');
+      setTimeout(() => {
+        if (resetArmed) { els.btnReset.textContent = 'Reset'; els.btnReset.classList.remove('armed'); resetArmed = 0; }
+      }, 2500);
+    }
+  });
+
+  // Sync vào Nhật ký chung (fitness-hub:v1, hiển thị + copy ở trang Bộ game).
+  // UPSERT theo app+ngày: ghi ĐÈ slot 'dem-squat' của hôm nay bằng toàn bộ nhật ký hiện tại — bấm bao nhiêu lần cũng không trùng.
+  els.btnSync.addEventListener('click', () => {
+    const entries = buildExportEntries(recWithPending(), todayStr());
+    if (!entries.length) { setStatus('Chưa có rep nào hôm nay để sync.'); return; }
+    try {
+      let hub; try { hub = JSON.parse(localStorage.getItem('fitness-hub:v1')); } catch { hub = null; }
+      if (!hub || typeof hub !== 'object' || !hub.days) hub = { v: 1, days: {} };
+      (hub.days[todayStr()] = hub.days[todayStr()] || {})['dem-squat'] = entries;
+      localStorage.setItem('fitness-hub:v1', JSON.stringify(hub));
+      setStatus(`Đã sync ${entries.length} mục hôm nay vào Nhật ký chung (⌂ Bộ game). Bấm lại không trùng.`);
+    } catch { setStatus('Không ghi được Nhật ký chung — localStorage bị chặn?'); }
+  });
+
+  // ảnh hỏng/thiếu -> rơi về hình người-que, không vỡ layout
+  for (const im of [els.photo0, els.photo1])
+    im.addEventListener('error', () => {
+      els.photoWrap.classList.add('hidden');
+      els.demoFallback.classList.remove('hidden');
+      els.photoCredit.style.display = 'none';
+    });
+
+  renderFilters(); renderExRow(); applyExUI(); renderSets(); renderVoice(); demoLoop();
+})();
+</script>
+<script>
+(function () {
+  var KEY = 'game:theme', root = document.documentElement;
+  function icon() {
+    var b = document.getElementById('themeBtn');
+    if (b) b.textContent = root.dataset.theme === 'light' ? '🌙' : '☀️';
+  }
+  var b = document.getElementById('themeBtn');
+  if (b) {
+    icon();
+    b.addEventListener('click', function () {
+      var t = root.dataset.theme === 'light' ? 'dark' : 'light';
+      root.dataset.theme = t;
+      try { localStorage.setItem(KEY, t); } catch (e) {}
+      var m = document.querySelector('meta[name="theme-color"]');
+      if (m) m.content = t === 'light' ? '#eef1f8' : '#0b1020';
+      icon();
+    });
+  }
+})();
+</script>
+</body>
+</html>

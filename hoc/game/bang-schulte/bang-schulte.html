@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"/>
+<meta name="theme-color" content="#0b1020"/>
+<title>Bảng Schulte — quét mắt tìm số theo thứ tự</title>
+<script>try{document.documentElement.dataset.theme=localStorage.getItem('game:theme')||'dark'}catch(e){document.documentElement.dataset.theme='dark'}</script>
+<style>
+:root{
+  --bg:#0b1020; --card:#151d33; --card-2:#1a2340; --inset:#0f1628;
+  --ink:#e9eef9; --ink-soft:#98a3bb; --ink-dim:#5f6b85;
+  --line:#27314f; --line-soft:#1d2742; --good:#34d399; --bad:#f87171;
+  --mc:#34d399; --mc2:#60a5fa;
+  --radius:20px; --shadow:0 1px 2px rgba(0,0,0,.35),0 12px 32px rgba(0,0,0,.38);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+button,input,select{font-family:inherit}
+html{-webkit-text-size-adjust:100%}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+  background:
+    radial-gradient(1100px 560px at 88% -12%, color-mix(in srgb,var(--mc) 12%,transparent), transparent 60%),
+    radial-gradient(900px 620px at -12% 26%, color-mix(in srgb,var(--mc2) 10%,transparent), transparent 55%),
+    linear-gradient(180deg,#0e1428 0%, var(--bg) 100%);
+  background-attachment:fixed;
+  color:var(--ink);line-height:1.5;min-height:100vh;display:flex;flex-direction:column}
+main{flex:1;width:100%;max-width:760px;margin:0 auto;padding:0 20px 40px}
+.num{font-variant-numeric:tabular-nums}
+header{position:sticky;top:0;z-index:10;background:rgba(11,16,32,.78);backdrop-filter:blur(10px);border-bottom:1px solid var(--line-soft)}
+.hd-in{max-width:760px;margin:0 auto;padding:11px 20px;display:flex;align-items:center;gap:14px}
+.logo{font-weight:800;font-size:18px;letter-spacing:-.02em;display:flex;align-items:center;gap:11px}
+.logo-ic{width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg,var(--mc),var(--mc2));display:flex;align-items:center;justify-content:center;font-size:22px;flex:none;box-shadow:0 4px 16px color-mix(in srgb,var(--mc) 45%,transparent)}
+.logo small{display:block;font-size:11px;font-weight:600;color:var(--ink-soft)}
+.hd-sp{flex:1}
+.theme-btn{border:1px solid var(--line);background:var(--card);color:var(--ink);width:38px;height:38px;border-radius:999px;cursor:pointer;font-size:16px;flex:none;line-height:1;padding:0}
+.nav-btn{border:1px solid var(--line);background:var(--card);color:var(--ink);padding:9px 16px;border-radius:999px;font-size:14px;font-weight:600;cursor:pointer;text-decoration:none;display:inline-block}
+.nav-btn:hover{border-color:var(--mc)}
+.nav-btn.active{background:linear-gradient(135deg,var(--mc),var(--mc2));color:#0b1020;border-color:transparent}
+.screen{display:none;animation:fadeIn .18s ease}
+.screen.on{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+.hero{padding:34px 0 10px}
+.hero h1{font-size:clamp(29px,5.4vw,42px);letter-spacing:-.03em;background:linear-gradient(92deg,var(--ink) 35%,var(--mc) 78%,var(--mc2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero p{color:var(--ink-soft);margin-top:9px;max-width:640px;font-size:16.5px}
+.stat-row{display:flex;gap:12px;margin-top:22px;flex-wrap:wrap}
+.stat-card{border:1px solid var(--line);border-radius:14px;padding:14px 20px 14px 22px;background:linear-gradient(160deg,var(--card),var(--card-2));min-width:120px;position:relative;overflow:hidden;box-shadow:var(--shadow)}
+.stat-card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--sc,var(--mc))}
+.stat-card:nth-child(1){--sc:var(--mc)}
+.stat-card:nth-child(2){--sc:#fbbf24}
+.stat-card:nth-child(3){--sc:#38bdf8}
+.stat-card b{display:block;font-size:28px;letter-spacing:-.02em;color:var(--sc,var(--mc))}
+.stat-card span{font-size:13px;color:var(--ink-soft);font-weight:600}
+.lv-adjust{position:absolute;right:10px;top:12px;display:flex;gap:5px}
+.lv-adjust button{width:30px;height:30px;border-radius:9px;border:1px solid var(--line);background:var(--inset);color:var(--ink);font-size:17px;font-weight:800;cursor:pointer;line-height:1}
+.lv-adjust button:hover{border-color:var(--mc);color:var(--mc)}
+.btn{border:1px solid var(--line);border-radius:14px;padding:13px 24px;font-size:16px;font-weight:700;cursor:pointer;background:var(--card);color:var(--ink)}
+.btn.primary{background:linear-gradient(135deg,var(--mc),var(--mc2));border-color:transparent;color:#0b1020;font-size:17.5px;padding:15px 34px;box-shadow:0 8px 26px color-mix(in srgb,var(--mc) 38%,transparent)}
+.btn:hover{filter:brightness(1.08)}
+.start-row{margin-top:26px;display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--card)}
+.seg button{border:none;background:transparent;padding:10px 16px;font-size:14.5px;font-weight:600;cursor:pointer;color:var(--ink-soft)}
+.seg button+button{border-left:1px solid var(--line-soft)}
+.seg button.on{background:linear-gradient(135deg,var(--mc),var(--mc2));color:#0b1020}
+.howto{margin-top:30px;border:1px solid var(--line);border-left:4px solid var(--mc);border-radius:var(--radius);padding:20px 22px;background:var(--card);font-size:15.5px;color:var(--ink-soft);max-width:640px}
+.howto b{color:var(--mc)}
+.hist{margin-top:26px;border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;background:var(--card)}
+.hist table{width:100%;border-collapse:collapse;font-size:14.5px}
+.hist th{background:var(--inset);text-align:left;padding:10px 14px;font-size:12.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-soft)}
+.hist td{padding:10px 14px;border-top:1px solid var(--line-soft)}
+.hist .r{text-align:right}
+.empty{padding:26px;text-align:center;color:var(--ink-soft);font-size:15px}
+/* play */
+.play-hud{display:flex;align-items:center;gap:12px;padding:16px 0 8px;flex-wrap:wrap}
+.hud-item{font-size:14.5px;color:var(--ink-soft);font-weight:600}
+.hud-item b{font-size:20px;color:var(--ink)}
+.hud-streak{font-size:15px;font-weight:800;color:#fbbf24}
+.lv-badge{font-size:13px;font-weight:800;padding:4px 12px;border-radius:999px;color:var(--mc);background:color-mix(in srgb,var(--mc) 14%,transparent);border:1px solid color-mix(in srgb,var(--mc) 38%,transparent)}
+.hud-sp{flex:1}
+.btn-quit{border:1px solid var(--line);background:var(--card);border-radius:999px;padding:8px 15px;font-size:13.5px;font-weight:600;cursor:pointer;color:var(--ink-soft)}
+.btn-quit:hover{color:var(--bad);border-color:var(--bad)}
+.round-bar{height:6px;border-radius:99px;background:var(--inset);overflow:hidden;flex:1}
+.round-bar i{display:block;height:100%;background:linear-gradient(90deg,var(--mc),var(--mc2));border-radius:99px}
+.timebox{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.clock{font-size:14.5px;font-weight:800;color:var(--ink-soft);min-width:38px;text-align:right}
+.target-line{display:flex;align-items:baseline;gap:10px;justify-content:center;margin-bottom:10px;font-size:15px;color:var(--ink-soft);font-weight:700}
+.target-line b{font-size:26px;color:var(--mc)}
+.board-wrap{border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow);background:linear-gradient(165deg,#141b31,#0e1526);padding:10px;user-select:none;-webkit-user-select:none}
+.sgrid{display:grid;gap:8px}
+.cell{aspect-ratio:1;border:1.5px solid #2c3757;border-radius:12px;background:#101830;color:#dfe6f5;font-weight:800;cursor:pointer;font-size:clamp(17px,4.5vw,26px);transition:background .08s,border-color .08s,opacity .12s;touch-action:manipulation;padding:0}
+.cell:active{background:#182446}
+.cell.done{opacity:.22;border-color:transparent;cursor:default}
+.cell.err{border-color:var(--bad);background:color-mix(in srgb,var(--bad) 22%,#101830)}
+.board-feed{text-align:center;min-height:26px;margin-top:10px;font-size:16px;font-weight:800}
+.board-feed.ok{color:var(--good)} .board-feed.no{color:var(--bad)}
+.play-hint{text-align:center;font-size:14px;color:var(--ink-dim);margin-top:8px}
+/* result */
+.res-wrap{max-width:520px;margin:40px auto 0;text-align:center}
+.res-mode{font-size:15.5px;font-weight:700;color:var(--ink-soft)}
+.res-score{font-size:clamp(56px,13vw,84px);font-weight:800;letter-spacing:-.04em;line-height:1.05;background:linear-gradient(92deg,var(--ink) 20%,var(--mc) 70%,var(--mc2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.res-note{margin-top:6px;font-size:15.5px;font-weight:700;color:var(--mc);min-height:22px}
+.res-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:26px}
+.res-cell{border:1px solid var(--line);border-radius:14px;padding:14px 8px;background:linear-gradient(160deg,var(--card),var(--card-2))}
+.res-cell b{display:block;font-size:24px;letter-spacing:-.02em;color:var(--mc)}
+.res-cell span{font-size:12.5px;color:var(--ink-soft);font-weight:600}
+.res-actions{display:flex;gap:10px;justify-content:center;margin-top:26px}
+footer{border-top:1px solid var(--line-soft);padding:16px 20px calc(16px + env(safe-area-inset-bottom));text-align:center;font-size:12px;color:var(--ink-dim)}
+button{touch-action:manipulation}
+/* ---------- mobile (iPhone) ---------- */
+@media (max-width:480px){
+  main{padding:0 8px 28px;padding-left:max(8px,env(safe-area-inset-left));padding-right:max(8px,env(safe-area-inset-right))}
+  .hd-in{padding:7px 10px;gap:6px}
+  .logo{font-size:14px;gap:7px;min-width:0;overflow:hidden}
+  .logo > span:last-child{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+  .logo-ic{width:32px;height:32px;font-size:16px;border-radius:9px}
+  .logo small{display:none}
+  .nav-btn{padding:7px 10px;font-size:12.5px;white-space:nowrap}
+  .theme-btn{width:32px;height:32px;font-size:14px}
+  .hero{padding:16px 0 6px}
+  .hero p{font-size:14.5px;margin-top:6px}
+  .stat-row{gap:8px;margin-top:14px}
+  .stat-card{padding:10px 12px;min-width:calc(50% - 4px);flex:1}
+  .stat-card b{font-size:22px}
+  .start-row{margin-top:18px;gap:10px}
+  .btn.primary{width:100%;padding:14px 20px}
+  .howto{padding:14px 16px;font-size:14px;margin-top:20px}
+  .play-hud{gap:7px;padding:10px 0 6px}
+  .hud-item{font-size:12.5px}
+  .hud-item b{font-size:16px}
+  .board-wrap{padding:8px;border-radius:14px}
+  .sgrid{gap:6px}
+  .play-hint{font-size:12.5px;margin-top:6px}
+  .res-grid{grid-template-columns:1fr 1fr;gap:8px}
+}
+/* ---------- dark/light mode (persist chung key game:theme) ---------- */
+html[data-theme="light"]{
+  --bg:#edf0f8; --card:#ffffff; --card-2:#f3f5fb; --inset:#e7ebf5;
+  --ink:#1a2233; --ink-soft:#4e5a74; --ink-dim:#7b869e;
+  --line:#cfd8e8; --line-soft:#dfe5f1;
+  --shadow:0 1px 2px rgba(23,32,56,.06),0 12px 32px rgba(23,32,56,.10);
+}
+html[data-theme="light"] body{
+  background:
+    radial-gradient(1100px 560px at 88% -12%, color-mix(in srgb,var(--mc) 11%,transparent), transparent 60%),
+    radial-gradient(900px 620px at -12% 26%, color-mix(in srgb,var(--mc2) 8%,transparent), transparent 55%),
+    linear-gradient(180deg,#f7f9fe 0%, #edf0f8 100%);
+  background-attachment:fixed;
+}
+html[data-theme="light"] header{background:rgba(247,249,254,.85)}
+/* bảng số giữ tối (số sáng trên nền tối dễ quét ngoại vi) */
+html[data-theme="light"] .board-wrap{background:linear-gradient(165deg,#141b31,#0e1526);border-color:#27314f}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="hd-in">
+    <div class="logo"><span class="logo-ic">🔎</span><span>Bảng Schulte<small>quét mắt · thị giác ngoại vi</small></span></div>
+    <div class="hd-sp"></div>
+    <button class="theme-btn" id="themeBtn" title="Đổi giao diện sáng/tối">☀️</button>
+    <a class="nav-btn" href="../index.html">⌂ Bộ game</a>
+    <button class="nav-btn active" id="nav-home">Trang chủ</button>
+  </div>
+</header>
+
+<main>
+
+<section class="screen on" id="screen-home">
+  <div class="hero">
+    <h1>Quét mắt nhanh hơn, nhìn rộng hơn</h1>
+    <p>Bấm các số theo thứ tự <b>1 → hết</b> nhanh nhất có thể. Bí quyết Schulte: <b>nhìn cố định vào giữa bảng</b>, để mắt "bắt" số bằng thị giác ngoại vi thay vì đảo mắt từng ô — đúng kỹ năng quan sát cần cho thể thao và đọc nhanh.</p>
+  </div>
+  <div class="stat-row">
+    <div class="stat-card"><b class="num" id="st-lv">1</b><span>Level (1–12)</span>
+      <div class="lv-adjust"><button id="lv-dn">−</button><button id="lv-up">+</button></div>
+    </div>
+    <div class="stat-card"><b class="num" id="st-best">—</b><span>Bảng nhanh nhất (level này)</span></div>
+    <div class="stat-card"><b class="num" id="st-rounds">0</b><span>Vòng đã chơi</span></div>
+  </div>
+  <div class="start-row">
+    <button class="btn primary" id="btn-start">▶ Chơi</button>
+    <span class="seg" id="seg-dur"><button data-v="60">1′</button><button data-v="120">2′</button><button data-v="180">3′</button></span>
+    <span class="seg" id="seg-sound"><button data-v="1">🔊</button><button data-v="0">🔇</button></span>
+  </div>
+  <div class="howto">
+    <b>Luật:</b> mỗi bảng là một hoán vị số. Bấm đúng thứ tự — ô sai nháy đỏ và <b>+1 giây phạt</b>. Xong bảng máy so thời gian với chuẩn của cỡ bảng đó: nhanh hơn chuẩn thì tiến level (3×3 → 6×6, từ Level 11 đếm <b>NGƯỢC</b>). Bảng sạch không lỗi liên tiếp 3+ được ×1,5 điểm 🔥.
+  </div>
+  <div class="hist" id="home-hist"></div>
+</section>
+
+<section class="screen" id="screen-play">
+  <div class="play-hud">
+    <span class="lv-badge" id="hud-lv">Lv 1</span>
+    <span class="hud-item">Điểm <b class="num" id="hud-score">0</b></span>
+    <span class="hud-item">Bảng <b class="num" id="hud-boards">0</b></span>
+    <span class="hud-streak" id="hud-streak"></span>
+    <div class="hud-sp"></div>
+    <button class="btn-quit" id="btn-quit">Kết thúc</button>
+  </div>
+  <div class="timebox">
+    <div class="round-bar"><i id="round-fill" style="width:100%"></i></div>
+    <span class="clock num" id="round-clock">2:00</span>
+  </div>
+  <div class="target-line">Tìm <b class="num" id="target-num">1</b><span id="board-timer" class="num" style="margin-left:auto">0.0s</span></div>
+  <div class="board-wrap"><div class="sgrid" id="sgrid"></div></div>
+  <div class="board-feed" id="board-feed"></div>
+  <div class="play-hint">Giữ mắt ở TÂM bảng — quét bằng ngoại vi, đừng đảo mắt từng ô</div>
+</section>
+
+<section class="screen" id="screen-result">
+  <div class="res-wrap">
+    <div class="res-mode" id="res-mode"></div>
+    <div class="res-score num" id="res-score">0</div>
+    <div class="res-note" id="res-note"></div>
+    <div class="res-grid">
+      <div class="res-cell"><b class="num" id="res-boards"></b><span>Bảng xong</span></div>
+      <div class="res-cell"><b class="num" id="res-avg"></b><span>TB / bảng</span></div>
+      <div class="res-cell"><b class="num" id="res-errs"></b><span>Bấm sai</span></div>
+      <div class="res-cell"><b class="num" id="res-lv"></b><span>Level</span></div>
+    </div>
+    <div class="res-actions">
+      <button class="btn primary" id="btn-again">Chơi lại</button>
+      <button class="btn" id="btn-home">Trang chủ</button>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>Bảng Schulte · tốc độ quét mắt &amp; thị giác ngoại vi · Build v1 · 2026-07-12 · dữ liệu lưu trong trình duyệt của bạn</footer>
+
+<script id="gen">
+"use strict";
+/* ================================================================
+   ===GEN-START===  Logic thuần: bảng level, sinh bảng, chuẩn thời gian
+   ================================================================ */
+const MAXLV = 12;
+// size: cỡ bảng · reverse: đếm ngược từ n² về 1 · par: chuẩn ms để giữ/lên level
+const LEVELS = [
+  { size: 3, reverse: false }, { size: 3, reverse: false },
+  { size: 4, reverse: false }, { size: 4, reverse: false }, { size: 4, reverse: false },
+  { size: 5, reverse: false }, { size: 5, reverse: false }, { size: 5, reverse: false },
+  { size: 6, reverse: false }, { size: 6, reverse: false },
+  { size: 5, reverse: true },  { size: 6, reverse: true },
+];
+function parMs(size, reverse) { return Math.round(size * size * 1150 * (reverse ? 1.25 : 1)); }
+function genBoard(lv, rnd = Math.random) {
+  const c = LEVELS[Math.min(MAXLV, Math.max(1, lv)) - 1];
+  const n2 = c.size * c.size;
+  const cells = Array.from({ length: n2 }, (_, i) => i + 1);
+  for (let i = n2 - 1; i > 0; i--) {                     // Fisher–Yates
+    const j = Math.min(i, Math.floor(rnd() * (i + 1)));
+    [cells[i], cells[j]] = [cells[j], cells[i]];
+  }
+  return { lv, size: c.size, reverse: c.reverse, cells, par: parMs(c.size, c.reverse) };
+}
+// Số phải bấm ở bước k (0-based): xuôi = k+1, ngược = n²−k
+function expectedAt(board, k) { return board.reverse ? board.size * board.size - k : k + 1; }
+// Điểm 1 bảng: so thời gian thật (đã cộng phạt) với par; bảng sạch liên tiếp ≥3 ×1.5
+function scoreBoard(lv, tMs, par, cleanStreak) {
+  const ratio = Math.min(2, Math.max(0.4, par / tMs));
+  return Math.round(20 * lv * ratio * (cleanStreak >= 3 ? 1.5 : 1));
+}
+// Staircase 1 bảng: nhanh hơn par +1 · tạm được +0.6 · quá chậm/квá lỗi −1.5 (ngưỡng ±3 đổi level)
+function progDelta(tMs, par, errs) {
+  if (errs >= 3 || tMs > par * 1.9) return -1.5;
+  if (tMs <= par) return 1;
+  if (tMs <= par * 1.45) return 0.6;
+  return 0;
+}
+/* ===GEN-END=== */
+if (typeof module !== "undefined" && module.exports)
+  module.exports = { MAXLV, LEVELS, parMs, genBoard, expectedAt, scoreBoard, progDelta };
+</script>
+
+<script id="app">
+"use strict";
+(() => {
+  const KEY = "bang-schulte:v1";
+  const $ = (id) => document.getElementById(id);
+  const load = () => {
+    try { const s = JSON.parse(localStorage.getItem(KEY)); if (s && s.v === 1) return s; } catch (e) {}
+    return { v: 1, settings: { dur: 120, sound: true }, lv: 1, prog: 0, rounds: [] };
+  };
+  const store = load();
+  const save = () => { try { localStorage.setItem(KEY, JSON.stringify(store)); } catch (e) {} };
+  const todayStr = () => { const d = new Date(); return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0"); };
+  const fmt = (s) => Math.floor(s / 60) + ":" + String(Math.floor(s % 60)).padStart(2, "0");
+
+  let audioCtx = null, audioOut = null;
+  function audioDest() {
+    audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+    if (!audioOut) {
+      try { audioOut = audioCtx.createDynamicsCompressor(); audioOut.threshold.value = -18; audioOut.knee.value = 24; audioOut.ratio.value = 6; audioOut.connect(audioCtx.destination); }
+      catch (e) { audioOut = audioCtx.destination; }
+    }
+    if (audioCtx.state === "suspended") { try { audioCtx.resume(); } catch (e) {} }
+    return audioOut;
+  }
+  function beep(f, dur, vol) {
+    if (!store.settings.sound) return;
+    try {
+      const out = audioDest(), t = audioCtx.currentTime;
+      const o = audioCtx.createOscillator(), g = audioCtx.createGain();
+      o.frequency.value = f; o.type = "sine";
+      g.gain.setValueAtTime(0.0001, t);
+      g.gain.exponentialRampToValueAtTime(vol, t + 0.015);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + dur / 1000);
+      o.connect(g); g.connect(out); o.start(t); o.stop(t + dur / 1000 + 0.03);
+    } catch (e) {}
+  }
+
+  const screens = { home: $("screen-home"), play: $("screen-play"), result: $("screen-result") };
+  function show(k) { Object.entries(screens).forEach(([n, el]) => el.classList.toggle("on", n === k)); }
+
+  function renderHome() {
+    $("st-lv").textContent = store.lv;
+    const mine = store.rounds.filter((r) => r.lv === store.lv && r.bestMs);
+    $("st-best").textContent = mine.length ? (Math.min(...mine.map((r) => r.bestMs)) / 1000).toFixed(1) + "s" : "—";
+    $("st-rounds").textContent = store.rounds.length;
+    document.querySelectorAll("#seg-dur button").forEach((b) => b.classList.toggle("on", +b.dataset.v === store.settings.dur));
+    document.querySelectorAll("#seg-sound button").forEach((b) => b.classList.toggle("on", !!+b.dataset.v === store.settings.sound));
+    const rows = store.rounds.slice(-8).reverse().map((r) =>
+      `<tr><td>${r.d}</td><td>Lv ${r.lv}</td><td class="r num">${r.boards}</td><td class="r num">${r.avgMs ? (r.avgMs / 1000).toFixed(1) + "s" : "—"}</td><td class="r num"><b>${r.s}</b></td></tr>`).join("");
+    $("home-hist").innerHTML = rows
+      ? `<table><tr><th>Ngày</th><th>Level</th><th class="r">Bảng</th><th class="r">TB/bảng</th><th class="r">Điểm</th></tr>${rows}</table>`
+      : `<div class="empty">Chưa có vòng nào — bấm ▶ Chơi để bắt đầu 🔎</div>`;
+  }
+
+  /* ---------- vòng chơi ---------- */
+  let game = null, board = null, step = 0, errs = 0, tBoard = 0, penalty = 0, clockId = null, feedT = null;
+
+  function startRound() {
+    game = { over: false, score: 0, boards: 0, errsTotal: 0, cleanStreak: 0, times: [], lvStart: store.lv,
+             endAt: Date.now() + store.settings.dur * 1000 };
+    $("hud-score").textContent = "0"; $("hud-boards").textContent = "0"; $("hud-streak").textContent = "";
+    show("play");
+    clearInterval(clockId);
+    clockId = setInterval(() => {
+      if (!game || game.over) return;
+      const left = Math.max(0, game.endAt - Date.now());
+      $("round-clock").textContent = fmt(left / 1000);
+      $("round-fill").style.width = (left / (store.settings.dur * 1000) * 100) + "%";
+      if (board) $("board-timer").textContent = ((performance.now() - tBoard + penalty) / 1000).toFixed(1) + "s";
+      if (left <= 0) endRound();
+    }, 100);
+    nextBoard();
+  }
+
+  function nextBoard() {
+    if (!game || game.over) return;
+    clearTimeout(feedT);
+    board = genBoard(store.lv);
+    step = 0; errs = 0; penalty = 0;
+    $("hud-lv").textContent = "Lv " + store.lv;
+    $("board-feed").textContent = ""; $("board-feed").className = "board-feed";
+    $("target-num").textContent = expectedAt(board, 0);
+    const grid = $("sgrid");
+    grid.style.gridTemplateColumns = `repeat(${board.size},1fr)`;
+    grid.innerHTML = "";
+    board.cells.forEach((v) => {
+      const b = document.createElement("button");
+      b.className = "cell"; b.textContent = v; b.dataset.v = v;
+      b.addEventListener("pointerdown", (e) => { e.preventDefault(); tapCell(b, v); });
+      grid.appendChild(b);
+    });
+    tBoard = performance.now();
+  }
+
+  function tapCell(el, v) {
+    if (!game || game.over || !board) return;
+    if (el.classList.contains("done")) return;
+    if (v === expectedAt(board, step)) {
+      el.classList.add("done");
+      step++;
+      beep(700 + step * 6, 35, 0.05);
+      if (step >= board.size * board.size) return finishBoard();
+      $("target-num").textContent = expectedAt(board, step);
+    } else {
+      errs++; game.errsTotal++;
+      penalty += 1000;                                   // +1s phạt mỗi lần bấm sai
+      el.classList.add("err");
+      setTimeout(() => el.classList.remove("err"), 320);
+      beep(220, 120, 0.08);
+    }
+  }
+
+  function finishBoard() {
+    const tMs = Math.round(performance.now() - tBoard + penalty);
+    game.boards++; game.times.push(tMs);
+    game.cleanStreak = errs === 0 ? game.cleanStreak + 1 : 0;
+    const pts = scoreBoard(board.lv, tMs, board.par, game.cleanStreak);
+    game.score += pts;
+    // staircase ±3 ngay trong vòng (kiểu hub)
+    store.prog = (store.prog || 0) + progDelta(tMs, board.par, errs);
+    if (store.prog >= 3 && store.lv < MAXLV) { store.lv++; store.prog = 0; }
+    else if (store.prog <= -3 && store.lv > 1) { store.lv--; store.prog = 0; }
+    save();
+    $("hud-score").textContent = game.score;
+    $("hud-boards").textContent = game.boards;
+    $("hud-streak").textContent = game.cleanStreak >= 3 ? "🔥 " + game.cleanStreak : "";
+    const f = $("board-feed");
+    f.textContent = `+${pts} · ${(tMs / 1000).toFixed(1)}s (chuẩn ${(board.par / 1000).toFixed(0)}s)${errs ? " · " + errs + " lỗi" : " · sạch ✨"}`;
+    f.className = "board-feed " + (tMs <= board.par ? "ok" : "no");
+    beep(880, 120, 0.09);
+    board = null;
+    feedT = setTimeout(nextBoard, 900);
+  }
+
+  function endRound() {
+    if (!game || game.over) return;
+    game.over = true;
+    clearInterval(clockId); clockId = null; clearTimeout(feedT);
+    const avg = game.times.length ? Math.round(game.times.reduce((a, b) => a + b, 0) / game.times.length) : 0;
+    store.rounds.push({ d: todayStr(), ts: Date.now(), s: game.score, boards: game.boards, errs: game.errsTotal,
+                        avgMs: avg, bestMs: game.times.length ? Math.min(...game.times) : 0, lv: game.lvStart });
+    if (store.rounds.length > 60) store.rounds = store.rounds.slice(-60);
+    save();
+    $("res-mode").textContent = "Bảng Schulte · " + store.settings.dur / 60 + " phút";
+    $("res-score").textContent = game.score;
+    $("res-note").textContent = store.lv > game.lvStart ? "🚀 Lên Level " + store.lv + "!" : store.lv < game.lvStart ? "Hạ về Level " + store.lv : "";
+    $("res-boards").textContent = game.boards;
+    $("res-avg").textContent = avg ? (avg / 1000).toFixed(1) + "s" : "—";
+    $("res-errs").textContent = game.errsTotal;
+    $("res-lv").textContent = game.lvStart === store.lv ? "Lv " + store.lv : "Lv " + game.lvStart + " → " + store.lv;
+    beep(880, 200, 0.1); setTimeout(() => beep(1175, 260, 0.1), 220);
+    show("result");
+  }
+
+  $("btn-start").addEventListener("click", startRound);
+  $("btn-again").addEventListener("click", startRound);
+  $("btn-quit").addEventListener("click", endRound);
+  $("btn-home").addEventListener("click", () => { renderHome(); show("home"); });
+  $("nav-home").addEventListener("click", () => { if (game && !game.over) endRound(); renderHome(); show("home"); });
+  $("lv-up").addEventListener("click", () => { if (store.lv < MAXLV) { store.lv++; store.prog = 0; save(); renderHome(); } });
+  $("lv-dn").addEventListener("click", () => { if (store.lv > 1) { store.lv--; store.prog = 0; save(); renderHome(); } });
+  document.querySelectorAll("#seg-dur button").forEach((b) =>
+    b.addEventListener("click", () => { store.settings.dur = +b.dataset.v; save(); renderHome(); }));
+  document.querySelectorAll("#seg-sound button").forEach((b) =>
+    b.addEventListener("click", () => { store.settings.sound = !!+b.dataset.v; save(); renderHome(); }));
+
+  renderHome();
+})();
+</script>
+<script>
+(function () {
+  var KEY = 'game:theme', root = document.documentElement;
+  function icon() {
+    var b = document.getElementById('themeBtn');
+    if (b) b.textContent = root.dataset.theme === 'light' ? '🌙' : '☀️';
+  }
+  var b = document.getElementById('themeBtn');
+  if (b) {
+    icon();
+    b.addEventListener('click', function () {
+      var t = root.dataset.theme === 'light' ? 'dark' : 'light';
+      root.dataset.theme = t;
+      try { localStorage.setItem(KEY, t); } catch (e) {}
+      var m = document.querySelector('meta[name="theme-color"]');
+      if (m) m.content = t === 'light' ? '#eef1f8' : '#0b1020';
+      icon();
+    });
+  }
+})();
+</script>
+</body>
+</html>
