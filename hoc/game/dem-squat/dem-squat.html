@@ -1166,6 +1166,8 @@ if (typeof module !== 'undefined' && module.exports)
   async function start() {
     els.btnCam.disabled = true;
     try {
+      if (location.protocol === 'file:') throw new Error('file-proto');
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) throw new Error('no-mediadevices');
       if (!detector) {
         showOverlay('Đang tải model MoveNet…');
         setStatus('Đang tải TensorFlow.js + MoveNet (cần internet lần đầu)…');
@@ -1190,13 +1192,22 @@ if (typeof module !== 'undefined' && module.exports)
       renderSets();
       loop();
     } catch (e) {
-      const msg = e && e.message === 'offline-lib'
-        ? 'Không tải được thư viện TensorFlow.js — kiểm tra internet rồi tải lại trang (lần đầu cần mạng, sau đó có cache).'
-        : (e && (e.name === 'NotAllowedError' || e.name === 'PermissionDeniedError'))
-          ? 'Trình duyệt chưa cấp được camera. Thử theo thứ tự: (1) TẢI LẠI TRANG sau khi đổi quyền; (2) icon 🔒 cạnh địa chỉ → Camera → Cho phép; (3) Windows: Settings → Privacy & security → Camera → bật “Camera access” và cho phép trình duyệt (Windows chặn ở đây thì Allow trong trình duyệt cũng vô ích).'
-          : (e && e.name === 'NotFoundError')
-            ? 'Không tìm thấy webcam trên máy.'
-            : 'Lỗi khởi động: ' + (e && (e.message || e.name) || 'không rõ') + '. Nếu đang offline, cần internet lần đầu để tải model.';
+      const nm = e && (e.name || '');
+      let msg;
+      if (e && e.message === 'offline-lib')
+        msg = 'Không tải được thư viện TensorFlow.js — kiểm tra internet rồi tải lại trang (lần đầu cần mạng, sau đó có cache).';
+      else if (e && e.message === 'file-proto')
+        msg = 'Bạn đang mở bằng file:// nên trình duyệt CHẶN camera — Allow kiểu gì cũng không được. Cách đúng: chạy start-game.bat để mở qua http://localhost:8777, hoặc mở bản trên flamindi.com/hoc/game.';
+      else if (e && e.message === 'no-mediadevices')
+        msg = 'Trang này không phải https/localhost nên trình duyệt không cho dùng camera. Mở qua http://localhost:8777 (start-game.bat) hoặc flamindi.com.';
+      else if (nm === 'NotAllowedError' || nm === 'PermissionDeniedError')
+        msg = 'Trình duyệt chưa cấp được camera. Kiểm tra lần lượt: (1) đang mở bằng file://? → phải chạy qua http://localhost (start-game.bat) hoặc flamindi.com; (2) icon 🔒/⚙ cạnh địa chỉ → Camera → Cho phép, rồi TẢI LẠI; (3) Windows: Settings → Privacy & security → Camera → bật “Camera access” VÀ “Let desktop apps access your camera”; (4) đóng app đang chiếm camera (Zoom/Teams/Meet).';
+      else if (nm === 'NotReadableError' || nm === 'TrackStartError' || nm === 'AbortError')
+        msg = 'Camera đang bị ứng dụng khác chiếm (Zoom/Teams/Google Meet/OBS…) hoặc driver lỗi. Đóng các app đó rồi TẢI LẠI trang.';
+      else if (nm === 'NotFoundError' || nm === 'OverconstrainedError')
+        msg = 'Không tìm thấy webcam phù hợp trên máy.';
+      else
+        msg = 'Lỗi khởi động: ' + (e && (e.message || e.name) || 'không rõ') + '. Nếu đang offline, cần internet lần đầu để tải model.';
       showOverlay('⚠️ ' + msg);
       setStatus('');
     }
