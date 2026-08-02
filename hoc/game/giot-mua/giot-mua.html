@@ -288,7 +288,7 @@ html[data-theme="light"] .numpad button.np-go{background:linear-gradient(135deg,
     <span class="seg" id="seg-sound"><button data-v="1">🔊</button><button data-v="0">🔇</button></span>
   </div>
   <div class="howto">
-    <b>Luật:</b> gõ đáp án + <b>↵</b> — <b>mọi giọt</b> khớp đáp án vỡ cùng lúc. Giọt chạm nước = mất 1 mạng ♥ — hết 3 mạng là kết thúc. Giọt nắng <b>☀️</b> hiếm: giải được là +thưởng lớn và <b>quét sạch cả màn</b> (giọt bị quét không tính điểm — quét là để thở). Mỗi câu đúng mưa <b>nhanh thêm</b>, lọt giọt mưa chậm lại; gõ trật 3 lần liên tiếp bị <b>khoá phím ~1s</b> 🥶. Level cao thêm nhân ×, chia ÷, số to hơn. Giải khi giọt còn trên nửa màn ×1,5; chuỗi 3+ ×1,5 🔥. Chọn độ khó <b>Dễ/Vừa/Khó/Ác</b> để nhảy level, game vẫn tự chỉnh tiếp theo phong độ. Chế độ <b>🎤 Nói</b>: đọc đáp án thành tiếng (“mười sáu”, “hai lăm”…) là giọt nổ — cần mở qua localhost/web và cho quyền micro.
+    <b>Luật:</b> gõ đáp án + <b>↵</b> — <b>mọi giọt</b> khớp đáp án vỡ cùng lúc. Giọt chạm nước = mất 1 mạng ♥ — hết 3 mạng là kết thúc. Giọt nắng <b>☀️</b> hiếm: giải được là +thưởng lớn và <b>quét sạch cả màn</b> (giọt bị quét không tính điểm — quét là để thở). Mỗi câu đúng mưa <b>nhanh thêm</b>, lọt giọt mưa chậm lại; gõ trật 3 lần liên tiếp bị <b>khoá phím ~1s</b> 🥶. Level cao thêm nhân ×, chia ÷, số to hơn. Giải khi giọt còn trên nửa màn ×1,5; chuỗi 3+ ×1,5 🔥. Chọn độ khó <b>Dễ/Vừa/Khó/Ác</b> để nhảy level, game vẫn tự chỉnh tiếp theo phong độ. Chế độ <b>🎤 Nói</b>: đọc đáp án thành tiếng là giọt nổ — mẹo: thêm chữ <b>“số”</b> đằng trước (“số mười sáu”, “số hai lăm”) để mic hiểu đang đọc đáp án, nhận chuẩn hơn — cần mở qua localhost/web và cho quyền micro.
   </div>
   <div class="hist" id="home-hist"></div>
 </section>
@@ -338,7 +338,7 @@ html[data-theme="light"] .numpad button.np-go{background:linear-gradient(135deg,
 
 </main>
 
-<footer>Giọt mưa (raindrops) · tính nhẩm phản xạ · Build v4 · 2026-08-02 · dữ liệu lưu trong trình duyệt của bạn</footer>
+<footer>Giọt mưa (raindrops) · tính nhẩm phản xạ · Build v5 · 2026-08-02 · dữ liệu lưu trong trình duyệt của bạn</footer>
 
 <script id="gen">
 "use strict";
@@ -402,7 +402,15 @@ function parseViNumber(raw) {
   if (!raw || typeof raw !== "string") return null;
   const t = raw.toLowerCase().trim();
   const SCALE = ["mươi", "trăm", "nghìn", "ngàn", "triệu", "tỷ", "tỉ", "mười", "phẩy", "chấm", "lăm", "nhăm", "mốt", "linh", "lẻ", "rưỡi"];
-  const tokens = t.replace(/[^0-9a-zà-ỹ.,\s]/g, " ").split(/\s+/).filter(Boolean);
+  // Bảng đồng âm/nghe-nhầm của ASR vi-VN (quét 0-9 + hàng chục/trăm — vd Quang dính: "chín" bị nghe thành "chính"):
+  // chuẩn hoá TRƯỚC khi parse. "số" là từ mồi ("số chín", "số 25") giúp mic hiểu đang đọc đáp án — bỏ qua khi parse.
+  const ALIAS = { "hay": "hai", "bà": "ba", "bún": "bốn", "tứ": "tư", "nằm": "năm", "lằm": "lăm",
+    "sau": "sáu", "sấu": "sáu", "xáu": "sáu", "bay": "bảy", "bãy": "bảy", "tắm": "tám", "tấm": "tám",
+    "chính": "chín", "chin": "chín", "chíng": "chín", "chăm": "trăm", "châm": "trăm", "mưới": "mười",
+    "rượi": "rưỡi", "rưới": "rưỡi", "phảy": "phẩy", "phẫy": "phẩy", "lẽ": "lẻ", "khống": "không" };
+  const tokens = t.replace(/[^0-9a-zà-ỹ.,\s]/g, " ").split(/\s+/).filter(Boolean)
+    .filter((w) => w !== "số" && w !== "so")
+    .map((w) => ALIAS[w] || w);
   const hasScale = tokens.some((w) => SCALE.includes(w));
   if (!hasScale) {
     const m = t.match(/\d[\d.,]*/);
@@ -425,7 +433,11 @@ function parseViNumber(raw) {
       continue;
     }
     if (/^\d+$/.test(w)) { num += parseInt(w, 10); seen = true; }
-    else if (w in U) { num += U[w]; seen = true; }
+    else if (w in U) {
+      // đọc số kiểu chục không có "mươi" (rất phổ biến khi nói): "hai lăm"=25, "hai mốt"=21, "bốn bảy"=47
+      num = (num >= 1 && num <= 9) ? num * 10 + U[w] : num + U[w];
+      seen = true;
+    }
     else if (w === "mười") { num += 10; lastScale = 10; seen = true; }
     else if (w === "mươi") { num *= 10; lastScale = 10; seen = true; }
     else if (w === "rưỡi") { half = lastScale ? lastScale / 2 : 0.5; seen = true; }
@@ -639,7 +651,7 @@ if (typeof module !== "undefined" && module.exports)
     game = { over: false, score: 0, solved: 0, missed: 0, wrongs: 0, wrongRun: 0, streak: 0, bestStreak: 0,
              lives: LIVES, spawned: 0, speedK: 0, frozenUntil: 0, lvStart: store.lv, nextSpawnAt: 0 };
     typed = ""; renderTyped(); renderLives(); renderHud();
-    showTranscript(store.settings.input === "voice" ? "🎤 Nói đáp án là giọt nổ — ví dụ: “mười sáu”" : "");
+    showTranscript(store.settings.input === "voice" ? "🎤 Nói đáp án là giọt nổ — mẹo: thêm chữ SỐ cho mic dễ hiểu, vd “số mười sáu”" : "");
     show("play");
     if (store.settings.input === "voice") VOICE.start(); else VOICE.stop();
     VOICE.syncMic();
@@ -851,7 +863,7 @@ if (typeof module !== "undefined" && module.exports)
     store.settings.input = store.settings.input === "voice" ? "type" : "voice";
     save(); renderHome();
     if (game && !game.over) {
-      if (store.settings.input === "voice") { VOICE.start(); showTranscript("🎤 Nói đáp án là giọt nổ — ví dụ: “mười sáu”"); }
+      if (store.settings.input === "voice") { VOICE.start(); showTranscript("🎤 Nói đáp án là giọt nổ — mẹo: thêm chữ SỐ cho mic dễ hiểu, vd “số mười sáu”"); }
       else { VOICE.stop(); showTranscript(""); }
     }
     VOICE.syncMic();

@@ -462,7 +462,7 @@ html[data-theme="light"] .q-wrap.rt-go{background:#d7f3e6;border-color:#5fc196}
 </main>
 
 <div id="toast"></div>
-<footer>Luyện trí não · nhẩm số, Stroop, phản xạ, trí nhớ, n-back · Build v18 · 2026-07-12 · dữ liệu lưu trong trình duyệt của bạn · mở qua start-game.bat để trình duyệt nhớ quyền micro</footer>
+<footer>Luyện trí não · nhẩm số, Stroop, phản xạ, trí nhớ, n-back · Build v19 · 2026-08-02 · dữ liệu lưu trong trình duyệt của bạn · mở qua start-game.bat để trình duyệt nhớ quyền micro</footer>
 
 <script>
 "use strict";
@@ -723,7 +723,15 @@ function parseViNumber(raw) {
   if (!raw || typeof raw !== "string") return null;
   const t = raw.toLowerCase().trim();
   const SCALE = ["mươi", "trăm", "nghìn", "ngàn", "triệu", "tỷ", "tỉ", "mười", "phẩy", "chấm", "lăm", "nhăm", "mốt", "linh", "lẻ", "rưỡi"];
-  const tokens = t.replace(/[^0-9a-zà-ỹ.,\s]/g, " ").split(/\s+/).filter(Boolean);
+  // Bảng đồng âm/nghe-nhầm của ASR vi-VN (quét 0-9 + hàng chục/trăm — vd Quang dính: "chín" bị nghe thành "chính"):
+  // chuẩn hoá TRƯỚC khi parse. "số" là từ mồi ("số chín", "số 25") giúp mic hiểu đang đọc đáp án — bỏ qua khi parse.
+  const ALIAS = { "hay": "hai", "bà": "ba", "bún": "bốn", "tứ": "tư", "nằm": "năm", "lằm": "lăm",
+    "sau": "sáu", "sấu": "sáu", "xáu": "sáu", "bay": "bảy", "bãy": "bảy", "tắm": "tám", "tấm": "tám",
+    "chính": "chín", "chin": "chín", "chíng": "chín", "chăm": "trăm", "châm": "trăm", "mưới": "mười",
+    "rượi": "rưỡi", "rưới": "rưỡi", "phảy": "phẩy", "phẫy": "phẩy", "lẽ": "lẻ", "khống": "không" };
+  const tokens = t.replace(/[^0-9a-zà-ỹ.,\s]/g, " ").split(/\s+/).filter(Boolean)
+    .filter((w) => w !== "số" && w !== "so")
+    .map((w) => ALIAS[w] || w);
   const hasScale = tokens.some((w) => SCALE.includes(w));
   // 1) Chỉ chữ số (vd "36", "1.200", "2,5", "1200000")
   if (!hasScale) {
@@ -749,7 +757,11 @@ function parseViNumber(raw) {
       continue;
     }
     if (/^\d+$/.test(w)) { num += parseInt(w, 10); seen = true; }
-    else if (w in U) { num += U[w]; seen = true; }
+    else if (w in U) {
+      // đọc số kiểu chục không có "mươi" (rất phổ biến khi nói): "hai lăm"=25, "hai mốt"=21, "bốn bảy"=47
+      num = (num >= 1 && num <= 9) ? num * 10 + U[w] : num + U[w];
+      seen = true;
+    }
     else if (w === "mười") { num += 10; lastScale = 10; seen = true; }
     else if (w === "mươi") { num *= 10; lastScale = 10; seen = true; }
     else if (w === "rưỡi") { half = lastScale ? lastScale / 2 : 0.5; seen = true; } // "hai triệu rưỡi" = 2,5 triệu
@@ -1041,7 +1053,7 @@ if (typeof document !== "undefined") (function () {
       $("kbd-hint").textContent = v
         ? (round.q.kind === "choice" ? `Nói “một … ${nOpt === 4 ? "bốn" : "ba"}” hoặc đọc đáp án` : "Đọc đáp án ra miệng — game tự chấm · vẫn gõ phím được")
         : (round.q.kind === "choice" ? `Phím 1 – ${nOpt} để chọn` : "Gõ số rồi Enter · phím , cho số thập phân");
-      if (v) { VOICE.start(); if (!$("transcript").textContent) showTranscript("🎙 Đang nghe — đọc đáp án là chấm liền"); }
+      if (v) { VOICE.start(); if (!$("transcript").textContent) showTranscript("🎙 Đang nghe — đọc đáp án là chấm liền (mẹo: nói “số chín”, “số 25” cho mic nhận chuẩn)"); }
       else { VOICE.stop(); showTranscript(""); }
     }
     document.querySelectorAll("#seg-input button").forEach((b) => b.classList.toggle("on", b.dataset.v === store.settings.input));
@@ -1612,7 +1624,7 @@ if (typeof document !== "undefined") (function () {
   });
   $("mic-btn").addEventListener("click", () => {
     if (VOICE.active) { VOICE.stop(); showTranscript("⏸ Tạm dừng — bấm mic để nghe lại"); }
-    else { VOICE.start(); showTranscript("🎙 Đang nghe — đọc đáp án là chấm liền"); }
+    else { VOICE.start(); showTranscript("🎙 Đang nghe — đọc đáp án là chấm liền (mẹo: nói “số chín”, “số 25” cho mic nhận chuẩn)"); }
   });
 
   // xoá dữ liệu: bấm 2 lần để xác nhận (không dùng dialog chặn luồng)
