@@ -173,6 +173,7 @@ header{position:sticky;top:0;z-index:10;background:rgba(11,16,32,.78);backdrop-f
 .typebox.frozen{opacity:.45;border-color:#64748b;box-shadow:none;filter:saturate(.3)}
 .typebox.frozen::after{content:"🥶";font-size:18px;margin-left:6px}
 .transcript{text-align:center;min-height:20px;font-size:13.5px;color:var(--ink-dim);margin-top:6px}
+@media (max-width:480px){.transcript{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}}
 .transcript.err{color:var(--bad)}
 .mic-ind{display:none;font-size:17px;line-height:1;opacity:.35}
 .mic-ind.show{display:inline}
@@ -338,7 +339,7 @@ html[data-theme="light"] .numpad button.np-go{background:linear-gradient(135deg,
 
 </main>
 
-<footer>Giọt mưa (raindrops) · tính nhẩm phản xạ · Build v8 · 2026-08-02 · dữ liệu lưu trong trình duyệt của bạn</footer>
+<footer>Giọt mưa (raindrops) · tính nhẩm phản xạ · Build v9 · 2026-08-02 · dữ liệu lưu trong trình duyệt của bạn</footer>
 
 <script id="gen">
 "use strict";
@@ -403,7 +404,8 @@ function progDelta(kind, frac) {
 /* ---------- Parser số tiếng Việt (nhập bằng giọng nói) — bản đã kiểm chứng từ luyen-tinh-nham ---------- */
 function parseViNumber(raw) {
   if (!raw || typeof raw !== "string") return null;
-  const t = raw.toLowerCase().trim();
+  // v8: tách chữ dính số ("hai mươi5" → "hai mươi 5")
+  const t = raw.toLowerCase().trim().replace(/(\d)([a-zà-ỹ])/g, "$1 $2").replace(/([a-zà-ỹ])(\d)/g, "$1 $2");
   const SCALE = ["mươi", "trăm", "nghìn", "ngàn", "triệu", "tỷ", "tỉ", "mười", "phẩy", "chấm", "lăm", "nhăm", "mốt", "linh", "lẻ", "rưỡi"];
   // Bảng đồng âm/nghe-nhầm của ASR vi-VN (quét 0-9 + hàng chục/trăm — vd Quang dính: "chín" bị nghe thành "chính"):
   // chuẩn hoá TRƯỚC khi parse. "số" là từ mồi ("số chín", "số 25") giúp mic hiểu đang đọc đáp án — bỏ qua khi parse.
@@ -414,11 +416,16 @@ function parseViNumber(raw) {
     "sáo": "sáu", "nắm": "năm", "bấy": "bảy", "tam": "tám", "mưỡi": "mười", "muơi": "mươi", "hài": "hai", "mộtt": "một",
     "muời": "mười", "mưòi": "mười", "trắm": "trăm", "trâm": "trăm" };
   const FILLER = new Set(["số", "so", "là", "la", "bằng", "bang", "đáp", "án", "kết", "quả", "ra"]); // từ đệm quanh đáp án ("số chín", "bằng 25", "ra chín")
-  const tokens = t.replace(/[^0-9a-zà-ỹ.,\s]/g, " ").split(/\s+/).filter(Boolean)
+  let tokens = t.replace(/[^0-9a-zà-ỹ.,\s]/g, " ").split(/\s+/).filter(Boolean)
     .filter((w) => !FILLER.has(w))
     .map((w) => ALIAS[w] || w);
+  // v8: ASR hay trả câu LẶP nguyên văn ("hai lăm hai lăm") → chỉ lấy một nửa
+  if (tokens.length >= 4 && tokens.length % 2 === 0) { // nửa ≥2 token — "chín chín"=99 là đọc rời, không phải lặp
+    const h = tokens.length / 2;
+    if (tokens.slice(0, h).join(" ") === tokens.slice(h).join(" ")) tokens = tokens.slice(0, h);
+  }
   const hasScale = tokens.some((w) => SCALE.includes(w));
-  if (!hasScale && !/\d\s+\d/.test(t)) { // v7: hai cum chu so roi ("1 6") -> xuong vong lap de ghep hang chuc
+  if (!hasScale && !/\d\s+\d/.test(t)) { // v8: hai cụm chữ số rời ("1 6") → xuống vòng lặp để ghép hàng chục
     const m = t.match(/\d[\d.,]*/);
     if (m) {
       let s = m[0].replace(/[.,]$/, "");
@@ -431,6 +438,14 @@ function parseViNumber(raw) {
   }
   const U = { "không": 0, "một": 1, "mốt": 1, "hai": 2, "ba": 3, "bốn": 4, "tư": 4, "năm": 5, "lăm": 5, "nhăm": 5, "sáu": 6, "bảy": 7, "bẩy": 7, "tám": 8, "chín": 9 };
   let total = 0, section = 0, num = 0, seen = false, inDec = false, dec = "", half = 0, lastScale = 0;
+  let chain = 0;      // v8: đếm chữ số ĐƠN nói liền nhau — "hai ba bốn" = 234, "2 5 0" = 250
+  let uas = 0;        // v8: chữ số đơn NGAY SAU trăm/nghìn/… = hàng chục bậc dưới — "trăm hai" = 120, "hai nghìn ba" = 2300
+  let afterScale = false; // token liền trước là trăm/nghìn/triệu/tỷ (linh/lẻ/mươi cắt hiệu lực)
+  const unitTok = (d) => { // nhận 1 chữ số đơn (chữ hoặc số)
+    num = chain >= 1 ? num * 10 + d : num + d;
+    uas = (afterScale && chain === 0 && num === d) ? 1 : 0;
+    afterScale = false; chain++; seen = true;
+  };
   for (const w of tokens) {
     if (w === "phẩy" || w === "chấm") { inDec = true; seen = true; continue; }
     if (inDec) {
@@ -440,27 +455,24 @@ function parseViNumber(raw) {
     }
     if (/^\d+$/.test(w)) {
       const n = parseInt(w, 10);
-      // v7: doc so roi tung chu so ("mot sau"/"1 6" = 16) — cung luat hang chuc nhu "hai lam"=25
-      num = (w.length === 1 && num >= 1 && num <= 9) ? num * 10 + n : num + n;
-      seen = true;
+      if (w.length === 1) unitTok(n);
+      else { num = n; chain = 0; uas = 0; afterScale = false; seen = true; } // v8: token nhiều chữ số = ASR tự sửa → THAY, không cộng dồn ("25 26" = 26)
     }
-    else if (w in U) {
-      // đọc số kiểu chục không có "mươi" (rất phổ biến khi nói): "hai lăm"=25, "hai mốt"=21, "bốn bảy"=47
-      num = (num >= 1 && num <= 9) ? num * 10 + U[w] : num + U[w];
-      seen = true;
-    }
-    else if (w === "mười") { num += 10; lastScale = 10; seen = true; }
-    else if (w === "mươi") { num *= 10; lastScale = 10; seen = true; }
-    else if (w === "rưỡi") { half = lastScale ? lastScale / 2 : 0.5; seen = true; }
-    else if (w === "trăm") { section += num * 100; num = 0; lastScale = 100; seen = true; }
-    else if (w === "nghìn" || w === "ngàn") { total += (section + num) * 1000; section = 0; num = 0; lastScale = 1000; seen = true; }
-    else if (w === "triệu") { total += (section + num) * 1e6; section = 0; num = 0; lastScale = 1e6; seen = true; }
-    else if (w === "tỷ" || w === "tỉ") { total += (section + num) * 1e9; section = 0; num = 0; lastScale = 1e9; seen = true; }
-    else if (w === "linh" || w === "lẻ") { continue; }
+    else if (w in U) unitTok(U[w]);
+    else if (w === "mười") { num += 10; lastScale = 10; chain = 0; uas = 0; afterScale = false; seen = true; }
+    else if (w === "mươi") { num *= 10; lastScale = 10; chain = 0; uas = 0; afterScale = false; seen = true; }
+    else if (w === "rưỡi") { half = lastScale >= 100 ? lastScale / 2 : 0.5; seen = true; } // v8: "mười rưỡi"=10,5 (không phải 15); trăm/nghìn rưỡi giữ nguyên nửa bậc
+    else if (w === "trăm") { if (num === 0 && !seen) num = 1; section += num * 100; num = 0; lastScale = 100; chain = 0; uas = 0; afterScale = true; seen = true; } // v8: "trăm hai" — trăm trần = 1 trăm
+    else if (w === "nghìn" || w === "ngàn") { if (num === 0 && section === 0 && !seen) num = 1; total += (section + num) * 1000; section = 0; num = 0; lastScale = 1000; chain = 0; uas = 0; afterScale = true; seen = true; }
+    else if (w === "triệu") { if (num === 0 && section === 0 && !seen) num = 1; total += (section + num) * 1e6; section = 0; num = 0; lastScale = 1e6; chain = 0; uas = 0; afterScale = true; seen = true; }
+    else if (w === "tỷ" || w === "tỉ") { if (num === 0 && section === 0 && !seen) num = 1; total += (section + num) * 1e9; section = 0; num = 0; lastScale = 1e9; chain = 0; uas = 0; afterScale = true; seen = true; }
+    else if (w === "linh" || w === "lẻ") { uas = 0; afterScale = false; continue; }
   }
   if (!seen) return null;
+  if (uas && lastScale >= 100 && num >= 1 && num <= 9) num *= lastScale / 100 * 10; // v8: "một trăm hai"=120 · "hai nghìn ba"=2300 · "trăm mốt"=110
   let v = total + section + num + half;
   if (dec) v += parseFloat("0." + dec) * (v < 0 ? -1 : 1);
+  if (v === 0 && !tokens.some((w) => w === "không" || /^0+$/.test(w))) return null; // v8: tiếng ồn nghe nhầm thành từ bậc ("mươi") không được trả 0
   return isFinite(v) ? v : null;
 }
 // v6 NHẠY: interim được chấm TỨC THÌ khi v khớp giọt và KHÔNG giọt nào khác có thể là "phần nói tiếp"
@@ -475,6 +487,9 @@ function voiceInstantOk(v, answers) {
     // (chuỗi "25" không bắt đầu bằng "20" nên luật prefix không bắt được — phải xét theo khoảng)
     if (v % 10 === 0 && v >= 10 && a > v && a < v + 10) return true;
     if (v % 100 === 0 && v >= 100 && a > v && a < v + 100) return true;
+    // v9 (review g57): "một trăm năm(mươi…)" — v có hàng đơn vị lẻ, hàng chục 0 (105) là khúc đầu của 150-159
+    const u = v % 100;
+    if (u >= 1 && u <= 9 && Math.floor(a / 100) === Math.floor(v / 100) && a >= v - u + u * 10 && a <= v - u + u * 10 + 9) return true;
     return false;
   });
 }
@@ -489,6 +504,7 @@ if (typeof module !== "undefined" && module.exports)
   const KEY = "giot-mua:v1";
   const $ = (id) => document.getElementById(id);
   const TEST = /[?&]test=1/.test(location.search);
+  const IS_IOS = /iP(hone|ad|od)/.test(navigator.userAgent); // v9: Safari iOS — SR hạn chế, cần nhánh phòng thủ
   const FAST = /[?&]fast=1/.test(location.search) ? 0.12 : 1; // hook smoke-test: mưa rơi nhanh ×8
   const load = () => {
     try { const s = JSON.parse(localStorage.getItem(KEY)); if (s && s.v === 1) return s; } catch (e) {}
@@ -547,48 +563,69 @@ if (typeof module !== "undefined" && module.exports)
   let game = null, drops = [], typed = "", rafId = 0, hiddenAt = 0, voiceAgeIv = null;
 
   /* ---------- nhận giọng nói (kiến trúc kiểm chứng từ luyen-tinh-nham §F):
-     phiên mới khi già >25s (phiên già lì mic) · watchdog 8s · chấm sớm từ interim
+     phiên mới khi già >15s + đang im (phiên già lì mic) · watchdog 8s 2 tầng stop→abort · chấm sớm từ interim
      (khớp giọt = nổ tức thì, số khác = chờ ổn định 500ms) · quét 5 alternatives ·
      guard voiceConsumedIdx chống final-đến-muộn chấm đúp ---------- */
   let voiceStableT = null, voiceCurIdx = -1, voiceConsumedIdx = -1, lastVoiceHeard = 0;
   const clearVoicePending = () => { clearTimeout(voiceStableT); voiceStableT = null; };
   const VOICE = (() => {
     const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-    let rec = null, active = false, watchdog = null, sessionT0 = 0;
+    let rec = null, active = false, watchdog = null, sessionT0 = 0, wdStage = 0, errRun = 0;
     function pet() {
-      clearTimeout(watchdog);
-      watchdog = setTimeout(() => { if (active && rec) { try { rec.abort(); } catch (e) {} } }, 8000);
+      clearTimeout(watchdog); wdStage = 0;
+      watchdog = setTimeout(wdFire, 8000);
+    }
+    function wdFire() {
+      if (!active || !rec) return;
+      // v9 (review g57): abort thẳng VỨT audio đang đệm — người vừa mở miệng sau 8s im bị cắt đầu câu ("mười sáu" → "sáu" → nổ nhầm giọt 6).
+      // Tầng 1: stop MỀM (Chrome vẫn trả nốt final của câu đang nói) → onend nối phiên; tầng 2 (1,5s sau vẫn lì): abort.
+      if (wdStage === 0) { wdStage = 1; try { rec.stop(); } catch (e) {} watchdog = setTimeout(wdFire, 1500); }
+      else { wdStage = 0; try { rec.abort(); } catch (e) {} }
     }
     function ensure() {
       if (rec || !SR) return;
       rec = new SR();
-      rec.lang = "vi-VN"; rec.continuous = true; rec.interimResults = true; rec.maxAlternatives = 5;
+      // v9: iOS Safari — continuous thật không có, phiên tự chết sau khoảng lặng; để false + onend tự nối cho êm
+      rec.lang = "vi-VN"; rec.continuous = !IS_IOS; rec.interimResults = true; rec.maxAlternatives = 5;
       rec.onaudiostart = pet; rec.onsoundstart = pet; rec.onspeechstart = pet;
       rec.onresult = (e) => {
-        pet();
+        pet(); errRun = 0;
+        if (!active) return;              // v9: đã bấm về ⌨️ Gõ giữa utterance — final trễ không được chấm nữa
+        if (document.hidden) return;      // v9: tab ẩn = game đóng băng — mic không được mutate ván đấu
         if (!game || game.over) return;
-        let fin = "", inter = "", finIdx = -1, interIdx = -1, finAlts = [];
+        // v9 (review g57): XỬ LÝ TỪNG FINAL RIÊNG — nối chuỗi 2 utterance ("mười sáu"+"hai mươi"="mười sáu hai mươi")
+        // parse ra số rác và chôn oan cả hai; giờ mỗi final là một lần chấm độc lập với alternatives của chính nó
+        let inter = "", interIdx = -1;
         for (let i = e.resultIndex || 0; i < e.results.length; i++) {
-          if (i <= voiceConsumedIdx) continue; // utterance đã chấm từ interim rồi
+          if (i <= voiceConsumedIdx) continue;
           const r = e.results[i], t = r && r[0] ? r[0].transcript : "";
           if (r && r.isFinal) {
-            fin += " " + t; finIdx = i;
-            for (let k = 1; k < (r.length || 1); k++) if (r[k] && r[k].transcript) finAlts.push(r[k].transcript);
+            const alts = [];
+            for (let k = 1; k < (r.length || 1); k++) if (r[k] && r[k].transcript) alts.push(r[k].transcript);
+            voiceConsumedIdx = i;
+            if (t.trim()) handleVoiceFinal(t.trim(), alts);
           } else { inter += " " + t; interIdx = i; }
         }
-        if (fin.trim()) { voiceConsumedIdx = finIdx; handleVoiceFinal(fin.trim(), finAlts); }
-        else if (inter.trim()) { voiceCurIdx = interIdx; handleVoiceInterim(inter.trim()); }
+        if (inter.trim() && interIdx > voiceConsumedIdx) { voiceCurIdx = interIdx; handleVoiceInterim(inter.trim()); }
       };
       rec.onerror = (e) => {
         if (e.error === "not-allowed" || e.error === "service-not-allowed") {
           active = false;
-          showTranscript("Không có quyền micro — về ⌨️ Gõ. Mở game qua localhost/web (không phải file://) rồi Allow mic.", true);
+          showTranscript(IS_IOS ? "Mic bị chặn — bật Siri & Đọc chính tả trong Cài đặt iPhone" : "Không có quyền micro — về ⌨️ Gõ (mở qua localhost/web rồi Allow)", true);
           store.settings.input = "type"; save(); syncMic();
-        }
+        } else if (e.error === "network" || e.error === "audio-capture") {
+          // v9 (review g57): SR của Chrome cần MẠNG — trước đây mất mạng = vòng lặp restart vô hạn, mic vẫn xanh, chết câm
+          errRun++;
+          if (errRun >= 2) {
+            active = false;
+            showTranscript(e.error === "network" ? "Nhận giọng nói cần mạng — tạm về ⌨️ Gõ nhé" : "Không thấy micro — về ⌨️ Gõ", true);
+            store.settings.input = "type"; save(); syncMic();
+          }
+        } // no-speech / aborted: bình thường (watchdog/khoảng lặng) — im lặng, onend tự nối phiên
       };
       // v7: PHIÊN MỚI = index reset về 0 — phải huỷ timer interim còn treo của phiên cũ,
       // nếu không callback của nó ghi đè voiceConsumedIdx bằng index CŨ và nuốt mất câu đầu phiên mới
-      rec.onend = () => { clearVoicePending(); if (active) { voiceConsumedIdx = -1; sessionT0 = Date.now(); pet(); try { rec.start(); } catch (err) { /* đang chạy */ } } };
+      rec.onend = () => { clearVoicePending(); if (active && !suspended) { voiceConsumedIdx = -1; sessionT0 = Date.now(); pet(); try { rec.start(); } catch (err) { /* đang chạy */ } } };
     }
     function start() {
       if (!SR) { showTranscript("Trình duyệt không hỗ trợ nhận giọng nói — dùng ⌨️ Gõ (Chrome/Edge mới có)", true); return false; }
@@ -598,6 +635,9 @@ if (typeof module !== "undefined" && module.exports)
       syncMic(); return true;
     }
     function stop() { active = false; clearTimeout(watchdog); clearVoicePending(); if (rec) { try { rec.stop(); } catch (e) {} } syncMic(); }
+    let suspended = false;
+    function suspend() { if (!active) return; suspended = true; clearTimeout(watchdog); clearVoicePending(); if (rec) { try { rec.abort(); } catch (e) {} } } // tab ẩn: game đóng băng thì mic cũng đóng băng
+    function resume() { if (!active || !suspended) return; suspended = false; voiceConsumedIdx = -1; sessionT0 = Date.now(); pet(); if (rec) { try { rec.start(); } catch (e) {} } }
     function restart() { if (!active || !rec) return; clearVoicePending(); sessionT0 = Date.now(); try { rec.abort(); } catch (e) {} }
     function syncMic() {
       const m = $("mic-ind");
@@ -605,7 +645,7 @@ if (typeof module !== "undefined" && module.exports)
       const b = $("btn-mic");
       if (b) { b.textContent = store.settings.input === "voice" ? "🎤 Nói" : "⌨️ Gõ"; b.classList.toggle("live", active); }
     }
-    return { start, stop, restart, syncMic,
+    return { start, stop, restart, suspend, resume, syncMic,
       get supported() { return !!SR; }, get active() { return active; },
       get sessionAge() { return active ? Date.now() - sessionT0 : 0; } };
   })();
@@ -655,7 +695,7 @@ if (typeof module !== "undefined" && module.exports)
     const hit = cands.find((x) => drops.some((d) => d.ans === x.v)) || cands[0];
     voiceSubmit(hit.v);
     // v6: KHÔNG restart sau mỗi lần chấm — abort cắt mất chữ đầu câu kế tiếp khi nói dồn dập
-    // (khác ltn có chủ đích: ltn có khoảng lặng giữa câu). Làm mới phiên do vòng tuổi lo (15s + đang im).
+    // (khác ltn có chủ đích: ltn có khoảng lặng giữa câu). Làm mới phiên do vòng tuổi lo (già >15s và đang im ≥1,8s).
   }
 
   const fracOf = (d, now) => ((now != null ? now : performance.now()) - d.born) / d.fallMs;
@@ -684,7 +724,7 @@ if (typeof module !== "undefined" && module.exports)
     if (store.settings.input === "voice") VOICE.start(); else VOICE.stop();
     VOICE.syncMic();
     clearInterval(voiceAgeIv);
-    // phiên nghe già 25s → thay phiên mới, NHƯNG chỉ khi không ai đang nói dở (bài học ltn dòng 1083)
+    // phiên nghe già 15s → thay phiên mới, NHƯNG chỉ khi không ai đang nói dở ≥1,8s
     voiceAgeIv = setInterval(() => { if (VOICE.active && VOICE.sessionAge > 15000 && Date.now() - lastVoiceHeard > 1800) VOICE.restart(); }, 2000);
     cancelAnimationFrame(rafId);
     rafId = requestAnimationFrame(tick);
@@ -775,11 +815,12 @@ if (typeof module !== "undefined" && module.exports)
   function solveDrops(list, now) {
     game.streak++; game.bestStreak = Math.max(game.bestStreak, game.streak);
     const hasSun = list.some((d) => d.sun);
+    let progDone = false; // v9: thang staircase tính theo CÂU TRẢ LỜI — multi-pop 2 giọt cùng đáp án chỉ +1 prog/speedK
     list.forEach((d) => {
       const f = Math.min(1, fracOf(d, now));
       const pts = d.sun ? sunBonus(store.lv) : scoreDrop(store.lv, f, game.streak);
-      game.score += pts; game.solved++; game.speedK++;
-      store.prog += progDelta("solved", f);
+      game.score += pts; game.solved++;
+      if (!progDone) { game.speedK++; store.prog += progDelta("solved", f); progDone = true; }
       const y = -70 + f * (field.clientHeight - 44);
       floater(d.x + 8, y - 8, "+" + pts + (d.sun ? " ☀️" : ""), d.sun);
       removeDrop(d);
@@ -802,7 +843,7 @@ if (typeof module !== "undefined" && module.exports)
   }
 
   function doSubmit() {
-    if (!game || game.over || !typed.length) return;
+    if (!game || game.over || game.dying || !typed.length) return; // v9: đối xứng với voice — vòng đã chết thì cả gõ lẫn nói đều không đổi điểm/level
     const v = parseInt(typed, 10);
     typed = ""; renderTyped();
     const now = performance.now();
@@ -855,8 +896,9 @@ if (typeof module !== "undefined" && module.exports)
   // tab ẩn: đóng băng cơn mưa, quay lại chơi tiếp không bị thiệt
   document.addEventListener("visibilitychange", () => {
     if (!game || game.over) return;
-    if (document.hidden) { hiddenAt = performance.now(); cancelAnimationFrame(rafId); }
+    if (document.hidden) { hiddenAt = performance.now(); cancelAnimationFrame(rafId); VOICE.suspend(); }
     else if (hiddenAt) {
+      VOICE.resume();
       const shift = performance.now() - hiddenAt;
       drops.forEach((d) => { d.born += shift; });
       game.nextSpawnAt += shift;

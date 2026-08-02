@@ -462,7 +462,7 @@ html[data-theme="light"] .q-wrap.rt-go{background:#d7f3e6;border-color:#5fc196}
 </main>
 
 <div id="toast"></div>
-<footer>Luyện trí não · nhẩm số, Stroop, phản xạ, trí nhớ, n-back · Build v22 · 2026-08-02 · dữ liệu lưu trong trình duyệt của bạn · mở qua start-game.bat để trình duyệt nhớ quyền micro</footer>
+<footer>Luyện trí não · nhẩm số, Stroop, phản xạ, trí nhớ, n-back · Build v23 · 2026-08-02 · dữ liệu lưu trong trình duyệt của bạn · mở qua start-game.bat để trình duyệt nhớ quyền micro</footer>
 
 <script>
 "use strict";
@@ -732,7 +732,8 @@ const GEN = {
 /* ---------- Parser số tiếng Việt (cho nhập bằng giọng nói) ---------- */
 function parseViNumber(raw) {
   if (!raw || typeof raw !== "string") return null;
-  const t = raw.toLowerCase().trim();
+  // v8: tách chữ dính số ("hai mươi5" → "hai mươi 5")
+  const t = raw.toLowerCase().trim().replace(/(\d)([a-zà-ỹ])/g, "$1 $2").replace(/([a-zà-ỹ])(\d)/g, "$1 $2");
   const SCALE = ["mươi", "trăm", "nghìn", "ngàn", "triệu", "tỷ", "tỉ", "mười", "phẩy", "chấm", "lăm", "nhăm", "mốt", "linh", "lẻ", "rưỡi"];
   // Bảng đồng âm/nghe-nhầm của ASR vi-VN (quét 0-9 + hàng chục/trăm — vd Quang dính: "chín" bị nghe thành "chính"):
   // chuẩn hoá TRƯỚC khi parse. "số" là từ mồi ("số chín", "số 25") giúp mic hiểu đang đọc đáp án — bỏ qua khi parse.
@@ -742,27 +743,37 @@ function parseViNumber(raw) {
     "rượi": "rưỡi", "rưới": "rưỡi", "phảy": "phẩy", "phẫy": "phẩy", "lẽ": "lẻ", "khống": "không",
     "sáo": "sáu", "nắm": "năm", "bấy": "bảy", "tam": "tám", "mưỡi": "mười", "muơi": "mươi", "hài": "hai", "mộtt": "một",
     "muời": "mười", "mưòi": "mười", "trắm": "trăm", "trâm": "trăm" };
-  const FILLER = new Set(["số", "so", "là", "la", "bằng", "bang", "đáp", "án", "kết", "quả", "ra"]); // từ đệm quanh đáp án (v20, đồng bộ giot-mua v6)
-  const tokens = t.replace(/[^0-9a-zà-ỹ.,\s]/g, " ").split(/\s+/).filter(Boolean)
+  const FILLER = new Set(["số", "so", "là", "la", "bằng", "bang", "đáp", "án", "kết", "quả", "ra"]); // từ đệm quanh đáp án ("số chín", "bằng 25", "ra chín")
+  let tokens = t.replace(/[^0-9a-zà-ỹ.,\s]/g, " ").split(/\s+/).filter(Boolean)
     .filter((w) => !FILLER.has(w))
     .map((w) => ALIAS[w] || w);
+  // v8: ASR hay trả câu LẶP nguyên văn ("hai lăm hai lăm") → chỉ lấy một nửa
+  if (tokens.length >= 4 && tokens.length % 2 === 0) { // nửa ≥2 token — "chín chín"=99 là đọc rời, không phải lặp
+    const h = tokens.length / 2;
+    if (tokens.slice(0, h).join(" ") === tokens.slice(h).join(" ")) tokens = tokens.slice(0, h);
+  }
   const hasScale = tokens.some((w) => SCALE.includes(w));
-  // 1) Chỉ chữ số (vd "36", "1.200", "2,5", "1200000")
-  if (!hasScale && !/\d\s+\d/.test(t)) { // v7: hai cum chu so roi ("1 6") -> xuong vong lap de ghep hang chuc
+  if (!hasScale && !/\d\s+\d/.test(t)) { // v8: hai cụm chữ số rời ("1 6") → xuống vòng lặp để ghép hàng chục
     const m = t.match(/\d[\d.,]*/);
-    if (!m) { /* rơi xuống parser chữ */ } else {
+    if (m) {
       let s = m[0].replace(/[.,]$/, "");
-      if (/^\d{1,3}(\.\d{3})+(,\d+)?$/.test(s)) s = s.replace(/\./g, "").replace(",", ".");      // 1.200 / 1.200,5
-      else if (/^\d{1,3}(,\d{3})+(\.\d+)?$/.test(s)) s = s.replace(/,/g, "");                     // 1,200 kiểu EN
-      else if (/^\d+,\d+$/.test(s)) s = s.replace(",", ".");                                      // 2,5
-      // "1.5" (dot + không đủ 3 số) giữ nguyên là thập phân
+      if (/^\d{1,3}(\.\d{3})+(,\d+)?$/.test(s)) s = s.replace(/\./g, "").replace(",", ".");
+      else if (/^\d{1,3}(,\d{3})+(\.\d+)?$/.test(s)) s = s.replace(/,/g, "");
+      else if (/^\d+,\d+$/.test(s)) s = s.replace(",", ".");
       const v = parseFloat(s);
       if (isFinite(v)) return v;
     }
   }
-  // 2) Chữ số tiếng Việt, cho phép lẫn chữ số ("2 nghìn 500", "hai mươi lăm", "hai phẩy năm")
   const U = { "không": 0, "một": 1, "mốt": 1, "hai": 2, "ba": 3, "bốn": 4, "tư": 4, "năm": 5, "lăm": 5, "nhăm": 5, "sáu": 6, "bảy": 7, "bẩy": 7, "tám": 8, "chín": 9 };
   let total = 0, section = 0, num = 0, seen = false, inDec = false, dec = "", half = 0, lastScale = 0;
+  let chain = 0;      // v8: đếm chữ số ĐƠN nói liền nhau — "hai ba bốn" = 234, "2 5 0" = 250
+  let uas = 0;        // v8: chữ số đơn NGAY SAU trăm/nghìn/… = hàng chục bậc dưới — "trăm hai" = 120, "hai nghìn ba" = 2300
+  let afterScale = false; // token liền trước là trăm/nghìn/triệu/tỷ (linh/lẻ/mươi cắt hiệu lực)
+  const unitTok = (d) => { // nhận 1 chữ số đơn (chữ hoặc số)
+    num = chain >= 1 ? num * 10 + d : num + d;
+    uas = (afterScale && chain === 0 && num === d) ? 1 : 0;
+    afterScale = false; chain++; seen = true;
+  };
   for (const w of tokens) {
     if (w === "phẩy" || w === "chấm") { inDec = true; seen = true; continue; }
     if (inDec) {
@@ -772,28 +783,24 @@ function parseViNumber(raw) {
     }
     if (/^\d+$/.test(w)) {
       const n = parseInt(w, 10);
-      // v7: doc so roi tung chu so ("mot sau"/"1 6" = 16) — cung luat hang chuc nhu "hai lam"=25
-      num = (w.length === 1 && num >= 1 && num <= 9) ? num * 10 + n : num + n;
-      seen = true;
+      if (w.length === 1) unitTok(n);
+      else { num = n; chain = 0; uas = 0; afterScale = false; seen = true; } // v8: token nhiều chữ số = ASR tự sửa → THAY, không cộng dồn ("25 26" = 26)
     }
-    else if (w in U) {
-      // đọc số kiểu chục không có "mươi" (rất phổ biến khi nói): "hai lăm"=25, "hai mốt"=21, "bốn bảy"=47
-      num = (num >= 1 && num <= 9) ? num * 10 + U[w] : num + U[w];
-      seen = true;
-    }
-    else if (w === "mười") { num += 10; lastScale = 10; seen = true; }
-    else if (w === "mươi") { num *= 10; lastScale = 10; seen = true; }
-    else if (w === "rưỡi") { half = lastScale ? lastScale / 2 : 0.5; seen = true; } // "hai triệu rưỡi" = 2,5 triệu
-    else if (w === "trăm") { section += num * 100; num = 0; lastScale = 100; seen = true; }
-    else if (w === "nghìn" || w === "ngàn") { total += (section + num) * 1000; section = 0; num = 0; lastScale = 1000; seen = true; }
-    else if (w === "triệu") { total += (section + num) * 1e6; section = 0; num = 0; lastScale = 1e6; seen = true; }
-    else if (w === "tỷ" || w === "tỉ") { total += (section + num) * 1e9; section = 0; num = 0; lastScale = 1e9; seen = true; }
-    else if (w === "linh" || w === "lẻ") { continue; }
-    // từ lạ ("khoảng", "là", "bằng"...) bỏ qua
+    else if (w in U) unitTok(U[w]);
+    else if (w === "mười") { num += 10; lastScale = 10; chain = 0; uas = 0; afterScale = false; seen = true; }
+    else if (w === "mươi") { num *= 10; lastScale = 10; chain = 0; uas = 0; afterScale = false; seen = true; }
+    else if (w === "rưỡi") { half = lastScale >= 100 ? lastScale / 2 : 0.5; seen = true; } // v8: "mười rưỡi"=10,5 (không phải 15); trăm/nghìn rưỡi giữ nguyên nửa bậc
+    else if (w === "trăm") { if (num === 0 && !seen) num = 1; section += num * 100; num = 0; lastScale = 100; chain = 0; uas = 0; afterScale = true; seen = true; } // v8: "trăm hai" — trăm trần = 1 trăm
+    else if (w === "nghìn" || w === "ngàn") { if (num === 0 && section === 0 && !seen) num = 1; total += (section + num) * 1000; section = 0; num = 0; lastScale = 1000; chain = 0; uas = 0; afterScale = true; seen = true; }
+    else if (w === "triệu") { if (num === 0 && section === 0 && !seen) num = 1; total += (section + num) * 1e6; section = 0; num = 0; lastScale = 1e6; chain = 0; uas = 0; afterScale = true; seen = true; }
+    else if (w === "tỷ" || w === "tỉ") { if (num === 0 && section === 0 && !seen) num = 1; total += (section + num) * 1e9; section = 0; num = 0; lastScale = 1e9; chain = 0; uas = 0; afterScale = true; seen = true; }
+    else if (w === "linh" || w === "lẻ") { uas = 0; afterScale = false; continue; }
   }
   if (!seen) return null;
+  if (uas && lastScale >= 100 && num >= 1 && num <= 9) num *= lastScale / 100 * 10; // v8: "một trăm hai"=120 · "hai nghìn ba"=2300 · "trăm mốt"=110
   let v = total + section + num + half;
   if (dec) v += parseFloat("0." + dec) * (v < 0 ? -1 : 1);
+  if (v === 0 && !tokens.some((w) => w === "không" || /^0+$/.test(w))) return null; // v8: tiếng ồn nghe nhầm thành từ bậc ("mươi") không được trả 0
   return isFinite(v) ? v : null;
 }
 
@@ -918,23 +925,31 @@ if (typeof document !== "undefined") (function () {
 
   /* ---------- nhận giọng nói ---------- */
   let voiceStableT = null, voiceCurIdx = -1, voiceConsumedIdx = -1, lastVoiceHeard = 0;
+  let voicePaused = false; // v23: người chơi bấm ⏸ — KHÔNG tự bật lại ở câu sau (review g57)
+  const IS_IOS = /iP(hone|ad|od)/.test(navigator.userAgent);
   function clearVoicePending() { clearTimeout(voiceStableT); voiceStableT = null; }
 
   const VOICE = (() => {
     const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-    let rec = null, active = false, watchdog = null, sessionT0 = 0;
+    let rec = null, active = false, watchdog = null, sessionT0 = 0, wdStage = 0, errRun = 0;
     // phiên nghe của Chrome hay "điếc dần" — 8s không có tín hiệu thì khởi động lại
     function pet() {
-      clearTimeout(watchdog);
-      watchdog = setTimeout(() => { if (active && rec) { try { rec.abort(); } catch (e) {} } }, 8000);
+      clearTimeout(watchdog); wdStage = 0;
+      watchdog = setTimeout(wdFire, 8000);
+    }
+    function wdFire() { // v23: tầng 1 stop MỀM (giữ audio đang đệm — abort thẳng cắt đầu câu sau 8s im), tầng 2 mới abort
+      if (!active || !rec) return;
+      if (wdStage === 0) { wdStage = 1; try { rec.stop(); } catch (e) {} watchdog = setTimeout(wdFire, 1500); }
+      else { wdStage = 0; try { rec.abort(); } catch (e) {} }
     }
     function ensure() {
       if (rec || !SR) return;
       rec = new SR();
-      rec.lang = "vi-VN"; rec.continuous = true; rec.interimResults = true; rec.maxAlternatives = 5;
+      rec.lang = "vi-VN"; rec.continuous = !IS_IOS; rec.interimResults = true; rec.maxAlternatives = 5; // v23: iOS không có continuous thật
       rec.onaudiostart = pet; rec.onsoundstart = pet; rec.onspeechstart = pet;
       rec.onresult = (e) => {
-        pet();
+        pet(); errRun = 0;
+        if (!active) return; // v23: đã bấm ⏸/về gõ giữa utterance — final trễ không được chấm
         if (!round || round.locked) return;
         let fin = "", inter = "", finIdx = -1, interIdx = -1, finAlts = [];
         for (let i = e.resultIndex || 0; i < e.results.length; i++) {
@@ -951,11 +966,21 @@ if (typeof document !== "undefined") (function () {
       rec.onerror = (e) => {
         if (e.error === "not-allowed" || e.error === "service-not-allowed") {
           active = false;
-          toast("Không có quyền micro — chuyển về gõ phím");
+          toast(IS_IOS ? "Mic bị chặn — bật Siri & Đọc chính tả trong Cài đặt iPhone" : "Không có quyền micro — chuyển về gõ phím");
           store.settings.input = "type"; save(); syncInputUI();
+        } else if (e.error === "network" || e.error === "audio-capture") {
+          // v23 (review g57): SR cần mạng — trước đây mất mạng = vòng lặp restart vô hạn, chết câm
+          errRun++;
+          if (errRun >= 2) {
+            active = false;
+            toast(e.error === "network" ? "Nhận giọng nói cần mạng — tạm chuyển về gõ phím" : "Không thấy micro — chuyển về gõ phím");
+            store.settings.input = "type"; save(); syncInputUI();
+          }
         }
       };
-      rec.onend = () => { if (active) { voiceConsumedIdx = -1; sessionT0 = Date.now(); pet(); try { rec.start(); } catch (err) { /* đang chạy */ } } };
+      // v23 (review g57 — P1): phiên mới reset index về 0, timer interim của phiên CŨ phải bị huỷ,
+      // nếu không callback ghi voiceConsumedIdx stale và NUỐT câu nói đầu tiên của phiên mới (đúng bug g55 giot-mua)
+      rec.onend = () => { clearVoicePending(); if (active) { voiceConsumedIdx = -1; sessionT0 = Date.now(); pet(); try { rec.start(); } catch (err) { /* đang chạy */ } } };
     }
     function start() {
       if (!SR) return false;
@@ -966,7 +991,7 @@ if (typeof document !== "undefined") (function () {
     }
     function stop() { active = false; clearTimeout(watchdog); if (rec) { try { rec.stop(); } catch (e) {} } syncMic(); }
     // thay phiên nghe mới tinh — phiên Chrome càng già nhận càng kém
-    function restart() { if (!active || !rec) return; sessionT0 = Date.now(); try { rec.abort(); } catch (e) {} }
+    function restart() { if (!active || !rec) return; clearVoicePending(); sessionT0 = Date.now(); try { rec.abort(); } catch (e) {} }
     function syncMic() { const b = $("mic-btn"); if (b) b.classList.toggle("live", active); }
     return { start, stop, restart, syncMic,
       get supported() { return !!SR; }, get active() { return active; },
@@ -985,7 +1010,28 @@ if (typeof document !== "undefined") (function () {
   function matchStringOption(q, text) {
     if (typeof q.options[0] !== "string") return -1;
     const t = " " + text.toLowerCase() + " ";
+    // v23 (review g57): "không giống"/"chẳng giống" = chọn phương án CÒN LẠI (KHÁC) — trước đây substring "giống" thắng
+    const neg = q.options.findIndex((o) => t.includes("không " + o.toLowerCase()) || t.includes("chẳng " + o.toLowerCase()));
+    if (neg >= 0) return q.options.length === 2 ? 1 - neg : -1;
     return q.options.findIndex((o) => t.includes(" " + o.toLowerCase() + " ") || t.includes(o.toLowerCase()));
+  }
+  // v23: v có thể là "khúc đầu nói dở" của đáp án không? (cùng họ luật voiceInstantOk giot-mua)
+  function couldContinue(v, a) {
+    if (!Number.isInteger(v) || !Number.isInteger(a) || v === a) return false;
+    if (String(a).startsWith(String(v))) return true;
+    if (v % 10 === 0 && v >= 10 && a > v && a < v + 10) return true;
+    if (v % 100 === 0 && v >= 100 && a > v && a < v + 100) return true;
+    const u = v % 100;
+    if (u >= 1 && u <= 9 && Math.floor(a / 100) === Math.floor(v / 100) && a >= v - u + u * 10 && a <= v - u + u * 10 + 9) return true;
+    return false;
+  }
+  // v23 (review g57): đọc đáp án KÈM ĐƠN VỊ ("hai trăm bốn lăm TỶ") — bóc đuôi đơn vị đang hiện trên chip rồi thử lại
+  function stripUnitTail(text, q) {
+    if (!q || !q.unit) return null;
+    const UW = /\s*(tỷ|tỉ|triệu|nghìn|ngàn|đồng|đô la|đô|usd|phần trăm|%|₫|cp)\s*$/i;
+    let s = String(text).trim(), changed = false;
+    while (UW.test(s)) { s = s.replace(UW, "").trim(); changed = true; }
+    return changed && s ? s : null;
   }
 
   function handleVoiceInterim(text) {
@@ -1000,14 +1046,18 @@ if (typeof document !== "undefined") (function () {
     }
     const v = parseViNumber(text);
     if (v === null) return;
+    const stripped = stripUnitTail(text, q);
+    const v2 = stripped !== null ? parseViNumber(stripped) : null; // "245 tỷ" → thử cả 245
     if (q.kind === "choice") {
-      const idx = q.options.findIndex((o) => typeof o === "number" && Math.abs(o - v) < 1e-9);
+      const idx = q.options.findIndex((o) => typeof o === "number" && (Math.abs(o - v) < 1e-9 || (v2 !== null && Math.abs(o - v2) < 1e-9)));
       if (idx >= 0) { voiceConsumedIdx = voiceCurIdx; clearVoicePending(); answer(idx); return; }
-    } else if (Math.abs(v - q.answer) < 1e-9) {
+    } else if (Math.abs(v - q.answer) < 1e-9 || (v2 !== null && Math.abs(v2 - q.answer) < 1e-9)) {
       voiceConsumedIdx = voiceCurIdx; clearVoicePending();
-      round.buf = String(v).replace(".", ",");
+      round.buf = String(Math.abs(v - q.answer) < 1e-9 ? v : v2).replace(".", ",");
       renderBuf(); submit(); return;
     }
+    // v23: số vừa nghe có thể là KHÚC ĐẦU của chính đáp án ("hai trăm…" khi đáp án 250) → đừng hẹn chấm sai, chờ nói nốt
+    if (q.kind === "input" && couldContinue(v, q.answer)) return;
     const seq = round.qSeq, idxAt = voiceCurIdx;
     clearVoicePending();
     voiceStableT = setTimeout(() => {
@@ -1021,7 +1071,8 @@ if (typeof document !== "undefined") (function () {
     if (!round || round.locked) return;
     const q = round.q;
     if (q.kind !== "choice" && q.kind !== "input") return; // chỉ câu hỏi thường mới nhận giọng nói
-    const allCands = [text].concat(alts || []).filter(Boolean);
+    const allCands0 = [text].concat(alts || []).filter(Boolean);
+    const allCands = allCands0.concat(allCands0.map((c) => stripUnitTail(c, q)).filter((s) => s && !allCands0.includes(s)));
     // lựa chọn dạng chữ (Stroop): khớp tên màu trong mọi phương án nhận dạng
     if (q.kind === "choice" && typeof q.options[0] === "string") {
       for (const c of allCands) {
@@ -1072,14 +1123,20 @@ if (typeof document !== "undefined") (function () {
       $("kbd-hint").textContent = v
         ? (round.q.kind === "choice" ? `Nói “một … ${nOpt === 4 ? "bốn" : "ba"}” hoặc đọc đáp án` : "Đọc đáp án ra miệng — game tự chấm · vẫn gõ phím được")
         : (round.q.kind === "choice" ? `Phím 1 – ${nOpt} để chọn` : "Gõ số rồi Enter · phím , cho số thập phân");
-      if (v) { VOICE.start(); if (!$("transcript").textContent) showTranscript("🎙 Đang nghe — đọc đáp án là chấm liền (mẹo: nói “số chín”, “số 25” cho mic nhận chuẩn)"); }
-      else { VOICE.stop(); showTranscript(""); }
+      if (v && !voicePaused) {
+        VOICE.start();
+        // v23: hint chỉ hiện 2 câu đầu mỗi vòng — không lải nhải suốt 3 phút
+        if (!$("transcript").textContent && round && (round.voiceHintN = (round.voiceHintN || 0) + 1) <= 2)
+          showTranscript("🎙 Đang nghe — đọc đáp án là chấm liền (mẹo: nói “số chín”, “số 25”)");
+      }
+      else if (!v) { VOICE.stop(); showTranscript(""); }
     }
     document.querySelectorAll("#seg-input button").forEach((b) => b.classList.toggle("on", b.dataset.v === store.settings.input));
   }
 
   function startRound(mode) {
     const now = Date.now();
+    voicePaused = false; // vòng mới: mic theo setting
     round = {
       mode, dur: store.settings.dur, t0: now, endsAt: now + store.settings.dur * 1000,
       mix: mode === "mix" ? store.settings.mix.filter((m) => MIXABLE.includes(m)) : null,
@@ -1642,8 +1699,9 @@ if (typeof document !== "undefined") (function () {
     store.settings.input = voiceOn() ? "type" : "voice"; save(); syncInputUI();
   });
   $("mic-btn").addEventListener("click", () => {
-    if (VOICE.active) { VOICE.stop(); showTranscript("⏸ Tạm dừng — bấm mic để nghe lại"); }
-    else { VOICE.start(); showTranscript("🎙 Đang nghe — đọc đáp án là chấm liền (mẹo: nói “số chín”, “số 25” cho mic nhận chuẩn)"); }
+    // v23 (review g57): ⏸ phải BỀN qua câu — trước đây câu kế tiếp syncInputUI tự bật mic lại ngược ý người chơi
+    if (VOICE.active) { voicePaused = true; VOICE.stop(); showTranscript("⏸ Tạm dừng — bấm mic để nghe lại"); }
+    else { voicePaused = false; VOICE.start(); showTranscript("🎙 Đang nghe — đọc đáp án là chấm liền"); }
   });
 
   // xoá dữ liệu: bấm 2 lần để xác nhận (không dùng dialog chặn luồng)
