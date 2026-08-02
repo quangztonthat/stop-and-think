@@ -338,7 +338,7 @@ html[data-theme="light"] .numpad button.np-go{background:linear-gradient(135deg,
 
 </main>
 
-<footer>Giọt mưa (raindrops) · tính nhẩm phản xạ · Build v5 · 2026-08-02 · dữ liệu lưu trong trình duyệt của bạn</footer>
+<footer>Giọt mưa (raindrops) · tính nhẩm phản xạ · Build v6 · 2026-08-02 · dữ liệu lưu trong trình duyệt của bạn</footer>
 
 <script id="gen">
 "use strict";
@@ -407,9 +407,11 @@ function parseViNumber(raw) {
   const ALIAS = { "hay": "hai", "bà": "ba", "bún": "bốn", "tứ": "tư", "nằm": "năm", "lằm": "lăm",
     "sau": "sáu", "sấu": "sáu", "xáu": "sáu", "bay": "bảy", "bãy": "bảy", "tắm": "tám", "tấm": "tám",
     "chính": "chín", "chin": "chín", "chíng": "chín", "chăm": "trăm", "châm": "trăm", "mưới": "mười",
-    "rượi": "rưỡi", "rưới": "rưỡi", "phảy": "phẩy", "phẫy": "phẩy", "lẽ": "lẻ", "khống": "không" };
+    "rượi": "rưỡi", "rưới": "rưỡi", "phảy": "phẩy", "phẫy": "phẩy", "lẽ": "lẻ", "khống": "không",
+    "sáo": "sáu", "nắm": "năm", "bấy": "bảy", "tam": "tám", "mưỡi": "mười", "muơi": "mươi", "hài": "hai", "mộtt": "một" };
+  const FILLER = new Set(["số", "so", "là", "la", "bằng", "bang", "đáp", "án", "kết", "quả", "ra"]); // từ đệm quanh đáp án ("số chín", "bằng 25", "ra chín")
   const tokens = t.replace(/[^0-9a-zà-ỹ.,\s]/g, " ").split(/\s+/).filter(Boolean)
-    .filter((w) => w !== "số" && w !== "so")
+    .filter((w) => !FILLER.has(w))
     .map((w) => ALIAS[w] || w);
   const hasScale = tokens.some((w) => SCALE.includes(w));
   if (!hasScale) {
@@ -452,9 +454,22 @@ function parseViNumber(raw) {
   if (dec) v += parseFloat("0." + dec) * (v < 0 ? -1 : 1);
   return isFinite(v) ? v : null;
 }
+// v6 NHẠY: interim được chấm TỨC THÌ khi v khớp giọt và KHÔNG giọt nào khác có thể là "phần nói tiếp"
+// của câu đang nói ("hai…" có thể thành "hai mươi lăm" → 2 xung đột 20-29; "mười…" → 11-19; "một trăm…" → 101-199)
+function voiceInstantOk(v, answers) {
+  if (!answers.includes(v)) return false;
+  const s = String(v);
+  return !answers.some((a) => {
+    if (a === v) return false;
+    if (String(a).startsWith(s)) return true;
+    if (v === 10 && a >= 11 && a <= 19) return true;
+    if (v === 100 && a >= 101 && a <= 199) return true;
+    return false;
+  });
+}
 /* ===GEN-END=== */
 if (typeof module !== "undefined" && module.exports)
-  module.exports = { MAXLV, OPSYM, LEVELS, genDrop, rampFall, rampSpawn, scoreDrop, sunBonus, progDelta, parseViNumber };
+  module.exports = { MAXLV, OPSYM, LEVELS, genDrop, rampFall, rampSpawn, scoreDrop, sunBonus, progDelta, parseViNumber, voiceInstantOk };
 </script>
 
 <script id="app">
@@ -587,24 +602,22 @@ if (typeof module !== "undefined" && module.exports)
     if (el) { el.textContent = msg || ""; el.className = "transcript" + (isErr ? " err" : ""); }
   }
 
-  // nói số → nộp: khớp giọt nào là nổ; không khớp = trật (KHÔNG tính vào chuỗi khoá phím — mic có thể nghe nhầm)
+  // nói số → nộp: khớp giọt nào là nổ. v6: KHÔNG khớp = TRUNG LẬP (không trừ điểm/chuỗi/level —
+  // mic nghe nhầm không phải lỗi người chơi; hình phạt thật của game là giọt chạm nước) — cứ nói lại.
   function voiceSubmit(v) {
     if (!game || game.over || game.dying) return;
     const now = performance.now();
     const matches = drops.filter((d) => d.ans === v);
     if (matches.length) { game.wrongRun = 0; showTranscript("« " + v + " » 💥", false); solveDrops(matches, now); return; }
-    game.wrongs++; game.streak = 0;
-    store.prog += progDelta("wrong");
-    stepLevel();
-    showTranscript("« " + v + " » không khớp giọt nào — nói lại nhé", true);
+    showTranscript("« " + v + " » không khớp giọt nào — nói lại nhé (không bị trừ)", true);
     const tb = $("typebox");
     tb.classList.remove("err"); void tb.offsetWidth; tb.classList.add("err");
     setTimeout(() => tb.classList.remove("err"), 350);
-    renderHud(); save();
+    renderHud();
   }
 
-  // KHÁC ltn có chủ đích: KHÔNG chấm tức thì từ interim — màn có NHIỀU đáp án hợp lệ cùng lúc,
-  // interim cụt ("hai" của "hai mươi lăm") có thể khớp nhầm giọt khác. Luôn chờ ổn định 500ms.
+  // v6 hai tầng: interim khớp giọt VÀ không giọt khác có thể là phần-nói-tiếp → nổ TỨC THÌ (nhạy);
+  // còn mơ hồ ("hai" khi màn có cả 2 lẫn 25) → chờ ổn định 450ms như cũ (chính xác).
   function handleVoiceInterim(text) {
     lastVoiceHeard = Date.now();
     if (!game || game.over) return;
@@ -613,7 +626,8 @@ if (typeof module !== "undefined" && module.exports)
     if (v === null || !Number.isInteger(v) || v < 0) return;
     const idxAt = voiceCurIdx;
     clearVoicePending();
-    voiceStableT = setTimeout(() => { if (game && !game.over) { voiceConsumedIdx = idxAt; handleVoiceFinal(text); } }, 500);
+    if (voiceInstantOk(v, drops.map((d) => d.ans))) { voiceConsumedIdx = idxAt; voiceSubmit(v); return; }
+    voiceStableT = setTimeout(() => { if (game && !game.over) { voiceConsumedIdx = idxAt; handleVoiceFinal(text); } }, 450);
   }
 
   function handleVoiceFinal(text, alts) {
@@ -627,7 +641,8 @@ if (typeof module !== "undefined" && module.exports)
     if (!cands.length) { showTranscript("Không nghe ra số: « " + text + " » — nói lại nhé", true); return; }
     const hit = cands.find((x) => drops.some((d) => d.ans === x.v)) || cands[0];
     voiceSubmit(hit.v);
-    VOICE.restart(); // mỗi lần chấm = một phiên nghe mới tinh (bài học ltn: phiên già lì mic)
+    // v6: KHÔNG restart sau mỗi lần chấm — abort cắt mất chữ đầu câu kế tiếp khi nói dồn dập
+    // (khác ltn có chủ đích: ltn có khoảng lặng giữa câu). Làm mới phiên do vòng tuổi lo (15s + đang im).
   }
 
   const fracOf = (d, now) => ((now != null ? now : performance.now()) - d.born) / d.fallMs;
@@ -657,7 +672,7 @@ if (typeof module !== "undefined" && module.exports)
     VOICE.syncMic();
     clearInterval(voiceAgeIv);
     // phiên nghe già 25s → thay phiên mới, NHƯNG chỉ khi không ai đang nói dở (bài học ltn dòng 1083)
-    voiceAgeIv = setInterval(() => { if (VOICE.active && VOICE.sessionAge > 25000 && Date.now() - lastVoiceHeard > 2000) VOICE.restart(); }, 3000);
+    voiceAgeIv = setInterval(() => { if (VOICE.active && VOICE.sessionAge > 15000 && Date.now() - lastVoiceHeard > 1800) VOICE.restart(); }, 2000);
     cancelAnimationFrame(rafId);
     rafId = requestAnimationFrame(tick);
   }
@@ -665,7 +680,8 @@ if (typeof module !== "undefined" && module.exports)
   const LANES = [0.06, 0.25, 0.44, 0.63, 0.82];
   function spawnDrop(now) {
     const L = LEVELS[store.lv - 1];
-    const d = genDrop(store.lv);
+    let d = genDrop(store.lv);
+    for (let rt = 0; rt < 6 && drops.some((x) => x.ans === d.ans); rt++) d = genDrop(store.lv); // v6: né đáp án trùng giọt đang rơi (voice hết mơ hồ; hết 6 lần thì multi-pop lo)
     d.fallMs = rampFall(L.fallMs, game.speedK) * FAST;
     d.born = now;
     const el = document.createElement("div");

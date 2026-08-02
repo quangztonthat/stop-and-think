@@ -113,10 +113,10 @@ header{position:sticky;top:0;z-index:10;background:rgba(11,16,32,.78);backdrop-f
 .bird svg{width:100%;height:100%;display:block;filter:drop-shadow(0 4px 9px rgba(0,0,0,.5));animation:flap .72s ease-in-out infinite alternate}
 .bird:nth-child(odd) svg{animation-delay:.2s}
 @keyframes flap{from{transform:scale(1,1)}to{transform:scale(.9,1.06)}}
-.bird .body{fill:url(#gradFl)}
-.bird .eye{fill:#0b1020;opacity:.55}
-.bird.lead .body{fill:url(#gradLd)}
-.bird.lead svg{filter:drop-shadow(0 4px 9px rgba(0,0,0,.5)) drop-shadow(0 0 12px rgba(251,191,36,.55))}
+/* v5 (Quang): CẢ ĐÀN GIỐNG HỆT NHAU như Lumosity — không highlight con giữa, tự tìm con chính giữa đội hình.
+   Màu phẳng đơn giản; okflash/badflash chỉ hiện SAU khi trả lời (kênh phản hồi — an toàn). */
+.bird .body{fill:#d9e6ff}
+.bird .eye{fill:#0b1020;opacity:.6}
 .bird.lead.okflash .body{fill:#34d399}
 .bird.lead.badflash .body{fill:#f87171}
 .wind{position:absolute;height:2px;border-radius:99px;background:linear-gradient(90deg,transparent,rgba(148,197,255,.3),transparent);animation:windmv 2.6s linear infinite;pointer-events:none}
@@ -223,7 +223,7 @@ html[data-theme="light"] .dpad button{background:linear-gradient(180deg,#ffffff,
     <span class="seg" id="seg-sound"><button data-v="1">🔊</button><button data-v="0">🔇</button></span>
   </div>
   <div class="howto">
-    <b>Luật:</b> đàn chim <b>bay lướt qua trời</b>, xuất hiện chỗ nào không báo trước — bấm phím mũi tên (hoặc WASD / nút / vuốt) theo hướng của <b>con chim chính giữa</b> trước khi hết giờ. Cả đàn lướt theo hướng những con xung quanh chỉ; con giữa có lúc thuận đàn (dễ), có lúc "lạc" chỉ hướng khác để <b>đánh lừa</b> — level cao lừa dày hơn, đàn đông hơn, bay nhanh hơn, thời gian ngắn hơn. Trả lời trong nửa đầu thời gian ×1,5 điểm; chuỗi đúng 3+ ×1,5 🔥. Chọn <b>Dễ/Vừa/Khó/Ác</b> để nhảy level.
+    <b>Luật:</b> đàn chim <b>bay lướt qua trời</b>, xuất hiện chỗ nào không báo trước — bấm phím mũi tên (hoặc WASD / nút / vuốt) theo hướng của <b>con chim chính giữa</b> trước khi hết giờ — <b>cả đàn giống hệt nhau</b> như Lumosity, mắt bạn phải tự tìm con nằm giữa đội hình. Cả đàn lướt theo hướng những con xung quanh chỉ; con giữa có lúc thuận đàn (dễ), có lúc "lạc" chỉ hướng khác để <b>đánh lừa</b> — level cao lừa dày hơn, đàn đông hơn, bay nhanh hơn, thời gian ngắn hơn. Trả lời trong nửa đầu thời gian ×1,5 điểm; chuỗi đúng 3+ ×1,5 🔥. Chọn <b>Dễ/Vừa/Khó/Ác</b> để nhảy level.
   </div>
   <div class="hist" id="home-hist"></div>
 </section>
@@ -283,7 +283,7 @@ html[data-theme="light"] .dpad button{background:linear-gradient(180deg,#ffffff,
 
 </main>
 
-<footer>Chim lạc (flanker) · chú ý chọn lọc &amp; kìm phản xạ · Build v4 · 2026-08-02 · dữ liệu lưu trong trình duyệt của bạn</footer>
+<footer>Chim lạc (flanker) · chú ý chọn lọc &amp; kìm phản xạ · Build v5 · 2026-08-02 · dữ liệu lưu trong trình duyệt của bạn</footer>
 
 <script id="gen">
 "use strict";
@@ -358,7 +358,8 @@ if (typeof module !== "undefined" && module.exports)
   const fmt = (s) => Math.floor(s / 60) + ":" + String(Math.floor(s % 60)).padStart(2, "0");
   const ISI_MS = 320;
   // dáng én: thân + 2 cánh vắt cong + đuôi chẻ
-  const BIRD_PATH = "M12 2 C12.9 4.6 14.1 6.6 16.1 8.1 C19.2 9.3 21.7 11.3 22.7 13.7 C19.6 12.8 16.9 12.5 14.7 13.3 C15 15.9 14.4 18.6 12.9 20.8 L12 19.1 L11.1 20.8 C9.6 18.6 9 15.9 9.3 13.3 C7.1 12.5 4.4 12.8 1.3 13.7 C2.3 11.3 4.8 9.3 7.9 8.1 C9.9 6.6 11.1 4.6 12 2 Z";
+  // v5: dáng chim én — đầu nhỏ, cánh dài vút sau, đuôi chẽ (soi mắt bằng screenshot trước khi chốt)
+  const BIRD_PATH = "M12 1.6 L12.7 3.2 C13 3.9 13.5 4.5 14.1 4.9 C17.6 5.4 21.2 7.8 23.2 11.4 C20 10.2 17 9.9 14.6 10.7 C14.8 14 14 17.4 12.6 19.9 L12 17.2 L11.4 19.9 C10 17.4 9.2 14 9.4 10.7 C7 9.9 4 10.2 0.8 11.4 C2.8 7.8 6.4 5.4 9.9 4.9 C10.5 4.5 11 3.9 11.3 3.2 Z";
 
   let audioCtx = null, audioOut = null;
   function audioDest() {
@@ -410,7 +411,7 @@ if (typeof module !== "undefined" && module.exports)
   function birdEl(dir, lead) {
     const d = document.createElement("div");
     d.className = "bird" + (lead ? " lead" : "");
-    d.innerHTML = `<svg viewBox="0 0 24 24"><path class="body" d="${BIRD_PATH}" transform="rotate(${ANG[dir]} 12 12)"/><circle class="eye" cx="12" cy="6.4" r=".9" transform="rotate(${ANG[dir]} 12 12)"/></svg>`;
+    d.innerHTML = `<svg viewBox="0 0 24 24"><path class="body" d="${BIRD_PATH}" transform="rotate(${ANG[dir]} 12 12)"/><circle class="eye" cx="11.2" cy="3.6" r=".55" transform="rotate(${ANG[dir]} 12 12)"/><circle class="eye" cx="12.8" cy="3.6" r=".55" transform="rotate(${ANG[dir]} 12 12)"/></svg>`;
     return d;
   }
 

@@ -462,7 +462,7 @@ html[data-theme="light"] .q-wrap.rt-go{background:#d7f3e6;border-color:#5fc196}
 </main>
 
 <div id="toast"></div>
-<footer>Luyện trí não · nhẩm số, Stroop, phản xạ, trí nhớ, n-back · Build v19 · 2026-08-02 · dữ liệu lưu trong trình duyệt của bạn · mở qua start-game.bat để trình duyệt nhớ quyền micro</footer>
+<footer>Luyện trí não · nhẩm số, Stroop, phản xạ, trí nhớ, n-back · Build v20 · 2026-08-02 · dữ liệu lưu trong trình duyệt của bạn · mở qua start-game.bat để trình duyệt nhớ quyền micro</footer>
 
 <script>
 "use strict";
@@ -728,9 +728,11 @@ function parseViNumber(raw) {
   const ALIAS = { "hay": "hai", "bà": "ba", "bún": "bốn", "tứ": "tư", "nằm": "năm", "lằm": "lăm",
     "sau": "sáu", "sấu": "sáu", "xáu": "sáu", "bay": "bảy", "bãy": "bảy", "tắm": "tám", "tấm": "tám",
     "chính": "chín", "chin": "chín", "chíng": "chín", "chăm": "trăm", "châm": "trăm", "mưới": "mười",
-    "rượi": "rưỡi", "rưới": "rưỡi", "phảy": "phẩy", "phẫy": "phẩy", "lẽ": "lẻ", "khống": "không" };
+    "rượi": "rưỡi", "rưới": "rưỡi", "phảy": "phẩy", "phẫy": "phẩy", "lẽ": "lẻ", "khống": "không",
+    "sáo": "sáu", "nắm": "năm", "bấy": "bảy", "tam": "tám", "mưỡi": "mười", "muơi": "mươi", "hài": "hai", "mộtt": "một" };
+  const FILLER = new Set(["số", "so", "là", "la", "bằng", "bang", "đáp", "án", "kết", "quả", "ra"]); // từ đệm quanh đáp án (v20, đồng bộ giot-mua v6)
   const tokens = t.replace(/[^0-9a-zà-ỹ.,\s]/g, " ").split(/\s+/).filter(Boolean)
-    .filter((w) => w !== "số" && w !== "so")
+    .filter((w) => !FILLER.has(w))
     .map((w) => ALIAS[w] || w);
   const hasScale = tokens.some((w) => SCALE.includes(w));
   // 1) Chỉ chữ số (vd "36", "1.200", "2,5", "1200000")
