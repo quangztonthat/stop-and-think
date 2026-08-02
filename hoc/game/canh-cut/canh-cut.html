@@ -156,6 +156,8 @@ html[data-theme="light"] body{
 html[data-theme="light"] header{background:rgba(247,249,254,.85)}
 /* mê cung băng giữ tối (màu vẽ tuned cho nền tối) */
 html[data-theme="light"] .maze-wrap{background:linear-gradient(165deg,#10203c,#0b1a33);border-color:#27314f}
+html[data-theme="light"] .dpad button{background:linear-gradient(180deg,#ffffff,#eef2fa);border-color:#c7d2e5;color:#1a2233;box-shadow:0 2px 0 rgba(23,32,56,.12), inset 0 1px 0 #fff}
+html[data-theme="light"] .dpad button small{color:#c2570b}
 </style>
 </head>
 <body>
@@ -240,7 +242,7 @@ html[data-theme="light"] .maze-wrap{background:linear-gradient(165deg,#10203c,#0
 
 </main>
 
-<footer>Cánh cụt đua cá (penguin rally) · định hướng không gian &amp; hệ quy chiếu xoay · Build v2 · 2026-08-02 · dữ liệu lưu trong trình duyệt của bạn</footer>
+<footer>Cánh cụt đua cá (penguin rally) · định hướng không gian &amp; hệ quy chiếu xoay · Build v3 · 2026-08-02 · dữ liệu lưu trong trình duyệt của bạn</footer>
 
 <script id="gen">
 "use strict";
@@ -255,22 +257,22 @@ const WBIT = { U: 1, R: 2, D: 4, L: 8 };
 const DXY = { U: [0, -1], R: [1, 0], D: [0, 1], L: [-1, 0] };
 const OPP = { U: "D", R: "L", D: "U", L: "R" };
 const FAST = 0.85;              // về đích ≤ 85% thời gian chuẩn = "nhanh"
-const AI_HEADSTART_MS = 900;    // đối thủ xuất phát chậm 0.9s cho công bằng
+const AI_HEADSTART_MS = 700;    // đối thủ xuất phát chậm 0.7s cho công bằng
 // g: cỡ mê cung · rotEvery: xoay view sau mỗi N bước người chơi (0 = không xoay)
 // nAI: số đối thủ · aiStepMs: nhịp bước đối thủ · parStepMs: chuẩn thời gian/bước cho time-trial
 const LEVELS = [
-  { g: 6,  rotEvery: 0, nAI: 0, aiStepMs: 0,   parStepMs: 780 },
-  { g: 7,  rotEvery: 6, nAI: 1, aiStepMs: 620, parStepMs: 780 },
-  { g: 7,  rotEvery: 5, nAI: 1, aiStepMs: 590, parStepMs: 760 },
-  { g: 8,  rotEvery: 5, nAI: 1, aiStepMs: 560, parStepMs: 760 },
-  { g: 8,  rotEvery: 4, nAI: 2, aiStepMs: 540, parStepMs: 740 },
-  { g: 8,  rotEvery: 4, nAI: 2, aiStepMs: 520, parStepMs: 740 },
-  { g: 9,  rotEvery: 3, nAI: 2, aiStepMs: 490, parStepMs: 720 },
-  { g: 9,  rotEvery: 3, nAI: 2, aiStepMs: 460, parStepMs: 720 },
-  { g: 9,  rotEvery: 3, nAI: 3, aiStepMs: 430, parStepMs: 700 },
-  { g: 10, rotEvery: 2, nAI: 3, aiStepMs: 410, parStepMs: 700 },
-  { g: 10, rotEvery: 2, nAI: 3, aiStepMs: 380, parStepMs: 680 },
-  { g: 10, rotEvery: 2, nAI: 3, aiStepMs: 350, parStepMs: 660 },
+  { g: 6,  rotEvery: 6, nAI: 0, aiStepMs: 0,   parStepMs: 700 },
+  { g: 7,  rotEvery: 5, nAI: 1, aiStepMs: 560, parStepMs: 700 },
+  { g: 7,  rotEvery: 4, nAI: 1, aiStepMs: 530, parStepMs: 680 },
+  { g: 8,  rotEvery: 4, nAI: 1, aiStepMs: 500, parStepMs: 680 },
+  { g: 8,  rotEvery: 3, nAI: 2, aiStepMs: 480, parStepMs: 660 },
+  { g: 8,  rotEvery: 3, nAI: 2, aiStepMs: 460, parStepMs: 660 },
+  { g: 9,  rotEvery: 3, nAI: 2, aiStepMs: 440, parStepMs: 640 },
+  { g: 9,  rotEvery: 2, nAI: 2, aiStepMs: 420, parStepMs: 640 },
+  { g: 9,  rotEvery: 2, nAI: 3, aiStepMs: 400, parStepMs: 620 },
+  { g: 10, rotEvery: 2, nAI: 3, aiStepMs: 380, parStepMs: 620 },
+  { g: 10, rotEvery: 2, nAI: 3, aiStepMs: 355, parStepMs: 600 },
+  { g: 10, rotEvery: 2, nAI: 3, aiStepMs: 330, parStepMs: 580 },
 ];
 // Mê cung hoàn hảo (spanning tree) bằng DFS lùi — mọi ô tới được, đúng 1 đường đơn giữa 2 ô
 function genMaze(g, rnd = Math.random) {

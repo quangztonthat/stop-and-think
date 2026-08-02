@@ -82,6 +82,8 @@ header{position:sticky;top:0;z-index:10;background:rgba(11,16,32,.78);backdrop-f
 .hud-sp{flex:1}
 .btn-quit{border:1px solid var(--line);background:var(--card);border-radius:999px;padding:8px 15px;font-size:13.5px;font-weight:600;cursor:pointer;color:var(--ink-soft)}
 .btn-quit:hover{color:var(--bad);border-color:var(--bad)}
+#btn-mic:hover{color:var(--mc);border-color:var(--mc)}
+#btn-mic.live{color:var(--mc);border-color:var(--mc);box-shadow:0 0 12px color-mix(in srgb,var(--mc) 35%,transparent)}
 .field-wrap{border:1px solid #2a3d66;border-radius:20px;box-shadow:var(--shadow),0 0 0 1px rgba(125,211,252,.06) inset;background:linear-gradient(178deg,#0a1836 0%,#0d2249 46%,#0e2c5c 78%,#0d3260 100%);overflow:hidden;position:relative;user-select:none;-webkit-user-select:none}
 .field{position:relative;height:clamp(280px,calc(100dvh - 442px),500px);overflow:hidden}
 /* mưa nền + mây trôi (trang trí, không nhận sự kiện) */
@@ -248,6 +250,9 @@ html[data-theme="light"] header{background:rgba(247,249,254,.85)}
 /* sân mưa giữ tối (màu giọt/nước tuned cho nền tối) */
 html[data-theme="light"] .field-wrap{background:linear-gradient(178deg,#0d1730 0%,#0e1c38 55%,#0d2140 100%);border-color:#27314f}
 html[data-theme="light"] .typebox{background:#fff}
+html[data-theme="light"] .numpad button{background:linear-gradient(180deg,#ffffff,#eef2fa);border-color:#c7d2e5;color:#1a2233;box-shadow:0 2px 0 rgba(23,32,56,.12), inset 0 1px 0 #fff}
+html[data-theme="light"] .numpad button.np-del{color:#4e5a74}
+html[data-theme="light"] .numpad button.np-go{background:linear-gradient(135deg,var(--mc),var(--mc2));color:#0b1020;border-color:transparent;box-shadow:0 4px 16px color-mix(in srgb,var(--mc) 35%,transparent)}
 </style>
 </head>
 <body>
@@ -297,6 +302,7 @@ html[data-theme="light"] .typebox{background:#fff}
     <span class="hud-streak" id="hud-streak"></span>
     <span class="mic-ind" id="mic-ind" title="Đang nghe giọng nói">🎤</span>
     <div class="hud-sp"></div>
+    <button class="btn-quit" id="btn-mic" title="Đổi cách nhập ngay trong trận">⌨️ Gõ</button>
     <button class="btn-quit" id="btn-quit">Kết thúc</button>
   </div>
   <div class="field-wrap">
@@ -332,7 +338,7 @@ html[data-theme="light"] .typebox{background:#fff}
 
 </main>
 
-<footer>Giọt mưa (raindrops) · tính nhẩm phản xạ · Build v2 · 2026-08-02 · dữ liệu lưu trong trình duyệt của bạn</footer>
+<footer>Giọt mưa (raindrops) · tính nhẩm phản xạ · Build v3 · 2026-08-02 · dữ liệu lưu trong trình duyệt của bạn</footer>
 
 <script id="gen">
 "use strict";
@@ -346,18 +352,18 @@ const OPSYM = { "+": "+", "-": "−", "x": "×", "/": "÷" };
 // ops: phép có ở level · lo..addHi: khoảng toán hạng +/− · mulHi: trần bảng nhân ×/÷
 // fallMs: thời gian rơi hết màn · spawnMs: nhịp sinh giọt · maxDrops: giọt đồng thời · pSun: xác suất giọt nắng
 const LEVELS = [
-  { ops: "+",    lo: 1,  addHi: 9,  mulHi: 0,  fallMs: 12000, spawnMs: 4300, maxDrops: 2, pSun: 0 },
-  { ops: "+-",   lo: 1,  addHi: 12, mulHi: 0,  fallMs: 11400, spawnMs: 4000, maxDrops: 3, pSun: 0 },
-  { ops: "+-",   lo: 2,  addHi: 15, mulHi: 0,  fallMs: 10800, spawnMs: 3700, maxDrops: 3, pSun: 0.05 },
-  { ops: "+-x",  lo: 2,  addHi: 15, mulHi: 6,  fallMs: 10300, spawnMs: 3450, maxDrops: 3, pSun: 0.05 },
-  { ops: "+-x",  lo: 2,  addHi: 18, mulHi: 8,  fallMs: 9800,  spawnMs: 3200, maxDrops: 4, pSun: 0.06 },
-  { ops: "+-x/", lo: 3,  addHi: 20, mulHi: 8,  fallMs: 9400,  spawnMs: 3000, maxDrops: 4, pSun: 0.06 },
-  { ops: "+-x/", lo: 5,  addHi: 25, mulHi: 9,  fallMs: 9000,  spawnMs: 2800, maxDrops: 4, pSun: 0.07 },
-  { ops: "+-x/", lo: 6,  addHi: 30, mulHi: 10, fallMs: 8600,  spawnMs: 2650, maxDrops: 5, pSun: 0.07 },
-  { ops: "+-x/", lo: 8,  addHi: 40, mulHi: 11, fallMs: 8200,  spawnMs: 2500, maxDrops: 5, pSun: 0.08 },
-  { ops: "+-x/", lo: 10, addHi: 50, mulHi: 12, fallMs: 7800,  spawnMs: 2350, maxDrops: 6, pSun: 0.08 },
-  { ops: "+-x/", lo: 15, addHi: 70, mulHi: 13, fallMs: 7400,  spawnMs: 2200, maxDrops: 6, pSun: 0.09 },
-  { ops: "+-x/", lo: 20, addHi: 99, mulHi: 14, fallMs: 7000,  spawnMs: 2050, maxDrops: 7, pSun: 0.10 },
+  { ops: "+",    lo: 1,  addHi: 9,  mulHi: 0,  fallMs: 10000, spawnMs: 3800, maxDrops: 3, pSun: 0 },
+  { ops: "+-",   lo: 1,  addHi: 12, mulHi: 0,  fallMs: 9500,  spawnMs: 3550, maxDrops: 3, pSun: 0 },
+  { ops: "+-",   lo: 2,  addHi: 15, mulHi: 0,  fallMs: 9000,  spawnMs: 3300, maxDrops: 4, pSun: 0.05 },
+  { ops: "+-x",  lo: 2,  addHi: 15, mulHi: 6,  fallMs: 8600,  spawnMs: 3100, maxDrops: 4, pSun: 0.05 },
+  { ops: "+-x",  lo: 2,  addHi: 18, mulHi: 8,  fallMs: 8200,  spawnMs: 2900, maxDrops: 4, pSun: 0.06 },
+  { ops: "+-x/", lo: 3,  addHi: 20, mulHi: 8,  fallMs: 7800,  spawnMs: 2700, maxDrops: 5, pSun: 0.06 },
+  { ops: "+-x/", lo: 5,  addHi: 25, mulHi: 9,  fallMs: 7400,  spawnMs: 2550, maxDrops: 5, pSun: 0.07 },
+  { ops: "+-x/", lo: 6,  addHi: 30, mulHi: 10, fallMs: 7000,  spawnMs: 2400, maxDrops: 5, pSun: 0.07 },
+  { ops: "+-x/", lo: 8,  addHi: 40, mulHi: 11, fallMs: 6700,  spawnMs: 2250, maxDrops: 6, pSun: 0.08 },
+  { ops: "+-x/", lo: 10, addHi: 50, mulHi: 12, fallMs: 6400,  spawnMs: 2100, maxDrops: 6, pSun: 0.08 },
+  { ops: "+-x/", lo: 15, addHi: 70, mulHi: 13, fallMs: 6100,  spawnMs: 1900, maxDrops: 7, pSun: 0.09 },
+  { ops: "+-x/", lo: 20, addHi: 99, mulHi: 14, fallMs: 5800,  spawnMs: 1700, maxDrops: 7, pSun: 0.10 },
 ];
 function genDrop(lv, rnd = Math.random, forceSun = false) {
   const L = LEVELS[Math.min(MAXLV, Math.max(1, lv)) - 1];
@@ -553,7 +559,12 @@ if (typeof module !== "undefined" && module.exports)
     }
     function stop() { active = false; clearTimeout(watchdog); clearVoicePending(); if (rec) { try { rec.stop(); } catch (e) {} } syncMic(); }
     function restart() { if (!active || !rec) return; sessionT0 = Date.now(); try { rec.abort(); } catch (e) {} }
-    function syncMic() { const m = $("mic-ind"); if (m) { m.classList.toggle("show", store.settings.input === "voice"); m.classList.toggle("live", active); } }
+    function syncMic() {
+      const m = $("mic-ind");
+      if (m) { m.classList.toggle("show", store.settings.input === "voice"); m.classList.toggle("live", active); }
+      const b = $("btn-mic");
+      if (b) { b.textContent = store.settings.input === "voice" ? "🎤 Nói" : "⌨️ Gõ"; b.classList.toggle("live", active); }
+    }
     return { start, stop, restart, syncMic,
       get supported() { return !!SR; }, get active() { return active; },
       get sessionAge() { return active ? Date.now() - sessionT0 : 0; } };
@@ -829,7 +840,17 @@ if (typeof module !== "undefined" && module.exports)
   document.querySelectorAll("#seg-diff button").forEach((b) =>
     b.addEventListener("click", () => { store.lv = +b.dataset.lv; store.prog = 0; save(); renderHome(); }));
   document.querySelectorAll("#seg-input button").forEach((b) =>
-    b.addEventListener("click", () => { store.settings.input = b.dataset.v; save(); renderHome(); }));
+    b.addEventListener("click", () => { store.settings.input = b.dataset.v; save(); renderHome(); VOICE.syncMic(); }));
+  // nút đổi cách nhập NGAY TRONG TRẬN (Quang: 'chưa có chỗ chuyển sang giọng nói')
+  $("btn-mic").addEventListener("click", () => {
+    store.settings.input = store.settings.input === "voice" ? "type" : "voice";
+    save(); renderHome();
+    if (game && !game.over) {
+      if (store.settings.input === "voice") { VOICE.start(); showTranscript("🎤 Nói đáp án là giọt nổ — ví dụ: “mười sáu”"); }
+      else { VOICE.stop(); showTranscript(""); }
+    }
+    VOICE.syncMic();
+  });
 
   if (TEST) {
     window.__gm = {
