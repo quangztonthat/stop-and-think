@@ -213,7 +213,7 @@ html[data-theme="light"] .board-wrap{background:linear-gradient(165deg,#141b31,#
     <p>Vài ô trên bàn sáng lên, bạn ghi nhớ. Ô tắt đi và <b>cả bàn cờ quay</b> 90°, 180° hay ngược chiều — bạn phải bấm lại đúng những ô đã sáng ở <b>vị trí mới</b> của chúng. Đây là bài trí nhớ không gian gắn với <b>phép xoay hệ quy chiếu</b>: giữ bản đồ trong đầu và quay cả bản đồ — kỹ năng đọc bản vẽ, định hướng, nhìn vấn đề từ góc khác.</p>
   </div>
   <div class="stat-row">
-    <div class="stat-card"><b class="num" id="st-lv">1</b><span>Level (1–12)</span>
+    <div class="stat-card"><b class="num" id="st-lv">1</b><span>Level (1–15)</span>
       <div class="lv-adjust"><button id="lv-dn">−</button><button id="lv-up">+</button></div>
     </div>
     <div class="stat-card"><b class="num" id="st-best">0</b><span>Điểm cao nhất (level này)</span></div>
@@ -221,7 +221,7 @@ html[data-theme="light"] .board-wrap{background:linear-gradient(165deg,#141b31,#
   </div>
   <div class="start-row">
     <button class="btn primary" id="btn-start">▶ Chơi</button>
-    <span class="seg" id="seg-diff" title="Chọn độ khó = nhảy thẳng level 1/4/7/10"><button data-lv="1">Dễ</button><button data-lv="4">Vừa</button><button data-lv="7">Khó</button><button data-lv="10">Ác</button></span>
+    <span class="seg" id="seg-diff" title="Chọn độ khó = nhảy thẳng level 1/4/7/10/13"><button data-lv="1">Dễ</button><button data-lv="4">Vừa</button><button data-lv="7">Khó</button><button data-lv="10">Ác</button><button data-lv="13">Cực</button></span>
     <span class="seg" id="seg-dur"><button data-v="60">1′</button><button data-v="120">2′</button><button data-v="180">3′</button></span>
     <span class="seg" id="seg-sound"><button data-v="1">🔊</button><button data-v="0">🔇</button></span>
   </div>
@@ -270,7 +270,7 @@ html[data-theme="light"] .board-wrap{background:linear-gradient(165deg,#141b31,#
 
 </main>
 
-<footer>Ma trận xoay (rotation matrix) · trí nhớ không gian &amp; xoay hệ quy chiếu · Build v3 · 2026-08-02 · dữ liệu lưu trong trình duyệt của bạn</footer>
+<footer>Ma trận xoay (rotation matrix) · trí nhớ không gian &amp; xoay hệ quy chiếu · Build v4 · 2026-08-02 · dữ liệu lưu trong trình duyệt của bạn</footer>
 
 <script id="gen">
 "use strict";
@@ -282,7 +282,7 @@ html[data-theme="light"] .board-wrap{background:linear-gradient(165deg,#141b31,#
    mang toạ độ GỐC — chấm đúng ⟺ toạ độ gốc ∈ cells. answer chỉ dùng cho
    test đối chiếu vị trí màn hình.
    ================================================================ */
-const MAXLV = 12;
+const MAXLV = 15;
 // g: cỡ bàn · k: số ô sáng · studyMs: thời gian nhìn · rots: các góc CW có thể (270 = quay trái 90°)
 const LEVELS = [
   { g: 3, k: 3, studyMs: 1700, rots: [90, 270] },
@@ -297,6 +297,9 @@ const LEVELS = [
   { g: 5, k: 8, studyMs: 1200, rots: [90, 180, 270] },
   { g: 6, k: 8, studyMs: 1150, rots: [90, 180, 270] },
   { g: 6, k: 9, studyMs: 1100, rots: [90, 180, 270] },
+  { g: 6, k: 10, studyMs: 1050, rots: [90, 180, 270] },
+  { g: 6, k: 11, studyMs: 1000, rots: [90, 180, 270] },
+  { g: 6, k: 12, studyMs: 1000, rots: [90, 180, 270] },
 ];
 // xoay CW quanh tâm bàn g×g (y hướng xuống): 90° (x,y)→(g-1-y,x) · 180° → (g-1-x,g-1-y) · 270° → (y,g-1-x)
 function rotatePos(p, g, rot) {

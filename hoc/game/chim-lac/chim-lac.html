@@ -210,7 +210,7 @@ html[data-theme="light"] .dpad button{background:linear-gradient(180deg,#ffffff,
     <p>Một đàn chim hiện ra, bạn chỉ trả lời <b>hướng bay của con chim GIỮA đàn</b> — mặc kệ những con xung quanh đang cố kéo mắt bạn theo hướng khác. Đây là bài <b>flanker</b> kinh điển đo chú ý chọn lọc: lọc nhiễu, kìm phản xạ bắt chước đám đông — kỹ năng đọc số giữa rừng dữ liệu gây nhiễu.</p>
   </div>
   <div class="stat-row">
-    <div class="stat-card"><b class="num" id="st-lv">1</b><span>Level (1–12)</span>
+    <div class="stat-card"><b class="num" id="st-lv">1</b><span>Level (1–15)</span>
       <div class="lv-adjust"><button id="lv-dn">−</button><button id="lv-up">+</button></div>
     </div>
     <div class="stat-card"><b class="num" id="st-best">0</b><span>Điểm cao nhất (level này)</span></div>
@@ -218,7 +218,7 @@ html[data-theme="light"] .dpad button{background:linear-gradient(180deg,#ffffff,
   </div>
   <div class="start-row">
     <button class="btn primary" id="btn-start">▶ Chơi</button>
-    <span class="seg" id="seg-diff" title="Chọn độ khó = nhảy thẳng level 1/4/7/10"><button data-lv="1">Dễ</button><button data-lv="4">Vừa</button><button data-lv="7">Khó</button><button data-lv="10">Ác</button></span>
+    <span class="seg" id="seg-diff" title="Chọn độ khó = nhảy thẳng level 1/4/7/10/13"><button data-lv="1">Dễ</button><button data-lv="4">Vừa</button><button data-lv="7">Khó</button><button data-lv="10">Ác</button><button data-lv="13">Cực</button></span>
     <span class="seg" id="seg-dur"><button data-v="60">1′</button><button data-v="120">2′</button><button data-v="180">3′</button></span>
     <span class="seg" id="seg-sound"><button data-v="1">🔊</button><button data-v="0">🔇</button></span>
   </div>
@@ -283,7 +283,7 @@ html[data-theme="light"] .dpad button{background:linear-gradient(180deg,#ffffff,
 
 </main>
 
-<footer>Chim lạc (flanker) · chú ý chọn lọc &amp; kìm phản xạ · Build v5 · 2026-08-02 · dữ liệu lưu trong trình duyệt của bạn</footer>
+<footer>Chim lạc (flanker) · chú ý chọn lọc &amp; kìm phản xạ · Build v6 · 2026-08-02 · dữ liệu lưu trong trình duyệt của bạn</footer>
 
 <script id="gen">
 "use strict";
@@ -292,7 +292,7 @@ html[data-theme="light"] .dpad button{background:linear-gradient(180deg,#ffffff,
    Lượt: chim GIỮA bay hướng dir, n chim quanh bay fdir (inc = lừa: fdir ≠ dir).
    offsets: toạ độ đơn vị quanh tâm (0,0) — tâm KHÔNG nằm trong offsets.
    ================================================================ */
-const MAXLV = 12;
+const MAXLV = 15;
 const DIRS = ["U", "R", "D", "L"];
 const ANG = { U: 0, R: 90, D: 180, L: 270 };
 // Đội hình: hàm nhận n → mảng offset [x,y] (y dương = xuống)
@@ -320,6 +320,9 @@ const LEVELS = [
   { n: 8, pInc: 0.80, windowMs: 1450, drift: 0.66, layouts: ["x8", "line", "v", "diamond"] },
   { n: 8, pInc: 0.84, windowMs: 1400, drift: 0.70, layouts: ["x8", "line", "v", "diamond"] },
   { n: 8, pInc: 0.88, windowMs: 1350, drift: 0.75, layouts: ["x8", "line", "v", "diamond"] },
+  { n: 8, pInc: 0.88, windowMs: 1300, drift: 0.80, layouts: ["x8", "line", "v", "diamond"] },
+  { n: 8, pInc: 0.88, windowMs: 1250, drift: 0.85, layouts: ["x8", "line", "v", "diamond"] },
+  { n: 8, pInc: 0.88, windowMs: 1200, drift: 0.90, layouts: ["x8", "line", "v", "diamond"] },
 ];
 function genTrial(lv, rnd = Math.random) {
   const L = LEVELS[Math.min(MAXLV, Math.max(1, lv)) - 1];

@@ -275,7 +275,7 @@ html[data-theme="light"] .numpad button.np-go{background:linear-gradient(135deg,
     <p>Mỗi giọt mưa mang một phép tính rơi dần xuống mặt nước. <b>Gõ đáp án rồi ↵</b> — giọt khớp sẽ vỡ tan. Để lọt <b>3 giọt</b> là hết vòng. Càng chơi mưa càng nhanh, càng dày — đây là bài rèn tính nhẩm phản xạ thuần: cộng trừ nhân chia bắn thẳng từ trí nhớ, không kịp nghĩ dài.</p>
   </div>
   <div class="stat-row">
-    <div class="stat-card"><b class="num" id="st-lv">1</b><span>Level (1–12)</span>
+    <div class="stat-card"><b class="num" id="st-lv">1</b><span>Level (1–15)</span>
       <div class="lv-adjust"><button id="lv-dn">−</button><button id="lv-up">+</button></div>
     </div>
     <div class="stat-card"><b class="num" id="st-best">0</b><span>Điểm cao nhất (level này)</span></div>
@@ -283,7 +283,7 @@ html[data-theme="light"] .numpad button.np-go{background:linear-gradient(135deg,
   </div>
   <div class="start-row">
     <button class="btn primary" id="btn-start">▶ Chơi</button>
-    <span class="seg" id="seg-diff" title="Chọn độ khó = nhảy thẳng level 1/4/7/10"><button data-lv="1">Dễ</button><button data-lv="4">Vừa</button><button data-lv="7">Khó</button><button data-lv="10">Ác</button></span>
+    <span class="seg" id="seg-diff" title="Chọn độ khó = nhảy thẳng level 1/4/7/10/13"><button data-lv="1">Dễ</button><button data-lv="4">Vừa</button><button data-lv="7">Khó</button><button data-lv="10">Ác</button><button data-lv="13">Cực</button></span>
     <span class="seg" id="seg-input" title="Cách nhập đáp án"><button data-v="type">⌨️ Gõ</button><button data-v="voice">🎤 Nói</button></span>
     <span class="seg" id="seg-sound"><button data-v="1">🔊</button><button data-v="0">🔇</button></span>
   </div>
@@ -338,7 +338,7 @@ html[data-theme="light"] .numpad button.np-go{background:linear-gradient(135deg,
 
 </main>
 
-<footer>Giọt mưa (raindrops) · tính nhẩm phản xạ · Build v6 · 2026-08-02 · dữ liệu lưu trong trình duyệt của bạn</footer>
+<footer>Giọt mưa (raindrops) · tính nhẩm phản xạ · Build v8 · 2026-08-02 · dữ liệu lưu trong trình duyệt của bạn</footer>
 
 <script id="gen">
 "use strict";
@@ -347,7 +347,7 @@ html[data-theme="light"] .numpad button.np-go{background:linear-gradient(135deg,
    Giọt: {a, b, op, ans, text, sun}. op ∈ +,-,x,/ (hiển thị + − × ÷).
    sun = giọt nắng: giải được thì quét sạch màn (đề luôn là cộng 1 chữ số).
    ================================================================ */
-const MAXLV = 12;
+const MAXLV = 15;
 const OPSYM = { "+": "+", "-": "−", "x": "×", "/": "÷" };
 // ops: phép có ở level · lo..addHi: khoảng toán hạng +/− · mulHi: trần bảng nhân ×/÷
 // fallMs: thời gian rơi hết màn · spawnMs: nhịp sinh giọt · maxDrops: giọt đồng thời · pSun: xác suất giọt nắng
@@ -364,6 +364,9 @@ const LEVELS = [
   { ops: "+-x/", lo: 10, addHi: 50, mulHi: 12, fallMs: 6400,  spawnMs: 2100, maxDrops: 6, pSun: 0.08 },
   { ops: "+-x/", lo: 15, addHi: 70, mulHi: 13, fallMs: 6100,  spawnMs: 1900, maxDrops: 7, pSun: 0.09 },
   { ops: "+-x/", lo: 20, addHi: 99, mulHi: 14, fallMs: 5800,  spawnMs: 1700, maxDrops: 7, pSun: 0.10 },
+  { ops: "+-x/", lo: 25, addHi: 120, mulHi: 15, fallMs: 5600, spawnMs: 1550, maxDrops: 8, pSun: 0.10 },
+  { ops: "+-x/", lo: 30, addHi: 150, mulHi: 16, fallMs: 5300, spawnMs: 1400, maxDrops: 8, pSun: 0.11 },
+  { ops: "+-x/", lo: 40, addHi: 199, mulHi: 17, fallMs: 5000, spawnMs: 1250, maxDrops: 8, pSun: 0.12 },
 ];
 function genDrop(lv, rnd = Math.random, forceSun = false) {
   const L = LEVELS[Math.min(MAXLV, Math.max(1, lv)) - 1];
@@ -408,13 +411,14 @@ function parseViNumber(raw) {
     "sau": "sáu", "sấu": "sáu", "xáu": "sáu", "bay": "bảy", "bãy": "bảy", "tắm": "tám", "tấm": "tám",
     "chính": "chín", "chin": "chín", "chíng": "chín", "chăm": "trăm", "châm": "trăm", "mưới": "mười",
     "rượi": "rưỡi", "rưới": "rưỡi", "phảy": "phẩy", "phẫy": "phẩy", "lẽ": "lẻ", "khống": "không",
-    "sáo": "sáu", "nắm": "năm", "bấy": "bảy", "tam": "tám", "mưỡi": "mười", "muơi": "mươi", "hài": "hai", "mộtt": "một" };
+    "sáo": "sáu", "nắm": "năm", "bấy": "bảy", "tam": "tám", "mưỡi": "mười", "muơi": "mươi", "hài": "hai", "mộtt": "một",
+    "muời": "mười", "mưòi": "mười", "trắm": "trăm", "trâm": "trăm" };
   const FILLER = new Set(["số", "so", "là", "la", "bằng", "bang", "đáp", "án", "kết", "quả", "ra"]); // từ đệm quanh đáp án ("số chín", "bằng 25", "ra chín")
   const tokens = t.replace(/[^0-9a-zà-ỹ.,\s]/g, " ").split(/\s+/).filter(Boolean)
     .filter((w) => !FILLER.has(w))
     .map((w) => ALIAS[w] || w);
   const hasScale = tokens.some((w) => SCALE.includes(w));
-  if (!hasScale) {
+  if (!hasScale && !/\d\s+\d/.test(t)) { // v7: hai cum chu so roi ("1 6") -> xuong vong lap de ghep hang chuc
     const m = t.match(/\d[\d.,]*/);
     if (m) {
       let s = m[0].replace(/[.,]$/, "");
@@ -434,7 +438,12 @@ function parseViNumber(raw) {
       else if (/^\d+$/.test(w)) dec += w;
       continue;
     }
-    if (/^\d+$/.test(w)) { num += parseInt(w, 10); seen = true; }
+    if (/^\d+$/.test(w)) {
+      const n = parseInt(w, 10);
+      // v7: doc so roi tung chu so ("mot sau"/"1 6" = 16) — cung luat hang chuc nhu "hai lam"=25
+      num = (w.length === 1 && num >= 1 && num <= 9) ? num * 10 + n : num + n;
+      seen = true;
+    }
     else if (w in U) {
       // đọc số kiểu chục không có "mươi" (rất phổ biến khi nói): "hai lăm"=25, "hai mốt"=21, "bốn bảy"=47
       num = (num >= 1 && num <= 9) ? num * 10 + U[w] : num + U[w];
@@ -462,8 +471,10 @@ function voiceInstantOk(v, answers) {
   return !answers.some((a) => {
     if (a === v) return false;
     if (String(a).startsWith(s)) return true;
-    if (v === 10 && a >= 11 && a <= 19) return true;
-    if (v === 100 && a >= 101 && a <= 199) return true;
+    // v7: SỐ TRÒN nói dở — "hai mươi(lăm)"=20→21-29, "mười(sáu)"=10→11-19, "ba trăm(hai mươi)"=300→301-399
+    // (chuỗi "25" không bắt đầu bằng "20" nên luật prefix không bắt được — phải xét theo khoảng)
+    if (v % 10 === 0 && v >= 10 && a > v && a < v + 10) return true;
+    if (v % 100 === 0 && v >= 100 && a > v && a < v + 100) return true;
     return false;
   });
 }
@@ -575,7 +586,9 @@ if (typeof module !== "undefined" && module.exports)
           store.settings.input = "type"; save(); syncMic();
         }
       };
-      rec.onend = () => { if (active) { voiceConsumedIdx = -1; sessionT0 = Date.now(); pet(); try { rec.start(); } catch (err) { /* đang chạy */ } } };
+      // v7: PHIÊN MỚI = index reset về 0 — phải huỷ timer interim còn treo của phiên cũ,
+      // nếu không callback của nó ghi đè voiceConsumedIdx bằng index CŨ và nuốt mất câu đầu phiên mới
+      rec.onend = () => { clearVoicePending(); if (active) { voiceConsumedIdx = -1; sessionT0 = Date.now(); pet(); try { rec.start(); } catch (err) { /* đang chạy */ } } };
     }
     function start() {
       if (!SR) { showTranscript("Trình duyệt không hỗ trợ nhận giọng nói — dùng ⌨️ Gõ (Chrome/Edge mới có)", true); return false; }
@@ -585,7 +598,7 @@ if (typeof module !== "undefined" && module.exports)
       syncMic(); return true;
     }
     function stop() { active = false; clearTimeout(watchdog); clearVoicePending(); if (rec) { try { rec.stop(); } catch (e) {} } syncMic(); }
-    function restart() { if (!active || !rec) return; sessionT0 = Date.now(); try { rec.abort(); } catch (e) {} }
+    function restart() { if (!active || !rec) return; clearVoicePending(); sessionT0 = Date.now(); try { rec.abort(); } catch (e) {} }
     function syncMic() {
       const m = $("mic-ind");
       if (m) { m.classList.toggle("show", store.settings.input === "voice"); m.classList.toggle("live", active); }
