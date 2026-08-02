@@ -286,7 +286,7 @@ html[data-theme="light"] .board-wrap{background:linear-gradient(165deg,#141b31,#
 
 </main>
 
-<footer>Bóng nảy (pinball recall) · trí nhớ làm việc &amp; mô phỏng không gian · Build v3 · 2026-08-02 · dữ liệu lưu trong trình duyệt của bạn</footer>
+<footer>Bóng nảy (pinball recall) · trí nhớ làm việc &amp; mô phỏng không gian · Build v4 · 2026-08-02 · dữ liệu lưu trong trình duyệt của bạn</footer>
 
 <script id="gen">
 "use strict";
@@ -297,20 +297,21 @@ html[data-theme="light"] .board-wrap{background:linear-gradient(165deg,#141b31,#
    Gương thuận nghịch ⇒ bóng vào từ mép KHÔNG THỂ kẹt vòng lặp — luôn thoát.
    ================================================================ */
 const MAXLV = 12;
-// g: cỡ bàn · nb: số gương · studyMs: thời gian ghi nhớ
+// g: cỡ bàn · nb: số gương · studyMs: thời gian ghi nhớ · minB: số cú nảy TỐI THIỂU của đường bóng
+// (minB tăng theo level — lên cấp là đường bóng BẮT BUỘC phức tạp hơn, không chỉ nhìn ngắn đi)
 const LEVELS = [
-  { g: 4, nb: 2, studyMs: 1800 },
-  { g: 4, nb: 3, studyMs: 1700 },
-  { g: 4, nb: 4, studyMs: 1600 },
-  { g: 5, nb: 3, studyMs: 1700 },
-  { g: 5, nb: 4, studyMs: 1600 },
-  { g: 5, nb: 5, studyMs: 1500 },
-  { g: 5, nb: 5, studyMs: 1400 },
-  { g: 5, nb: 6, studyMs: 1350 },
-  { g: 6, nb: 5, studyMs: 1450 },
-  { g: 6, nb: 6, studyMs: 1350 },
-  { g: 6, nb: 7, studyMs: 1300 },
-  { g: 6, nb: 8, studyMs: 1250 },
+  { g: 4, nb: 2, studyMs: 1800, minB: 1 },
+  { g: 4, nb: 3, studyMs: 1700, minB: 1 },
+  { g: 4, nb: 4, studyMs: 1600, minB: 2 },
+  { g: 5, nb: 3, studyMs: 1700, minB: 2 },
+  { g: 5, nb: 4, studyMs: 1600, minB: 2 },
+  { g: 5, nb: 5, studyMs: 1500, minB: 3 },
+  { g: 5, nb: 5, studyMs: 1400, minB: 3 },
+  { g: 5, nb: 6, studyMs: 1350, minB: 3 },
+  { g: 6, nb: 5, studyMs: 1450, minB: 3 },
+  { g: 6, nb: 6, studyMs: 1350, minB: 4 },
+  { g: 6, nb: 7, studyMs: 1300, minB: 4 },
+  { g: 6, nb: 8, studyMs: 1250, minB: 4 },
 ];
 const DIRS = { U: { dx: 0, dy: -1 }, D: { dx: 0, dy: 1 }, L: { dx: -1, dy: 0 }, R: { dx: 1, dy: 0 } };
 // gương '/': phải→lên, trái→xuống, lên→phải, xuống→trái · gương '\': phải→xuống, trái→lên, lên→trái, xuống→phải
@@ -346,6 +347,7 @@ function entryFor(g, side, i) {
 function genTrial(lv, rnd = Math.random) {
   const L = LEVELS[Math.min(MAXLV, Math.max(1, lv)) - 1];
   const g = L.g;
+  let best = null; // cấu hình nảy NHIỀU NHẤT tìm được — phương án chót nếu 500 lần bốc không đạt minB
   for (let t = 0; t < 500; t++) {
     const pos = Array.from({ length: g * g }, (_, i) => i);
     for (let i = pos.length - 1; i > 0; i--) {
@@ -356,14 +358,18 @@ function genTrial(lv, rnd = Math.random) {
     const bumpMap = new Map(bumpers.map((b) => [b.x + "," + b.y, b.o]));
     const entry = entryFor(g, Math.min(3, Math.floor(rnd() * 4)), Math.min(g - 1, Math.floor(rnd() * g)));
     const sim = simulate(g, bumpMap, entry);
-    if (sim && sim.bounces >= 1)
-      return { lv, g, nb: L.nb, studyMs: L.studyMs, bumpers, entry, exit: sim.exit, path: sim.path, bounces: sim.bounces };
+    if (!sim) continue;
+    if (sim.bounces >= L.minB)
+      return { lv, g, nb: L.nb, studyMs: L.studyMs, minB: L.minB, bumpers, entry, exit: sim.exit, path: sim.path, bounces: sim.bounces };
+    if (sim.bounces >= 1 && (!best || sim.bounces > best.sim.bounces)) best = { bumpers, entry, sim };
   }
+  if (best)
+    return { lv, g, nb: L.nb, studyMs: L.studyMs, minB: L.minB, bumpers: best.bumpers, entry: best.entry, exit: best.sim.exit, path: best.sim.path, bounces: best.sim.bounces };
   // fallback (thực tế không chạm tới): ép 1 gương ngay ô vào — chắc chắn nảy
   const entry = entryFor(g, 0, 0);
   const bumpers = [{ x: 0, y: 0, o: "\\" }];
   const sim = simulate(g, new Map([["0,0", "\\"]]), entry);
-  return { lv, g, nb: 1, studyMs: L.studyMs, bumpers, entry, exit: sim.exit, path: sim.path, bounces: sim.bounces };
+  return { lv, g, nb: 1, studyMs: L.studyMs, minB: 1, bumpers, entry, exit: sim.exit, path: sim.path, bounces: sim.bounces };
 }
 // Điểm: đúng = 15×lv · trả lời ≤3s ×1.5 · chuỗi ≥3 ×1.5
 function scorePick(lv, rtMs, streak) {

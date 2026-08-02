@@ -338,7 +338,7 @@ html[data-theme="light"] .numpad button.np-go{background:linear-gradient(135deg,
 
 </main>
 
-<footer>Giọt mưa (raindrops) · tính nhẩm phản xạ · Build v3 · 2026-08-02 · dữ liệu lưu trong trình duyệt của bạn</footer>
+<footer>Giọt mưa (raindrops) · tính nhẩm phản xạ · Build v4 · 2026-08-02 · dữ liệu lưu trong trình duyệt của bạn</footer>
 
 <script id="gen">
 "use strict";
@@ -512,7 +512,7 @@ if (typeof module !== "undefined" && module.exports)
      phiên mới khi già >25s (phiên già lì mic) · watchdog 8s · chấm sớm từ interim
      (khớp giọt = nổ tức thì, số khác = chờ ổn định 500ms) · quét 5 alternatives ·
      guard voiceConsumedIdx chống final-đến-muộn chấm đúp ---------- */
-  let voiceStableT = null, voiceCurIdx = -1, voiceConsumedIdx = -1;
+  let voiceStableT = null, voiceCurIdx = -1, voiceConsumedIdx = -1, lastVoiceHeard = 0;
   const clearVoicePending = () => { clearTimeout(voiceStableT); voiceStableT = null; };
   const VOICE = (() => {
     const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -591,18 +591,21 @@ if (typeof module !== "undefined" && module.exports)
     renderHud(); save();
   }
 
+  // KHÁC ltn có chủ đích: KHÔNG chấm tức thì từ interim — màn có NHIỀU đáp án hợp lệ cùng lúc,
+  // interim cụt ("hai" của "hai mươi lăm") có thể khớp nhầm giọt khác. Luôn chờ ổn định 500ms.
   function handleVoiceInterim(text) {
+    lastVoiceHeard = Date.now();
     if (!game || game.over) return;
     showTranscript("« " + text + " …", false);
     const v = parseViNumber(text);
     if (v === null || !Number.isInteger(v) || v < 0) return;
-    if (drops.some((d) => d.ans === v)) { voiceConsumedIdx = voiceCurIdx; clearVoicePending(); voiceSubmit(v); return; }
     const idxAt = voiceCurIdx;
     clearVoicePending();
     voiceStableT = setTimeout(() => { if (game && !game.over) { voiceConsumedIdx = idxAt; handleVoiceFinal(text); } }, 500);
   }
 
   function handleVoiceFinal(text, alts) {
+    lastVoiceHeard = Date.now();
     clearVoicePending();
     if (!game || game.over) return;
     // quét mọi phương án nhận dạng — ưu tiên phương án khớp một giọt đang rơi
@@ -612,6 +615,7 @@ if (typeof module !== "undefined" && module.exports)
     if (!cands.length) { showTranscript("Không nghe ra số: « " + text + " » — nói lại nhé", true); return; }
     const hit = cands.find((x) => drops.some((d) => d.ans === x.v)) || cands[0];
     voiceSubmit(hit.v);
+    VOICE.restart(); // mỗi lần chấm = một phiên nghe mới tinh (bài học ltn: phiên già lì mic)
   }
 
   const fracOf = (d, now) => ((now != null ? now : performance.now()) - d.born) / d.fallMs;
@@ -640,7 +644,8 @@ if (typeof module !== "undefined" && module.exports)
     if (store.settings.input === "voice") VOICE.start(); else VOICE.stop();
     VOICE.syncMic();
     clearInterval(voiceAgeIv);
-    voiceAgeIv = setInterval(() => { if (VOICE.active && VOICE.sessionAge > 25000) VOICE.restart(); }, 3000); // phiên nghe già 25s → thay phiên mới
+    // phiên nghe già 25s → thay phiên mới, NHƯNG chỉ khi không ai đang nói dở (bài học ltn dòng 1083)
+    voiceAgeIv = setInterval(() => { if (VOICE.active && VOICE.sessionAge > 25000 && Date.now() - lastVoiceHeard > 2000) VOICE.restart(); }, 3000);
     cancelAnimationFrame(rafId);
     rafId = requestAnimationFrame(tick);
   }

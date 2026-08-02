@@ -84,7 +84,7 @@ header{position:sticky;top:0;z-index:10;background:rgba(11,16,32,.78);backdrop-f
 .round-bar i{display:block;height:100%;background:linear-gradient(90deg,var(--mc),var(--mc2));border-radius:99px}
 .clock{font-size:14.5px;font-weight:800;color:var(--ink-soft);min-width:38px;text-align:right}
 .sky-wrap{border:1px solid #2b3f6e;border-radius:20px;box-shadow:var(--shadow), inset 0 1px 0 rgba(148,197,255,.12);background:linear-gradient(178deg,#0a142e 0%,#122048 45%,#1b2c5c 80%,#27356b 100%);overflow:hidden;position:relative;user-select:none;-webkit-user-select:none;touch-action:none}
-.sky{position:relative;height:clamp(240px,40vh,360px)}
+.sky{position:relative;height:clamp(300px,48vh,430px);overflow:hidden}
 .sky::before{ /* sao + trăng */
   content:"";position:absolute;inset:0;pointer-events:none;
   background-image:
@@ -108,7 +108,8 @@ header{position:sticky;top:0;z-index:10;background:rgba(11,16,32,.78);backdrop-f
 .cloudb.k1{width:230px;height:56px;left:5%;top:14%;animation:cdrift 28s ease-in-out infinite alternate}
 .cloudb.k2{width:150px;height:44px;right:8%;bottom:22%;background:rgba(192,132,252,.10);animation:cdrift 22s ease-in-out infinite alternate-reverse}
 @keyframes cdrift{from{transform:translateX(0)}to{transform:translateX(52px)}}
-.bird{position:absolute;width:56px;height:56px;margin:-28px 0 0 -28px;pointer-events:none;transition:opacity .1s}
+.flock{position:absolute;width:0;height:0;will-change:transform}
+.bird{position:absolute;width:40px;height:40px;margin:-20px 0 0 -20px;pointer-events:none;transition:opacity .1s}
 .bird svg{width:100%;height:100%;display:block;filter:drop-shadow(0 4px 9px rgba(0,0,0,.5));animation:flap .72s ease-in-out infinite alternate}
 .bird:nth-child(odd) svg{animation-delay:.2s}
 @keyframes flap{from{transform:scale(1,1)}to{transform:scale(.9,1.06)}}
@@ -163,8 +164,8 @@ button{touch-action:manipulation}
   .play-hud{gap:7px;padding:8px 0 6px}
   .hud-item{font-size:12.5px}
   .hud-item b{font-size:16px}
-  .sky{height:clamp(220px,calc(100dvh - 472px),340px)}
-  .bird{width:42px;height:42px;margin:-21px 0 0 -21px}
+  .sky{height:clamp(240px,calc(100dvh - 452px),400px)}
+  .bird{width:32px;height:32px;margin:-16px 0 0 -16px}
   .dpad{grid-template-columns:repeat(3,minmax(58px,1fr));grid-template-rows:repeat(2,48px);max-width:240px;margin-left:auto;margin-right:auto}
   .play-hint{font-size:12px;margin-top:5px}
   .res-grid{gap:8px}
@@ -222,7 +223,7 @@ html[data-theme="light"] .dpad button{background:linear-gradient(180deg,#ffffff,
     <span class="seg" id="seg-sound"><button data-v="1">🔊</button><button data-v="0">🔇</button></span>
   </div>
   <div class="howto">
-    <b>Luật:</b> bấm phím mũi tên (hoặc WASD / nút / vuốt) theo hướng của <b>con chim chính giữa</b>. Đàn xung quanh có lúc bay cùng hướng (dễ), có lúc bay hướng khác để <b>đánh lừa</b> — level cao lừa dày hơn, đàn đông hơn, thời gian ngắn hơn. Trả lời trong nửa đầu thời gian ×1,5 điểm; chuỗi đúng 3+ ×1,5 🔥.
+    <b>Luật:</b> đàn chim <b>bay lướt qua trời</b>, xuất hiện chỗ nào không báo trước — bấm phím mũi tên (hoặc WASD / nút / vuốt) theo hướng của <b>con chim chính giữa</b> trước khi hết giờ. Cả đàn lướt theo hướng những con xung quanh chỉ; con giữa có lúc thuận đàn (dễ), có lúc "lạc" chỉ hướng khác để <b>đánh lừa</b> — level cao lừa dày hơn, đàn đông hơn, bay nhanh hơn, thời gian ngắn hơn. Trả lời trong nửa đầu thời gian ×1,5 điểm; chuỗi đúng 3+ ×1,5 🔥. Chọn <b>Dễ/Vừa/Khó/Ác</b> để nhảy level.
   </div>
   <div class="hist" id="home-hist"></div>
 </section>
@@ -282,7 +283,7 @@ html[data-theme="light"] .dpad button{background:linear-gradient(180deg,#ffffff,
 
 </main>
 
-<footer>Chim lạc (flanker) · chú ý chọn lọc &amp; kìm phản xạ · Build v3 · 2026-08-02 · dữ liệu lưu trong trình duyệt của bạn</footer>
+<footer>Chim lạc (flanker) · chú ý chọn lọc &amp; kìm phản xạ · Build v4 · 2026-08-02 · dữ liệu lưu trong trình duyệt của bạn</footer>
 
 <script id="gen">
 "use strict";
@@ -304,19 +305,21 @@ const LAYOUTS = {
   diamond: () => [[0, -2], [2, 0], [0, 2], [-2, 0], [1, -1], [1, 1], [-1, 1], [-1, -1]],
 };
 // n: số chim quanh · pInc: xác suất lừa · windowMs: thời gian trả lời · layouts: đội hình có ở level
+// drift: quãng đàn BAY qua trời trong cửa sổ trả lời (theo tỉ lệ cạnh trời) — đúng Lumosity:
+// đàn không đứng yên mà lướt theo hướng ĐÀN đang chỉ, con giữa "lạc" chỉ hướng khác
 const LEVELS = [
-  { n: 4, pInc: 0.45, windowMs: 2000, layouts: ["plus", "x"] },
-  { n: 4, pInc: 0.50, windowMs: 1900, layouts: ["plus", "x"] },
-  { n: 4, pInc: 0.55, windowMs: 1850, layouts: ["plus", "x", "line"] },
-  { n: 6, pInc: 0.60, windowMs: 1750, layouts: ["line", "v"] },
-  { n: 6, pInc: 0.62, windowMs: 1700, layouts: ["line", "v"] },
-  { n: 6, pInc: 0.65, windowMs: 1650, layouts: ["line", "v"] },
-  { n: 8, pInc: 0.68, windowMs: 1600, layouts: ["x8", "line", "v"] },
-  { n: 8, pInc: 0.72, windowMs: 1550, layouts: ["x8", "line", "v"] },
-  { n: 8, pInc: 0.75, windowMs: 1500, layouts: ["x8", "line", "v", "diamond"] },
-  { n: 8, pInc: 0.80, windowMs: 1450, layouts: ["x8", "line", "v", "diamond"] },
-  { n: 8, pInc: 0.84, windowMs: 1400, layouts: ["x8", "line", "v", "diamond"] },
-  { n: 8, pInc: 0.88, windowMs: 1350, layouts: ["x8", "line", "v", "diamond"] },
+  { n: 4, pInc: 0.45, windowMs: 2000, drift: 0.30, layouts: ["plus", "x"] },
+  { n: 4, pInc: 0.50, windowMs: 1900, drift: 0.34, layouts: ["plus", "x"] },
+  { n: 4, pInc: 0.55, windowMs: 1850, drift: 0.38, layouts: ["plus", "x", "line"] },
+  { n: 6, pInc: 0.60, windowMs: 1750, drift: 0.42, layouts: ["line", "v"] },
+  { n: 6, pInc: 0.62, windowMs: 1700, drift: 0.46, layouts: ["line", "v"] },
+  { n: 6, pInc: 0.65, windowMs: 1650, drift: 0.50, layouts: ["line", "v"] },
+  { n: 8, pInc: 0.68, windowMs: 1600, drift: 0.54, layouts: ["x8", "line", "v"] },
+  { n: 8, pInc: 0.72, windowMs: 1550, drift: 0.58, layouts: ["x8", "line", "v"] },
+  { n: 8, pInc: 0.75, windowMs: 1500, drift: 0.62, layouts: ["x8", "line", "v", "diamond"] },
+  { n: 8, pInc: 0.80, windowMs: 1450, drift: 0.66, layouts: ["x8", "line", "v", "diamond"] },
+  { n: 8, pInc: 0.84, windowMs: 1400, drift: 0.70, layouts: ["x8", "line", "v", "diamond"] },
+  { n: 8, pInc: 0.88, windowMs: 1350, drift: 0.75, layouts: ["x8", "line", "v", "diamond"] },
 ];
 function genTrial(lv, rnd = Math.random) {
   const L = LEVELS[Math.min(MAXLV, Math.max(1, lv)) - 1];
@@ -326,7 +329,7 @@ function genTrial(lv, rnd = Math.random) {
   if (inc) { do { fdir = DIRS[Math.min(3, Math.floor(rnd() * 4))]; } while (fdir === dir); }
   const layout = L.layouts[Math.min(L.layouts.length - 1, Math.floor(rnd() * L.layouts.length))];
   const offsets = LAYOUTS[layout](L.n);
-  return { lv, dir, fdir, inc, n: L.n, layout, offsets, windowMs: L.windowMs };
+  return { lv, dir, fdir, inc, n: L.n, layout, offsets, windowMs: L.windowMs, drift: L.drift };
 }
 // Điểm: đúng = 10×lv · trả lời trong nửa đầu cửa sổ ×1.5 · chuỗi ≥3 ×1.5
 function scoreHit(lv, rtMs, windowMs, streak) {
@@ -411,21 +414,44 @@ if (typeof module !== "undefined" && module.exports)
     return d;
   }
 
+  // Đàn BAY qua trời (đúng Lumosity): xuất hiện ở vị trí ngẫu nhiên, lướt theo hướng ĐÀN (fdir)
+  // suốt cửa sổ trả lời — chuyển động củng cố hướng gây nhiễu, con giữa càng "lạc"
+  const DVEC = { U: [0, -1], R: [1, 0], D: [0, 1], L: [-1, 0] };
   function renderFlock() {
-    sky.querySelectorAll(".bird").forEach((el) => el.remove());
+    sky.querySelectorAll(".flock").forEach((el) => el.remove());
     const W = sky.clientWidth, H = sky.clientHeight;
     const ext = Math.max(1, ...trial.offsets.map((o) => Math.max(Math.abs(o[0]), Math.abs(o[1]))));
-    const unit = Math.min(64, (Math.min(W, H) / 2 - 40) / ext);
-    const cx = W / 2, cy = H / 2;
+    const unit = Math.min(48, (Math.min(W, H) / 2 - 30) / ext);
+    const half = ext * unit + 22;
+    const travel = trial.drift * Math.min(W, H);
+    const tx = DVEC[trial.fdir][0] * travel, ty = DVEC[trial.fdir][1] * travel;
+    // chọn điểm xuất phát sao cho cả đầu lẫn cuối đường bay đều nằm trong trời
+    const rng = (min, max) => (max <= min ? (min + max) / 2 : min + Math.random() * (max - min));
+    const cx0 = rng(Math.max(half + 6, half + 6 - tx), Math.min(W - half - 6, W - half - 6 - tx));
+    const cy0 = rng(Math.max(half + 6, half + 6 - ty), Math.min(H - half - 6, H - half - 6 - ty));
+    const fl = document.createElement("div");
+    fl.className = "flock";
+    fl.style.left = cx0 + "px"; fl.style.top = cy0 + "px";
     trial.offsets.forEach((o) => {
       const b = birdEl(trial.fdir, false);
-      b.style.left = (cx + o[0] * unit) + "px";
-      b.style.top = (cy + o[1] * unit) + "px";
-      sky.appendChild(b);
+      b.style.left = (o[0] * unit) + "px";
+      b.style.top = (o[1] * unit) + "px";
+      fl.appendChild(b);
     });
     const ld = birdEl(trial.dir, true);
-    ld.style.left = cx + "px"; ld.style.top = cy + "px";
-    sky.appendChild(ld);
+    ld.style.left = "0px"; ld.style.top = "0px";
+    fl.appendChild(ld);
+    sky.appendChild(fl);
+    void fl.offsetWidth; // chốt vị trí xuất phát rồi mới bay
+    fl.style.transition = "transform " + trial.windowMs + "ms linear";
+    fl.style.transform = "translate(" + tx + "px," + ty + "px)";
+  }
+  function freezeFlock() {
+    const fl = sky.querySelector(".flock");
+    if (!fl) return;
+    const cs = getComputedStyle(fl).transform;
+    fl.style.transition = "none";
+    fl.style.transform = cs === "none" ? "" : cs;
   }
 
   function decorWind() {
@@ -462,7 +488,7 @@ if (typeof module !== "undefined" && module.exports)
     if (!game || game.over) return;
     clearTimers();
     phase = "isi";
-    sky.querySelectorAll(".bird").forEach((el) => el.remove());
+    sky.querySelectorAll(".flock").forEach((el) => el.remove());
     $("trial-feed").textContent = ""; $("trial-feed").className = "trial-feed";
     $("hud-lv").textContent = "Lv " + store.lv;
     later(() => {
@@ -484,6 +510,7 @@ if (typeof module !== "undefined" && module.exports)
     clearTimers();
     phase = "feedback";
     game.trials++;
+    freezeFlock(); // đứng hình đàn tại chỗ để đọc feedback
     const lead = sky.querySelector(".bird.lead");
     const f = $("trial-feed");
     const AR = { U: "↑", R: "→", D: "↓", L: "←" };
