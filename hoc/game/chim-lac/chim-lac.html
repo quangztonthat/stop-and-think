@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"/>
+<meta name="theme-color" content="#0b1020"/>
+<title>Chim lạc — chỉ nhìn con chim giữa đàn</title>
+<script>try{document.documentElement.dataset.theme=localStorage.getItem('game:theme')||'dark'}catch(e){document.documentElement.dataset.theme='dark'}</script>
+<style>
+:root{
+  --bg:#0b1020; --card:#151d33; --card-2:#1a2340; --inset:#0f1628;
+  --ink:#e9eef9; --ink-soft:#98a3bb; --ink-dim:#5f6b85;
+  --line:#27314f; --line-soft:#1d2742; --good:#34d399; --bad:#f87171;
+  --mc:#fbbf24; --mc2:#22d3ee;
+  --radius:20px; --shadow:0 1px 2px rgba(0,0,0,.35),0 12px 32px rgba(0,0,0,.38);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+button,input,select{font-family:inherit}
+html{-webkit-text-size-adjust:100%}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+  background:
+    radial-gradient(1100px 560px at 88% -12%, color-mix(in srgb,var(--mc) 13%,transparent), transparent 60%),
+    radial-gradient(900px 620px at -12% 26%, color-mix(in srgb,var(--mc2) 10%,transparent), transparent 55%),
+    linear-gradient(180deg,#0e1428 0%, var(--bg) 100%);
+  background-attachment:fixed;
+  color:var(--ink);line-height:1.5;min-height:100vh;display:flex;flex-direction:column}
+main{flex:1;width:100%;max-width:760px;margin:0 auto;padding:0 20px 40px}
+.num{font-variant-numeric:tabular-nums}
+header{position:sticky;top:0;z-index:10;background:rgba(11,16,32,.78);backdrop-filter:blur(10px);border-bottom:1px solid var(--line-soft)}
+.hd-in{max-width:760px;margin:0 auto;padding:11px 20px;display:flex;align-items:center;gap:14px}
+.logo{font-weight:800;font-size:18px;letter-spacing:-.02em;display:flex;align-items:center;gap:11px}
+.logo-ic{width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg,var(--mc),var(--mc2));display:flex;align-items:center;justify-content:center;font-size:22px;flex:none;box-shadow:0 4px 16px color-mix(in srgb,var(--mc) 45%,transparent)}
+.logo small{display:block;font-size:11px;font-weight:600;color:var(--ink-soft)}
+.hd-sp{flex:1}
+.theme-btn{border:1px solid var(--line);background:var(--card);color:var(--ink);width:38px;height:38px;border-radius:999px;cursor:pointer;font-size:16px;flex:none;line-height:1;padding:0}
+.nav-btn{border:1px solid var(--line);background:var(--card);color:var(--ink);padding:9px 16px;border-radius:999px;font-size:14px;font-weight:600;cursor:pointer;text-decoration:none;display:inline-block}
+.nav-btn:hover{border-color:var(--mc)}
+.nav-btn.active{background:linear-gradient(135deg,var(--mc),var(--mc2));color:#0b1020;border-color:transparent}
+.screen{display:none;animation:fadeIn .18s ease}
+.screen.on{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+.hero{padding:34px 0 10px}
+.hero h1{font-size:clamp(29px,5.4vw,42px);letter-spacing:-.03em;background:linear-gradient(92deg,var(--ink) 35%,var(--mc) 78%,var(--mc2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero p{color:var(--ink-soft);margin-top:9px;max-width:640px;font-size:16.5px}
+.stat-row{display:flex;gap:12px;margin-top:22px;flex-wrap:wrap}
+.stat-card{border:1px solid var(--line);border-radius:14px;padding:14px 20px 14px 22px;background:linear-gradient(160deg,var(--card),var(--card-2));min-width:120px;position:relative;overflow:hidden;box-shadow:var(--shadow)}
+.stat-card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--sc,var(--mc))}
+.stat-card:nth-child(1){--sc:var(--mc)}
+.stat-card:nth-child(2){--sc:#fbbf24}
+.stat-card:nth-child(3){--sc:#38bdf8}
+.stat-card b{display:block;font-size:28px;letter-spacing:-.02em;color:var(--sc,var(--mc))}
+.stat-card span{font-size:13px;color:var(--ink-soft);font-weight:600}
+.lv-adjust{position:absolute;right:10px;top:12px;display:flex;gap:5px}
+.lv-adjust button{width:30px;height:30px;border-radius:9px;border:1px solid var(--line);background:var(--inset);color:var(--ink);font-size:17px;font-weight:800;cursor:pointer;line-height:1}
+.lv-adjust button:hover{border-color:var(--mc);color:var(--mc)}
+.btn{border:1px solid var(--line);border-radius:14px;padding:13px 24px;font-size:16px;font-weight:700;cursor:pointer;background:var(--card);color:var(--ink)}
+.btn.primary{background:linear-gradient(135deg,var(--mc),var(--mc2));border-color:transparent;color:#0b1020;font-size:17.5px;padding:15px 34px;box-shadow:0 8px 26px color-mix(in srgb,var(--mc) 38%,transparent)}
+.btn:hover{filter:brightness(1.08)}
+.start-row{margin-top:26px;display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--card)}
+.seg button{border:none;background:transparent;padding:10px 16px;font-size:14.5px;font-weight:600;cursor:pointer;color:var(--ink-soft)}
+.seg button+button{border-left:1px solid var(--line-soft)}
+.seg button.on{background:linear-gradient(135deg,var(--mc),var(--mc2));color:#0b1020}
+.howto{margin-top:30px;border:1px solid var(--line);border-left:4px solid var(--mc);border-radius:var(--radius);padding:20px 22px;background:var(--card);font-size:15.5px;color:var(--ink-soft);max-width:640px}
+.howto b{color:var(--mc)}
+.hist{margin-top:26px;border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;background:var(--card)}
+.hist table{width:100%;border-collapse:collapse;font-size:14.5px}
+.hist th{background:var(--inset);text-align:left;padding:10px 14px;font-size:12.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-soft)}
+.hist td{padding:10px 14px;border-top:1px solid var(--line-soft)}
+.hist .r{text-align:right}
+.empty{padding:26px;text-align:center;color:var(--ink-soft);font-size:15px}
+/* ---------- play ---------- */
+.play-hud{display:flex;align-items:center;gap:12px;padding:14px 0 8px;flex-wrap:wrap}
+.hud-item{font-size:14.5px;color:var(--ink-soft);font-weight:600}
+.hud-item b{font-size:20px;color:var(--ink)}
+.hud-streak{font-size:15px;font-weight:800;color:#fbbf24}
+.lv-badge{font-size:13px;font-weight:800;padding:4px 12px;border-radius:999px;color:var(--mc);background:color-mix(in srgb,var(--mc) 14%,transparent);border:1px solid color-mix(in srgb,var(--mc) 38%,transparent)}
+.hud-sp{flex:1}
+.btn-quit{border:1px solid var(--line);background:var(--card);border-radius:999px;padding:8px 15px;font-size:13.5px;font-weight:600;cursor:pointer;color:var(--ink-soft)}
+.btn-quit:hover{color:var(--bad);border-color:var(--bad)}
+.timebox{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.round-bar{height:6px;border-radius:99px;background:var(--inset);overflow:hidden;flex:1}
+.round-bar i{display:block;height:100%;background:linear-gradient(90deg,var(--mc),var(--mc2));border-radius:99px}
+.clock{font-size:14.5px;font-weight:800;color:var(--ink-soft);min-width:38px;text-align:right}
+.sky-wrap{border:1px solid #2b3f6e;border-radius:20px;box-shadow:var(--shadow), inset 0 1px 0 rgba(148,197,255,.12);background:linear-gradient(178deg,#0a142e 0%,#122048 45%,#1b2c5c 80%,#27356b 100%);overflow:hidden;position:relative;user-select:none;-webkit-user-select:none;touch-action:none}
+.sky{position:relative;height:clamp(240px,40vh,360px)}
+.sky::before{ /* sao + trăng */
+  content:"";position:absolute;inset:0;pointer-events:none;
+  background-image:
+    radial-gradient(circle at 86% 16%, #fdf6c9 0 11px, rgba(253,246,201,.35) 13px, transparent 26px),
+    radial-gradient(1.6px 1.6px at 11% 22%, rgba(255,255,255,.8), transparent 60%),
+    radial-gradient(1.4px 1.4px at 27% 9%, rgba(255,255,255,.6), transparent 60%),
+    radial-gradient(1.8px 1.8px at 44% 16%, rgba(255,255,255,.7), transparent 60%),
+    radial-gradient(1.3px 1.3px at 63% 7%, rgba(255,255,255,.55), transparent 60%),
+    radial-gradient(1.5px 1.5px at 74% 26%, rgba(255,255,255,.65), transparent 60%),
+    radial-gradient(1.3px 1.3px at 18% 45%, rgba(255,255,255,.4), transparent 60%),
+    radial-gradient(1.6px 1.6px at 92% 44%, rgba(255,255,255,.5), transparent 60%),
+    radial-gradient(1.2px 1.2px at 55% 36%, rgba(255,255,255,.45), transparent 60%);
+  animation:twinkle 3.4s ease-in-out infinite alternate;
+}
+@keyframes twinkle{from{opacity:.9}to{opacity:.55}}
+.sky::after{ /* dải mây mờ chân trời */
+  content:"";position:absolute;left:0;right:0;bottom:0;height:38%;pointer-events:none;
+  background:linear-gradient(180deg, transparent, rgba(148,163,255,.10) 60%, rgba(165,180,252,.16));
+}
+.cloudb{position:absolute;border-radius:999px;filter:blur(15px);background:rgba(148,197,255,.13);pointer-events:none}
+.cloudb.k1{width:230px;height:56px;left:5%;top:14%;animation:cdrift 28s ease-in-out infinite alternate}
+.cloudb.k2{width:150px;height:44px;right:8%;bottom:22%;background:rgba(192,132,252,.10);animation:cdrift 22s ease-in-out infinite alternate-reverse}
+@keyframes cdrift{from{transform:translateX(0)}to{transform:translateX(52px)}}
+.bird{position:absolute;width:56px;height:56px;margin:-28px 0 0 -28px;pointer-events:none;transition:opacity .1s}
+.bird svg{width:100%;height:100%;display:block;filter:drop-shadow(0 4px 9px rgba(0,0,0,.5));animation:flap .72s ease-in-out infinite alternate}
+.bird:nth-child(odd) svg{animation-delay:.2s}
+@keyframes flap{from{transform:scale(1,1)}to{transform:scale(.9,1.06)}}
+.bird .body{fill:url(#gradFl)}
+.bird .eye{fill:#0b1020;opacity:.55}
+.bird.lead .body{fill:url(#gradLd)}
+.bird.lead svg{filter:drop-shadow(0 4px 9px rgba(0,0,0,.5)) drop-shadow(0 0 12px rgba(251,191,36,.55))}
+.bird.lead.okflash .body{fill:#34d399}
+.bird.lead.badflash .body{fill:#f87171}
+.wind{position:absolute;height:2px;border-radius:99px;background:linear-gradient(90deg,transparent,rgba(148,197,255,.3),transparent);animation:windmv 2.6s linear infinite;pointer-events:none}
+@keyframes windmv{from{transform:translateX(-140px)}to{transform:translateX(140px)}}
+.trial-feed{text-align:center;min-height:26px;margin-top:10px;font-size:16px;font-weight:800}
+.trial-feed.ok{color:var(--good)} .trial-feed.no{color:var(--bad)}
+.dpad{display:grid;grid-template-columns:repeat(3,64px);grid-template-rows:repeat(2,52px);gap:7px;justify-content:center;margin-top:12px}
+.dpad button{border-radius:12px;border:1px solid #2c3a61;background:linear-gradient(180deg,#1a2444,#131c36);color:var(--ink);font-size:21px;font-weight:800;cursor:pointer;touch-action:manipulation;line-height:1;box-shadow:0 2px 0 rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,.06)}
+.dpad button:active{transform:translateY(1px) scale(.96);border-color:var(--mc);color:var(--mc)}
+.dpad .d-u{grid-column:2;grid-row:1}
+.dpad .d-l{grid-column:1;grid-row:2}
+.dpad .d-d{grid-column:2;grid-row:2}
+.dpad .d-r{grid-column:3;grid-row:2}
+.play-hint{text-align:center;font-size:13.5px;color:var(--ink-dim);margin-top:8px}
+/* ---------- result ---------- */
+.res-wrap{max-width:520px;margin:40px auto 0;text-align:center}
+.res-mode{font-size:15.5px;font-weight:700;color:var(--ink-soft)}
+.res-score{font-size:clamp(56px,13vw,84px);font-weight:800;letter-spacing:-.04em;line-height:1.05;background:linear-gradient(92deg,var(--ink) 20%,var(--mc) 70%,var(--mc2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.res-note{margin-top:6px;font-size:15.5px;font-weight:700;color:var(--mc);min-height:22px}
+.res-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:26px}
+.res-cell{border:1px solid var(--line);border-radius:14px;padding:14px 8px;background:linear-gradient(160deg,var(--card),var(--card-2))}
+.res-cell b{display:block;font-size:24px;letter-spacing:-.02em;color:var(--mc)}
+.res-cell span{font-size:12.5px;color:var(--ink-soft);font-weight:600}
+.res-actions{display:flex;gap:10px;justify-content:center;margin-top:26px}
+footer{border-top:1px solid var(--line-soft);padding:16px 20px calc(16px + env(safe-area-inset-bottom));text-align:center;font-size:12px;color:var(--ink-dim)}
+button{touch-action:manipulation}
+/* ---------- mobile (iPhone) ---------- */
+@media (max-width:480px){
+  main{padding:0 8px 24px;padding-left:max(8px,env(safe-area-inset-left));padding-right:max(8px,env(safe-area-inset-right))}
+  .hd-in{padding:7px 10px;gap:6px}
+  .logo{font-size:14px;gap:7px;min-width:0;overflow:hidden}
+  .logo > span:last-child{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+  .logo-ic{width:32px;height:32px;font-size:16px;border-radius:9px}
+  .logo small{display:none}
+  .nav-btn{padding:7px 10px;font-size:12.5px;white-space:nowrap}
+  .theme-btn{width:32px;height:32px;font-size:14px}
+  .hero{padding:16px 0 6px}
+  .hero p{font-size:14.5px;margin-top:6px}
+  .stat-row{gap:8px;margin-top:14px}
+  .stat-card{padding:10px 12px;min-width:calc(50% - 4px);flex:1}
+  .stat-card b{font-size:22px}
+  .start-row{margin-top:18px;gap:10px}
+  .btn.primary{width:100%;padding:14px 20px}
+  .howto{padding:14px 16px;font-size:14px;margin-top:20px}
+  .play-hud{gap:7px;padding:8px 0 6px}
+  .hud-item{font-size:12.5px}
+  .hud-item b{font-size:16px}
+  .sky{height:clamp(220px,calc(100dvh - 472px),340px)}
+  .bird{width:42px;height:42px;margin:-21px 0 0 -21px}
+  .dpad{grid-template-columns:repeat(3,minmax(58px,1fr));grid-template-rows:repeat(2,48px);max-width:240px;margin-left:auto;margin-right:auto}
+  .play-hint{font-size:12px;margin-top:5px}
+  .res-grid{gap:8px}
+}
+/* ---------- dark/light mode (persist chung key game:theme) ---------- */
+html[data-theme="light"]{
+  --bg:#edf0f8; --card:#ffffff; --card-2:#f3f5fb; --inset:#e7ebf5;
+  --ink:#1a2233; --ink-soft:#4e5a74; --ink-dim:#7b869e;
+  --line:#cfd8e8; --line-soft:#dfe5f1;
+  --shadow:0 1px 2px rgba(23,32,56,.06),0 12px 32px rgba(23,32,56,.10);
+}
+html[data-theme="light"] body{
+  background:
+    radial-gradient(1100px 560px at 88% -12%, color-mix(in srgb,var(--mc) 11%,transparent), transparent 60%),
+    radial-gradient(900px 620px at -12% 26%, color-mix(in srgb,var(--mc2) 8%,transparent), transparent 55%),
+    linear-gradient(180deg,#f7f9fe 0%, #edf0f8 100%);
+  background-attachment:fixed;
+}
+html[data-theme="light"] header{background:rgba(247,249,254,.85)}
+/* bầu trời giữ tối (màu chim tuned cho nền tối) */
+html[data-theme="light"] .sky-wrap{background:linear-gradient(178deg,#0c1633 0%,#101d3f 60%,#132244 100%);border-color:#27314f}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="hd-in">
+    <div class="logo"><span class="logo-ic">🐦</span><span>Chim lạc<small>lost in migration · chú ý chọn lọc (flanker)</small></span></div>
+    <div class="hd-sp"></div>
+    <button class="theme-btn" id="themeBtn" title="Đổi giao diện sáng/tối">☀️</button>
+    <a class="nav-btn" href="../index.html">⌂ Bộ game</a>
+    <button class="nav-btn active" id="nav-home">Trang chủ</button>
+  </div>
+</header>
+
+<main>
+
+<section class="screen on" id="screen-home">
+  <div class="hero">
+    <h1>Cả đàn bay một hướng — trừ con dẫn đầu</h1>
+    <p>Một đàn chim hiện ra, bạn chỉ trả lời <b>hướng bay của con chim GIỮA đàn</b> — mặc kệ những con xung quanh đang cố kéo mắt bạn theo hướng khác. Đây là bài <b>flanker</b> kinh điển đo chú ý chọn lọc: lọc nhiễu, kìm phản xạ bắt chước đám đông — kỹ năng đọc số giữa rừng dữ liệu gây nhiễu.</p>
+  </div>
+  <div class="stat-row">
+    <div class="stat-card"><b class="num" id="st-lv">1</b><span>Level (1–12)</span>
+      <div class="lv-adjust"><button id="lv-dn">−</button><button id="lv-up">+</button></div>
+    </div>
+    <div class="stat-card"><b class="num" id="st-best">0</b><span>Điểm cao nhất (level này)</span></div>
+    <div class="stat-card"><b class="num" id="st-rounds">0</b><span>Vòng đã chơi</span></div>
+  </div>
+  <div class="start-row">
+    <button class="btn primary" id="btn-start">▶ Chơi</button>
+    <span class="seg" id="seg-diff" title="Chọn độ khó = nhảy thẳng level 1/4/7/10"><button data-lv="1">Dễ</button><button data-lv="4">Vừa</button><button data-lv="7">Khó</button><button data-lv="10">Ác</button></span>
+    <span class="seg" id="seg-dur"><button data-v="60">1′</button><button data-v="120">2′</button><button data-v="180">3′</button></span>
+    <span class="seg" id="seg-sound"><button data-v="1">🔊</button><button data-v="0">🔇</button></span>
+  </div>
+  <div class="howto">
+    <b>Luật:</b> bấm phím mũi tên (hoặc WASD / nút / vuốt) theo hướng của <b>con chim chính giữa</b>. Đàn xung quanh có lúc bay cùng hướng (dễ), có lúc bay hướng khác để <b>đánh lừa</b> — level cao lừa dày hơn, đàn đông hơn, thời gian ngắn hơn. Trả lời trong nửa đầu thời gian ×1,5 điểm; chuỗi đúng 3+ ×1,5 🔥.
+  </div>
+  <div class="hist" id="home-hist"></div>
+</section>
+
+<section class="screen" id="screen-play">
+  <div class="play-hud">
+    <span class="lv-badge" id="hud-lv">Lv 1</span>
+    <span class="hud-item">Điểm <b class="num" id="hud-score">0</b></span>
+    <span class="hud-item">Đúng <b class="num" id="hud-count">0/0</b></span>
+    <span class="hud-streak" id="hud-streak"></span>
+    <div class="hud-sp"></div>
+    <button class="btn-quit" id="btn-quit">Kết thúc</button>
+  </div>
+  <div class="timebox">
+    <div class="round-bar"><i id="round-fill" style="width:100%"></i></div>
+    <span class="clock num" id="round-clock">2:00</span>
+  </div>
+  <div class="sky-wrap">
+    <svg width="0" height="0" style="position:absolute">
+      <defs>
+        <linearGradient id="gradFl" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#7ea6d9"/><stop offset="1" stop-color="#4e6ea3"/>
+        </linearGradient>
+        <linearGradient id="gradLd" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#fbbf24"/><stop offset="1" stop-color="#22d3ee"/>
+        </linearGradient>
+      </defs>
+    </svg>
+    <div class="sky" id="sky"><div class="cloudb k1"></div><div class="cloudb k2"></div></div>
+  </div>
+  <div class="trial-feed" id="trial-feed"></div>
+  <div class="dpad" id="dpad">
+    <button class="d-u" data-d="U">↑</button>
+    <button class="d-l" data-d="L">←</button>
+    <button class="d-d" data-d="D">↓</button>
+    <button class="d-r" data-d="R">→</button>
+  </div>
+  <div class="play-hint">Ghim mắt vào ĐÚNG TÂM đàn — đừng để mắt trôi theo cánh chim rìa</div>
+</section>
+
+<section class="screen" id="screen-result">
+  <div class="res-wrap">
+    <div class="res-mode" id="res-mode"></div>
+    <div class="res-score num" id="res-score">0</div>
+    <div class="res-note" id="res-note"></div>
+    <div class="res-grid">
+      <div class="res-cell"><b class="num" id="res-count"></b><span>Đúng</span></div>
+      <div class="res-cell"><b class="num" id="res-acc"></b><span>Chính xác</span></div>
+      <div class="res-cell"><b class="num" id="res-lv"></b><span>Level</span></div>
+    </div>
+    <div class="res-actions">
+      <button class="btn primary" id="btn-again">Chơi lại</button>
+      <button class="btn" id="btn-home">Trang chủ</button>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>Chim lạc (flanker) · chú ý chọn lọc &amp; kìm phản xạ · Build v2 · 2026-08-02 · dữ liệu lưu trong trình duyệt của bạn</footer>
+
+<script id="gen">
+"use strict";
+/* ================================================================
+   ===GEN-START===  Logic thuần: bảng level, đội hình đàn chim, sinh lượt flanker
+   Lượt: chim GIỮA bay hướng dir, n chim quanh bay fdir (inc = lừa: fdir ≠ dir).
+   offsets: toạ độ đơn vị quanh tâm (0,0) — tâm KHÔNG nằm trong offsets.
+   ================================================================ */
+const MAXLV = 12;
+const DIRS = ["U", "R", "D", "L"];
+const ANG = { U: 0, R: 90, D: 180, L: 270 };
+// Đội hình: hàm nhận n → mảng offset [x,y] (y dương = xuống)
+const LAYOUTS = {
+  plus:    () => [[0, -1], [1, 0], [0, 1], [-1, 0]],
+  x:       () => [[-1, -1], [1, -1], [1, 1], [-1, 1]],
+  line:    (n) => { const o = []; for (let i = 1; i <= n / 2; i++) { o.push([-i, 0]); o.push([i, 0]); } return o; },
+  v:       (n) => { const o = []; for (let i = 1; i <= n / 2; i++) { o.push([-i, i * 0.9]); o.push([i, i * 0.9]); } return o; },
+  x8:      () => [[0, -1], [1, 0], [0, 1], [-1, 0], [-1, -1], [1, -1], [1, 1], [-1, 1]],
+  diamond: () => [[0, -2], [2, 0], [0, 2], [-2, 0], [1, -1], [1, 1], [-1, 1], [-1, -1]],
+};
+// n: số chim quanh · pInc: xác suất lừa · windowMs: thời gian trả lời · layouts: đội hình có ở level
+const LEVELS = [
+  { n: 4, pInc: 0.40, windowMs: 2400, layouts: ["plus", "x"] },
+  { n: 4, pInc: 0.45, windowMs: 2300, layouts: ["plus", "x"] },
+  { n: 4, pInc: 0.50, windowMs: 2200, layouts: ["plus", "x", "line"] },
+  { n: 6, pInc: 0.55, windowMs: 2100, layouts: ["line", "v"] },
+  { n: 6, pInc: 0.60, windowMs: 2000, layouts: ["line", "v"] },
+  { n: 6, pInc: 0.62, windowMs: 1950, layouts: ["line", "v"] },
+  { n: 8, pInc: 0.65, windowMs: 1900, layouts: ["x8", "line", "v"] },
+  { n: 8, pInc: 0.70, windowMs: 1850, layouts: ["x8", "line", "v"] },
+  { n: 8, pInc: 0.72, windowMs: 1800, layouts: ["x8", "line", "v", "diamond"] },
+  { n: 8, pInc: 0.75, windowMs: 1750, layouts: ["x8", "line", "v", "diamond"] },
+  { n: 8, pInc: 0.80, windowMs: 1700, layouts: ["x8", "line", "v", "diamond"] },
+  { n: 8, pInc: 0.85, windowMs: 1650, layouts: ["x8", "line", "v", "diamond"] },
+];
+function genTrial(lv, rnd = Math.random) {
+  const L = LEVELS[Math.min(MAXLV, Math.max(1, lv)) - 1];
+  const dir = DIRS[Math.min(3, Math.floor(rnd() * 4))];
+  const inc = rnd() < L.pInc;
+  let fdir = dir;
+  if (inc) { do { fdir = DIRS[Math.min(3, Math.floor(rnd() * 4))]; } while (fdir === dir); }
+  const layout = L.layouts[Math.min(L.layouts.length - 1, Math.floor(rnd() * L.layouts.length))];
+  const offsets = LAYOUTS[layout](L.n);
+  return { lv, dir, fdir, inc, n: L.n, layout, offsets, windowMs: L.windowMs };
+}
+// Điểm: đúng = 10×lv · trả lời trong nửa đầu cửa sổ ×1.5 · chuỗi ≥3 ×1.5
+function scoreHit(lv, rtMs, windowMs, streak) {
+  return Math.round(10 * lv * (rtMs <= windowMs * 0.5 ? 1.5 : 1) * (streak >= 3 ? 1.5 : 1));
+}
+// Staircase ±3: đúng nhanh +1 · đúng chậm +0.6 · sai/hết giờ −1.5
+function progDelta(hit, rtMs, windowMs) { return hit ? (rtMs <= windowMs * 0.5 ? 1 : 0.6) : -1.5; }
+/* ===GEN-END=== */
+if (typeof module !== "undefined" && module.exports)
+  module.exports = { MAXLV, DIRS, ANG, LAYOUTS, LEVELS, genTrial, scoreHit, progDelta };
+</script>
+
+<script id="app">
+"use strict";
+(() => {
+  const KEY = "chim-lac:v1";
+  const $ = (id) => document.getElementById(id);
+  const TEST = /[?&]test=1/.test(location.search);
+  const load = () => {
+    try { const s = JSON.parse(localStorage.getItem(KEY)); if (s && s.v === 1) return s; } catch (e) {}
+    return { v: 1, settings: { dur: 120, sound: true }, lv: 1, prog: 0, rounds: [] };
+  };
+  const store = load();
+  const save = () => { try { localStorage.setItem(KEY, JSON.stringify(store)); } catch (e) {} };
+  const todayStr = () => { const d = new Date(); return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0"); };
+  const fmt = (s) => Math.floor(s / 60) + ":" + String(Math.floor(s % 60)).padStart(2, "0");
+  const ISI_MS = 320;
+  // dáng én: thân + 2 cánh vắt cong + đuôi chẻ
+  const BIRD_PATH = "M12 2 C12.9 4.6 14.1 6.6 16.1 8.1 C19.2 9.3 21.7 11.3 22.7 13.7 C19.6 12.8 16.9 12.5 14.7 13.3 C15 15.9 14.4 18.6 12.9 20.8 L12 19.1 L11.1 20.8 C9.6 18.6 9 15.9 9.3 13.3 C7.1 12.5 4.4 12.8 1.3 13.7 C2.3 11.3 4.8 9.3 7.9 8.1 C9.9 6.6 11.1 4.6 12 2 Z";
+
+  let audioCtx = null, audioOut = null;
+  function audioDest() {
+    audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+    if (!audioOut) {
+      try { audioOut = audioCtx.createDynamicsCompressor(); audioOut.threshold.value = -18; audioOut.knee.value = 24; audioOut.ratio.value = 6; audioOut.connect(audioCtx.destination); }
+      catch (e) { audioOut = audioCtx.destination; }
+    }
+    if (audioCtx.state === "suspended") { try { audioCtx.resume(); } catch (e) {} }
+    return audioOut;
+  }
+  function beep(f, dur, vol) {
+    if (!store.settings.sound) return;
+    try {
+      const out = audioDest(), t = audioCtx.currentTime;
+      const o = audioCtx.createOscillator(), g = audioCtx.createGain();
+      o.frequency.value = f; o.type = "sine";
+      g.gain.setValueAtTime(0.0001, t);
+      g.gain.exponentialRampToValueAtTime(vol, t + 0.015);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + dur / 1000);
+      o.connect(g); g.connect(out); o.start(t); o.stop(t + dur / 1000 + 0.03);
+    } catch (e) {}
+  }
+
+  const screens = { home: $("screen-home"), play: $("screen-play"), result: $("screen-result") };
+  function show(k) { Object.entries(screens).forEach(([n, el]) => el.classList.toggle("on", n === k)); }
+
+  function renderHome() {
+    $("st-lv").textContent = store.lv;
+    const mine = store.rounds.filter((r) => r.lv === store.lv);
+    $("st-best").textContent = mine.length ? Math.max(...mine.map((r) => r.s)) : 0;
+    $("st-rounds").textContent = store.rounds.length;
+    document.querySelectorAll("#seg-dur button").forEach((b) => b.classList.toggle("on", +b.dataset.v === store.settings.dur));
+    document.querySelectorAll("#seg-sound button").forEach((b) => b.classList.toggle("on", !!+b.dataset.v === store.settings.sound));
+    document.querySelectorAll("#seg-diff button").forEach((b) => { const lo = +b.dataset.lv; b.classList.toggle("on", store.lv >= lo && store.lv < lo + 3); });
+    const rows = store.rounds.slice(-8).reverse().map((r) =>
+      `<tr><td>${r.d}</td><td>Lv ${r.lv}</td><td class="r num">${r.hit}/${r.tr}</td><td class="r num"><b>${r.s}</b></td></tr>`).join("");
+    $("home-hist").innerHTML = rows
+      ? `<table><tr><th>Ngày</th><th>Level</th><th class="r">Đúng</th><th class="r">Điểm</th></tr>${rows}</table>`
+      : `<div class="empty">Chưa có vòng nào — bấm ▶ Chơi để dẫn đàn chim đầu tiên 🐦</div>`;
+  }
+
+  /* ---------- vòng chơi ---------- */
+  const sky = $("sky");
+  let game = null, trial = null, phase = "idle", tShow = 0, timers = [], clockId = null;
+  const clearTimers = () => { timers.forEach(clearTimeout); timers = []; };
+  const later = (fn, ms) => timers.push(setTimeout(fn, ms));
+
+  function birdEl(dir, lead) {
+    const d = document.createElement("div");
+    d.className = "bird" + (lead ? " lead" : "");
+    d.innerHTML = `<svg viewBox="0 0 24 24"><path class="body" d="${BIRD_PATH}" transform="rotate(${ANG[dir]} 12 12)"/><circle class="eye" cx="12" cy="6.4" r=".9" transform="rotate(${ANG[dir]} 12 12)"/></svg>`;
+    return d;
+  }
+
+  function renderFlock() {
+    sky.querySelectorAll(".bird").forEach((el) => el.remove());
+    const W = sky.clientWidth, H = sky.clientHeight;
+    const ext = Math.max(1, ...trial.offsets.map((o) => Math.max(Math.abs(o[0]), Math.abs(o[1]))));
+    const unit = Math.min(64, (Math.min(W, H) / 2 - 40) / ext);
+    const cx = W / 2, cy = H / 2;
+    trial.offsets.forEach((o) => {
+      const b = birdEl(trial.fdir, false);
+      b.style.left = (cx + o[0] * unit) + "px";
+      b.style.top = (cy + o[1] * unit) + "px";
+      sky.appendChild(b);
+    });
+    const ld = birdEl(trial.dir, true);
+    ld.style.left = cx + "px"; ld.style.top = cy + "px";
+    sky.appendChild(ld);
+  }
+
+  function decorWind() {
+    sky.querySelectorAll(".wind").forEach((el) => el.remove());
+    for (let i = 0; i < 4; i++) {
+      const w = document.createElement("div");
+      w.className = "wind";
+      w.style.left = 10 + Math.random() * 70 + "%";
+      w.style.top = 8 + Math.random() * 84 + "%";
+      w.style.width = 60 + Math.random() * 90 + "px";
+      w.style.animationDelay = (Math.random() * 2.4) + "s";
+      sky.appendChild(w);
+    }
+  }
+
+  function startRound() {
+    game = { over: false, score: 0, hits: 0, trials: 0, streak: 0, lvStart: store.lv,
+             endAt: Date.now() + store.settings.dur * 1000 };
+    $("hud-score").textContent = "0"; $("hud-count").textContent = "0/0"; $("hud-streak").textContent = "";
+    show("play");
+    decorWind();
+    clearInterval(clockId);
+    clockId = setInterval(() => {
+      if (!game || game.over) return;
+      const left = Math.max(0, game.endAt - Date.now());
+      $("round-clock").textContent = fmt(left / 1000);
+      $("round-fill").style.width = (left / (store.settings.dur * 1000) * 100) + "%";
+      if (left <= 0) endRound();
+    }, 100);
+    nextTrial();
+  }
+
+  function nextTrial() {
+    if (!game || game.over) return;
+    clearTimers();
+    phase = "isi";
+    sky.querySelectorAll(".bird").forEach((el) => el.remove());
+    $("trial-feed").textContent = ""; $("trial-feed").className = "trial-feed";
+    $("hud-lv").textContent = "Lv " + store.lv;
+    later(() => {
+      trial = genTrial(store.lv);
+      phase = "show"; tShow = performance.now();
+      renderFlock();
+      later(() => { if (phase === "show") resolve(false, null, trial.windowMs); }, trial.windowMs);
+    }, ISI_MS);
+  }
+
+  function answer(d) {
+    if (!game || game.over || phase !== "show") return;
+    const rt = performance.now() - tShow;
+    resolve(d === trial.dir, d, rt);
+  }
+
+  function resolve(hit, picked, rt) {
+    if (phase === "feedback") return;
+    clearTimers();
+    phase = "feedback";
+    game.trials++;
+    const lead = sky.querySelector(".bird.lead");
+    const f = $("trial-feed");
+    const AR = { U: "↑", R: "→", D: "↓", L: "←" };
+    if (hit) {
+      game.hits++; game.streak++;
+      const pts = scoreHit(store.lv, rt, trial.windowMs, game.streak);
+      game.score += pts;
+      if (lead) lead.classList.add("okflash");
+      f.textContent = `+${pts} · ${(rt / 1000).toFixed(2)}s`;
+      f.className = "trial-feed ok";
+      beep(880, 90, 0.09);
+    } else {
+      game.streak = 0;
+      if (lead) lead.classList.add("badflash");
+      f.textContent = (picked == null ? "🐌 Hết giờ — " : "❌ Trượt — ") +
+        `con GIỮA bay ${AR[trial.dir]}` + (trial.inc ? ` (đàn lừa bay ${AR[trial.fdir]})` : " (cả đàn cùng hướng!)");
+      f.className = "trial-feed no";
+      beep(220, 150, 0.09);
+    }
+    store.prog = (store.prog || 0) + progDelta(hit, rt, trial.windowMs);
+    if (store.prog >= 3 && store.lv < MAXLV) { store.lv++; store.prog = 0; }
+    else if (store.prog <= -3 && store.lv > 1) { store.lv--; store.prog = 0; }
+    save();
+    $("hud-score").textContent = game.score;
+    $("hud-count").textContent = game.hits + "/" + game.trials;
+    $("hud-streak").textContent = game.streak >= 3 ? "🔥 " + game.streak : "";
+    later(nextTrial, hit ? 620 : 1250);
+  }
+
+  function endRound() {
+    if (!game || game.over) return;
+    game.over = true;
+    clearTimers(); clearInterval(clockId); clockId = null;
+    store.rounds.push({ d: todayStr(), ts: Date.now(), s: game.score, hit: game.hits, tr: game.trials, lv: game.lvStart });
+    if (store.rounds.length > 60) store.rounds = store.rounds.slice(-60);
+    save();
+    $("res-mode").textContent = "Chim lạc · " + store.settings.dur / 60 + " phút";
+    $("res-score").textContent = game.score;
+    $("res-note").textContent = store.lv > game.lvStart ? "🚀 Lên Level " + store.lv + "!" : store.lv < game.lvStart ? "Hạ về Level " + store.lv : "";
+    $("res-count").textContent = game.hits + "/" + game.trials;
+    $("res-acc").textContent = game.trials ? Math.round(100 * game.hits / game.trials) + "%" : "—";
+    $("res-lv").textContent = game.lvStart === store.lv ? "Lv " + store.lv : "Lv " + game.lvStart + " → " + store.lv;
+    beep(880, 200, 0.1); setTimeout(() => beep(1175, 260, 0.1), 220);
+    show("result");
+  }
+
+  // bàn phím: mũi tên + WASD
+  const KEYMAP = { ArrowUp: "U", ArrowRight: "R", ArrowDown: "D", ArrowLeft: "L", w: "U", d: "R", s: "D", a: "L", W: "U", D: "R", S: "D", A: "L" };
+  window.addEventListener("keydown", (e) => {
+    if (!screens.play.classList.contains("on")) return;
+    const d = KEYMAP[e.key];
+    if (d) { answer(d); e.preventDefault(); }
+  });
+  document.querySelectorAll("#dpad button").forEach((b) =>
+    b.addEventListener("pointerdown", (e) => { e.preventDefault(); answer(b.dataset.d); }));
+  // vuốt trên bầu trời
+  let swipe = null;
+  const skyWrap = document.querySelector(".sky-wrap");
+  skyWrap.addEventListener("pointerdown", (e) => { swipe = { x: e.clientX, y: e.clientY }; });
+  skyWrap.addEventListener("pointerup", (e) => {
+    if (!swipe) return;
+    const dx = e.clientX - swipe.x, dy = e.clientY - swipe.y;
+    swipe = null;
+    if (Math.max(Math.abs(dx), Math.abs(dy)) < 24) return;
+    answer(Math.abs(dx) > Math.abs(dy) ? (dx > 0 ? "R" : "L") : (dy > 0 ? "D" : "U"));
+  });
+
+  $("btn-start").addEventListener("click", startRound);
+  $("btn-again").addEventListener("click", startRound);
+  $("btn-quit").addEventListener("click", endRound);
+  $("btn-home").addEventListener("click", () => { renderHome(); show("home"); });
+  $("nav-home").addEventListener("click", () => { if (game && !game.over) endRound(); renderHome(); show("home"); });
+  $("lv-up").addEventListener("click", () => { if (store.lv < MAXLV) { store.lv++; store.prog = 0; save(); renderHome(); } });
+  $("lv-dn").addEventListener("click", () => { if (store.lv > 1) { store.lv--; store.prog = 0; save(); renderHome(); } });
+  document.querySelectorAll("#seg-dur button").forEach((b) =>
+    b.addEventListener("click", () => { store.settings.dur = +b.dataset.v; save(); renderHome(); }));
+  document.querySelectorAll("#seg-sound button").forEach((b) =>
+    b.addEventListener("click", () => { store.settings.sound = !!+b.dataset.v; save(); renderHome(); }));
+  document.querySelectorAll("#seg-diff button").forEach((b) =>
+    b.addEventListener("click", () => { store.lv = +b.dataset.lv; store.prog = 0; save(); renderHome(); }));
+
+  if (TEST) {
+    window.__cl = {
+      trial: () => trial && { dir: trial.dir, fdir: trial.fdir, inc: trial.inc, n: trial.n, layout: trial.layout, windowMs: trial.windowMs },
+      phase: () => phase,
+      game: () => game,
+      store: () => store,
+    };
+  }
+
+  renderHome();
+})();
+</script>
+<script>
+(function () {
+  var KEY = 'game:theme', root = document.documentElement;
+  function icon() {
+    var b = document.getElementById('themeBtn');
+    if (b) b.textContent = root.dataset.theme === 'light' ? '🌙' : '☀️';
+  }
+  var b = document.getElementById('themeBtn');
+  if (b) {
+    icon();
+    b.addEventListener('click', function () {
+      var t = root.dataset.theme === 'light' ? 'dark' : 'light';
+      root.dataset.theme = t;
+      try { localStorage.setItem(KEY, t); } catch (e) {}
+      var m = document.querySelector('meta[name="theme-color"]');
+      if (m) m.content = t === 'light' ? '#eef1f8' : '#0b1020';
+      icon();
+    });
+  }
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"/>
+<meta name="theme-color" content="#0b1020"/>
+<title>Bóng nảy — nhớ gương chắn, đoán cửa thoát</title>
+<script>try{document.documentElement.dataset.theme=localStorage.getItem('game:theme')||'dark'}catch(e){document.documentElement.dataset.theme='dark'}</script>
+<style>
+:root{
+  --bg:#0b1020; --card:#151d33; --card-2:#1a2340; --inset:#0f1628;
+  --ink:#e9eef9; --ink-soft:#98a3bb; --ink-dim:#5f6b85;
+  --line:#27314f; --line-soft:#1d2742; --good:#34d399; --bad:#f87171;
+  --mc:#2dd4bf; --mc2:#a3e635;
+  --radius:20px; --shadow:0 1px 2px rgba(0,0,0,.35),0 12px 32px rgba(0,0,0,.38);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+button,input,select{font-family:inherit}
+html{-webkit-text-size-adjust:100%}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+  background:
+    radial-gradient(1100px 560px at 88% -12%, color-mix(in srgb,var(--mc) 13%,transparent), transparent 60%),
+    radial-gradient(900px 620px at -12% 26%, color-mix(in srgb,var(--mc2) 10%,transparent), transparent 55%),
+    linear-gradient(180deg,#0e1428 0%, var(--bg) 100%);
+  background-attachment:fixed;
+  color:var(--ink);line-height:1.5;min-height:100vh;display:flex;flex-direction:column}
+main{flex:1;width:100%;max-width:760px;margin:0 auto;padding:0 20px 40px}
+.num{font-variant-numeric:tabular-nums}
+header{position:sticky;top:0;z-index:10;background:rgba(11,16,32,.78);backdrop-filter:blur(10px);border-bottom:1px solid var(--line-soft)}
+.hd-in{max-width:760px;margin:0 auto;padding:11px 20px;display:flex;align-items:center;gap:14px}
+.logo{font-weight:800;font-size:18px;letter-spacing:-.02em;display:flex;align-items:center;gap:11px}
+.logo-ic{width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg,var(--mc),var(--mc2));display:flex;align-items:center;justify-content:center;font-size:22px;flex:none;box-shadow:0 4px 16px color-mix(in srgb,var(--mc) 45%,transparent)}
+.logo small{display:block;font-size:11px;font-weight:600;color:var(--ink-soft)}
+.hd-sp{flex:1}
+.theme-btn{border:1px solid var(--line);background:var(--card);color:var(--ink);width:38px;height:38px;border-radius:999px;cursor:pointer;font-size:16px;flex:none;line-height:1;padding:0}
+.nav-btn{border:1px solid var(--line);background:var(--card);color:var(--ink);padding:9px 16px;border-radius:999px;font-size:14px;font-weight:600;cursor:pointer;text-decoration:none;display:inline-block}
+.nav-btn:hover{border-color:var(--mc)}
+.nav-btn.active{background:linear-gradient(135deg,var(--mc),var(--mc2));color:#0b1020;border-color:transparent}
+.screen{display:none;animation:fadeIn .18s ease}
+.screen.on{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+.hero{padding:34px 0 10px}
+.hero h1{font-size:clamp(29px,5.4vw,42px);letter-spacing:-.03em;background:linear-gradient(92deg,var(--ink) 35%,var(--mc) 78%,var(--mc2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero p{color:var(--ink-soft);margin-top:9px;max-width:640px;font-size:16.5px}
+.stat-row{display:flex;gap:12px;margin-top:22px;flex-wrap:wrap}
+.stat-card{border:1px solid var(--line);border-radius:14px;padding:14px 20px 14px 22px;background:linear-gradient(160deg,var(--card),var(--card-2));min-width:120px;position:relative;overflow:hidden;box-shadow:var(--shadow)}
+.stat-card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--sc,var(--mc))}
+.stat-card:nth-child(1){--sc:var(--mc)}
+.stat-card:nth-child(2){--sc:#fbbf24}
+.stat-card:nth-child(3){--sc:#38bdf8}
+.stat-card b{display:block;font-size:28px;letter-spacing:-.02em;color:var(--sc,var(--mc))}
+.stat-card span{font-size:13px;color:var(--ink-soft);font-weight:600}
+.lv-adjust{position:absolute;right:10px;top:12px;display:flex;gap:5px}
+.lv-adjust button{width:30px;height:30px;border-radius:9px;border:1px solid var(--line);background:var(--inset);color:var(--ink);font-size:17px;font-weight:800;cursor:pointer;line-height:1}
+.lv-adjust button:hover{border-color:var(--mc);color:var(--mc)}
+.btn{border:1px solid var(--line);border-radius:14px;padding:13px 24px;font-size:16px;font-weight:700;cursor:pointer;background:var(--card);color:var(--ink)}
+.btn.primary{background:linear-gradient(135deg,var(--mc),var(--mc2));border-color:transparent;color:#0b1020;font-size:17.5px;padding:15px 34px;box-shadow:0 8px 26px color-mix(in srgb,var(--mc) 38%,transparent)}
+.btn:hover{filter:brightness(1.08)}
+.start-row{margin-top:26px;display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--card)}
+.seg button{border:none;background:transparent;padding:10px 16px;font-size:14.5px;font-weight:600;cursor:pointer;color:var(--ink-soft)}
+.seg button+button{border-left:1px solid var(--line-soft)}
+.seg button.on{background:linear-gradient(135deg,var(--mc),var(--mc2));color:#0b1020}
+.howto{margin-top:30px;border:1px solid var(--line);border-left:4px solid var(--mc);border-radius:var(--radius);padding:20px 22px;background:var(--card);font-size:15.5px;color:var(--ink-soft);max-width:640px}
+.howto b{color:var(--mc)}
+.hist{margin-top:26px;border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;background:var(--card)}
+.hist table{width:100%;border-collapse:collapse;font-size:14.5px}
+.hist th{background:var(--inset);text-align:left;padding:10px 14px;font-size:12.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-soft)}
+.hist td{padding:10px 14px;border-top:1px solid var(--line-soft)}
+.hist .r{text-align:right}
+.empty{padding:26px;text-align:center;color:var(--ink-soft);font-size:15px}
+/* ---------- play ---------- */
+.play-hud{display:flex;align-items:center;gap:12px;padding:14px 0 8px;flex-wrap:wrap}
+.hud-item{font-size:14.5px;color:var(--ink-soft);font-weight:600}
+.hud-item b{font-size:20px;color:var(--ink)}
+.hud-streak{font-size:15px;font-weight:800;color:#fbbf24}
+.lv-badge{font-size:13px;font-weight:800;padding:4px 12px;border-radius:999px;color:var(--mc);background:color-mix(in srgb,var(--mc) 14%,transparent);border:1px solid color-mix(in srgb,var(--mc) 38%,transparent)}
+.hud-sp{flex:1}
+.btn-quit{border:1px solid var(--line);background:var(--card);border-radius:999px;padding:8px 15px;font-size:13.5px;font-weight:600;cursor:pointer;color:var(--ink-soft)}
+.btn-quit:hover{color:var(--bad);border-color:var(--bad)}
+.timebox{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.round-bar{height:6px;border-radius:99px;background:var(--inset);overflow:hidden;flex:1}
+.round-bar i{display:block;height:100%;background:linear-gradient(90deg,var(--mc),var(--mc2));border-radius:99px}
+.clock{font-size:14.5px;font-weight:800;color:var(--ink-soft);min-width:38px;text-align:right}
+.phase-note{text-align:center;font-size:15px;font-weight:800;letter-spacing:.04em;color:var(--ink-soft);margin-bottom:10px;min-height:24px}
+.phase-note.pick{color:var(--mc)}
+.board-wrap{
+  max-width:480px;margin:0 auto;border:1px solid #34477a;border-radius:22px;padding:14px;position:relative;
+  background:linear-gradient(160deg,#1b2a52 0%,#131f40 40%,#0e1730 100%);
+  box-shadow:var(--shadow), inset 0 1px 0 rgba(148,197,255,.15), inset 0 -2px 8px rgba(0,0,0,.5);
+  user-select:none;-webkit-user-select:none;
+}
+.board-wrap::before{ /* ánh đèn bàn */
+  content:"";position:absolute;inset:0;border-radius:22px;pointer-events:none;
+  background:radial-gradient(340px 200px at 22% 8%, rgba(125,211,252,.10), transparent 65%);
+}
+.board-wrap .screw{position:absolute;width:7px;height:7px;border-radius:50%;pointer-events:none;
+  background:radial-gradient(circle at 35% 30%, #b9cae8, #46587e 75%);box-shadow:0 0 0 1px rgba(8,15,32,.6)}
+.board-wrap .screw.s1{left:8px;top:8px}
+.board-wrap .screw.s2{right:8px;top:8px}
+.board-wrap .screw.s3{left:8px;bottom:8px}
+.board-wrap .screw.s4{right:8px;bottom:8px}
+.board{display:grid;grid-template-columns:repeat(var(--n),1fr);gap:5px;position:relative}
+.corner{aspect-ratio:1}
+.slot{
+  aspect-ratio:1;border-radius:10px;border:1.5px dashed #34426b;cursor:pointer;
+  background:linear-gradient(180deg,#0c1226,#0f1830);
+  display:flex;align-items:center;justify-content:center;font-size:clamp(13px,3vw,19px);font-weight:800;color:#4a5b85;
+  transition:border-color .1s,background .1s,box-shadow .1s;touch-action:manipulation;padding:0;
+  box-shadow:inset 0 2px 6px rgba(0,0,0,.55);
+}
+.slot::after{content:"·"}
+.slot:hover{border-color:var(--mc);color:var(--mc);box-shadow:inset 0 2px 6px rgba(0,0,0,.55),0 0 10px color-mix(in srgb,var(--mc) 25%,transparent)}
+.slot.entry{border-style:solid;border-color:color-mix(in srgb,var(--mc) 75%,transparent);background:linear-gradient(180deg,color-mix(in srgb,var(--mc) 22%,#0c1226),#0f1830);color:var(--mc);animation:entrypulse 1.4s ease-in-out infinite}
+.slot.entry::after{content:attr(data-arrow)}
+@keyframes entrypulse{0%,100%{box-shadow:inset 0 2px 6px rgba(0,0,0,.4),0 0 8px color-mix(in srgb,var(--mc) 30%,transparent)}50%{box-shadow:inset 0 2px 6px rgba(0,0,0,.4),0 0 22px color-mix(in srgb,var(--mc) 60%,transparent)}}
+.slot.ok{border-style:solid;border-color:var(--good);background:linear-gradient(180deg,color-mix(in srgb,var(--good) 24%,#0c1226),#0f1830);color:var(--good);box-shadow:0 0 18px color-mix(in srgb,var(--good) 50%,transparent);animation:none}
+.slot.ok::after{content:"◉"}
+.slot.bad{border-style:solid;border-color:var(--bad);background:linear-gradient(180deg,color-mix(in srgb,var(--bad) 20%,#0c1226),#0f1830);color:var(--bad);box-shadow:0 0 14px color-mix(in srgb,var(--bad) 45%,transparent)}
+.slot.bad::after{content:"✕"}
+.slot.picked{border-style:solid;border-color:#fbbf24;color:#fbbf24}
+.slot.picked::after{content:"?"}
+.cell{
+  aspect-ratio:1;border-radius:10px;position:relative;overflow:hidden;
+  background:linear-gradient(160deg,#182448,#121b38 60%,#101832);
+  border:1px solid #263f66;
+  box-shadow:inset 0 3px 8px rgba(0,0,0,.5), inset 0 -1px 0 rgba(148,197,255,.07);
+}
+.bump{position:absolute;inset:0;opacity:0;transition:opacity .12s}
+.bump::before{ /* thanh gương metallic: viền màu + lõi sáng */
+  content:"";position:absolute;left:5%;right:5%;top:calc(50% - 9%);height:18%;border-radius:99px;
+  background:linear-gradient(180deg, color-mix(in srgb,var(--mc) 80%,#fff) 0%, var(--mc) 35%, var(--mc2) 100%);
+  box-shadow:0 0 14px color-mix(in srgb,var(--mc) 65%,transparent), inset 0 1px 2px rgba(255,255,255,.65), inset 0 -2px 3px rgba(0,20,30,.4);
+}
+.bump::after{ /* 2 đinh tán 2 đầu gương */
+  content:"";position:absolute;left:5%;right:5%;top:calc(50% - 9%);height:18%;border-radius:99px;
+  background:
+    radial-gradient(circle at 8% 50%, #f4fbff 0 26%, rgba(244,251,255,0) 36%),
+    radial-gradient(circle at 92% 50%, #f4fbff 0 26%, rgba(244,251,255,0) 36%);
+}
+.bump.o1{transform:rotate(-45deg)}   /* gương "/" */
+.bump.o2{transform:rotate(45deg)}    /* gương "\" */
+.bump.show{opacity:1}
+.bump.hit::before{background:linear-gradient(180deg,#fef08a,#fbbf24 40%,#fb923c);box-shadow:0 0 22px rgba(251,191,36,.85), inset 0 1px 2px rgba(255,255,255,.7)}
+.ball{
+  position:absolute;width:7.4%;aspect-ratio:1;border-radius:50%;z-index:5;pointer-events:none;
+  background:radial-gradient(circle at 32% 28%, #ffffff, #dbe6f2 34%, #8ba3c2 72%, #5c7396);
+  box-shadow:0 0 18px rgba(190,225,255,.9), 0 3px 8px rgba(0,0,0,.55), inset 0 -2px 4px rgba(20,40,70,.5);
+  transition:left .1s linear, top .1s linear;opacity:0;
+}
+.ball.on{opacity:1}
+.board-feed{text-align:center;min-height:26px;margin-top:10px;font-size:16px;font-weight:800}
+.board-feed.ok{color:var(--good)} .board-feed.no{color:var(--bad)}
+.play-hint{text-align:center;font-size:14px;color:var(--ink-dim);margin-top:8px}
+/* ---------- result ---------- */
+.res-wrap{max-width:520px;margin:40px auto 0;text-align:center}
+.res-mode{font-size:15.5px;font-weight:700;color:var(--ink-soft)}
+.res-score{font-size:clamp(56px,13vw,84px);font-weight:800;letter-spacing:-.04em;line-height:1.05;background:linear-gradient(92deg,var(--ink) 20%,var(--mc) 70%,var(--mc2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.res-note{margin-top:6px;font-size:15.5px;font-weight:700;color:var(--mc);min-height:22px}
+.res-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:26px}
+.res-cell{border:1px solid var(--line);border-radius:14px;padding:14px 8px;background:linear-gradient(160deg,var(--card),var(--card-2))}
+.res-cell b{display:block;font-size:24px;letter-spacing:-.02em;color:var(--mc)}
+.res-cell span{font-size:12.5px;color:var(--ink-soft);font-weight:600}
+.res-actions{display:flex;gap:10px;justify-content:center;margin-top:26px}
+footer{border-top:1px solid var(--line-soft);padding:16px 20px calc(16px + env(safe-area-inset-bottom));text-align:center;font-size:12px;color:var(--ink-dim)}
+button{touch-action:manipulation}
+/* ---------- mobile (iPhone) ---------- */
+@media (max-width:480px){
+  main{padding:0 8px 28px;padding-left:max(8px,env(safe-area-inset-left));padding-right:max(8px,env(safe-area-inset-right))}
+  .hd-in{padding:7px 10px;gap:6px}
+  .logo{font-size:14px;gap:7px;min-width:0;overflow:hidden}
+  .logo > span:last-child{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+  .logo-ic{width:32px;height:32px;font-size:16px;border-radius:9px}
+  .logo small{display:none}
+  .nav-btn{padding:7px 10px;font-size:12.5px;white-space:nowrap}
+  .theme-btn{width:32px;height:32px;font-size:14px}
+  .hero{padding:16px 0 6px}
+  .hero p{font-size:14.5px;margin-top:6px}
+  .stat-row{gap:8px;margin-top:14px}
+  .stat-card{padding:10px 12px;min-width:calc(50% - 4px);flex:1}
+  .stat-card b{font-size:22px}
+  .start-row{margin-top:18px;gap:10px}
+  .btn.primary{width:100%;padding:14px 20px}
+  .howto{padding:14px 16px;font-size:14px;margin-top:20px}
+  .play-hud{gap:7px;padding:8px 0 6px}
+  .hud-item{font-size:12.5px}
+  .hud-item b{font-size:16px}
+  .board-wrap{padding:7px;border-radius:14px;max-width:min(92vw,420px)}
+  .board{gap:3px}
+  .play-hint{font-size:12.5px;margin-top:6px}
+  .res-grid{gap:8px}
+}
+/* ---------- dark/light mode (persist chung key game:theme) ---------- */
+html[data-theme="light"]{
+  --bg:#edf0f8; --card:#ffffff; --card-2:#f3f5fb; --inset:#e7ebf5;
+  --ink:#1a2233; --ink-soft:#4e5a74; --ink-dim:#7b869e;
+  --line:#cfd8e8; --line-soft:#dfe5f1;
+  --shadow:0 1px 2px rgba(23,32,56,.06),0 12px 32px rgba(23,32,56,.10);
+}
+html[data-theme="light"] body{
+  background:
+    radial-gradient(1100px 560px at 88% -12%, color-mix(in srgb,var(--mc) 11%,transparent), transparent 60%),
+    radial-gradient(900px 620px at -12% 26%, color-mix(in srgb,var(--mc2) 8%,transparent), transparent 55%),
+    linear-gradient(180deg,#f7f9fe 0%, #edf0f8 100%);
+  background-attachment:fixed;
+}
+html[data-theme="light"] header{background:rgba(247,249,254,.85)}
+/* bàn pinball giữ tối (màu gương/bóng tuned cho nền tối) */
+html[data-theme="light"] .board-wrap{background:linear-gradient(165deg,#141b31,#0e1526);border-color:#27314f}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="hd-in">
+    <div class="logo"><span class="logo-ic">🎱</span><span>Bóng nảy<small>pinball recall · trí nhớ làm việc + mô phỏng</small></span></div>
+    <div class="hd-sp"></div>
+    <button class="theme-btn" id="themeBtn" title="Đổi giao diện sáng/tối">☀️</button>
+    <a class="nav-btn" href="../index.html">⌂ Bộ game</a>
+    <button class="nav-btn active" id="nav-home">Trang chủ</button>
+  </div>
+</header>
+
+<main>
+
+<section class="screen on" id="screen-home">
+  <div class="hero">
+    <h1>Nhớ gương chắn — tính đường bóng trong đầu</h1>
+    <p>Các <b>gương chắn chéo</b> hiện lên vài giây rồi biến mất. Bóng lăn vào từ cửa mũi tên, <b>nảy vuông góc</b> mỗi lần chạm gương đã ẩn — bạn phải giữ bản đồ gương trong trí nhớ, mô phỏng từng cú nảy và bấm <b>cửa bóng thoát ra</b>. Đây là bài kép: trí nhớ làm việc giữ hình ảnh + suy luận không gian chạy mô phỏng — kỹ năng đọc sơ đồ, dò luồng trong đầu.</p>
+  </div>
+  <div class="stat-row">
+    <div class="stat-card"><b class="num" id="st-lv">1</b><span>Level (1–12)</span>
+      <div class="lv-adjust"><button id="lv-dn">−</button><button id="lv-up">+</button></div>
+    </div>
+    <div class="stat-card"><b class="num" id="st-best">0</b><span>Điểm cao nhất (level này)</span></div>
+    <div class="stat-card"><b class="num" id="st-rounds">0</b><span>Vòng đã chơi</span></div>
+  </div>
+  <div class="start-row">
+    <button class="btn primary" id="btn-start">▶ Chơi</button>
+    <span class="seg" id="seg-diff" title="Chọn độ khó = nhảy thẳng level 1/4/7/10"><button data-lv="1">Dễ</button><button data-lv="4">Vừa</button><button data-lv="7">Khó</button><button data-lv="10">Ác</button></span>
+    <span class="seg" id="seg-dur"><button data-v="60">1′</button><button data-v="120">2′</button><button data-v="180">3′</button></span>
+    <span class="seg" id="seg-sound"><button data-v="1">🔊</button><button data-v="0">🔇</button></span>
+  </div>
+  <div class="howto">
+    <b>Luật:</b> nhìn kỹ vị trí + chiều nghiêng các gương trong lúc <b>GHI NHỚ</b> → gương ẩn đi → bấm cửa quanh bàn nơi bóng sẽ thoát (bóng đi thẳng, chạm gương <b>/</b> hay <b>\</b> thì rẽ 90° theo chiều nghiêng; có thể thoát ngược lại đúng cửa vào). Sau khi chọn, máy chiếu lại đường bóng thật để bạn đối chiếu. Level cao: bàn to hơn, nhiều gương hơn, thời gian nhìn ngắn hơn. Trả lời ≤3s ×1,5 điểm; chuỗi đúng 3+ ×1,5 🔥.
+  </div>
+  <div class="hist" id="home-hist"></div>
+</section>
+
+<section class="screen" id="screen-play">
+  <div class="play-hud">
+    <span class="lv-badge" id="hud-lv">Lv 1</span>
+    <span class="hud-item">Điểm <b class="num" id="hud-score">0</b></span>
+    <span class="hud-item">Đúng <b class="num" id="hud-count">0/0</b></span>
+    <span class="hud-streak" id="hud-streak"></span>
+    <div class="hud-sp"></div>
+    <button class="btn-quit" id="btn-quit">Kết thúc</button>
+  </div>
+  <div class="timebox">
+    <div class="round-bar"><i id="round-fill" style="width:100%"></i></div>
+    <span class="clock num" id="round-clock">2:00</span>
+  </div>
+  <div class="phase-note" id="phase-note">GHI NHỚ GƯƠNG CHẮN…</div>
+  <div class="board-wrap"><span class="screw s1"></span><span class="screw s2"></span><span class="screw s3"></span><span class="screw s4"></span><div class="board" id="board"></div><div class="ball" id="ball"></div></div>
+  <div class="board-feed" id="board-feed"></div>
+  <div class="play-hint">Lần theo đường bóng trong đầu, từng cú nảy một — đừng đoán chay</div>
+</section>
+
+<section class="screen" id="screen-result">
+  <div class="res-wrap">
+    <div class="res-mode" id="res-mode"></div>
+    <div class="res-score num" id="res-score">0</div>
+    <div class="res-note" id="res-note"></div>
+    <div class="res-grid">
+      <div class="res-cell"><b class="num" id="res-count"></b><span>Đúng</span></div>
+      <div class="res-cell"><b class="num" id="res-acc"></b><span>Chính xác</span></div>
+      <div class="res-cell"><b class="num" id="res-lv"></b><span>Level</span></div>
+    </div>
+    <div class="res-actions">
+      <button class="btn primary" id="btn-again">Chơi lại</button>
+      <button class="btn" id="btn-home">Trang chủ</button>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>Bóng nảy (pinball recall) · trí nhớ làm việc &amp; mô phỏng không gian · Build v2 · 2026-08-02 · dữ liệu lưu trong trình duyệt của bạn</footer>
+
+<script id="gen">
+"use strict";
+/* ================================================================
+   ===GEN-START===  Logic thuần: bảng level, mô phỏng bóng nảy, sinh lượt
+   Gương '/' và '\' đổi hướng bóng 90°. Lưới g×g, toạ độ ngoài (outer)
+   (g+2)×(g+2) cho cửa quanh bàn: ox = x+1, oy = y+1.
+   Gương thuận nghịch ⇒ bóng vào từ mép KHÔNG THỂ kẹt vòng lặp — luôn thoát.
+   ================================================================ */
+const MAXLV = 12;
+// g: cỡ bàn · nb: số gương · studyMs: thời gian ghi nhớ
+const LEVELS = [
+  { g: 4, nb: 2, studyMs: 2200 },
+  { g: 4, nb: 3, studyMs: 2100 },
+  { g: 4, nb: 3, studyMs: 1900 },
+  { g: 5, nb: 3, studyMs: 2000 },
+  { g: 5, nb: 4, studyMs: 1900 },
+  { g: 5, nb: 4, studyMs: 1750 },
+  { g: 5, nb: 5, studyMs: 1700 },
+  { g: 5, nb: 6, studyMs: 1600 },
+  { g: 6, nb: 5, studyMs: 1700 },
+  { g: 6, nb: 6, studyMs: 1550 },
+  { g: 6, nb: 7, studyMs: 1400 },
+  { g: 6, nb: 8, studyMs: 1300 },
+];
+const DIRS = { U: { dx: 0, dy: -1 }, D: { dx: 0, dy: 1 }, L: { dx: -1, dy: 0 }, R: { dx: 1, dy: 0 } };
+// gương '/': phải→lên, trái→xuống, lên→phải, xuống→trái · gương '\': phải→xuống, trái→lên, lên→trái, xuống→phải
+function deflect(dir, o) {
+  if (o === "/") return dir === "R" ? "U" : dir === "L" ? "D" : dir === "U" ? "R" : "L";
+  return dir === "R" ? "D" : dir === "L" ? "U" : dir === "U" ? "L" : "R";
+}
+// bumpMap: Map "x,y" -> '/'|'\'. entry: {x,y,dir} ô đầu tiên trong lưới + hướng bay.
+// Trả {path:[{x,y,dir}...], bounces, exit:{x,y,dir,ox,oy}} — exit.ox/oy = cửa outer bóng thoát.
+function simulate(g, bumpMap, entry) {
+  let x = entry.x, y = entry.y, dir = entry.dir, bounces = 0;
+  const path = [], seen = new Set();
+  for (;;) {
+    const key = x + "," + y + "," + dir;
+    if (seen.has(key)) return null; // bất khả thi với gương thuận nghịch — guard chống treo
+    seen.add(key);
+    const o = bumpMap.get(x + "," + y);
+    if (o) { dir = deflect(dir, o); bounces++; }
+    path.push({ x, y, dir });
+    const nx = x + DIRS[dir].dx, ny = y + DIRS[dir].dy;
+    if (nx < 0 || ny < 0 || nx >= g || ny >= g)
+      return { path, bounces, exit: { x, y, dir, ox: nx + 1, oy: ny + 1 } };
+    x = nx; y = ny;
+  }
+}
+// side: 0 trên, 1 phải, 2 dưới, 3 trái — trả entry + toạ độ cửa vào (outer)
+function entryFor(g, side, i) {
+  if (side === 0) return { x: i, y: 0, dir: "D", ox: i + 1, oy: 0, arrow: "↓" };
+  if (side === 1) return { x: g - 1, y: i, dir: "L", ox: g + 1, oy: i + 1, arrow: "←" };
+  if (side === 2) return { x: i, y: g - 1, dir: "U", ox: i + 1, oy: g + 1, arrow: "↑" };
+  return { x: 0, y: i, dir: "R", ox: 0, oy: i + 1, arrow: "→" };
+}
+function genTrial(lv, rnd = Math.random) {
+  const L = LEVELS[Math.min(MAXLV, Math.max(1, lv)) - 1];
+  const g = L.g;
+  for (let t = 0; t < 500; t++) {
+    const pos = Array.from({ length: g * g }, (_, i) => i);
+    for (let i = pos.length - 1; i > 0; i--) {
+      const j = Math.min(i, Math.floor(rnd() * (i + 1)));
+      const tmp = pos[i]; pos[i] = pos[j]; pos[j] = tmp;
+    }
+    const bumpers = pos.slice(0, L.nb).map((p) => ({ x: p % g, y: Math.floor(p / g), o: rnd() < 0.5 ? "/" : "\\" }));
+    const bumpMap = new Map(bumpers.map((b) => [b.x + "," + b.y, b.o]));
+    const entry = entryFor(g, Math.min(3, Math.floor(rnd() * 4)), Math.min(g - 1, Math.floor(rnd() * g)));
+    const sim = simulate(g, bumpMap, entry);
+    if (sim && sim.bounces >= 1)
+      return { lv, g, nb: L.nb, studyMs: L.studyMs, bumpers, entry, exit: sim.exit, path: sim.path, bounces: sim.bounces };
+  }
+  // fallback (thực tế không chạm tới): ép 1 gương ngay ô vào — chắc chắn nảy
+  const entry = entryFor(g, 0, 0);
+  const bumpers = [{ x: 0, y: 0, o: "\\" }];
+  const sim = simulate(g, new Map([["0,0", "\\"]]), entry);
+  return { lv, g, nb: 1, studyMs: L.studyMs, bumpers, entry, exit: sim.exit, path: sim.path, bounces: sim.bounces };
+}
+// Điểm: đúng = 15×lv · trả lời ≤3s ×1.5 · chuỗi ≥3 ×1.5
+function scorePick(lv, rtMs, streak) {
+  return Math.round(15 * lv * (rtMs <= 3000 ? 1.5 : 1) * (streak >= 3 ? 1.5 : 1));
+}
+// Staircase: đúng nhanh +1 · đúng chậm +0.6 · sai/hết giờ −1.5
+function progDelta(hit, rtMs) { return hit ? (rtMs <= 3000 ? 1 : 0.6) : -1.5; }
+/* ===GEN-END=== */
+if (typeof module !== "undefined" && module.exports)
+  module.exports = { MAXLV, LEVELS, DIRS, deflect, simulate, entryFor, genTrial, scorePick, progDelta };
+</script>
+
+<script id="app">
+"use strict";
+(() => {
+  const KEY = "bong-nay:v1";
+  const $ = (id) => document.getElementById(id);
+  const TEST = /[?&]test=1/.test(location.search);
+  const load = () => {
+    try { const s = JSON.parse(localStorage.getItem(KEY)); if (s && s.v === 1) return s; } catch (e) {}
+    return { v: 1, settings: { dur: 120, sound: true }, lv: 1, prog: 0, rounds: [] };
+  };
+  const store = load();
+  const save = () => { try { localStorage.setItem(KEY, JSON.stringify(store)); } catch (e) {} };
+  const todayStr = () => { const d = new Date(); return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0"); };
+  const fmt = (s) => Math.floor(s / 60) + ":" + String(Math.floor(s % 60)).padStart(2, "0");
+  const ANSWER_MS = 9000, STEP_MS = 110;
+
+  let audioCtx = null, audioOut = null;
+  function audioDest() {
+    audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+    if (!audioOut) {
+      try { audioOut = audioCtx.createDynamicsCompressor(); audioOut.threshold.value = -18; audioOut.knee.value = 24; audioOut.ratio.value = 6; audioOut.connect(audioCtx.destination); }
+      catch (e) { audioOut = audioCtx.destination; }
+    }
+    if (audioCtx.state === "suspended") { try { audioCtx.resume(); } catch (e) {} }
+    return audioOut;
+  }
+  function beep(f, dur, vol) {
+    if (!store.settings.sound) return;
+    try {
+      const out = audioDest(), t = audioCtx.currentTime;
+      const o = audioCtx.createOscillator(), g = audioCtx.createGain();
+      o.frequency.value = f; o.type = "sine";
+      g.gain.setValueAtTime(0.0001, t);
+      g.gain.exponentialRampToValueAtTime(vol, t + 0.015);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + dur / 1000);
+      o.connect(g); g.connect(out); o.start(t); o.stop(t + dur / 1000 + 0.03);
+    } catch (e) {}
+  }
+
+  const screens = { home: $("screen-home"), play: $("screen-play"), result: $("screen-result") };
+  function show(k) { Object.entries(screens).forEach(([n, el]) => el.classList.toggle("on", n === k)); }
+
+  function renderHome() {
+    $("st-lv").textContent = store.lv;
+    const mine = store.rounds.filter((r) => r.lv === store.lv);
+    $("st-best").textContent = mine.length ? Math.max(...mine.map((r) => r.s)) : 0;
+    $("st-rounds").textContent = store.rounds.length;
+    document.querySelectorAll("#seg-dur button").forEach((b) => b.classList.toggle("on", +b.dataset.v === store.settings.dur));
+    document.querySelectorAll("#seg-sound button").forEach((b) => b.classList.toggle("on", !!+b.dataset.v === store.settings.sound));
+    document.querySelectorAll("#seg-diff button").forEach((b) => { const lo = +b.dataset.lv; b.classList.toggle("on", store.lv >= lo && store.lv < lo + 3); });
+    const rows = store.rounds.slice(-8).reverse().map((r) =>
+      `<tr><td>${r.d}</td><td>Lv ${r.lv}</td><td class="r num">${r.hit}/${r.tr}</td><td class="r num"><b>${r.s}</b></td></tr>`).join("");
+    $("home-hist").innerHTML = rows
+      ? `<table><tr><th>Ngày</th><th>Level</th><th class="r">Đúng</th><th class="r">Điểm</th></tr>${rows}</table>`
+      : `<div class="empty">Chưa có vòng nào — bấm ▶ Chơi để thả bóng đầu tiên 🎱</div>`;
+  }
+
+  /* ---------- vòng chơi ---------- */
+  let game = null, trial = null, phase = "idle", tPick = 0, timers = [], clockId = null;
+  const clearTimers = () => { timers.forEach(clearTimeout); timers = []; };
+  const later = (fn, ms) => timers.push(setTimeout(fn, ms));
+  const board = $("board"), ball = $("ball");
+
+  function startRound() {
+    game = { over: false, score: 0, hits: 0, trials: 0, streak: 0, lvStart: store.lv,
+             endAt: Date.now() + store.settings.dur * 1000 };
+    $("hud-score").textContent = "0"; $("hud-count").textContent = "0/0"; $("hud-streak").textContent = "";
+    show("play");
+    clearInterval(clockId);
+    clockId = setInterval(() => {
+      if (!game || game.over) return;
+      const left = Math.max(0, game.endAt - Date.now());
+      $("round-clock").textContent = fmt(left / 1000);
+      $("round-fill").style.width = (left / (store.settings.dur * 1000) * 100) + "%";
+      if (left <= 0) endRound();
+    }, 100);
+    nextTrial();
+  }
+
+  // đặt tâm bóng vào ô outer (ox,oy) — đo px từ chính ô trong grid (chuẩn cả khi có gap)
+  function ballTo(ox, oy, instant) {
+    const n = trial.g + 2;
+    const cell = board.children[oy * n + ox];
+    if (!cell) return;
+    if (instant) ball.style.transition = "none";
+    ball.style.left = (cell.offsetLeft + cell.offsetWidth / 2 - ball.offsetWidth / 2) + "px";
+    ball.style.top = (cell.offsetTop + cell.offsetHeight / 2 - ball.offsetHeight / 2) + "px";
+    if (instant) { void ball.offsetWidth; ball.style.transition = ""; }
+  }
+
+  function buildBoard() {
+    const g = trial.g, n = g + 2;
+    board.style.setProperty("--n", n);
+    board.innerHTML = "";
+    for (let oy = 0; oy < n; oy++) for (let ox = 0; ox < n; ox++) {
+      const isB = ox === 0 || oy === 0 || ox === n - 1 || oy === n - 1;
+      const corner = (ox === 0 || ox === n - 1) && (oy === 0 || oy === n - 1);
+      if (corner) { const d = document.createElement("div"); d.className = "corner"; board.appendChild(d); continue; }
+      if (isB) {
+        const b = document.createElement("button");
+        b.className = "slot"; b.dataset.ox = ox; b.dataset.oy = oy;
+        if (ox === trial.entry.ox && oy === trial.entry.oy) { b.classList.add("entry"); b.dataset.arrow = trial.entry.arrow; }
+        b.addEventListener("pointerdown", (e) => { e.preventDefault(); pickSlot(ox, oy, b); });
+        board.appendChild(b);
+        continue;
+      }
+      const c = document.createElement("div");
+      c.className = "cell";
+      const bp = trial.bumpers.find((q) => q.x === ox - 1 && q.y === oy - 1);
+      if (bp) {
+        const m = document.createElement("div");
+        m.className = "bump " + (bp.o === "/" ? "o1" : "o2") + " show";
+        m.dataset.x = bp.x; m.dataset.y = bp.y;
+        c.appendChild(m);
+      }
+      board.appendChild(c);
+    }
+    board.appendChild(ball); // bóng nằm TRONG board để đo offset ô chính xác (grid bỏ qua absolute)
+  }
+
+  function nextTrial() {
+    if (!game || game.over) return;
+    clearTimers();
+    trial = genTrial(store.lv);
+    phase = "study";
+    $("hud-lv").textContent = "Lv " + store.lv;
+    $("board-feed").textContent = ""; $("board-feed").className = "board-feed";
+    $("phase-note").textContent = "GHI NHỚ GƯƠNG CHẮN…"; $("phase-note").className = "phase-note";
+    buildBoard();
+    ball.classList.add("on");
+    ballTo(trial.entry.ox, trial.entry.oy, true);
+    later(() => {
+      phase = "pick"; tPick = performance.now();
+      document.querySelectorAll(".bump").forEach((el) => el.classList.remove("show"));
+      $("phase-note").textContent = "BÓNG SẼ THOÁT Ở CỬA NÀO?"; $("phase-note").className = "phase-note pick";
+      beep(660, 50, 0.06);
+      later(() => { if (phase === "pick") resolve(false, null, ANSWER_MS); }, ANSWER_MS);
+    }, trial.studyMs);
+  }
+
+  function pickSlot(ox, oy, el) {
+    if (!game || game.over || phase !== "pick") return;
+    const rt = performance.now() - tPick;
+    el.classList.add("picked");
+    resolve(ox === trial.exit.ox && oy === trial.exit.oy, { ox, oy, el }, rt);
+  }
+
+  function slotAt(ox, oy) { return board.querySelector(`.slot[data-ox="${ox}"][data-oy="${oy}"]`); }
+
+  function resolve(hit, picked, rt) {
+    if (phase === "feedback") return;
+    clearTimers();
+    phase = "feedback";
+    game.trials++;
+    // chiếu lại đường bóng thật: lăn từng ô, gương hiện + loé khi chạm
+    let step = 0;
+    const roll = setInterval(() => {
+      if (step < trial.path.length) {
+        const p = trial.path[step];
+        ballTo(p.x + 1, p.y + 1);
+        const bump = board.querySelector(`.bump[data-x="${p.x}"][data-y="${p.y}"]`);
+        if (bump && !bump.classList.contains("show")) {
+          bump.classList.add("show", "hit");
+          beep(523, 40, 0.05);
+        }
+        step++;
+      } else {
+        clearInterval(roll);
+        ballTo(trial.exit.ox, trial.exit.oy);
+        const ex = slotAt(trial.exit.ox, trial.exit.oy);
+        if (ex) { ex.classList.remove("picked"); ex.classList.add("ok"); }
+        if (!hit && picked && picked.el && picked.el !== ex) { picked.el.classList.remove("picked"); picked.el.classList.add("bad"); }
+      }
+    }, STEP_MS);
+    timers.push(roll); // clearTimeout với interval id vẫn dọn được trong browser
+    const f = $("board-feed");
+    if (hit) {
+      game.hits++; game.streak++;
+      const pts = scorePick(store.lv, rt, game.streak);
+      game.score += pts;
+      f.textContent = `+${pts} · ${(rt / 1000).toFixed(1)}s · nảy ${trial.bounces} lần`;
+      f.className = "board-feed ok";
+      beep(880, 100, 0.09);
+    } else {
+      game.streak = 0;
+      f.textContent = (picked ? "❌ Trượt — " : "🐌 Hết giờ — ") + `xem đường bóng: nảy ${trial.bounces} lần, thoát ở cửa ◉`;
+      f.className = "board-feed no";
+      beep(220, 150, 0.09);
+    }
+    store.prog = (store.prog || 0) + progDelta(hit, rt);
+    if (store.prog >= 3 && store.lv < MAXLV) { store.lv++; store.prog = 0; }
+    else if (store.prog <= -3 && store.lv > 1) { store.lv--; store.prog = 0; }
+    save();
+    $("hud-score").textContent = game.score;
+    $("hud-count").textContent = game.hits + "/" + game.trials;
+    $("hud-streak").textContent = game.streak >= 3 ? "🔥 " + game.streak : "";
+    later(nextTrial, trial.path.length * STEP_MS + 1500);
+  }
+
+  function endRound() {
+    if (!game || game.over) return;
+    game.over = true;
+    clearTimers(); clearInterval(clockId); clockId = null;
+    ball.classList.remove("on");
+    store.rounds.push({ d: todayStr(), ts: Date.now(), s: game.score, hit: game.hits, tr: game.trials, lv: game.lvStart });
+    if (store.rounds.length > 60) store.rounds = store.rounds.slice(-60);
+    save();
+    $("res-mode").textContent = "Bóng nảy · " + store.settings.dur / 60 + " phút";
+    $("res-score").textContent = game.score;
+    $("res-note").textContent = store.lv > game.lvStart ? "🚀 Lên Level " + store.lv + "!" : store.lv < game.lvStart ? "Hạ về Level " + store.lv : "";
+    $("res-count").textContent = game.hits + "/" + game.trials;
+    $("res-acc").textContent = game.trials ? Math.round(100 * game.hits / game.trials) + "%" : "—";
+    $("res-lv").textContent = game.lvStart === store.lv ? "Lv " + store.lv : "Lv " + game.lvStart + " → " + store.lv;
+    beep(880, 200, 0.1); setTimeout(() => beep(1175, 260, 0.1), 220);
+    show("result");
+  }
+
+  $("btn-start").addEventListener("click", startRound);
+  $("btn-again").addEventListener("click", startRound);
+  $("btn-quit").addEventListener("click", endRound);
+  $("btn-home").addEventListener("click", () => { renderHome(); show("home"); });
+  $("nav-home").addEventListener("click", () => { if (game && !game.over) endRound(); renderHome(); show("home"); });
+  $("lv-up").addEventListener("click", () => { if (store.lv < MAXLV) { store.lv++; store.prog = 0; save(); renderHome(); } });
+  $("lv-dn").addEventListener("click", () => { if (store.lv > 1) { store.lv--; store.prog = 0; save(); renderHome(); } });
+  document.querySelectorAll("#seg-dur button").forEach((b) =>
+    b.addEventListener("click", () => { store.settings.dur = +b.dataset.v; save(); renderHome(); }));
+  document.querySelectorAll("#seg-sound button").forEach((b) =>
+    b.addEventListener("click", () => { store.settings.sound = !!+b.dataset.v; save(); renderHome(); }));
+  document.querySelectorAll("#seg-diff button").forEach((b) =>
+    b.addEventListener("click", () => { store.lv = +b.dataset.lv; store.prog = 0; save(); renderHome(); }));
+
+  if (TEST) {
+    window.__bn = {
+      trial: () => trial && { g: trial.g, bumpers: trial.bumpers, entry: trial.entry, exit: trial.exit, bounces: trial.bounces },
+      phase: () => phase,
+      game: () => game,
+      store: () => store,
+    };
+  }
+
+  renderHome();
+})();
+</script>
+<script>
+(function () {
+  var KEY = 'game:theme', root = document.documentElement;
+  function icon() {
+    var b = document.getElementById('themeBtn');
+    if (b) b.textContent = root.dataset.theme === 'light' ? '🌙' : '☀️';
+  }
+  var b = document.getElementById('themeBtn');
+  if (b) {
+    icon();
+    b.addEventListener('click', function () {
+      var t = root.dataset.theme === 'light' ? 'dark' : 'light';
+      root.dataset.theme = t;
+      try { localStorage.setItem(KEY, t); } catch (e) {}
+      var m = document.querySelector('meta[name="theme-color"]');
+      if (m) m.content = t === 'light' ? '#eef1f8' : '#0b1020';
+      icon();
+    });
+  }
+})();
+</script>
+</body>
+</html>

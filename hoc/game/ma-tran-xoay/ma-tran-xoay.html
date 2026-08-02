@@ -4,14 +4,14 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"/>
 <meta name="theme-color" content="#0b1020"/>
-<title>Hai nhịp — kìm cú lừa, bung đúng hướng (cầu lông)</title>
+<title>Ma trận xoay — nhớ ô sáng khi cả bàn quay</title>
 <script>try{document.documentElement.dataset.theme=localStorage.getItem('game:theme')||'dark'}catch(e){document.documentElement.dataset.theme='dark'}</script>
 <style>
 :root{
   --bg:#0b1020; --card:#151d33; --card-2:#1a2340; --inset:#0f1628;
   --ink:#e9eef9; --ink-soft:#98a3bb; --ink-dim:#5f6b85;
   --line:#27314f; --line-soft:#1d2742; --good:#34d399; --bad:#f87171;
-  --mc:#fbbf24; --mc2:#22d3ee;
+  --mc:#f472b6; --mc2:#fbbf24;
   --radius:20px; --shadow:0 1px 2px rgba(0,0,0,.35),0 12px 32px rgba(0,0,0,.38);
 }
 *{box-sizing:border-box;margin:0;padding:0}
@@ -33,8 +33,8 @@ header{position:sticky;top:0;z-index:10;background:rgba(11,16,32,.78);backdrop-f
 .logo-ic{width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg,var(--mc),var(--mc2));display:flex;align-items:center;justify-content:center;font-size:22px;flex:none;box-shadow:0 4px 16px color-mix(in srgb,var(--mc) 45%,transparent)}
 .logo small{display:block;font-size:11px;font-weight:600;color:var(--ink-soft)}
 .hd-sp{flex:1}
-.theme-btn{border:1px solid var(--line);background:var(--card);color:var(--ink);width:38px;height:38px;border-radius:999px;cursor:pointer;font-size:16px;font-family:inherit;flex:none;line-height:1;padding:0}
-.nav-btn{border:1px solid var(--line);background:var(--card);color:var(--ink);padding:9px 16px;border-radius:999px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;text-decoration:none;display:inline-block}
+.theme-btn{border:1px solid var(--line);background:var(--card);color:var(--ink);width:38px;height:38px;border-radius:999px;cursor:pointer;font-size:16px;flex:none;line-height:1;padding:0}
+.nav-btn{border:1px solid var(--line);background:var(--card);color:var(--ink);padding:9px 16px;border-radius:999px;font-size:14px;font-weight:600;cursor:pointer;text-decoration:none;display:inline-block}
 .nav-btn:hover{border-color:var(--mc)}
 .nav-btn.active{background:linear-gradient(135deg,var(--mc),var(--mc2));color:#0b1020;border-color:transparent}
 .screen{display:none;animation:fadeIn .18s ease}
@@ -47,8 +47,8 @@ header{position:sticky;top:0;z-index:10;background:rgba(11,16,32,.78);backdrop-f
 .stat-card{border:1px solid var(--line);border-radius:14px;padding:14px 20px 14px 22px;background:linear-gradient(160deg,var(--card),var(--card-2));min-width:120px;position:relative;overflow:hidden;box-shadow:var(--shadow)}
 .stat-card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--sc,var(--mc))}
 .stat-card:nth-child(1){--sc:var(--mc)}
-.stat-card:nth-child(2){--sc:#38bdf8}
-.stat-card:nth-child(3){--sc:#34d399}
+.stat-card:nth-child(2){--sc:#fbbf24}
+.stat-card:nth-child(3){--sc:#38bdf8}
 .stat-card b{display:block;font-size:28px;letter-spacing:-.02em;color:var(--sc,var(--mc))}
 .stat-card span{font-size:13px;color:var(--ink-soft);font-weight:600}
 .lv-adjust{position:absolute;right:10px;top:12px;display:flex;gap:5px}
@@ -70,8 +70,8 @@ header{position:sticky;top:0;z-index:10;background:rgba(11,16,32,.78);backdrop-f
 .hist td{padding:10px 14px;border-top:1px solid var(--line-soft)}
 .hist .r{text-align:right}
 .empty{padding:26px;text-align:center;color:var(--ink-soft);font-size:15px}
-/* play */
-.play-hud{display:flex;align-items:center;gap:12px;padding:16px 0 8px;flex-wrap:wrap}
+/* ---------- play ---------- */
+.play-hud{display:flex;align-items:center;gap:12px;padding:14px 0 8px;flex-wrap:wrap}
 .hud-item{font-size:14.5px;color:var(--ink-soft);font-weight:600}
 .hud-item b{font-size:20px;color:var(--ink)}
 .hud-streak{font-size:15px;font-weight:800;color:#fbbf24}
@@ -79,32 +79,69 @@ header{position:sticky;top:0;z-index:10;background:rgba(11,16,32,.78);backdrop-f
 .hud-sp{flex:1}
 .btn-quit{border:1px solid var(--line);background:var(--card);border-radius:999px;padding:8px 15px;font-size:13.5px;font-weight:600;cursor:pointer;color:var(--ink-soft)}
 .btn-quit:hover{color:var(--bad);border-color:var(--bad)}
+.timebox{display:flex;align-items:center;gap:10px;margin-bottom:10px}
 .round-bar{height:6px;border-radius:99px;background:var(--inset);overflow:hidden;flex:1}
 .round-bar i{display:block;height:100%;background:linear-gradient(90deg,var(--mc),var(--mc2));border-radius:99px}
-.timebox{display:flex;align-items:center;gap:10px;margin-bottom:10px}
 .clock{font-size:14.5px;font-weight:800;color:var(--ink-soft);min-width:38px;text-align:right}
-/* sân: các Ô HƯỚNG là nút bấm to; con thoi + nhãn ở giữa KHÔNG nuốt tap (§F pointer-events) */
-.court{position:relative;border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow);background:linear-gradient(165deg,#141b31,#0e1526);padding:10px;display:grid;gap:10px;height:min(58vh,440px);user-select:none;-webkit user-select:none}
-.court.d2{grid-template-columns:1fr 1fr}
-.court.d4{grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr}
-.zone{border:1.5px dashed #2c3757;border-radius:14px;background:rgba(255,255,255,.02);cursor:pointer;transition:background .08s,border-color .08s;touch-action:manipulation;position:relative;color:var(--ink-dim);font-size:13px;font-weight:700;padding:0}
-.zone:active{background:rgba(255,255,255,.05)}
-.zone.cue{border:3px solid var(--mc);background:color-mix(in srgb,var(--mc) 22%,transparent);box-shadow:0 0 26px color-mix(in srgb,var(--mc) 45%,transparent),inset 0 0 40px color-mix(in srgb,var(--mc) 18%,transparent)}
-.zone.ok{border-color:var(--good);background:color-mix(in srgb,var(--good) 20%,transparent)}
-.zone.bad{border-color:var(--bad);background:color-mix(in srgb,var(--bad) 18%,transparent)}
-.center{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);text-align:center;pointer-events:none;z-index:5}
-.shuttle{font-size:46px;line-height:1;filter:drop-shadow(0 4px 10px rgba(0,0,0,.5))}
-.shuttle.windup{animation:windup .9s ease-in-out infinite}
-@keyframes windup{0%,100%{transform:rotate(-14deg) scale(1)}50%{transform:rotate(10deg) scale(1.12)}}
-.cue-lbl{margin-top:6px;font-size:14px;font-weight:800;letter-spacing:.04em;color:var(--ink-soft);text-shadow:0 2px 6px rgba(0,0,0,.6);min-height:22px}
-.cue-lbl.ok{color:var(--good)} .cue-lbl.no{color:var(--bad)} .cue-lbl.fool{color:#fb923c}
-.play-hint{text-align:center;font-size:14px;color:var(--ink-dim);margin-top:10px}
-/* result */
+.phase-note{text-align:center;font-size:15px;font-weight:800;letter-spacing:.04em;color:var(--ink-soft);margin-bottom:10px;min-height:24px}
+.phase-note.pick{color:var(--mc)}
+.phase-note.rot{color:#fbbf24}
+.board-wrap{
+  max-width:420px;margin:0 auto;border:1px solid #37477c;border-radius:22px;padding:16px;position:relative;
+  background:linear-gradient(160deg,#1c2850 0%,#141e3e 45%,#0f1730 100%);
+  box-shadow:var(--shadow), inset 0 1px 0 rgba(148,197,255,.14), inset 0 -2px 8px rgba(0,0,0,.5);
+  user-select:none;-webkit-user-select:none;
+}
+.board-wrap .screw{position:absolute;width:7px;height:7px;border-radius:50%;pointer-events:none;
+  background:radial-gradient(circle at 35% 30%, #b9cae8, #46587e 75%);box-shadow:0 0 0 1px rgba(8,15,32,.6)}
+.board-wrap .screw.s1{left:8px;top:8px}
+.board-wrap .screw.s2{right:8px;top:8px}
+.board-wrap .screw.s3{left:8px;bottom:8px}
+.board-wrap .screw.s4{right:8px;bottom:8px}
+.mx-rot{transition:transform .65s cubic-bezier(.45,.05,.35,1)}
+.mx-grid{display:grid;grid-template-columns:repeat(var(--g),1fr);gap:8px}
+.mcell{
+  aspect-ratio:1;border-radius:12px;border:1px solid #263566;cursor:pointer;position:relative;touch-action:manipulation;padding:0;
+  background:linear-gradient(160deg,#141f42,#101a36 65%,#0e1730);
+  box-shadow:inset 0 3px 8px rgba(0,0,0,.55), inset 0 -1px 0 rgba(148,197,255,.06);
+  transition:background .12s,border-color .12s,box-shadow .12s;
+  font-size:clamp(16px,4vw,24px);font-weight:800;line-height:1;color:transparent;
+}
+.mcell:active{transform:scale(.96)}
+.mcell.lit{
+  background:linear-gradient(150deg,#f472b6 0%,#fb7185 45%,#fbbf24 100%);
+  border-color:#fda4cf;
+  box-shadow:0 0 18px rgba(244,114,182,.65), inset 0 2px 5px rgba(255,255,255,.4), inset 0 -3px 6px rgba(120,30,70,.4);
+  animation:litpop .22s ease;
+}
+@keyframes litpop{from{transform:scale(.82)}to{transform:scale(1)}}
+.mcell.found{
+  background:linear-gradient(150deg,#34d399 0%,#10b981 55%,#22d3ee 100%);
+  border-color:#6ee7c5;
+  box-shadow:0 0 16px rgba(52,211,153,.6), inset 0 2px 5px rgba(255,255,255,.35), inset 0 -3px 6px rgba(6,80,60,.4);
+  animation:litpop .18s ease;
+}
+.mcell.missed{border-color:#fda4cf;background:linear-gradient(150deg,rgba(244,114,182,.30),rgba(251,191,36,.22));box-shadow:0 0 12px rgba(244,114,182,.4)}
+.mcell.err{border-color:var(--bad);color:var(--bad);background:linear-gradient(150deg,rgba(248,113,113,.2),#101a36)}
+.mcell.err::after{content:"✕";position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--bad);text-shadow:0 0 10px rgba(248,113,113,.7)}
+.notch{ /* mốc góc — cho thấy bàn đã xoay bao nhiêu */
+  position:absolute;left:5px;top:5px;width:24px;height:24px;pointer-events:none;
+  border-left:4.5px solid #fbbf24;border-top:4.5px solid #fbbf24;border-radius:9px 0 0 0;
+  filter:drop-shadow(0 0 6px rgba(251,191,36,.7));
+}
+.notch::after{content:"";position:absolute;left:1px;top:1px;width:7px;height:7px;border-radius:50%;background:#fbbf24;box-shadow:0 0 8px rgba(251,191,36,.9)}
+.mx-stage{position:relative}
+.board-feed{text-align:center;min-height:26px;margin-top:10px;font-size:16px;font-weight:800}
+.board-feed.ok{color:var(--good)} .board-feed.no{color:var(--bad)}
+.pick-count{text-align:center;font-size:14px;font-weight:700;color:var(--ink-soft);margin-top:6px;min-height:20px}
+.pick-count b{color:var(--mc)}
+.play-hint{text-align:center;font-size:14px;color:var(--ink-dim);margin-top:8px}
+/* ---------- result ---------- */
 .res-wrap{max-width:520px;margin:40px auto 0;text-align:center}
 .res-mode{font-size:15.5px;font-weight:700;color:var(--ink-soft)}
 .res-score{font-size:clamp(56px,13vw,84px);font-weight:800;letter-spacing:-.04em;line-height:1.05;background:linear-gradient(92deg,var(--ink) 20%,var(--mc) 70%,var(--mc2));-webkit-background-clip:text;background-clip:text;color:transparent}
 .res-note{margin-top:6px;font-size:15.5px;font-weight:700;color:var(--mc);min-height:22px}
-.res-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:26px}
+.res-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:26px}
 .res-cell{border:1px solid var(--line);border-radius:14px;padding:14px 8px;background:linear-gradient(160deg,var(--card),var(--card-2))}
 .res-cell b{display:block;font-size:24px;letter-spacing:-.02em;color:var(--mc)}
 .res-cell span{font-size:12.5px;color:var(--ink-soft);font-weight:600}
@@ -129,12 +166,13 @@ button{touch-action:manipulation}
   .start-row{margin-top:18px;gap:10px}
   .btn.primary{width:100%;padding:14px 20px}
   .howto{padding:14px 16px;font-size:14px;margin-top:20px}
-  .play-hud{gap:7px;padding:10px 0 6px}
+  .play-hud{gap:7px;padding:8px 0 6px}
   .hud-item{font-size:12.5px}
   .hud-item b{font-size:16px}
-  .court{height:min(62vh,520px);padding:8px;gap:8px}
-  .play-hint{font-size:12.5px;margin-top:8px}
-  .res-grid{grid-template-columns:1fr 1fr;gap:8px}
+  .board-wrap{padding:9px;border-radius:14px;max-width:min(92vw,380px)}
+  .mx-grid{gap:5px}
+  .play-hint{font-size:12.5px;margin-top:6px}
+  .res-grid{gap:8px}
 }
 /* ---------- dark/light mode (persist chung key game:theme) ---------- */
 html[data-theme="light"]{
@@ -151,17 +189,15 @@ html[data-theme="light"] body{
   background-attachment:fixed;
 }
 html[data-theme="light"] header{background:rgba(247,249,254,.85)}
-/* sân giữ tối trong light mode (glow cue tuned cho nền tối) */
-html[data-theme="light"] .court{background:linear-gradient(165deg,#141b31,#0e1526);border-color:#27314f}
-html[data-theme="light"] .zone{color:#5f6b85}
-html[data-theme="light"] .cue-lbl{color:#98a3bb}
+/* bàn giữ tối (màu ô sáng tuned cho nền tối) */
+html[data-theme="light"] .board-wrap{background:linear-gradient(165deg,#141b31,#0e1526);border-color:#27314f}
 </style>
 </head>
 <body>
 
 <header>
   <div class="hd-in">
-    <div class="logo"><span class="logo-ic">🏸</span><span>Hai nhịp<small>kìm cú lừa · bung đúng hướng</small></span></div>
+    <div class="logo"><span class="logo-ic">🔄</span><span>Ma trận xoay<small>rotation matrix · trí nhớ không gian + xoay</small></span></div>
     <div class="hd-sp"></div>
     <button class="theme-btn" id="themeBtn" title="Đổi giao diện sáng/tối">☀️</button>
     <a class="nav-btn" href="../index.html">⌂ Bộ game</a>
@@ -173,8 +209,8 @@ html[data-theme="light"] .cue-lbl{color:#98a3bb}
 
 <section class="screen on" id="screen-home">
   <div class="hero">
-    <h1>Đừng ăn cú lừa nhịp một</h1>
-    <p>Trong cầu lông, đối thủ hay <b>nhá nhịp một</b> rồi mới đánh thật ở <b>nhịp hai</b>. Game này luyện đúng bộ não đó: ô sáng <b>nhá rồi tắt</b> là LỪA — ai bung theo là mất điểm; ô sáng <b>và GIỮ</b> mới là thật — chạm càng nhanh càng nhiều điểm.</p>
+    <h1>Ô sáng vẫn ở đó — chỉ là cả bàn đã quay</h1>
+    <p>Vài ô trên bàn sáng lên, bạn ghi nhớ. Ô tắt đi và <b>cả bàn cờ quay</b> 90°, 180° hay ngược chiều — bạn phải bấm lại đúng những ô đã sáng ở <b>vị trí mới</b> của chúng. Đây là bài trí nhớ không gian gắn với <b>phép xoay hệ quy chiếu</b>: giữ bản đồ trong đầu và quay cả bản đồ — kỹ năng đọc bản vẽ, định hướng, nhìn vấn đề từ góc khác.</p>
   </div>
   <div class="stat-row">
     <div class="stat-card"><b class="num" id="st-lv">1</b><span>Level (1–12)</span>
@@ -185,11 +221,12 @@ html[data-theme="light"] .cue-lbl{color:#98a3bb}
   </div>
   <div class="start-row">
     <button class="btn primary" id="btn-start">▶ Chơi</button>
+    <span class="seg" id="seg-diff" title="Chọn độ khó = nhảy thẳng level 1/4/7/10"><button data-lv="1">Dễ</button><button data-lv="4">Vừa</button><button data-lv="7">Khó</button><button data-lv="10">Ác</button></span>
     <span class="seg" id="seg-dur"><button data-v="60">1′</button><button data-v="120">2′</button><button data-v="180">3′</button></span>
     <span class="seg" id="seg-sound"><button data-v="1">🔊</button><button data-v="0">🔇</button></span>
   </div>
   <div class="howto">
-    <b>Luật:</b> chờ ở giữa sân. Ô nào <b>sáng và GIỮ NGUYÊN</b> → chạm ô đó thật nhanh. Ô <b>nhá sáng rồi tắt</b> = cú lừa nhịp một — <b>kìm tay lại</b>, chờ ô thật sáng. Bung sớm / dính lừa / sai hướng đều mất chuỗi. Từ Level 5 sân mở rộng 4 góc, cú lừa nhanh và dày hơn. Chính xác ≥85% cuối vòng thì lên level, dưới 60% thì hạ. Chuỗi 3+ đúng liên tiếp ×1,5 điểm 🔥.
+    <b>Luật:</b> ghi nhớ các ô sáng → ô tắt, bàn <b>quay thật trước mắt bạn</b> (góc vát vàng ở mép cho biết bàn đã xoay bao nhiêu) → bấm đủ các ô sáng ở vị trí mới. Bấm trật hiện <b>✕</b>: trật 1 lần vẫn được tính (điểm ít hơn), trật 2 lần là hỏng lượt. Level cao: bàn to hơn, nhiều ô hơn, xem ngắn hơn, thêm góc quay 180°. Lượt sạch không lỗi chuỗi 3+ ×1,5 🔥.
   </div>
   <div class="hist" id="home-hist"></div>
 </section>
@@ -207,10 +244,11 @@ html[data-theme="light"] .cue-lbl{color:#98a3bb}
     <div class="round-bar"><i id="round-fill" style="width:100%"></i></div>
     <span class="clock num" id="round-clock">2:00</span>
   </div>
-  <div class="court d2" id="court">
-    <div class="center"><div class="shuttle" id="shuttle">🏸</div><div class="cue-lbl" id="cue-lbl"></div></div>
-  </div>
-  <div class="play-hint">Ô sáng <b>và giữ</b> = thật, chạm ngay · nhá rồi tắt = lừa, kìm tay chờ nhịp hai</div>
+  <div class="phase-note" id="phase-note">GHI NHỚ Ô SÁNG…</div>
+  <div class="board-wrap"><span class="screw s1"></span><span class="screw s2"></span><span class="screw s3"></span><span class="screw s4"></span><div class="mx-stage"><div class="mx-rot" id="mxrot"><div class="mx-grid" id="mxgrid"></div></div></div></div>
+  <div class="pick-count" id="pick-count"></div>
+  <div class="board-feed" id="board-feed"></div>
+  <div class="play-hint">Đừng nhớ từng ô — nhớ HÌNH DẠNG cụm ô, rồi quay cả hình trong đầu</div>
 </section>
 
 <section class="screen" id="screen-result">
@@ -219,9 +257,8 @@ html[data-theme="light"] .cue-lbl{color:#98a3bb}
     <div class="res-score num" id="res-score">0</div>
     <div class="res-note" id="res-note"></div>
     <div class="res-grid">
-      <div class="res-cell"><b class="num" id="res-count"></b><span>Đúng</span></div>
-      <div class="res-cell"><b class="num" id="res-fooled"></b><span>Dính lừa</span></div>
-      <div class="res-cell"><b class="num" id="res-rt"></b><span>Phản xạ TB</span></div>
+      <div class="res-cell"><b class="num" id="res-count"></b><span>Lượt trọn vẹn</span></div>
+      <div class="res-cell"><b class="num" id="res-acc"></b><span>Chính xác</span></div>
       <div class="res-cell"><b class="num" id="res-lv"></b><span>Level</span></div>
     </div>
     <div class="res-actions">
@@ -233,80 +270,82 @@ html[data-theme="light"] .cue-lbl{color:#98a3bb}
 
 </main>
 
-<footer>Hai nhịp (phỏng cú lừa double-motion cầu lông) · kìm phản xạ + chọn hướng · Build v1 · 2026-07-12 · dữ liệu lưu trong trình duyệt của bạn</footer>
+<footer>Ma trận xoay (rotation matrix) · trí nhớ không gian &amp; xoay hệ quy chiếu · Build v2 · 2026-08-02 · dữ liệu lưu trong trình duyệt của bạn</footer>
 
 <script id="gen">
 "use strict";
 /* ================================================================
-   ===GEN-START===  Logic thuần: bảng level, sinh lượt, chấm điểm
-   Lượt chơi (trial) là MỘT timeline:
-     [0 .. prepMs)                  : chờ — bấm là "early" (bung sớm)
-     nếu fake:
-       [prepMs .. prepMs+fakeMs)    : ô fakeDir NHÁ SÁNG (nhịp một — cú lừa)
-       [.. +gapMs)                  : tắt hết (khoảng nín) — bấm trong 2 khúc này là "fooled"
-     [tReal .. tReal+windowMs]      : ô real sáng VÀ GIỮ (nhịp hai — thật)
-                                      bấm đúng ô = hit (kèm rt), sai ô = wrong, quá cửa sổ = late
+   ===GEN-START===  Logic thuần: bảng level, phép xoay toạ độ, sinh lượt
+   rot = độ xoay CW của BÀN. Ô nội dung tại (x,y) sau khi bàn xoay CW rot
+   nằm ở vị trí màn hình rotatePos((x,y), g, rot).
+   Vì bàn giữ transform xoay VĨNH VIỄN trong pha chọn, ô DOM người chơi bấm
+   mang toạ độ GỐC — chấm đúng ⟺ toạ độ gốc ∈ cells. answer chỉ dùng cho
+   test đối chiếu vị trí màn hình.
    ================================================================ */
 const MAXLV = 12;
-// dirs: số hướng (2 = trái/phải, 4 = 4 góc) · pFake: xác suất có nhịp lừa · fakeMs: nhá bao lâu
-// gapMs: nín giữa lừa→thật · windowMs: thời gian cho phép chạm · prepMin/Max: chờ ngẫu nhiên đầu lượt
+// g: cỡ bàn · k: số ô sáng · studyMs: thời gian nhìn · rots: các góc CW có thể (270 = quay trái 90°)
 const LEVELS = [
-  { dirs: 2, pFake: 0.25, fakeMs: 360, gapMs: 450, windowMs: 1500, prepMin: 700, prepMax: 1500 },
-  { dirs: 2, pFake: 0.30, fakeMs: 330, gapMs: 420, windowMs: 1350, prepMin: 700, prepMax: 1500 },
-  { dirs: 2, pFake: 0.35, fakeMs: 300, gapMs: 390, windowMs: 1250, prepMin: 650, prepMax: 1400 },
-  { dirs: 2, pFake: 0.40, fakeMs: 280, gapMs: 360, windowMs: 1150, prepMin: 650, prepMax: 1400 },
-  { dirs: 4, pFake: 0.35, fakeMs: 300, gapMs: 400, windowMs: 1300, prepMin: 650, prepMax: 1400 },
-  { dirs: 4, pFake: 0.40, fakeMs: 280, gapMs: 370, windowMs: 1200, prepMin: 600, prepMax: 1350 },
-  { dirs: 4, pFake: 0.45, fakeMs: 260, gapMs: 340, windowMs: 1100, prepMin: 600, prepMax: 1300 },
-  { dirs: 4, pFake: 0.48, fakeMs: 240, gapMs: 310, windowMs: 1000, prepMin: 550, prepMax: 1250 },
-  { dirs: 4, pFake: 0.52, fakeMs: 220, gapMs: 280, windowMs: 950,  prepMin: 550, prepMax: 1200 },
-  { dirs: 4, pFake: 0.55, fakeMs: 200, gapMs: 250, windowMs: 900,  prepMin: 500, prepMax: 1150 },
-  { dirs: 4, pFake: 0.58, fakeMs: 180, gapMs: 220, windowMs: 820,  prepMin: 500, prepMax: 1100 },
-  { dirs: 4, pFake: 0.62, fakeMs: 160, gapMs: 190, windowMs: 750,  prepMin: 450, prepMax: 1050 },
+  { g: 3, k: 3, studyMs: 2000, rots: [90, 270] },
+  { g: 3, k: 4, studyMs: 1900, rots: [90, 270] },
+  { g: 4, k: 4, studyMs: 1900, rots: [90, 270] },
+  { g: 4, k: 5, studyMs: 1800, rots: [90, 270] },
+  { g: 4, k: 5, studyMs: 1700, rots: [90, 180, 270] },
+  { g: 4, k: 6, studyMs: 1650, rots: [90, 180, 270] },
+  { g: 5, k: 6, studyMs: 1700, rots: [90, 180, 270] },
+  { g: 5, k: 7, studyMs: 1650, rots: [90, 180, 270] },
+  { g: 5, k: 7, studyMs: 1550, rots: [90, 180, 270] },
+  { g: 5, k: 8, studyMs: 1500, rots: [90, 180, 270] },
+  { g: 6, k: 8, studyMs: 1450, rots: [90, 180, 270] },
+  { g: 6, k: 9, studyMs: 1400, rots: [90, 180, 270] },
 ];
-
+// xoay CW quanh tâm bàn g×g (y hướng xuống): 90° (x,y)→(g-1-y,x) · 180° → (g-1-x,g-1-y) · 270° → (y,g-1-x)
+function rotatePos(p, g, rot) {
+  if (rot === 90) return { x: g - 1 - p.y, y: p.x };
+  if (rot === 180) return { x: g - 1 - p.x, y: g - 1 - p.y };
+  if (rot === 270) return { x: p.y, y: g - 1 - p.x };
+  return { x: p.x, y: p.y };
+}
 function genTrial(lv, rnd = Math.random) {
-  const c = LEVELS[Math.min(MAXLV, Math.max(1, lv)) - 1];
-  const real = Math.min(c.dirs - 1, Math.floor(rnd() * c.dirs));
-  const fake = rnd() < c.pFake;
-  // fakeDir chọn bằng OFFSET quanh real — luôn ≠ real, không vòng lặp (do-while với rnd suy biến sẽ treo)
-  const fakeDir = fake ? (real + 1 + Math.min(c.dirs - 2, Math.floor(rnd() * (c.dirs - 1)))) % c.dirs : -1;
-  const prepMs = Math.round(c.prepMin + rnd() * (c.prepMax - c.prepMin));
-  return { lv, dirs: c.dirs, real, fake, fakeDir, prepMs, fakeMs: c.fakeMs, gapMs: c.gapMs, windowMs: c.windowMs };
+  const L = LEVELS[Math.min(MAXLV, Math.max(1, lv)) - 1];
+  const g = L.g;
+  const pos = Array.from({ length: g * g }, (_, i) => i);
+  for (let i = pos.length - 1; i > 0; i--) {
+    const j = Math.min(i, Math.floor(rnd() * (i + 1)));
+    const t = pos[i]; pos[i] = pos[j]; pos[j] = t;
+  }
+  const cells = pos.slice(0, L.k).map((p) => ({ x: p % g, y: Math.floor(p / g) }));
+  const rot = L.rots[Math.min(L.rots.length - 1, Math.floor(rnd() * L.rots.length))];
+  const answer = cells.map((c) => rotatePos(c, g, rot));
+  return { lv, g, k: L.k, studyMs: L.studyMs, rot, cells, answer };
 }
-function tRealOf(tr) { return tr.prepMs + (tr.fake ? tr.fakeMs + tr.gapMs : 0); }
-// Chấm 1 cú chạm vào hướng dir tại thời điểm t (ms từ đầu lượt). App chấm theo PHASE thật của
-// state machine (tránh drift setTimeout) — hàm này là bản timeline lý thuyết, phải cho cùng kết quả.
-function grade(tr, dir, t) {
-  const tReal = tRealOf(tr);
-  if (t < tr.prepMs) return { verdict: "early" };
-  if (t < tReal) return { verdict: "fooled" };
-  if (t <= tReal + tr.windowMs) return dir === tr.real ? { verdict: "hit", rt: t - tReal } : { verdict: "wrong", rt: t - tReal };
-  return { verdict: "late" };
+// Điểm lượt: 0 lỗi = 20×lv (chuỗi ≥3 ×1.5) · 1 lỗi = 12×lv · ≥2 lỗi = 0
+function scoreTrial(lv, errs, streak) {
+  if (errs === 0) return Math.round(20 * lv * (streak >= 3 ? 1.5 : 1));
+  if (errs === 1) return 12 * lv;
+  return 0;
 }
-// Điểm 1 lượt hit: nhanh (<45% cửa sổ) thưởng thêm; streak>=3 nhân 1.5 (làm tròn).
-function scoreHit(lv, rt, windowMs, streak) {
-  const base = 10 * lv * (rt <= windowMs * 0.45 ? 1.5 : 1);
-  return Math.round(base * (streak >= 3 ? 1.5 : 1));
-}
+// Staircase ±3: 0 lỗi +1 · 1 lỗi +0.6 · ≥2 lỗi (hỏng lượt) / hết giờ −1.5
+function progDelta(errs) { return errs === 0 ? 1 : errs === 1 ? 0.6 : -1.5; }
 /* ===GEN-END=== */
 if (typeof module !== "undefined" && module.exports)
-  module.exports = { MAXLV, LEVELS, genTrial, tRealOf, grade, scoreHit };
+  module.exports = { MAXLV, LEVELS, rotatePos, genTrial, scoreTrial, progDelta };
 </script>
 
 <script id="app">
 "use strict";
 (() => {
-  const KEY = "hai-nhip:v1";
+  const KEY = "ma-tran-xoay:v1";
   const $ = (id) => document.getElementById(id);
+  const TEST = /[?&]test=1/.test(location.search);
   const load = () => {
     try { const s = JSON.parse(localStorage.getItem(KEY)); if (s && s.v === 1) return s; } catch (e) {}
-    return { v: 1, settings: { dur: 120, sound: true }, lv: 1, rounds: [] };
+    return { v: 1, settings: { dur: 120, sound: true }, lv: 1, prog: 0, rounds: [] };
   };
   const store = load();
   const save = () => { try { localStorage.setItem(KEY, JSON.stringify(store)); } catch (e) {} };
   const todayStr = () => { const d = new Date(); return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0"); };
   const fmt = (s) => Math.floor(s / 60) + ":" + String(Math.floor(s % 60)).padStart(2, "0");
+  const ROT_MS = 700, ANSWER_MS = 12000;
 
   let audioCtx = null, audioOut = null;
   function audioDest() {
@@ -331,7 +370,6 @@ if (typeof module !== "undefined" && module.exports)
     } catch (e) {}
   }
 
-  /* ---------- màn hình ---------- */
   const screens = { home: $("screen-home"), play: $("screen-play"), result: $("screen-result") };
   function show(k) { Object.entries(screens).forEach(([n, el]) => el.classList.toggle("on", n === k)); }
 
@@ -342,43 +380,24 @@ if (typeof module !== "undefined" && module.exports)
     $("st-rounds").textContent = store.rounds.length;
     document.querySelectorAll("#seg-dur button").forEach((b) => b.classList.toggle("on", +b.dataset.v === store.settings.dur));
     document.querySelectorAll("#seg-sound button").forEach((b) => b.classList.toggle("on", !!+b.dataset.v === store.settings.sound));
+    document.querySelectorAll("#seg-diff button").forEach((b) => { const lo = +b.dataset.lv; b.classList.toggle("on", store.lv >= lo && store.lv < lo + 3); });
     const rows = store.rounds.slice(-8).reverse().map((r) =>
-      `<tr><td>${r.d}</td><td>Lv ${r.lv}</td><td class="r num">${r.hit}/${r.tr}</td><td class="r num">${r.fool}🎣</td><td class="r num"><b>${r.s}</b></td></tr>`).join("");
+      `<tr><td>${r.d}</td><td>Lv ${r.lv}</td><td class="r num">${r.hit}/${r.tr}</td><td class="r num"><b>${r.s}</b></td></tr>`).join("");
     $("home-hist").innerHTML = rows
-      ? `<table><tr><th>Ngày</th><th>Level</th><th class="r">Đúng</th><th class="r">Dính lừa</th><th class="r">Điểm</th></tr>${rows}</table>`
-      : `<div class="empty">Chưa có vòng nào — bấm ▶ Chơi để bắt đầu 🏸</div>`;
+      ? `<table><tr><th>Ngày</th><th>Level</th><th class="r">Lượt sạch</th><th class="r">Điểm</th></tr>${rows}</table>`
+      : `<div class="empty">Chưa có vòng nào — bấm ▶ Chơi để quay bàn đầu tiên 🔄</div>`;
   }
 
   /* ---------- vòng chơi ---------- */
-  const ZONE_LBL2 = ["TRÁI", "PHẢI"], ZONE_LBL4 = ["TRÁI TRÊN", "PHẢI TRÊN", "TRÁI DƯỚI", "PHẢI DƯỚI"];
-  let game = null, trial = null, phase = "idle", tLive = 0, timers = [], clockId = null;
+  const rotEl = $("mxrot"), grid = $("mxgrid");
+  let game = null, trial = null, phase = "idle", found = 0, errs = 0, timers = [], clockId = null;
   const clearTimers = () => { timers.forEach(clearTimeout); timers = []; };
   const later = (fn, ms) => timers.push(setTimeout(fn, ms));
 
-  function buildZones(dirs) {
-    const court = $("court");
-    court.classList.toggle("d2", dirs === 2);
-    court.classList.toggle("d4", dirs === 4);
-    court.querySelectorAll(".zone").forEach((z) => z.remove());
-    const lbls = dirs === 2 ? ZONE_LBL2 : ZONE_LBL4;
-    for (let i = 0; i < dirs; i++) {
-      const b = document.createElement("button");
-      b.className = "zone"; b.dataset.dir = i; b.textContent = lbls[i];
-      b.addEventListener("pointerdown", (e) => { e.preventDefault(); tap(i); });
-      court.appendChild(b);
-    }
-  }
-  const zones = () => [...$("court").querySelectorAll(".zone")];
-  function light(i, on) { const z = zones()[i]; if (z) z.classList.toggle("cue", on); }
-  function clearCues() { zones().forEach((z) => z.classList.remove("cue", "ok", "bad")); }
-  function setLbl(txt, cls) { const l = $("cue-lbl"); l.textContent = txt; l.className = "cue-lbl" + (cls ? " " + cls : ""); }
-
   function startRound() {
-    game = { over: false, score: 0, hits: 0, trials: 0, fooled: 0, streak: 0, rts: [], lvStart: store.lv,
+    game = { over: false, score: 0, hits: 0, trials: 0, streak: 0, lvStart: store.lv,
              endAt: Date.now() + store.settings.dur * 1000 };
-    $("hud-lv").textContent = "Lv " + store.lv;
     $("hud-score").textContent = "0"; $("hud-count").textContent = "0/0"; $("hud-streak").textContent = "";
-    buildZones(LEVELS[store.lv - 1].dirs);
     show("play");
     clearInterval(clockId);
     clockId = setInterval(() => {
@@ -391,111 +410,150 @@ if (typeof module !== "undefined" && module.exports)
     nextTrial();
   }
 
+  function buildGrid() {
+    grid.style.setProperty("--g", trial.g);
+    grid.innerHTML = "";
+    const litSet = new Set(trial.cells.map((c) => c.x + "," + c.y));
+    for (let y = 0; y < trial.g; y++) for (let x = 0; x < trial.g; x++) {
+      const b = document.createElement("button");
+      b.className = "mcell" + (litSet.has(x + "," + y) ? " lit" : "");
+      b.dataset.x = x; b.dataset.y = y;
+      b.addEventListener("pointerdown", (e) => { e.preventDefault(); pick(x, y, b); });
+      grid.appendChild(b);
+    }
+    // góc vát vàng — mốc cho thấy bàn đã xoay bao nhiêu (xoay cùng bàn)
+    const n = document.createElement("div");
+    n.className = "notch";
+    grid.appendChild(n);
+  }
+
+  function pickCount() { $("pick-count").innerHTML = phase === "pick" ? `Đã tìm <b>${found}/${trial.k}</b> ô · trật ${errs}/2` : ""; }
+
   function nextTrial() {
     if (!game || game.over) return;
-    clearTimers(); clearCues();
+    clearTimers();
     trial = genTrial(store.lv);
-    if (trial.dirs !== zones().length) buildZones(trial.dirs);  // lv đổi giữa vòng không xảy ra, nhưng an toàn
-    phase = "prep";
-    $("shuttle").classList.add("windup");
-    setLbl("CHỜ…", "");
+    phase = "study"; found = 0; errs = 0;
+    $("hud-lv").textContent = "Lv " + store.lv;
+    $("board-feed").textContent = ""; $("board-feed").className = "board-feed";
+    $("phase-note").textContent = "GHI NHỚ Ô SÁNG…"; $("phase-note").className = "phase-note";
+    rotEl.style.transition = "none"; rotEl.style.transform = "rotate(0deg)";
+    void rotEl.offsetWidth; rotEl.style.transition = "";
+    buildGrid();
+    pickCount();
     later(() => {
-      if (trial.fake) {
-        phase = "fake"; light(trial.fakeDir, true); beep(500, 45, 0.05);
-        later(() => {
-          light(trial.fakeDir, false); phase = "gap";
-          later(goLive, trial.gapMs);
-        }, trial.fakeMs);
-      } else goLive();
-    }, trial.prepMs);
+      phase = "rot";
+      document.querySelectorAll(".mcell.lit").forEach((el) => el.classList.remove("lit"));
+      const label = trial.rot === 90 ? "BÀN XOAY PHẢI 90° ↻" : trial.rot === 180 ? "BÀN XOAY NỬA VÒNG 180° ↻" : "BÀN XOAY TRÁI 90° ↺";
+      $("phase-note").textContent = label; $("phase-note").className = "phase-note rot";
+      rotEl.style.transform = "rotate(" + trial.rot + "deg)"; // giữ transform vĩnh viễn — ô DOM mang toạ độ gốc
+      beep(494, 70, 0.06);
+      later(() => {
+        phase = "pick";
+        $("phase-note").textContent = "Ô SÁNG GIỜ NẰM ĐÂU?"; $("phase-note").className = "phase-note pick";
+        pickCount();
+        beep(660, 50, 0.06);
+        later(() => { if (phase === "pick") finish(2, true); }, ANSWER_MS);
+      }, ROT_MS + 150);
+    }, trial.studyMs);
   }
-  function goLive() {
-    if (!game || game.over) return;
-    phase = "live"; tLive = performance.now();
-    light(trial.real, true); beep(760, 55, 0.07);
-    later(() => { if (phase === "live") resolve("late", -1); }, trial.windowMs);
-  }
-  // App chấm theo PHASE của state machine — tương đương grade() thuần (unit test đối chiếu timeline)
-  function tap(dir) {
-    if (!game || game.over) return;
-    if (phase === "prep") return resolve("early", dir);
-    if (phase === "fake" || phase === "gap") return resolve("fooled", dir);
-    if (phase === "live") {
-      const rt = performance.now() - tLive;
-      return resolve(dir === trial.real ? "hit" : "wrong", dir, rt);
+
+  // vì bàn giữ transform xoay, ô đúng = ô có toạ độ GỐC nằm trong cells
+  function pick(x, y, el) {
+    if (!game || game.over || phase !== "pick") return;
+    const isLit = trial.cells.some((c) => c.x === x && c.y === y);
+    if (isLit && !el.classList.contains("found")) {
+      el.classList.add("found");
+      found++;
+      beep(740 + found * 60, 60, 0.07);
+      pickCount();
+      if (found >= trial.k) finish(errs, false);
+      return;
     }
+    if (el.classList.contains("found") || el.classList.contains("err")) return;
+    errs++;
+    el.classList.add("err");
+    beep(220, 140, 0.08);
+    pickCount();
+    if (errs >= 2) finish(errs, false);
   }
-  function resolve(verdict, dir, rt) {
+
+  function finish(errCount, timeout) {
     if (phase === "feedback") return;
     clearTimers();
     phase = "feedback";
-    $("shuttle").classList.remove("windup");
     game.trials++;
-    if (verdict === "hit") {
-      game.hits++; game.streak++; game.rts.push(rt);
-      const pts = scoreHit(store.lv, rt, trial.windowMs, game.streak);
+    const failed = errCount >= 2 || timeout;
+    // lộ đáp án: ô sáng chưa tìm thấy
+    document.querySelectorAll(".mcell").forEach((el) => {
+      const x = +el.dataset.x, y = +el.dataset.y;
+      if (trial.cells.some((c) => c.x === x && c.y === y) && !el.classList.contains("found")) el.classList.add("missed");
+    });
+    const f = $("board-feed");
+    if (!failed) {
+      game.hits += errCount === 0 ? 1 : 0;
+      game.streak = errCount === 0 ? game.streak + 1 : 0;
+      const pts = scoreTrial(store.lv, errCount, game.streak);
       game.score += pts;
-      zones()[trial.real].classList.add("ok");
-      setLbl("+" + pts + " · " + Math.round(rt) + " ms", "ok");
-      beep(880, 90, 0.1);
+      f.textContent = errCount === 0 ? `+${pts} · lượt sạch ✨` : `+${pts} · xong nhưng trật 1`;
+      f.className = "board-feed ok";
+      beep(880, 100, 0.09);
     } else {
       game.streak = 0;
-      if (verdict === "fooled") { game.fooled++; setLbl("🎣 DÍNH CÚ LỪA!", "fool"); if (dir >= 0) zones()[dir].classList.add("bad"); }
-      else if (verdict === "early") { setLbl("⚡ BUNG SỚM!", "no"); if (dir >= 0) zones()[dir].classList.add("bad"); }
-      else if (verdict === "wrong") { setLbl("❌ SAI HƯỚNG", "no"); if (dir >= 0) zones()[dir].classList.add("bad"); zones()[trial.real].classList.add("ok"); }
-      else setLbl("🐌 TRỄ MẤT RỒI", "no");
-      beep(220, 140, 0.09);
+      f.textContent = (timeout ? "🐌 Hết giờ — " : "❌ Trật 2 lần — ") + "các ô hồng là đáp án còn thiếu";
+      f.className = "board-feed no";
+      beep(220, 150, 0.09);
     }
+    store.prog = (store.prog || 0) + progDelta(failed ? 2 : errCount);
+    if (store.prog >= 3 && store.lv < MAXLV) { store.lv++; store.prog = 0; }
+    else if (store.prog <= -3 && store.lv > 1) { store.lv--; store.prog = 0; }
+    save();
     $("hud-score").textContent = game.score;
     $("hud-count").textContent = game.hits + "/" + game.trials;
     $("hud-streak").textContent = game.streak >= 3 ? "🔥 " + game.streak : "";
-    later(nextTrial, 750);
+    later(nextTrial, 1450);
   }
 
   function endRound() {
     if (!game || game.over) return;
     game.over = true;
-    clearTimers(); clearInterval(clockId); clockId = null; clearCues();
-    const acc = game.trials ? game.hits / game.trials : 0;
-    const lv0 = store.lv;
-    if (game.trials >= 5) {
-      if (acc >= 0.85 && store.lv < MAXLV) store.lv++;
-      else if (acc < 0.60 && store.lv > 1) store.lv--;
-    }
-    store.rounds.push({ d: todayStr(), ts: Date.now(), s: game.score, hit: game.hits, tr: game.trials, fool: game.fooled, lv: lv0 });
+    clearTimers(); clearInterval(clockId); clockId = null;
+    store.rounds.push({ d: todayStr(), ts: Date.now(), s: game.score, hit: game.hits, tr: game.trials, lv: game.lvStart });
     if (store.rounds.length > 60) store.rounds = store.rounds.slice(-60);
     save();
-    $("res-mode").textContent = "Hai nhịp · " + store.settings.dur / 60 + " phút";
+    $("res-mode").textContent = "Ma trận xoay · " + store.settings.dur / 60 + " phút";
     $("res-score").textContent = game.score;
-    $("res-note").textContent = store.lv > lv0 ? "🚀 Lên Level " + store.lv + "!" : store.lv < lv0 ? "Hạ về Level " + store.lv : "";
+    $("res-note").textContent = store.lv > game.lvStart ? "🚀 Lên Level " + store.lv + "!" : store.lv < game.lvStart ? "Hạ về Level " + store.lv : "";
     $("res-count").textContent = game.hits + "/" + game.trials;
-    $("res-fooled").textContent = game.fooled;
-    $("res-rt").textContent = game.rts.length ? Math.round(game.rts.reduce((a, b) => a + b, 0) / game.rts.length) + " ms" : "—";
-    $("res-lv").textContent = lv0 === store.lv ? "Lv " + store.lv : "Lv " + lv0 + " → " + store.lv;
+    $("res-acc").textContent = game.trials ? Math.round(100 * game.hits / game.trials) + "%" : "—";
+    $("res-lv").textContent = game.lvStart === store.lv ? "Lv " + store.lv : "Lv " + game.lvStart + " → " + store.lv;
     beep(880, 200, 0.1); setTimeout(() => beep(1175, 260, 0.1), 220);
     show("result");
   }
 
-  /* ---------- events ---------- */
   $("btn-start").addEventListener("click", startRound);
   $("btn-again").addEventListener("click", startRound);
   $("btn-quit").addEventListener("click", endRound);
   $("btn-home").addEventListener("click", () => { renderHome(); show("home"); });
   $("nav-home").addEventListener("click", () => { if (game && !game.over) endRound(); renderHome(); show("home"); });
-  $("lv-up").addEventListener("click", () => { if (store.lv < MAXLV) { store.lv++; save(); renderHome(); } });
-  $("lv-dn").addEventListener("click", () => { if (store.lv > 1) { store.lv--; save(); renderHome(); } });
+  $("lv-up").addEventListener("click", () => { if (store.lv < MAXLV) { store.lv++; store.prog = 0; save(); renderHome(); } });
+  $("lv-dn").addEventListener("click", () => { if (store.lv > 1) { store.lv--; store.prog = 0; save(); renderHome(); } });
   document.querySelectorAll("#seg-dur button").forEach((b) =>
     b.addEventListener("click", () => { store.settings.dur = +b.dataset.v; save(); renderHome(); }));
   document.querySelectorAll("#seg-sound button").forEach((b) =>
     b.addEventListener("click", () => { store.settings.sound = !!+b.dataset.v; save(); renderHome(); }));
-  document.addEventListener("keydown", (e) => {
-    if (!game || game.over) return;
-    const n = zones().length;
-    const map2 = { ArrowLeft: 0, ArrowRight: 1, Digit1: 0, Digit2: 1 };
-    const map4 = { Digit1: 0, Digit2: 1, Digit3: 2, Digit4: 3 };
-    const m = n === 2 ? map2 : map4;
-    if (e.code in m) { e.preventDefault(); tap(m[e.code]); }
-  });
+  document.querySelectorAll("#seg-diff button").forEach((b) =>
+    b.addEventListener("click", () => { store.lv = +b.dataset.lv; store.prog = 0; save(); renderHome(); }));
+
+  if (TEST) {
+    window.__mx = {
+      trial: () => trial && { g: trial.g, k: trial.k, rot: trial.rot, cells: trial.cells, answer: trial.answer },
+      phase: () => phase,
+      state: () => ({ found, errs }),
+      game: () => game,
+      store: () => store,
+    };
+  }
 
   renderHome();
 })();

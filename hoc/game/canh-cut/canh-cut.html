@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"/>
+<meta name="theme-color" content="#0b1020"/>
+<title>Cánh cụt đua cá — mê cung băng xoay chong chóng</title>
+<script>try{document.documentElement.dataset.theme=localStorage.getItem('game:theme')||'dark'}catch(e){document.documentElement.dataset.theme='dark'}</script>
+<style>
+:root{
+  --bg:#0b1020; --card:#151d33; --card-2:#1a2340; --inset:#0f1628;
+  --ink:#e9eef9; --ink-soft:#98a3bb; --ink-dim:#5f6b85;
+  --line:#27314f; --line-soft:#1d2742; --good:#34d399; --bad:#f87171;
+  --mc:#7dd3fc; --mc2:#a5b4fc;
+  --radius:20px; --shadow:0 1px 2px rgba(0,0,0,.35),0 12px 32px rgba(0,0,0,.38);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+button,input,select{font-family:inherit}
+html{-webkit-text-size-adjust:100%}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+  background:
+    radial-gradient(1100px 560px at 88% -12%, color-mix(in srgb,var(--mc) 13%,transparent), transparent 60%),
+    radial-gradient(900px 620px at -12% 26%, color-mix(in srgb,var(--mc2) 10%,transparent), transparent 55%),
+    linear-gradient(180deg,#0e1428 0%, var(--bg) 100%);
+  background-attachment:fixed;
+  color:var(--ink);line-height:1.5;min-height:100vh;display:flex;flex-direction:column}
+main{flex:1;width:100%;max-width:760px;margin:0 auto;padding:0 20px 40px}
+.num{font-variant-numeric:tabular-nums}
+header{position:sticky;top:0;z-index:10;background:rgba(11,16,32,.78);backdrop-filter:blur(10px);border-bottom:1px solid var(--line-soft)}
+.hd-in{max-width:760px;margin:0 auto;padding:11px 20px;display:flex;align-items:center;gap:14px}
+.logo{font-weight:800;font-size:18px;letter-spacing:-.02em;display:flex;align-items:center;gap:11px}
+.logo-ic{width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg,var(--mc),var(--mc2));display:flex;align-items:center;justify-content:center;font-size:22px;flex:none;box-shadow:0 4px 16px color-mix(in srgb,var(--mc) 45%,transparent)}
+.logo small{display:block;font-size:11px;font-weight:600;color:var(--ink-soft)}
+.hd-sp{flex:1}
+.theme-btn{border:1px solid var(--line);background:var(--card);color:var(--ink);width:38px;height:38px;border-radius:999px;cursor:pointer;font-size:16px;flex:none;line-height:1;padding:0}
+.nav-btn{border:1px solid var(--line);background:var(--card);color:var(--ink);padding:9px 16px;border-radius:999px;font-size:14px;font-weight:600;cursor:pointer;text-decoration:none;display:inline-block}
+.nav-btn:hover{border-color:var(--mc)}
+.nav-btn.active{background:linear-gradient(135deg,var(--mc),var(--mc2));color:#0b1020;border-color:transparent}
+.screen{display:none;animation:fadeIn .18s ease}
+.screen.on{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+.hero{padding:34px 0 10px}
+.hero h1{font-size:clamp(29px,5.4vw,42px);letter-spacing:-.03em;background:linear-gradient(92deg,var(--ink) 35%,var(--mc) 78%,var(--mc2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero p{color:var(--ink-soft);margin-top:9px;max-width:640px;font-size:16.5px}
+.stat-row{display:flex;gap:12px;margin-top:22px;flex-wrap:wrap}
+.stat-card{border:1px solid var(--line);border-radius:14px;padding:14px 20px 14px 22px;background:linear-gradient(160deg,var(--card),var(--card-2));min-width:120px;position:relative;overflow:hidden;box-shadow:var(--shadow)}
+.stat-card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--sc,var(--mc))}
+.stat-card:nth-child(1){--sc:var(--mc)}
+.stat-card:nth-child(2){--sc:#fbbf24}
+.stat-card:nth-child(3){--sc:#38bdf8}
+.stat-card b{display:block;font-size:28px;letter-spacing:-.02em;color:var(--sc,var(--mc))}
+.stat-card span{font-size:13px;color:var(--ink-soft);font-weight:600}
+.lv-adjust{position:absolute;right:10px;top:12px;display:flex;gap:5px}
+.lv-adjust button{width:30px;height:30px;border-radius:9px;border:1px solid var(--line);background:var(--inset);color:var(--ink);font-size:17px;font-weight:800;cursor:pointer;line-height:1}
+.lv-adjust button:hover{border-color:var(--mc);color:var(--mc)}
+.btn{border:1px solid var(--line);border-radius:14px;padding:13px 24px;font-size:16px;font-weight:700;cursor:pointer;background:var(--card);color:var(--ink)}
+.btn.primary{background:linear-gradient(135deg,var(--mc),var(--mc2));border-color:transparent;color:#0b1020;font-size:17.5px;padding:15px 34px;box-shadow:0 8px 26px color-mix(in srgb,var(--mc) 38%,transparent)}
+.btn:hover{filter:brightness(1.08)}
+.start-row{margin-top:26px;display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--card)}
+.seg button{border:none;background:transparent;padding:10px 16px;font-size:14.5px;font-weight:600;cursor:pointer;color:var(--ink-soft)}
+.seg button+button{border-left:1px solid var(--line-soft)}
+.seg button.on{background:linear-gradient(135deg,var(--mc),var(--mc2));color:#0b1020}
+.howto{margin-top:30px;border:1px solid var(--line);border-left:4px solid var(--mc);border-radius:var(--radius);padding:20px 22px;background:var(--card);font-size:15.5px;color:var(--ink-soft);max-width:640px}
+.howto b{color:var(--mc)}
+.hist{margin-top:26px;border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;background:var(--card)}
+.hist table{width:100%;border-collapse:collapse;font-size:14.5px}
+.hist th{background:var(--inset);text-align:left;padding:10px 14px;font-size:12.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-soft)}
+.hist td{padding:10px 14px;border-top:1px solid var(--line-soft)}
+.hist .r{text-align:right}
+.empty{padding:26px;text-align:center;color:var(--ink-soft);font-size:15px}
+/* ---------- play ---------- */
+.play-hud{display:flex;align-items:center;gap:12px;padding:14px 0 8px;flex-wrap:wrap}
+.hud-item{font-size:14.5px;color:var(--ink-soft);font-weight:600}
+.hud-item b{font-size:20px;color:var(--ink)}
+.hud-streak{font-size:15px;font-weight:800;color:#fbbf24}
+.lv-badge{font-size:13px;font-weight:800;padding:4px 12px;border-radius:999px;color:var(--mc);background:color-mix(in srgb,var(--mc) 14%,transparent);border:1px solid color-mix(in srgb,var(--mc) 38%,transparent)}
+.hud-sp{flex:1}
+.btn-quit{border:1px solid var(--line);background:var(--card);border-radius:999px;padding:8px 15px;font-size:13.5px;font-weight:600;cursor:pointer;color:var(--ink-soft)}
+.btn-quit:hover{color:var(--bad);border-color:var(--bad)}
+.timebox{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.round-bar{height:6px;border-radius:99px;background:var(--inset);overflow:hidden;flex:1}
+.round-bar i{display:block;height:100%;background:linear-gradient(90deg,var(--mc),var(--mc2));border-radius:99px}
+.clock{font-size:14.5px;font-weight:800;color:var(--ink-soft);min-width:38px;text-align:right}
+.phase-note{text-align:center;font-size:15px;font-weight:800;letter-spacing:.04em;color:var(--ink-soft);margin-bottom:10px;min-height:24px}
+.phase-note.spin{color:#fb923c}
+.maze-wrap{max-width:440px;margin:0 auto;border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow);background:linear-gradient(165deg,#10203c,#0b1a33);padding:14px;user-select:none;-webkit-user-select:none;overflow:hidden}
+.rot-view{transition:transform .5s cubic-bezier(.5,.05,.3,1)}
+.rot-view svg{width:100%;height:auto;display:block}
+.board-feed{text-align:center;min-height:26px;margin-top:10px;font-size:16px;font-weight:800}
+.board-feed.ok{color:var(--good)} .board-feed.no{color:var(--bad)}
+.dpad{display:grid;grid-template-columns:repeat(3,66px);grid-template-rows:repeat(2,54px);gap:7px;justify-content:center;margin-top:12px}
+.dpad button{border-radius:12px;border:1px solid #2c3a61;background:linear-gradient(180deg,#1a2444,#131c36);color:var(--ink);font-size:19px;font-weight:800;cursor:pointer;touch-action:manipulation;line-height:1.05;box-shadow:0 2px 0 rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,.06)}
+.dpad button small{display:block;font-size:9.5px;font-weight:700;color:#fdba74;letter-spacing:.05em}
+.dpad button:active{transform:translateY(1px) scale(.96);border-color:var(--mc);color:var(--mc)}
+.dpad .d-u{grid-column:2;grid-row:1}
+.dpad .d-l{grid-column:1;grid-row:2}
+.dpad .d-d{grid-column:2;grid-row:2}
+.dpad .d-r{grid-column:3;grid-row:2}
+.play-hint{text-align:center;font-size:13.5px;color:var(--ink-dim);margin-top:8px}
+/* ---------- result ---------- */
+.res-wrap{max-width:520px;margin:40px auto 0;text-align:center}
+.res-mode{font-size:15.5px;font-weight:700;color:var(--ink-soft)}
+.res-score{font-size:clamp(56px,13vw,84px);font-weight:800;letter-spacing:-.04em;line-height:1.05;background:linear-gradient(92deg,var(--ink) 20%,var(--mc) 70%,var(--mc2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.res-note{margin-top:6px;font-size:15.5px;font-weight:700;color:var(--mc);min-height:22px}
+.res-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:26px}
+.res-cell{border:1px solid var(--line);border-radius:14px;padding:14px 8px;background:linear-gradient(160deg,var(--card),var(--card-2))}
+.res-cell b{display:block;font-size:24px;letter-spacing:-.02em;color:var(--mc)}
+.res-cell span{font-size:12.5px;color:var(--ink-soft);font-weight:600}
+.res-actions{display:flex;gap:10px;justify-content:center;margin-top:26px}
+footer{border-top:1px solid var(--line-soft);padding:16px 20px calc(16px + env(safe-area-inset-bottom));text-align:center;font-size:12px;color:var(--ink-dim)}
+button{touch-action:manipulation}
+/* ---------- mobile (iPhone) ---------- */
+@media (max-width:480px){
+  main{padding:0 8px 24px;padding-left:max(8px,env(safe-area-inset-left));padding-right:max(8px,env(safe-area-inset-right))}
+  .hd-in{padding:7px 10px;gap:6px}
+  .logo{font-size:14px;gap:7px;min-width:0;overflow:hidden}
+  .logo > span:last-child{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+  .logo-ic{width:32px;height:32px;font-size:16px;border-radius:9px}
+  .logo small{display:none}
+  .nav-btn{padding:7px 10px;font-size:12.5px;white-space:nowrap}
+  .theme-btn{width:32px;height:32px;font-size:14px}
+  .hero{padding:16px 0 6px}
+  .hero p{font-size:14.5px;margin-top:6px}
+  .stat-row{gap:8px;margin-top:14px}
+  .stat-card{padding:10px 12px;min-width:calc(50% - 4px);flex:1}
+  .stat-card b{font-size:22px}
+  .start-row{margin-top:18px;gap:10px}
+  .btn.primary{width:100%;padding:14px 20px}
+  .howto{padding:14px 16px;font-size:14px;margin-top:20px}
+  .play-hud{gap:7px;padding:8px 0 6px}
+  .hud-item{font-size:12.5px}
+  .hud-item b{font-size:16px}
+  .maze-wrap{padding:8px;border-radius:14px;max-width:min(92vw,400px)}
+  .maze-wrap{max-height:calc(100dvh - 460px)}
+  .maze-wrap .rot-view svg{max-height:calc(100dvh - 480px)}
+  .dpad{grid-template-columns:repeat(3,minmax(58px,1fr));grid-template-rows:repeat(2,48px);max-width:240px;margin-left:auto;margin-right:auto}
+  .play-hint{font-size:12px;margin-top:5px}
+  .res-grid{gap:8px}
+}
+/* ---------- dark/light mode (persist chung key game:theme) ---------- */
+html[data-theme="light"]{
+  --bg:#edf0f8; --card:#ffffff; --card-2:#f3f5fb; --inset:#e7ebf5;
+  --ink:#1a2233; --ink-soft:#4e5a74; --ink-dim:#7b869e;
+  --line:#cfd8e8; --line-soft:#dfe5f1;
+  --shadow:0 1px 2px rgba(23,32,56,.06),0 12px 32px rgba(23,32,56,.10);
+}
+html[data-theme="light"] body{
+  background:
+    radial-gradient(1100px 560px at 88% -12%, color-mix(in srgb,var(--mc) 11%,transparent), transparent 60%),
+    radial-gradient(900px 620px at -12% 26%, color-mix(in srgb,var(--mc2) 8%,transparent), transparent 55%),
+    linear-gradient(180deg,#f7f9fe 0%, #edf0f8 100%);
+  background-attachment:fixed;
+}
+html[data-theme="light"] header{background:rgba(247,249,254,.85)}
+/* mê cung băng giữ tối (màu vẽ tuned cho nền tối) */
+html[data-theme="light"] .maze-wrap{background:linear-gradient(165deg,#10203c,#0b1a33);border-color:#27314f}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="hd-in">
+    <div class="logo"><span class="logo-ic">🐧</span><span>Cánh cụt đua cá<small>penguin rally · định hướng khi hệ quy chiếu xoay</small></span></div>
+    <div class="hd-sp"></div>
+    <button class="theme-btn" id="themeBtn" title="Đổi giao diện sáng/tối">☀️</button>
+    <a class="nav-btn" href="../index.html">⌂ Bộ game</a>
+    <button class="nav-btn active" id="nav-home">Trang chủ</button>
+  </div>
+</header>
+
+<main>
+
+<section class="screen on" id="screen-home">
+  <div class="hero">
+    <h1>Dẫn cánh cụt tới cá — khi cả mê cung xoay</h1>
+    <p>Lái chú cánh cụt qua mê cung băng tới con cá 🐟 trước các cánh cụt đối thủ. Cái khó đúng kiểu Lumosity Penguin Rally: <b>phím KHÔNG đổi theo màn hình</b> — ↑ luôn đi về hướng <b>BẮC của mê cung</b>, trong khi góc nhìn cứ xoay chong chóng. Mũi tên cam 🧭 chỉ Bắc đang nằm đâu; muốn đi "sang trái trên màn hình" bạn phải tự dịch ra phím la bàn đúng — bài luyện định hướng không gian và cập nhật hệ quy chiếu.</p>
+  </div>
+  <div class="stat-row">
+    <div class="stat-card"><b class="num" id="st-lv">1</b><span>Level (1–12)</span>
+      <div class="lv-adjust"><button id="lv-dn">−</button><button id="lv-up">+</button></div>
+    </div>
+    <div class="stat-card"><b class="num" id="st-best">0</b><span>Điểm cao nhất (level này)</span></div>
+    <div class="stat-card"><b class="num" id="st-rounds">0</b><span>Vòng đã chơi</span></div>
+  </div>
+  <div class="start-row">
+    <button class="btn primary" id="btn-start">▶ Chơi</button>
+    <span class="seg" id="seg-diff" title="Chọn độ khó = nhảy thẳng level 1/4/7/10"><button data-lv="1">Dễ</button><button data-lv="4">Vừa</button><button data-lv="7">Khó</button><button data-lv="10">Ác</button></span>
+    <span class="seg" id="seg-dur"><button data-v="120">2′</button><button data-v="180">3′</button><button data-v="300">5′</button></span>
+    <span class="seg" id="seg-sound"><button data-v="1">🔊</button><button data-v="0">🔇</button></span>
+  </div>
+  <div class="howto">
+    <b>Luật (đúng bản gốc Lumosity):</b> phím mũi tên / WASD / nút bấm theo <b>LA BÀN MÊ CUNG</b>, không theo màn hình — ↑ luôn là Bắc, → luôn là Đông… Khi mê cung <b>xoay 90°</b> (sau mỗi vài bước), mũi tên cam 🧭 cho biết Bắc đang nằm đâu trên màn hình: ví dụ Bắc đang ở bên phải thì muốn cánh cụt chạy "lên trên màn hình" phải bấm <b>←</b> (Tây). Level 1 đua với đồng hồ; từ level 2 có <b>cánh cụt đối thủ</b> chạy đường ngắn nhất, càng cao càng đông + nhanh, mê cung to hơn, xoay dày hơn. Thắng nhanh ×1,5; chuỗi thắng 3+ ×1,5 🔥. Chọn <b>Dễ/Vừa/Khó/Ác</b> để nhảy level.
+  </div>
+  <div class="hist" id="home-hist"></div>
+</section>
+
+<section class="screen" id="screen-play">
+  <div class="play-hud">
+    <span class="lv-badge" id="hud-lv">Lv 1</span>
+    <span class="hud-item">Điểm <b class="num" id="hud-score">0</b></span>
+    <span class="hud-item">Thắng <b class="num" id="hud-count">0/0</b></span>
+    <span class="hud-streak" id="hud-streak"></span>
+    <div class="hud-sp"></div>
+    <button class="btn-quit" id="btn-quit">Kết thúc</button>
+  </div>
+  <div class="timebox">
+    <div class="round-bar"><i id="round-fill" style="width:100%"></i></div>
+    <span class="clock num" id="round-clock">2:00</span>
+  </div>
+  <div class="phase-note" id="phase-note"></div>
+  <div class="maze-wrap"><div class="rot-view" id="rotview"></div></div>
+  <div class="board-feed" id="board-feed"></div>
+  <div class="dpad" id="dpad">
+    <button class="d-u" data-d="U">↑<small>BẮC</small></button>
+    <button class="d-l" data-d="L">←<small>TÂY</small></button>
+    <button class="d-d" data-d="D">↓<small>NAM</small></button>
+    <button class="d-r" data-d="R">→<small>ĐÔNG</small></button>
+  </div>
+  <div class="play-hint">Phím đi theo LA BÀN (↑ = Bắc), không theo màn hình — liếc mũi tên cam 🧭 rồi mới bấm</div>
+</section>
+
+<section class="screen" id="screen-result">
+  <div class="res-wrap">
+    <div class="res-mode" id="res-mode"></div>
+    <div class="res-score num" id="res-score">0</div>
+    <div class="res-note" id="res-note"></div>
+    <div class="res-grid">
+      <div class="res-cell"><b class="num" id="res-count"></b><span>Rally thắng</span></div>
+      <div class="res-cell"><b class="num" id="res-acc"></b><span>Tỉ lệ thắng</span></div>
+      <div class="res-cell"><b class="num" id="res-lv"></b><span>Level</span></div>
+    </div>
+    <div class="res-actions">
+      <button class="btn primary" id="btn-again">Chơi lại</button>
+      <button class="btn" id="btn-home">Trang chủ</button>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>Cánh cụt đua cá (penguin rally) · định hướng không gian &amp; hệ quy chiếu xoay · Build v2 · 2026-08-02 · dữ liệu lưu trong trình duyệt của bạn</footer>
+
+<script id="gen">
+"use strict";
+/* ================================================================
+   ===GEN-START===  Logic thuần: mê cung DFS hoàn hảo, BFS đường ngắn nhất,
+   dịch hướng màn hình ↔ mê cung khi view xoay, bảng level, điểm.
+   walls[i] = bitmask TƯỜNG (U=1,R=2,D=4,L=8) của ô i = y*g+x. Bit bật = có tường.
+   ================================================================ */
+const MAXLV = 12;
+const DIRS = ["U", "R", "D", "L"];
+const WBIT = { U: 1, R: 2, D: 4, L: 8 };
+const DXY = { U: [0, -1], R: [1, 0], D: [0, 1], L: [-1, 0] };
+const OPP = { U: "D", R: "L", D: "U", L: "R" };
+const FAST = 0.85;              // về đích ≤ 85% thời gian chuẩn = "nhanh"
+const AI_HEADSTART_MS = 900;    // đối thủ xuất phát chậm 0.9s cho công bằng
+// g: cỡ mê cung · rotEvery: xoay view sau mỗi N bước người chơi (0 = không xoay)
+// nAI: số đối thủ · aiStepMs: nhịp bước đối thủ · parStepMs: chuẩn thời gian/bước cho time-trial
+const LEVELS = [
+  { g: 6,  rotEvery: 0, nAI: 0, aiStepMs: 0,   parStepMs: 780 },
+  { g: 7,  rotEvery: 6, nAI: 1, aiStepMs: 620, parStepMs: 780 },
+  { g: 7,  rotEvery: 5, nAI: 1, aiStepMs: 590, parStepMs: 760 },
+  { g: 8,  rotEvery: 5, nAI: 1, aiStepMs: 560, parStepMs: 760 },
+  { g: 8,  rotEvery: 4, nAI: 2, aiStepMs: 540, parStepMs: 740 },
+  { g: 8,  rotEvery: 4, nAI: 2, aiStepMs: 520, parStepMs: 740 },
+  { g: 9,  rotEvery: 3, nAI: 2, aiStepMs: 490, parStepMs: 720 },
+  { g: 9,  rotEvery: 3, nAI: 2, aiStepMs: 460, parStepMs: 720 },
+  { g: 9,  rotEvery: 3, nAI: 3, aiStepMs: 430, parStepMs: 700 },
+  { g: 10, rotEvery: 2, nAI: 3, aiStepMs: 410, parStepMs: 700 },
+  { g: 10, rotEvery: 2, nAI: 3, aiStepMs: 380, parStepMs: 680 },
+  { g: 10, rotEvery: 2, nAI: 3, aiStepMs: 350, parStepMs: 660 },
+];
+// Mê cung hoàn hảo (spanning tree) bằng DFS lùi — mọi ô tới được, đúng 1 đường đơn giữa 2 ô
+function genMaze(g, rnd = Math.random) {
+  const walls = new Array(g * g).fill(15);
+  const seen = new Array(g * g).fill(false);
+  const stack = [0];
+  seen[0] = true;
+  while (stack.length) {
+    const cur = stack[stack.length - 1];
+    const x = cur % g, y = Math.floor(cur / g);
+    const opts = DIRS.filter((d) => {
+      const nx = x + DXY[d][0], ny = y + DXY[d][1];
+      return nx >= 0 && ny >= 0 && nx < g && ny < g && !seen[ny * g + nx];
+    });
+    if (!opts.length) { stack.pop(); continue; }
+    const d = opts[Math.min(opts.length - 1, Math.floor(rnd() * opts.length))];
+    const nx = x + DXY[d][0], ny = y + DXY[d][1], ni = ny * g + nx;
+    walls[cur] &= ~WBIT[d];
+    walls[ni] &= ~WBIT[OPP[d]];
+    seen[ni] = true;
+    stack.push(ni);
+  }
+  return walls;
+}
+function canMove(walls, g, x, y, d) {
+  const nx = x + DXY[d][0], ny = y + DXY[d][1];
+  if (nx < 0 || ny < 0 || nx >= g || ny >= g) return false;
+  return (walls[y * g + x] & WBIT[d]) === 0;
+}
+// BFS: mảng khoảng cách từ (sx,sy)
+function bfsDist(walls, g, sx, sy) {
+  const dist = new Array(g * g).fill(-1);
+  const q = [sy * g + sx];
+  dist[sy * g + sx] = 0;
+  for (let h = 0; h < q.length; h++) {
+    const c = q[h], x = c % g, y = Math.floor(c / g);
+    for (const d of DIRS) {
+      if (!canMove(walls, g, x, y, d)) continue;
+      const ni = (y + DXY[d][1]) * g + (x + DXY[d][0]);
+      if (dist[ni] === -1) { dist[ni] = dist[c] + 1; q.push(ni); }
+    }
+  }
+  return dist;
+}
+// Đường ngắn nhất dạng chuỗi hướng đi (đi lùi từ đích theo dist giảm dần)
+function bfsPath(walls, g, sx, sy, tx, ty) {
+  const dist = bfsDist(walls, g, sx, sy);
+  if (dist[ty * g + tx] < 0) return null;
+  const rev = [];
+  let x = tx, y = ty;
+  while (x !== sx || y !== sy) {
+    for (const d of DIRS) {
+      if (!canMove(walls, g, x, y, d)) continue;
+      const nx = x + DXY[d][0], ny = y + DXY[d][1];
+      if (dist[ny * g + nx] === dist[y * g + x] - 1) { rev.push(OPP[d]); x = nx; y = ny; break; }
+    }
+  }
+  return rev.reverse();
+}
+// View xoay R° CW: hướng mê cung d hiện trên màn hình thành rotateDir(d,R).
+// Người chơi bấm hướng MÀN HÌNH s → hướng mê cung thật = mapDir(s,R) (nghịch đảo).
+function rotateDir(d, R) { return DIRS[(DIRS.indexOf(d) + R / 90) % 4]; }
+function mapDir(s, R) { return DIRS[(DIRS.indexOf(s) - R / 90 + 4) % 4]; }
+// Sinh 1 rally: mê cung + xuất phát góc + cá ở ô XA NHẤT theo BFS
+function genRally(lv, rnd = Math.random) {
+  const L = LEVELS[Math.min(MAXLV, Math.max(1, lv)) - 1];
+  const g = L.g;
+  const walls = genMaze(g, rnd);
+  const corners = [[0, 0], [g - 1, 0], [0, g - 1], [g - 1, g - 1]];
+  const c = corners[Math.min(3, Math.floor(rnd() * 4))];
+  const start = { x: c[0], y: c[1] };
+  const dist = bfsDist(walls, g, start.x, start.y);
+  let fi = 0;
+  for (let i = 1; i < dist.length; i++) if (dist[i] > dist[fi]) fi = i;
+  const fish = { x: fi % g, y: Math.floor(fi / g) };
+  const dirs = bfsPath(walls, g, start.x, start.y, fish.x, fish.y);
+  const pathLen = dirs.length;
+  const parMs = L.nAI ? AI_HEADSTART_MS + pathLen * L.aiStepMs : pathLen * L.parStepMs;
+  return { lv, g, walls, start, fish, dirs, pathLen, parMs,
+           rotEvery: L.rotEvery, nAI: L.nAI, aiStepMs: L.aiStepMs };
+}
+// Điểm rally thắng: 30×lv · nhanh (≤85% chuẩn) ×1.5 · chuỗi thắng ≥3 ×1.5 · thua = 0
+function scoreRally(lv, won, msUsed, parMs, streak) {
+  if (!won) return 0;
+  return Math.round(30 * lv * (msUsed <= parMs * FAST ? 1.5 : 1) * (streak >= 3 ? 1.5 : 1));
+}
+// Staircase ±3: thắng nhanh +1 · thắng chậm +0.6 · thua −1.5
+function progDelta(won, msUsed, parMs) { return won ? (msUsed <= parMs * FAST ? 1 : 0.6) : -1.5; }
+/* ===GEN-END=== */
+if (typeof module !== "undefined" && module.exports)
+  module.exports = { MAXLV, DIRS, WBIT, DXY, OPP, FAST, AI_HEADSTART_MS, LEVELS,
+                     genMaze, canMove, bfsDist, bfsPath, rotateDir, mapDir, genRally, scoreRally, progDelta };
+</script>
+
+<script id="app">
+"use strict";
+(() => {
+  const KEY = "canh-cut:v1";
+  const $ = (id) => document.getElementById(id);
+  const TEST = /[?&]test=1/.test(location.search);
+  const load = () => {
+    try { const s = JSON.parse(localStorage.getItem(KEY)); if (s && s.v === 1) return s; } catch (e) {}
+    return { v: 1, settings: { dur: 120, sound: true }, lv: 1, prog: 0, rounds: [] };
+  };
+  const store = load();
+  const save = () => { try { localStorage.setItem(KEY, JSON.stringify(store)); } catch (e) {} };
+  const todayStr = () => { const d = new Date(); return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0"); };
+  const fmt = (s) => Math.floor(s / 60) + ":" + String(Math.floor(s % 60)).padStart(2, "0");
+  const CELL = 44, PAD = 10;
+  const AI_COLORS = ["#f87171", "#fb923c", "#c084fc"];
+
+  let audioCtx = null, audioOut = null;
+  function audioDest() {
+    audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+    if (!audioOut) {
+      try { audioOut = audioCtx.createDynamicsCompressor(); audioOut.threshold.value = -18; audioOut.knee.value = 24; audioOut.ratio.value = 6; audioOut.connect(audioCtx.destination); }
+      catch (e) { audioOut = audioCtx.destination; }
+    }
+    if (audioCtx.state === "suspended") { try { audioCtx.resume(); } catch (e) {} }
+    return audioOut;
+  }
+  function beep(f, dur, vol) {
+    if (!store.settings.sound) return;
+    try {
+      const out = audioDest(), t = audioCtx.currentTime;
+      const o = audioCtx.createOscillator(), g = audioCtx.createGain();
+      o.frequency.value = f; o.type = "sine";
+      g.gain.setValueAtTime(0.0001, t);
+      g.gain.exponentialRampToValueAtTime(vol, t + 0.015);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + dur / 1000);
+      o.connect(g); g.connect(out); o.start(t); o.stop(t + dur / 1000 + 0.03);
+    } catch (e) {}
+  }
+
+  const screens = { home: $("screen-home"), play: $("screen-play"), result: $("screen-result") };
+  function show(k) { Object.entries(screens).forEach(([n, el]) => el.classList.toggle("on", n === k)); }
+
+  function renderHome() {
+    $("st-lv").textContent = store.lv;
+    const mine = store.rounds.filter((r) => r.lv === store.lv);
+    $("st-best").textContent = mine.length ? Math.max(...mine.map((r) => r.s)) : 0;
+    $("st-rounds").textContent = store.rounds.length;
+    document.querySelectorAll("#seg-dur button").forEach((b) => b.classList.toggle("on", +b.dataset.v === store.settings.dur));
+    document.querySelectorAll("#seg-sound button").forEach((b) => b.classList.toggle("on", !!+b.dataset.v === store.settings.sound));
+    document.querySelectorAll("#seg-diff button").forEach((b) => { const lo = +b.dataset.lv; b.classList.toggle("on", store.lv >= lo && store.lv < lo + 3); });
+    const rows = store.rounds.slice(-8).reverse().map((r) =>
+      `<tr><td>${r.d}</td><td>Lv ${r.lv}</td><td class="r num">${r.hit}/${r.tr}</td><td class="r num"><b>${r.s}</b></td></tr>`).join("");
+    $("home-hist").innerHTML = rows
+      ? `<table><tr><th>Ngày</th><th>Level</th><th class="r">Thắng</th><th class="r">Điểm</th></tr>${rows}</table>`
+      : `<div class="empty">Chưa có vòng nào — bấm ▶ Chơi để thả cánh cụt đầu tiên 🐧</div>`;
+  }
+
+  /* ---------- vòng chơi ---------- */
+  const rotview = $("rotview");
+  let game = null, rally = null, phase = "idle", R = 0, timers = [], clockId = null;
+  let px = 0, py = 0, moves = 0, tRally = 0, ais = [], lastResult = null;
+  const clearTimers = () => { timers.forEach((t) => { clearTimeout(t); clearInterval(t); }); timers = []; };
+  const later = (fn, ms) => { const t = setTimeout(fn, ms); timers.push(t); return t; };
+
+  function svgMaze() {
+    const g = rally.g, W = g * CELL + PAD * 2;
+    let wallsPath = "";
+    for (let y = 0; y < g; y++) for (let x = 0; x < g; x++) {
+      const w = rally.walls[y * g + x];
+      const X = PAD + x * CELL, Y = PAD + y * CELL;
+      if (w & 1) wallsPath += `M${X} ${Y}h${CELL}`;
+      if (w & 2) wallsPath += `M${X + CELL} ${Y}v${CELL}`;
+      if (w & 4) wallsPath += `M${X} ${Y + CELL}h${CELL}`;
+      if (w & 8) wallsPath += `M${X} ${Y}v${CELL}`;
+    }
+    const fx = PAD + rally.fish.x * CELL + CELL / 2, fy = PAD + rally.fish.y * CELL + CELL / 2;
+    // bông tuyết trang trí rải ngẫu nhiên (chỉ thị giác, không đụng logic)
+    let snow = "";
+    for (let i = 0; i < Math.round(g * 1.6); i++) {
+      const sx = (PAD + 6 + Math.random() * (W - PAD * 2 - 12)).toFixed(0);
+      const sy = (PAD + 6 + Math.random() * (W - PAD * 2 - 12)).toFixed(0);
+      snow += Math.random() < 0.6
+        ? `<circle cx="${sx}" cy="${sy}" r="${(1 + Math.random() * 1.6).toFixed(1)}" fill="rgba(226,240,255,.4)"/>`
+        : `<text x="${sx}" y="${sy}" font-size="10" opacity=".28" text-anchor="middle" dominant-baseline="central">❄️</text>`;
+    }
+    const aiTxt = ais.map((a, i) =>
+      `<g id="ai${i}" style="transition:transform .28s ease"><ellipse cy="12" rx="11" ry="4.5" fill="rgba(0,0,0,.3)"/><circle r="15" fill="${AI_COLORS[i]}" opacity=".3"></circle><circle r="15" fill="none" stroke="${AI_COLORS[i]}" stroke-width="1.6" opacity=".7"></circle><text class="glyph" text-anchor="middle" dominant-baseline="central" font-size="24">🐧</text></g>`).join("");
+    rotview.innerHTML =
+      `<svg viewBox="0 0 ${W} ${W}" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="iceg" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#16345f"/><stop offset=".55" stop-color="#102a52"/><stop offset="1" stop-color="#0b1f42"/>
+          </linearGradient>
+          <radialGradient id="icesheen" cx=".28" cy=".18" r=".9">
+            <stop offset="0" stop-color="rgba(186,230,253,.14)"/><stop offset=".6" stop-color="rgba(186,230,253,0)"/>
+          </radialGradient>
+        </defs>
+        <rect x="1" y="1" width="${W - 2}" height="${W - 2}" rx="14" fill="url(#iceg)" stroke="#38598f" stroke-width="1.5"/>
+        <rect x="1" y="1" width="${W - 2}" height="${W - 2}" rx="14" fill="url(#icesheen)"/>
+        ${snow}
+        <path d="${wallsPath}" stroke="#2b558f" stroke-width="8" stroke-linecap="round" fill="none" opacity=".55"/>
+        <path d="${wallsPath}" stroke="#c8e6ff" stroke-width="3.2" stroke-linecap="round" fill="none" opacity=".95"/>
+        <g id="north">
+          <circle cx="${W / 2}" cy="13" r="11.5" fill="#132c52" stroke="#fb923c" stroke-width="1.6"/>
+          <polygon points="${W / 2 - 6},16 ${W / 2 + 6},16 ${W / 2},5" fill="#fb923c"/>
+          <text x="${W / 2}" y="21.5" text-anchor="middle" font-size="7" font-weight="800" fill="#fdba74">B</text>
+        </g>
+        <circle cx="${fx}" cy="${fy}" r="17" fill="#0a2e52" stroke="#38bdf8" stroke-width="1.6" opacity=".95"/>
+        <circle cx="${fx}" cy="${fy}" r="12" fill="none" stroke="rgba(125,211,252,.35)" stroke-width="1"/>
+        <text class="glyph" x="${fx}" y="${fy}" text-anchor="middle" dominant-baseline="central" font-size="23">🐟</text>
+        ${aiTxt}
+        <g id="pg" style="transition:transform .22s ease"><ellipse cy="13" rx="12" ry="5" fill="rgba(0,0,0,.35)"/><circle r="16" fill="#7dd3fc" opacity=".32"></circle><circle r="16" fill="none" stroke="#7dd3fc" stroke-width="1.8" opacity=".85"></circle><text class="glyph" text-anchor="middle" dominant-baseline="central" font-size="26">🐧</text></g>
+      </svg>`;
+    placeAll();
+  }
+  const cxy = (x, y) => [PAD + x * CELL + CELL / 2, PAD + y * CELL + CELL / 2];
+  function placeAll() {
+    const pg = rotview.querySelector("#pg");
+    const [cx, cy] = cxy(px, py);
+    if (pg) pg.style.transform = `translate(${cx}px,${cy}px)`;
+    ais.forEach((a, i) => {
+      const el = rotview.querySelector("#ai" + i);
+      const [ax, ay] = cxy(a.x, a.y);
+      if (el) el.style.transform = `translate(${ax}px,${ay}px)`;
+    });
+    // glyph đứng thẳng bất kể view xoay
+    rotview.querySelectorAll(".glyph").forEach((t) => { t.setAttribute("transform", `rotate(${-R} ${t.getAttribute("x") || 0} ${t.getAttribute("y") || 0})`); });
+  }
+  function applyR(animate) {
+    if (!animate) { rotview.style.transition = "none"; }
+    rotview.style.transform = `rotate(${R}deg)`;
+    if (!animate) { void rotview.offsetWidth; rotview.style.transition = ""; }
+    placeAll();
+  }
+
+  function noteRot() {
+    $("phase-note").textContent = R === 0 ? "🧭 Bắc đang ở TRÊN" :
+      R === 90 ? "🧭 mê cung xoay 90° — Bắc đang ở bên PHẢI" :
+      R === 180 ? "🧭 mê cung lộn ngược — Bắc đang ở DƯỚI" : "🧭 mê cung xoay −90° — Bắc đang ở bên TRÁI";
+    $("phase-note").className = "phase-note" + (R !== 0 ? " spin" : "");
+  }
+
+  function startRound() {
+    game = { over: false, score: 0, hits: 0, trials: 0, streak: 0, lvStart: store.lv,
+             endAt: Date.now() + store.settings.dur * 1000 };
+    $("hud-score").textContent = "0"; $("hud-count").textContent = "0/0"; $("hud-streak").textContent = "";
+    show("play");
+    clearInterval(clockId);
+    clockId = setInterval(() => {
+      if (!game || game.over) return;
+      const left = Math.max(0, game.endAt - Date.now());
+      $("round-clock").textContent = fmt(left / 1000);
+      $("round-fill").style.width = (left / (store.settings.dur * 1000) * 100) + "%";
+      if (left <= 0) endRound();
+    }, 100);
+    nextRally();
+  }
+
+  function nextRally() {
+    if (!game || game.over) return;
+    clearTimers();
+    rally = genRally(store.lv);
+    phase = "run";
+    R = 0; moves = 0;
+    px = rally.start.x; py = rally.start.y;
+    ais = Array.from({ length: rally.nAI }, () => ({ x: rally.start.x, y: rally.start.y, i: 0 }));
+    lastResult = null;
+    $("hud-lv").textContent = "Lv " + store.lv;
+    $("board-feed").textContent = ""; $("board-feed").className = "board-feed";
+    applyR(false);
+    svgMaze();
+    noteRot();
+    tRally = performance.now();
+    // đối thủ: chạy đường ngắn nhất, xuất phát chậm AI_HEADSTART_MS, con sau chậm hơn con trước chút
+    ais.forEach((a, i) => {
+      later(() => {
+        const iv = setInterval(() => {
+          if (phase !== "run") { clearInterval(iv); return; }
+          if (a.i >= rally.dirs.length) { clearInterval(iv); return; }
+          const d = rally.dirs[a.i++];
+          a.x += DXY[d][0]; a.y += DXY[d][1];
+          placeAll();
+          if (a.x === rally.fish.x && a.y === rally.fish.y) { clearInterval(iv); finishRally(false, i); }
+        }, Math.round(rally.aiStepMs * (1 + i * 0.08)));
+        timers.push(iv);
+      }, AI_HEADSTART_MS + i * 150);
+    });
+  }
+
+  // ĐÚNG LUẬT LUMOSITY: phím CỐ ĐỊNH theo la bàn mê cung — ↑ luôn đi về hướng BẮC của mê cung,
+  // bất kể view đang xoay thế nào. Mũi tên cam 🧭 cho biết Bắc đang nằm đâu trên màn hình.
+  function tryMove(d) {
+    if (!game || game.over || phase !== "run") return;
+    if (!canMove(rally.walls, rally.g, px, py, d)) {
+      beep(180, 60, 0.05);
+      return;
+    }
+    px += DXY[d][0]; py += DXY[d][1];
+    moves++;
+    placeAll();
+    beep(520 + (moves % 3) * 40, 30, 0.03);
+    if (px === rally.fish.x && py === rally.fish.y) { finishRally(true); return; }
+    if (rally.rotEvery > 0 && moves % rally.rotEvery === 0) {
+      R = (R + (Math.random() < 0.5 ? 90 : 270)) % 360;
+      applyR(true);
+      noteRot();
+      beep(392, 120, 0.06);
+    }
+  }
+
+  function finishRally(playerWon, aiIdx) {
+    if (phase !== "feedback") {
+      phase = "feedback";
+      clearTimers();
+      const msUsed = performance.now() - tRally;
+      game.trials++;
+      const f = $("board-feed");
+      if (playerWon) {
+        game.hits++; game.streak++;
+        const pts = scoreRally(store.lv, true, msUsed, rally.parMs, game.streak);
+        game.score += pts;
+        f.textContent = `🐟 +${pts} · ${(msUsed / 1000).toFixed(1)}s / chuẩn ${(rally.parMs / 1000).toFixed(1)}s`;
+        f.className = "board-feed ok";
+        beep(880, 100, 0.09); setTimeout(() => beep(1175, 140, 0.09), 120);
+      } else {
+        game.streak = 0;
+        const left = bfsDist(rally.walls, rally.g, px, py)[rally.fish.y * rally.g + rally.fish.x];
+        f.textContent = rally.nAI ? `❌ Cánh cụt ${aiIdx + 1} đớp cá trước — bạn còn cách ${left} bước` : "🐌 Quá giờ chuẩn";
+        f.className = "board-feed no";
+        beep(220, 200, 0.09);
+      }
+      lastResult = { won: playerWon, msUsed, parMs: rally.parMs };
+      store.prog = (store.prog || 0) + progDelta(playerWon, msUsed, rally.parMs);
+      if (store.prog >= 3 && store.lv < MAXLV) { store.lv++; store.prog = 0; }
+      else if (store.prog <= -3 && store.lv > 1) { store.lv--; store.prog = 0; }
+      save();
+      $("hud-score").textContent = game.score;
+      $("hud-count").textContent = game.hits + "/" + game.trials;
+      $("hud-streak").textContent = game.streak >= 3 ? "🔥 " + game.streak : "";
+      later(nextRally, 1600);
+    }
+  }
+
+  function endRound() {
+    if (!game || game.over) return;
+    game.over = true;
+    clearTimers(); clearInterval(clockId); clockId = null;
+    store.rounds.push({ d: todayStr(), ts: Date.now(), s: game.score, hit: game.hits, tr: game.trials, lv: game.lvStart });
+    if (store.rounds.length > 60) store.rounds = store.rounds.slice(-60);
+    save();
+    $("res-mode").textContent = "Cánh cụt đua cá · " + store.settings.dur / 60 + " phút";
+    $("res-score").textContent = game.score;
+    $("res-note").textContent = store.lv > game.lvStart ? "🚀 Lên Level " + store.lv + "!" : store.lv < game.lvStart ? "Hạ về Level " + store.lv : "";
+    $("res-count").textContent = game.hits + "/" + game.trials;
+    $("res-acc").textContent = game.trials ? Math.round(100 * game.hits / game.trials) + "%" : "—";
+    $("res-lv").textContent = game.lvStart === store.lv ? "Lv " + store.lv : "Lv " + game.lvStart + " → " + store.lv;
+    beep(880, 200, 0.1); setTimeout(() => beep(1175, 260, 0.1), 220);
+    show("result");
+  }
+
+  const KEYMAP = { ArrowUp: "U", ArrowRight: "R", ArrowDown: "D", ArrowLeft: "L", w: "U", d: "R", s: "D", a: "L", W: "U", D: "R", S: "D", A: "L" };
+  window.addEventListener("keydown", (e) => {
+    if (!screens.play.classList.contains("on")) return;
+    const d = KEYMAP[e.key];
+    if (d) { tryMove(d); e.preventDefault(); }
+  });
+  document.querySelectorAll("#dpad button").forEach((b) =>
+    b.addEventListener("pointerdown", (e) => { e.preventDefault(); tryMove(b.dataset.d); }));
+
+  $("btn-start").addEventListener("click", startRound);
+  $("btn-again").addEventListener("click", startRound);
+  $("btn-quit").addEventListener("click", endRound);
+  $("btn-home").addEventListener("click", () => { renderHome(); show("home"); });
+  $("nav-home").addEventListener("click", () => { if (game && !game.over) endRound(); renderHome(); show("home"); });
+  $("lv-up").addEventListener("click", () => { if (store.lv < MAXLV) { store.lv++; store.prog = 0; save(); renderHome(); } });
+  $("lv-dn").addEventListener("click", () => { if (store.lv > 1) { store.lv--; store.prog = 0; save(); renderHome(); } });
+  document.querySelectorAll("#seg-dur button").forEach((b) =>
+    b.addEventListener("click", () => { store.settings.dur = +b.dataset.v; save(); renderHome(); }));
+  document.querySelectorAll("#seg-sound button").forEach((b) =>
+    b.addEventListener("click", () => { store.settings.sound = !!+b.dataset.v; save(); renderHome(); }));
+  document.querySelectorAll("#seg-diff button").forEach((b) =>
+    b.addEventListener("click", () => { store.lv = +b.dataset.lv; store.prog = 0; save(); renderHome(); }));
+
+  if (TEST) {
+    window.__pr = {
+      rally: () => rally && { g: rally.g, walls: Array.from(rally.walls), start: rally.start, fish: rally.fish,
+                             dirs: rally.dirs.slice(), pathLen: rally.pathLen, parMs: rally.parMs,
+                             nAI: rally.nAI, rotEvery: rally.rotEvery },
+      R: () => R,
+      pos: () => ({ x: px, y: py }),
+      ais: () => ais.map((a) => ({ x: a.x, y: a.y, i: a.i })),
+      phase: () => phase,
+      result: () => lastResult,
+      game: () => game,
+      store: () => store,
+    };
+  }
+
+  renderHome();
+})();
+</script>
+<script>
+(function () {
+  var KEY = 'game:theme', root = document.documentElement;
+  function icon() {
+    var b = document.getElementById('themeBtn');
+    if (b) b.textContent = root.dataset.theme === 'light' ? '🌙' : '☀️';
+  }
+  var b = document.getElementById('themeBtn');
+  if (b) {
+    icon();
+    b.addEventListener('click', function () {
+      var t = root.dataset.theme === 'light' ? 'dark' : 'light';
+      root.dataset.theme = t;
+      try { localStorage.setItem(KEY, t); } catch (e) {}
+      var m = document.querySelector('meta[name="theme-color"]');
+      if (m) m.content = t === 'light' ? '#eef1f8' : '#0b1020';
+      icon();
+    });
+  }
+})();
+</script>
+</body>
+</html>
