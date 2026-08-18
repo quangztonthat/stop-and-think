@@ -16,6 +16,32 @@ const SLUG_RE = /^[a-z0-9][a-z0-9-]{0,80}$/;
 const MAX_LABEL = 80;
 const MAX_LINKS = 200; // chặn tạo tràn
 
+// Bảng share_links tự tạo ở lần gọi đầu tiên, khỏi phải chạy migration tay.
+// CREATE ... IF NOT EXISTS nên chạy lại vô hại; cờ `ready` để mỗi isolate chỉ
+// tốn một lần. File migrations/0002_share_links.sql giữ lại làm bản ghi chép,
+// không bắt buộc chạy. Chỉ đặt ở đây (API của chủ), KHÔNG đặt ở /d/[token].js —
+// đường công khai phải chỉ đọc; chưa có bảng thì nó trả 404, đúng như mong muốn.
+let ready = false;
+async function ensureTable(env) {
+  if (ready) return;
+  // Chạy tuần tự chứ không gói vào env.DB.batch: batch bọc mọi câu trong một
+  // transaction, mà đặt DDL trong transaction là chỗ dễ sinh chuyện lạ.
+  await env.DB.prepare(`CREATE TABLE IF NOT EXISTS share_links (
+    token        TEXT PRIMARY KEY,
+    slug         TEXT NOT NULL,
+    label        TEXT,
+    enabled      INTEGER NOT NULL DEFAULT 1,
+    created_at   INTEGER NOT NULL DEFAULT (unixepoch()),
+    expires_at   INTEGER,
+    views        INTEGER NOT NULL DEFAULT 0,
+    last_view_at INTEGER,
+    created_by   INTEGER REFERENCES users(id) ON DELETE SET NULL
+  )`).run();
+  await env.DB.prepare('CREATE INDEX IF NOT EXISTS idx_share_slug    ON share_links(slug)').run();
+  await env.DB.prepare('CREATE INDEX IF NOT EXISTS idx_share_created ON share_links(created_at)').run();
+  ready = true;
+}
+
 async function owner(env, request) {
   let user = null;
   try {
@@ -27,6 +53,23 @@ async function owner(env, request) {
     && user.email_verified
     && OWNER_EMAILS.includes((user.email || '').toLowerCase());
   return ok ? user : null;
+}
+
+// Chống CSRF cho ba phương thức có tác dụng phụ.
+// Cookie st_session là SameSite=Lax nên trình duyệt vốn đã không gửi kèm ở
+// POST/PATCH/DELETE khác site — đây là lớp thứ hai, phòng khi cấu hình cookie
+// đổi về None hoặc trình duyệt cũ không tôn trọng Lax.
+// Mọi trình duyệt hiện nay đều gửi Origin ở request khác GET/HEAD, kể cả cùng
+// site (đã đo bằng Chromium trước khi bắt buộc), nên thiếu Origin là bất thường
+// -> chặn luôn, không đoán mò bằng Referer.
+function sameOrigin(request) {
+  const o = request.headers.get('origin');
+  if (!o) return false;
+  try {
+    return new URL(o).origin === new URL(request.url).origin;
+  } catch (_) {
+    return false;
+  }
 }
 
 function cleanLabel(v) {
@@ -54,6 +97,7 @@ async function readBody(request) {
 
 export async function onRequestGet({ request, env }) {
   if (!await owner(env, request)) return json({ error: 'Unauthorized' }, 401);
+  await ensureTable(env);
   const r = await env.DB.prepare(
     `SELECT token, slug, label, enabled, created_at, expires_at, views, last_view_at
        FROM share_links ORDER BY created_at DESC LIMIT ?`
@@ -62,8 +106,10 @@ export async function onRequestGet({ request, env }) {
 }
 
 export async function onRequestPost({ request, env }) {
+  if (!sameOrigin(request)) return json({ error: 'Forbidden' }, 403);
   const user = await owner(env, request);
   if (!user) return json({ error: 'Unauthorized' }, 401);
+  await ensureTable(env);
 
   const body = await readBody(request);
   const slug = String(body.slug || '').trim().toLowerCase();
@@ -89,7 +135,9 @@ export async function onRequestPost({ request, env }) {
 }
 
 export async function onRequestPatch({ request, env }) {
+  if (!sameOrigin(request)) return json({ error: 'Forbidden' }, 403);
   if (!await owner(env, request)) return json({ error: 'Unauthorized' }, 401);
+  await ensureTable(env);
 
   const body = await readBody(request);
   const token = String(body.token || '');
@@ -112,7 +160,9 @@ export async function onRequestPatch({ request, env }) {
 }
 
 export async function onRequestDelete({ request, env }) {
+  if (!sameOrigin(request)) return json({ error: 'Forbidden' }, 403);
   if (!await owner(env, request)) return json({ error: 'Unauthorized' }, 401);
+  await ensureTable(env);
 
   const body = await readBody(request);
   const token = String(body.token || '');
