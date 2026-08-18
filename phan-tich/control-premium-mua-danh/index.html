@@ -86,6 +86,7 @@
     if(!nav) return;
     var btn=document.getElementById('shareBtn');
     var slug=(location.pathname.match(/^\/phan-tich\/([a-z0-9][a-z0-9-]*)\//)||[])[1]||'';
+    var cache=null;
 
     function toast(msg,bad){
       var t=document.getElementById('sh-toast');
@@ -106,23 +107,28 @@
       return j;
     }
 
-    fetch('/api/auth/me',{credentials:'same-origin'})
-      .then(function(r){ return r.json(); })
+    /* Phép thử quyền = chính API của chủ. /api/auth/me chỉ trả lời "đã đăng
+       nhập hay chưa", mà site có đăng ký công khai (/dang-ky), nên dựa vào nó
+       thì mọi tài khoản thường cũng thấy nút và link quản lý — bấm vào chỉ
+       nhận 401. GET /api/share trả 200 đúng cho chủ, 401 cho tất cả còn lại. */
+    api('GET')
       .then(function(d){
-        if(!d||!d.user) return;          /* chưa đăng nhập -> không hiện gì */
+        cache=d;                         /* dùng lại khi bấm nút */
         nav.hidden=false;
         if(btn && slug) btn.hidden=false;
       })
-      .catch(function(){});
+      .catch(function(){});              /* 401 -> không hiện gì */
 
     if(!btn) return;
     btn.addEventListener('click', async function(){
       if(!slug){ toast('Không đọc được mã bài từ đường dẫn.',1); return; }
       btn.disabled=true;
       try{
-        /* Có link còn sống cho bài này thì chép lại, không đẻ thêm link mới. */
-        var now=Math.floor(Date.now()/1000);
-        var list=await api('GET');
+        /* Có link còn sống cho bài này thì chép lại, không đẻ thêm link mới.
+           Hạn dùng so bằng `now` của SERVER (api trả kèm), không bằng
+           Date.now() của máy — máy lệch giờ là chép nhầm link đã chết. */
+        var list=cache||await api('GET'); cache=null;
+        var now=list.now||Math.floor(Date.now()/1000);
         var live=(list.links||[]).filter(function(L){
           return L.slug===slug && L.enabled===1 && (!L.expires_at || L.expires_at>now);
         })[0];

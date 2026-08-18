@@ -111,7 +111,7 @@ td.acts{white-space:nowrap;text-align:right}
 })();
 
 var $=function(id){return document.getElementById(id);};
-var msgEl=$('msg'), listEl=$('list'), titles={};
+var msgEl=$('msg'), listEl=$('list'), titles=Object.create(null); // không để slug 'constructor' chui qua prototype
 
 function say(text,kind){
   msgEl.textContent=text;
@@ -177,7 +177,8 @@ function render(links,now){
       + '<td class="nums">'+L.views+' lượt xem<br>tạo '+dstr(L.created_at)
       +     (L.expires_at?'<br>hết '+dstr(L.expires_at):'')+'</td>'
       + '<td class="acts"><button class="mini" data-a="copy">Chép</button>'
-      +     '<button class="mini" data-a="toggle">'+(L.enabled===1?'Tắt':'Bật')+'</button>'
+      +     '<button class="mini" data-a="toggle" data-exp="'+(expired?'1':'')+'">'
+      +       (L.enabled===1 && !expired ? 'Tắt' : 'Bật')+'</button>'
       +     '<button class="mini danger" data-a="del">Xoá</button></td>'
       + '</tr>';
   }).join('');
@@ -202,7 +203,17 @@ listEl.addEventListener('click',async function(ev){
   }
   if(a==='toggle'){
     var on=b.textContent.trim()==='Bật';
-    try{ await api('PATCH',{token:token,enabled:on}); say(on?'Đã bật lại link.':'Đã tắt link.'); refresh(); }
+    /* Link đã HẾT HẠN mà chỉ bật `enabled` thì khách vẫn nhận 404, vì
+       functions/d/[token].js kiểm cả expires_at. Bật lại một link hết hạn
+       phải bỏ luôn hạn (days:0), nếu không thông báo "đã bật" là nói dối. */
+    var wasExpired = b.getAttribute('data-exp')==='1';
+    var body = {token:token, enabled:on};
+    if(on && wasExpired) body.days = 0;
+    try{
+      await api('PATCH', body);
+      say(!on ? 'Đã tắt link.' : (wasExpired ? 'Đã bật lại và bỏ hạn — link sống lại.' : 'Đã bật lại link.'));
+      refresh();
+    }
     catch(e){ say('Lỗi: '+e.message,'err'); }
     return;
   }

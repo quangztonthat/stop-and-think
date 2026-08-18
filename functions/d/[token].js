@@ -23,6 +23,7 @@ const ART_DIR  = '/phan-tich/';
 const TOKEN_RE = /^[a-f0-9]{64}$/;
 const SLUG_RE  = /^[a-z0-9][a-z0-9-]{0,80}$/;
 
+const SHARED_MARK = 'Bản chia sẻ riêng';
 const SHARED_HEADER =
   '<header class="site"><div class="hd-in">' +
   '<span class="wordmark">Stop <i>&amp;</i> Think</span>' +
@@ -43,7 +44,7 @@ function notFound() {
 }
 
 export function sharedView(html) {  // export để test được bằng node
-  return html
+  const out = html
     // CSS/font nằm ở /phan-tich/assets/, mà trang này phục vụ dưới /d/<token>
     // nên đường dẫn tương đối "../assets/" phải đổi thành đường dẫn tuyệt đối.
     .split('"../assets/').join('"/phan-tich/assets/')
@@ -54,6 +55,26 @@ export function sharedView(html) {  // export để test được bằng node
     // #shareNav, nhưng để lại thì khách xem mã nguồn vẫn đọc được /api/share
     // và /quan-ly/chia-se.html — không cần cho khách biết bề mặt đó tồn tại.
     .replace(/\/\*<share>\*\/[\s\S]*?\/\*<\/share>\*\//, '');
+
+  // Bốn phép thay ở trên đều là replace KHÔNG toàn cục với mẫu literal: nếu
+  // engine dựng bài đổi markup (thêm thuộc tính vào <header>, đổi tên dấu
+  // <share>...), chúng lặng lẽ không khớp mà hàm vẫn trả chuỗi — trang khách
+  // sẽ kèm nguyên khối điều hướng riêng của chủ và không ai biết.
+  // Chốt hậu điều kiện: thiếu dấu hiệu nào thì coi như hỏng, trả 404.
+  //
+  // Soi theo NỘI DUNG chứ không theo tên dấu. Soi tên dấu là vô dụng: đổi
+  // `/*<share>*/` thành `/*<share-block>*/` thì phép thay trượt, mà phép kiểm
+  // "còn /*<share>*/ không" cũng trượt theo — cả hai cùng mù một chỗ.
+  // Ba bất biến dưới đây đúng bất kể markup đặt tên thế nào:
+  //   1. phải có thanh đầu trang của bản chia sẻ;
+  //   2. KHÔNG còn link tương đối "../" nào — mọi link kiểu đó (bài trước/sau,
+  //      nút quay lại) đều trỏ tới chỗ khách không vào được;
+  //   3. KHÔNG còn chuỗi nào của bề mặt riêng: /api/share, shareNav, shareBtn,
+  //      /quan-ly/, /hoc/.
+  const ok = out.includes(SHARED_MARK)
+    && !/(href|src)="\.\.\//.test(out)
+    && !/\/api\/share|shareNav|shareBtn|\/quan-ly\/|href="\/hoc\/"/.test(out);
+  return ok ? out : null;
 }
 
 export async function onRequestGet({ request, env, params, waitUntil }) {
@@ -83,6 +104,7 @@ export async function onRequestGet({ request, env, params, waitUntil }) {
   if (!asset.ok) return notFound();
 
   const html = sharedView(await asset.text());
+  if (html === null) return notFound(); // markup lạ -> không phục vụ nửa vời
 
   waitUntil(
     env.DB.prepare(
