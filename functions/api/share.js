@@ -155,7 +155,13 @@ export async function onRequestPatch({ request, env }) {
     `UPDATE share_links SET ${sets.join(', ')} WHERE token = ?`
   ).bind(...vals).run();
 
-  if (!res.meta || res.meta.changes === 0) return json({ error: 'Không tìm thấy link' }, 404);
+  // D1 trả số dòng đã đổi ở res.meta.changes. Viết `changes === 0` thôi thì
+  // khi meta thiếu trường đó, `undefined === 0` là false và API báo thành công
+  // cho một token không tồn tại. Chỉ coi là thành công khi ĐẾM ĐƯỢC ít nhất
+  // một dòng — thiếu số đếm cũng là không biết, mà không biết thì không báo OK.
+  if (!(res.meta && res.meta.changes > 0)) {
+    return json({ error: 'Không tìm thấy link' }, 404);
+  }
   return json({ ok: true });
 }
 
@@ -168,6 +174,12 @@ export async function onRequestDelete({ request, env }) {
   const token = String(body.token || '');
   if (!/^[a-f0-9]{64}$/.test(token)) return json({ error: 'Token không hợp lệ' }, 400);
 
-  await env.DB.prepare('DELETE FROM share_links WHERE token = ?').bind(token).run();
+  const res = await env.DB.prepare('DELETE FROM share_links WHERE token = ?')
+    .bind(token).run();
+  // Cùng lý do như PATCH: xoá một token không có thật mà báo "Đã xoá link" thì
+  // trang quản lý đang nói dối chủ về trạng thái thật của dữ liệu.
+  if (!(res.meta && res.meta.changes > 0)) {
+    return json({ error: 'Không tìm thấy link' }, 404);
+  }
   return json({ ok: true });
 }
