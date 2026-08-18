@@ -267,11 +267,19 @@ html[data-theme="light"] .bval.hot{color:#0b74c4}
   .leg{padding-left:0}
 }
 
-sup.cit{line-height:0}
-sup.cit a{display:inline-block;font-family:var(--mono);font-size:10.5px;font-weight:700;
-  color:var(--mc2);background:color-mix(in srgb,var(--mc2) 14%,transparent);
-  border-radius:4px;padding:1px 4px;margin:0 1px;vertical-align:super;cursor:pointer}
-sup.cit a:hover{background:var(--mc2);color:#fff}
+/* Số trích dẫn: một con số nhỏ nhấc lên, KHÔNG có khối nền.
+   Bản cũ cho thẻ <a> `display:inline-block` kèm nền bo góc, mà thẻ <sup> bọc ngoài
+   lại đặt `line-height:0` — hộp inline-block thừa hưởng luôn số 0 đó nên chiều cao
+   thật của nó chỉ còn 2px (đo được), và cái nền bo góc vẽ ra thành một VẠCH NGANG
+   cắt qua con số. Bỏ nền thì hết vạch, và vì không còn hộp nào nên dòng chữ cũng
+   không bị đẩy giãn. Giữ nguyên ký tự "[n]" — cổng bảo toàn chữ so từng ký tự. */
+sup.cit{line-height:0;font-size:0}
+sup.cit a{display:inline;font-family:var(--mono);font-size:9.5px;font-weight:700;
+  line-height:0;color:var(--mc2);background:none;padding:0 1px;vertical-align:super;
+  cursor:pointer;white-space:nowrap}
+sup.cit a:hover{color:var(--ink);text-decoration:underline}
+/* hai trích dẫn liền nhau: chừa 2px, không thì "[11][12]" dính thành một khối */
+sup.cit + sup.cit{margin-left:2px}
 #cit-tip{position:absolute;max-width:340px;background:var(--card);color:var(--ink);
   border:1px solid var(--line);border-radius:8px;padding:9px 12px;font-size:12.5px;line-height:1.5;
   display:none;box-shadow:var(--shadow);z-index:50}
