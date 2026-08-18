@@ -132,97 +132,132 @@ html[data-theme="light"] .filters{background:rgba(247,249,254,.9)}
 .art main blockquote{border-left:3px solid var(--mc2);background:var(--inset);
   border-radius:0 var(--radius-sm) var(--radius-sm) 0;padding:16px 22px;margin:28px 0;color:var(--ink)}
 
-/* ===== BIỂU ĐỒ =====
-   Trước đây đây là ảnh PNG nướng sẵn nền trắng và chữ đen, nên trên nền tối
-   phải khoét một tấm trắng lót dưới — chính là chỗ nhìn chướng. Giờ biểu đồ
-   được dựng lại bằng div: KHÔNG có nền riêng, nền chính là nền trang; màu và
-   chữ ăn theo token nên tự đổi khi bật giao diện sáng.
-   Chữ trong hình là chữ thật (không phải pixel trong ảnh), nên thu nhỏ màn
-   hình thì nó xuống dòng chứ không mờ đi. */
-.art figure{margin:30px 0 32px}
+/* ===== BIỂU ĐỒ — theo giải phẫu exhibit của engine-ppt =====
+   Bảng màu lấy đúng brand book EY-Parthenon (p.45, trang "BẢNG MÀU EY"):
+   MỘT xanh cho phần đang nói tới, phần còn lại xám — không phải dải nhiều sắc.
+   Xám hỗ trợ có hai bậc: Gray 02 #C4C4CD dùng trên nền trắng, Gray 01 #747480
+   dùng trên nền tối (đảo lại thì thanh "phần còn lại" sáng hơn cả thanh xanh).
+   Không gridline — đúng luật của tc_charts.py. */
+:root{
+  --ey-blue:#1A9AFA;   /* EY-Parthenon Blue — HERO/highlight */
+  --ey-navy:#7FC4FC;   /* thanh TỔNG. Trên nền tối phải NHẠT hơn xanh chính mới
+                          "nặng" hơn; 0F69AE của bản gốc là xanh sẫm, đặt lên
+                          nền #0b1020 thì chìm chứ không nổi. Cả hai đều là màu
+                          trong bảng EY (Link Blue / forecast blue 7FC4FC).   */
+  --ey-ctx:#747480;    /* Gray 01 — hỗ trợ trên nền tối      */
+  --ey-line:#3a4666;   /* trục + vạch chia                   */
+}
+html[data-theme="light"]{ --ey-blue:#1A9AFA; --ey-navy:#0F69AE;  /* nền trắng: tổng = xanh SẪM */
+  --ey-ctx:#C4C4CD;    /* Gray 02 — hỗ trợ trên nền trắng    */
+  --ey-line:#C4C4CD; }
+
+.art figure{margin:32px 0 34px}
 .fig-t{font-size:16px;font-weight:700;line-height:1.42;color:var(--ink);max-width:var(--measure)}
-.fig-u{font-family:var(--mono);font-size:11px;letter-spacing:.02em;color:var(--ink-dim);
-  margin-top:3px;text-transform:none}
+.fig-u{font-family:var(--mono);font-size:11px;letter-spacing:.02em;color:var(--ink-dim);margin-top:3px}
 .fig-s{font-size:11.5px;line-height:1.5;color:var(--ink-dim);margin-top:12px;max-width:var(--measure)}
-.art figcaption{font-size:13.5px;color:var(--ink-dim);line-height:1.55;max-width:var(--measure)}
-.art figcaption.fig-t{font-size:16px;color:var(--ink)}
+.art figcaption{line-height:1.55;max-width:var(--measure)}
 
-/* thanh ngang — nhãn tiếng Việt nằm ngang, đọc được, không phải xoay đứng như
-   biểu đồ cột. Con số in ở đầu thanh; thang đo đã chừa 24% chỗ cho nó nên
-   không con số nào bị cắt ở mép phải. */
-.hbars{display:grid;gap:13px;margin-top:16px}
-.hb{display:grid;grid-template-columns:minmax(100px,190px) 1fr;gap:16px;align-items:center}
-.hbars.nrw .hb{grid-template-columns:1fr;gap:5px}
-.hb-l{font-size:13px;line-height:1.35;color:var(--ink-soft)}
-.hb-bs{display:grid;gap:7px}
-.hb-r{display:grid;grid-template-columns:1fr auto;align-items:center;gap:10px}
-.hb-t{position:relative;height:20px}
-.hb-t .hb-f{position:absolute;top:0;height:100%;border-radius:3px;min-width:2px;
-  background:color-mix(in srgb,var(--ink-soft) 34%,transparent)}
-.hb-t .hb-f.hot{background:linear-gradient(90deg,var(--mc),var(--mc2))}
-.hb-t .hb-f.neg{background:color-mix(in srgb,var(--badc) 62%,transparent)}
-.hb-f0{position:absolute;top:-4px;bottom:-4px;width:1px;transform:translateX(-.5px);
-  background:color-mix(in srgb,var(--ink-soft) 45%,transparent)}
-.hb-v{font-family:var(--mono);font-size:12.5px;font-weight:700;color:var(--ink);
+/* ---- CỘT DỌC: B1 trục · B2 vạch · B3 nhãn trục · B6 baseline · B7 nhãn hạng mục */
+.cch{margin-top:14px}
+.cplot{display:grid;grid-template-columns:auto 1fr}
+.cax{position:relative;width:48px;height:210px}
+.cch.nrw .cax{width:38px;height:150px}
+.ax-t{position:absolute;right:0;width:100%;height:0;list-style:none}
+.ax-t u{position:absolute;right:7px;bottom:-8px;font-family:var(--mono);font-size:10.5px;
+  color:var(--ink-dim);text-decoration:none;white-space:nowrap}   /* B3 canh phải sát trục */
+.ax-t::after{content:"";position:absolute;right:0;bottom:0;width:4px;height:1px;
+  background:var(--ey-line)}                                       /* B2 vạch chia */
+.cbody{position:relative;height:210px;border-left:1px solid var(--ey-line);   /* B1 */
+  border-bottom:1px solid var(--ey-line)}                                     /* B6 */
+.cch.nrw .cbody{height:150px}
+.ax-0{position:absolute;left:0;right:0;height:1px;background:var(--ey-line)}
+.ccols,.ccats{display:flex;gap:min(4%,18px);padding:0 min(3%,14px)}
+.ccols{position:absolute;inset:0;align-items:stretch}
+.ccol{position:relative;flex:1}
+.cbar{position:absolute;background:var(--ey-ctx);min-height:2px}
+.cbar.hot{background:var(--ey-blue)}
+.cval{position:absolute;left:50%;transform:translateX(-50%);font-family:var(--mono);
+  font-size:11.5px;font-weight:700;color:var(--ink);white-space:nowrap}
+.cval.up{bottom:100%;margin-bottom:4px}
+.cval.dn{top:100%;margin-top:4px}
+/* B7 — nhãn hạng mục phải dùng ĐÚNG flex/gap/padding của .ccols, nếu không
+   nhãn lệch khỏi cột nó chú thích. Cột trái 48px chừa cho dải trục. */
+.ccats{margin-left:48px;padding-top:7px;font-size:12px;color:var(--ink-soft)}
+.cch.nrw .ccats{margin-left:38px}
+.ccats > div{flex:1;text-align:center;line-height:1.3}
+
+/* ---- THANH NGANG (tc_bars): nhãn canh PHẢI sát trục Oy, vạch chia mỗi hàng,
+       số canh thành MỘT cột dọc bên phải */
+.bch{margin-top:14px;display:grid;gap:12px}
+/* Cột nhãn: engine-ppt `_rowlblw` chặn ở 34% bề rộng khung. Bản đầu để
+   minmax(90px,190px) cố định, trong cột hẹp 322px thì nhãn nuốt hết chỗ và
+   thanh chỉ còn ~60px — phần NHÌN của biểu đồ nhỏ hơn phần chữ chú thích nó. */
+.bgrp{display:grid;grid-template-columns:minmax(0,34%) 1fr;gap:0;align-items:center}
+.bch:not(.nrw) .bgrp{grid-template-columns:minmax(90px,min(34%,190px)) 1fr}
+.blbl{font-size:13px;line-height:1.32;color:var(--ink);text-align:right;padding-right:9px}
+.bbars{display:grid;gap:6px;border-left:1px solid var(--ey-line);padding-left:0}
+.brow{display:grid;grid-template-columns:1fr auto;align-items:center;gap:10px;position:relative}
+.brow::before{content:"";position:absolute;left:-5px;top:50%;width:5px;height:1px;
+  background:var(--ey-line)}                                        /* vạch chia hàng */
+.btrk{position:relative;height:19px}
+.bfill{position:absolute;top:0;height:100%;background:var(--ey-ctx);min-width:2px}
+.bfill.hot{background:var(--ey-blue)}
+.bfill.tot{background:var(--ey-navy)}
+.bch.nrw .bval{font-size:11px}
+.bch.nrw .blbl{font-size:12px;padding-right:7px}
+.bval{font-family:var(--mono);font-size:12.5px;font-weight:700;color:var(--ink);
   white-space:nowrap;text-align:right}
-.hb-k{display:flex;flex-wrap:wrap;gap:8px 18px;margin:0 0 4px;padding:0;list-style:none}
-.hb-k li{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--ink-soft)}
-.hb-k li i{width:11px;height:11px;border-radius:3px;flex:none;
-  background:color-mix(in srgb,var(--ink-soft) 34%,transparent)}
-.hb-k li.hot i{background:linear-gradient(90deg,var(--mc),var(--mc2))}
+.bval.hot{color:var(--ey-blue)}
+.bval.tot{color:var(--ey-navy)}
+html[data-theme="light"] .bval.hot{color:#0b74c4}
 
-/* thác nước — bước sau nối tiếp bước trước, dòng cuối là tổng */
-.wf-f{position:absolute;top:0;height:100%;border-radius:3px;min-width:2px;
-  background:color-mix(in srgb,var(--mc2) 45%,transparent)}
-.wf-f.hot{background:linear-gradient(90deg,var(--mc),var(--mc2))}
-.wf-f.tot{background:transparent;border:1px dashed color-mix(in srgb,var(--mc2) 70%,transparent)}
-
-/* hình tròn */
-.dnut{display:flex;align-items:center;gap:24px;margin-top:18px;flex-wrap:wrap}
-.dnut.nrw{gap:14px}
-.dn-w{position:relative;flex:none;width:136px;height:136px}
-.dn-s{stroke:color-mix(in srgb,var(--ink-soft) 26%,transparent);transform:rotate(-90deg);
-  transform-origin:50% 50%}
-.dn-s.hot{stroke:var(--mc2)}
-.dn-c{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
-  font-family:var(--mono);font-size:22px;font-weight:700;font-style:normal;color:var(--ink)}
-.dn-c u{text-decoration:none;font-size:13px;color:var(--ink-dim);margin-left:1px}
-.dn-k{list-style:none;margin:0;padding:0;display:grid;gap:9px;min-width:150px}
-.dn-k li{display:grid;grid-template-columns:11px 1fr auto;align-items:center;gap:9px;
+/* ---- VÀNH KHUYÊN */
+.dch{display:flex;align-items:center;gap:26px;margin-top:16px;flex-wrap:wrap}
+.dwrap{flex:none;width:132px;height:132px}
+.dseg{stroke:var(--ey-ctx);transform:rotate(-90deg);transform-origin:50% 50%}
+.dseg.hot{stroke:var(--ey-blue)}
+.dkey{list-style:none;margin:0;padding:0;display:grid;gap:9px;min-width:170px}
+.dkey li{display:grid;grid-template-columns:11px 1fr auto;align-items:center;gap:10px;
   font-size:13px;color:var(--ink-soft)}
-.dn-k li i{width:11px;height:11px;border-radius:3px;
-  background:color-mix(in srgb,var(--ink-soft) 26%,transparent)}
-.dn-k li.hot i{background:var(--mc2)}
-.dn-k li b{font-family:var(--mono);font-size:12.5px;color:var(--ink)}
+.dkey li i{width:11px;height:11px;background:var(--ey-ctx)}
+.dkey li.hot i{background:var(--ey-blue)}
+.dkey li b{font-family:var(--mono);font-size:12.5px;color:var(--ink)}
 
-/* dải mốc thời gian */
-.chev{list-style:none;display:flex;flex-wrap:wrap;gap:8px;margin:18px 0 0;padding:0}
-.chev li{flex:1 1 140px;min-width:132px;display:grid;gap:2px;padding:11px 13px;
-  border:1px solid var(--line);border-radius:var(--radius-sm);
-  background:color-mix(in srgb,var(--card) 55%,transparent)}
-.cv-n{font-family:var(--mono);font-size:10.5px;font-weight:700;color:var(--mc2)}
-.cv-h{font-size:13px;font-weight:600;color:var(--ink);line-height:1.3}
-.cv-s{font-family:var(--mono);font-size:11px;color:var(--ink-dim)}
+/* ---- CHÚ GIẢI (A6) — ô vuông + chữ, đặt dưới vùng vẽ */
+.leg{list-style:none;display:flex;flex-wrap:wrap;gap:8px 20px;margin:12px 0 0;padding:0 0 0 48px}
+.leg li{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--ink-soft)}
+.leg li i{width:11px;height:11px;flex:none;background:var(--ey-ctx)}
+.leg li.hot i{background:var(--ey-blue)}
 
-/* 2/3 chữ + 1/3 hình — bố cục mà trang gốc gọi là `.side`. Chú thích của
-   chính bản gốc nói rõ luật trên điện thoại: cột 1/3 ép hình xuống ~110px thì
-   chữ trong hình hết đọc được, nên màn hẹp phải xếp dọc.
-   Căn giữa theo chiều dọc: biểu đồ vẽ lại giờ thấp hơn đoạn văn bên cạnh, để
-   `start` thì thừa một mảng trống dưới chân hình, nhìn như lỗi. */
+/* ---- DẢI MỐC THỜI GIAN */
+.tline{list-style:none;display:flex;flex-wrap:wrap;gap:8px;margin:16px 0 0;padding:0}
+.tline li{flex:1 1 140px;min-width:130px;display:grid;gap:2px;padding:10px 12px;
+  border:1px solid var(--line);border-left:2px solid var(--ey-blue)}
+.tl-n{font-family:var(--mono);font-size:10.5px;font-weight:700;color:var(--ey-blue)}
+.tl-h{font-size:13px;font-weight:600;color:var(--ink);line-height:1.3}
+.tl-s{font-family:var(--mono);font-size:11px;color:var(--ink-dim)}
+
+/* 2/3 chữ + 1/3 hình — bố cục mà trang gốc gọi là `.side`. Chú thích của chính
+   bản gốc nói rõ luật trên điện thoại: cột 1/3 ép hình xuống ~110px thì chữ
+   trong hình hết đọc được, nên màn hẹp phải xếp dọc. */
 .side{display:grid;grid-template-columns:2fr 1fr;gap:34px;align-items:center;margin:30px 0 32px}
 .side > p{margin:0}
-.side > figure{margin:0;border-left:3px solid var(--mc2);padding:4px 0 4px 16px}
+.side > figure{margin:0;border-left:3px solid var(--ey-blue);padding:4px 0 4px 16px}
 @media (max-width:860px){
   .side{grid-template-columns:1fr;gap:18px;align-items:start}
   .side > figure{max-width:520px}
 }
-/* Màn hẹp: nhãn lên trên, thanh ăn trọn bề ngang. Bản đầu làm ngược lại —
-   ép nhãn về cột trái — và trên máy 390px thanh chỉ còn ~90px, tức là phần
-   nhìn của biểu đồ nhỏ hơn phần chữ chú thích nó. */
 @media (max-width:560px){
-  .hbars .hb{grid-template-columns:1fr;gap:5px}
-  .dnut{gap:16px}
-  .chev li{flex:1 1 100%}
+  /* Chỉ biểu đồ trong khối 2/3–1/3 mới xếp nhãn lên trên: cột nhãn 34% của nó
+     trên màn 390px còn ~110px, không đủ. Biểu đồ rộng giữ nguyên cột nhãn +
+     trục Oy vì nhãn vẫn vừa. */
+  .bch.nrw .bgrp{grid-template-columns:1fr;gap:4px}
+  .bch.nrw .blbl{text-align:left;padding:0}
+  .bch.nrw .bbars{border-left:0}
+  .bch.nrw .brow::before{display:none}
+  .dch{gap:16px}
+  .tline li{flex:1 1 100%}
+  .leg{padding-left:0}
 }
 
 sup.cit{line-height:0}
