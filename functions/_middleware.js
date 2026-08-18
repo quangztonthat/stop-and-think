@@ -17,6 +17,12 @@ const OPEN_PREFIXES = [
   '/pages/dang-nhap',      // trang đăng nhập (cả pretty URL lẫn .html)
   '/pages/quen-mat-khau',
   '/pages/dat-lai-mat-khau',
+  // Link chia sẻ riêng: functions/d/[token].js tự gác quyền bằng bảng
+  // share_links trong D1 (token sai/đã tắt/hết hạn -> 404). Mở ở đây để khách
+  // được mời vẫn đọc được đúng MỘT bài trong khi site đang ở chế độ bảo trì.
+  // Dưới /d/ không có tệp tĩnh nào; đường dẫn không khớp route sẽ 404.
+  '/d/',
+  '/phan-tich/assets/',    // chỉ st.css + woff2 — trang chia sẻ cần để hiển thị
 ];
 const OPEN_EXACT = [
   '/bao-tri.html', '/favicon.svg', '/favicon.ico', '/apple-touch-icon.png',
