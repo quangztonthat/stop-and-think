@@ -49,7 +49,11 @@ export function sharedView(html) {  // export để test được bằng node
     .split('"../assets/').join('"/phan-tich/assets/')
     .replace(/<header class="site">[\s\S]*?<\/header>/, SHARED_HEADER)
     .replace(/<nav class="art-nav">[\s\S]*?<\/nav>/, '')
-    .replace(/<a class="backlink"[\s\S]*?<\/a>/, '');
+    .replace(/<a class="backlink"[\s\S]*?<\/a>/, '')
+    // Gỡ luôn khối JS chia sẻ dành cho chủ. Nó vốn tự thoát khi không thấy
+    // #shareNav, nhưng để lại thì khách xem mã nguồn vẫn đọc được /api/share
+    // và /quan-ly/chia-se.html — không cần cho khách biết bề mặt đó tồn tại.
+    .replace(/\/\*<share>\*\/[\s\S]*?\/\*<\/share>\*\//, '');
 }
 
 export async function onRequestGet({ request, env, params, waitUntil }) {

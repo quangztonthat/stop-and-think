@@ -9,7 +9,7 @@
 <meta name="theme-color" content="#0b1020">
 <meta name="description" content="Mọi báo cáo định giá đều kết bằng một bảng bội số thị trường và một dòng trấn an rằng hai phương pháp 'gặp nhau'. Ở Việt Nam, bảng ấy phần nhiều là sân khấu.">
 <meta name="robots" content="noindex">
-<link rel="stylesheet" href="../assets/st.css?v=a38a1fc6">
+<link rel="stylesheet" href="../assets/st.css?v=51a55165">
 </head>
 <body class="p-art">
 <header class="site"><div class="hd-in">
@@ -17,7 +17,8 @@
   <div class="hd-sp"></div>
   <a class="hd-nav" href="/phan-tich/">Góc phân tích</a>
   <a class="hd-nav" href="/hoc/">Khu học riêng</a>
-  <button class="theme-btn" id="themeBtn" title="Đổi giao diện sáng/tối">&#9728;</button>
+  <a class="hd-nav" id="shareNav" href="/quan-ly/chia-se.html" hidden>Quản lý chia sẻ</a>
+  <button class="hd-share" id="shareBtn" hidden title="Tạo/chép link đọc riêng cho bài này">Chia sẻ</button><button class="theme-btn" id="themeBtn" title="Đổi giao diện sáng/tối">&#9728;</button>
 </div></header>
 <div id="prog"></div>
 <div class="art">
@@ -73,7 +74,61 @@
       if(m) m.content = t==='light' ? '#eef1f8' : '#0b1020';
       icon(); }); }
   })();
+/*<share>*/
+  /* Chia sẻ — CHỈ chủ trang. Bản đọc dành cho khách (/d/<token>) đã bị thay cả
+     khối <header> nên không có #shareNav; hàm thoát ngay, khách không gọi API. */
+  (function(){
+    var nav=document.getElementById('shareNav');
+    if(!nav) return;
+    var btn=document.getElementById('shareBtn');
+    var slug=(location.pathname.match(/^\/phan-tich\/([a-z0-9][a-z0-9-]*)\//)||[])[1]||'';
 
+    function toast(msg,bad){
+      var t=document.getElementById('sh-toast');
+      if(!t){ t=document.createElement('div'); t.id='sh-toast'; document.body.appendChild(t); }
+      t.textContent=msg; t.className=bad?'bad':''; t.style.display='block';
+      clearTimeout(t._h); t._h=setTimeout(function(){ t.style.display='none'; },3200);
+    }
+    async function copy(url){
+      try{ await navigator.clipboard.writeText(url); toast('Đã chép link chia sẻ vào clipboard.'); }
+      catch(e){ toast(url); }   /* chép hỏng thì đổ link ra để chọn tay */
+    }
+    async function api(method,body){
+      var o={method:method,headers:{'content-type':'application/json'},credentials:'same-origin'};
+      if(body) o.body=JSON.stringify(body);
+      var r=await fetch('/api/share',o), j=null;
+      try{ j=await r.json(); }catch(e){}
+      if(!r.ok) throw new Error((j&&j.error)||('HTTP '+r.status));
+      return j;
+    }
+
+    fetch('/api/auth/me',{credentials:'same-origin'})
+      .then(function(r){ return r.json(); })
+      .then(function(d){
+        if(!d||!d.user) return;          /* chưa đăng nhập -> không hiện gì */
+        nav.hidden=false;
+        if(btn && slug) btn.hidden=false;
+      })
+      .catch(function(){});
+
+    if(!btn) return;
+    btn.addEventListener('click', async function(){
+      if(!slug){ toast('Không đọc được mã bài từ đường dẫn.',1); return; }
+      btn.disabled=true;
+      try{
+        /* Có link còn sống cho bài này thì chép lại, không đẻ thêm link mới. */
+        var now=Math.floor(Date.now()/1000);
+        var list=await api('GET');
+        var live=(list.links||[]).filter(function(L){
+          return L.slug===slug && L.enabled===1 && (!L.expires_at || L.expires_at>now);
+        })[0];
+        if(!live) live=await api('POST',{slug:slug});
+        await copy(location.origin+'/d/'+live.token);
+      }catch(e){ toast('Lỗi: '+e.message,1); }
+      btn.disabled=false;
+    });
+  })();
+/*</share>*/
   /* The source pages carry each citation's full text in the anchor's title
      attribute. A native tooltip is slow and unstyled, so move it into an
      element and show it on hover — same behaviour the engine shipped. */

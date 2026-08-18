@@ -61,6 +61,20 @@ body.p-art footer.site{max-width:var(--band);margin:0 auto;width:100%}
 .theme-btn{border:1px solid var(--line);background:var(--card);color:var(--ink);width:29px;height:29px;
   border-radius:999px;cursor:pointer;font-size:13px;flex:none;line-height:1;padding:0;margin-left:4px}
 .theme-btn:hover{border-color:var(--mc)}
+/* Nút chia sẻ — CHỈ chủ trang thấy. Mặc định `hidden`, JS gỡ hidden sau khi
+   /api/auth/me xác nhận. Nằm trong <header class="site"> nên bản chia sẻ cho
+   khách (functions/d/[token].js thay cả khối header) không bao giờ có nó. */
+.hd-share{border:1px solid var(--mc);background:none;color:var(--mc);
+  font:600 13px/1 inherit;padding:7px 13px;border-radius:999px;cursor:pointer;
+  flex:none;white-space:nowrap}
+.hd-share:hover{background:var(--mc);color:#fff}
+.hd-share[disabled]{opacity:.55;cursor:default}
+.hd-share[hidden],.hd-nav[hidden]{display:none}
+#sh-toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%);z-index:60;
+  background:var(--card);border:1px solid var(--line);color:var(--ink);
+  padding:11px 18px;border-radius:10px;font-size:13.5px;box-shadow:0 8px 26px rgba(0,0,0,.35);
+  display:none;max-width:min(90vw,420px);word-break:break-all;line-height:1.45}
+#sh-toast.bad{border-color:#e0574a;color:#e0574a}
 
 /* reading progress — a long read deserves a sense of where you are */
 #prog{position:fixed;top:0;left:0;height:2px;width:0;z-index:40;
@@ -314,6 +328,7 @@ footer.site{border-top:1px solid var(--line-soft);padding:18px 22px;text-align:c
 
 @media (max-width:760px){
   .hd-in{padding:7px 14px}
+  .hd-nav[href="/hoc/"],#shareNav{display:none}   /* nhường chỗ cho nút Chia sẻ */
   .wrap,.art{padding-left:16px;padding-right:16px}
   .filters{margin-left:-16px;margin-right:-16px;padding-left:16px;padding-right:16px;top:44px}
   .grid{grid-template-columns:1fr}
@@ -323,4 +338,4 @@ footer.site{border-top:1px solid var(--line-soft);padding:18px 22px;text-align:c
   .art-nav{grid-template-columns:1fr}
   .art-nav .next{text-align:left}
 }
-@media print{header.site,.filters,.art-nav,.backlink,#prog,.theme-btn{display:none}}
+@media print{header.site,.filters,.art-nav,.backlink,#prog,.theme-btn,#sh-toast{display:none}}
