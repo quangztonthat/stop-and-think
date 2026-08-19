@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ch1 - Hệ Thống Pháp Luật &amp; Giải Quyết Tranh Chấp</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Segoe UI', sans-serif; background: #0f172a; color: #e2e8f0; min-height: 100vh; }
+
+  .container { max-width: 1000px; margin: 0 auto; padding: 24px; }
+
+  h1 { text-align: center; font-size: 26px; margin-bottom: 8px; color: #60a5fa; }
+  .subtitle { text-align: center; color: #94a3b8; margin-bottom: 32px; font-size: 15px; }
+
+  /* Mnemonic Story Section */
+  .story-box {
+    background: linear-gradient(135deg, #1e3a5f, #1a2744);
+    border: 1px solid #334155;
+    border-radius: 16px;
+    padding: 28px;
+    margin-bottom: 36px;
+    position: relative;
+    overflow: hidden;
+  }
+  .story-box::before {
+    content: '';
+    position: absolute;
+    top: -50%; right: -50%;
+    width: 100%; height: 100%;
+    background: radial-gradient(circle, rgba(96,165,250,0.05) 0%, transparent 70%);
+  }
+  .story-box h2 { color: #fbbf24; font-size: 20px; margin-bottom: 16px; position: relative; }
+  .story-box .mnemonic {
+    font-size: 36px;
+    font-weight: 800;
+    text-align: center;
+    margin: 20px 0;
+    letter-spacing: 12px;
+    position: relative;
+  }
+  .story-box .mnemonic span {
+    display: inline-block;
+    transition: transform 0.3s, color 0.3s;
+    cursor: pointer;
+  }
+  .story-box .mnemonic span:hover { transform: scale(1.3); }
+  .m-S { color: #f87171; } .m-C { color: #fb923c; } .m-L { color: #fbbf24; }
+  .m-A { color: #4ade80; } .m-M { color: #60a5fa; }
+
+  .story-text {
+    font-size: 16px;
+    line-height: 1.9;
+    color: #cbd5e1;
+    position: relative;
+  }
+  .story-text .highlight { font-weight: 700; padding: 1px 4px; border-radius: 4px; }
+  .hl-s { color: #f87171; background: rgba(248,113,113,0.15); }
+  .hl-c { color: #fb923c; background: rgba(251,146,60,0.15); }
+  .hl-l { color: #fbbf24; background: rgba(251,191,36,0.15); }
+  .hl-a { color: #4ade80; background: rgba(74,222,128,0.15); }
+  .hl-m { color: #60a5fa; background: rgba(96,165,250,0.15); }
+
+  /* Tip box */
+  .tip-box {
+    background: linear-gradient(135deg, #1a2744, #1e293b);
+    border: 1px solid #334155;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 24px;
+    text-align: center;
+  }
+  .tip-box h3 { color: #fbbf24; margin-bottom: 10px; }
+  .tip-box p { color: #94a3b8; font-size: 14px; line-height: 1.7; }
+  .tip-box .big-text { font-size: 20px; color: #e2e8f0; font-weight: 700; margin: 12px 0; }
+
+  /* Journey Map */
+  .journey-title { text-align: center; font-size: 22px; color: #60a5fa; margin-bottom: 24px; }
+
+  .journey {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    margin-bottom: 36px;
+    position: relative;
+  }
+
+  .step {
+    display: flex;
+    align-items: stretch;
+    min-height: 120px;
+    position: relative;
+    cursor: pointer;
+  }
+
+  .step-left {
+    width: 80px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    flex-shrink: 0;
+  }
+
+  .step-icon {
+    width: 56px; height: 56px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 26px;
+    z-index: 2;
+    position: relative;
+    border: 3px solid;
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+  .step:hover .step-icon { transform: scale(1.15); box-shadow: 0 0 20px rgba(255,255,255,0.2); }
+
+  .step-line {
+    width: 3px;
+    flex: 1;
+    z-index: 1;
+  }
+
+  .step-content {
+    flex: 1;
+    padding: 8px 0 24px 20px;
+  }
+
+  .step-header {
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .step-name {
+    font-size: 19px;
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+  .step-vi {
+    font-size: 14px;
+    color: #94a3b8;
+    margin-bottom: 8px;
+    font-style: italic;
+  }
+  .step-story {
+    font-size: 14px;
+    color: #cbd5e1;
+    line-height: 1.7;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.6s ease;
+  }
+  .step.open .step-story { max-height: 600px; }
+  .step-hint {
+    font-size: 12px;
+    color: #64748b;
+    margin-top: 4px;
+  }
+
+  /* Colors per step */
+  .s-sources .step-icon { background: rgba(248,113,113,0.15); border-color: #f87171; color: #f87171; }
+  .s-sources .step-line { background: linear-gradient(to bottom, #f87171, #fb923c); }
+  .s-sources .step-header { color: #f87171; }
+  .s-sources .step-name { color: #fca5a5; }
+
+  .s-courts .step-icon { background: rgba(251,146,60,0.15); border-color: #fb923c; color: #fb923c; }
+  .s-courts .step-line { background: linear-gradient(to bottom, #fb923c, #fbbf24); }
+  .s-courts .step-header { color: #fb923c; }
+  .s-courts .step-name { color: #fdba74; }
+
+  .s-litigation .step-icon { background: rgba(251,191,36,0.15); border-color: #fbbf24; color: #fbbf24; }
+  .s-litigation .step-line { background: linear-gradient(to bottom, #fbbf24, #4ade80); }
+  .s-litigation .step-header { color: #fbbf24; }
+  .s-litigation .step-name { color: #fde68a; }
+
+  .s-arbitration .step-icon { background: rgba(74,222,128,0.15); border-color: #4ade80; color: #4ade80; }
+  .s-arbitration .step-line { background: linear-gradient(to bottom, #4ade80, #60a5fa); }
+  .s-arbitration .step-header { color: #4ade80; }
+  .s-arbitration .step-name { color: #86efac; }
+
+  .s-mediation .step-icon { background: rgba(96,165,250,0.15); border-color: #60a5fa; color: #60a5fa; }
+  .s-mediation .step-line { background: linear-gradient(to bottom, #60a5fa, #475569); }
+  .s-mediation .step-header { color: #60a5fa; }
+  .s-mediation .step-name { color: #93c5fd; }
+
+  /* Comparison Table */
+  .compare-section {
+    background: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 16px;
+    padding: 28px;
+    margin-bottom: 36px;
+    overflow-x: auto;
+  }
+  .compare-section h2 { color: #fbbf24; font-size: 20px; margin-bottom: 20px; text-align: center; }
+
+  .compare-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+  .compare-table th {
+    background: #0f172a;
+    color: #fbbf24;
+    padding: 12px 10px;
+    text-align: center;
+    border: 1px solid #334155;
+    font-size: 14px;
+  }
+  .compare-table td {
+    padding: 10px;
+    border: 1px solid #334155;
+    vertical-align: top;
+    line-height: 1.6;
+  }
+  .compare-table tr:nth-child(even) td { background: rgba(15,23,42,0.5); }
+  .compare-table tr:hover td { background: rgba(96,165,250,0.05); }
+  .compare-table td:first-child {
+    font-weight: 700;
+    color: #94a3b8;
+    white-space: nowrap;
+    min-width: 110px;
+  }
+  .col-lit { color: #fbbf24; }
+  .col-arb { color: #4ade80; }
+  .col-med { color: #60a5fa; }
+
+  /* Key Laws Section */
+  .laws-section {
+    background: linear-gradient(135deg, #1a2744, #1e293b);
+    border: 1px solid #334155;
+    border-radius: 16px;
+    padding: 28px;
+    margin-bottom: 36px;
+  }
+  .laws-section h2 { color: #fbbf24; font-size: 20px; margin-bottom: 20px; text-align: center; }
+  .law-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  .law-card {
+    background: #0f172a;
+    border: 1px solid #334155;
+    border-radius: 12px;
+    padding: 16px;
+    transition: all 0.3s;
+  }
+  .law-card:hover { border-color: #60a5fa; transform: translateY(-2px); }
+  .law-abbr {
+    font-size: 18px;
+    font-weight: 800;
+    margin-bottom: 4px;
+  }
+  .law-full {
+    font-size: 12px;
+    color: #94a3b8;
+    margin-bottom: 8px;
+  }
+  .law-desc {
+    font-size: 13px;
+    color: #cbd5e1;
+    line-height: 1.6;
+  }
+
+  /* Court Hierarchy */
+  .hierarchy-section {
+    background: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 16px;
+    padding: 28px;
+    margin-bottom: 36px;
+    text-align: center;
+  }
+  .hierarchy-section h2 { color: #fbbf24; font-size: 20px; margin-bottom: 24px; }
+  .court-level {
+    display: inline-block;
+    padding: 14px 28px;
+    border-radius: 12px;
+    font-weight: 700;
+    margin: 4px 0;
+    position: relative;
+    transition: transform 0.3s;
+    cursor: pointer;
+  }
+  .court-level:hover { transform: scale(1.05); }
+  .cl-apex {
+    background: linear-gradient(135deg, #7c3aed, #6d28d9);
+    color: white;
+    font-size: 16px;
+    border: 2px solid #a78bfa;
+  }
+  .cl-high {
+    background: linear-gradient(135deg, #2563eb, #1d4ed8);
+    color: white;
+    font-size: 15px;
+    border: 2px solid #60a5fa;
+  }
+  .cl-sub { font-size: 12px; font-weight: 400; opacity: 0.85; display: block; margin-top: 4px; }
+  .cl-state {
+    background: linear-gradient(135deg, #059669, #047857);
+    color: white;
+    font-size: 14px;
+    border: 2px solid #34d399;
+  }
+  .court-arrow {
+    font-size: 24px;
+    color: #475569;
+    display: block;
+    margin: 6px 0;
+  }
+  .court-note {
+    font-size: 12px;
+    color: #64748b;
+    margin-top: 4px;
+  }
+  .stare-box {
+    background: #0f172a;
+    border: 1px solid #334155;
+    border-radius: 10px;
+    padding: 14px;
+    margin-top: 20px;
+    text-align: left;
+    font-size: 13px;
+    line-height: 1.7;
+    color: #cbd5e1;
+  }
+  .stare-box strong { color: #a78bfa; }
+
+  /* Quiz Section */
+  .quiz-box {
+    background: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 16px;
+    padding: 28px;
+    margin-bottom: 24px;
+  }
+  .quiz-box h2 { color: #fbbf24; font-size: 20px; margin-bottom: 20px; text-align: center; }
+
+  .q-card {
+    background: #0f172a;
+    border: 2px solid #334155;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 16px;
+    transition: all 0.3s;
+  }
+  .q-card.answered-correct { border-color: #4ade80; }
+  .q-card.answered-wrong { border-color: #f87171; }
+
+  .q-text {
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 14px;
+    color: #e2e8f0;
+    line-height: 1.6;
+  }
+  .q-num {
+    display: inline-block;
+    background: #3b82f6;
+    color: white;
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 28px;
+    font-size: 13px;
+    margin-right: 8px;
+  }
+
+  .q-options {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .q-opt {
+    background: #1e293b;
+    border: 2px solid #334155;
+    border-radius: 10px;
+    padding: 12px 16px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.3s;
+    color: #cbd5e1;
+  }
+  .q-opt:hover { border-color: #60a5fa; background: #1a2744; }
+  .q-opt.selected { border-color: #60a5fa; background: rgba(96,165,250,0.1); color: white; }
+  .q-opt.correct { border-color: #4ade80; background: rgba(74,222,128,0.1); color: #4ade80; }
+  .q-opt.wrong { border-color: #f87171; background: rgba(248,113,113,0.1); color: #f87171; }
+  .q-opt.disabled { pointer-events: none; opacity: 0.6; }
+  .q-opt.correct.disabled { opacity: 1; }
+
+  .q-explain {
+    margin-top: 12px;
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 13px;
+    line-height: 1.6;
+    display: none;
+  }
+  .q-explain.show { display: block; }
+  .q-explain.is-correct { background: rgba(74,222,128,0.08); color: #86efac; border: 1px solid rgba(74,222,128,0.2); }
+  .q-explain.is-wrong { background: rgba(248,113,113,0.08); color: #fca5a5; border: 1px solid rgba(248,113,113,0.2); }
+
+  .quiz-score {
+    text-align: center;
+    padding: 20px;
+    font-size: 22px;
+    font-weight: 700;
+    color: #4ade80;
+    display: none;
+  }
+  .quiz-score.show { display: block; }
+
+  .quiz-btn {
+    display: block;
+    margin: 20px auto 0;
+    padding: 12px 32px;
+    background: #3b82f6;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+  .quiz-btn:hover { background: #2563eb; transform: translateY(-1px); }
+
+  @media (max-width: 640px) {
+    .law-grid { grid-template-columns: 1fr; }
+    .story-box .mnemonic { font-size: 28px; letter-spacing: 8px; }
+    .compare-table { font-size: 11px; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>Ch1: H&#7879; Th&#7889;ng Ph&aacute;p Lu&#7853;t &amp; Gi&#7843;i Quy&#7871;t Tranh Ch&#7845;p</h1>
+  <p class="subtitle">Module 2 &mdash; Law and Valuation &mdash; CVA Programme</p>
+
+  <!-- MNEMONIC STORY -->
+  <div class="story-box">
+    <h2>&#128161; C&acirc;u chuy&#7879;n ghi nh&#7899;: "V&#7883; Lu&#7853;t S&#432; Trong Ph&ograve;ng X&#7917;"</h2>
+    <div class="mnemonic">
+      <span class="m-S">S</span>
+      <span class="m-C">C</span>
+      <span class="m-L">L</span>
+      <span class="m-A">A</span>
+      <span class="m-M">M</span>
+    </div>
+    <div class="story-text">
+      <p>H&atilde;y t&#432;&#7903;ng t&#432;&#7907;ng b&#7841;n l&agrave; m&#7897;t th&#7849;m &#273;&#7883;nh vi&ecirc;n &#273;&#432;&#7907;c m&#7901;i l&agrave;m chuy&ecirc;n gia trong m&#7897;t v&#7909; tranh ch&#7845;p t&#7841;i Singapore. H&agrave;nh tr&igrave;nh c&#7911;a b&#7841;n qua 5 "c&#259;n ph&ograve;ng":</p>
+      <br>
+      <p>&#9312; B&#7841;n b&#432;&#7899;c v&agrave;o <span class="highlight hl-s">Th&#432; vi&#7879;n Lu&#7853;t (Sources of Law)</span> &mdash; n&#417;i l&#432;u gi&#7919; 3 ngu&#7891;n lu&#7853;t: Written Law, Case Law, International Law.</p>
+      <p>&#9313; Ti&#7871;p theo, b&#7841;n v&agrave;o <span class="highlight hl-c">T&ograve;a &aacute;n (Court System)</span> &mdash; h&#7879; th&#7889;ng ph&acirc;n c&#7845;p: Court of Appeal &rarr; High Court &rarr; State Courts.</p>
+      <p>&#9314; Ph&ograve;ng th&#7913; ba l&agrave; <span class="highlight hl-l">Ph&ograve;ng ki&#7879;n t&#7909;ng (Litigation)</span> &mdash; claimant ki&#7879;n defendant, x&#7917; c&ocirc;ng khai, c&oacute; th&#7875; kh&aacute;ng c&aacute;o.</p>
+      <p>&#9315; Ph&ograve;ng th&#7913; t&#432; l&agrave; <span class="highlight hl-a">Ph&ograve;ng tr&#7885;ng t&agrave;i (Arbitration)</span> &mdash; b&iacute; m&#7853;t, t&#7921; ch&#7885;n tr&#7885;ng t&agrave;i vi&ecirc;n, thi h&agrave;nh qu&#7889;c t&#7871; (New York Convention).</p>
+      <p>&#9316; Ph&ograve;ng cu&#7889;i l&agrave; <span class="highlight hl-m">Ph&ograve;ng h&ograve;a gi&#7843;i (Mediation)</span> &mdash; kh&ocirc;ng r&agrave;ng bu&#7897;c, c&aacute;c b&ecirc;n t&#7921; th&#7887;a thu&#7853;n, linh ho&#7841;t nh&#7845;t.</p>
+    </div>
+  </div>
+
+  <div class="tip-box">
+    <h3>&#128272; M&#7865;o nh&#7899; nhanh</h3>
+    <div class="big-text">"S &ndash; C &ndash; L &ndash; A &ndash; M"</div>
+    <p><strong style="color:#f87171">S</strong>ources of Law &rarr; <strong style="color:#fb923c">C</strong>ourt System &rarr; <strong style="color:#fbbf24">L</strong>itigation &rarr; <strong style="color:#4ade80">A</strong>rbitration &rarr; <strong style="color:#60a5fa">M</strong>ediation</p>
+    <br>
+    <p>&#272;&#7885;c th&agrave;nh c&acirc;u: <strong style="color:#e2e8f0; font-size:16px;">"Singapore Courts Let All Matters (be resolved)"</strong></p>
+    <p style="margin-top:8px;">Ti&#7871;ng Vi&#7879;t: <strong style="color:#e2e8f0; font-size:16px;">"S&aacute;ch C&#7911;a Lu&#7853;t An Minh (b&#7841;ch)"</strong></p>
+  </div>
+
+  <!-- COURT HIERARCHY -->
+  <div class="hierarchy-section">
+    <h2>&#127963;&#65039; H&#7879; Th&#7889;ng T&ograve;a &Aacute;n Singapore</h2>
+
+    <div class="court-level cl-apex">&#9878;&#65039; Court of Appeal
+      <span class="cl-sub">T&ograve;a cao nh&#7845;t &mdash; quy&#7871;t &#273;&#7883;nh cu&#7889;i c&ugrave;ng &amp; r&agrave;ng bu&#7897;c</span>
+    </div>
+    <div class="court-arrow">&#9660;</div>
+    <div class="court-level cl-high">&#128218; High Court
+      <span class="cl-sub">General Division &bull; Appellate Division &bull; SICC</span>
+      <span class="cl-sub">D&acirc;n s&#7921; &gt; S$250,000 &bull; H&igrave;nh s&#7921; kh&ocirc;ng gi&#7899;i h&#7841;n</span>
+    </div>
+    <div class="court-arrow">&#9660;</div>
+    <div class="court-level cl-state">&#127970; State Courts
+      <span class="cl-sub">District Courts (&#8804; S$250K) &bull; Magistrates' Courts (&#8804; S$60K) &bull; Tribunals</span>
+    </div>
+    <div class="court-note">Stare Decisis: T&ograve;a tr&ecirc;n r&agrave;ng bu&#7897;c t&ograve;a d&#432;&#7899;i</div>
+
+    <div class="stare-box">
+      <strong>&#128203; Stare Decisis (Ti&#7873;n l&#7879; r&agrave;ng bu&#7897;c):</strong><br>
+      &bull; <strong>Vertical</strong>: T&ograve;a c&#7845;p tr&ecirc;n r&agrave;ng bu&#7897;c t&ograve;a c&#7845;p d&#432;&#7899;i (Court of Appeal &rarr; High Court &rarr; State Courts)<br>
+      &bull; <strong>Horizontal</strong>: T&ograve;a c&ugrave;ng c&#7845;p c&#361;ng r&agrave;ng bu&#7897;c l&#7851;n nhau<br>
+      &bull; &#272;&#7843;m b&#7843;o t&iacute;nh <em>nh&#7845;t qu&aacute;n, d&#7921; &#273;o&aacute;n &#273;&#432;&#7907;c, &#7893;n &#273;&#7883;nh</em> c&#7911;a ph&aacute;p lu&#7853;t
+    </div>
+  </div>
+
+  <!-- JOURNEY MAP -->
+  <h2 class="journey-title">&#128506;&#65039; H&agrave;nh Tr&igrave;nh 5 C&#259;n Ph&ograve;ng</h2>
+  <p style="text-align:center; color:#64748b; margin-bottom:20px; font-size:13px;">(B&#7845;m v&agrave;o t&#7915;ng b&#432;&#7899;c &#273;&#7875; xem chi ti&#7871;t)</p>
+
+  <div class="journey">
+    <!-- SOURCES OF LAW -->
+    <div class="step s-sources" onclick="toggleStep(this)">
+      <div class="step-left">
+        <div class="step-icon">&#128214;</div>
+        <div class="step-line"></div>
+      </div>
+      <div class="step-content">
+        <div class="step-header">M&#7909;c 1.1</div>
+        <div class="step-name">Sources of Law</div>
+        <div class="step-vi">Ngu&#7891;n lu&#7853;t c&#7911;a Singapore</div>
+        <div class="step-story">
+          Singapore theo h&#7879; th&#7889;ng <strong>Common Law</strong> (th&#7915;a h&#432;&#7903;ng t&#7915; Anh).<br><br>
+          <strong>3 ngu&#7891;n lu&#7853;t ch&iacute;nh:</strong><br>
+          &bull; <strong>Written Law (Lu&#7853;t th&agrave;nh v&#259;n)</strong>: Statutes (primary legislation) do Qu&#7889;c h&#7897;i ban h&agrave;nh + Subsidiary legislation (v&#259;n b&#7843;n d&#432;&#7899;i lu&#7853;t)<br>
+          &bull; <strong>Case Law (Lu&#7853;t &aacute;n l&#7879;)</strong>: Quy&#7871;t &#273;&#7883;nh c&#7911;a t&ograve;a &aacute;n &mdash; &#273;&#7863;c bi&#7879;t quan tr&#7885;ng v&#7899;i Contract Law v&agrave; Tort Law<br>
+          &bull; <strong>International Law</strong>: Lu&#7853;t qu&#7889;c t&#7871; v&agrave; c&aacute;c quy &#273;&#7883;nh c&oacute; t&iacute;nh r&agrave;ng bu&#7897;c<br><br>
+          &#128161; <em>Written law &#432;u ti&ecirc;n khi &aacute;p d&#7909;ng, nh&#432;ng case law l&#7845;p &#273;&#7847;y kho&#7843;ng tr&#7889;ng v&agrave; gi&#7843;i th&iacute;ch lu&#7853;t.</em>
+        </div>
+        <div class="step-hint">&#9654; B&#7845;m &#273;&#7875; xem th&ecirc;m</div>
+      </div>
+    </div>
+
+    <!-- COURT SYSTEM -->
+    <div class="step s-courts" onclick="toggleStep(this)">
+      <div class="step-left">
+        <div class="step-icon">&#127963;</div>
+        <div class="step-line"></div>
+      </div>
+      <div class="step-content">
+        <div class="step-header">M&#7909;c 1.2</div>
+        <div class="step-name">The Court System</div>
+        <div class="step-vi">H&#7879; th&#7889;ng t&ograve;a &aacute;n</div>
+        <div class="step-story">
+          <strong>Supreme Court</strong> = Court of Appeal + High Court<br>
+          &bull; <strong>Court of Appeal</strong>: T&ograve;a cao nh&#7845;t, nghe kh&aacute;ng c&aacute;o t&#7915; High Court<br>
+          &bull; <strong>High Court</strong>: General Division, Appellate Division, SICC. D&acirc;n s&#7921; &gt; S$250K<br><br>
+          <strong>State Courts:</strong><br>
+          &bull; <strong>District Courts</strong>: D&acirc;n s&#7921; &#8804; S$250,000<br>
+          &bull; <strong>Magistrates' Courts</strong>: D&acirc;n s&#7921; &#8804; S$60,000<br><br>
+          <strong>C&#417; ch&#7871; m&#7899;i:</strong><br>
+          &bull; <strong>Express Track</strong> (Order 46A ROC): X&#7917; nhanh trong 9 th&aacute;ng, trial &#8804; 4 ng&agrave;y, c&#7847;n &#273;&#7891;ng &yacute; c&#7911;a t&#7845;t c&#7843; c&aacute;c b&ecirc;n, ph&#7847;n l&#7899;n quy&#7871;t &#273;&#7883;nh kh&ocirc;ng &#273;&#432;&#7907;c kh&aacute;ng c&aacute;o<br>
+          &bull; <strong>Simplified Process</strong> (SCJIPR): Cho tranh ch&#7845;p IP &#8804; S$500K, trial &#8804; 2 ng&agrave;y
+        </div>
+        <div class="step-hint">&#9654; B&#7845;m &#273;&#7875; xem th&ecirc;m</div>
+      </div>
+    </div>
+
+    <!-- LITIGATION -->
+    <div class="step s-litigation" onclick="toggleStep(this)">
+      <div class="step-left">
+        <div class="step-icon">&#9878;</div>
+        <div class="step-line"></div>
+      </div>
+      <div class="step-content">
+        <div class="step-header">M&#7909;c 1.3.1</div>
+        <div class="step-name">Litigation</div>
+        <div class="step-vi">Ki&#7879;n t&#7909;ng t&#7841;i t&ograve;a</div>
+        <div class="step-story">
+          <strong>&#272;&#7863;c &#273;i&#7875;m ch&iacute;nh:</strong><br>
+          &bull; C&ocirc;ng khai (public by default)<br>
+          &bull; Claimant ki&#7879;n Defendant<br>
+          &bull; C&oacute; th&#7875; kh&aacute;ng c&aacute;o (v&#7873; v&#7845;n &#273;&#7873; lu&#7853;t, kh&ocirc;ng ph&#7843;i v&#7845;n &#273;&#7873; th&#7921;c t&#7871;)<br><br>
+          <strong>2 lo&#7841;i kh&#7903;i ki&#7879;n:</strong><br>
+          &bull; <strong>Originating Claim</strong> + Statement of Claim: khi c&oacute; c&#7843; v&#7845;n &#273;&#7873; th&#7921;c t&#7871; &amp; lu&#7853;t &rarr; c&#7847;n trial<br>
+          &bull; <strong>Originating Application</strong> + Affidavit: ch&#7881; v&#7845;n &#273;&#7873; lu&#7853;t &rarr; kh&ocirc;ng c&#7847;n trial<br><br>
+          <strong>Bifurcation</strong>: T&ograve;a c&oacute; th&#7875; t&aacute;ch x&#7917; liability tr&#432;&#7899;c, damages sau.<br><br>
+          <strong>Thi h&agrave;nh (Enforcement &mdash; O.22 ROC):</strong><br>
+          &bull; Seizure &amp; sale, delivery/possession, garnishee order, specific performance<br>
+          &bull; Hi&#7879;u l&#7921;c 12 th&aacute;ng (gia h&#7841;n &#273;&#432;&#7907;c)<br>
+          &bull; Sheriff th&#7921;c hi&#7879;n
+        </div>
+        <div class="step-hint">&#9654; B&#7845;m &#273;&#7875; xem th&ecirc;m</div>
+      </div>
+    </div>
+
+    <!-- ARBITRATION -->
+    <div class="step s-arbitration" onclick="toggleStep(this)">
+      <div class="step-left">
+        <div class="step-icon">&#9883;</div>
+        <div class="step-line"></div>
+      </div>
+      <div class="step-content">
+        <div class="step-header">M&#7909;c 1.3.2</div>
+        <div class="step-name">Arbitration</div>
+        <div class="step-vi">Tr&#7885;ng t&agrave;i</div>
+        <div class="step-story">
+          <strong>&#272;&#7863;c &#273;i&#7875;m ch&iacute;nh:</strong><br>
+          &bull; <strong>B&iacute; m&#7853;t</strong> (confidential by default)<br>
+          &bull; C&aacute;c b&ecirc;n t&#7921; ch&#7885;n arbitrator(s) &mdash; 1 ho&#7863;c 3 ng&#432;&#7901;i<br>
+          &bull; Ph&aacute;n quy&#7871;t c&oacute; t&iacute;nh <strong>chung th&#7849;m</strong> (final), ch&#7881; c&oacute; th&#7875; kh&aacute;ng c&aacute;o h&#7841;n ch&#7871;<br><br>
+          <strong>2 &#273;&#7841;o lu&#7853;t ch&iacute;nh:</strong><br>
+          &bull; <strong>AA</strong> (Arbitration Act 2001): Tr&#7885;ng t&agrave;i <em>trong n&#432;&#7899;c</em><br>
+          &bull; <strong>IAA</strong> (International Arbitration Act 1994): Tr&#7885;ng t&agrave;i <em>qu&#7889;c t&#7871;</em><br><br>
+          <strong>SIAC</strong> (Singapore International Arbitration Centre):<br>
+          &bull; SIAC Rules 2025 (c&oacute; hi&#7879;u l&#7921;c 1/1/2025)<br>
+          &bull; Streamlined Procedure: &#8804; S$1M<br>
+          &bull; Expedited Procedure: &#8804; S$10M<br><br>
+          <strong>Doctrine of Separability</strong>: &#272;i&#7873;u kho&#7843;n tr&#7885;ng t&agrave;i &#273;&#7897;c l&#7853;p v&#7899;i h&#7907;p &#273;&#7891;ng ch&iacute;nh<br><br>
+          <strong>Thi h&agrave;nh:</strong><br>
+          &bull; Trong n&#432;&#7899;c: nh&#432; b&#7843;n &aacute;n High Court<br>
+          &bull; Qu&#7889;c t&#7871;: theo <strong>New York Convention</strong> (REFJA)
+        </div>
+        <div class="step-hint">&#9654; B&#7845;m &#273;&#7875; xem th&ecirc;m</div>
+      </div>
+    </div>
+
+    <!-- MEDIATION -->
+    <div class="step s-mediation" onclick="toggleStep(this)">
+      <div class="step-left">
+        <div class="step-icon">&#129309;</div>
+        <div class="step-line"></div>
+      </div>
+      <div class="step-content">
+        <div class="step-header">M&#7909;c 1.3.3</div>
+        <div class="step-name">Mediation</div>
+        <div class="step-vi">H&ograve;a gi&#7843;i</div>
+        <div class="step-story">
+          <strong>&#272;&#7863;c &#273;i&#7875;m ch&iacute;nh:</strong><br>
+          &bull; <strong>Kh&ocirc;ng r&agrave;ng bu&#7897;c</strong> &mdash; mediator ch&#7881; h&#7895; tr&#7907;, kh&ocirc;ng ra quy&#7871;t &#273;&#7883;nh<br>
+          &bull; <strong>B&iacute; m&#7853;t</strong> (confidential)<br>
+          &bull; C&aacute;c b&ecirc;n gi&#7919; to&agrave;n quy&#7873;n ki&#7875;m so&aacute;t k&#7871;t qu&#7843;<br>
+          &bull; Linh ho&#7841;t &mdash; c&oacute; th&#7875; th&#7887;a thu&#7853;n c&aacute;c gi&#7843;i ph&aacute;p s&aacute;ng t&#7841;o (xin l&#7895;i, thay &#273;&#7893;i kinh doanh...)<br><br>
+          <strong>T&#7893; ch&#7913;c:</strong><br>
+          &bull; <strong>SMC</strong> (Singapore Mediation Centre)<br>
+          &bull; <strong>SIMC</strong> (Singapore International Mediation Centre)<br>
+          &bull; T&ograve;a c&#361;ng c&oacute; th&#7875; t&#7893; ch&#7913;c <em>judicial mediation</em><br><br>
+          <strong>Mediation Act 2017 (MA):</strong><br>
+          &bull; Th&#7887;a thu&#7853;n h&ograve;a gi&#7843;i c&oacute; th&#7875; &#273;&#432;&#7907;c ghi nh&#7853;n nh&#432; <strong>court order</strong> (s.12 MA)<br>
+          &bull; Khi &#273;&oacute; c&oacute; hi&#7879;u l&#7921;c thi h&agrave;nh nh&#432; b&#7843;n &aacute;n<br>
+          &bull; B&iacute; m&#7853;t (s.9 MA)
+        </div>
+        <div class="step-hint">&#9654; B&#7845;m &#273;&#7875; xem th&ecirc;m</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- COMPARISON TABLE -->
+  <div class="compare-section">
+    <h2>&#9878;&#65039; So S&aacute;nh 3 C&#417; Ch&#7871; Gi&#7843;i Quy&#7871;t Tranh Ch&#7845;p</h2>
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th>Ti&ecirc;u ch&iacute;</th>
+          <th class="col-lit">&#9878; Litigation</th>
+          <th class="col-arb">&#9883; Arbitration</th>
+          <th class="col-med">&#129309; Mediation</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>C&ocirc;ng khai?</td>
+          <td class="col-lit"><strong>C&ocirc;ng khai</strong></td>
+          <td class="col-arb"><strong>B&iacute; m&#7853;t</strong></td>
+          <td class="col-med"><strong>B&iacute; m&#7853;t</strong></td>
+        </tr>
+        <tr>
+          <td>Ng&#432;&#7901;i quy&#7871;t &#273;&#7883;nh</td>
+          <td>Th&#7849;m ph&aacute;n (Judge)</td>
+          <td>Tr&#7885;ng t&agrave;i vi&ecirc;n (Arbitrator)</td>
+          <td>C&aacute;c b&ecirc;n t&#7921; quy&#7871;t &#273;&#7883;nh</td>
+        </tr>
+        <tr>
+          <td>R&agrave;ng bu&#7897;c?</td>
+          <td>C&oacute; (binding judgment)</td>
+          <td>C&oacute; (binding award)</td>
+          <td><strong>Kh&ocirc;ng</strong> (tr&#7915; khi ghi nh&#7853;n court order)</td>
+        </tr>
+        <tr>
+          <td>Kh&aacute;ng c&aacute;o?</td>
+          <td>C&oacute; (v&#7873; v&#7845;n &#273;&#7873; lu&#7853;t)</td>
+          <td>R&#7845;t h&#7841;n ch&#7871;</td>
+          <td>Kh&ocirc;ng &aacute;p d&#7909;ng</td>
+        </tr>
+        <tr>
+          <td>T&#7921; ch&#7911; c&#7911;a c&aacute;c b&ecirc;n</td>
+          <td>Th&#7845;p</td>
+          <td>Cao (ch&#7885;n arbitrator, rules)</td>
+          <td>R&#7845;t cao</td>
+        </tr>
+        <tr>
+          <td>Thi h&agrave;nh qu&#7889;c t&#7871;</td>
+          <td>Kh&oacute; kh&#259;n</td>
+          <td><strong>New York Convention</strong></td>
+          <td>H&#7841;n ch&#7871;</td>
+        </tr>
+        <tr>
+          <td>Lu&#7853;t &#273;i&#7873;u ch&#7881;nh</td>
+          <td>ROC 2021</td>
+          <td>AA (n&#7897;i &#273;&#7883;a) / IAA (qu&#7889;c t&#7871;)</td>
+          <td>MA 2017</td>
+        </tr>
+        <tr>
+          <td>Ph&ugrave; h&#7907;p khi</td>
+          <td>C&#7847;n ti&#7873;n l&#7879;, c&ocirc;ng l&yacute; c&ocirc;ng khai</td>
+          <td>Tranh ch&#7845;p th&#432;&#417;ng m&#7841;i, xuy&ecirc;n bi&ecirc;n gi&#7899;i</td>
+          <td>Gi&#7919; m&#7889;i quan h&#7879;, gi&#7843;i ph&aacute;p s&aacute;ng t&#7841;o</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- KEY LAWS -->
+  <div class="laws-section">
+    <h2>&#128220; C&aacute;c &#272;&#7841;o Lu&#7853;t Quan Tr&#7885;ng</h2>
+    <div class="law-grid">
+      <div class="law-card">
+        <div class="law-abbr" style="color:#fbbf24;">ROC 2021</div>
+        <div class="law-full">Rules of Court 2021</div>
+        <div class="law-desc">Quy t&#7855;c t&#7889; t&#7909;ng t&#7841;i t&ograve;a &aacute;n Singapore. G&#7891;m Order 22 (Enforcement), Order 46A (Express Track).</div>
+      </div>
+      <div class="law-card">
+        <div class="law-abbr" style="color:#4ade80;">AA</div>
+        <div class="law-full">Arbitration Act 2001</div>
+        <div class="law-desc">&#272;i&#7873;u ch&#7881;nh tr&#7885;ng t&agrave;i <strong>trong n&#432;&#7899;c</strong> (domestic).</div>
+      </div>
+      <div class="law-card">
+        <div class="law-abbr" style="color:#60a5fa;">IAA</div>
+        <div class="law-full">International Arbitration Act 1994</div>
+        <div class="law-desc">&#272;i&#7873;u ch&#7881;nh tr&#7885;ng t&agrave;i <strong>qu&#7889;c t&#7871;</strong>. Bao g&#7891;m UNCITRAL Model Law.</div>
+      </div>
+      <div class="law-card">
+        <div class="law-abbr" style="color:#a78bfa;">MA</div>
+        <div class="law-full">Mediation Act 2017</div>
+        <div class="law-desc">Cho ph&eacute;p th&#7887;a thu&#7853;n h&ograve;a gi&#7843;i &#273;&#432;&#7907;c ghi nh&#7853;n nh&#432; court order (s.12). B&#7843;o &#273;&#7843;m b&iacute; m&#7853;t (s.9).</div>
+      </div>
+      <div class="law-card">
+        <div class="law-abbr" style="color:#f87171;">SCJA</div>
+        <div class="law-full">Supreme Court of Judicature Act 1969</div>
+        <div class="law-desc">Quy &#273;&#7883;nh th&#7849;m quy&#7873;n High Court (d&acirc;n s&#7921; &gt; S$250K).</div>
+      </div>
+      <div class="law-card">
+        <div class="law-abbr" style="color:#fb923c;">REFJA</div>
+        <div class="law-full">Recognition and Enforcement of Foreign Arbitral Awards 1958</div>
+        <div class="law-desc">New York Convention &mdash; thi h&agrave;nh ph&aacute;n quy&#7871;t tr&#7885;ng t&agrave;i n&#432;&#7899;c ngo&agrave;i t&#7841;i Singapore.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+  <div class="quiz-box">
+    <h2>&#127919; Ki&#7875;m Tra Tr&iacute; Nh&#7899; &mdash; 15 C&acirc;u H&#7887;i</h2>
+    <p style="text-align:center; color:#94a3b8; margin-bottom:20px; font-size:14px;">Ch&#7885;n c&acirc;u tr&#7843; l&#7901;i &#273;&uacute;ng nh&#7845;t</p>
+    <div id="quizContainer"></div>
+    <div class="quiz-score" id="quizScore"></div>
+    <button class="quiz-btn" onclick="resetQuiz()">&#128260; L&agrave;m l&#7841;i</button>
+  </div>
+
+</div>
+
+<script>
+function toggleStep(el) {
+  el.classList.toggle('open');
+}
+
+// Quiz data
+const quizData = [
+  {
+    q: "H&#7879; th&#7889;ng ph&aacute;p lu&#7853;t Singapore d&#7921;a tr&ecirc;n truy&#7873;n th&#7889;ng n&agrave;o?",
+    opts: ["Civil Law (Lu&#7853;t d&acirc;n s&#7921; l&#7909;c &#273;&#7883;a)", "Common Law (Lu&#7853;t &aacute;n l&#7879;)", "Sharia Law", "Customary Law"],
+    correct: 1,
+    explain: "Singapore theo h&#7879; th&#7889;ng Common Law, th&#7915;a h&#432;&#7903;ng t&#7915; Anh qu&#7889;c trong th&#7901;i k&#7923; thu&#7897;c &#273;&#7883;a."
+  },
+  {
+    q: "3 ngu&#7891;n lu&#7853;t ch&iacute;nh c&#7911;a Singapore l&agrave; g&igrave;?",
+    opts: ["Statutes, Regulations, Guidelines", "Written Law, Case Law, International Law", "Constitution, Treaties, Custom", "Primary Law, Secondary Law, Tertiary Law"],
+    correct: 1,
+    explain: "3 ngu&#7891;n ch&iacute;nh: Written Law (lu&#7853;t th&agrave;nh v&#259;n), Case Law (&aacute;n l&#7879;), v&agrave; International Law."
+  },
+  {
+    q: "T&ograve;a n&agrave;o l&agrave; t&ograve;a cao nh&#7845;t c&#7911;a Singapore?",
+    opts: ["High Court", "State Courts", "Court of Appeal", "SICC"],
+    correct: 2,
+    explain: "Court of Appeal l&agrave; t&ograve;a cao nh&#7845;t. C&ugrave;ng v&#7899;i High Court t&#7841;o th&agrave;nh Supreme Court."
+  },
+  {
+    q: "District Courts c&oacute; th&#7849;m quy&#7873;n x&#7917; v&#7909; d&acirc;n s&#7921; t&#7889;i &#273;a bao nhi&ecirc;u?",
+    opts: ["S$60,000", "S$100,000", "S$250,000", "S$500,000"],
+    correct: 2,
+    explain: "District Courts x&#7917; v&#7909; d&acirc;n s&#7921; t&#7899;i S$250,000. Magistrates' Courts t&#7899;i S$60,000."
+  },
+  {
+    q: "Doctrine of Stare Decisis c&oacute; ngh&#297;a l&agrave; g&igrave;?",
+    opts: ["T&ograve;a c&oacute; quy&#7873;n t&#7921; do quy&#7871;t &#273;&#7883;nh", "T&ograve;a ph&#7843;i tu&acirc;n theo ti&#7873;n l&#7879; c&#7911;a t&ograve;a c&#7845;p tr&ecirc;n", "C&aacute;c b&ecirc;n t&#7921; ch&#7885;n th&#7849;m ph&aacute;n", "Ph&aacute;n quy&#7871;t lu&ocirc;n c&oacute; th&#7875; kh&aacute;ng c&aacute;o"],
+    correct: 1,
+    explain: "Stare Decisis = ti&#7873;n l&#7879; r&agrave;ng bu&#7897;c. Vertical: t&ograve;a tr&ecirc;n r&agrave;ng bu&#7897;c t&ograve;a d&#432;&#7899;i. Horizontal: t&ograve;a c&ugrave;ng c&#7845;p r&agrave;ng bu&#7897;c l&#7851;n nhau."
+  },
+  {
+    q: "Express Track (Order 46A ROC) c&oacute; &#273;&#7863;c &#273;i&#7875;m g&igrave;?",
+    opts: ["Trial t&#7889;i &#273;a 4 ng&agrave;y, c&#7847;n &#273;&#7891;ng &yacute; c&#7911;a t&#7845;t c&#7843; c&aacute;c b&ecirc;n, ph&#7847;n l&#7899;n kh&ocirc;ng &#273;&#432;&#7907;c kh&aacute;ng c&aacute;o", "Ch&#7881; d&agrave;nh cho v&#7909; IP", "Kh&ocirc;ng c&#7847;n &#273;&#7891;ng &yacute; c&#7911;a c&aacute;c b&ecirc;n", "Trial kh&ocirc;ng gi&#7899;i h&#7841;n th&#7901;i gian"],
+    correct: 0,
+    explain: "Express Track: trial &#8804; 4 ng&agrave;y, ho&agrave;n th&agrave;nh trong 9 th&aacute;ng, c&#7847;n t&#7845;t c&#7843; c&aacute;c b&ecirc;n &#273;&#7891;ng &yacute;, ph&#7847;n l&#7899;n quy&#7871;t &#273;&#7883;nh l&agrave; chung th&#7849;m."
+  },
+  {
+    q: "Khi n&agrave;o d&ugrave;ng Originating Claim thay v&igrave; Originating Application?",
+    opts: ["Khi ch&#7881; c&oacute; v&#7845;n &#273;&#7873; lu&#7853;t", "Khi c&oacute; c&#7843; v&#7845;n &#273;&#7873; th&#7921;c t&#7871; v&agrave; lu&#7853;t, c&#7847;n trial", "Khi gi&aacute; tr&#7883; tranh ch&#7845;p nh&#7887;", "Khi c&aacute;c b&ecirc;n &#273;&#7891;ng &yacute;"],
+    correct: 1,
+    explain: "Originating Claim + Statement of Claim: khi c&oacute; c&#7843; issues of fact &amp; law, c&#7847;n trial. Originating Application + Affidavit: ch&#7881; issues of law."
+  },
+  {
+    q: "&#272;&#7863;c &#273;i&#7875;m N&#7892;I B&#7852;T nh&#7845;t c&#7911;a Arbitration so v&#7899;i Litigation l&agrave; g&igrave;?",
+    opts: ["R&#7867; h&#417;n", "Nhanh h&#417;n", "B&iacute; m&#7853;t (Confidentiality)", "C&oacute; th&#7875; kh&aacute;ng c&aacute;o"],
+    correct: 2,
+    explain: "&#431;u &#273;i&#7875;m n&#7893;i b&#7853;t nh&#7845;t c&#7911;a Arbitration: B&iacute; m&#7853;t. Litigation th&igrave; c&ocirc;ng khai by default."
+  },
+  {
+    q: "AA &#273;i&#7873;u ch&#7881;nh lo&#7841;i tr&#7885;ng t&agrave;i n&agrave;o?",
+    opts: ["Qu&#7889;c t&#7871;", "Trong n&#432;&#7899;c (domestic)", "C&#7843; hai", "Kh&ocirc;ng lo&#7841;i n&agrave;o"],
+    correct: 1,
+    explain: "AA (Arbitration Act 2001) = tr&#7885;ng t&agrave;i trong n&#432;&#7899;c. IAA (International Arbitration Act 1994) = tr&#7885;ng t&agrave;i qu&#7889;c t&#7871;."
+  },
+  {
+    q: "Doctrine of Separability trong Arbitration c&oacute; ngh&#297;a l&agrave; g&igrave;?",
+    opts: ["C&aacute;c b&ecirc;n c&oacute; th&#7875; t&aacute;ch v&#7909; ki&#7879;n", "&#272;i&#7873;u kho&#7843;n tr&#7885;ng t&agrave;i &#273;&#7897;c l&#7853;p v&#7899;i h&#7907;p &#273;&#7891;ng ch&iacute;nh", "Tr&#7885;ng t&agrave;i vi&ecirc;n ph&#7843;i &#273;&#7897;c l&#7853;p", "Ph&aacute;n quy&#7871;t c&oacute; th&#7875; t&aacute;ch ra"],
+    correct: 1,
+    explain: "Separability: d&ugrave; h&#7907;p &#273;&#7891;ng ch&iacute;nh v&ocirc; hi&#7879;u, &#273;i&#7873;u kho&#7843;n tr&#7885;ng t&agrave;i v&#7851;n c&oacute; hi&#7879;u l&#7921;c v&agrave; thi h&agrave;nh &#273;&#432;&#7907;c."
+  },
+  {
+    q: "Ph&aacute;n quy&#7871;t tr&#7885;ng t&agrave;i n&#432;&#7899;c ngo&agrave;i &#273;&#432;&#7907;c thi h&agrave;nh t&#7841;i Singapore theo c&ocirc;ng &#432;&#7899;c n&agrave;o?",
+    opts: ["Geneva Convention", "New York Convention", "Singapore Convention", "Hague Convention"],
+    correct: 1,
+    explain: "New York Convention (REFJA) cho ph&eacute;p thi h&agrave;nh ph&aacute;n quy&#7871;t tr&#7885;ng t&agrave;i n&#432;&#7899;c ngo&agrave;i t&#7841;i Singapore."
+  },
+  {
+    q: "Mediator c&oacute; quy&#7873;n ra quy&#7871;t &#273;&#7883;nh r&agrave;ng bu&#7897;c kh&ocirc;ng?",
+    opts: ["C&oacute;, lu&ocirc;n lu&ocirc;n", "C&oacute;, n&#7871;u c&aacute;c b&ecirc;n &#273;&#7891;ng &yacute;", "Kh&ocirc;ng &mdash; ch&#7881; h&#7895; tr&#7907; c&aacute;c b&ecirc;n th&#7887;a thu&#7853;n", "C&oacute;, theo MA 2017"],
+    correct: 2,
+    explain: "Mediator kh&ocirc;ng ra quy&#7871;t &#273;&#7883;nh. Ch&#7881; h&#7895; tr&#7907; c&aacute;c b&ecirc;n &#273;&#7841;t th&#7887;a thu&#7853;n. K&#7871;t qu&#7843; kh&ocirc;ng r&agrave;ng bu&#7897;c tr&#7915; khi ghi nh&#7853;n nh&#432; court order."
+  },
+  {
+    q: "Theo Mediation Act 2017, th&#7887;a thu&#7853;n h&ograve;a gi&#7843;i c&oacute; th&#7875; &#273;&#432;&#7907;c l&agrave;m g&igrave;?",
+    opts: ["Kh&ocirc;ng c&oacute; gi&aacute; tr&#7883; ph&aacute;p l&yacute;", "Ghi nh&#7853;n nh&#432; court order (s.12 MA)", "T&#7921; &#273;&#7897;ng c&oacute; hi&#7879;u l&#7921;c thi h&agrave;nh", "Ch&#7881; c&oacute; hi&#7879;u l&#7921;c &#7903; Singapore"],
+    correct: 1,
+    explain: "Section 12 MA cho ph&eacute;p th&#7887;a thu&#7853;n h&ograve;a gi&#7843;i &#273;&#432;&#7907;c ghi nh&#7853;n nh&#432; court order, c&oacute; hi&#7879;u l&#7921;c thi h&agrave;nh nh&#432; b&#7843;n &aacute;n."
+  },
+  {
+    q: "C&#417; ch&#7871; n&agrave;o ph&ugrave; h&#7907;p nh&#7845;t cho tranh ch&#7845;p th&#432;&#417;ng m&#7841;i xuy&ecirc;n bi&ecirc;n gi&#7899;i?",
+    opts: ["Litigation", "Arbitration", "Mediation", "Negotiation"],
+    correct: 1,
+    explain: "Arbitration ph&ugrave; h&#7907;p nh&#7845;t v&igrave;: b&iacute; m&#7853;t, t&#7921; ch&#7911; ch&#7885;n arbitrator, v&agrave; ph&aacute;n quy&#7871;t thi h&agrave;nh qu&#7889;c t&#7871; theo New York Convention."
+  },
+  {
+    q: "Kh&aacute;ng c&aacute;o trong litigation ch&#7881; &#273;&#432;&#7907;c th&#7921;c hi&#7879;n v&#7873;:",
+    opts: ["V&#7845;n &#273;&#7873; th&#7921;c t&#7871; (issues of fact)", "V&#7845;n &#273;&#7873; lu&#7853;t (issues of law)", "C&#7843; hai", "Kh&ocirc;ng &#273;&#432;&#7907;c kh&aacute;ng c&aacute;o"],
+    correct: 1,
+    explain: "Appeals ch&#7881; v&#7873; issues of law. T&ograve;a ph&uacute;c th&#7849;m kh&ocirc;ng x&#7917; l&#7841;i v&#7845;n &#273;&#7873; th&#7921;c t&#7871; m&agrave; ch&#7881; xem x&eacute;t v&#7845;n &#273;&#7873; ph&aacute;p l&yacute;."
+  }
+];
+
+let totalAnswered = 0;
+let totalCorrect = 0;
+
+function renderQuiz() {
+  const container = document.getElementById('quizContainer');
+  container.innerHTML = quizData.map((q, i) => `
+    <div class="q-card" id="qcard-${i}">
+      <div class="q-text"><span class="q-num">${i+1}</span>${q.q}</div>
+      <div class="q-options">
+        ${q.opts.map((opt, j) => `
+          <div class="q-opt" data-q="${i}" data-opt="${j}" onclick="selectAnswer(${i}, ${j})">${String.fromCharCode(65+j)}. ${opt}</div>
+        `).join('')}
+      </div>
+      <div class="q-explain" id="qexp-${i}">${q.explain}</div>
+    </div>
+  `).join('');
+}
+
+function selectAnswer(qIdx, optIdx) {
+  const card = document.getElementById('qcard-' + qIdx);
+  if (card.classList.contains('answered-correct') || card.classList.contains('answered-wrong')) return;
+
+  const opts = card.querySelectorAll('.q-opt');
+  const correct = quizData[qIdx].correct;
+  const explain = document.getElementById('qexp-' + qIdx);
+
+  totalAnswered++;
+
+  opts.forEach((o, j) => {
+    if (j === correct) {
+      o.classList.add('correct');
+    }
+    if (j === optIdx && j !== correct) {
+      o.classList.add('wrong');
+    }
+    o.classList.add('disabled');
+  });
+
+  if (optIdx === correct) {
+    card.classList.add('answered-correct');
+    explain.classList.add('is-correct');
+    totalCorrect++;
+  } else {
+    card.classList.add('answered-wrong');
+    explain.classList.add('is-wrong');
+  }
+  explain.classList.add('show');
+
+  if (totalAnswered === quizData.length) {
+    const scoreEl = document.getElementById('quizScore');
+    const pct = Math.round(totalCorrect / quizData.length * 100);
+    let emoji = pct >= 80 ? '&#127881;' : pct >= 60 ? '&#128170;' : '&#128218;';
+    scoreEl.innerHTML = `${emoji} K&#7871;t qu&#7843;: ${totalCorrect}/${quizData.length} (${pct}%)${pct >= 80 ? ' &mdash; Xu&#7845;t s&#7855;c!' : pct >= 60 ? ' &mdash; Kh&aacute;!' : ' &mdash; C&#7847;n &ocirc;n l&#7841;i!'}`;
+    scoreEl.classList.add('show');
+  }
+}
+
+function resetQuiz() {
+  totalAnswered = 0;
+  totalCorrect = 0;
+  document.getElementById('quizScore').classList.remove('show');
+  renderQuiz();
+}
+
+renderQuiz();
+</script>
+</body>
+</html>

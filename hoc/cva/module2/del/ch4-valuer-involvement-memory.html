@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ch4 - Vai Tr&#242; Chuy&#234;n Gia &#272;&#7883;nh Gi&#225; Trong T&#7889; T&#7909;ng</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Segoe UI', sans-serif; background: #0f172a; color: #e2e8f0; min-height: 100vh; }
+  .container { max-width: 1000px; margin: 0 auto; padding: 24px; }
+  h1 { text-align: center; font-size: 26px; margin-bottom: 8px; color: #60a5fa; }
+  .subtitle { text-align: center; color: #94a3b8; margin-bottom: 32px; font-size: 15px; }
+
+  .story-box {
+    background: linear-gradient(135deg, #1e3a5f, #1a2744);
+    border: 1px solid #334155;
+    border-radius: 16px;
+    padding: 28px;
+    margin-bottom: 36px;
+    position: relative;
+    overflow: hidden;
+  }
+  .story-box::before {
+    content: '';
+    position: absolute;
+    top: -50%; right: -50%;
+    width: 100%; height: 100%;
+    background: radial-gradient(circle, rgba(96,165,250,0.05) 0%, transparent 70%);
+  }
+  .story-box h2 { color: #fbbf24; font-size: 20px; margin-bottom: 16px; position: relative; }
+  .story-box .mnemonic {
+    font-size: 30px;
+    font-weight: 800;
+    text-align: center;
+    margin: 20px 0;
+    letter-spacing: 6px;
+    position: relative;
+  }
+  .story-box .mnemonic span {
+    display: inline-block;
+    transition: transform 0.3s, color 0.3s;
+    cursor: pointer;
+  }
+  .story-box .mnemonic span:hover { transform: scale(1.3); }
+  .m-E { color: #f87171; } .m-L { color: #fb923c; } .m-I { color: #fbbf24; }
+  .m-C { color: #a78bfa; } .m-A { color: #4ade80; } .m-D { color: #22d3ee; }
+  .m-R { color: #f472b6; } .m-P { color: #60a5fa; } .m-X { color: #34d399; }
+  .m-O { color: #facc15; }
+
+  .story-text {
+    font-size: 16px; line-height: 1.9; color: #cbd5e1; position: relative;
+  }
+  .story-text .highlight { font-weight: 700; padding: 1px 4px; border-radius: 4px; }
+  .hl-e { color: #f87171; background: rgba(248,113,113,0.15); }
+  .hl-l { color: #fb923c; background: rgba(251,146,60,0.15); }
+  .hl-i { color: #fbbf24; background: rgba(251,191,36,0.15); }
+  .hl-c { color: #a78bfa; background: rgba(167,139,250,0.15); }
+  .hl-a { color: #4ade80; background: rgba(74,222,128,0.15); }
+  .hl-d { color: #22d3ee; background: rgba(34,211,238,0.15); }
+  .hl-r { color: #f472b6; background: rgba(244,114,182,0.15); }
+  .hl-p { color: #60a5fa; background: rgba(96,165,250,0.15); }
+  .hl-x { color: #34d399; background: rgba(52,211,153,0.15); }
+  .hl-o { color: #facc15; background: rgba(250,204,21,0.15); }
+
+  .tip-box {
+    background: linear-gradient(135deg, #1a2744, #1e293b);
+    border: 1px solid #334155;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 24px;
+    text-align: center;
+  }
+  .tip-box h3 { color: #fbbf24; margin-bottom: 10px; }
+  .tip-box p { color: #94a3b8; font-size: 14px; line-height: 1.7; }
+  .tip-box .big-text { font-size: 20px; color: #e2e8f0; font-weight: 700; margin: 12px 0; }
+
+  .section-title {
+    text-align: center; font-size: 22px; color: #60a5fa;
+    margin: 40px 0 24px; padding-bottom: 12px; border-bottom: 2px solid #1e3a5f;
+  }
+
+  /* Journey */
+  .journey { display: flex; flex-direction: column; gap: 0; margin-bottom: 36px; }
+  .step { display: flex; align-items: stretch; min-height: 120px; position: relative; cursor: pointer; }
+  .step-left { width: 80px; display: flex; flex-direction: column; align-items: center; flex-shrink: 0; }
+  .step-icon {
+    width: 56px; height: 56px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 26px; z-index: 2; border: 3px solid;
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+  .step:hover .step-icon { transform: scale(1.15); box-shadow: 0 0 20px rgba(255,255,255,0.2); }
+  .step-line { width: 3px; flex: 1; z-index: 1; }
+  .step-content { flex: 1; padding: 8px 0 24px 20px; }
+  .step-header { font-size: 13px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 4px; }
+  .step-name { font-size: 19px; font-weight: 700; margin-bottom: 6px; }
+  .step-vi { font-size: 14px; color: #94a3b8; margin-bottom: 8px; font-style: italic; }
+  .step-story { font-size: 14px; color: #cbd5e1; line-height: 1.7; max-height: 0; overflow: hidden; transition: max-height 0.6s ease; }
+  .step.open .step-story { max-height: 1200px; }
+  .step-hint { font-size: 12px; color: #64748b; margin-top: 4px; }
+
+  .s-engage .step-icon { background: rgba(248,113,113,0.15); border-color: #f87171; color: #f87171; }
+  .s-engage .step-line { background: linear-gradient(to bottom, #f87171, #fb923c); }
+  .s-engage .step-header { color: #f87171; } .s-engage .step-name { color: #fca5a5; }
+
+  .s-liability .step-icon { background: rgba(251,146,60,0.15); border-color: #fb923c; color: #fb923c; }
+  .s-liability .step-line { background: linear-gradient(to bottom, #fb923c, #fbbf24); }
+  .s-liability .step-header { color: #fb923c; } .s-liability .step-name { color: #fdba74; }
+
+  .s-insurance .step-icon { background: rgba(251,191,36,0.15); border-color: #fbbf24; color: #fbbf24; }
+  .s-insurance .step-line { background: linear-gradient(to bottom, #fbbf24, #a78bfa); }
+  .s-insurance .step-header { color: #fbbf24; } .s-insurance .step-name { color: #fde68a; }
+
+  .s-compare .step-icon { background: rgba(167,139,250,0.15); border-color: #a78bfa; color: #a78bfa; }
+  .s-compare .step-line { background: linear-gradient(to bottom, #a78bfa, #4ade80); }
+  .s-compare .step-header { color: #a78bfa; } .s-compare .step-name { color: #c4b5fd; }
+
+  .s-arb .step-icon { background: rgba(74,222,128,0.15); border-color: #4ade80; color: #4ade80; }
+  .s-arb .step-line { background: linear-gradient(to bottom, #4ade80, #22d3ee); }
+  .s-arb .step-header { color: #4ade80; } .s-arb .step-name { color: #86efac; }
+
+  .s-duty .step-icon { background: rgba(34,211,238,0.15); border-color: #22d3ee; color: #22d3ee; }
+  .s-duty .step-line { background: linear-gradient(to bottom, #22d3ee, #f472b6); }
+  .s-duty .step-header { color: #22d3ee; } .s-duty .step-name { color: #67e8f9; }
+
+  .s-report .step-icon { background: rgba(244,114,182,0.15); border-color: #f472b6; color: #f472b6; }
+  .s-report .step-line { background: linear-gradient(to bottom, #f472b6, #60a5fa); }
+  .s-report .step-header { color: #f472b6; } .s-report .step-name { color: #f9a8d4; }
+
+  .s-docs .step-icon { background: rgba(96,165,250,0.15); border-color: #60a5fa; color: #60a5fa; }
+  .s-docs .step-line { background: linear-gradient(to bottom, #60a5fa, #34d399); }
+  .s-docs .step-header { color: #60a5fa; } .s-docs .step-name { color: #93c5fd; }
+
+  .s-exam .step-icon { background: rgba(52,211,153,0.15); border-color: #34d399; color: #34d399; }
+  .s-exam .step-line { background: linear-gradient(to bottom, #34d399, #facc15); }
+  .s-exam .step-header { color: #34d399; } .s-exam .step-name { color: #6ee7b7; }
+
+  .s-court .step-icon { background: rgba(250,204,21,0.15); border-color: #facc15; color: #facc15; }
+  .s-court .step-line { background: linear-gradient(to bottom, #facc15, #475569); }
+  .s-court .step-header { color: #facc15; } .s-court .step-name { color: #fef08a; }
+
+  /* Comparison Table */
+  .compare-section {
+    background: #1e293b; border: 1px solid #334155; border-radius: 16px;
+    padding: 28px; margin-bottom: 36px; overflow-x: auto;
+  }
+  .compare-section h2 { color: #fbbf24; font-size: 20px; margin-bottom: 20px; text-align: center; }
+  .compare-table { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 13px; }
+  .compare-table th { background: #334155; color: #fbbf24; padding: 12px 10px; text-align: center; font-weight: 700; border-bottom: 2px solid #475569; }
+  .compare-table td { padding: 10px; border-bottom: 1px solid #334155; vertical-align: top; line-height: 1.6; }
+  .compare-table tr:hover td { background: rgba(96,165,250,0.08); }
+  .compare-table td:first-child { font-weight: 600; color: #93c5fd; white-space: nowrap; }
+
+  /* Highlight box */
+  .highlight-box {
+    background: linear-gradient(135deg, #1e293b, #1a2744);
+    border-left: 4px solid #fbbf24; border-radius: 0 12px 12px 0;
+    padding: 20px 24px; margin-bottom: 24px;
+  }
+  .highlight-box h3 { color: #fbbf24; margin-bottom: 10px; font-size: 16px; }
+  .highlight-box p { color: #cbd5e1; font-size: 14px; line-height: 1.8; }
+  .highlight-box ul { list-style: none; padding: 0; }
+  .highlight-box ul li { padding: 4px 0; font-size: 14px; color: #cbd5e1; }
+  .highlight-box ul li::before { content: '&#9679; '; color: #fbbf24; }
+
+  /* Info Cards */
+  .info-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; margin-bottom: 36px; }
+  .info-card {
+    background: #1e293b; border: 1px solid #334155; border-radius: 12px; padding: 20px;
+    cursor: pointer; transition: transform 0.2s, border-color 0.3s;
+  }
+  .info-card:hover { transform: translateY(-3px); border-color: #60a5fa; }
+  .info-card .card-icon { font-size: 32px; margin-bottom: 10px; }
+  .info-card .card-title { font-size: 16px; font-weight: 700; margin-bottom: 6px; }
+  .info-card .card-subtitle { font-size: 13px; color: #94a3b8; margin-bottom: 10px; font-style: italic; }
+  .info-card .card-detail { font-size: 13px; color: #cbd5e1; line-height: 1.7; max-height: 0; overflow: hidden; transition: max-height 0.5s ease; }
+  .info-card.open .card-detail { max-height: 800px; }
+  .info-card .card-hint { font-size: 11px; color: #64748b; margin-top: 6px; }
+
+  /* Quiz */
+  .quiz-section { background: #1e293b; border: 1px solid #334155; border-radius: 16px; padding: 28px; margin-bottom: 36px; }
+  .quiz-section h2 { color: #60a5fa; font-size: 22px; text-align: center; margin-bottom: 24px; }
+  .quiz-q { background: #0f172a; border: 1px solid #334155; border-radius: 12px; padding: 20px; margin-bottom: 16px; }
+  .quiz-q .q-text { font-size: 15px; font-weight: 600; margin-bottom: 14px; color: #e2e8f0; }
+  .quiz-q .q-num { color: #60a5fa; }
+  .q-options { display: flex; flex-direction: column; gap: 8px; }
+  .q-option { padding: 12px 16px; border: 1px solid #334155; border-radius: 8px; cursor: pointer; font-size: 14px; transition: all 0.2s; color: #cbd5e1; }
+  .q-option:hover { border-color: #60a5fa; background: rgba(96,165,250,0.08); }
+  .q-option.correct { border-color: #4ade80; background: rgba(74,222,128,0.15); color: #4ade80; }
+  .q-option.wrong { border-color: #f87171; background: rgba(248,113,113,0.15); color: #f87171; }
+  .q-option.disabled { pointer-events: none; opacity: 0.7; }
+  .q-explanation { margin-top: 12px; padding: 12px 16px; background: rgba(96,165,250,0.08); border-radius: 8px; font-size: 13px; color: #94a3b8; display: none; line-height: 1.7; }
+  .quiz-score { text-align: center; padding: 20px; background: linear-gradient(135deg, #1e3a5f, #1a2744); border-radius: 12px; margin-top: 20px; }
+  .quiz-score .score-text { font-size: 24px; font-weight: 800; color: #fbbf24; }
+  .quiz-score .score-label { font-size: 14px; color: #94a3b8; margin-top: 8px; }
+
+  @media (max-width: 700px) {
+    .compare-table { font-size: 11px; }
+    .info-grid { grid-template-columns: 1fr; }
+    .story-box .mnemonic { font-size: 20px; letter-spacing: 3px; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+<h1>Ch&#432;&#417;ng 4: Vai Tr&#242; Chuy&#234;n Gia &#272;&#7883;nh Gi&#225; Trong T&#7889; T&#7909;ng</h1>
+<p class="subtitle">Module 2 &mdash; Law and Valuation | CVA Programme 2025</p>
+
+<!-- ===== MNEMONIC ===== -->
+<div class="story-box">
+  <h2>&#128161; Ghi Nh&#7899; 10 B&#432;&#7899;c Tham Gia C&#7911;a Valuer</h2>
+  <div class="mnemonic">
+    <span class="m-E">E</span> &middot;
+    <span class="m-L">L</span> &middot;
+    <span class="m-I">I</span> &middot;
+    <span class="m-C">C</span> &middot;
+    <span class="m-A">A</span> &middot;
+    <span class="m-D">D</span> &middot;
+    <span class="m-R">R</span> &middot;
+    <span class="m-P">P</span> &middot;
+    <span class="m-X">X</span> &middot;
+    <span class="m-O">O</span>
+  </div>
+  <p style="text-align:center; color:#94a3b8; font-size:14px; margin-bottom:18px;">
+    <strong style="color:#fbbf24;">"Expert Lu&#244;n &#205;t C&#227;i &mdash; Ai &#272;&#250;ng R&#245; Ph&#7843;i X&#233;t &#7892;n"</strong>
+  </p>
+  <div class="story-text">
+    H&#224;nh tr&#236;nh c&#7911;a m&#7897;t chuy&#234;n gia &#273;&#7883;nh gi&#225; trong tranh ch&#7845;p ph&#225;p l&#253;:<br><br>
+    &#9312; <span class="highlight hl-e">Engagement</span> &mdash; K&#253; h&#7907;p &#273;&#7891;ng, x&#225;c nh&#7853;n &#273;&#7897;c l&#7853;p, ph&#7841;m vi c&#244;ng vi&#7879;c<br>
+    &#9313; <span class="highlight hl-l">Liability</span> &mdash; Tr&#225;ch nhi&#7879;m ngh&#7873; nghi&#7879;p (contractual + tortious)<br>
+    &#9314; <span class="highlight hl-i">Insurance</span> &mdash; B&#7843;o hi&#7875;m b&#7891;i th&#432;&#7901;ng ngh&#7873; nghi&#7879;p (indemnity)<br>
+    &#9315; <span class="highlight hl-c">Civil Litigation vs Arbitration</span> &mdash; So s&#225;nh hai h&#236;nh th&#7913;c t&#7889; t&#7909;ng<br>
+    &#9316; <span class="highlight hl-a">Arbitration &amp; Neutral Evaluation</span> &mdash; Vai tr&#242; trong tr&#7885;ng t&#224;i<br>
+    &#9317; <span class="highlight hl-d">Duties as Expert Witness</span> &mdash; Ngh&#297;a v&#7909; theo Order 12 ROC<br>
+    &#9318; <span class="highlight hl-r">Report Preparation</span> &mdash; So&#7841;n b&#225;o c&#225;o chuy&#234;n gia (O.12 r.5(2))<br>
+    &#9319; <span class="highlight hl-p">Production of Documents</span> &mdash; Cung c&#7845;p t&#224;i li&#7879;u ch&#7913;ng c&#7913;<br>
+    &#9320; <span class="highlight hl-x">eXamination</span> &mdash; H&#7887;i ch&#237;nh, ph&#7843;n b&#225;c, h&#7887;i l&#7841;i t&#7841;i t&#242;a<br>
+    &#9321; <span class="highlight hl-o">Order (Court-ordered)</span> &mdash; &#272;&#7883;nh gi&#225; theo l&#7879;nh t&#242;a
+  </div>
+</div>
+
+<!-- ===== KEY PRINCIPLE ===== -->
+<div class="tip-box">
+  <h3>&#9888;&#65039; Nguy&#234;n T&#7855;c V&#224;ng</h3>
+  <div class="big-text">Ngh&#297;a v&#7909; ch&#237;nh c&#7911;a expert l&#224; v&#7899;i T&#242;a, KH&#212;NG PH&#7842;I v&#7899;i kh&#225;ch h&#224;ng</div>
+  <p>
+    &#272;&#7897;c l&#7853;p &bull; Kh&#225;ch quan &bull; Minh b&#7841;ch &bull; Trung th&#7921;c &bull; Kh&#244;ng b&#234;nh v&#7921;c b&#234;n n&#224;o<br>
+    <em>Order 12, Rule 1(3) ROC: "The expert's duty is to the Court, overriding any obligation to the instructing party"</em>
+  </p>
+</div>
+
+<!-- ===== 10-STEP JOURNEY ===== -->
+<h2 class="section-title">&#128506; 10 B&#432;&#7899;c Tham Gia T&#7889; T&#7909;ng</h2>
+
+<div class="journey">
+
+  <!-- 1. ENGAGEMENT -->
+  <div class="step s-engage" onclick="toggleStep(this)">
+    <div class="step-left">
+      <div class="step-icon">&#128221;</div>
+      <div class="step-line"></div>
+    </div>
+    <div class="step-content">
+      <div class="step-header">B&#432;&#7899;c 1</div>
+      <div class="step-name">Engagement &mdash; Quy Tr&#236;nh Tham Gia</div>
+      <div class="step-vi">Conflict check &#8594; Independence &#8594; Engagement letter &#8594; Standards</div>
+      <div class="step-hint">&#128073; Nh&#7845;n &#273;&#7875; xem chi ti&#7871;t</div>
+      <div class="step-story">
+        <br><strong style="color:#f87171;">Quy tr&#236;nh:</strong><br>
+        &bull; <strong>Conflict check:</strong> Ki&#7875;m tra &#273;&#7897;c l&#7853;p v&#7899;i t&#7845;t c&#7843; c&#225;c b&#234;n tranh ch&#7845;p<br>
+        &bull; <strong>X&#225;c nh&#7853;n b&#7893; nhi&#7879;m:</strong> Do m&#7897;t b&#234;n, c&#7843; hai b&#234;n, hay t&#242;a ch&#7881; &#273;&#7883;nh?<br>
+        &bull; <strong>Ph&#226;n bi&#7879;t:</strong> Advisory valuation (t&#432; v&#7845;n/&#273;&#224;m ph&#225;n) vs Expert valuation (cho t&#7889; t&#7909;ng)<br><br>
+        <strong>N&#7897;i dung Engagement Letter:</strong><br>
+        &bull; M&#7909;c &#273;&#237;ch v&#224; ph&#7841;m vi &#273;&#7883;nh gi&#225;<br>
+        &bull; C&#417; s&#7903; b&#7893; nhi&#7879;m v&#224; gi&#7843; &#273;&#7883;nh/gi&#7899;i h&#7841;n<br>
+        &bull; Ph&#237; (hourly/fixed/staged &mdash; KH&#212;NG contingent)<br>
+        &bull; B&#7843;o m&#7853;t v&#224; IP trong b&#225;o c&#225;o<br>
+        &bull; &#272;i&#7873;u kho&#7843;n gi&#7899;i h&#7841;n tr&#225;ch nhi&#7879;m<br>
+        &bull; Chu&#7849;n m&#7921;c &#225;p d&#7909;ng (IVS, IVAS)<br><br>
+        <strong>L&#432;u &#253;:</strong> Ph&#237; kh&#244;ng &#273;&#432;&#7907;c ph&#7909; thu&#7897;c k&#7871;t qu&#7843; v&#7909; ki&#7879;n (contingent fee) v&#236; s&#7869; &#7843;nh h&#432;&#7903;ng &#273;&#7897;c l&#7853;p. Fraud v&#224; bad faith kh&#244;ng th&#7875; lo&#7841;i tr&#7915; b&#7857;ng limitation clause.
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. LIABILITY -->
+  <div class="step s-liability" onclick="toggleStep(this)">
+    <div class="step-left">
+      <div class="step-icon">&#9878;&#65039;</div>
+      <div class="step-line"></div>
+    </div>
+    <div class="step-content">
+      <div class="step-header">B&#432;&#7899;c 2</div>
+      <div class="step-name">Professional Liability &mdash; Tr&#225;ch Nhi&#7879;m Ngh&#7873; Nghi&#7879;p</div>
+      <div class="step-vi">Contractual + Tortious liability; Hedley Byrne duty of care</div>
+      <div class="step-hint">&#128073; Nh&#7845;n &#273;&#7875; xem chi ti&#7871;t</div>
+      <div class="step-story">
+        <br><strong style="color:#fb923c;">2 lo&#7841;i tr&#225;ch nhi&#7879;m:</strong><br>
+        &bull; <strong>Contractual:</strong> Vi ph&#7841;m h&#7907;p &#273;&#7891;ng engagement v&#7899;i kh&#225;ch h&#224;ng<br>
+        &bull; <strong>Tortious (negligence):</strong> Ng&#432;&#7901;i th&#7913; ba d&#7921;a v&#224;o &#273;&#7883;nh gi&#225; sai &#8594; <em>Hedley Byrne v Heller</em> [1964]: chuy&#234;n gia n&#7907; duty of care cho ng&#432;&#7901;i m&#224; h&#7885; c&#243; th&#7875; d&#7921; &#273;o&#225;n s&#7869; d&#7921;a v&#224;o &#253; ki&#7871;n<br><br>
+        <strong>Chu&#7849;n m&#7921;c:</strong> "Ordinarily competent professional exercising reasonable skill and diligence" &mdash; <em>JSI Shipping v Teofoongwonglcloong</em> [2007]<br><br>
+        <strong>C&#225;c r&#7911;i ro:</strong><br>
+        &bull; D&#249;ng ph&#432;&#417;ng ph&#225;p kh&#244;ng ph&#249; h&#7907;p<br>
+        &bull; D&#7921;a tr&#234;n d&#7919; li&#7879;u kh&#244;ng ki&#7875;m ch&#7913;ng<br>
+        &bull; Kh&#244;ng n&#234;u gi&#7843; &#273;&#7883;nh v&#224; gi&#7899;i h&#7841;n<br>
+        &bull; &#272;&#7883;nh gi&#225; qu&#225; cao/th&#7845;p g&#226;y thi&#7879;t h&#7841;i
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. INSURANCE -->
+  <div class="step s-insurance" onclick="toggleStep(this)">
+    <div class="step-left">
+      <div class="step-icon">&#128737;&#65039;</div>
+      <div class="step-line"></div>
+    </div>
+    <div class="step-content">
+      <div class="step-header">B&#432;&#7899;c 3</div>
+      <div class="step-name">Insurance &mdash; B&#7843;o Hi&#7875;m Ngh&#7873; Nghi&#7879;p</div>
+      <div class="step-vi">Professional indemnity insurance b&#7855;t bu&#7897;c cho th&#224;nh vi&#234;n IVAS</div>
+      <div class="step-hint">&#128073; Nh&#7845;n &#273;&#7875; xem chi ti&#7871;t</div>
+      <div class="step-story">
+        <br><strong style="color:#fbbf24;">Professional Indemnity Insurance:</strong><br>
+        &bull; B&#7855;t bu&#7897;c cho th&#224;nh vi&#234;n IVAS<br>
+        &bull; B&#7843;o v&#7879;: negligent misstatement, breach of duty, breach of confidentiality, defamation v&#244; &#253;<br>
+        &bull; KH&#212;NG b&#7843;o v&#7879;: fraud, deliberate wrongdoing, gian l&#7853;n c&#7889; &#253;<br>
+        &bull; M&#7913;c b&#7843;o hi&#7875;m ph&#7909; thu&#7897;c quy m&#244; practice v&#224; r&#7911;i ro ti&#7873;m &#7849;n<br><br>
+        <strong>L&#7907;i &#237;ch:</strong> B&#7843;o v&#7879; t&#224;i ch&#237;nh + N&#226;ng cao uy t&#237;n ngh&#7873; nghi&#7879;p + T&#242;a v&#224; kh&#225;ch h&#224;ng tin t&#432;&#7903;ng h&#417;n<br><br>
+        <strong>L&#432;u &#253;:</strong> Ki&#7875;m tra k&#7929; &#273;i&#7873;u kho&#7843;n lo&#7841;i tr&#7915; li&#234;n quan &#273;&#7871;n expert witness work v&#236; c&#243; r&#7911;i ro ri&#234;ng kh&#244;ng c&#243; trong &#273;&#7883;nh gi&#225; th&#432;&#417;ng m&#7841;i th&#244;ng th&#432;&#7901;ng.
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. LITIGATION vs ARBITRATION -->
+  <div class="step s-compare" onclick="toggleStep(this)">
+    <div class="step-left">
+      <div class="step-icon">&#9878;&#65039;</div>
+      <div class="step-line"></div>
+    </div>
+    <div class="step-content">
+      <div class="step-header">B&#432;&#7899;c 4</div>
+      <div class="step-name">Litigation vs Arbitration &mdash; So S&#225;nh</div>
+      <div class="step-vi">ROC/Evidence Act vs SIAC Rules; c&#244;ng khai vs b&#237; m&#7853;t</div>
+      <div class="step-hint">&#128073; Nh&#7845;n &#273;&#7875; xem chi ti&#7871;t</div>
+      <div class="step-story">
+        <br><strong style="color:#a78bfa;">Litigation:</strong> C&#244;ng khai, theo ROC + Evidence Act, Order 12 chi ph&#7889;i expert evidence. Ph&#225;n quy&#7871;t c&#244;ng b&#7889;, c&#243; quy&#7873;n kh&#225;ng c&#225;o. Formal, t&#7889;n k&#233;m h&#417;n.<br><br>
+        <strong>Arbitration:</strong> Ri&#234;ng t&#432;, theo th&#7887;a thu&#7853;n c&#225;c b&#234;n + SIAC Rules. Ph&#225;n quy&#7871;t b&#237; m&#7853;t, kh&#243; kh&#225;ng c&#225;o (ch&#7881; v&#236; l&#253; do th&#7911; t&#7909;c). Linh ho&#7841;t h&#417;n: joint reports, hot-tubbing, tribunal-appointed experts.<br><br>
+        <strong>&#272;i&#7875;m chung:</strong> Valuer ph&#7843;i &#273;&#7897;c l&#7853;p v&#224; kh&#225;ch quan trong c&#7843; hai. Enforcement: t&#242;a &#225;n &mdash; tr&#7921;c ti&#7871;p trong SG; tr&#7885;ng t&#224;i &mdash; qua New York Convention / IAA.
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. ARBITRATION & NEUTRAL EVAL -->
+  <div class="step s-arb" onclick="toggleStep(this)">
+    <div class="step-left">
+      <div class="step-icon">&#128101;</div>
+      <div class="step-line"></div>
+    </div>
+    <div class="step-content">
+      <div class="step-header">B&#432;&#7899;c 5</div>
+      <div class="step-name">Arbitration &amp; Neutral Evaluation</div>
+      <div class="step-vi">Vai tr&#242; t&#432; v&#7845;n, tribunal-appointed expert, hot-tubbing</div>
+      <div class="step-hint">&#128073; Nh&#7845;n &#273;&#7875; xem chi ti&#7871;t</div>
+      <div class="step-story">
+        <br><strong style="color:#4ade80;">Trong tr&#7885;ng t&#224;i:</strong><br>
+        &bull; Vai tr&#242; linh ho&#7841;t h&#417;n: consultative, joint expert reports<br>
+        &bull; Tribunal c&#243; th&#7875; b&#7893; nhi&#7879;m expert ri&#234;ng &#8594; b&#225;o c&#225;o chia s&#7867; cho hai b&#234;n<br>
+        &bull; Hot-tubbing: hai expert tr&#236;nh b&#224;y &#273;&#7891;ng th&#7901;i, t&#7853;p trung v&#224;o &#273;i&#7875;m b&#7845;t &#273;&#7891;ng<br>
+        &bull; B&#7843;o m&#7853;t cao h&#417;n &mdash; b&#7857;ng ch&#7913;ng ri&#234;ng t&#432; ngay c&#7843; sau khi v&#7909; k&#7871;t th&#250;c<br><br>
+        <strong>Neutral Evaluation:</strong><br>
+        &bull; &#221; ki&#7871;n &#273;&#7897;c l&#7853;p kh&#244;ng r&#224;ng bu&#7897;c (non-binding) tr&#432;&#7899;c khi v&#224;o t&#7889; t&#7909;ng ch&#237;nh th&#7913;c<br>
+        &bull; Gi&#250;p c&#225;c b&#234;n &#273;&#225;nh gi&#225; v&#7883; th&#7871; v&#224; khuy&#7871;n kh&#237;ch h&#242;a gi&#7843;i<br>
+        &bull; Ph&#249; h&#7907;p: v&#7909; nhi&#7873;u t&#224;i li&#7879;u, expert ch&#7889;ng nhau, v&#7845;n &#273;&#7873; k&#7929; thu&#7853;t
+      </div>
+    </div>
+  </div>
+
+  <!-- 6. DUTIES -->
+  <div class="step s-duty" onclick="toggleStep(this)">
+    <div class="step-left">
+      <div class="step-icon">&#9881;&#65039;</div>
+      <div class="step-line"></div>
+    </div>
+    <div class="step-content">
+      <div class="step-header">B&#432;&#7899;c 6</div>
+      <div class="step-name">Duties as Expert Witness &mdash; Ngh&#297;a V&#7909; Nh&#226;n Ch&#7913;ng Chuy&#234;n Gia</div>
+      <div class="step-vi">Order 12 ROC: duty to Court, independence, "no hiding and siding"</div>
+      <div class="step-hint">&#128073; Nh&#7845;n &#273;&#7875; xem chi ti&#7871;t</div>
+      <div class="step-story">
+        <br><strong style="color:#22d3ee;">&#9733; Order 12 ROC &mdash; Quy &#273;&#7883;nh ch&#237;nh:</strong><br>
+        &bull; O.12 r.1(3): Ngh&#297;a v&#7909; v&#7899;i T&#242;a v&#432;&#7907;t tr&#234;n ngh&#297;a v&#7909; v&#7899;i b&#234;n thu&#234;<br>
+        &bull; O.12 r.2(1): Expert ph&#7843;i &#273;&#432;&#7907;c t&#242;a ch&#7845;p thu&#7853;n tr&#432;&#7899;c khi l&#224;m ch&#7913;ng<br>
+        &bull; Ch&#7881; &#253; ki&#7871;n trong l&#297;nh v&#7921;c chuy&#234;n m&#244;n, n&#234;u r&#245; gi&#7843; &#273;&#7883;nh v&#224; gi&#7899;i h&#7841;n<br><br>
+        <strong>"No hiding and siding"</strong> (<em>Gunapathy v Dr James Khoo</em> [2001]):<br>
+        &bull; Kh&#244;ng gi&#7845;u th&#244;ng tin, kh&#244;ng b&#234;nh v&#7921;c b&#234;n n&#224;o<br>
+        &bull; T&#7921; h&#236;nh th&#224;nh &#253; ki&#7871;n &#273;&#7897;c l&#7853;p, kh&#244;ng b&#7883; &#7843;nh h&#432;&#7903;ng<br>
+        &bull; S&#7917;a l&#7895;i ngay khi ph&#225;t hi&#7879;n, d&#249; b&#7845;t l&#7907;i cho b&#234;n thu&#234;<br><br>
+        <strong>V&#7909; &#225;n li&#234;n quan:</strong><br>
+        &bull; <em>Basil Anthony Herman v Premier Security</em> [2010]: Expert ph&#7843;i &#273;&#432;&#7907;c t&#242;a duy&#7879;t<br>
+        &bull; <em>Longyuan-Arrk v Show and Tell</em> [2013]: Nh&#226;n ch&#7913;ng th&#7921;c t&#7871; kh&#244;ng th&#7875; l&#224;m expert<br>
+        &bull; <em>M&#252;hlbauer v Manufacturing Integration</em> [2010]: Expert kh&#244;ng quy&#7871;t &#273;&#7883;nh v&#7845;n &#273;&#7873; ph&#225;p l&#253;
+      </div>
+    </div>
+  </div>
+
+  <!-- 7. REPORT -->
+  <div class="step s-report" onclick="toggleStep(this)">
+    <div class="step-left">
+      <div class="step-icon">&#128196;</div>
+      <div class="step-line"></div>
+    </div>
+    <div class="step-content">
+      <div class="step-header">B&#432;&#7899;c 7</div>
+      <div class="step-name">Expert Report &mdash; B&#225;o C&#225;o Chuy&#234;n Gia</div>
+      <div class="step-vi">O.12 r.5(2) ROC: 8 y&#234;u c&#7847;u b&#7855;t bu&#7897;c</div>
+      <div class="step-hint">&#128073; Nh&#7845;n &#273;&#7875; xem chi ti&#7871;t</div>
+      <div class="step-story">
+        <br><strong style="color:#f472b6;">8 n&#7897;i dung b&#7855;t bu&#7897;c (O.12 r.5(2)):</strong><br>
+        (a) Tr&#236;nh &#273;&#7897; chuy&#234;n m&#244;n<br>
+        (b) Cam k&#7871;t ngh&#297;a v&#7909; v&#7899;i T&#242;a<br>
+        (c) V&#7845;n &#273;&#7873; &#273;&#432;&#7907;c giao + d&#7919; ki&#7879;n &#273;&#227; th&#7887;a thu&#7853;n<br>
+        (d) T&#224;i li&#7879;u &#273;&#227; tham kh&#7843;o (ch&#7881; tr&#237;ch &#273;o&#7841;n c&#7847;n thi&#7871;t)<br>
+        (e) Ng&#432;&#7901;i th&#7921;c hi&#7879;n th&#237; nghi&#7879;m/ph&#226;n t&#237;ch d&#7919; li&#7879;u<br>
+        (f) N&#7871;u c&#243; nhi&#7873;u &#253; ki&#7871;n: t&#243;m t&#7855;t c&#225;c quan &#273;i&#7875;m + l&#253; do ch&#7885;n<br>
+        (g) Cam k&#7871;t t&#237;nh &#273;&#250;ng &#273;&#7855;n<br>
+        (h) K&#7871;t lu&#7853;n v&#224; l&#253; do<br><br>
+        <strong>L&#432;u &#253; th&#7921;c h&#224;nh:</strong><br>
+        &bull; Ph&#432;&#417;ng ph&#225;p minh b&#7841;ch (income/market/asset)<br>
+        &bull; Nh&#7845;t qu&#225;n gi&#7919;a b&#225;o c&#225;o, ph&#7909; l&#7909;c, spreadsheet<br>
+        &bull; Tr&#225;nh: d&#7921;a qu&#225; nhi&#7873;u v&#224;o management representation, b&#7887; qua sensitivity analysis<br>
+        &bull; N&#234;n &#273;&#432;a ra range ho&#7863;c scenario thay v&#236; ch&#7881; m&#7897;t s&#7889;<br>
+        &bull; <em>Abdul Razak v Keppel</em> [2002]: Expert kh&#244;ng &#273;&#432;&#7907;c v&#432;&#7907;t qua l&#297;nh v&#7921;c chuy&#234;n m&#244;n sang quy&#7871;t &#273;&#7883;nh ph&#225;p l&#253;
+      </div>
+    </div>
+  </div>
+
+  <!-- 8. PRODUCTION OF DOCUMENTS -->
+  <div class="step s-docs" onclick="toggleStep(this)">
+    <div class="step-left">
+      <div class="step-icon">&#128193;</div>
+      <div class="step-line"></div>
+    </div>
+    <div class="step-content">
+      <div class="step-header">B&#432;&#7899;c 8</div>
+      <div class="step-name">Production of Documents &mdash; Cung C&#7845;p T&#224;i Li&#7879;u</div>
+      <div class="step-vi">Order 11 ROC: request-based, kh&#244;ng c&#242;n general discovery</div>
+      <div class="step-hint">&#128073; Nh&#7845;n &#273;&#7875; xem chi ti&#7871;t</div>
+      <div class="step-story">
+        <br><strong style="color:#60a5fa;">Order 11 ROC (m&#7899;i):</strong><br>
+        &bull; Thay th&#7871; general discovery c&#361; b&#7857;ng request-based model<br>
+        &bull; Ph&#7843;i ch&#7881; r&#245; t&#224;i li&#7879;u c&#7909; th&#7875;, li&#234;n quan v&#224; t&#432;&#417;ng x&#7913;ng<br>
+        &bull; T&#242;a gi&#225;m s&#225;t ch&#7863;t ch&#7869; h&#417;n: c&#226;n nh&#7855;c disclosure vs hi&#7879;u qu&#7843;<br><br>
+        <strong>T&#224;i li&#7879;u valuer th&#432;&#7901;ng c&#7847;n:</strong> B&#225;o c&#225;o t&#224;i ch&#237;nh, management accounts, d&#7921; b&#225;o, market studies, h&#7891; s&#417; giao d&#7883;ch<br><br>
+        <strong>L&#432;u &#253; quan tr&#7885;ng:</strong><br>
+        &bull; Working papers, b&#7843;n nh&#225;p, email v&#7899;i lu&#7853;t s&#432; c&#243; th&#7875; b&#7883; y&#234;u c&#7847;u cung c&#7845;p<br>
+        &bull; Litigation privilege b&#7843;o v&#7879; communications, nh&#432;ng d&#7919; li&#7879;u n&#7873;n th&#236; kh&#244;ng<br>
+        &bull; Gi&#7919; h&#7891; s&#417; chuy&#234;n nghi&#7879;p, ch&#237;nh x&#225;c, c&#243; th&#7875; ch&#7883;u ki&#7875;m tra &#273;&#7897;c l&#7853;p<br><br>
+        <strong>Trong arbitration:</strong> SIAC Rules / IBA Rules; Redfern Schedules &#273;&#7875; li&#7879;t k&#234; t&#224;i li&#7879;u y&#234;u c&#7847;u.
+      </div>
+    </div>
+  </div>
+
+  <!-- 9. EXAMINATION -->
+  <div class="step s-exam" onclick="toggleStep(this)">
+    <div class="step-left">
+      <div class="step-icon">&#128483;&#65039;</div>
+      <div class="step-line"></div>
+    </div>
+    <div class="step-content">
+      <div class="step-header">B&#432;&#7899;c 9</div>
+      <div class="step-name">Examination &mdash; H&#7887;i Ch&#237;nh, Ph&#7843;n B&#225;c, H&#7887;i L&#7841;i</div>
+      <div class="step-vi">Examination-in-chief &#8594; Cross-examination &#8594; Re-examination</div>
+      <div class="step-hint">&#128073; Nh&#7845;n &#273;&#7875; xem chi ti&#7871;t</div>
+      <div class="step-story">
+        <br><strong style="color:#34d399;">3 giai &#273;o&#7841;n l&#224;m ch&#7913;ng:</strong><br><br>
+        <strong>1. Examination-in-chief (H&#7887;i ch&#237;nh):</strong><br>
+        &bull; Do b&#234;n m&#7901;i expert th&#7921;c hi&#7879;n<br>
+        &bull; B&#225;o c&#225;o = evidence-in-chief; l&#7901;i n&#243;i ch&#7881; b&#7893; sung/l&#224;m r&#245;<br>
+        &bull; Tr&#236;nh b&#224;y ph&#432;&#417;ng ph&#225;p, gi&#7843; &#273;&#7883;nh, c&#417; s&#7903; d&#7919; li&#7879;u<br>
+        &bull; Ng&#7855;n g&#7885;n, kh&#225;ch quan, d&#249;ng visual aids<br><br>
+        <strong>2. Cross-examination (Ph&#7843;n b&#225;c):</strong><br>
+        &bull; Do lu&#7853;t s&#432; &#273;&#7889;i ph&#432;&#417;ng th&#7921;c hi&#7879;n<br>
+        &bull; Kh&#243; nh&#7845;t: th&#225;ch th&#7913;c gi&#7843; &#273;&#7883;nh, comparables, discount rates<br>
+        &bull; B&#236;nh t&#297;nh, tr&#7843; l&#7901;i tr&#7921;c ti&#7871;p, nh&#7853;n gi&#7899;i h&#7841;n khi c&#243;<br>
+        &bull; C&#243; th&#7875; d&#249;ng hot-tubbing: 2 expert c&#249;ng tr&#236;nh b&#224;y<br><br>
+        <strong>3. Re-examination (H&#7887;i l&#7841;i):</strong><br>
+        &bull; Do lu&#7853;t s&#432; b&#234;n m&#236;nh l&#224;m r&#245; &#273;i&#7875;m b&#7883; hi&#7875;u sai trong cross<br>
+        &bull; Kh&#244;ng &#273;&#432;&#7907;c &#273;&#432;a b&#7857;ng ch&#7913;ng m&#7899;i<br>
+        &bull; Ng&#7855;n g&#7885;n, kh&#244;ng l&#7863;p l&#7841;i
+      </div>
+    </div>
+  </div>
+
+  <!-- 10. COURT ORDER -->
+  <div class="step s-court" onclick="toggleStep(this)">
+    <div class="step-left">
+      <div class="step-icon">&#128467;&#65039;</div>
+      <div class="step-line"></div>
+    </div>
+    <div class="step-content">
+      <div class="step-header">B&#432;&#7899;c 10</div>
+      <div class="step-name">Court-Ordered Valuations &mdash; &#272;&#7883;nh Gi&#225; Theo L&#7879;nh T&#242;a</div>
+      <div class="step-vi">s.216 oppression buyout, matrimonial s.112 WC, insolvency</div>
+      <div class="step-hint">&#128073; Nh&#7845;n &#273;&#7875; xem chi ti&#7871;t</div>
+      <div class="step-story">
+        <br><strong style="color:#facc15;">Khi n&#224;o t&#242;a ra l&#7879;nh &#273;&#7883;nh gi&#225;?</strong><br>
+        &bull; Shareholder oppression (s.216 CA) &mdash; buyout &#7903; fair value<br>
+        &bull; Matrimonial (s.112 WC) &mdash; chia t&#224;i s&#7843;n h&#244;n nh&#226;n<br>
+        &bull; Insolvency &mdash; x&#225;c &#273;&#7883;nh gi&#225; tr&#7883; thanh l&#253; ho&#7863;c t&#225;i c&#7845;u tr&#250;c<br><br>
+        <strong>Quy &#273;&#7883;nh:</strong><br>
+        &bull; C&#225;c b&#234;n n&#234;n th&#7887;a thu&#7853;n 1 expert chung; n&#7871;u kh&#244;ng, t&#242;a ch&#7881; &#273;&#7883;nh<br>
+        &bull; T&#242;a quy&#7871;t &#273;&#7883;nh ph&#432;&#417;ng ph&#225;p h&#7887;i v&#224; th&#249; lao expert<br>
+        &bull; <em>Ting Shwu Ping v Scanone</em> [2016]: buy-out t&#7841;i fair value l&#224; remedy ph&#249; h&#7907;p khi quan h&#7879; c&#7893; &#273;&#244;ng tan v&#7905;<br><br>
+        <strong>Ngh&#297;a v&#7909; valuer:</strong> Trung l&#7853;p tuy&#7879;t &#273;&#7889;i, khai b&#225;o conflict, minh b&#7841;ch ph&#432;&#417;ng ph&#225;p. B&#225;o c&#225;o l&#224; m&#7897;t ph&#7847;n c&#7911;a h&#7891; s&#417; t&#7889; t&#7909;ng, c&#243; th&#7875; b&#7883; h&#7887;i b&#7893; sung ho&#7863;c g&#7885;i l&#224;m ch&#7913;ng.
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ===== COMPARISON TABLE ===== -->
+<div class="compare-section">
+  <h2>&#9878;&#65039; So S&#225;nh: Litigation vs Arbitration cho Valuer</h2>
+  <table class="compare-table">
+    <tr>
+      <th>Ti&#234;u ch&#237;</th>
+      <th style="color:#a78bfa;">Litigation (T&#242;a &#193;n)</th>
+      <th style="color:#4ade80;">Arbitration (Tr&#7885;ng T&#224;i)</th>
+    </tr>
+    <tr>
+      <td>Lu&#7853;t &#225;p d&#7909;ng</td>
+      <td>ROC, Evidence Act, Order 12</td>
+      <td>Th&#7887;a thu&#7853;n + SIAC Rules / AA / IAA</td>
+    </tr>
+    <tr>
+      <td>C&#244;ng khai</td>
+      <td>C&#244;ng khai (tr&#7915; khi c&#243; l&#7879;nh b&#7843;o m&#7853;t)</td>
+      <td>Ri&#234;ng t&#432;, b&#7843;o m&#7853;t</td>
+    </tr>
+    <tr>
+      <td>Kh&#225;ng c&#225;o</td>
+      <td>C&#243; quy&#7873;n kh&#225;ng c&#225;o (&#273;&#7847;y &#273;&#7911;)</td>
+      <td>R&#7845;t h&#7841;n ch&#7871; (ch&#7881; l&#253; do th&#7911; t&#7909;c)</td>
+    </tr>
+    <tr>
+      <td>Expert evidence</td>
+      <td>Order 12 ROC; t&#242;a duy&#7879;t expert; SCPD</td>
+      <td>Linh ho&#7841;t: joint reports, hot-tubbing, tribunal expert</td>
+    </tr>
+    <tr>
+      <td>Document discovery</td>
+      <td>Order 11 ROC (request-based)</td>
+      <td>Redfern Schedules / IBA Rules</td>
+    </tr>
+    <tr>
+      <td>Thi hành</td>
+      <td>Tr&#7921;c ti&#7871;p trong Singapore</td>
+      <td>Qua New York Convention / IAA</td>
+    </tr>
+    <tr>
+      <td>Ngh&#297;a v&#7909; valuer</td>
+      <td>&#272;&#7897;c l&#7853;p, kh&#225;ch quan, duty to Court</td>
+      <td>&#272;&#7897;c l&#7853;p, kh&#225;ch quan, duty to Tribunal</td>
+    </tr>
+  </table>
+</div>
+
+<!-- ===== EXPERT REPORT CHECKLIST ===== -->
+<div class="highlight-box" style="border-left-color: #f472b6;">
+  <h3 style="color:#f472b6;">&#128196; Checklist B&#225;o C&#225;o Chuy&#234;n Gia (O.12 r.5(2) ROC)</h3>
+  <ul>
+    <li><strong>(a)</strong> Tr&#236;nh &#273;&#7897; chuy&#234;n m&#244;n ph&#249; h&#7907;p</li>
+    <li><strong>(b)</strong> Cam k&#7871;t ngh&#297;a v&#7909; v&#7899;i T&#242;a (duty statement)</li>
+    <li><strong>(c)</strong> V&#7845;n &#273;&#7873; &#273;&#432;&#7907;c giao + d&#7919; ki&#7879;n th&#7887;a thu&#7853;n/gi&#7843; &#273;&#7883;nh</li>
+    <li><strong>(d)</strong> Danh s&#225;ch t&#224;i li&#7879;u tham kh&#7843;o</li>
+    <li><strong>(e)</strong> Th&#244;ng tin v&#7873; ng&#432;&#7901;i th&#7921;c hi&#7879;n ph&#226;n t&#237;ch/th&#237; nghi&#7879;m</li>
+    <li><strong>(f)</strong> T&#243;m t&#7855;t c&#225;c quan &#273;i&#7875;m kh&#225;c nhau + l&#253; do</li>
+    <li><strong>(g)</strong> Cam k&#7871;t t&#237;nh &#273;&#250;ng &#273;&#7855;n (statement of correctness)</li>
+    <li><strong>(h)</strong> K&#7871;t lu&#7853;n v&#224; l&#253; do h&#7895; tr&#7907;</li>
+  </ul>
+</div>
+
+<!-- ===== KEY CASES ===== -->
+<h2 class="section-title">&#128218; V&#7909; &#193;n Quan Tr&#7885;ng</h2>
+
+<div class="info-grid">
+  <div class="info-card" onclick="toggleCard(this)">
+    <div class="card-icon">&#9878;&#65039;</div>
+    <div class="card-title" style="color:#fb923c;">Hedley Byrne v Heller [1964]</div>
+    <div class="card-subtitle">Tortious Liability &mdash; Duty of Care</div>
+    <div class="card-hint">&#128073; Nh&#7845;n &#273;&#7875; xem</div>
+    <div class="card-detail">
+      <br>Chuy&#234;n gia n&#7907; duty of care &#273;&#7889;i v&#7899;i ng&#432;&#7901;i th&#7913; ba m&#224; h&#7885; c&#243; th&#7875; d&#7921; &#273;o&#225;n s&#7869; d&#7921;a v&#224;o &#253; ki&#7871;n chuy&#234;n m&#244;n. &#272;&#227; &#273;&#432;&#7907;c &#225;p d&#7909;ng t&#7841;i Singapore &mdash; valuer c&#243; th&#7875; b&#7883; ki&#7879;n b&#7903;i ng&#432;&#7901;i kh&#244;ng ph&#7843;i kh&#225;ch h&#224;ng tr&#7921;c ti&#7871;p n&#7871;u h&#7885; d&#7921;a v&#224;o &#273;&#7883;nh gi&#225; sai.
+    </div>
+  </div>
+
+  <div class="info-card" onclick="toggleCard(this)">
+    <div class="card-icon">&#128221;</div>
+    <div class="card-title" style="color:#fb923c;">JSI Shipping v Teofoongwonglcloong [2007]</div>
+    <div class="card-subtitle">Professional Standard of Care</div>
+    <div class="card-hint">&#128073; Nh&#7845;n &#273;&#7875; xem</div>
+    <div class="card-detail">
+      <br>Chu&#7849;n m&#7921;c: chuy&#234;n gia ph&#7843;i h&#224;nh &#273;&#7897;ng v&#7899;i m&#7913;c &#273;&#7897; k&#7929; n&#259;ng v&#224; c&#7849;n tr&#7885;ng c&#7911;a m&#7897;t ng&#432;&#7901;i h&#224;nh ngh&#7873; c&#243; n&#259;ng l&#7921;c h&#7907;p l&#253; trong l&#297;nh v&#7921;c &#273;&#243;. Test l&#224; kh&#225;ch quan v&#224; t&#249;y b&#7889;i c&#7843;nh (scope, time, purpose).
+    </div>
+  </div>
+
+  <div class="info-card" onclick="toggleCard(this)">
+    <div class="card-icon">&#9881;&#65039;</div>
+    <div class="card-title" style="color:#22d3ee;">Gunapathy v Dr James Khoo [2001]</div>
+    <div class="card-subtitle">"No Hiding and Siding" Rule</div>
+    <div class="card-hint">&#128073; Nh&#7845;n &#273;&#7875; xem</div>
+    <div class="card-detail">
+      <br>Expert witness ph&#7843;i: kh&#244;ng gi&#7845;u th&#244;ng tin, kh&#244;ng b&#234;nh v&#7921;c b&#234;n n&#224;o, kh&#244;ng l&#224;m sai l&#7879;ch. T&#242;a ph&#7843;i bi&#7871;t ti&#7873;n &#273;&#7873; c&#7911;a &#253; ki&#7871;n expert &#273;&#7875; &#273;&#225;nh gi&#225; &#273;&#7897; m&#7841;nh c&#7911;a &#253; ki&#7871;n &#273;&#243;. &#272;&#226;y l&#224; nguy&#234;n t&#7855;c n&#7873;n t&#7843;ng c&#7911;a expert evidence.
+    </div>
+  </div>
+
+  <div class="info-card" onclick="toggleCard(this)">
+    <div class="card-icon">&#128196;</div>
+    <div class="card-title" style="color:#f472b6;">Abdul Razak v Keppel [2002]</div>
+    <div class="card-subtitle">Expert Overreaching</div>
+    <div class="card-hint">&#128073; Nh&#7845;n &#273;&#7875; xem</div>
+    <div class="card-detail">
+      <br>T&#242;a ph&#234; b&#236;nh 2 expert &#273;&#227; v&#432;&#7907;t qu&#225; ph&#7841;m vi chuy&#234;n m&#244;n, xem x&#233;t v&#7845;n &#273;&#7873; ph&#225;p l&#253; thu&#7897;c th&#7849;m quy&#7873;n t&#242;a. Expert kh&#244;ng &#273;&#432;&#7907;c di&#7877;n gi&#7843;i h&#7907;p &#273;&#7891;ng hay &#225;p d&#7909;ng lu&#7853;t &mdash; &#273;&#243; l&#224; vi&#7879;c c&#7911;a t&#242;a &#225;n.
+    </div>
+  </div>
+
+  <div class="info-card" onclick="toggleCard(this)">
+    <div class="card-icon">&#128467;&#65039;</div>
+    <div class="card-title" style="color:#facc15;">Ting Shwu Ping v Scanone [2016]</div>
+    <div class="card-subtitle">Court-Ordered Buy-out Valuation</div>
+    <div class="card-hint">&#128073; Nh&#7845;n &#273;&#7875; xem</div>
+    <div class="card-detail">
+      <br>T&#242;a Ph&#250;c th&#7849;m: buy-out t&#7841;i fair value l&#224; remedy ph&#249; h&#7907;p khi quan h&#7879; c&#7893; &#273;&#244;ng &#273;&#227; tan v&#7905; kh&#244;ng th&#7875; c&#7913;u v&#227;n (s.216 + s.254(2A) CA). T&#242;a c&#243; th&#7875; ra l&#7879;nh valuer &#273;&#7897;c l&#7853;p &#273;&#7883;nh gi&#225; c&#7893; ph&#7847;n.
+    </div>
+  </div>
+
+  <div class="info-card" onclick="toggleCard(this)">
+    <div class="card-icon">&#128101;</div>
+    <div class="card-title" style="color:#4ade80;">Lim Siew Fern v Tan Beng Yong [2023]</div>
+    <div class="card-subtitle">Expert Independence</div>
+    <div class="card-hint">&#128073; Nh&#7845;n &#273;&#7875; xem</div>
+    <div class="card-detail">
+      <br>T&#242;a nh&#7845;n m&#7841;nh: expert ph&#7843;i &#273;&#432;&#7907;c l&#224;m vi&#7879;c &#273;&#7897;c l&#7853;p, kh&#244;ng b&#7883; c&#225;c b&#234;n hay t&#242;a can thi&#7879;p v&#224;o quy&#7871;t &#273;&#7883;nh &#273;&#7883;nh gi&#225;, mi&#7877;n l&#224; h&#7885; h&#224;nh &#273;&#7897;ng trong ph&#7841;m vi &#273;&#432;&#7907;c giao (terms of reference).
+    </div>
+  </div>
+</div>
+
+<!-- ===== QUIZ ===== -->
+<div class="quiz-section">
+  <h2>&#127891; Ki&#7875;m Tra Ki&#7871;n Th&#7913;c &mdash; 15 C&#226;u MCQ</h2>
+
+  <!-- Q1 -->
+  <div class="quiz-q">
+    <div class="q-text"><span class="q-num">C&#226;u 1.</span> Ngh&#297;a v&#7909; ch&#237;nh c&#7911;a expert witness l&#224; v&#7899;i ai?</div>
+    <div class="q-options">
+      <div class="q-option" onclick="checkAnswer(this, false)">A. Kh&#225;ch h&#224;ng tr&#7843; ph&#237;</div>
+      <div class="q-option" onclick="checkAnswer(this, true)">B. T&#242;a &#225;n ho&#7863;c Tribunal</div>
+      <div class="q-option" onclick="checkAnswer(this, false)">C. Lu&#7853;t s&#432; b&#234;n thu&#234;</div>
+      <div class="q-option" onclick="checkAnswer(this, false)">D. C&#244;ng ch&#250;ng</div>
+    </div>
+    <div class="q-explanation">O.12 r.1(3) ROC: Ngh&#297;a v&#7909; v&#7899;i T&#242;a v&#432;&#7907;t tr&#234;n m&#7885;i ngh&#297;a v&#7909; v&#7899;i b&#234;n thu&#234; ho&#7863;c tr&#7843; ph&#237;.</div>
+  </div>
+
+  <!-- Q2 -->
+  <div class="quiz-q">
+    <div class="q-text"><span class="q-num">C&#226;u 2.</span> Ph&#237; c&#7911;a valuer trong v&#7909; tranh ch&#7845;p KH&#212;NG &#273;&#432;&#7907;c c&#7845;u tr&#250;c theo h&#236;nh th&#7913;c n&#224;o?</div>
+    <div class="q-options">
+      <div class="q-option" onclick="checkAnswer(this, false)">A. Hourly rate</div>
+      <div class="q-option" onclick="checkAnswer(this, false)">B. Fixed fee</div>
+      <div class="q-option" onclick="checkAnswer(this, true)">C. Contingent fee (ph&#7909; thu&#7897;c k&#7871;t qu&#7843;)</div>
+      <div class="q-option" onclick="checkAnswer(this, false)">D. Staged payment</div>
+    </div>
+    <div class="q-explanation">Contingent fee l&#224;m &#7843;nh h&#432;&#7903;ng &#273;&#7897;c l&#7853;p c&#7911;a valuer. Ph&#237; kh&#244;ng bao gi&#7901; &#273;&#432;&#7907;c ph&#7909; thu&#7897;c v&#224;o k&#7871;t qu&#7843; v&#7909; tranh ch&#7845;p.</div>
+  </div>
+
+  <!-- Q3 -->
+  <div class="quiz-q">
+    <div class="q-text"><span class="q-num">C&#226;u 3.</span> Hedley Byrne v Heller [1964] x&#225;c l&#7853;p nguy&#234;n t&#7855;c g&#236;?</div>
+    <div class="q-options">
+      <div class="q-option" onclick="checkAnswer(this, false)">A. Expert ph&#7843;i &#273;&#432;&#7907;c t&#242;a duy&#7879;t</div>
+      <div class="q-option" onclick="checkAnswer(this, true)">B. Chuy&#234;n gia n&#7907; duty of care v&#7899;i ng&#432;&#7901;i th&#7913; ba d&#7921;a v&#224;o &#253; ki&#7871;n c&#7911;a h&#7885;</div>
+      <div class="q-option" onclick="checkAnswer(this, false)">C. B&#225;o c&#225;o ph&#7843;i c&#243; 8 m&#7909;c</div>
+      <div class="q-option" onclick="checkAnswer(this, false)">D. Expert kh&#244;ng b&#7883; cross-examination</div>
+    </div>
+    <div class="q-explanation">Hedley Byrne x&#225;c l&#7853;p: chuy&#234;n gia c&#243; duty of care v&#7899;i ng&#432;&#7901;i m&#224; h&#7885; d&#7921; &#273;o&#225;n s&#7869; d&#7921;a v&#224;o &#253; ki&#7871;n c&#7911;a m&#236;nh (tortious liability, kh&#244;ng c&#7847;n h&#7907;p &#273;&#7891;ng).</div>
+  </div>
+
+  <!-- Q4 -->
+  <div class="quiz-q">
+    <div class="q-text"><span class="q-num">C&#226;u 4.</span> Professional indemnity insurance KH&#212;NG b&#7843;o v&#7879; tr&#432;&#7901;ng h&#7907;p n&#224;o?</div>
+    <div class="q-options">
+      <div class="q-option" onclick="checkAnswer(this, false)">A. Negligent misstatement</div>
+      <div class="q-option" onclick="checkAnswer(this, false)">B. Breach of confidentiality</div>
+      <div class="q-option" onclick="checkAnswer(this, true)">C. Fraud v&#224; deliberate wrongdoing</div>
+      <div class="q-option" onclick="checkAnswer(this, false)">D. Unintentional defamation</div>
+    </div>
+    <div class="q-explanation">Insurance kh&#244;ng cover: fraud, c&#7889; &#253; gian l&#7853;n, h&#224;nh vi sai tr&#225;i c&#7889; &#253;. Ch&#7881; b&#7843;o v&#7879; negligence v&#224; sai s&#243;t v&#244; &#253;.</div>
+  </div>
+
+  <!-- Q5 -->
+  <div class="quiz-q">
+    <div class="q-text"><span class="q-num">C&#226;u 5.</span> "Hot-tubbing" l&#224; g&#236;?</div>
+    <div class="q-options">
+      <div class="q-option" onclick="checkAnswer(this, false)">A. Expert &#273;&#432;&#7907;c ngh&#7881; gi&#7919;a ph&#234;n h&#7887;i</div>
+      <div class="q-option" onclick="checkAnswer(this, true)">B. Hai expert tr&#236;nh b&#224;y &#273;&#7891;ng th&#7901;i, t&#7853;p trung v&#224;o &#273;i&#7875;m b&#7845;t &#273;&#7891;ng</div>
+      <div class="q-option" onclick="checkAnswer(this, false)">C. Expert b&#7883; h&#7887;i ngo&#224;i ph&#7841;m vi</div>
+      <div class="q-option" onclick="checkAnswer(this, false)">D. B&#225;o c&#225;o &#273;&#432;&#7907;c s&#7917;a sau khi n&#7897;p</div>
+    </div>
+    <div class="q-explanation">Hot-tubbing (concurrent evidence): hai expert &#273;&#7889;i l&#7853;p tr&#236;nh b&#224;y c&#249;ng l&#250;c tr&#432;&#7899;c t&#242;a/tribunal, t&#7853;p trung v&#224;o &#273;i&#7875;m kh&#225;c bi&#7879;t &#273;&#7875; gi&#250;p ra quy&#7871;t &#273;&#7883;nh nhanh h&#417;n.</div>
+  </div>
+
+  <!-- Q6 -->
+  <div class="quiz-q">
+    <div class="q-text"><span class="q-num">C&#226;u 6.</span> Theo Gunapathy [2001], quy t&#7855;c n&#224;o &#225;p d&#7909;ng cho expert witness?</div>
+    <div class="q-options">
+      <div class="q-option" onclick="checkAnswer(this, true)">A. "No hiding and siding"</div>
+      <div class="q-option" onclick="checkAnswer(this, false)">B. "Best evidence rule"</div>
+      <div class="q-option" onclick="checkAnswer(this, false)">C. "Parol evidence rule"</div>
+      <div class="q-option" onclick="checkAnswer(this, false)">D. "Hearsay exception"</div>
+    </div>
+    <div class="q-explanation">"No hiding and siding": kh&#244;ng gi&#7845;u th&#244;ng tin, kh&#244;ng &#273;&#7913;ng v&#7873; b&#234;n n&#224;o, kh&#244;ng l&#224;m sai l&#7879;ch t&#242;a.</div>
+  </div>
+
+  <!-- Q7 -->
+  <div class="quiz-q">
+    <div class="q-text"><span class="q-num">C&#226;u 7.</span> B&#225;o c&#225;o expert theo O.12 r.5(2) ph&#7843;i c&#243; bao nhi&#234;u n&#7897;i dung b&#7855;t bu&#7897;c?</div>
+    <div class="q-options">
+      <div class="q-option" onclick="checkAnswer(this, false)">A. 5</div>
+      <div class="q-option" onclick="checkAnswer(this, false)">B. 6</div>
+      <div class="q-option" onclick="checkAnswer(this, true)">C. 8</div>
+      <div class="q-option" onclick="checkAnswer(this, false)">D. 10</div>
+    </div>
+    <div class="q-explanation">8 m&#7909;c: (a) qualifications, (b) duty statement, (c) issues + facts, (d) materials, (e) personnel, (f) range of opinions, (g) correctness statement, (h) conclusions + reasons.</div>
+  </div>
+
+  <!-- Q8 -->
+  <div class="quiz-q">
+    <div class="q-text"><span class="q-num">C&#226;u 8.</span> Trong cross-examination, expert n&#234;n l&#224;m g&#236;?</div>
+    <div class="q-options">
+      <div class="q-option" onclick="checkAnswer(this, false)">A. B&#7843;o v&#7879; &#253; ki&#7871;n b&#7857;ng m&#7885;i gi&#225;</div>
+      <div class="q-option" onclick="checkAnswer(this, true)">B. B&#236;nh t&#297;nh, tr&#7843; l&#7901;i tr&#7921;c ti&#7871;p, nh&#7853;n gi&#7899;i h&#7841;n khi c&#243;</div>
+      <div class="q-option" onclick="checkAnswer(this, false)">C. T&#7915; ch&#7889;i tr&#7843; l&#7901;i c&#226;u h&#7887;i kh&#243;</div>
+      <div class="q-option" onclick="checkAnswer(this, false)">D. &#272;&#432;a th&#234;m b&#7857;ng ch&#7913;ng m&#7899;i</div>
+    </div>
+    <div class="q-explanation">Expert c&#7847;n b&#236;nh t&#297;nh, tr&#7843; l&#7901;i tr&#7921;c ti&#7871;p, th&#7915;a nh&#7853;n gi&#7899;i h&#7841;n v&#224; uncertainty m&#7897;t c&#225;ch chuy&#234;n nghi&#7879;p. &#272;&#7897; tin c&#7853;y ph&#7909; thu&#7897;c c&#7843; k&#7929; thu&#7853;t l&#7851;n th&#225;i &#273;&#7897;.</div>
+  </div>
+
+  <!-- Q9 -->
+  <div class="quiz-q">
+    <div class="q-text"><span class="q-num">C&#226;u 9.</span> Order 11 ROC thay &#273;&#7893;i g&#236; v&#7873; document discovery?</div>
+    <div class="q-options">
+      <div class="q-option" onclick="checkAnswer(this, true)">A. Thay general discovery b&#7857;ng request-based model</div>
+      <div class="q-option" onclick="checkAnswer(this, false)">B. Lo&#7841;i b&#7887; ho&#224;n to&#224;n vi&#7879;c cung c&#7845;p t&#224;i li&#7879;u</div>
+      <div class="q-option" onclick="checkAnswer(this, false)">C. Ch&#7881; &#225;p d&#7909;ng cho arbitration</div>
+      <div class="q-option" onclick="checkAnswer(this, false)">D. B&#7855;t bu&#7897;c cung c&#7845;p m&#7885;i t&#224;i li&#7879;u</div>
+    </div>
+    <div class="q-explanation">Order 11 ROC m&#7899;i: request-based, ph&#7843;i ch&#7881; r&#245; t&#224;i li&#7879;u c&#7909; th&#7875;, relevant v&#224; proportionate. T&#242;a gi&#225;m s&#225;t ch&#7863;t ch&#7869; h&#417;n.</div>
+  </div>
+
+  <!-- Q10 -->
+  <div class="quiz-q">
+    <div class="q-text"><span class="q-num">C&#226;u 10.</span> Trong re-examination, expert &#273;&#432;&#7907;c l&#224;m g&#236;?</div>
+    <div class="q-options">
+      <div class="q-option" onclick="checkAnswer(this, false)">A. &#272;&#432;a b&#7857;ng ch&#7913;ng m&#7899;i</div>
+      <div class="q-option" onclick="checkAnswer(this, false)">B. T&#7845;n c&#244;ng expert &#273;&#7889;i ph&#432;&#417;ng</div>
+      <div class="q-option" onclick="checkAnswer(this, true)">C. L&#224;m r&#245; &#273;i&#7875;m b&#7883; hi&#7875;u sai trong cross-examination</div>
+      <div class="q-option" onclick="checkAnswer(this, false)">D. Thay &#273;&#7893;i k&#7871;t lu&#7853;n ban &#273;&#7847;u</div>
+    </div>
+    <div class="q-explanation">Re-examination ch&#7881; &#273;&#7875; l&#224;m r&#245; ho&#7863;c contextualise nh&#7919;ng g&#236; b&#7883; hi&#7875;u sai trong cross. Kh&#244;ng &#273;&#432;a b&#7857;ng ch&#7913;ng m&#7899;i, kh&#244;ng l&#7863;p l&#7841;i.</div>
+  </div>
+
+  <!-- Q11 -->
+  <div class="quiz-q">
+    <div class="q-text"><span class="q-num">C&#226;u 11.</span> Neutral evaluation c&#243; t&#237;nh ch&#7845;t g&#236;?</div>
+    <div class="q-options">
+      <div class="q-option" onclick="checkAnswer(this, true)">A. Non-binding (kh&#244;ng r&#224;ng bu&#7897;c)</div>
+      <div class="q-option" onclick="checkAnswer(this, false)">B. Binding nh&#432; ph&#225;n quy&#7871;t t&#242;a</div>
+      <div class="q-option" onclick="checkAnswer(this, false)">C. Ch&#7881; d&#249;ng trong arbitration</div>
+      <div class="q-option" onclick="checkAnswer(this, false)">D. Kh&#244;ng c&#7847;n expert</div>
+    </div>
+    <div class="q-explanation">Neutral evaluation l&#224; &#253; ki&#7871;n &#273;&#7897;c l&#7853;p kh&#244;ng r&#224;ng bu&#7897;c, gi&#250;p c&#225;c b&#234;n &#273;&#225;nh gi&#225; v&#7883; th&#7871; v&#224; khuy&#7871;n kh&#237;ch h&#242;a gi&#7843;i tr&#432;&#7899;c khi v&#224;o t&#7889; t&#7909;ng ch&#237;nh th&#7913;c.</div>
+  </div>
+
+  <!-- Q12 -->
+  <div class="quiz-q">
+    <div class="q-text"><span class="q-num">C&#226;u 12.</span> M&#252;hlbauer v Manufacturing Integration [2010] nh&#7845;n m&#7841;nh &#273;i&#7873;u g&#236;?</div>
+    <div class="q-options">
+      <div class="q-option" onclick="checkAnswer(this, false)">A. Expert c&#243; th&#7875; quy&#7871;t &#273;&#7883;nh v&#7845;n &#273;&#7873; ph&#225;p l&#253;</div>
+      <div class="q-option" onclick="checkAnswer(this, true)">B. Expert kh&#244;ng &#273;&#432;&#7907;c quy&#7871;t &#273;&#7883;nh c&#225;c v&#7845;n &#273;&#7873; ph&#225;p l&#253; &mdash; &#273;&#243; l&#224; vi&#7879;c c&#7911;a t&#242;a</div>
+      <div class="q-option" onclick="checkAnswer(this, false)">C. Hot-tubbing l&#224; b&#7855;t bu&#7897;c</div>
+      <div class="q-option" onclick="checkAnswer(this, false)">D. Expert kh&#244;ng c&#7847;n &#273;&#7897;c l&#7853;p</div>
+    </div>
+    <div class="q-explanation">Expert ch&#7881; gi&#7843;i th&#237;ch k&#7929; thu&#7853;t cho t&#242;a hi&#7875;u, kh&#244;ng &#273;&#432;&#7907;c x&#226;m ph&#7841;m v&#224;o v&#7845;n &#273;&#7873; ph&#225;p l&#253; (novelty, inventive step, interpretation) &mdash; &#273;&#243; thu&#7897;c th&#7849;m quy&#7873;n t&#242;a &#225;n.</div>
+  </div>
+
+  <!-- Q13 -->
+  <div class="quiz-q">
+    <div class="q-text"><span class="q-num">C&#226;u 13.</span> Limitation clause trong engagement letter c&#243; th&#7875; lo&#7841;i tr&#7915; g&#236;?</div>
+    <div class="q-options">
+      <div class="q-option" onclick="checkAnswer(this, false)">A. Fraud</div>
+      <div class="q-option" onclick="checkAnswer(this, false)">B. Bad faith</div>
+      <div class="q-option" onclick="checkAnswer(this, true)">C. Indirect/consequential damages (n&#7871;u h&#7907;p l&#253;)</div>
+      <div class="q-option" onclick="checkAnswer(this, false)">D. Wilful misconduct</div>
+    </div>
+    <div class="q-explanation">Limitation clause c&#243; th&#7875; cap ho&#7863;c lo&#7841;i tr&#7915; indirect damages n&#7871;u r&#245; r&#224;ng v&#224; kh&#244;ng unconscionable. Nh&#432;ng KH&#212;NG th&#7875; lo&#7841;i tr&#7915;: fraud, wilful misconduct, bad faith.</div>
+  </div>
+
+  <!-- Q14 -->
+  <div class="quiz-q">
+    <div class="q-text"><span class="q-num">C&#226;u 14.</span> Working papers c&#7911;a expert c&#243; th&#7875; b&#7883; y&#234;u c&#7847;u cung c&#7845;p kh&#244;ng?</div>
+    <div class="q-options">
+      <div class="q-option" onclick="checkAnswer(this, true)">A. C&#243; &mdash; factual data v&#224; underlying materials kh&#244;ng &#273;&#432;&#7907;c b&#7843;o v&#7879; b&#7903;i litigation privilege</div>
+      <div class="q-option" onclick="checkAnswer(this, false)">B. Kh&#244;ng bao gi&#7901;</div>
+      <div class="q-option" onclick="checkAnswer(this, false)">C. Ch&#7881; trong arbitration</div>
+      <div class="q-option" onclick="checkAnswer(this, false)">D. Ch&#7881; n&#7871;u expert &#273;&#7891;ng &#253;</div>
+    </div>
+    <div class="q-explanation">Litigation privilege b&#7843;o v&#7879; communications v&#7899;i lu&#7853;t s&#432;, nh&#432;ng d&#7919; li&#7879;u n&#7873;n, working papers, v&#224; underlying materials c&#243; th&#7875; ph&#7843;i cung c&#7845;p. Expert ph&#7843;i gi&#7919; h&#7891; s&#417; chuy&#234;n nghi&#7879;p.</div>
+  </div>
+
+  <!-- Q15 -->
+  <div class="quiz-q">
+    <div class="q-text"><span class="q-num">C&#226;u 15.</span> Ting Shwu Ping v Scanone [2016] li&#234;n quan &#273;&#7871;n t&#236;nh hu&#7889;ng n&#224;o?</div>
+    <div class="q-options">
+      <div class="q-option" onclick="checkAnswer(this, false)">A. Matrimonial asset division</div>
+      <div class="q-option" onclick="checkAnswer(this, true)">B. Court-ordered buy-out trong shareholder oppression (s.216 CA)</div>
+      <div class="q-option" onclick="checkAnswer(this, false)">C. Insolvency clawback</div>
+      <div class="q-option" onclick="checkAnswer(this, false)">D. Patent infringement damages</div>
+    </div>
+    <div class="q-explanation">T&#242;a Ph&#250;c th&#7849;m x&#225;c nh&#7853;n: buy-out t&#7841;i fair value l&#224; remedy ph&#249; h&#7907;p cho minority oppression (s.216 + s.254(2A) CA). T&#242;a c&#243; th&#7875; ch&#7881; &#273;&#7883;nh valuer &#273;&#7897;c l&#7853;p.</div>
+  </div>
+
+  <div class="quiz-score" id="quizScore" style="display:none;">
+    <div class="score-text" id="scoreText">0 / 15</div>
+    <div class="score-label">&#272;i&#7875;m c&#7911;a b&#7841;n</div>
+  </div>
+</div>
+
+</div>
+
+<script>
+function toggleStep(el) { el.classList.toggle('open'); }
+function toggleCard(el) { el.classList.toggle('open'); }
+
+let totalAnswered = 0, totalCorrect = 0;
+
+function checkAnswer(optionEl, isCorrect) {
+  const quizQ = optionEl.closest('.quiz-q');
+  if (quizQ.classList.contains('answered')) return;
+  quizQ.classList.add('answered');
+  const options = quizQ.querySelectorAll('.q-option');
+  options.forEach(o => o.classList.add('disabled'));
+  if (isCorrect) { optionEl.classList.add('correct'); totalCorrect++; }
+  else { optionEl.classList.add('wrong'); options.forEach(o => { if (o.getAttribute('onclick') && o.getAttribute('onclick').includes('true')) o.classList.add('correct'); }); }
+  const explanation = quizQ.querySelector('.q-explanation');
+  if (explanation) explanation.style.display = 'block';
+  totalAnswered++;
+  if (totalAnswered >= 15) { document.getElementById('quizScore').style.display = 'block'; document.getElementById('scoreText').textContent = totalCorrect + ' / 15'; }
+}
+</script>
+</body>
+</html>

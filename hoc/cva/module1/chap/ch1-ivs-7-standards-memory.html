@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ghi nhớ 7 IVS General Standards</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Segoe UI', sans-serif; background: #0f172a; color: #e2e8f0; min-height: 100vh; }
+
+  .container { max-width: 1000px; margin: 0 auto; padding: 24px; }
+
+  h1 { text-align: center; font-size: 28px; margin-bottom: 8px; color: #60a5fa; }
+  .subtitle { text-align: center; color: #94a3b8; margin-bottom: 32px; font-size: 15px; }
+
+  /* Mnemonic Story Section */
+  .story-box {
+    background: linear-gradient(135deg, #1e3a5f, #1a2744);
+    border: 1px solid #334155;
+    border-radius: 16px;
+    padding: 28px;
+    margin-bottom: 36px;
+    position: relative;
+    overflow: hidden;
+  }
+  .story-box::before {
+    content: '';
+    position: absolute;
+    top: -50%; right: -50%;
+    width: 100%; height: 100%;
+    background: radial-gradient(circle, rgba(96,165,250,0.05) 0%, transparent 70%);
+  }
+  .story-box h2 { color: #fbbf24; font-size: 20px; margin-bottom: 16px; position: relative; }
+  .story-box .mnemonic {
+    font-size: 36px;
+    font-weight: 800;
+    text-align: center;
+    margin: 20px 0;
+    letter-spacing: 12px;
+    position: relative;
+  }
+  .story-box .mnemonic span {
+    display: inline-block;
+    transition: transform 0.3s, color 0.3s;
+    cursor: pointer;
+  }
+  .story-box .mnemonic span:hover { transform: scale(1.3); }
+  .m-F { color: #f87171; } .m-S { color: #fb923c; } .m-B { color: #fbbf24; }
+  .m-A { color: #4ade80; } .m-D { color: #60a5fa; } .m-M { color: #a78bfa; }
+  .m-R { color: #f472b6; }
+
+  .story-text {
+    font-size: 16px;
+    line-height: 1.9;
+    color: #cbd5e1;
+    position: relative;
+  }
+  .story-text .highlight { font-weight: 700; padding: 1px 4px; border-radius: 4px; }
+  .hl-100 { color: #f87171; background: rgba(248,113,113,0.15); }
+  .hl-101 { color: #fb923c; background: rgba(251,146,60,0.15); }
+  .hl-102 { color: #fbbf24; background: rgba(251,191,36,0.15); }
+  .hl-103 { color: #4ade80; background: rgba(74,222,128,0.15); }
+  .hl-104 { color: #60a5fa; background: rgba(96,165,250,0.15); }
+  .hl-105 { color: #a78bfa; background: rgba(167,139,250,0.15); }
+  .hl-106 { color: #f472b6; background: rgba(244,114,182,0.15); }
+
+  /* Journey Map */
+  .journey-title { text-align: center; font-size: 22px; color: #60a5fa; margin-bottom: 24px; }
+
+  .journey {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    margin-bottom: 36px;
+    position: relative;
+  }
+
+  .step {
+    display: flex;
+    align-items: stretch;
+    min-height: 120px;
+    position: relative;
+    cursor: pointer;
+  }
+
+  .step-left {
+    width: 80px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    flex-shrink: 0;
+  }
+
+  .step-icon {
+    width: 56px; height: 56px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 26px;
+    z-index: 2;
+    position: relative;
+    border: 3px solid;
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+  .step:hover .step-icon { transform: scale(1.15); box-shadow: 0 0 20px rgba(255,255,255,0.2); }
+
+  .step-line {
+    width: 3px;
+    flex: 1;
+    z-index: 1;
+  }
+
+  .step-content {
+    flex: 1;
+    padding: 8px 0 24px 20px;
+  }
+
+  .step-header {
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .step-name {
+    font-size: 19px;
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+  .step-vi {
+    font-size: 14px;
+    color: #94a3b8;
+    margin-bottom: 8px;
+    font-style: italic;
+  }
+  .step-story {
+    font-size: 14px;
+    color: #cbd5e1;
+    line-height: 1.7;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease;
+  }
+  .step.open .step-story { max-height: 300px; }
+  .step-hint {
+    font-size: 12px;
+    color: #64748b;
+    margin-top: 4px;
+  }
+
+  /* Colors per step */
+  .s100 .step-icon { background: rgba(248,113,113,0.15); border-color: #f87171; color: #f87171; }
+  .s100 .step-line { background: linear-gradient(to bottom, #f87171, #fb923c); }
+  .s100 .step-header { color: #f87171; }
+  .s100 .step-name { color: #fca5a5; }
+
+  .s101 .step-icon { background: rgba(251,146,60,0.15); border-color: #fb923c; color: #fb923c; }
+  .s101 .step-line { background: linear-gradient(to bottom, #fb923c, #fbbf24); }
+  .s101 .step-header { color: #fb923c; }
+  .s101 .step-name { color: #fdba74; }
+
+  .s102 .step-icon { background: rgba(251,191,36,0.15); border-color: #fbbf24; color: #fbbf24; }
+  .s102 .step-line { background: linear-gradient(to bottom, #fbbf24, #4ade80); }
+  .s102 .step-header { color: #fbbf24; }
+  .s102 .step-name { color: #fde68a; }
+
+  .s103 .step-icon { background: rgba(74,222,128,0.15); border-color: #4ade80; color: #4ade80; }
+  .s103 .step-line { background: linear-gradient(to bottom, #4ade80, #60a5fa); }
+  .s103 .step-header { color: #4ade80; }
+  .s103 .step-name { color: #86efac; }
+
+  .s104 .step-icon { background: rgba(96,165,250,0.15); border-color: #60a5fa; color: #60a5fa; }
+  .s104 .step-line { background: linear-gradient(to bottom, #60a5fa, #a78bfa); }
+  .s104 .step-header { color: #60a5fa; }
+  .s104 .step-name { color: #93c5fd; }
+
+  .s105 .step-icon { background: rgba(167,139,250,0.15); border-color: #a78bfa; color: #a78bfa; }
+  .s105 .step-line { background: linear-gradient(to bottom, #a78bfa, #f472b6); }
+  .s105 .step-header { color: #a78bfa; }
+  .s105 .step-name { color: #c4b5fd; }
+
+  .s106 .step-icon { background: rgba(244,114,182,0.15); border-color: #f472b6; color: #f472b6; }
+  .s106 .step-line { background: linear-gradient(to bottom, #f472b6, #475569); }
+  .s106 .step-header { color: #f472b6; }
+  .s106 .step-name { color: #f9a8d4; }
+
+  /* Quiz Section */
+  .quiz-box {
+    background: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 16px;
+    padding: 28px;
+    margin-bottom: 24px;
+  }
+  .quiz-box h2 { color: #fbbf24; font-size: 20px; margin-bottom: 20px; text-align: center; }
+
+  .quiz-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+  .quiz-item {
+    background: #0f172a;
+    border: 2px solid #334155;
+    border-radius: 12px;
+    padding: 14px;
+    cursor: grab;
+    text-align: center;
+    font-size: 14px;
+    transition: all 0.3s;
+    user-select: none;
+  }
+  .quiz-item:hover { border-color: #60a5fa; background: #1a2744; }
+  .quiz-item.correct { border-color: #4ade80; background: rgba(74,222,128,0.1); }
+  .quiz-item.wrong { border-color: #f87171; background: rgba(248,113,113,0.1); animation: shake 0.4s; }
+
+  @keyframes shake {
+    0%,100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+  }
+
+  .quiz-dropzones {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  .dropzone {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: #0f172a;
+    border: 2px dashed #334155;
+    border-radius: 10px;
+    padding: 10px 16px;
+    min-height: 48px;
+    transition: all 0.3s;
+  }
+  .dropzone.over { border-color: #60a5fa; background: rgba(96,165,250,0.05); }
+  .dropzone.matched { border-color: #4ade80; border-style: solid; background: rgba(74,222,128,0.05); }
+  .dz-label { font-weight: 700; font-size: 14px; min-width: 70px; color: #94a3b8; }
+  .dz-answer { font-size: 14px; color: #e2e8f0; }
+
+  .quiz-btn {
+    display: block;
+    margin: 0 auto;
+    padding: 12px 32px;
+    background: #3b82f6;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+  .quiz-btn:hover { background: #2563eb; transform: translateY(-1px); }
+
+  .score-display {
+    text-align: center;
+    font-size: 18px;
+    color: #4ade80;
+    margin-top: 16px;
+    min-height: 28px;
+  }
+
+  /* Tip box */
+  .tip-box {
+    background: linear-gradient(135deg, #1a2744, #1e293b);
+    border: 1px solid #334155;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 24px;
+    text-align: center;
+  }
+  .tip-box h3 { color: #fbbf24; margin-bottom: 10px; }
+  .tip-box p { color: #94a3b8; font-size: 14px; line-height: 1.7; }
+  .tip-box .big-text { font-size: 20px; color: #e2e8f0; font-weight: 700; margin: 12px 0; }
+
+  @media (max-width: 640px) {
+    .quiz-grid { grid-template-columns: 1fr; }
+    .story-box .mnemonic { font-size: 28px; letter-spacing: 8px; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>Ghi Nh&#7899; 7 IVS General Standards</h1>
+  <p class="subtitle">Module 1 &mdash; Chartered Valuer and Appraiser Programme</p>
+
+  <!-- MNEMONIC STORY -->
+  <div class="story-box">
+    <h2>&#128161; C&acirc;u chuy&#7879;n ghi nh&#7899;: "Ng&#432;&#7901;i Th&#7849;m &#272;&#7883;nh X&acirc;y Nh&agrave;"</h2>
+    <div class="mnemonic">
+      <span class="m-F">F</span>
+      <span class="m-S">S</span>
+      <span class="m-B">B</span>
+      <span class="m-A">A</span>
+      <span class="m-D">D</span>
+      <span class="m-M">M</span>
+      <span class="m-R">R</span>
+    </div>
+    <div class="story-text">
+      <p>H&atilde;y t&#432;&#7903;ng t&#432;&#7907;ng b&#7841;n l&agrave; m&#7897;t th&#7849;m &#273;&#7883;nh vi&ecirc;n &#273;&#432;&#7907;c thu&ecirc; &#273;&#7875; &#273;&#7883;nh gi&aacute; m&#7897;t c&ocirc;ng ty. Quy tr&igrave;nh c&#7911;a b&#7841;n di&#7877;n ra &#273;&uacute;ng 7 b&#432;&#7899;c theo th&#7913; t&#7921;:</p>
+      <br>
+      <p>&#9312; Tr&#432;&#7899;c h&#7871;t, b&#7841;n x&acirc;y d&#7921;ng <span class="highlight hl-100">N&#7873;n m&oacute;ng (Framework)</span> &mdash; nh&#7919;ng nguy&ecirc;n t&#7855;c c&#417; b&#7843;n nh&#7845;t.</p>
+      <p>&#9313; R&#7891;i b&#7841;n v&#7869; <span class="highlight hl-101">B&#7843;n thi&#7871;t k&#7871; (Scope of Work)</span> &mdash; ph&#7841;m vi c&ocirc;ng vi&#7879;c c&#7909; th&#7875; l&agrave; g&igrave;?</p>
+      <p>&#9314; Ti&#7871;p theo, b&#7841;n ch&#7885;n <span class="highlight hl-102">Lo&#7841;i g&#7841;ch (Bases of Value)</span> &mdash; c&#417; s&#7903; gi&aacute; tr&#7883; n&agrave;o s&#7869; d&ugrave;ng?</p>
+      <p>&#9315; B&#7841;n quy&#7871;t &#273;&#7883;nh <span class="highlight hl-103">C&aacute;ch x&acirc;y (Approaches)</span> &mdash; 3 ph&#432;&#417;ng ph&aacute;p: Market, Income, Cost.</p>
+      <p>&#9316; B&#7841;n &#273;i mua <span class="highlight hl-104">V&#7853;t li&#7879;u (Data & Inputs)</span> &mdash; d&#7919; li&#7879;u v&agrave; th&ocirc;ng tin &#273;&#7847;u v&agrave;o.</p>
+      <p>&#9317; B&#7841;n d&ugrave;ng <span class="highlight hl-105">M&aacute;y m&oacute;c (Models)</span> &#273;&#7875; x&acirc;y &mdash; ch&#7841;y m&ocirc; h&igrave;nh &#273;&#7883;nh gi&aacute;.</p>
+      <p>&#9318; Cu&#7889;i c&ugrave;ng, b&#7841;n vi&#7871;t <span class="highlight hl-106">B&aacute;o c&aacute;o b&agrave;n giao (Reporting)</span> cho kh&aacute;ch h&agrave;ng.</p>
+    </div>
+  </div>
+
+  <div class="tip-box">
+    <h3>&#128272; M&#7865;o nh&#7899; nhanh</h3>
+    <div class="big-text">"F-S-B-A-D-M-R"</div>
+    <p><strong style="color:#f87171">F</strong>ramework &rarr; <strong style="color:#fb923c">S</strong>cope &rarr; <strong style="color:#fbbf24">B</strong>ases &rarr; <strong style="color:#4ade80">A</strong>pproaches &rarr; <strong style="color:#60a5fa">D</strong>ata &rarr; <strong style="color:#a78bfa">M</strong>odels &rarr; <strong style="color:#f472b6">R</strong>eporting</p>
+    <br>
+    <p>&#272;&#7885;c th&agrave;nh c&acirc;u: <strong style="color:#e2e8f0; font-size:16px;">"First, Set the Bases, then Apply Data to Models, and Report"</strong></p>
+    <p style="margin-top:8px;">Ho&#7863;c ti&#7871;ng Vi&#7879;t: <strong style="color:#e2e8f0; font-size:16px;">"Ph&#7843;i S&#7855;p B&agrave;i A&ndash;&#272;&ndash;M R&otilde; r&agrave;ng"</strong></p>
+  </div>
+
+  <!-- JOURNEY MAP -->
+  <h2 class="journey-title">&#128506;&#65039; H&agrave;nh Tr&igrave;nh 7 B&#432;&#7899;c Th&#7849;m &#272;&#7883;nh</h2>
+  <p style="text-align:center; color:#64748b; margin-bottom:20px; font-size:13px;">(B&#7845;m v&agrave;o t&#7915;ng b&#432;&#7899;c &#273;&#7875; xem chi ti&#7871;t)</p>
+
+  <div class="journey">
+    <div class="step s100" onclick="toggleStep(this)">
+      <div class="step-left">
+        <div class="step-icon">&#127959;</div>
+        <div class="step-line"></div>
+      </div>
+      <div class="step-content">
+        <div class="step-header">IVS 100</div>
+        <div class="step-name">Valuation Framework</div>
+        <div class="step-vi">Khung nguy&ecirc;n t&#7855;c n&#7873;n t&#7843;ng</div>
+        <div class="step-story">
+          Gi&#7889;ng nh&#432; n&#7873;n m&oacute;ng c&#7911;a ng&ocirc;i nh&agrave;, &#273;&acirc;y l&agrave; b&#432;&#7899;c &#273;&#7847;u ti&ecirc;n &mdash; x&aacute;c &#273;&#7883;nh c&aacute;c nguy&ecirc;n t&#7855;c c&#417; b&#7843;n chi ph&#7889;i to&agrave;n b&#7897; quy tr&igrave;nh th&#7849;m &#273;&#7883;nh gi&aacute;. Bao g&#7891;m ki&#7875;m so&aacute;t ch&#7845;t l&#432;&#7907;ng, vi&#7879;c s&#7917; d&#7909;ng chuy&ecirc;n gia, v&agrave; c&aacute;c tr&#432;&#7901;ng h&#7907;p sai l&#7879;ch kh&#7887;i IVS.
+        </div>
+        <div class="step-hint">&#9654; B&#7845;m &#273;&#7875; xem th&ecirc;m</div>
+      </div>
+    </div>
+
+    <div class="step s101" onclick="toggleStep(this)">
+      <div class="step-left">
+        <div class="step-icon">&#128209;</div>
+        <div class="step-line"></div>
+      </div>
+      <div class="step-content">
+        <div class="step-header">IVS 101</div>
+        <div class="step-name">Scope of Work</div>
+        <div class="step-vi">Ph&#7841;m vi c&ocirc;ng vi&#7879;c</div>
+        <div class="step-story">
+          B&#7843;n thi&#7871;t k&#7871; c&#7911;a ng&ocirc;i nh&agrave; &mdash; x&aacute;c &#273;&#7883;nh r&otilde; r&agrave;ng gi&#7899;i h&#7841;n c&#7911;a cu&#7897;c th&#7849;m &#273;&#7883;nh. Bao g&#7891;m: &#273;&#7889;i t&#432;&#7907;ng th&#7849;m &#273;&#7883;nh l&agrave; g&igrave;, m&#7909;c &#273;&iacute;ch, ng&agrave;y th&#7849;m &#273;&#7883;nh, c&aacute;c gi&#7843; &#273;&#7883;nh v&agrave; h&#7841;n ch&#7871;. &#272;&#7843;m b&#7843;o valuers v&agrave; kh&aacute;ch h&agrave;ng c&ugrave;ng hi&#7875;u r&otilde;.
+        </div>
+        <div class="step-hint">&#9654; B&#7845;m &#273;&#7875; xem th&ecirc;m</div>
+      </div>
+    </div>
+
+    <div class="step s102" onclick="toggleStep(this)">
+      <div class="step-left">
+        <div class="step-icon">&#9878;&#65039;</div>
+        <div class="step-line"></div>
+      </div>
+      <div class="step-content">
+        <div class="step-header">IVS 102</div>
+        <div class="step-name">Bases of Value</div>
+        <div class="step-vi">C&#417; s&#7903; gi&aacute; tr&#7883;</div>
+        <div class="step-story">
+          Ch&#7885;n lo&#7841;i g&#7841;ch &#273;&#7875; x&acirc;y &mdash; b&#7841;n d&ugrave;ng Market Value, Fair Value, Investment Value, hay lo&#7841;i n&agrave;o kh&aacute;c? M&#7895;i c&#417; s&#7903; gi&aacute; tr&#7883; mang theo c&aacute;c gi&#7843; &#273;&#7883;nh, &#273;i&#7873;u ki&#7879;n, v&agrave; t&#7915; ng&#7919; &#273;&#7883;nh ngh&#297;a ri&ecirc;ng. Vi&#7879;c ch&#7885;n &#273;&uacute;ng c&#417; s&#7903; gi&aacute; tr&#7883; l&agrave; c&#7921;c k&#7923; quan tr&#7885;ng.
+        </div>
+        <div class="step-hint">&#9654; B&#7845;m &#273;&#7875; xem th&ecirc;m</div>
+      </div>
+    </div>
+
+    <div class="step s103" onclick="toggleStep(this)">
+      <div class="step-left">
+        <div class="step-icon">&#128295;</div>
+        <div class="step-line"></div>
+      </div>
+      <div class="step-content">
+        <div class="step-header">IVS 103</div>
+        <div class="step-name">Valuation Approaches</div>
+        <div class="step-vi">Ph&#432;&#417;ng ph&aacute;p th&#7849;m &#273;&#7883;nh</div>
+        <div class="step-story">
+          C&aacute;ch x&acirc;y ng&ocirc;i nh&agrave; &mdash; c&oacute; 3 c&aacute;ch ch&iacute;nh:<br>
+          &#8226; <strong>Market Approach</strong>: so s&aacute;nh v&#7899;i c&aacute;c giao d&#7883;ch t&#432;&#417;ng t&#7921;<br>
+          &#8226; <strong>Income Approach</strong>: d&#7921;a tr&ecirc;n d&ograve;ng ti&#7873;n t&#432;&#417;ng lai (DCF)<br>
+          &#8226; <strong>Cost Approach</strong>: chi ph&iacute; thay th&#7871; / t&aacute;i t&#7841;o t&agrave;i s&#7843;n
+        </div>
+        <div class="step-hint">&#9654; B&#7845;m &#273;&#7875; xem th&ecirc;m</div>
+      </div>
+    </div>
+
+    <div class="step s104" onclick="toggleStep(this)">
+      <div class="step-left">
+        <div class="step-icon">&#128202;</div>
+        <div class="step-line"></div>
+      </div>
+      <div class="step-content">
+        <div class="step-header">IVS 104</div>
+        <div class="step-name">Data and Inputs</div>
+        <div class="step-vi">D&#7919; li&#7879;u &#273;&#7847;u v&agrave;o</div>
+        <div class="step-story">
+          Mua v&#7853;t li&#7879;u x&acirc;y d&#7921;ng &mdash; d&#7919; li&#7879;u ch&iacute;nh l&agrave; "nguy&ecirc;n li&#7879;u" c&#7911;a m&#7885;i b&agrave;i th&#7849;m &#273;&#7883;nh. C&#7847;n x&aacute;c &#273;&#7883;nh d&#7919; li&#7879;u n&agrave;o l&agrave; ph&ugrave; h&#7907;p, &#273;&aacute;ng tin c&#7853;y. Bao g&#7891;m c&#7843; y&#7871;u t&#7889; ESG (m&ocirc;i tr&#432;&#7901;ng, x&atilde; h&#7897;i, qu&#7843;n tr&#7883;).
+        </div>
+        <div class="step-hint">&#9654; B&#7845;m &#273;&#7875; xem th&ecirc;m</div>
+      </div>
+    </div>
+
+    <div class="step s105" onclick="toggleStep(this)">
+      <div class="step-left">
+        <div class="step-icon">&#9881;&#65039;</div>
+        <div class="step-line"></div>
+      </div>
+      <div class="step-content">
+        <div class="step-header">IVS 105</div>
+        <div class="step-name">Valuation Models</div>
+        <div class="step-vi">M&ocirc; h&igrave;nh &#273;&#7883;nh gi&aacute;</div>
+        <div class="step-story">
+          M&aacute;y m&oacute;c thi c&ocirc;ng &mdash; ch&#7885;n v&agrave; s&#7917; d&#7909;ng m&ocirc; h&igrave;nh &#273;&#7883;nh gi&aacute; ph&ugrave; h&#7907;p v&#7899;i ph&#432;&#417;ng ph&aacute;p &#273;&atilde; ch&#7885;n &#7903; b&#432;&#7899;c tr&#432;&#7899;c. V&iacute; d&#7909;: m&ocirc; h&igrave;nh DCF, m&ocirc; h&igrave;nh comparable multiples, m&ocirc; h&igrave;nh adjusted net assets...
+        </div>
+        <div class="step-hint">&#9654; B&#7845;m &#273;&#7875; xem th&ecirc;m</div>
+      </div>
+    </div>
+
+    <div class="step s106" onclick="toggleStep(this)">
+      <div class="step-left">
+        <div class="step-icon">&#128221;</div>
+        <div class="step-line"></div>
+      </div>
+      <div class="step-content">
+        <div class="step-header">IVS 106</div>
+        <div class="step-name">Documentation & Reporting</div>
+        <div class="step-vi">L&#7853;p b&aacute;o c&aacute;o</div>
+        <div class="step-story">
+          B&agrave;n giao ng&ocirc;i nh&agrave; &mdash; b&#432;&#7899;c cu&#7889;i c&ugrave;ng! Vi&#7871;t b&aacute;o c&aacute;o th&#7849;m &#273;&#7883;nh gi&aacute; chuy&ecirc;n nghi&#7879;p, l&#432;u tr&#7919; h&#7891; s&#417; &#273;&#7847;y &#273;&#7911;. B&aacute;o c&aacute;o ph&#7843;i r&otilde; r&agrave;ng, minh b&#7841;ch, v&agrave; ph&ugrave; h&#7907;p v&#7899;i m&#7909;c &#273;&iacute;ch th&#7849;m &#273;&#7883;nh.
+        </div>
+        <div class="step-hint">&#9654; B&#7845;m &#273;&#7875; xem th&ecirc;m</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+  <div class="quiz-box">
+    <h2>&#127919; Ki&#7875;m tra tr&iacute; nh&#7899;</h2>
+    <p style="text-align:center; color:#94a3b8; margin-bottom:16px; font-size:14px;">B&#7845;m v&agrave;o t&ecirc;n ti&ecirc;u chu&#7849;n, r&#7891;i b&#7845;m v&agrave;o &ocirc; IVS t&#432;&#417;ng &#7913;ng</p>
+
+    <div class="quiz-grid" id="quizOptions">
+      <!-- shuffled options will be inserted here -->
+    </div>
+
+    <div class="quiz-dropzones" id="quizDropzones">
+      <!-- dropzones will be inserted here -->
+    </div>
+
+    <button class="quiz-btn" onclick="resetQuiz()">&#128260; L&agrave;m l&#7841;i</button>
+    <div class="score-display" id="scoreDisplay"></div>
+  </div>
+</div>
+
+<script>
+function toggleStep(el) {
+  el.classList.toggle('open');
+}
+
+// Quiz logic
+const standards = [
+  { code: 'IVS 100', name: 'Valuation Framework', vi: 'Khung nguyên tắc nền tảng' },
+  { code: 'IVS 101', name: 'Scope of Work', vi: 'Phạm vi công việc' },
+  { code: 'IVS 102', name: 'Bases of Value', vi: 'Cơ sở giá trị' },
+  { code: 'IVS 103', name: 'Valuation Approaches', vi: 'Phương pháp thẩm định' },
+  { code: 'IVS 104', name: 'Data and Inputs', vi: 'Dữ liệu đầu vào' },
+  { code: 'IVS 105', name: 'Valuation Models', vi: 'Mô hình định giá' },
+  { code: 'IVS 106', name: 'Documentation & Reporting', vi: 'Lập báo cáo' },
+];
+
+let selectedOption = null;
+let matched = {};
+let score = 0;
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function renderQuiz() {
+  const optDiv = document.getElementById('quizOptions');
+  const dzDiv = document.getElementById('quizDropzones');
+
+  const shuffled = shuffle(standards);
+
+  optDiv.innerHTML = shuffled.map(s =>
+    `<div class="quiz-item" data-code="${s.code}" onclick="selectOption(this)">${s.name}<br><small style="color:#64748b">${s.vi}</small></div>`
+  ).join('');
+
+  dzDiv.innerHTML = standards.map(s =>
+    `<div class="dropzone" data-code="${s.code}" onclick="dropOption(this)">
+      <span class="dz-label">${s.code}</span>
+      <span class="dz-answer"></span>
+    </div>`
+  ).join('');
+}
+
+function selectOption(el) {
+  if (el.classList.contains('correct')) return;
+  document.querySelectorAll('.quiz-item').forEach(e => e.style.outline = 'none');
+  selectedOption = el;
+  el.style.outline = '2px solid #60a5fa';
+}
+
+function dropOption(dz) {
+  if (!selectedOption || dz.classList.contains('matched')) return;
+
+  const optCode = selectedOption.dataset.code;
+  const dzCode = dz.dataset.code;
+
+  if (optCode === dzCode) {
+    dz.classList.add('matched');
+    dz.querySelector('.dz-answer').textContent = selectedOption.textContent.split('\n')[0];
+    selectedOption.classList.add('correct');
+    selectedOption.style.outline = 'none';
+    selectedOption = null;
+    score++;
+
+    if (score === 7) {
+      document.getElementById('scoreDisplay').innerHTML = '&#127881; Xuất sắc! Bạn đã nhớ hết 7 General Standards!';
+    }
+  } else {
+    selectedOption.classList.add('wrong');
+    setTimeout(() => selectedOption.classList.remove('wrong'), 400);
+  }
+}
+
+function resetQuiz() {
+  score = 0;
+  selectedOption = null;
+  matched = {};
+  document.getElementById('scoreDisplay').innerHTML = '';
+  renderQuiz();
+}
+
+renderQuiz();
+</script>
+</body>
+</html>

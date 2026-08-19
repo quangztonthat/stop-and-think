@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ghi nhớ 1.2 - Xu Hướng Tương Lai Ngành Thẩm Định Giá</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Segoe UI',sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh}
+  .container{max-width:1000px;margin:0 auto;padding:24px}
+  h1{text-align:center;font-size:26px;margin-bottom:6px;color:#60a5fa}
+  .subtitle{text-align:center;color:#94a3b8;margin-bottom:28px;font-size:14px}
+  .tip-box{background:linear-gradient(135deg,#1a2744,#1e293b);border:1px solid #334155;border-radius:14px;padding:22px;margin-bottom:28px;text-align:center}
+  .tip-box h3{color:#fbbf24;margin-bottom:10px;font-size:18px}
+  .tip-box p{color:#94a3b8;font-size:14px;line-height:1.8}
+  .big-text{font-size:20px;color:#e2e8f0;font-weight:700;margin:10px 0}
+
+  .compass{display:grid;grid-template-columns:1fr 1fr;gap:14px;max-width:700px;margin:0 auto 32px;position:relative}
+  .trend-card{padding:18px;border-radius:14px;cursor:pointer;transition:all .3s;position:relative}
+  .trend-card:hover{transform:scale(1.02)}
+  .tc-num{font-size:32px;font-weight:900;opacity:.12;position:absolute;top:8px;right:14px}
+  .tc-emoji{font-size:32px;margin-bottom:6px}
+  .tc-name{font-size:15px;font-weight:700;margin-bottom:4px}
+  .tc-sub{font-size:12px;line-height:1.5}
+  .tc-detail{max-height:0;overflow:hidden;transition:max-height .4s;margin-top:8px;font-size:12px;line-height:1.7;color:#cbd5e1}
+  .trend-card.open .tc-detail{max-height:400px}
+  .tc-hint{font-size:10px;margin-top:6px;opacity:.5}
+
+  .t1{background:linear-gradient(135deg,#2a1215,#1a1018);border:1px solid rgba(248,113,113,.25)}
+  .t1:hover{border-color:#f87171;box-shadow:0 0 20px rgba(248,113,113,.1)}
+  .t1 .tc-num,.t1 .tc-name{color:#f87171}.t1 .tc-sub{color:#fca5a5}
+  .t2{background:linear-gradient(135deg,#121a2e,#101828);border:1px solid rgba(96,165,250,.25)}
+  .t2:hover{border-color:#60a5fa;box-shadow:0 0 20px rgba(96,165,250,.1)}
+  .t2 .tc-num,.t2 .tc-name{color:#60a5fa}.t2 .tc-sub{color:#93c5fd}
+  .t3{background:linear-gradient(135deg,#2a2412,#1a1815);border:1px solid rgba(251,191,36,.25)}
+  .t3:hover{border-color:#fbbf24;box-shadow:0 0 20px rgba(251,191,36,.1)}
+  .t3 .tc-num,.t3 .tc-name{color:#fbbf24}.t3 .tc-sub{color:#fde68a}
+  .t4{background:linear-gradient(135deg,#122a1a,#101f18);border:1px solid rgba(74,222,128,.25)}
+  .t4:hover{border-color:#4ade80;box-shadow:0 0 20px rgba(74,222,128,.1)}
+  .t4 .tc-num,.t4 .tc-name{color:#4ade80}.t4 .tc-sub{color:#86efac}
+
+  .ifrs-box{background:#1e293b;border:1px solid #334155;border-radius:14px;padding:22px;margin-bottom:28px}
+  .ifrs-box h3{color:#60a5fa;font-size:18px;margin-bottom:14px;text-align:center}
+  .ifrs-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px}
+  .ifrs-card{background:#0f172a;border:1px solid #1e3a5f;border-radius:10px;padding:12px;text-align:center;cursor:pointer;transition:all .3s}
+  .ifrs-card:hover{border-color:#60a5fa;transform:translateY(-2px)}
+  .ifrs-code{font-size:13px;font-weight:700;color:#60a5fa;margin-bottom:2px}
+  .ifrs-name{font-size:12px;color:#e2e8f0;margin-bottom:4px}
+  .ifrs-vi{font-size:11px;color:#64748b;font-style:italic}
+  .ifrs-detail{max-height:0;overflow:hidden;transition:max-height .3s;font-size:11px;color:#94a3b8;margin-top:6px;text-align:left;line-height:1.5}
+  .ifrs-card.open .ifrs-detail{max-height:100px}
+
+  .simm-box{background:#1e293b;border:1px solid #334155;border-radius:14px;padding:22px;margin-bottom:28px}
+  .simm-box h3{color:#4ade80;font-size:18px;margin-bottom:6px;text-align:center}
+  .simm-sub{text-align:center;color:#64748b;font-size:13px;margin-bottom:16px}
+  .simm-row{display:flex;justify-content:center;gap:12px;flex-wrap:wrap}
+  .simm-pill{display:flex;flex-direction:column;align-items:center;padding:14px 18px;border-radius:12px;border:2px solid;min-width:100px;transition:transform .2s}
+  .simm-pill:hover{transform:scale(1.06)}
+  .sp-letter{font-size:28px;font-weight:900;margin-bottom:4px}
+  .sp-word{font-size:12px;font-weight:600}
+  .sp-vi{font-size:10px;margin-top:2px}
+  .sp-s{border-color:#f87171;background:rgba(248,113,113,.08)}.sp-s .sp-letter{color:#f87171}.sp-s .sp-word,.sp-s .sp-vi{color:#fca5a5}
+  .sp-i{border-color:#fbbf24;background:rgba(251,191,36,.08)}.sp-i .sp-letter{color:#fbbf24}.sp-i .sp-word,.sp-i .sp-vi{color:#fde68a}
+  .sp-m1{border-color:#60a5fa;background:rgba(96,165,250,.08)}.sp-m1 .sp-letter{color:#60a5fa}.sp-m1 .sp-word,.sp-m1 .sp-vi{color:#93c5fd}
+  .sp-m2{border-color:#4ade80;background:rgba(74,222,128,.08)}.sp-m2 .sp-letter{color:#4ade80}.sp-m2 .sp-word,.sp-m2 .sp-vi{color:#86efac}
+
+  .stake-box{background:#1e293b;border:1px solid #334155;border-radius:14px;padding:22px;margin-bottom:28px}
+  .stake-box h3{color:#a78bfa;font-size:18px;margin-bottom:14px;text-align:center}
+  .stake-grid{display:flex;flex-wrap:wrap;justify-content:center;gap:8px}
+  .stake-tag{padding:8px 14px;border-radius:20px;font-size:12px;font-weight:600;border:1px solid rgba(167,139,250,.3);background:rgba(167,139,250,.08);color:#c4b5fd;transition:all .2s;cursor:default}
+  .stake-tag:hover{background:rgba(167,139,250,.15);border-color:#a78bfa;transform:scale(1.05)}
+
+  .quiz-box{background:#1e293b;border:1px solid #334155;border-radius:14px;padding:24px;margin-bottom:24px}
+  .quiz-box h2{color:#fbbf24;font-size:20px;margin-bottom:6px;text-align:center}
+  .quiz-sub{text-align:center;color:#94a3b8;font-size:13px;margin-bottom:16px}
+  .q-progress{display:flex;justify-content:center;gap:6px;margin-bottom:14px}
+  .q-dot{width:12px;height:12px;border-radius:50%;background:#334155;transition:background .3s}
+  .q-dot.right{background:#4ade80}.q-dot.wrong{background:#f87171}
+  .q-card{background:#0f172a;border:2px solid #334155;border-radius:12px;padding:18px;margin-bottom:14px;text-align:center}
+  .q-text{font-size:15px;color:#e2e8f0;line-height:1.6}
+  .q-options{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+  @media(max-width:600px){.q-options{grid-template-columns:1fr}}
+  .q-opt{padding:12px;background:#0f172a;border:2px solid #334155;border-radius:10px;cursor:pointer;font-size:13px;text-align:center;transition:all .2s;line-height:1.4}
+  .q-opt:hover{border-color:#60a5fa;background:#1a2744}
+  .q-opt.correct{border-color:#4ade80;background:rgba(74,222,128,.1);pointer-events:none}
+  .q-opt.wrong{border-color:#f87171;background:rgba(248,113,113,.1);animation:shake .4s}
+  @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+  .q-feedback{text-align:center;font-size:14px;min-height:22px;margin-bottom:10px}
+  .q-btn{display:inline-block;padding:10px 24px;background:#3b82f6;color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;transition:all .2s;margin:0 6px}
+  .q-btn:hover{background:#2563eb;transform:translateY(-1px)}
+  .q-btn.sec{background:#475569}.q-btn.sec:hover{background:#64748b}
+  .q-controls{text-align:center}
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>1.2 Xu Hướng Tương Lai Ngành Thẩm Định Giá</h1>
+  <p class="subtitle">4 Xu hướng chính + IFRS + SIMM + Stakeholders</p>
+
+  <div class="tip-box">
+    <h3>&#128273; Mẹo nhớ 4 xu hướng: "CÔNG &ndash; TÀI &ndash; TỔNG &ndash; VÔ"</h3>
+    <div class="big-text">
+      <span style="color:#f87171">&#127970; CÔNG ty</span> &nbsp;&#8594;&nbsp;
+      <span style="color:#60a5fa">&#128202; TÀI chính</span> &nbsp;&#8594;&nbsp;
+      <span style="color:#fbbf24">&#9878;&#65039; TỔNG tụng</span> &nbsp;&#8594;&nbsp;
+      <span style="color:#4ade80">&#128161; VÔ hình</span>
+    </div>
+    <p>Hoặc nhớ theo câu: <strong style="color:#e2e8f0;font-size:16px">"Công ty cần Tài chính, Tổng kết tranh chấp, Vô hình lên ngôi"</strong></p>
+  </div>
+
+  <div class="compass">
+    <div class="trend-card t1" onclick="this.classList.toggle('open')">
+      <div class="tc-num">1</div>
+      <div class="tc-emoji">&#127970;</div>
+      <div class="tc-name">Hoạt động Doanh nghiệp</div>
+      <div class="tc-sub">Valuation là la bàn tài chính xuyên suốt vòng đời công ty</div>
+      <div class="tc-detail">
+        &#8226; M&amp;A tiếp tục tăng, giao dịch ngày càng phức tạp<br>
+        &#8226; Tài sản vô hình, ESG làm tăng độ khó<br>
+        &#8226; Valuers đóng vai trò chiến lược từ khởi nghiệp đến "sunset"<br>
+        &#8226; Định giá hỗ trợ đàm phán, quyết định đầu tư, mua bán
+      </div>
+      <div class="tc-hint">&#9654; Bấm xem thêm</div>
+    </div>
+    <div class="trend-card t2" onclick="this.classList.toggle('open')">
+      <div class="tc-num">2</div>
+      <div class="tc-emoji">&#128202;</div>
+      <div class="tc-name">Fair Value / Báo cáo Tài chính</div>
+      <div class="tc-sub">IFRS yêu cầu đo lường giá trị hợp lý</div>
+      <div class="tc-detail">
+        &#8226; Valuers cần hiểu 7 chuẩn mực IFRS/IAS<br>
+        &#8226; IFRS 13, IFRS 3, IFRS 9, IAS 36, IAS 38, IAS 40, IAS 41<br>
+        &#8226; Fair value cho: business combinations, impairment testing, PPA<br>
+        &#8226; Valuers có thể làm valuation hoặc review trong audit
+      </div>
+      <div class="tc-hint">&#9654; Bấm xem thêm</div>
+    </div>
+    <div class="trend-card t3" onclick="this.classList.toggle('open')">
+      <div class="tc-num">3</div>
+      <div class="tc-emoji">&#9878;&#65039;</div>
+      <div class="tc-name">Tranh chấp &amp; Kiện tụng</div>
+      <div class="tc-sub">ADR, litigation &#8594; nhu cầu valuation tăng</div>
+      <div class="tc-detail">
+        &#8226; Tranh chấp cổ đông, sở hữu trí tuệ, hôn nhân<br>
+        &#8226; ADR (Alternative Dispute Resolution) ngày càng phổ biến<br>
+        &#8226; Singapore là trung tâm: SIAC, SIMC, SICC<br>
+        &#8226; Valuers cung cấp ý kiến độc lập cho tòa án, trọng tài
+      </div>
+      <div class="tc-hint">&#9654; Bấm xem thêm</div>
+    </div>
+    <div class="trend-card t4" onclick="this.classList.toggle('open')">
+      <div class="tc-num">4</div>
+      <div class="tc-emoji">&#128161;</div>
+      <div class="tc-name">Tài sản Vô hình</div>
+      <div class="tc-sub">Brands, patents, data chiếm phần lớn giá trị DN</div>
+      <div class="tc-detail">
+        &#8226; Intangible Assets thường không trên bảng cân đối<br>
+        &#8226; Singapore: IDF (2023) với 4 trụ cột SIMM<br>
+        &#8226; IVAS hợp tác ASA, CBV, RICS xây dựng IA valuation guidelines<br>
+        &#8226; Brands, patents, software, data, human capital
+      </div>
+      <div class="tc-hint">&#9654; Bấm xem thêm</div>
+    </div>
+  </div>
+
+  <div class="ifrs-box">
+    <h3>&#128218; 7 Chuẩn mực IFRS/IAS liên quan đến Valuation</h3>
+    <p style="text-align:center;color:#64748b;font-size:12px;margin-bottom:14px">Mẹo: "13-3-9 rồi 36-38-40-41" &mdash; 3 IFRS trước, 4 IAS sau. Bấm để xem chi tiết.</p>
+    <div class="ifrs-grid">
+      <div class="ifrs-card" onclick="this.classList.toggle('open')"><div class="ifrs-code">IFRS 13</div><div class="ifrs-name">Fair Value Measurement</div><div class="ifrs-vi">Đo lường giá trị hợp lý</div><div class="ifrs-detail">Chuẩn mực nền tảng — định nghĩa fair value, các cấp độ đầu vào (Level 1-2-3), khung đo lường chung.</div></div>
+      <div class="ifrs-card" onclick="this.classList.toggle('open')"><div class="ifrs-code">IFRS 3</div><div class="ifrs-name">Business Combinations</div><div class="ifrs-vi">Hợp nhất kinh doanh (M&amp;A)</div><div class="ifrs-detail">Purchase Price Allocation (PPA) — phân bổ giá mua vào các tài sản hữu hình, vô hình, và goodwill.</div></div>
+      <div class="ifrs-card" onclick="this.classList.toggle('open')"><div class="ifrs-code">IFRS 9</div><div class="ifrs-name">Financial Instruments</div><div class="ifrs-vi">Công cụ tài chính</div><div class="ifrs-detail">Định giá cổ phiếu, trái phiếu, phái sinh. Phân loại và đo lường fair value của financial instruments.</div></div>
+      <div class="ifrs-card" onclick="this.classList.toggle('open')"><div class="ifrs-code">IAS 36</div><div class="ifrs-name">Impairment of Assets</div><div class="ifrs-vi">Suy giảm giá trị tài sản</div><div class="ifrs-detail">Kiểm tra xem tài sản có bị suy giảm không. So sánh carrying amount với recoverable amount.</div></div>
+      <div class="ifrs-card" onclick="this.classList.toggle('open')"><div class="ifrs-code">IAS 38</div><div class="ifrs-name">Intangible Assets</div><div class="ifrs-vi">Tài sản vô hình</div><div class="ifrs-detail">Ghi nhận, đo lường, khấu hao tài sản vô hình như patents, trademarks, software.</div></div>
+      <div class="ifrs-card" onclick="this.classList.toggle('open')"><div class="ifrs-code">IAS 40</div><div class="ifrs-name">Investment Property</div><div class="ifrs-vi">BĐS đầu tư</div><div class="ifrs-detail">Định giá bất động sản nắm giữ để cho thuê hoặc tăng giá. Cho phép fair value model.</div></div>
+      <div class="ifrs-card" onclick="this.classList.toggle('open')"><div class="ifrs-code">IAS 41</div><div class="ifrs-name">Agriculture</div><div class="ifrs-vi">Nông nghiệp</div><div class="ifrs-detail">Định giá tài sản sinh học (cây trồng, vật nuôi) và sản phẩm nông nghiệp theo fair value.</div></div>
+    </div>
+  </div>
+
+  <div class="simm-box">
+    <h3>&#128161; SIMM Framework (IDF 2023 - Singapore)</h3>
+    <p class="simm-sub">4 trụ cột của Intangible Disclosure Framework</p>
+    <div class="simm-row">
+      <div class="simm-pill sp-s"><div class="sp-letter">S</div><div class="sp-word">Strategy</div><div class="sp-vi">Chiến lược</div></div>
+      <div class="simm-pill sp-i"><div class="sp-letter">I</div><div class="sp-word">Identification</div><div class="sp-vi">Nhận diện</div></div>
+      <div class="simm-pill sp-m1"><div class="sp-letter">M</div><div class="sp-word">Measurement</div><div class="sp-vi">Đo lường</div></div>
+      <div class="simm-pill sp-m2"><div class="sp-letter">M</div><div class="sp-word">Management</div><div class="sp-vi">Quản lý</div></div>
+    </div>
+    <p style="text-align:center;color:#94a3b8;font-size:13px;margin-top:14px">Mẹo: <strong style="color:#e2e8f0">"SIMM"</strong> — đọc giống "SIM card" &#128241; của điện thoại, nhưng có 2 chữ M!</p>
+  </div>
+
+  <div class="stake-box">
+    <h3>&#127760; 11 Stakeholders trong Hệ sinh thái Valuation</h3>
+    <div class="stake-grid">
+      <div class="stake-tag">&#127974; Regulators</div>
+      <div class="stake-tag">&#128202; Analysts</div>
+      <div class="stake-tag">&#128084; Board of Directors</div>
+      <div class="stake-tag">&#128081; C-suite Executives</div>
+      <div class="stake-tag">&#128176; PE &amp; Venture Capitalists</div>
+      <div class="stake-tag">&#127975; Bankers</div>
+      <div class="stake-tag">&#128221; Accountants</div>
+      <div class="stake-tag">&#128269; Auditors</div>
+      <div class="stake-tag">&#9878;&#65039; Valuers</div>
+      <div class="stake-tag">&#128220; Legal Professionals</div>
+      <div class="stake-tag">&#127891; Academia</div>
+    </div>
+  </div>
+
+  <div class="quiz-box">
+    <h2>&#127919; Quiz: Kiểm tra trí nhớ</h2>
+    <p class="quiz-sub">12 câu hỏi về 4 xu hướng, IFRS, SIMM và Stakeholders</p>
+    <div class="q-progress" id="qProgress"></div>
+    <div class="q-card" id="qCard"></div>
+    <div class="q-options" id="qOpts"></div>
+    <div class="q-feedback" id="qFeedback"></div>
+    <div class="q-controls">
+      <button class="q-btn" id="qNext" onclick="nextQ()" style="display:none">Câu tiếp &#8594;</button>
+      <button class="q-btn sec" onclick="startQ()">&#128260; Làm lại</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const quizData=[
+  {q:"4 xu hướng tương lai của ngành thẩm định giá KHÔNG bao gồm điều nào?",ai:2,opts:["Hoạt động doanh nghiệp (M&A)","Fair Value trong báo cáo tài chính","Blockchain và tiền mã hóa","Tài sản vô hình"]},
+  {q:"IFRS 13 quy định về điều gì?",ai:0,opts:["Fair Value Measurement","Business Combinations","Impairment of Assets","Financial Instruments"]},
+  {q:"IFRS 3 liên quan đến hoạt động nào?",ai:1,opts:["Suy giảm tài sản","Hợp nhất kinh doanh (M&A)","BĐS đầu tư","Nông nghiệp"]},
+  {q:"IAS 36 quy định về gì?",ai:0,opts:["Impairment (suy giảm giá trị)","Tài sản vô hình","Công cụ tài chính","BĐS đầu tư"]},
+  {q:"SIMM là viết tắt của 4 trụ cột nào trong IDF?",ai:2,opts:["Standards, Implementation, Monitoring, Management","System, Integration, Metrics, Methodology","Strategy, Identification, Measurement, Management","Security, Innovation, Marketing, Manufacturing"]},
+  {q:"Intangible Disclosure Framework (IDF) được phát triển ở đâu, năm nào?",ai:1,opts:["Úc, 2022","Singapore, 2023","Mỹ, 2021","Anh, 2024"]},
+  {q:"SIAC, SIMC, SICC là các tổ chức giải quyết tranh chấp ở đâu?",ai:0,opts:["Singapore","London","New York","Hong Kong"]},
+  {q:"Chuẩn mực nào quy định về tài sản vô hình (patents, trademarks)?",ai:3,opts:["IFRS 13","IFRS 3","IAS 36","IAS 38"]},
+  {q:"IAS 41 áp dụng cho lĩnh vực nào?",ai:2,opts:["Bất động sản","Công cụ tài chính","Nông nghiệp","Doanh nghiệp"]},
+  {q:"Đâu KHÔNG phải là stakeholder trong hệ sinh thái valuation?",ai:3,opts:["Auditors","PE/VC","Legal Professionals","Social Media Influencers"]},
+  {q:"Xu hướng nào liên quan đến SIAC và ADR?",ai:0,opts:["Tranh chấp & kiện tụng","Fair Value Measurement","Hoạt động doanh nghiệp","Tài sản vô hình"]},
+  {q:"Mẹo nhớ 7 IFRS/IAS: '13-3-9 rồi 36-38-40-41'. Số 13 tương ứng với?",ai:1,opts:["IFRS 3 - Business Combinations","IFRS 13 - Fair Value Measurement","IAS 36 - Impairment","IAS 38 - Intangible Assets"]},
+];
+
+let cq=0,sc=0,ans=false,shuffled=[];
+
+function shuffle(a){const b=[...a];for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]]}return b}
+
+function startQ(){
+  shuffled=shuffle(quizData).map(function(q){
+    var correctText=q.opts[q.ai];
+    var sOpts=shuffle(q.opts.slice());
+    var newAi=sOpts.indexOf(correctText);
+    return {q:q.q,ai:q.ai,opts:q.opts,sOpts:sOpts,correctIdx:newAi,_ok:null};
+  });
+  cq=0;sc=0;ans=false;renderProgress();renderQ();
+}
+
+function renderProgress(){
+  var html='';
+  for(var i=0;i<shuffled.length;i++){
+    var c='q-dot';
+    if(i<cq) c+=shuffled[i]._ok?' right':' wrong';
+    html+='<div class="'+c+'"></div>';
+  }
+  document.getElementById('qProgress').innerHTML=html;
+}
+
+function renderQ(){
+  if(cq>=shuffled.length){
+    document.getElementById('qCard').innerHTML='<div class="q-text" style="font-size:20px">Kết quả: '+sc+'/'+shuffled.length+'</div>';
+    document.getElementById('qOpts').innerHTML='';
+    var pct=sc/shuffled.length;
+    document.getElementById('qFeedback').innerHTML=pct>=0.9
+      ?'<span style="color:#4ade80">&#127881; Xuất sắc!</span>'
+      :pct>=0.6?'<span style="color:#fbbf24">&#128170; Khá tốt!</span>'
+      :'<span style="color:#fb923c">&#128214; Ôn lại nhé!</span>';
+    document.getElementById('qNext').style.display='none';return;
+  }
+  ans=false;
+  var q=shuffled[cq];
+  document.getElementById('qCard').innerHTML='<div class="q-text">'+q.q+'</div>';
+  var html='';
+  for(var i=0;i<q.sOpts.length;i++){
+    html+='<div class="q-opt" data-idx="'+i+'" onclick="checkQ(this,'+i+')">'+q.sOpts[i]+'</div>';
+  }
+  document.getElementById('qOpts').innerHTML=html;
+  document.getElementById('qFeedback').innerHTML='<span style="color:#64748b">Câu '+(cq+1)+'/'+shuffled.length+'</span>';
+  document.getElementById('qNext').style.display='none';
+}
+
+function checkQ(el,idx){
+  if(ans)return;ans=true;
+  var q=shuffled[cq];
+  if(idx===q.correctIdx){
+    el.classList.add('correct');q._ok=true;sc++;
+    document.getElementById('qFeedback').innerHTML='<span style="color:#4ade80">&#9989; Chính xác!</span>';
+  }else{
+    el.classList.add('wrong');q._ok=false;
+    var opts=document.querySelectorAll('.q-opt');
+    for(var i=0;i<opts.length;i++){if(parseInt(opts[i].dataset.idx)===q.correctIdx)opts[i].classList.add('correct')}
+    document.getElementById('qFeedback').innerHTML='<span style="color:#f87171">&#10060; Đáp án: '+q.sOpts[q.correctIdx]+'</span>';
+  }
+  renderProgress();document.getElementById('qNext').style.display='inline-block';
+}
+function nextQ(){cq++;renderQ();renderProgress()}
+startQ();
+</script>
+</body>
+</html>

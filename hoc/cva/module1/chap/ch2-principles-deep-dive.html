@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter 2: Ph&#226;n Bi&#7879;t 10 Nguy&#234;n T&#7855;c - Deep Dive</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh;padding:20px}
+.container{max-width:960px;margin:0 auto}
+h1{text-align:center;font-size:1.5em;margin-bottom:6px;background:linear-gradient(135deg,#f59e0b,#ef4444);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.subtitle{text-align:center;color:#94a3b8;margin-bottom:20px;font-size:0.9em}
+.nav-tabs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:20px;justify-content:center}
+.nav-tab{padding:8px 14px;border-radius:20px;border:1px solid #334155;background:#1e293b;color:#94a3b8;cursor:pointer;font-size:0.82em;transition:all 0.2s}
+.nav-tab:hover{border-color:#38bdf8;color:#e2e8f0}
+.nav-tab.active{background:#2563eb;border-color:#2563eb;color:#fff;font-weight:600}
+.tab-content{display:none}
+.tab-content.active{display:block;animation:fadeIn 0.4s}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.section-card{background:#1e293b;border-radius:14px;padding:20px;margin-bottom:16px;border:1px solid #334155}
+.section-card h2{color:#38bdf8;font-size:1.1em;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.section-card h3{color:#fbbf24;font-size:0.95em;margin:14px 0 8px}
+.cmp-table{width:100%;border-collapse:collapse;margin:12px 0;font-size:0.88em}
+.cmp-table th{background:#0f172a;color:#38bdf8;padding:10px 12px;text-align:left;border-bottom:2px solid #334155;font-weight:600}
+.cmp-table td{padding:10px 12px;border-bottom:1px solid #1e3a5f;color:#cbd5e1;vertical-align:top}
+.cmp-table tr:hover td{background:#162032}
+.cmp-table .label-col{color:#fbbf24;font-weight:600;width:140px}
+.vs-box{display:grid;grid-template-columns:1fr auto 1fr;gap:12px;margin:12px 0;align-items:start}
+.vs-left,.vs-right{background:#0f172a;border-radius:12px;padding:16px;border:2px solid #334155}
+.vs-left{border-color:#22c55e}.vs-right{border-color:#ef4444}
+.vs-left h4{color:#22c55e;margin-bottom:8px;font-size:0.95em}
+.vs-right h4{color:#ef4444;margin-bottom:8px;font-size:0.95em}
+.vs-left p,.vs-right p{color:#94a3b8;font-size:0.88em;line-height:1.6}
+.vs-middle{display:flex;align-items:center;justify-content:center;color:#fbbf24;font-size:1.8em;font-weight:bold;padding-top:20px}
+.vs-left .tag,.vs-right .tag{display:inline-block;padding:3px 10px;border-radius:6px;font-size:0.8em;margin-top:6px;font-weight:600}
+.vs-left .tag{background:#14532d;color:#86efac}.vs-right .tag{background:#450a0a;color:#fca5a5}
+.insight{background:#1a1a2e;border-left:4px solid #a78bfa;padding:14px 16px;border-radius:0 10px 10px 0;margin:12px 0;color:#c4b5fd;font-size:0.9em;line-height:1.6}
+.insight strong{color:#e2e8f0}
+.ex-box{background:#0f172a;border-radius:10px;padding:14px;margin:10px 0;border-left:3px solid #f59e0b}
+.ex-box .ex-title{color:#f59e0b;font-weight:600;font-size:0.88em;margin-bottom:6px}
+.ex-box p{color:#94a3b8;font-size:0.85em;line-height:1.6}
+.ex-box .num{color:#fbbf24;font-weight:bold;font-size:1.1em}
+.flow{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:8px;margin:12px 0}
+.flow-item{background:#1e3a5f;color:#7dd3fc;padding:8px 16px;border-radius:10px;font-size:0.88em;font-weight:600}
+.flow-arrow{color:#64748b;font-size:1.2em}
+.flow-result{background:#14532d;color:#86efac;padding:8px 16px;border-radius:10px;font-size:0.88em;font-weight:600}
+.flow-result.bad{background:#450a0a;color:#fca5a5}
+.pills{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+.pill{padding:4px 12px;border-radius:20px;font-size:0.8em;font-weight:600}
+.pill-green{background:#14532d;color:#86efac}
+.pill-red{background:#450a0a;color:#fca5a5}
+.pill-blue{background:#1e3a5f;color:#7dd3fc}
+.pill-yellow{background:#422006;color:#fbbf24}
+/* Deep concept card */
+.concept-full{background:#0f172a;border:1px solid #334155;border-radius:12px;margin:12px 0;overflow:hidden}
+.concept-full-header{display:flex;align-items:center;gap:12px;padding:14px 16px;cursor:pointer;user-select:none}
+.concept-full-header:hover{background:#162032}
+.concept-num{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:bold;font-size:0.95em;flex-shrink:0;color:#fff}
+.concept-full-header .title{flex:1}
+.concept-full-header .title .vn{color:#fbbf24;font-weight:600;font-size:0.95em}
+.concept-full-header .title .en{color:#64748b;font-size:0.82em}
+.concept-full-header .arrow{color:#64748b;font-size:1.1em;transition:transform 0.3s}
+.concept-full-header .arrow.open{transform:rotate(90deg)}
+.concept-body{display:none;padding:0 16px 16px 64px}
+.concept-body.show{display:block;animation:fadeIn 0.3s}
+.concept-body .def{background:#1e293b;border-radius:8px;padding:12px;margin:8px 0;border-left:3px solid #38bdf8}
+.concept-body .def-label{color:#38bdf8;font-weight:600;font-size:0.85em;margin-bottom:4px}
+.concept-body .def-text{color:#e2e8f0;font-size:0.88em;line-height:1.6}
+.concept-body .keywords{margin:8px 0}
+.concept-body .keywords span{display:inline-block;background:#1e3a5f;color:#7dd3fc;padding:3px 10px;border-radius:6px;font-size:0.78em;margin:3px 3px 3px 0}
+.concept-body .note{color:#94a3b8;font-size:0.86em;line-height:1.6;margin:6px 0}
+.concept-body .warning{background:#422006;border-radius:8px;padding:10px 12px;margin:8px 0;color:#fbbf24;font-size:0.85em;line-height:1.5}
+.concept-body .formula{background:#1a1a2e;border-radius:8px;padding:12px;margin:8px 0;text-align:center;font-size:1em;color:#a78bfa;font-weight:600}
+.c1{background:#7c3aed}.c2{background:#2563eb}.c3{background:#0891b2}.c4{background:#059669}.c5{background:#d97706}
+.c6{background:#dc2626}.c7{background:#4f46e5}.c8{background:#0d9488}.c9{background:#b91c1c}.c10{background:#6d28d9}
+/* Quiz */
+.quiz-section{background:#1e293b;border-radius:16px;padding:20px;margin-top:24px}
+.quiz-section h2{color:#fbbf24;text-align:center;margin-bottom:16px}
+.quiz-info{text-align:center;color:#94a3b8;margin-bottom:16px;font-size:0.9em}
+.quiz-q{background:#0f172a;border-radius:12px;padding:16px;margin-bottom:12px;display:none}
+.quiz-q.active{display:block}
+.quiz-q p{color:#e2e8f0;margin-bottom:12px;font-size:0.93em;line-height:1.5}
+.quiz-opts{display:flex;flex-direction:column;gap:8px}
+.quiz-opt{padding:12px 16px;background:#1e293b;border:2px solid #334155;border-radius:10px;cursor:pointer;color:#cbd5e1;font-size:0.88em;transition:all 0.2s;text-align:left}
+.quiz-opt:hover{border-color:#38bdf8;background:#1e3a5f}
+.quiz-opt.correct{border-color:#22c55e;background:#14532d;color:#86efac}
+.quiz-opt.wrong{border-color:#ef4444;background:#450a0a;color:#fca5a5}
+.quiz-opt.disabled{pointer-events:none}
+.quiz-explain{display:none;margin-top:10px;padding:12px;background:#1a1a2e;border-radius:8px;color:#a78bfa;font-size:0.86em;line-height:1.6}
+.quiz-nav{display:flex;justify-content:center;margin-top:16px}
+.quiz-btn{padding:10px 24px;border:none;border-radius:10px;font-size:0.95em;cursor:pointer;font-weight:600;background:#2563eb;color:#fff}
+.quiz-btn:hover{background:#1d4ed8}
+.quiz-btn:disabled{opacity:0.4;cursor:not-allowed}
+.quiz-score{text-align:center;color:#fbbf24;font-size:1.1em;font-weight:bold}
+@media(max-width:700px){
+  .vs-box{grid-template-columns:1fr;gap:8px}
+  .vs-middle{padding:0;font-size:1.4em}
+  .cmp-table{font-size:0.82em}
+  .cmp-table .label-col{width:100px}
+}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>&#128269; Ph&#226;n Bi&#7879;t 10 Nguy&#234;n T&#7855;c &#272;&#7883;nh Gi&#225;</h1>
+<p class="subtitle">Deep Dive: Kh&#225;i ni&#7879;m &#273;&#7847;y &#273;&#7911;, so s&#225;nh, ph&#226;n bi&#7879;t v&#224; quiz</p>
+
+<div class="nav-tabs">
+<div class="nav-tab active" onclick="showTab(0)">&#128214; Kh&#225;i ni&#7879;m &#273;&#7847;y &#273;&#7911;</div>
+<div class="nav-tab" onclick="showTab(1)">&#128200; Nh&#243;m 3</div>
+<div class="nav-tab" onclick="showTab(2)">&#128176; Value/Price/Cost</div>
+<div class="nav-tab" onclick="showTab(3)">&#128178; DLOM vs DLOC</div>
+<div class="nav-tab" onclick="showTab(4)">&#9200; Th&#7901;i gian vs T&#432;&#417;ng lai</div>
+<div class="nav-tab" onclick="showTab(5)">&#9888;&#65039; C&#7863;p d&#7877; nh&#7847;m</div>
+<div class="nav-tab" onclick="showTab(6)">&#127941; Quiz</div>
+</div>
+
+<!-- ==================== TAB 0: KHÁI NIỆM ĐẦY ĐỦ ==================== -->
+<div class="tab-content active" id="tab0">
+<div class="section-card">
+<h2>&#128214; 2.1 Kh&#225;i ni&#7879;m c&#417; b&#7843;n v&#7873; &#272;&#7883;nh gi&#225; Doanh nghi&#7879;p</h2>
+<div class="def">
+<div class="def-label">&#272;&#7883;nh ngh&#297;a (Definition)</div>
+<div class="def-text"><strong>Business Valuation</strong> = x&#225;c &#273;&#7883;nh gi&#225; tr&#7883; c&#7911;a to&#224;n b&#7897; doanh nghi&#7879;p, m&#7897;t t&#224;i s&#7843;n c&#7909; th&#7875;, ho&#7863;c l&#7907;i &#237;ch s&#7903; h&#7919;u (ownership interest) trong doanh nghi&#7879;p.</div>
+</div>
+<div class="def">
+<div class="def-label">B&#7843;n ch&#7845;t k&#233;p (Dual Nature)</div>
+<div class="def-text">Valuation = <strong style="color:#22c55e">SCIENCE</strong> (ph&#432;&#417;ng ph&#225;p &#273;&#7883;nh l&#432;&#7907;ng, m&#244; h&#236;nh to&#225;n) + <strong style="color:#a78bfa">ART</strong> (ph&#225;n &#273;o&#225;n chuy&#234;n m&#244;n, kinh nghi&#7879;m th&#7921;c t&#7871;). Kh&#244;ng ph&#7843;i ch&#7881; l&#224; t&#237;nh to&#225;n c&#417; h&#7885;c.</div>
+</div>
+<div class="keywords">
+<span>Science = Quantitative methods</span>
+<span>Art = Professional judgement</span>
+<span>Ongoing process</span>
+<span>Valuation principles</span>
+</div>
+<div class="insight">&#128161; <strong>T&#7841;i sao quan tr&#7885;ng?</strong> V&#236; valuation g&#7855;n v&#7899;i m&#7885;i ho&#7841;t &#273;&#7897;ng doanh nghi&#7879;p: M&amp;A, IPO, t&#225;i c&#417; c&#7845;u, thu&#7871;, b&#225;o c&#225;o t&#224;i ch&#237;nh, ki&#7879;n t&#7909;ng. C&#225;c stakeholders (auditor, banker, lu&#7853;t s&#432;, nh&#224; &#273;&#7847;u t&#432;, ban gi&#225;m &#273;&#7889;c) &#273;&#7873;u c&#7847;n hi&#7875;u valuation.</div>
+</div>
+
+<div class="section-card">
+<h2>&#128203; 2.2 M&#432;&#7901;i Nguy&#234;n T&#7855;c &#8212; &#272;&#7883;nh ngh&#297;a &#273;&#7847;y &#273;&#7911; (click m&#7903; r&#7897;ng)</h2>
+
+<div class="concept-full">
+<div class="concept-full-header" onclick="toggleC(this)">
+<div class="concept-num c1">1</div>
+<div class="title"><div class="vn">&#128202; Gi&#225; tr&#7883; ph&#7909; thu&#7897;c TH&#212;NG TIN</div><div class="en">Value is information driven (2.2.1)</div></div>
+<div class="arrow">&#9654;</div>
+</div>
+<div class="concept-body">
+<div class="def"><div class="def-label">&#272;&#7883;nh ngh&#297;a</div><div class="def-text">Gi&#225; tr&#7883; c&#243; m&#7889;i t&#432;&#417;ng quan tr&#7921;c ti&#7871;p v&#7899;i th&#244;ng tin. Th&#7849;m &#273;&#7883;nh vi&#234;n kh&#225;c nhau c&#243; th&#7875; cho ra gi&#225; tr&#7883; kh&#225;c nhau n&#7871;u h&#7885; c&#243; <strong>t&#7853;p d&#7919; li&#7879;u kh&#225;c nhau</strong> v&#7873; c&#249;ng m&#7897;t doanh nghi&#7879;p.</div></div>
+<div class="keywords"><span>Data quality</span><span>Data completeness</span><span>Information asymmetry</span><span>Reliability</span></div>
+<p class="note"><strong>&#272;i&#7875;m m&#7845;u ch&#7889;t:</strong> K&#7871;t qu&#7843; &#273;&#7883;nh gi&#225; ph&#7909; thu&#7897;c v&#224;o <em>ch&#7845;t l&#432;&#7907;ng, &#273;&#7897; tin c&#7853;y, v&#224; &#273;&#7897; &#273;&#7847;y &#273;&#7911;</em> c&#7911;a th&#244;ng tin. B&#234;n c&#243; insider information s&#7869; &#273;&#7883;nh gi&#225; kh&#225;c b&#234;n ch&#7881; c&#243; public data.</p>
+<div class="ex-box"><div class="ex-title">V&#237; d&#7909; t&#7915; s&#225;ch (trang 39)</div><p>A ch&#7881; c&#243; BCTC 3 n&#259;m &#8594; &#273;&#7883;nh gi&#225; <span class="num">$20M</span>. B c&#243; th&#234;m d&#7921; b&#225;o + h&#7907;p &#273;&#7891;ng 5 n&#259;m &#8594; &#273;&#7883;nh gi&#225; <span class="num">$30M</span>. C&#249;ng c&#244;ng ty, c&#249;ng ng&#224;y, nh&#432;ng data kh&#225;c &#8594; k&#7871;t qu&#7843; kh&#225;c.</p></div>
+<div class="warning">&#9888;&#65039; Ph&#226;n bi&#7879;t v&#7899;i #4 (Judgement): &#7902; #1, data kh&#225;c nhau. &#7902; #4, data GI&#7888;NG nhau nh&#432;ng ph&#225;n &#273;o&#225;n kh&#225;c.</div>
+</div>
+</div>
+
+<div class="concept-full">
+<div class="concept-full-header" onclick="toggleC(this)">
+<div class="concept-num c2">2</div>
+<div class="title"><div class="vn">&#9200; Gi&#225; tr&#7883; g&#7855;n li&#7873;n TH&#7900;I &#272;I&#7874;M</div><div class="en">Value is time specific (2.2.2)</div></div>
+<div class="arrow">&#9654;</div>
+</div>
+<div class="concept-body">
+<div class="def"><div class="def-label">&#272;&#7883;nh ngh&#297;a</div><div class="def-text">Gi&#225; tr&#7883; mang t&#237;nh <strong>nh&#7841;y c&#7843;m v&#7899;i th&#7901;i gian</strong> v&#224; thay &#273;&#7893;i khi c&#243; th&#244;ng tin m&#7899;i. Th&#7849;m &#273;&#7883;nh vi&#234;n ph&#7843;i x&#225;c l&#7853;p <strong>valuation date</strong> &#8212; m&#7889;c th&#7901;i gian c&#7909; th&#7875; m&#224; gi&#225; tr&#7883; &#273;&#432;&#7907;c x&#225;c &#273;&#7883;nh.</div></div>
+<div class="keywords"><span>Valuation date</span><span>Time-sensitive</span><span>Market conditions change</span><span>Hindsight bias</span></div>
+<p class="note"><strong>Quy t&#7855;c:</strong> Ch&#7881; s&#7917; d&#7909;ng th&#244;ng tin &#273;&#227; bi&#7871;t ho&#7863;c c&#243; th&#7875; bi&#7871;t &#273;&#432;&#7907;c <em>t&#7841;i valuation date</em>. N&#7871;u d&#249;ng hindsight (nh&#236;n l&#7841;i), ph&#7843;i d&#7921;a tr&#234;n s&#7921; ki&#7879;n h&#7907;p l&#253; c&#243; th&#7875; nh&#7853;n bi&#7871;t t&#7841;i th&#7901;i &#273;i&#7875;m &#273;&#243;.</p>
+<div class="ex-box"><div class="ex-title">V&#237; d&#7909; t&#7915; s&#225;ch (trang 39)</div><p>C&#244;ng ty A: <span class="num">$300M</span> (12/2019) &#8594; <span class="num">$200M</span> (6/2020 - COVID) &#8594; <span class="num">$500M</span> (12/2021 - h&#7891;i ph&#7909;c + h&#7907;p &#273;&#7891;ng m&#7899;i). Thay &#273;&#7893;i v&#297; m&#244; c&#243; th&#7875; thay &#273;&#7893;i gi&#225; tr&#7883; r&#7845;t nhanh.</p></div>
+<div class="warning">&#9888;&#65039; Ph&#226;n bi&#7879;t v&#7899;i #7 (Future): #2 h&#7887;i "KHI N&#192;O &#273;o?" (&#273;i&#7875;m m&#7889;c). #7 h&#7887;i "NH&#204;N V&#7872; &#272;&#194;U?" (h&#432;&#7899;ng nh&#236;n t&#432;&#417;ng lai).</div>
+</div>
+</div>
+
+<div class="concept-full">
+<div class="concept-full-header" onclick="toggleC(this)">
+<div class="concept-num c3">3</div>
+<div class="title"><div class="vn">&#127919; Gi&#225; tr&#7883; ph&#7909; thu&#7897;c M&#7908;C &#272;&#205;CH</div><div class="en">Value is purpose dependent (2.2.3)</div></div>
+<div class="arrow">&#9654;</div>
+</div>
+<div class="concept-body">
+<div class="def"><div class="def-label">&#272;&#7883;nh ngh&#297;a</div><div class="def-text">Gi&#225; tr&#7883; thay &#273;&#7893;i t&#249;y theo <strong>m&#7909;c &#273;&#237;ch &#273;&#7883;nh gi&#225;</strong>. M&#7909;c &#273;&#237;ch quy&#7871;t &#273;&#7883;nh <strong>basis of value</strong> (chu&#7849;n gi&#225; tr&#7883;) &#273;&#432;&#7907;c &#225;p d&#7909;ng, v&#224; t&#7915; &#273;&#243; quy&#7871;t &#273;&#7883;nh gi&#7843; &#273;&#7883;nh v&#224; k&#7871;t qu&#7843;.</div></div>
+<div class="keywords"><span>Basis of value</span><span>Market value</span><span>Investment value</span><span>Liquidation value</span><span>Going concern</span></div>
+<p class="note"><strong>Nguy&#234;n l&#253;:</strong> C&#249;ng t&#224;i s&#7843;n nh&#432;ng &#273;&#7883;nh gi&#225; cho <em>financing</em> (kh&#244;ng t&#237;nh synergies) s&#7869; kh&#225;c &#273;&#7883;nh gi&#225; cho <em>acquisition</em> (t&#237;nh synergies). &#272;&#7883;nh gi&#225; &#273;&#7875; <em>thanh l&#253;</em> c&#361;ng kh&#225;c <em>ho&#7841;t &#273;&#7897;ng li&#234;n t&#7909;c</em>.</p>
+<div class="ex-box"><div class="ex-title">V&#237; d&#7909; t&#7915; s&#225;ch (trang 40)</div><p>C&#249;ng c&#244;ng ty, c&#249;ng ng&#224;y:<br>&#8226; Financing (market value, kh&#244;ng synergies) = <span class="num">$60M</span><br>&#8226; Acquisition (investment value, c&#243; synergies) = <span class="num">$100M</span><br>C&#7843; hai &#273;&#7873;u &#273;&#250;ng v&#7873; k&#7929; thu&#7853;t, ch&#7881; kh&#225;c m&#7909;c &#273;&#237;ch.</p></div>
+<div class="warning">&#9888;&#65039; Ph&#226;n bi&#7879;t v&#7899;i #4: #3 = m&#7909;c &#273;&#237;ch kh&#225;c &#8594; basis kh&#225;c. #4 = c&#249;ng m&#7909;c &#273;&#237;ch, c&#249;ng basis, nh&#432;ng chuy&#234;n gia ch&#7885;n gi&#7843; &#273;&#7883;nh kh&#225;c.</div>
+</div>
+</div>
+
+<div class="concept-full">
+<div class="concept-full-header" onclick="toggleC(this)">
+<div class="concept-num c4">4</div>
+<div class="title"><div class="vn">&#9878;&#65039; Gi&#225; tr&#7883; ph&#7909; thu&#7897;c X&#201;T &#272;O&#193;N chuy&#234;n m&#244;n</div><div class="en">Value is subject to professional judgement (2.2.4)</div></div>
+<div class="arrow">&#9654;</div>
+</div>
+<div class="concept-body">
+<div class="def"><div class="def-label">&#272;&#7883;nh ngh&#297;a</div><div class="def-text">Ngay c&#7843; khi m&#7909;c ti&#234;u v&#224; m&#244; h&#236;nh gi&#7889;ng nhau, k&#7871;t qu&#7843; v&#7851;n c&#243; th&#7875; kh&#225;c do chuy&#234;n gia <strong>di&#7877;n gi&#7843;i data kh&#225;c nhau</strong>, &#273;&#7863;t tr&#7885;ng s&#7889; kh&#225;c nhau, v&#224; c&#243; <strong>k&#7923; v&#7885;ng kh&#225;c nhau</strong> v&#7873; t&#432;&#417;ng lai.</div></div>
+<div class="keywords"><span>Professional judgement</span><span>Discount rate selection</span><span>Growth assumptions</span><span>Not formulaic</span></div>
+<p class="note"><strong>Nh&#7845;n m&#7841;nh t&#7915; s&#225;ch:</strong> "Business valuation is <em>not a formulaic calculation process or mathematical exercise</em>. It involves analysis, application of professional skills and knowledge, and judgment gained through experience."</p>
+<div class="ex-box"><div class="ex-title">V&#237; d&#7909; t&#7915; s&#225;ch (trang 40-41)</div><p>C&#249;ng c&#244;ng ty, c&#249;ng DCF method:<br>&#8226; Valuer A (l&#7841;c quan): discount rate 15% &#8594; <span class="num">$100M</span><br>&#8226; Valuer B (th&#7853;n tr&#7885;ng): discount rate 20% &#8594; <span class="num">$75M</span><br>Kh&#225;c bi&#7879;t $25M ch&#7881; v&#236; ph&#225;n &#273;o&#225;n v&#7873; r&#7911;i ro kh&#225;c nhau.</p></div>
+</div>
+</div>
+
+<div class="concept-full">
+<div class="concept-full-header" onclick="toggleC(this)">
+<div class="concept-num c5">5</div>
+<div class="title"><div class="vn">&#128176; GI&#193; giao d&#7883;ch &#8800; Gi&#225; tr&#7883;</div><div class="en">Value and price are not always the same (2.2.5)</div></div>
+<div class="arrow">&#9654;</div>
+</div>
+<div class="concept-body">
+<div class="def"><div class="def-label">&#272;&#7883;nh ngh&#297;a</div><div class="def-text"><strong>Value</strong> = gi&#225; tr&#7883; n&#7897;i t&#7841;i (intrinsic worth), &#432;&#7899;c t&#237;nh d&#7921;a tr&#234;n l&#7907;i &#237;ch kinh t&#7871; t&#432;&#417;ng lai, ph&#432;&#417;ng ph&#225;p v&#224; m&#244; h&#236;nh. <strong>Price</strong> = s&#7889; ti&#7873;n th&#7921;c t&#7871; trong giao d&#7883;ch, b&#7883; &#7843;nh h&#432;&#7903;ng b&#7903;i &#273;&#224;m ph&#225;n, c&#7843;m x&#250;c, chi&#7871;n l&#432;&#7907;c, synergies.</div></div>
+<div class="keywords"><span>Intrinsic worth</span><span>Observable fact</span><span>Negotiation power</span><span>Strategic premium</span><span>Distressed seller</span></div>
+<p class="note"><strong>Quy t&#7855;c v&#224;ng:</strong> Price l&#224; <em>s&#7921; th&#7853;t quan s&#225;t &#273;&#432;&#7907;c</em> (observable fact), Value l&#224; <em>&#432;&#7899;c t&#237;nh/&#253; ki&#7871;n</em> (estimate/opinion). Kh&#244;ng &#273;&#432;&#7907;c suy ra r&#7857;ng gi&#225; giao d&#7883;ch = gi&#225; tr&#7883; th&#7921;c.</p>
+<div class="ex-box"><div class="ex-title">V&#237; d&#7909; t&#7915; s&#225;ch (trang 41)</div><p>&#8226; Valuer &#273;&#7883;nh gi&#225; market value = <span class="num">$50M</span> (Value)<br>&#8226; B&#234;n mua tr&#7843; <span class="num">$60M</span> v&#236; synergies (Price)<br>&#8226; Ch&#234;nh l&#7879;ch $10M do: m&#7841;ng l&#432;&#7899;i ph&#226;n ph&#7889;i, cross-selling, economy of scale</p></div>
+<div class="warning">&#9888;&#65039; Price c&#243; th&#7875; &gt; Value (premium) ho&#7863;c &lt; Value (distressed sale). Kh&#244;ng bao gi&#7901; t&#7921; &#273;&#7897;ng b&#7857;ng nhau.</div>
+</div>
+</div>
+
+<div class="concept-full">
+<div class="concept-full-header" onclick="toggleC(this)">
+<div class="concept-num c6">6</div>
+<div class="title"><div class="vn">&#9888;&#65039; Gi&#225; tr&#7883; d&#7921;a tr&#234;n R&#7910;I RO v&#224; l&#7907;i nhu&#7853;n</div><div class="en">Value is based on the concept of risk and return (2.2.6)</div></div>
+<div class="arrow">&#9654;</div>
+</div>
+<div class="concept-body">
+<div class="def"><div class="def-label">&#272;&#7883;nh ngh&#297;a</div><div class="def-text">Gi&#225; tr&#7883; t&#7927; l&#7879; thu&#7853;n v&#7899;i l&#7907;i nhu&#7853;n k&#7923; v&#7885;ng v&#224; t&#7927; l&#7879; ngh&#7883;ch v&#7899;i r&#7911;i ro. R&#7911;i ro cao &#8594; nh&#224; &#273;&#7847;u t&#432; &#273;&#242;i <strong>discount rate cao</strong> &#8594; gi&#225; tr&#7883; hi&#7879;n t&#7841;i th&#7845;p h&#417;n. &#272;&#226;y l&#224; n&#7873;n t&#7843;ng c&#7911;a DCF.</div></div>
+<div class="keywords"><span>Risk-return trade-off</span><span>Discount rate</span><span>DCF method</span><span>Present value</span><span>Higher risk = lower value</span></div>
+<div class="formula">Value = Future Cash Flows &#247; (1 + Discount Rate)&#8319;<br><small style="color:#64748b">R&#7911;i ro cao &#8594; Discount Rate cao &#8594; M&#7851;u s&#7889; l&#7899;n &#8594; Value nh&#7887;</small></div>
+<div class="ex-box"><div class="ex-title">V&#237; d&#7909; t&#7915; s&#225;ch (trang 42)</div><p>C&#249;ng earnings $1M/n&#259;m:<br>&#8226; Cty A (&#273;a d&#7841;ng kh&#225;ch h&#224;ng, c&#244;ng ngh&#7879; &#7893;n &#273;&#7883;nh): multiple <strong>12x</strong> = <span class="num">$12M</span><br>&#8226; Cty B (ph&#7909; thu&#7897;c 1 kh&#225;ch l&#7899;n, key-man risk): multiple <strong>8x</strong> = <span class="num">$8M</span><br>Ch&#234;nh $4M ho&#224;n to&#224;n do r&#7911;i ro kh&#225;c nhau.</p></div>
+</div>
+</div>
+
+<div class="concept-full">
+<div class="concept-full-header" onclick="toggleC(this)">
+<div class="concept-num c7">7</div>
+<div class="title"><div class="vn">&#128302; Gi&#225; tr&#7883; h&#432;&#7899;ng v&#7873; T&#431;&#416;NG LAI</div><div class="en">Value is about expectations of future returns (2.2.7)</div></div>
+<div class="arrow">&#9654;</div>
+</div>
+<div class="concept-body">
+<div class="def"><div class="def-label">&#272;&#7883;nh ngh&#297;a</div><div class="def-text">&#272;&#7897;ng l&#7921;c ch&#237;nh c&#7911;a gi&#225; tr&#7883; l&#224; <strong>l&#7907;i nhu&#7853;n k&#7923; v&#7885;ng trong t&#432;&#417;ng lai</strong> (prospective returns). Qu&#225; kh&#7913; ch&#7881; l&#224; ch&#7881; d&#7851;n (guiding indicator), kh&#244;ng quy&#7871;t &#273;&#7883;nh gi&#225; tr&#7883;. Kh&#7843; n&#259;ng sinh l&#7901;i t&#432;&#417;ng lai m&#7899;i t&#7841;o ra gi&#225; tr&#7883;.</div></div>
+<div class="keywords"><span>Forward-looking</span><span>Prospective returns</span><span>Historical = guiding indicator</span><span>Future cash flows</span><span>Growth potential</span></div>
+<p class="note"><strong>&#7912;ng d&#7909;ng:</strong> Valuer d&#249;ng ph&#226;n t&#237;ch BCTC qu&#225; kh&#7913; &#273;&#7875; nh&#7853;n di&#7879;n xu h&#432;&#7899;ng, ki&#7875;m tra t&#237;nh h&#7907;p l&#253; c&#7911;a d&#7921; b&#225;o t&#432;&#417;ng lai. Nh&#432;ng <em>gi&#225; tr&#7883; n&#7857;m &#7903; t&#432;&#417;ng lai</em>, kh&#244;ng ph&#7843;i qu&#225; kh&#7913;.</p>
+<div class="ex-box"><div class="ex-title">V&#237; d&#7909; t&#7915; s&#225;ch (trang 42-43)</div><p>&#8226; Cty A: l&#7907;i nhu&#7853;n tr&#236; tr&#7879; 3 n&#259;m, NH&#431;NG c&#243; patent &#273;&#7897;c quy&#7873;n + h&#7907;p &#273;&#7891;ng d&#224;i h&#7841;n &#8594; <span class="num">$250M</span><br>&#8226; &#272;&#7889;i th&#7911;: l&#7907;i nhu&#7853;n hi&#7879;n t&#7841;i t&#7889;t h&#417;n, NH&#431;NG kh&#244;ng c&#243; tri&#7875;n v&#7885;ng t&#259;ng tr&#432;&#7903;ng r&#245; &#8594; <span class="num">$100M</span><br>T&#432;&#417;ng lai quy&#7871;t &#273;&#7883;nh gi&#225; tr&#7883;, kh&#244;ng ph&#7843;i qu&#225; kh&#7913;!</p></div>
+<div class="warning">&#9888;&#65039; Kh&#225;c #6: #7 n&#243;i v&#7873; <strong>cash flows k&#7923; v&#7885;ng</strong> (t&#7917; s&#7889; c&#7911;a DCF). #6 n&#243;i v&#7873; <strong>discount rate</strong> (m&#7851;u s&#7889; c&#7911;a DCF). C&#7843; hai c&#249;ng &#7843;nh h&#432;&#7903;ng gi&#225; tr&#7883; nh&#432;ng &#7903; v&#7883; tr&#237; kh&#225;c nhau trong c&#244;ng th&#7913;c.</div>
+</div>
+</div>
+
+<div class="concept-full">
+<div class="concept-full-header" onclick="toggleC(this)">
+<div class="concept-num c8">8</div>
+<div class="title"><div class="vn">&#128167; THANH KHO&#7842;N &#7843;nh h&#432;&#7903;ng gi&#225; tr&#7883;</div><div class="en">Liquidity affects value (2.2.8)</div></div>
+<div class="arrow">&#9654;</div>
+</div>
+<div class="concept-body">
+<div class="def"><div class="def-label">&#272;&#7883;nh ngh&#297;a</div><div class="def-text">T&#224;i s&#7843;n d&#7877; b&#225;n (liquid) c&#243; gi&#225; tr&#7883; cao h&#417;n t&#224;i s&#7843;n kh&#243; b&#225;n (illiquid), c&#225;c y&#7871;u t&#7889; kh&#225;c b&#7857;ng nhau. Nh&#224; &#273;&#7847;u t&#432; &#273;&#242;i h&#7887;i chi&#7871;t kh&#7845;u khi mua t&#224;i s&#7843;n kh&#243; chuy&#7875;n &#273;&#7893;i th&#224;nh ti&#7873;n m&#7863;t.</div></div>
+<div class="keywords"><span>Liquidity</span><span>Marketability</span><span>DLOM</span><span>Listed vs Private</span><span>Deep market vs Thin market</span></div>
+<div class="def"><div class="def-label">DLOM &#8212; Discount for Lack of Marketability</div><div class="def-text">Chi&#7871;t kh&#7845;u &#225;p d&#7909;ng cho t&#224;i s&#7843;n <strong>kh&#244;ng giao d&#7883;ch tr&#234;n th&#7883; tr&#432;&#7901;ng c&#244;ng khai</strong>. V&#237; d&#7909;: c&#7893; ph&#7847;n c&#244;ng ty t&#432; nh&#226;n so v&#7899;i c&#7893; phi&#7871;u ni&#234;m y&#7871;t.</div></div>
+<div class="ex-box"><div class="ex-title">V&#237; d&#7909; t&#7915; s&#225;ch (trang 43)</div><p>&#8226; Investor A: c&#7893; phi&#7871;u ni&#234;m y&#7871;t &#8594; b&#225;n ngay tr&#234;n s&#224;n, gi&#225; th&#7883; tr&#432;&#7901;ng<br>&#8226; Investor B: 10% c&#244;ng ty t&#432; nh&#226;n &#8594; b&#7883; &#225;p d&#7909;ng <strong>DLOM 20%</strong><br>C&#249;ng ng&#224;nh, c&#249;ng quy m&#244;, nh&#432;ng illiquid = gi&#225; tr&#7883; th&#7845;p h&#417;n.</p></div>
+</div>
+</div>
+
+<div class="concept-full">
+<div class="concept-full-header" onclick="toggleC(this)">
+<div class="concept-num c9">9</div>
+<div class="title"><div class="vn">&#128101; C&#7893; ph&#7847;n THI&#7874;U S&#7888; &lt; C&#7893; ph&#7847;n ki&#7875;m so&#225;t</div><div class="en">Minority interest value &lt; controlling interest (2.2.9)</div></div>
+<div class="arrow">&#9654;</div>
+</div>
+<div class="concept-body">
+<div class="def"><div class="def-label">&#272;&#7883;nh ngh&#297;a</div><div class="def-text">C&#7893; &#273;&#244;ng ki&#7875;m so&#225;t c&#243; quy&#7873;n: b&#7893; nhi&#7879;m qu&#7843;n l&#253;, chia c&#7893; t&#7913;c, t&#225;i c&#417; c&#7845;u, thanh l&#253;. C&#7893; &#273;&#244;ng thi&#7875;u s&#7889; kh&#244;ng c&#243; c&#225;c quy&#7873;n n&#224;y &#8594; tr&#234;n c&#417; s&#7903; <strong>per share</strong>, c&#7893; ph&#7847;n ki&#7875;m so&#225;t c&#243; gi&#225; tr&#7883; cao h&#417;n.</div></div>
+<div class="keywords"><span>Controlling interest</span><span>Minority interest</span><span>DLOC</span><span>Decision-making rights</span><span>Per share basis</span></div>
+<div class="def"><div class="def-label">DLOC &#8212; Discount for Lack of Control</div><div class="def-text">Chi&#7871;t kh&#7845;u &#225;p d&#7909;ng v&#236; c&#7893; &#273;&#244;ng <strong>kh&#244;ng c&#243; quy&#7873;n ra quy&#7871;t &#273;&#7883;nh chi&#7871;n l&#432;&#7907;c</strong>. G&#7885;i t&#7855;t: minority discount.</div></div>
+<p class="note"><strong>Quy&#7873;n c&#7911;a c&#7893; &#273;&#244;ng ki&#7875;m so&#225;t:</strong> b&#7893; nhi&#7879;m/mi&#7877;n nhi&#7879;m ban gi&#225;m &#273;&#7889;c, quy&#7871;t &#273;&#7883;nh chia c&#7893; t&#7913;c, t&#225;i c&#417; c&#7845;u doanh nghi&#7879;p, thanh l&#253; t&#224;i s&#7843;n, quy&#7871;t &#273;&#7883;nh chi&#7871;n l&#432;&#7907;c kinh doanh.</p>
+<div class="ex-box"><div class="ex-title">V&#237; d&#7909; t&#7915; s&#225;ch (trang 44)</div><p>ABC Private: equity value = <span class="num">$100M</span><br>&#8226; Pro rata 10% = $10M<br>&#8226; Th&#7921;c t&#7871; &#273;&#7883;nh gi&#225; = <span class="num">$8M</span> (DLOC 20%)<br>V&#236; 10% kh&#244;ng c&#243; quy&#7873;n chi&#7871;n l&#432;&#7907;c, c&#7893; t&#7913;c, hay b&#7893; nhi&#7879;m.</p></div>
+<div class="warning">&#9888;&#65039; DLOC v&#224; DLOM c&#243; th&#7875; &#225;p d&#7909;ng &#273;&#7891;ng th&#7901;i! 10% c&#244;ng ty t&#432; nh&#226;n b&#7883; c&#7843; DLOC (thi&#7875;u s&#7889;) + DLOM (kh&#244;ng ni&#234;m y&#7871;t).</div>
+</div>
+</div>
+
+<div class="concept-full">
+<div class="concept-full-header" onclick="toggleC(this)">
+<div class="concept-num c10">10</div>
+<div class="title"><div class="vn">&#127959;&#65039; PH&#205; (chi ph&#237;) &#8800; Gi&#225; tr&#7883;</div><div class="en">Cost and value are not always identical (2.2.10)</div></div>
+<div class="arrow">&#9654;</div>
+</div>
+<div class="concept-body">
+<div class="def"><div class="def-label">&#272;&#7883;nh ngh&#297;a</div><div class="def-text"><strong>Cost</strong> = chi ph&#237; ti&#7873;n t&#7879; &#273;&#227; b&#7887; ra &#273;&#7875; s&#7843;n xu&#7845;t, mua l&#7841;i, ho&#7863;c thay th&#7871; t&#224;i s&#7843;n (l&#7883;ch s&#7917; ho&#7863;c hi&#7879;n t&#7841;i). <strong>Value</strong> = gi&#225; tr&#7883; n&#7897;i t&#7841;i d&#7921;a tr&#234;n l&#7907;i &#237;ch kinh t&#7871; t&#432;&#417;ng lai. Cost c&#243; th&#7875; &gt; Value ho&#7863;c &lt; Value.</div></div>
+<div class="keywords"><span>Historical cost</span><span>Replacement cost</span><span>Economic obsolescence</span><span>Technological change</span><span>Market decline</span></div>
+<p class="note"><strong>Khi n&#224;o Cost &gt; Value?</strong> Thi&#7871;t b&#7883; l&#7895;i th&#7901;i, thi&#7871;t k&#7871; chuy&#234;n bi&#7879;t kh&#243; chuy&#7875;n nh&#432;&#7907;ng, th&#7883; tr&#432;&#7901;ng suy tho&#225;i. <strong>Khi n&#224;o Cost &lt; Value?</strong> T&#224;i s&#7843;n t&#259;ng gi&#225; (&#273;&#7845;t &#273;ai), ho&#7863;c ti&#7873;m n&#259;ng t&#432;&#417;ng lai v&#432;&#7907;t xa chi ph&#237; ban &#273;&#7847;u.</p>
+<div class="ex-box"><div class="ex-title">V&#237; d&#7909; t&#7915; s&#225;ch (trang 44-45)</div><p>X&#226;y lab s&#7843;n xu&#7845;t kit x&#233;t nghi&#7879;m:<br>&#8226; Chi ph&#237; x&#226;y d&#7921;ng (Cost) = <span class="num">$25M</span><br>&#8226; Gi&#225; th&#7883; tr&#432;&#7901;ng (Value) = <span class="num">$18M</span><br>L&#253; do: thi&#7871;t b&#7883; l&#7895;i th&#7901;i + thi&#7871;t k&#7871; chuy&#234;n bi&#7879;t kh&#244;ng ph&#249; h&#7907;p ng&#432;&#7901;i mua kh&#225;c.</p></div>
+<div class="warning">&#9888;&#65039; C&#7843;nh b&#225;o t&#7915; s&#225;ch: "Valuers must exercise caution and avoid excessive reliance on historical costs." Lu&#244;n &#273;&#7843;m b&#7843;o value ph&#7843;n &#225;nh th&#7921;c t&#7871; kinh t&#7871; v&#224; &#273;i&#7873;u ki&#7879;n th&#7883; tr&#432;&#7901;ng.</div>
+</div>
+</div>
+
+</div>
+
+<div class="section-card">
+<h2>&#128218; Thu&#7853;t ng&#7919; quan tr&#7885;ng (Glossary)</h2>
+<table class="cmp-table">
+<tr><th>Thu&#7853;t ng&#7919;</th><th>Ti&#7871;ng Vi&#7879;t</th><th>Gi&#7843;i th&#237;ch</th></tr>
+<tr><td class="label-col">Valuation date</td><td>Ng&#224;y &#273;&#7883;nh gi&#225;</td><td>M&#7889;c th&#7901;i gian c&#7909; th&#7875; m&#224; gi&#225; tr&#7883; &#273;&#432;&#7907;c x&#225;c &#273;&#7883;nh</td></tr>
+<tr><td class="label-col">Basis of value</td><td>Chu&#7849;n gi&#225; tr&#7883;</td><td>Lo&#7841;i gi&#225; tr&#7883; &#273;&#432;&#7907;c &#225;p d&#7909;ng (market, investment, liquidation...)</td></tr>
+<tr><td class="label-col">Intrinsic worth</td><td>Gi&#225; tr&#7883; n&#7897;i t&#7841;i</td><td>Gi&#225; tr&#7883; th&#7921;c c&#7911;a t&#224;i s&#7843;n d&#7921;a tr&#234;n ph&#226;n t&#237;ch c&#417; b&#7843;n</td></tr>
+<tr><td class="label-col">Discount rate</td><td>T&#7927; su&#7845;t chi&#7871;t kh&#7845;u</td><td>T&#7927; l&#7879; ph&#7843;n &#225;nh r&#7911;i ro, d&#249;ng &#273;&#7875; quy &#273;&#7893;i cash flow t&#432;&#417;ng lai v&#7873; hi&#7879;n t&#7841;i</td></tr>
+<tr><td class="label-col">DCF</td><td>Chi&#7871;t kh&#7845;u d&#242;ng ti&#7873;n</td><td>Discounted Cash Flow &#8212; ph&#432;&#417;ng ph&#225;p &#273;&#7883;nh gi&#225; d&#7921;a tr&#234;n cash flow t&#432;&#417;ng lai</td></tr>
+<tr><td class="label-col">DLOM</td><td>CK thi&#7871;u thanh kho&#7843;n</td><td>Discount for Lack of Marketability &#8212; t&#224;i s&#7843;n kh&#243; b&#225;n</td></tr>
+<tr><td class="label-col">DLOC</td><td>CK thi&#7871;u ki&#7875;m so&#225;t</td><td>Discount for Lack of Control &#8212; c&#7893; &#273;&#244;ng thi&#7875;u s&#7889;</td></tr>
+<tr><td class="label-col">Enterprise value</td><td>Gi&#225; tr&#7883; doanh nghi&#7879;p</td><td>T&#7893;ng gi&#225; tr&#7883; t&#7915; cash flow, chia cho equity + debt holders</td></tr>
+<tr><td class="label-col">Synergies</td><td>C&#7897;ng h&#432;&#7903;ng</td><td>L&#7907;i &#237;ch th&#234;m khi k&#7871;t h&#7907;p 2 doanh nghi&#7879;p (1+1&gt;2)</td></tr>
+<tr><td class="label-col">Going concern</td><td>Ho&#7841;t &#273;&#7897;ng li&#234;n t&#7909;c</td><td>Gi&#7843; &#273;&#7883;nh doanh nghi&#7879;p ti&#7871;p t&#7909;c ho&#7841;t &#273;&#7897;ng b&#236;nh th&#432;&#7901;ng</td></tr>
+<tr><td class="label-col">Hindsight</td><td>Nh&#236;n l&#7841;i</td><td>S&#7917; d&#7909;ng th&#244;ng tin sau valuation date &#8212; ph&#7843;i h&#7841;n ch&#7871;</td></tr>
+<tr><td class="label-col">Multiple</td><td>H&#7879; s&#7889; nh&#226;n</td><td>VD: P/E ratio, EV/EBITDA &#8212; d&#249;ng trong market approach</td></tr>
+</table>
+</div>
+</div>
+
+<!-- ==================== TAB 1: NHÓM 3 KHÁI NIỆM ==================== -->
+<div class="tab-content" id="tab1">
+<div class="section-card">
+<h2>&#128200; Ph&#226;n Nh&#243;m 10 Nguy&#234;n T&#7855;c</h2>
+<p style="color:#94a3b8;font-size:0.9em;margin-bottom:16px">10 nguy&#234;n t&#7855;c chia th&#224;nh <strong style="color:#fbbf24">3 nh&#243;m l&#7899;n</strong> theo b&#7843;n ch&#7845;t:</p>
+<h3>&#127793; Nh&#243;m A: &#272;&#7847;u v&#224;o &#7843;nh h&#432;&#7903;ng gi&#225; tr&#7883; (INPUT)</h3>
+<p style="color:#94a3b8;font-size:0.88em;margin-bottom:8px">Nh&#7919;ng y&#7871;u t&#7889; <em>tr&#432;&#7899;c khi</em> b&#7855;t &#273;&#7847;u &#273;&#7883;nh gi&#225;:</p>
+<div class="pills">
+<span class="pill pill-blue">1. TH&#212;NG TIN (Information)</span>
+<span class="pill pill-blue">2. TH&#7900;I &#272;I&#7874;M (Time)</span>
+<span class="pill pill-blue">3. M&#7908;C &#272;&#205;CH (Purpose)</span>
+</div>
+<div class="insight">&#128161; <strong>Tr&#432;&#7899;c khi &#273;&#7883;nh gi&#225;,</strong> ph&#7843;i x&#225;c &#273;&#7883;nh: c&#243; th&#244;ng tin g&#236;? t&#7841;i th&#7901;i &#273;i&#7875;m n&#224;o? v&#224; v&#236; m&#7909;c &#273;&#237;ch g&#236;?</div>
+<h3>&#9878;&#65039; Nh&#243;m B: B&#7843;n ch&#7845;t c&#7911;a gi&#225; tr&#7883; (NATURE)</h3>
+<div class="pills">
+<span class="pill pill-yellow">4. X&#201;T &#272;O&#193;N (Judgement)</span>
+<span class="pill pill-yellow">5. GI&#193; &#8800; Gi&#225; tr&#7883;</span>
+<span class="pill pill-yellow">6. R&#7910;I RO (Risk)</span>
+<span class="pill pill-yellow">7. T&#431;&#416;NG LAI (Future)</span>
+<span class="pill pill-yellow">10. PH&#205; &#8800; Gi&#225; tr&#7883;</span>
+</div>
+<div class="insight">&#128161; <strong>Gi&#225; tr&#7883; l&#224; opinion,</strong> kh&#225;c price v&#224; cost, ph&#7909; thu&#7897;c r&#7911;i ro v&#224; k&#7923; v&#7885;ng t&#432;&#417;ng lai.</div>
+<h3>&#128178; Nh&#243;m C: Chi&#7871;t kh&#7845;u &#273;&#7863;c th&#249; (DISCOUNTS)</h3>
+<div class="pills">
+<span class="pill pill-red">8. THANH KHO&#7842;N (DLOM)</span>
+<span class="pill pill-red">9. THI&#7874;U S&#7888; (DLOC)</span>
+</div>
+<div class="insight">&#128161; <strong>DLOM v&#224; DLOC</strong> c&#243; th&#7875; c&#7897;ng d&#7891;n tr&#234;n c&#249;ng 1 c&#7893; ph&#7847;n.</div>
+</div>
+</div>
+
+<!-- ==================== TAB 2: VALUE vs PRICE vs COST ==================== -->
+<div class="tab-content" id="tab2">
+<div class="section-card">
+<h2>&#128176; Tam gi&#225;c: VALUE &#8211; PRICE &#8211; COST</h2>
+<table class="cmp-table">
+<tr><th></th><th style="color:#22c55e">VALUE</th><th style="color:#3b82f6">PRICE</th><th style="color:#ef4444">COST</th></tr>
+<tr><td class="label-col">&#272;&#7883;nh ngh&#297;a</td><td>Gi&#225; tr&#7883; n&#7897;i t&#7841;i, &#432;&#7899;c t&#237;nh b&#7903;i chuy&#234;n gia</td><td>S&#7889; ti&#7873;n th&#7921;c t&#7871; giao d&#7883;ch</td><td>S&#7889; ti&#7873;n b&#7887; ra &#273;&#7875; t&#7841;o/mua t&#224;i s&#7843;n</td></tr>
+<tr><td class="label-col">B&#7843;n ch&#7845;t</td><td>Opinion (&#253; ki&#7871;n)</td><td>Fact (s&#7921; th&#7853;t)</td><td>Historical fact</td></tr>
+<tr><td class="label-col">Th&#7901;i gian</td><td>T&#7841;i valuation date</td><td>T&#7841;i th&#7901;i &#273;i&#7875;m giao d&#7883;ch</td><td>Qu&#225; kh&#7913;</td></tr>
+<tr><td class="label-col">Ai quy&#7871;t &#273;&#7883;nh?</td><td>Valuer</td><td>B&#234;n mua + b&#225;n</td><td>Th&#7883; tr&#432;&#7901;ng &#273;&#7847;u v&#224;o</td></tr>
+<tr><td class="label-col">&#7842;nh h&#432;&#7903;ng b&#7903;i</td><td>Ph&#432;&#417;ng ph&#225;p, data, r&#7911;i ro</td><td>&#272;&#224;m ph&#225;n, c&#7843;m x&#250;c, synergies</td><td>V&#7853;t li&#7879;u, lao &#273;&#7897;ng, c&#244;ng ngh&#7879;</td></tr>
+</table>
+<div class="ex-box"><div class="ex-title">V&#237; d&#7909; 1: Lab s&#7843;n xu&#7845;t</div><p>&#8226; COST = <span class="num">$25M</span> | VALUE = <span class="num">$18M</span> | PRICE = <span class="num">$15M</span><br>&#8594; COST &gt; VALUE &gt; PRICE</p></div>
+<div class="ex-box"><div class="ex-title">V&#237; d&#7909; 2: Mua c&#244;ng ty c&#244;ng ngh&#7879;</div><p>&#8226; VALUE = <span class="num">$50M</span> | PRICE = <span class="num">$60M</span> | COST (t&#7921; x&#226;y) = <span class="num">$80M</span><br>&#8594; COST &gt; PRICE &gt; VALUE</p></div>
+<div class="insight">&#9888;&#65039; <strong>Quy t&#7855;c v&#224;ng:</strong> Kh&#244;ng suy ra VALUE t&#7915; PRICE, kh&#244;ng d&#7921;a qu&#225; nhi&#7873;u v&#224;o COST.</div>
+</div>
+</div>
+
+<!-- ==================== TAB 3: DLOM vs DLOC ==================== -->
+<div class="tab-content" id="tab3">
+<div class="section-card">
+<h2>&#128178; DLOM vs DLOC</h2>
+<div class="vs-box">
+<div class="vs-left"><h4>&#128167; DLOM</h4><p><strong>Discount for Lack of Marketability</strong></p><p style="margin-top:8px">T&#224;i s&#7843;n <strong>kh&#243; b&#225;n</strong></p><p>"B&#225;n &#273;&#432;&#7907;c nhanh kh&#244;ng?"</p><span class="tag">Nguy&#234;n t&#7855;c #8</span></div>
+<div class="vs-middle">VS</div>
+<div class="vs-right"><h4>&#128101; DLOC</h4><p><strong>Discount for Lack of Control</strong></p><p style="margin-top:8px"><strong>Kh&#244;ng c&#243; quy&#7873;n ki&#7875;m so&#225;t</strong></p><p>"C&#243; quy&#7873;n ra quy&#7871;t &#273;&#7883;nh?"</p><span class="tag">Nguy&#234;n t&#7855;c #9</span></div>
+</div>
+<h3>4 T&#236;nh hu&#7889;ng th&#7921;c t&#7871;:</h3>
+<div class="ex-box"><div class="ex-title">51% c&#7893; phi&#7871;u ni&#234;m y&#7871;t</div><p><span class="pill pill-green">Kh&#244;ng DLOM</span> <span class="pill pill-green">Kh&#244;ng DLOC</span></p></div>
+<div class="ex-box"><div class="ex-title">5% c&#7893; phi&#7871;u ni&#234;m y&#7871;t</div><p><span class="pill pill-green">Kh&#244;ng DLOM</span> <span class="pill pill-red">C&#243; DLOC</span></p></div>
+<div class="ex-box"><div class="ex-title">10% c&#244;ng ty t&#432; nh&#226;n</div><p><span class="pill pill-red">C&#243; DLOM</span> <span class="pill pill-red">C&#243; DLOC</span></p></div>
+<div class="ex-box"><div class="ex-title">90% c&#244;ng ty t&#432; nh&#226;n</div><p><span class="pill pill-red">C&#243; DLOM</span> <span class="pill pill-green">Kh&#244;ng DLOC</span></p></div>
+<h3>S&#417; &#273;&#7891; c&#7897;ng d&#7891;n:</h3>
+<div class="flow">
+<span class="flow-item">Pro rata: $10M</span><span class="flow-arrow">&#10132;</span>
+<span class="flow-result bad">DLOC -20%: $8M</span><span class="flow-arrow">&#10132;</span>
+<span class="flow-result bad">DLOM -15%: $6.8M</span>
+</div>
+</div>
+</div>
+
+<!-- ==================== TAB 4: THỜI GIAN vs TƯƠNG LAI ==================== -->
+<div class="tab-content" id="tab4">
+<div class="section-card">
+<h2>&#9200; Th&#7901;i &#272;i&#7875;m (#2) vs T&#432;&#417;ng Lai (#7)</h2>
+<div class="vs-box">
+<div class="vs-left"><h4>&#9200; #2: Time Specific</h4><p>G&#7855;n v&#7899;i <strong>1 ng&#224;y c&#7909; th&#7875;</strong></p><p>"&#272;&#7883;nh gi&#225; v&#224;o ng&#224;y n&#224;o?"</p><span class="tag">&#272;I&#7874;M M&#7888;C</span></div>
+<div class="vs-middle">vs</div>
+<div class="vs-right"><h4>&#128302; #7: Future Returns</h4><p>K&#7923; v&#7885;ng <strong>l&#7907;i nhu&#7853;n t&#432;&#417;ng lai</strong></p><p>"T&#432;&#417;ng lai ra sao?"</p><span class="tag">H&#431;&#7898;NG NH&#204;N</span></div>
+</div>
+<div class="insight">&#128161; T&#7841;i m&#7895;i th&#7901;i &#273;i&#7875;m (#2), k&#7923; v&#7885;ng t&#432;&#417;ng lai (#7) kh&#225;c nhau &#8594; gi&#225; tr&#7883; kh&#225;c nhau.</div>
+</div>
+<div class="section-card">
+<h2>&#128202; Th&#244;ng Tin (#1) vs X&#233;t &#272;o&#225;n (#4)</h2>
+<div class="vs-box">
+<div class="vs-left"><h4>#1: Information</h4><p><strong>Data kh&#225;c</strong> &#8594; k&#7871;t qu&#7843; kh&#225;c</p><span class="tag">&#272;&#7846;U V&#192;O kh&#225;c</span></div>
+<div class="vs-middle">vs</div>
+<div class="vs-right"><h4>#4: Judgement</h4><p><strong>C&#249;ng data</strong>, gi&#7843; &#273;&#7883;nh kh&#225;c</p><span class="tag">X&#7916; L&#221; kh&#225;c</span></div>
+</div>
+<div class="insight">&#128161; Data kh&#225;c = #1. C&#249;ng data nh&#432;ng k&#7871;t qu&#7843; kh&#225;c = #4.</div>
+</div>
+</div>
+
+<!-- ==================== TAB 5: CÁC CẶP DỄ NHẦM ==================== -->
+<div class="tab-content" id="tab5">
+<div class="section-card">
+<h2>&#9888;&#65039; C&#225;c C&#7863;p D&#7877; Nh&#7847;m</h2>
+<h3>&#9312; Purpose (#3) vs Judgement (#4)</h3>
+<table class="cmp-table">
+<tr><th></th><th>#3: Purpose</th><th>#4: Judgement</th></tr>
+<tr><td class="label-col">Ngu&#7891;n g&#7889;c</td><td>M&#7909;c &#273;&#237;ch kh&#225;c nhau</td><td>C&#249;ng m&#7909;c &#273;&#237;ch, ng&#432;&#7901;i kh&#225;c</td></tr>
+<tr><td class="label-col">V&#237; d&#7909;</td><td>Financing=$60M vs Acquisition=$100M</td><td>Valuer A=$100M vs B=$75M</td></tr>
+<tr><td class="label-col">T&#7841;i sao?</td><td>Basis of value kh&#225;c</td><td>Gi&#7843; &#273;&#7883;nh kh&#225;c</td></tr>
+</table>
+<h3>&#9313; Risk (#6) vs Future (#7)</h3>
+<table class="cmp-table">
+<tr><th></th><th>#6: Risk</th><th>#7: Future</th></tr>
+<tr><td class="label-col">G&#243;c nh&#236;n</td><td>Ti&#234;u c&#7921;c (gi&#7843;m gi&#225; tr&#7883;)</td><td>T&#237;ch c&#7921;c (t&#7841;o gi&#225; tr&#7883;)</td></tr>
+<tr><td class="label-col">Trong DCF</td><td>Discount rate (m&#7851;u s&#7889;)</td><td>Cash flows (t&#7917; s&#7889;)</td></tr>
+</table>
+<h3>&#9314; Price&#8800;Value (#5) vs Cost&#8800;Value (#10)</h3>
+<table class="cmp-table">
+<tr><th></th><th>#5: Price&#8800;Value</th><th>#10: Cost&#8800;Value</th></tr>
+<tr><td class="label-col">So s&#225;nh</td><td>Gi&#225; giao d&#7883;ch vs gi&#225; tr&#7883;</td><td>Chi ph&#237; t&#7841;o ra vs gi&#225; tr&#7883;</td></tr>
+<tr><td class="label-col">Th&#7901;i gian</td><td>Hi&#7879;n t&#7841;i/t&#432;&#417;ng lai</td><td>Qu&#225; kh&#7913;</td></tr>
+</table>
+</div>
+</div>
+
+<!-- ==================== TAB 6: QUIZ ==================== -->
+<div class="tab-content" id="tab6">
+<div class="quiz-section">
+<h2>&#127941; Quiz Ph&#226;n Bi&#7879;t Nguy&#234;n T&#7855;c</h2>
+<div class="quiz-info">C&#226;u <span id="qNum">1</span>/15 | &#272;i&#7875;m: <span id="qScore">0</span></div>
+<div id="quizContainer"></div>
+<div class="quiz-nav"><button class="quiz-btn" id="nextBtn" onclick="nextQ()" disabled>C&#226;u Ti&#7871;p &#10132;</button></div>
+<div class="quiz-score" id="finalScore" style="display:none"></div>
+</div>
+</div>
+
+</div>
+
+<script>
+function showTab(idx){
+  document.querySelectorAll('.nav-tab').forEach(function(t,i){t.classList.toggle('active',i===idx);});
+  for(var i=0;i<7;i++){var el=document.getElementById('tab'+i);if(el)el.classList.toggle('active',i===idx);}
+  if(idx===6&&!quizStarted){initQuiz();quizStarted=true;}
+}
+function toggleC(el){
+  var body=el.nextElementSibling;var arrow=el.querySelector('.arrow');
+  body.classList.toggle('show');arrow.classList.toggle('open');
+}
+
+var quizStarted=false;
+var quizData=[
+  {q:"A ch\u1ec9 c\u00f3 BCTC, B c\u00f3 th\u00eam d\u1ef1 b\u00e1o + h\u1ee3p \u0111\u1ed3ng. K\u1ebft qu\u1ea3 kh\u00e1c v\u00ec nguy\u00ean t\u1eafc n\u00e0o?",opts:["#1 Information driven","#4 Professional judgement","#3 Purpose dependent","#2 Time specific"],ai:0,explain:"Data kh\u00e1c nhau \u2192 #1 Information driven."},
+  {q:"C\u00f9ng data, c\u00f9ng DCF, Valuer A ch\u1ecdn 15%, B ch\u1ecdn 20%. Nguy\u00ean t\u1eafc?",opts:["#4 Professional judgement","#1 Information","#6 Risk & return","#3 Purpose"],ai:0,explain:"C\u00f9ng data, gi\u1ea3 \u0111\u1ecbnh kh\u00e1c \u2192 #4 Judgement."},
+  {q:"Financing=$60M vs Acquisition=$100M. Nguy\u00ean t\u1eafc?",opts:["#3 Purpose dependent","#5 Price\u2260Value","#4 Judgement","#1 Information"],ai:0,explain:"M\u1ee5c \u0111\u00edch kh\u00e1c \u2192 basis kh\u00e1c \u2192 #3."},
+  {q:"Value l\u00e0 g\u00ec: opinion hay fact?",opts:["Opinion (\u00fd ki\u1ebfn)","Fact (s\u1ef1 th\u1eadt)","Historical record","Market consensus"],ai:0,explain:"Value = opinion/estimate c\u1ee7a valuer."},
+  {q:"S\u1ed1 ti\u1ec1n th\u1ef1c t\u1ebf giao d\u1ecbch g\u1ecdi l\u00e0 g\u00ec?",opts:["Price","Value","Cost","Enterprise value"],ai:0,explain:"Price = s\u1ed1 ti\u1ec1n th\u1ef1c t\u1ebf giao d\u1ecbch (fact)."},
+  {q:"Chi ph\u00ed x\u00e2y nh\u00e0 m\u00e1y $25M g\u1ecdi l\u00e0?",opts:["Cost","Value","Price","Book value"],ai:0,explain:"Cost = chi ph\u00ed \u0111\u00e3 b\u1ecf ra."},
+  {q:"DLOM \u00e1p d\u1ee5ng khi n\u00e0o?",opts:["T\u00e0i s\u1ea3n kh\u00f3 b\u00e1n (illiquid)","Kh\u00f4ng c\u00f3 quy\u1ec1n ki\u1ec3m so\u00e1t","R\u1ee7i ro cao","Chi ph\u00ed > gi\u00e1 tr\u1ecb"],ai:0,explain:"DLOM = kh\u00f3 b\u00e1n."},
+  {q:"DLOC \u00e1p d\u1ee5ng khi n\u00e0o?",opts:["Thi\u1ec3u s\u1ed1, kh\u00f4ng quy\u1ec1n ki\u1ec3m so\u00e1t","Kh\u00f3 b\u00e1n","R\u1ee7i ro cao","Cost > Value"],ai:0,explain:"DLOC = kh\u00f4ng c\u00f3 quy\u1ec1n ki\u1ec3m so\u00e1t."},
+  {q:"5% c\u1ed5 phi\u1ebfu NI\u00caM Y\u1EBET. Chi\u1ebft kh\u1ea5u n\u00e0o?",opts:["Ch\u1ec9 DLOC","Ch\u1ec9 DLOM","C\u1ea3 DLOM+DLOC","Kh\u00f4ng chi\u1ebft kh\u1ea5u"],ai:0,explain:"Ni\u00eam y\u1ebft=liquid. 5%=thi\u1ec3u s\u1ed1. Ch\u1ec9 DLOC."},
+  {q:"10% c\u00f4ng ty T\u01af NH\u00c2N. Chi\u1ebft kh\u1ea5u?",opts:["C\u1ea3 DLOM+DLOC","Ch\u1ec9 DLOM","Ch\u1ec9 DLOC","Kh\u00f4ng"],ai:0,explain:"T\u01b0 nh\u00e2n=DLOM. 10%=DLOC. C\u1ea3 hai."},
+  {q:"Trong DCF, Risk (#6) \u1ea3nh h\u01b0\u1edfng ph\u1ea7n n\u00e0o?",opts:["Discount rate (m\u1eabu s\u1ed1)","Cash flows (t\u1eed s\u1ed1)","C\u1ea3 hai","Kh\u00f4ng li\u00ean quan"],ai:0,explain:"Risk \u2192 discount rate (m\u1eabu s\u1ed1)."},
+  {q:"Trong DCF, Future (#7) \u1ea3nh h\u01b0\u1edfng ph\u1ea7n n\u00e0o?",opts:["Cash flows (t\u1eed s\u1ed1)","Discount rate (m\u1eabu s\u1ed1)","C\u1ea3 hai","Kh\u00f4ng"],ai:0,explain:"Future returns \u2192 cash flows (t\u1eed s\u1ed1)."},
+  {q:"12/2019=$300M, 6/2020=$200M, 12/2021=$500M. K\u1ebft h\u1ee3p nguy\u00ean t\u1eafc?",opts:["#2 (Time) + #7 (Future)","#1 + #4","#3 + #6","#5 + #10"],ai:0,explain:"Th\u1eddi \u0111i\u1ec3m kh\u00e1c (#2) + k\u1ef3 v\u1ecdng kh\u00e1c (#7)."},
+  {q:"90% c\u00f4ng ty T\u01af NH\u00c2N. Chi\u1ebft kh\u1ea5u n\u00e0o?",opts:["Ch\u1ec9 DLOM","C\u1ea3 DLOM+DLOC","Ch\u1ec9 DLOC","Kh\u00f4ng"],ai:0,explain:"T\u01b0 nh\u00e2n=DLOM. 90%=ki\u1ec3m so\u00e1t=kh\u00f4ng DLOC."},
+  {q:"Valuation l\u00e0 s\u1ef1 k\u1ebft h\u1ee3p gi\u1eefa?",opts:["Science v\u00e0 Art","Math v\u00e0 Physics","Theory v\u00e0 Practice","Law v\u00e0 Finance"],ai:0,explain:"Science (quantitative) + Art (judgement)."}
+];
+
+function shuffle(arr){var a=arr.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;}return a;}
+var shuffled,currentQ=0,score=0,answered=false;
+function initQuiz(){
+  shuffled=shuffle(quizData).map(function(q){
+    var correctText=q.opts[q.ai];var sOpts=shuffle(q.opts.slice());var newAi=sOpts.indexOf(correctText);
+    return{q:q.q,sOpts:sOpts,correctIdx:newAi,explain:q.explain};
+  });
+  currentQ=0;score=0;answered=false;renderQ();
+}
+function renderQ(){
+  var c=document.getElementById("quizContainer");c.innerHTML="";var q=shuffled[currentQ];
+  var div=document.createElement("div");div.className="quiz-q active";var oh="";
+  q.sOpts.forEach(function(o,i){oh+='<div class="quiz-opt" onclick="checkQ(this,'+i+')">'+String.fromCharCode(65+i)+'. '+o+'</div>';});
+  div.innerHTML='<p><strong>C\u00e2u '+(currentQ+1)+':</strong> '+q.q+'</p><div class="quiz-opts">'+oh+'</div><div class="quiz-explain" id="ex'+currentQ+'">'+q.explain+'</div>';
+  c.appendChild(div);
+  document.getElementById("qNum").textContent=currentQ+1;
+  document.getElementById("qScore").textContent=score;
+  document.getElementById("nextBtn").disabled=true;
+  document.getElementById("nextBtn").textContent="C\u00e2u Ti\u1ebfp \u27a1";answered=false;
+}
+function checkQ(el,idx){
+  if(answered)return;answered=true;var q=shuffled[currentQ];
+  var opts=el.parentElement.querySelectorAll(".quiz-opt");
+  opts.forEach(function(o){o.classList.add("disabled");});
+  if(idx===q.correctIdx){el.classList.add("correct");score++;}
+  else{el.classList.add("wrong");opts[q.correctIdx].classList.add("correct");}
+  document.getElementById("qScore").textContent=score;
+  document.getElementById("ex"+currentQ).style.display="block";
+  document.getElementById("nextBtn").disabled=false;
+  if(currentQ===shuffled.length-1)document.getElementById("nextBtn").textContent="Xem K\u1ebft Qu\u1ea3 \uD83C\uDFC6";
+}
+function nextQ(){
+  if(currentQ<shuffled.length-1){currentQ++;renderQ();}
+  else{
+    document.getElementById("quizContainer").innerHTML="";
+    document.getElementById("nextBtn").style.display="none";
+    document.getElementById("quizInfo").style.display="none";
+    var pct=Math.round(score/shuffled.length*100);
+    var msg=pct>=80?"\uD83C\uDF1F Xu\u1EA5t s\u1EAFc!":pct>=60?"\uD83D\uDC4D Kh\u00E1 t\u1ED1t!":"\uD83D\uDCDA \u00D4n l\u1EA1i nh\u00E9!";
+    var fs=document.getElementById("finalScore");fs.style.display="block";
+    fs.innerHTML=score+"/"+shuffled.length+" ("+pct+"%)<br><span style='font-size:0.8em;color:#94a3b8'>"+msg+"</span><br><br><button class='quiz-btn' onclick='initQuiz();document.getElementById(\"nextBtn\").style.display=\"block\";document.getElementById(\"quizInfo\").style.display=\"block\";document.getElementById(\"finalScore\").style.display=\"none\"'>L\u00e0m L\u1ea1i \uD83D\uDD04</button>";
+  }
+}
+</script>
+</body>
+</html>

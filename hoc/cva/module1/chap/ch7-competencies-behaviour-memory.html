@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ch7 - Năng lực, Vai trò & Hành vi của Thẩm định viên</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh;padding:10px;}
+.container{max-width:900px;margin:0 auto;}
+h1{text-align:center;color:#fbbf24;font-size:1.5em;margin:10px 0;text-shadow:0 0 20px rgba(251,191,36,0.3);}
+.subtitle{text-align:center;color:#94a3b8;font-size:0.9em;margin-bottom:15px;}
+.tabs{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:15px;justify-content:center;}
+.tab{padding:8px 14px;background:#1e293b;border:1px solid #334155;border-radius:8px;cursor:pointer;color:#94a3b8;font-size:0.85em;transition:all 0.3s;}
+.tab:hover{background:#334155;color:#e2e8f0;}
+.tab.active{background:#f59e0b;color:#0f172a;border-color:#f59e0b;font-weight:bold;}
+.panel{display:none;animation:fadeIn 0.3s ease;}
+.panel.active{display:block;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+.card{background:#1e293b;border:1px solid #334155;border-radius:12px;padding:16px;margin-bottom:12px;}
+.card h3{color:#f59e0b;margin-bottom:8px;font-size:1.05em;}
+.card h4{color:#38bdf8;margin:10px 0 6px;font-size:0.95em;}
+.mnemonic{background:linear-gradient(135deg,#1a1a2e,#16213e);border:2px solid #f59e0b;border-radius:12px;padding:16px;margin:12px 0;text-align:center;}
+.mnemonic .vn{font-size:1.3em;color:#f59e0b;font-weight:bold;margin-bottom:6px;}
+.mnemonic .en{font-size:0.85em;color:#94a3b8;font-style:italic;}
+.story{background:linear-gradient(135deg,#0c1e0c,#1a2e1a);border:2px solid #4ade80;border-radius:12px;padding:16px;margin:12px 0;}
+.story h3{color:#4ade80;}
+.story p{line-height:1.7;margin:6px 0;color:#d1fae5;}
+.highlight{color:#f59e0b;font-weight:bold;}
+.highlight-blue{color:#38bdf8;font-weight:bold;}
+.highlight-green{color:#4ade80;font-weight:bold;}
+.highlight-red{color:#f87171;font-weight:bold;}
+.highlight-purple{color:#c084fc;font-weight:bold;}
+.collapse-btn{background:#334155;border:1px solid #475569;color:#e2e8f0;padding:10px 16px;border-radius:8px;cursor:pointer;width:100%;text-align:left;font-size:0.95em;margin:4px 0;transition:all 0.3s;}
+.collapse-btn:hover{background:#475569;}
+.collapse-btn.open{background:#1e40af;border-color:#3b82f6;}
+.collapse-content{display:none;padding:12px;background:#0f172a;border:1px solid #334155;border-radius:0 0 8px 8px;margin-top:-4px;margin-bottom:8px;}
+.collapse-content.open{display:block;}
+table{width:100%;border-collapse:collapse;margin:10px 0;font-size:0.9em;}
+th{background:#1e40af;color:#e2e8f0;padding:10px;text-align:left;border:1px solid #334155;}
+td{padding:10px;border:1px solid #334155;background:#1e293b;}
+tr:nth-child(even) td{background:#162032;}
+.trap{background:linear-gradient(135deg,#2a0a0a,#1a0505);border:2px solid #f87171;border-radius:12px;padding:16px;margin:12px 0;}
+.trap h3{color:#f87171;}
+.trap-item{background:#1e293b;border-left:4px solid #f87171;padding:12px;margin:8px 0;border-radius:0 8px 8px 0;}
+.trap-item .wrong{color:#f87171;font-weight:bold;}
+.trap-item .right{color:#4ade80;font-weight:bold;}
+.quiz-area{background:#1e293b;border-radius:12px;padding:20px;margin:10px 0;}
+.quiz-area h3{color:#f59e0b;margin-bottom:15px;}
+.q-card{background:#0f172a;border:1px solid #334155;border-radius:10px;padding:16px;margin:10px 0;}
+.q-card p{margin-bottom:10px;font-weight:bold;color:#e2e8f0;}
+.q-opt{display:block;width:100%;padding:10px 14px;margin:4px 0;background:#1e293b;border:2px solid #334155;border-radius:8px;color:#e2e8f0;cursor:pointer;text-align:left;font-size:0.9em;transition:all 0.2s;}
+.q-opt:hover{border-color:#f59e0b;background:#2d3a50;}
+.q-opt.correct{background:#064e3b;border-color:#4ade80;color:#4ade80;}
+.q-opt.wrong{background:#450a0a;border-color:#f87171;color:#f87171;}
+.q-opt:disabled{cursor:not-allowed;opacity:0.8;}
+.explain{display:none;background:#1a2332;border-left:4px solid #38bdf8;padding:12px;margin-top:8px;border-radius:0 8px 8px 0;font-size:0.9em;color:#93c5fd;}
+.score-box{text-align:center;padding:20px;background:#0f172a;border-radius:12px;margin-top:15px;font-size:1.2em;}
+.badge{display:inline-block;padding:4px 10px;border-radius:20px;font-size:0.75em;font-weight:bold;margin:2px;}
+.badge-gold{background:#f59e0b;color:#0f172a;}
+.badge-blue{background:#3b82f6;color:#fff;}
+.badge-green{background:#4ade80;color:#0f172a;}
+.badge-red{background:#f87171;color:#0f172a;}
+.badge-purple{background:#c084fc;color:#0f172a;}
+.flow-box{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;align-items:center;margin:12px 0;}
+.flow-item{background:#1e40af;padding:8px 16px;border-radius:20px;color:#e2e8f0;font-weight:bold;font-size:0.9em;}
+.flow-arrow{color:#f59e0b;font-size:1.5em;font-weight:bold;}
+ul{padding-left:20px;margin:6px 0;}
+li{margin:4px 0;line-height:1.6;}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+@media(max-width:600px){.grid-2{grid-template-columns:1fr;}.tabs{gap:2px;}.tab{padding:6px 10px;font-size:0.8em;}}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>🏛️ Chương 7: Năng lực, Vai trò & Hành vi của Thẩm định viên</h1>
+<p class="subtitle">Module 1 – CVA Programme | Competencies, Role and Behaviour of Business Valuers</p>
+
+<div class="tabs">
+<div class="tab active" onclick="showTab(0)">Tổng quan</div>
+<div class="tab" onclick="showTab(1)">Năng lực</div>
+<div class="tab" onclick="showTab(2)">Vai trò</div>
+<div class="tab" onclick="showTab(3)">Hành vi</div>
+<div class="tab" onclick="showTab(4)">So sánh</div>
+<div class="tab" onclick="showTab(5)">Bẫy thi</div>
+<div class="tab" onclick="showTab(6)">Quiz</div>
+</div>
+
+<!-- TAB 0: TỔNG QUAN -->
+<div class="panel active" id="panel0">
+<div class="card">
+<h3>📋 Tổng quan Chương 7</h3>
+<p>Chương này bàn về <span class="highlight">con người</span> – thẩm định viên phải có năng lực gì, đóng vai trò gì, và hành xử ra sao. Đây là chương cuối cùng của Module 1, tập trung vào khía cạnh <span class="highlight-blue">đạo đức và chuyên nghiệp</span> thay vì kỹ thuật.</p>
+<h4>5 phần chính:</h4>
+<ul>
+<li><span class="highlight">7.1</span> Năng lực (Competencies) – IVS100, Competency Framework, 3 thuộc tính</li>
+<li><span class="highlight">7.2</span> Vai trò (Role) – Advocate / Expert / Arbitrator + Kế toán + Kiểm toán</li>
+<li><span class="highlight">7.3</span> Hành vi (Behaviour) – 5 nguyên tắc đạo đức Code of Ethical Principles</li>
+<li><span class="highlight">7.4</span> Yêu cầu & Chứng chỉ (Requirements & Credentials)</li>
+<li><span class="highlight">7.5</span> PMO – Membership Organisation Requirements</li>
+</ul>
+</div>
+
+<div class="mnemonic">
+<div class="vn">🧠 "NĂM VẤN ĐỀ CỦA NGƯỜI THẨM ĐỊNH"</div>
+<div class="vn">NĂNG lực → VAI trò → HÀNH vi → YÊU cầu → TỔ chức</div>
+<div class="en">Competencies → Roles → Behaviour → Requirements → PMO</div>
+</div>
+
+<div class="mnemonic">
+<div class="vn">🎯 6 Nguyên tắc IVS100 (10.01):</div>
+<div class="vn">"CHÍNH TRỰC, KHÁCH QUAN, CÔNG BẰNG, BÍ MẬT, NĂNG LỰC, CHUYÊN NGHIỆP"</div>
+<div class="en">Integrity, Objectivity, Impartiality, Confidentiality, Competence, Professionalism</div>
+</div>
+
+<div class="mnemonic">
+<div class="vn">🎭 3 Vai trò: "BIỆN HỘ – CHUYÊN GIA – TRỌNG TÀI"</div>
+<div class="en">Advocate (M&A) – Expert (Litigation, duty to court) – Arbitrator (Dispute resolution)</div>
+</div>
+
+<div class="mnemonic">
+<div class="vn">⚖️ 5 Nguyên tắc Đạo đức Code:</div>
+<div class="vn">"TRỰC – QUAN – LỰC – MẬT – NGHIỆP"</div>
+<div class="en">Integrity – Objectivity – Competence – Confidentiality – Professional Behaviour</div>
+<div class="en" style="margin-top:4px;color:#f59e0b;">Nhớ: "Chính TRỰC, Khách QUAN, Năng LỰC, Bí MẬT, Chuyên NGHIỆP"</div>
+</div>
+
+<div class="story">
+<h3>📖 Câu chuyện: Thẩm định viên Minh và 5 thử thách đạo đức</h3>
+<p>Anh <span class="highlight">Minh</span> vừa được cấp chứng chỉ CVA. Ngày đầu tiên đi làm, anh đối mặt với 5 tình huống:</p>
+<p>1️⃣ <span class="highlight-green">Chính trực</span>: CFO yêu cầu dùng giả định lạc quan hơn để tăng giá trị. Minh từ chối: "Tôi phải <em>thẳng thắn và trung thực</em>."</p>
+<p>2️⃣ <span class="highlight-blue">Khách quan</span>: Công ty mẹ của Minh sở hữu cổ phần công ty khách hàng. Minh từ chối: "Tôi có <em>xung đột lợi ích</em>."</p>
+<p>3️⃣ <span class="highlight-purple">Năng lực</span>: Khách hàng yêu cầu định giá công ty biotech. Minh chưa có kinh nghiệm → mời chuyên gia hỗ trợ và <em>công khai việc này</em>.</p>
+<p>4️⃣ <span class="highlight-red">Bí mật</span>: Đồng nghiệp hỏi "Công ty X được định giá bao nhiêu?" Minh từ chối: "Tôi <em>không được tiết lộ</em> nếu không có sự đồng ý."</p>
+<p>5️⃣ <span class="highlight">Chuyên nghiệp</span>: Khách hàng gợi ý "hoa hồng" nếu định giá cao. Minh báo cáo hành vi hối lộ và <em>rút khỏi engagement</em>.</p>
+<p style="text-align:center;margin-top:10px;color:#f59e0b;font-weight:bold;">→ Mỗi tình huống = 1 nguyên tắc đạo đức. Nhớ Minh = nhớ 5 nguyên tắc!</p>
+</div>
+</div>
+
+<!-- TAB 1: NĂNG LỰC -->
+<div class="panel" id="panel1">
+<div class="card">
+<h3>7.1 Năng lực của Thẩm định viên (Competencies)</h3>
+<p>Theo <span class="highlight">IVS100 Framework 10.01</span>, thẩm định viên phải tuân thủ 6 nguyên tắc:</p>
+<div class="flow-box">
+<span class="flow-item">Integrity</span>
+<span class="flow-item">Objectivity</span>
+<span class="flow-item">Impartiality</span>
+<span class="flow-item">Confidentiality</span>
+<span class="flow-item">Competence</span>
+<span class="flow-item">Professionalism</span>
+</div>
+</div>
+
+<button class="collapse-btn" onclick="toggle(this)">📄 Các tài liệu quan trọng của IVSC</button>
+<div class="collapse-content">
+<table>
+<tr><th>Tài liệu</th><th>Năm</th><th>Nội dung</th></tr>
+<tr><td><span class="highlight">Competency Framework</span></td><td>2012</td><td>Khung năng lực cho thẩm định viên chuyên nghiệp</td></tr>
+<tr><td><span class="highlight-blue">Code of Ethical Principles</span></td><td>2011</td><td>5 nguyên tắc đạo đức cơ bản</td></tr>
+<tr><td><span class="highlight-green">IPS → PMO</span></td><td>2016</td><td>International Professional Standards → Professional Membership Organisation Requirements</td></tr>
+<tr><td><span class="highlight-purple">Guide to Audit Process</span></td><td>2014</td><td>Hướng dẫn quy trình kiểm toán</td></tr>
+</table>
+</div>
+
+<button class="collapse-btn" onclick="toggle(this)">🔺 3 Thuộc tính Năng lực (Competency Attributes)</button>
+<div class="collapse-content">
+<div class="mnemonic">
+<div class="vn">"KIẾN THỨC – ĐẠO ĐỨC – KINH NGHIỆM"</div>
+<div class="en">Specialised Knowledge/Skills – Professional Values/Ethics – Relevant Practical Experience</div>
+</div>
+<div class="grid-2">
+<div class="card">
+<h4>1. Kiến thức & Kỹ năng chuyên môn</h4>
+<p>Kiến thức chuyên sâu về định giá, kế toán, tài chính, pháp luật. Kỹ năng phân tích, xây dựng mô hình.</p>
+</div>
+<div class="card">
+<h4>2. Giá trị & Đạo đức nghề nghiệp</h4>
+<p>Cam kết phục vụ <span class="highlight-red">lợi ích công chúng</span> (public interest), không chỉ khách hàng/người thuê.</p>
+</div>
+</div>
+<div class="card">
+<h4>3. Kinh nghiệm thực tiễn liên quan</h4>
+<p>Kinh nghiệm thực tế trong lĩnh vực định giá doanh nghiệp. Không chỉ lý thuyết mà phải có thực hành.</p>
+</div>
+<div class="trap-item">
+<span class="highlight-red">⚠️ Quan trọng:</span> Thẩm định viên có nghĩa vụ hành động vì <span class="wrong">lợi ích CÔNG CHÚNG</span>, không chỉ vì khách hàng hay người thuê (client/employer). Đây là điểm khác biệt với nhiều nghề khác!
+</div>
+</div>
+
+<button class="collapse-btn" onclick="toggle(this)">📝 Ví dụ minh họa: Thẩm định viên A</button>
+<div class="collapse-content">
+<div class="card">
+<p><span class="highlight">Tình huống:</span> Thẩm định viên A được thuê định giá công ty dược phẩm. A có kiến thức tài chính nhưng thiếu kinh nghiệm ngành dược.</p>
+<p><span class="highlight-green">Giải pháp đúng:</span></p>
+<ul>
+<li>Tìm hiểu thêm về ngành dược phẩm (bổ sung kiến thức)</li>
+<li>Mời chuyên gia ngành dược hỗ trợ (bổ sung kinh nghiệm)</li>
+<li>Công khai việc sử dụng chuyên gia trong báo cáo (đạo đức)</li>
+</ul>
+<p>→ Đảm bảo đủ cả <span class="highlight">3 thuộc tính</span>: Kiến thức ✓ Đạo đức ✓ Kinh nghiệm ✓</p>
+</div>
+</div>
+</div>
+
+<!-- TAB 2: VAI TRÒ -->
+<div class="panel" id="panel2">
+<div class="card">
+<h3>7.2 Vai trò của Thẩm định viên (Roles)</h3>
+<p>Thẩm định viên có thể đóng <span class="highlight">3 vai trò khác nhau</span> tùy bối cảnh:</p>
+</div>
+
+<button class="collapse-btn" onclick="toggle(this)">🎭 3 Vai trò chính: Advocate – Expert – Arbitrator</button>
+<div class="collapse-content">
+<table>
+<tr><th>Vai trò</th><th>Bối cảnh</th><th>Nghĩa vụ chính</th><th>Đặc điểm</th></tr>
+<tr>
+<td><span class="highlight">Advocate<br>(Biện hộ)</span></td>
+<td>M&A advisory, tư vấn giao dịch</td>
+<td>Phục vụ <span class="highlight-blue">lợi ích khách hàng</span></td>
+<td>Đàm phán giá tốt nhất cho bên thuê; có thiên lệch hợp pháp</td>
+</tr>
+<tr>
+<td><span class="highlight-green">Expert<br>(Chuyên gia)</span></td>
+<td>Litigation, tranh tụng tòa án</td>
+<td>Nghĩa vụ với <span class="highlight-red">TÒA ÁN</span> (duty to court)</td>
+<td>Độc lập, khách quan, phục vụ sự thật; KHÔNG phải phục vụ bên thuê</td>
+</tr>
+<tr>
+<td><span class="highlight-purple">Arbitrator<br>(Trọng tài)</span></td>
+<td>Dispute resolution, giải quyết tranh chấp</td>
+<td>Công bằng cho <span class="highlight">CẢ HAI bên</span></td>
+<td>Quyết định ràng buộc; trung lập tuyệt đối</td>
+</tr>
+</table>
+<div class="trap-item">
+<span class="wrong">⚠️ BẪY THI LỚN NHẤT:</span> Thẩm định viên ra tòa với tư cách <span class="wrong">ADVOCATE</span> → <span class="right">SAI! Phải là EXPERT</span>. Expert có nghĩa vụ với TÒA ÁN, không phải với bên thuê!
+</div>
+</div>
+
+<button class="collapse-btn" onclick="toggle(this)">📊 Vai trò của Kế toán viên (Accountants)</button>
+<div class="collapse-content">
+<div class="card">
+<p>Kế toán viên sử dụng kết quả định giá trong nhiều tình huống:</p>
+<ul>
+<li><span class="highlight">Purchase Price Allocation (PPA)</span> – Phân bổ giá mua trong M&A</li>
+<li><span class="highlight-blue">Impairment Testing</span> – Kiểm tra suy giảm giá trị tài sản</li>
+<li><span class="highlight-green">Fair Value Measurement</span> – Đo lường giá trị hợp lý theo chuẩn kế toán</li>
+</ul>
+<p>→ Kế toán viên là <span class="highlight-red">người sử dụng</span> kết quả định giá, không phải người thẩm định.</p>
+</div>
+</div>
+
+<button class="collapse-btn" onclick="toggle(this)">🔍 IVSC Guide to Audit Process (2014)</button>
+<div class="collapse-content">
+<div class="card">
+<h4>Thẩm định viên trong quy trình kiểm toán</h4>
+<p>Có <span class="highlight">2 vai trò</span> khác nhau:</p>
+</div>
+<div class="grid-2">
+<div class="card" style="border-left:4px solid #f59e0b;">
+<h4 style="color:#f59e0b;">Thẩm định viên A – Hỗ trợ Ban quản lý</h4>
+<p><span class="badge badge-gold">Preparer</span></p>
+<ul>
+<li>Giúp management <span class="highlight">chuẩn bị</span> định giá</li>
+<li>Cung cấp số liệu cho báo cáo tài chính</li>
+<li>Là "tay" của management</li>
+</ul>
+</div>
+<div class="card" style="border-left:4px solid #3b82f6;">
+<h4 style="color:#3b82f6;">Thẩm định viên B – Hỗ trợ Kiểm toán viên</h4>
+<p><span class="badge badge-blue">Reviewer</span></p>
+<ul>
+<li>Giúp auditor <span class="highlight-blue">kiểm tra</span> định giá</li>
+<li>Đánh giá tính hợp lý của giả định</li>
+<li>Là "mắt" của auditor</li>
+</ul>
+</div>
+</div>
+<div class="mnemonic">
+<div class="vn">"A chuẩn bị (Preparer) cho Management, B kiểm tra (Reviewer) cho Auditor"</div>
+<div class="en">Valuer A assists management (preparation) | Valuer B assists auditors (review)</div>
+</div>
+</div>
+</div>
+
+<!-- TAB 3: HÀNH VI -->
+<div class="panel" id="panel3">
+<div class="card">
+<h3>7.3 Hành vi của Thẩm định viên – 5 Nguyên tắc Đạo đức</h3>
+<p>Theo <span class="highlight">IVSC Code of Ethical Principles (2011)</span>, có 5 nguyên tắc cơ bản:</p>
+<div class="mnemonic">
+<div class="vn">"TRỰC – QUAN – LỰC – MẬT – NGHIỆP"</div>
+<div class="en">Chính TRỰC → Khách QUAN → Năng LỰC → Bí MẬT → Chuyên NGHIỆP</div>
+</div>
+</div>
+
+<button class="collapse-btn" onclick="toggle(this)">1️⃣ Chính trực (Integrity)</button>
+<div class="collapse-content">
+<div class="card">
+<h4>Nguyên tắc:</h4>
+<p>Thẩm định viên phải <span class="highlight">thẳng thắn và trung thực</span> (straightforward and honest) trong mọi mối quan hệ nghề nghiệp.</p>
+<h4>Ví dụ minh họa:</h4>
+<div class="trap-item" style="border-left-color:#4ade80;">
+<p><span class="highlight-blue">Tình huống:</span> CFO của khách hàng yêu cầu thẩm định viên sử dụng giả định doanh thu <span class="wrong">lạc quan hơn thực tế</span> để tăng giá trị công ty trước vòng gọi vốn.</p>
+<p><span class="highlight-green">Hành xử đúng:</span> <span class="right">Từ chối</span>. Giải thích rằng giả định phải phản ánh triển vọng hợp lý, không phải mong muốn của management. Đề xuất sử dụng scenario analysis để thể hiện upside.</p>
+</div>
+</div>
+</div>
+
+<button class="collapse-btn" onclick="toggle(this)">2️⃣ Khách quan (Objectivity)</button>
+<div class="collapse-content">
+<div class="card">
+<h4>Nguyên tắc:</h4>
+<p>Không để <span class="highlight-red">xung đột lợi ích</span> (conflict of interest), thiên kiến, hoặc ảnh hưởng không đúng đắn chi phối phán đoán chuyên môn.</p>
+<h4>Ví dụ minh họa:</h4>
+<div class="trap-item" style="border-left-color:#4ade80;">
+<p><span class="highlight-blue">Tình huống:</span> Thẩm định viên được mời định giá Công ty X, nhưng phát hiện <span class="wrong">công ty mẹ của mình sở hữu cổ phần</span> trong Công ty X.</p>
+<p><span class="highlight-green">Hành xử đúng:</span> <span class="right">Từ chối engagement</span>. Có xung đột lợi ích vì kết quả định giá ảnh hưởng đến giá trị khoản đầu tư của công ty mẹ. Phải công khai xung đột và withdraw.</p>
+</div>
+</div>
+</div>
+
+<button class="collapse-btn" onclick="toggle(this)">3️⃣ Năng lực (Competence)</button>
+<div class="collapse-content">
+<div class="card">
+<h4>Nguyên tắc:</h4>
+<p>Duy trì kiến thức và kỹ năng chuyên môn ở mức cần thiết. Có thể <span class="highlight">tìm kiếm trợ giúp chuyên gia</span> MIỄN LÀ công khai trong báo cáo.</p>
+<h4>Ví dụ minh họa:</h4>
+<div class="trap-item" style="border-left-color:#4ade80;">
+<p><span class="highlight-blue">Tình huống:</span> Được yêu cầu định giá công ty <span class="highlight-purple">biotech</span> đang phát triển thuốc mới. Thẩm định viên có kinh nghiệm tài chính nhưng không am hiểu ngành dược.</p>
+<p><span class="highlight-green">Hành xử đúng:</span> <span class="right">Mời chuyên gia ngành dược hỗ trợ</span> đánh giá pipeline thuốc và xác suất thành công. Công khai việc sử dụng specialist trong báo cáo. KHÔNG được giấu việc này.</p>
+</div>
+<div class="trap-item">
+<span class="highlight-red">⚠️ Lưu ý thi:</span> Có thể seek specialist help → <span class="right">TRUE</span>, nhưng phải <span class="highlight">appropriately disclosed</span>. Nếu đáp án nói "can seek help WITHOUT disclosure" → <span class="wrong">FALSE</span>!
+</div>
+</div>
+</div>
+
+<button class="collapse-btn" onclick="toggle(this)">4️⃣ Bí mật (Confidentiality)</button>
+<div class="collapse-content">
+<div class="card">
+<h4>Nguyên tắc:</h4>
+<p>Bảo vệ thông tin thu được trong quá trình làm việc. <span class="highlight-red">Không tiết lộ</span> nếu không có sự đồng ý hoặc yêu cầu pháp lý.</p>
+<h4>Ví dụ minh họa:</h4>
+<div class="trap-item" style="border-left-color:#4ade80;">
+<p><span class="highlight-blue">Tình huống:</span> Đồng nghiệp cùng công ty (nhưng không liên quan đến dự án) hỏi: "Công ty X được định giá trong <span class="wrong">khoảng bao nhiêu?</span>"</p>
+<p><span class="highlight-green">Hành xử đúng:</span> <span class="right">Từ chối trả lời</span>. Thông tin định giá là bí mật của engagement. Chỉ được tiết lộ khi có (1) sự đồng ý của khách hàng, hoặc (2) yêu cầu pháp lý.</p>
+</div>
+</div>
+</div>
+
+<button class="collapse-btn" onclick="toggle(this)">5️⃣ Hành vi chuyên nghiệp (Professional Behaviour)</button>
+<div class="collapse-content">
+<div class="card">
+<h4>Nguyên tắc:</h4>
+<p>Hành động <span class="highlight">cẩn trọng</span> (diligently), báo cáo hành vi phi đạo đức, và sẵn sàng <span class="highlight-red">rút khỏi engagement</span> nếu cần.</p>
+<h4>Ví dụ minh họa:</h4>
+<div class="trap-item" style="border-left-color:#4ade80;">
+<p><span class="highlight-blue">Tình huống:</span> Khách hàng gợi ý sẽ trả <span class="wrong">"phí thưởng"</span> nếu kết quả định giá đạt mức mong muốn.</p>
+<p><span class="highlight-green">Hành xử đúng:</span> <span class="right">Báo cáo hành vi hối lộ</span> cho cấp trên và cơ quan có thẩm quyền. Xem xét rút khỏi engagement. Phí thẩm định KHÔNG được gắn với kết quả định giá (contingency fee = vi phạm).</p>
+</div>
+</div>
+</div>
+
+<button class="collapse-btn" onclick="toggle(this)">📜 7.4 Yêu cầu & Chứng chỉ (Requirements & Credentials)</button>
+<div class="collapse-content">
+<div class="card">
+<h4>4 Yêu cầu cơ bản:</h4>
+<ul>
+<li><span class="highlight">Professional Qualifications</span> – Bằng cấp chuyên môn</li>
+<li><span class="highlight-blue">Ethical Standards Adherence</span> – Tuân thủ chuẩn mực đạo đức</li>
+<li><span class="highlight-green">Practical Experience</span> – Kinh nghiệm thực tiễn</li>
+<li><span class="highlight-purple">CPD</span> – Continuing Professional Development (phát triển nghề nghiệp liên tục)</li>
+</ul>
+</div>
+<div class="card">
+<h4>6 Yêu cầu công nhận (Recognition Requirements):</h4>
+<div class="mnemonic">
+<div class="vn">"NGƯỜI TỐT, GIỎI, DÀY DẠN, CÓ ĐẠO ĐỨC, CÓ TỔ CHỨC, TUÂN LUẬT"</div>
+</div>
+<ol style="padding-left:20px;">
+<li><span class="highlight">Upright Character</span> – Tính cách đứng đắn</li>
+<li><span class="highlight-blue">Technical Proficiency</span> – Thành thạo kỹ thuật</li>
+<li><span class="highlight-green">Practical Experience</span> – Kinh nghiệm thực tế</li>
+<li><span class="highlight-purple">Code Adherence</span> – Tuân thủ bộ quy tắc</li>
+<li><span class="highlight-red">Accountability to Accredited Org</span> – Chịu trách nhiệm với tổ chức được công nhận</li>
+<li><span class="highlight">Statutory Compliance</span> – Tuân thủ pháp luật</li>
+</ol>
+</div>
+</div>
+
+<button class="collapse-btn" onclick="toggle(this)">🏢 7.5 PMO – Professional Membership Organisation Requirements</button>
+<div class="collapse-content">
+<div class="card">
+<h4>Lịch sử: IPS → PMO (2016)</h4>
+<p>International Professional Standards được đổi tên thành PMO Requirements vào năm 2016.</p>
+</div>
+<div class="card">
+<h4>Bảng 7.1 – Cấu trúc PMO</h4>
+<table>
+<tr><th>Series</th><th>Loại</th><th>Mã</th><th>Nội dung</th></tr>
+<tr><td rowspan="5"><span class="highlight">100<br>(Initial)</span></td><td rowspan="5">Yêu cầu ban đầu</td><td>PMO 101</td><td>Education</td></tr>
+<tr><td>PMO 102</td><td>Assessment of competence</td></tr>
+<tr><td>PMO 103</td><td>Practical experience</td></tr>
+<tr><td>PMO 104</td><td>Ethical & professional standards</td></tr>
+<tr><td>PMO 105</td><td>Public interest considerations</td></tr>
+<tr><td><span class="highlight-blue">200<br>(Continuing)</span></td><td>Yêu cầu duy trì</td><td>PMO 201</td><td>Continuing Professional Development (CPD)</td></tr>
+</table>
+</div>
+<div class="card">
+<h4>5 Mục tiêu của PMO:</h4>
+<div class="mnemonic">
+<div class="vn">"CHẤT – TIN – GIỎI – TOÀN CẦU – CHỊU TRÁCH NHIỆM"</div>
+</div>
+<ol style="padding-left:20px;">
+<li><span class="highlight">Consistency & Quality</span> – Nhất quán và chất lượng</li>
+<li><span class="highlight-blue">Ethics & Public Trust</span> – Đạo đức và niềm tin công chúng</li>
+<li><span class="highlight-green">Professionalism & Competence</span> – Chuyên nghiệp và năng lực</li>
+<li><span class="highlight-purple">Global Mobility</span> – Di chuyển toàn cầu (công nhận quốc tế)</li>
+<li><span class="highlight-red">Accountability & Regulatory Support</span> – Trách nhiệm và hỗ trợ pháp quy</li>
+</ol>
+</div>
+</div>
+</div>
+
+<!-- TAB 4: SO SÁNH -->
+<div class="panel" id="panel4">
+<div class="card">
+<h3>📊 Bảng So sánh</h3>
+</div>
+
+<div class="card">
+<h4>So sánh 3 Vai trò của Thẩm định viên</h4>
+<table>
+<tr><th>Tiêu chí</th><th><span class="highlight">Advocate</span></th><th><span class="highlight-green">Expert</span></th><th><span class="highlight-purple">Arbitrator</span></th></tr>
+<tr><td>Bối cảnh</td><td>M&A, tư vấn giao dịch</td><td>Tòa án, tranh tụng</td><td>Giải quyết tranh chấp</td></tr>
+<tr><td>Phục vụ ai?</td><td>Khách hàng</td><td><span class="highlight-red">Tòa án</span></td><td>Cả hai bên</td></tr>
+<tr><td>Thiên lệch?</td><td>Có (hợp pháp)</td><td>KHÔNG</td><td>KHÔNG</td></tr>
+<tr><td>Quyết định?</td><td>Không</td><td>Không (tòa quyết)</td><td>CÓ (ràng buộc)</td></tr>
+<tr><td>Từ khóa</td><td>Best price for client</td><td>Duty to court</td><td>Binding decision</td></tr>
+</table>
+</div>
+
+<div class="card">
+<h4>So sánh 6 Nguyên tắc IVS100 vs 5 Nguyên tắc Code</h4>
+<table>
+<tr><th>IVS100 (10.01) – 6 nguyên tắc</th><th>Code of Ethical Principles – 5 nguyên tắc</th></tr>
+<tr><td>Integrity ✓</td><td>Integrity ✓</td></tr>
+<tr><td>Objectivity ✓</td><td>Objectivity ✓</td></tr>
+<tr><td><span class="highlight-red">Impartiality</span> ✓</td><td><span class="highlight-red">—</span></td></tr>
+<tr><td>Confidentiality ✓</td><td>Confidentiality ✓</td></tr>
+<tr><td>Competence ✓</td><td>Competence ✓</td></tr>
+<tr><td>Professionalism ✓</td><td>Professional Behaviour ✓</td></tr>
+</table>
+<p style="margin-top:8px;"><span class="highlight-red">⚠️ Khác biệt:</span> IVS100 có <span class="highlight">Impartiality</span> (công bằng), Code thì KHÔNG liệt kê riêng. Code gom vào Objectivity.</p>
+</div>
+
+<div class="card">
+<h4>So sánh Thẩm định viên A vs B trong Kiểm toán</h4>
+<table>
+<tr><th>Tiêu chí</th><th><span class="highlight">Valuer A</span></th><th><span class="highlight-blue">Valuer B</span></th></tr>
+<tr><td>Vai trò</td><td>Preparer</td><td>Reviewer</td></tr>
+<tr><td>Hỗ trợ ai?</td><td>Management</td><td>Auditor</td></tr>
+<tr><td>Mục đích</td><td>Chuẩn bị số liệu định giá cho BCTC</td><td>Kiểm tra tính hợp lý của định giá</td></tr>
+<tr><td>Ví von</td><td>"Tay" của management</td><td>"Mắt" của auditor</td></tr>
+</table>
+</div>
+
+<div class="card">
+<h4>So sánh PMO 100 Series vs 200 Series</h4>
+<table>
+<tr><th>Tiêu chí</th><th><span class="highlight">100 Series (Initial)</span></th><th><span class="highlight-blue">200 Series (Continuing)</span></th></tr>
+<tr><td>Mục đích</td><td>Yêu cầu gia nhập ban đầu</td><td>Yêu cầu duy trì tư cách</td></tr>
+<tr><td>Số lượng</td><td>5 (PMO 101-105)</td><td>1 (PMO 201)</td></tr>
+<tr><td>Nội dung</td><td>Education, Assessment, Experience, Ethics, Public Interest</td><td>CPD (Continuing Professional Development)</td></tr>
+<tr><td>Khi nào?</td><td>Trước khi được công nhận</td><td>Suốt sự nghiệp</td></tr>
+</table>
+</div>
+</div>
+
+<!-- TAB 5: BẪY THI -->
+<div class="panel" id="panel5">
+<div class="trap">
+<h3>🚨 Bẫy Thi Chương 7 – Từ Review Questions</h3>
+</div>
+
+<div class="trap-item">
+<h4>Bẫy #1: Advocate vs Expert tại tòa</h4>
+<p><span class="wrong">❌ SAI:</span> "Valuer acting as an <span class="wrong">advocate</span> in court proceedings"</p>
+<p><span class="right">✅ ĐÚNG:</span> "Valuer acting as an <span class="right">expert</span> in court" – nghĩa vụ với TÒA ÁN, không phải bên thuê!</p>
+<p>→ Đây là bẫy của <strong>RQ3</strong>. Statement A nói "advocate in court" → FALSE. Đáp án là A.</p>
+</div>
+
+<div class="trap-item">
+<h4>Bẫy #2: Seek specialist help – có hay không có disclosure?</h4>
+<p><span class="wrong">❌ SAI:</span> "Valuer can seek specialist help and does NOT need to disclose"</p>
+<p><span class="right">✅ ĐÚNG:</span> "Can seek specialist help <span class="right">PROVIDED</span> the work is appropriately disclosed"</p>
+<p>→ Bẫy của <strong>RQ2</strong>. Disclosure là bắt buộc!</p>
+</div>
+
+<div class="trap-item">
+<h4>Bẫy #3: "All of the above" – đọc kỹ từng statement</h4>
+<p><span class="highlight-blue">RQ1:</span> Cả 3 statements đều TRUE (controls for objectivity + competency + impartial judgement) → <span class="right">C. All of the above</span></p>
+<p><span class="highlight-blue">RQ4:</span> Cả 3 statements đều TRUE (disciplinary process + acquire competency + ethical code) → <span class="right">C. All of the above</span></p>
+<p><span class="highlight-blue">RQ5:</span> Cả 3 statements đều TRUE (PMO scope + competence attributes + 5 Code principles) → <span class="right">C. All of the above</span></p>
+<p>→ Trong chương này, 3 trong 5 câu hỏi có đáp án "All of the above" (C). Nhưng đừng mặc định chọn C!</p>
+</div>
+
+<div class="trap-item">
+<h4>Bẫy #4: Public interest vs Client interest</h4>
+<p><span class="wrong">❌ SAI:</span> "Thẩm định viên có nghĩa vụ phục vụ lợi ích <span class="wrong">khách hàng</span> trước tiên"</p>
+<p><span class="right">✅ ĐÚNG:</span> "Thẩm định viên có nghĩa vụ hành động vì <span class="right">lợi ích công chúng</span> (public interest)"</p>
+<p>→ Ngoại lệ: Vai trò Advocate trong M&A thì phục vụ khách hàng. Nhưng nguyên tắc TỔNG QUÁT là public interest.</p>
+</div>
+
+<div class="trap-item">
+<h4>Bẫy #5: IVS100 có 6 nguyên tắc vs Code có 5 nguyên tắc</h4>
+<p><span class="wrong">❌ SAI:</span> "Code of Ethical Principles có 6 nguyên tắc" hoặc "IVS100 có 5 nguyên tắc"</p>
+<p><span class="right">✅ ĐÚNG:</span> IVS100 = <span class="right">6</span> (thêm Impartiality) | Code = <span class="right">5</span> (không có Impartiality riêng)</p>
+</div>
+
+<div class="trap-item">
+<h4>Bẫy #6: PMO 100 vs 200 Series</h4>
+<p><span class="wrong">❌ SAI:</span> "PMO 200 series bao gồm education và assessment"</p>
+<p><span class="right">✅ ĐÚNG:</span> 200 series CHỈ có CPD (PMO 201). Education/Assessment nằm trong <span class="right">100 series</span>.</p>
+</div>
+</div>
+
+<!-- TAB 6: QUIZ -->
+<div class="panel" id="panel6">
+<div class="quiz-area" id="quizArea">
+<h3>🎯 Quiz – Chương 7 (15 câu ngẫu nhiên)</h3>
+<p style="color:#94a3b8;margin-bottom:15px;">Bấm đáp án để kiểm tra. Mỗi lần tải lại sẽ có thứ tự khác!</p>
+<div id="quizContainer"></div>
+<div id="scoreBox" class="score-box" style="display:none;"></div>
+</div>
+</div>
+
+</div><!-- end container -->
+
+<script>
+var quizData=[
+{q:"Theo IVS100 Framework 10.01, thẩm định viên phải tuân thủ bao nhiêu nguyên tắc?",opts:["5 nguyên tắc","6 nguyên tắc","7 nguyên tắc"],ai:1,explain:"IVS100 có 6 nguyên tắc: Integrity, Objectivity, Impartiality, Confidentiality, Competence, Professionalism."},
+{q:"Code of Ethical Principles (2011) bao gồm bao nhiêu nguyên tắc cơ bản?",opts:["5 nguyên tắc","6 nguyên tắc","4 nguyên tắc"],ai:0,explain:"Code có 5 nguyên tắc: Integrity, Objectivity, Competence, Confidentiality, Professional Behaviour. Không có Impartiality riêng (khác với IVS100)."},
+{q:"Nguyên tắc nào có trong IVS100 nhưng KHÔNG được liệt kê riêng trong Code of Ethical Principles?",opts:["Impartiality","Confidentiality","Professionalism"],ai:0,explain:"Impartiality (công bằng) chỉ có trong IVS100 (6 nguyên tắc), không nằm riêng trong Code (5 nguyên tắc)."},
+{q:"3 thuộc tính năng lực (competency attributes) theo IVSC Competency Framework là gì?",opts:["Knowledge, Ethics, Experience","Education, Training, Certification","Theory, Practice, Research"],ai:0,explain:"3 thuộc tính: Specialised Knowledge/Skills, Professional Values/Ethics, Relevant Practical Experience."},
+{q:"Thẩm định viên có nghĩa vụ hành động vì lợi ích của ai?",opts:["Chỉ khách hàng (client)","Chỉ người thuê (employer)","Công chúng (public interest)"],ai:2,explain:"Thẩm định viên có nghĩa vụ hành động vì lợi ích công chúng (public interest), không chỉ vì khách hàng hay người thuê."},
+{q:"Khi thẩm định viên ra tòa, họ đóng vai trò gì?",opts:["Advocate – phục vụ bên thuê","Expert – nghĩa vụ với tòa án","Arbitrator – trung lập hai bên"],ai:1,explain:"Tại tòa án, thẩm định viên là EXPERT với duty to court. KHÔNG phải Advocate (bẫy thi phổ biến nhất chương 7)."},
+{q:"Vai trò Advocate phù hợp với bối cảnh nào?",opts:["Tranh tụng tại tòa án","M&A advisory, tư vấn giao dịch","Giải quyết tranh chấp giữa hai bên"],ai:1,explain:"Advocate phục vụ lợi ích khách hàng trong M&A/tư vấn giao dịch. Expert cho tòa án, Arbitrator cho dispute resolution."},
+{q:"Arbitrator có đặc điểm gì khác biệt so với Expert và Advocate?",opts:["Có thiên lệch hợp pháp","Có quyền ra quyết định ràng buộc (binding)","Chỉ cung cấp ý kiến tham khảo"],ai:1,explain:"Arbitrator ra quyết định ràng buộc (binding decision) cho cả hai bên. Expert chỉ đưa ý kiến (tòa quyết), Advocate đàm phán cho bên mình."},
+{q:"Thẩm định viên CÓ THỂ tìm kiếm trợ giúp chuyên gia (specialist help) với điều kiện gì?",opts:["Không cần điều kiện gì","Phải công khai (appropriately disclosed)","Chỉ khi được khách hàng cho phép"],ai:1,explain:"Có thể seek specialist help nhưng PHẢI appropriately disclosed trong báo cáo. Disclosure là bắt buộc!"},
+{q:"CFO yêu cầu dùng giả định lạc quan để tăng giá trị. Thẩm định viên vi phạm nguyên tắc nào nếu đồng ý?",opts:["Integrity (Chính trực)","Confidentiality (Bí mật)","Competence (Năng lực)"],ai:0,explain:"Vi phạm Integrity – phải thẳng thắn và trung thực, giả định phải phản ánh triển vọng hợp lý."},
+{q:"Công ty mẹ sở hữu cổ phần công ty khách hàng. Thẩm định viên nên làm gì?",opts:["Tiếp tục nhưng công khai xung đột","Từ chối engagement (withdraw)","Giảm phí để bù đắp xung đột"],ai:1,explain:"Phải từ chối engagement vì có conflict of interest. Chỉ công khai chưa đủ khi xung đột quá nghiêm trọng."},
+{q:"Đồng nghiệp hỏi về khoảng giá trị định giá. Nguyên tắc nào bị vi phạm nếu tiết lộ?",opts:["Objectivity (Khách quan)","Confidentiality (Bí mật)","Professional Behaviour (Chuyên nghiệp)"],ai:1,explain:"Vi phạm Confidentiality – không được tiết lộ thông tin engagement mà không có sự đồng ý hoặc yêu cầu pháp lý."},
+{q:"Khách hàng gợi ý 'phí thưởng' nếu định giá cao. Đây là vấn đề của nguyên tắc nào?",opts:["Integrity","Professional Behaviour","Competence"],ai:1,explain:"Vi phạm Professional Behaviour – phải báo cáo hành vi hối lộ và xem xét rút khỏi engagement. Contingency fee = vi phạm."},
+{q:"Trong quy trình kiểm toán, Valuer A hỗ trợ ai?",opts:["Auditor (kiểm toán viên)","Management (ban quản lý)","Cả hai"],ai:1,explain:"Valuer A = Preparer, hỗ trợ Management chuẩn bị. Valuer B = Reviewer, hỗ trợ Auditor kiểm tra."},
+{q:"PMO 100 Series bao gồm bao nhiêu yêu cầu?",opts:["3 (PMO 101-103)","5 (PMO 101-105)","6 (PMO 101-106)"],ai:1,explain:"100 Series (Initial) có 5: PMO 101 Education, 102 Assessment, 103 Experience, 104 Ethics, 105 Public Interest."},
+{q:"PMO 200 Series chỉ bao gồm yêu cầu gì?",opts:["Education và Assessment","CPD (Continuing Professional Development)","Ethics và Public Interest"],ai:1,explain:"200 Series (Continuing) chỉ có 1: PMO 201 – CPD. Tất cả yêu cầu khác nằm trong 100 Series."},
+{q:"Competency Framework của IVSC được ban hành năm nào?",opts:["2011","2012","2016"],ai:1,explain:"Competency Framework: 2012. Code of Ethical Principles: 2011. IPS→PMO: 2016."},
+{q:"Mục tiêu nào KHÔNG phải là mục tiêu của PMO?",opts:["Global Mobility","Revenue Generation","Public Trust"],ai:1,explain:"5 mục tiêu PMO: Consistency/Quality, Ethics/Public Trust, Professionalism/Competence, Global Mobility, Accountability. Revenue Generation không phải mục tiêu."}
+];
+
+function shuffle(arr){var a=arr.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;}return a;}
+
+var shuffled=shuffle(quizData).slice(0,15).map(function(q){
+var correctText=q.opts[q.ai];
+var sOpts=shuffle(q.opts.slice());
+var newAi=sOpts.indexOf(correctText);
+return{q:q.q,sOpts:sOpts,correctIdx:newAi,explain:q.explain};
+});
+
+var answered=[];
+var score=0;
+var total=shuffled.length;
+
+function renderQuiz(){
+var html="";
+for(var i=0;i<shuffled.length;i++){
+html+='<div class="q-card" id="qc'+i+'"><p>Câu '+(i+1)+'/'+total+': '+shuffled[i].q+'</p>';
+for(var j=0;j<shuffled[i].sOpts.length;j++){
+html+='<button class="q-opt" id="opt'+i+'_'+j+'" onclick="checkAns('+i+','+j+')">'+String.fromCharCode(65+j)+'. '+shuffled[i].sOpts[j]+'</button>';
+}
+html+='<div class="explain" id="exp'+i+'">'+shuffled[i].explain+'</div></div>';
+}
+document.getElementById("quizContainer").innerHTML=html;
+}
+
+function checkAns(qi,oi){
+if(answered[qi]!==undefined)return;
+answered[qi]=oi;
+var correct=shuffled[qi].correctIdx;
+var btn=document.getElementById("opt"+qi+"_"+oi);
+if(oi===correct){btn.classList.add("correct");score++;}
+else{btn.classList.add("wrong");document.getElementById("opt"+qi+"_"+correct).classList.add("correct");}
+for(var j=0;j<shuffled[qi].sOpts.length;j++){document.getElementById("opt"+qi+"_"+j).disabled=true;}
+document.getElementById("exp"+qi).style.display="block";
+var done=0;for(var k=0;k<total;k++){if(answered[k]!==undefined)done++;}
+if(done===total){
+var pct=Math.round(score/total*100);
+var grade=pct>=90?"🏆 Xuất sắc!":pct>=70?"👍 Tốt lắm!":pct>=50?"📚 Cần ôn thêm":"💪 Hãy đọc lại chương 7";
+document.getElementById("scoreBox").style.display="block";
+document.getElementById("scoreBox").innerHTML="<p>Kết quả: <span class='highlight'>"+score+"/"+total+"</span> ("+pct+"%)</p><p>"+grade+"</p><br><button class='collapse-btn' onclick='resetQuiz()' style='max-width:200px;margin:0 auto;text-align:center;'>🔄 Làm lại</button>";
+}
+}
+
+function resetQuiz(){
+shuffled=shuffle(quizData).slice(0,15).map(function(q){
+var correctText=q.opts[q.ai];
+var sOpts=shuffle(q.opts.slice());
+var newAi=sOpts.indexOf(correctText);
+return{q:q.q,sOpts:sOpts,correctIdx:newAi,explain:q.explain};
+});
+answered=[];score=0;total=shuffled.length;
+document.getElementById("scoreBox").style.display="none";
+renderQuiz();
+}
+
+renderQuiz();
+
+function showTab(n){
+var panels=document.querySelectorAll(".panel");
+var tabs=document.querySelectorAll(".tab");
+for(var i=0;i<panels.length;i++){panels[i].classList.remove("active");tabs[i].classList.remove("active");}
+document.getElementById("panel"+n).classList.add("active");
+tabs[n].classList.add("active");
+}
+
+function toggle(btn){
+btn.classList.toggle("open");
+var content=btn.nextElementSibling;
+content.classList.toggle("open");
+}
+</script>
+</body>
+</html>

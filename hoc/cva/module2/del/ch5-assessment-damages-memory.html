@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ch5 - &#272;&#225;nh Gi&#225; Thi&#7879;t H&#7841;i (Assessment of Damages)</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Segoe UI', sans-serif; background: #0f172a; color: #e2e8f0; min-height: 100vh; }
+  .container { max-width: 1000px; margin: 0 auto; padding: 24px; }
+  h1 { text-align: center; font-size: 26px; margin-bottom: 8px; color: #60a5fa; }
+  .subtitle { text-align: center; color: #94a3b8; margin-bottom: 32px; font-size: 15px; }
+
+  .story-box {
+    background: linear-gradient(135deg, #1e3a5f, #1a2744);
+    border: 1px solid #334155;
+    border-radius: 16px;
+    padding: 28px;
+    margin-bottom: 36px;
+    position: relative;
+    overflow: hidden;
+  }
+  .story-box::before {
+    content: '';
+    position: absolute;
+    top: -50%; right: -50%;
+    width: 100%; height: 100%;
+    background: radial-gradient(circle, rgba(96,165,250,0.05) 0%, transparent 70%);
+  }
+  .story-box h2 { color: #fbbf24; font-size: 20px; margin-bottom: 16px; position: relative; }
+  .story-box .mnemonic {
+    font-size: 30px;
+    font-weight: 800;
+    text-align: center;
+    margin: 20px 0;
+    letter-spacing: 6px;
+    position: relative;
+  }
+  .story-box .mnemonic span {
+    display: inline-block;
+    transition: transform 0.3s, color 0.3s;
+    cursor: pointer;
+  }
+  .story-box .mnemonic span:hover { transform: scale(1.3); }
+  .m-C { color: #f87171; } .m-R { color: #fb923c; } .m-M { color: #fbbf24; }
+  .m-T { color: #a78bfa; } .m-D { color: #4ade80; } .m-L { color: #22d3ee; }
+  .m-V { color: #f472b6; }
+
+  .story-text {
+    font-size: 16px; line-height: 1.9; color: #cbd5e1; position: relative;
+  }
+  .story-text .highlight { font-weight: 700; padding: 1px 4px; border-radius: 4px; }
+  .hl-c { color: #f87171; background: rgba(248,113,113,0.15); }
+  .hl-r { color: #fb923c; background: rgba(251,146,60,0.15); }
+  .hl-m { color: #fbbf24; background: rgba(251,191,36,0.15); }
+  .hl-t { color: #a78bfa; background: rgba(167,139,250,0.15); }
+  .hl-d { color: #4ade80; background: rgba(74,222,128,0.15); }
+  .hl-l { color: #22d3ee; background: rgba(34,211,238,0.15); }
+  .hl-v { color: #f472b6; background: rgba(244,114,182,0.15); }
+
+  .tip-box {
+    background: linear-gradient(135deg, #1a2744, #1e293b);
+    border: 1px solid #334155;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 24px;
+    text-align: center;
+  }
+  .tip-box h3 { color: #fbbf24; margin-bottom: 10px; }
+  .tip-box p { color: #94a3b8; font-size: 14px; line-height: 1.7; }
+  .tip-box .big-text { font-size: 20px; color: #e2e8f0; font-weight: 700; margin: 12px 0; }
+
+  .section-title {
+    text-align: center; font-size: 22px; color: #60a5fa;
+    margin: 40px 0 24px; padding-bottom: 12px; border-bottom: 2px solid #1e3a5f;
+  }
+
+  /* Journey */
+  .journey { display: flex; flex-direction: column; gap: 0; margin-bottom: 36px; }
+  .step { display: flex; align-items: stretch; min-height: 120px; position: relative; cursor: pointer; }
+  .step-left { width: 80px; display: flex; flex-direction: column; align-items: center; flex-shrink: 0; }
+  .step-icon {
+    width: 56px; height: 56px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 26px; z-index: 2; border: 3px solid;
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+  .step:hover .step-icon { transform: scale(1.15); box-shadow: 0 0 20px rgba(255,255,255,0.2); }
+  .step-line { width: 3px; flex: 1; z-index: 1; }
+  .step-content { flex: 1; padding: 8px 0 24px 20px; }
+  .step-header { font-size: 13px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 4px; }
+  .step-name { font-size: 19px; font-weight: 700; margin-bottom: 6px; }
+  .step-vi { font-size: 14px; color: #94a3b8; margin-bottom: 8px; font-style: italic; }
+  .step-story { font-size: 14px; color: #cbd5e1; line-height: 1.7; max-height: 0; overflow: hidden; transition: max-height 0.6s ease; }
+  .step.open .step-story { max-height: 1500px; }
+  .step-hint { font-size: 12px; color: #64748b; margin-top: 4px; }
+
+  .s-cause .step-icon { background: rgba(248,113,113,0.15); border-color: #f87171; color: #f87171; }
+  .s-cause .step-line { background: linear-gradient(to bottom, #f87171, #fb923c); }
+  .s-cause .step-header { color: #f87171; } .s-cause .step-name { color: #fca5a5; }
+
+  .s-remote .step-icon { background: rgba(251,146,60,0.15); border-color: #fb923c; color: #fb923c; }
+  .s-remote .step-line { background: linear-gradient(to bottom, #fb923c, #fbbf24); }
+  .s-remote .step-header { color: #fb923c; } .s-remote .step-name { color: #fdba74; }
+
+  .s-mitigate .step-icon { background: rgba(251,191,36,0.15); border-color: #fbbf24; color: #fbbf24; }
+  .s-mitigate .step-line { background: linear-gradient(to bottom, #fbbf24, #a78bfa); }
+  .s-mitigate .step-header { color: #fbbf24; } .s-mitigate .step-name { color: #fde68a; }
+
+  .s-timing .step-icon { background: rgba(167,139,250,0.15); border-color: #a78bfa; color: #a78bfa; }
+  .s-timing .step-line { background: linear-gradient(to bottom, #a78bfa, #4ade80); }
+  .s-timing .step-header { color: #a78bfa; } .s-timing .step-name { color: #c4b5fd; }
+
+  .s-types .step-icon { background: rgba(74,222,128,0.15); border-color: #4ade80; color: #4ade80; }
+  .s-types .step-line { background: linear-gradient(to bottom, #4ade80, #22d3ee); }
+  .s-types .step-header { color: #4ade80; } .s-types .step-name { color: #86efac; }
+
+  .s-loss .step-icon { background: rgba(34,211,238,0.15); border-color: #22d3ee; color: #22d3ee; }
+  .s-loss .step-line { background: linear-gradient(to bottom, #22d3ee, #f472b6); }
+  .s-loss .step-header { color: #22d3ee; } .s-loss .step-name { color: #67e8f9; }
+
+  .s-dimval .step-icon { background: rgba(244,114,182,0.15); border-color: #f472b6; color: #f472b6; }
+  .s-dimval .step-line { background: linear-gradient(to bottom, #f472b6, #475569); }
+  .s-dimval .step-header { color: #f472b6; } .s-dimval .step-name { color: #f9a8d4; }
+
+  /* Comparison Table */
+  .compare-section {
+    background: #1e293b; border: 1px solid #334155; border-radius: 16px;
+    padding: 28px; margin-bottom: 36px; overflow-x: auto;
+  }
+  .compare-section h2 { color: #fbbf24; font-size: 20px; margin-bottom: 20px; text-align: center; }
+  .compare-table { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 13px; }
+  .compare-table th { background: #334155; color: #fbbf24; padding: 12px 10px; text-align: center; font-weight: 700; border-bottom: 2px solid #475569; }
+  .compare-table td { padding: 10px; border-bottom: 1px solid #334155; vertical-align: top; line-height: 1.6; }
+  .compare-table tr:hover td { background: rgba(96,165,250,0.08); }
+  .compare-table td:first-child { font-weight: 600; color: #93c5fd; white-space: nowrap; }
+
+  /* Highlight box */
+  .highlight-box {
+    background: linear-gradient(135deg, #1e293b, #1a2744);
+    border-left: 4px solid #fbbf24; border-radius: 0 12px 12px 0;
+    padding: 20px 24px; margin-bottom: 24px;
+  }
+  .highlight-box h3 { color: #fbbf24; margin-bottom: 10px; font-size: 16px; }
+  .highlight-box p { color: #cbd5e1; font-size: 14px; line-height: 1.8; }
+  .highlight-box ul { list-style: none; padding: 0; }
+  .highlight-box ul li { padding: 4px 0; font-size: 14px; color: #cbd5e1; }
+  .highlight-box ul li::before { content: '&#9679; '; color: #fbbf24; }
+
+  /* Info Cards */
+  .info-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; margin-bottom: 36px; }
+  .info-card {
+    background: #1e293b; border: 1px solid #334155; border-radius: 12px; padding: 20px;
+    cursor: pointer; transition: transform 0.2s, border-color 0.3s;
+  }
+  .info-card:hover { transform: translateY(-3px); border-color: #60a5fa; }
+  .info-card .card-icon { font-size: 32px; margin-bottom: 10px; }
+  .info-card .card-title { font-size: 16px; font-weight: 700; margin-bottom: 6px; }
+  .info-card .card-subtitle { font-size: 13px; color: #94a3b8; margin-bottom: 10px; font-style: italic; }
+  .info-card .card-detail { font-size: 13px; color: #cbd5e1; line-height: 1.7; max-height: 0; overflow: hidden; transition: max-height 0.5s ease; }
+  .info-card.open .card-detail { max-height: 800px; }
+  .info-card .card-hint { font-size: 11px; color: #64748b; margin-top: 6px; }
+
+  /* Legislation Grid */
+  .leg-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; margin-bottom: 36px; }
+  .leg-item {
+    background: #1e293b; border: 1px solid #334155; border-radius: 10px;
+    padding: 16px; text-align: center; transition: border-color 0.3s, transform 0.2s;
+  }
+  .leg-item:hover { border-color: #60a5fa; transform: translateY(-2px); }
+  .leg-item .leg-icon { font-size: 28px; margin-bottom: 8px; }
+  .leg-item .leg-name { font-size: 14px; font-weight: 700; color: #93c5fd; margin-bottom: 4px; }
+  .leg-item .leg-desc { font-size: 12px; color: #94a3b8; line-height: 1.5; }
+
+  /* Quiz */
+  .quiz-section { background: #1e293b; border: 1px solid #334155; border-radius: 16px; padding: 28px; margin-bottom: 36px; }
+  .quiz-section h2 { color: #60a5fa; font-size: 22px; text-align: center; margin-bottom: 24px; }
+  .quiz-q { background: #0f172a; border: 1px solid #334155; border-radius: 12px; padding: 20px; margin-bottom: 16px; }
+  .quiz-q .q-text { font-size: 15px; font-weight: 600; margin-bottom: 14px; color: #e2e8f0; }
+  .quiz-q .q-num { color: #60a5fa; }
+  .q-options { display: flex; flex-direction: column; gap: 8px; }
+  .q-option { padding: 12px 16px; border: 1px solid #334155; border-radius: 8px; cursor: pointer; font-size: 14px; transition: all 0.2s; color: #cbd5e1; }
+  .q-option:hover { border-color: #60a5fa; background: rgba(96,165,250,0.08); }
+  .q-option.correct { border-color: #4ade80; background: rgba(74,222,128,0.15); color: #4ade80; }
+  .q-option.wrong { border-color: #f87171; background: rgba(248,113,113,0.15); color: #f87171; }
+  .q-option.disabled { pointer-events: none; opacity: 0.7; }
+  .q-explanation { margin-top: 12px; padding: 12px 16px; background: rgba(96,165,250,0.08); border-radius: 8px; font-size: 13px; color: #94a3b8; display: none; line-height: 1.7; }
+  .quiz-score { text-align: center; padding: 20px; background: linear-gradient(135deg, #1e3a5f, #1a2744); border-radius: 12px; margin-top: 20px; }
+  .quiz-score .score-text { font-size: 24px; font-weight: 800; color: #fbbf24; }
+  .quiz-score .score-label { font-size: 14px; color: #94a3b8; margin-top: 8px; }
+
+  @media (max-width: 700px) {
+    .compare-table { font-size: 11px; }
+    .info-grid { grid-template-columns: 1fr; }
+    .leg-grid { grid-template-columns: 1fr 1fr; }
+    .story-box .mnemonic { font-size: 20px; letter-spacing: 3px; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+<h1>Ch&#432;&#417;ng 5: &#272;&#225;nh Gi&#225; Thi&#7879;t H&#7841;i (Assessment of Damages)</h1>
+<p class="subtitle">Module 2 &mdash; Law and Valuation | CVA Programme 2025</p>
+
+<!-- ===== MNEMONIC ===== -->
+<div class="story-box">
+  <h2>&#128161; Ghi Nh&#7899; 7 Ch&#7911; &#272;&#7873; &#272;&#225;nh Gi&#225; Thi&#7879;t H&#7841;i</h2>
+  <div class="mnemonic">
+    <span class="m-C">C</span> &middot;
+    <span class="m-R">R</span> &middot;
+    <span class="m-M">M</span> &middot;
+    <span class="m-T">T</span> &middot;
+    <span class="m-D">D</span> &middot;
+    <span class="m-L">L</span> &middot;
+    <span class="m-V">V</span>
+  </div>
+  <p style="text-align:center; color:#94a3b8; font-size:14px; margin-bottom:18px;">
+    <strong style="color:#fbbf24;">"C&#243; R&#245; M&#7845;t Ti&#7873;n &mdash; &#272;&#7873;n L&#7845;y V&#7873;"</strong>
+  </p>
+  <div class="story-text">
+    Quy tr&#236;nh &#273;&#225;nh gi&#225; thi&#7879;t h&#7841;i trong tranh ch&#7845;p th&#432;&#417;ng m&#7841;i:<br><br>
+    &#9312; <span class="highlight hl-c">Causation</span> &mdash; Nguy&#234;n nh&#226;n: "But-for test" &mdash; n&#7871;u kh&#244;ng c&#243; vi ph&#7841;m, thi&#7879;t h&#7841;i c&#243; x&#7843;y ra?<br>
+    &#9313; <span class="highlight hl-r">Remoteness</span> &mdash; M&#7913;c &#273;&#7897; xa: ch&#7881; b&#7891;i th&#432;&#7901;ng thi&#7879;t h&#7841;i c&#243; th&#7875; d&#7921; &#273;o&#225;n h&#7907;p l&#253;<br>
+    &#9314; <span class="highlight hl-m">Mitigation</span> &mdash; Gi&#7843;m thi&#7875;u: nguy&#234;n &#273;&#417;n ph&#7843;i h&#224;nh &#273;&#7897;ng h&#7907;p l&#253; &#273;&#7875; gi&#7843;m m&#7845;t m&#225;t<br>
+    &#9315; <span class="highlight hl-t">Timing</span> &mdash; Th&#7901;i &#273;i&#7875;m &#273;&#7883;nh gi&#225;: th&#432;&#7901;ng t&#7841;i ng&#224;y vi ph&#7841;m<br>
+    &#9316; <span class="highlight hl-d">Damages Types</span> &mdash; 6 lo&#7841;i thi&#7879;t h&#7841;i (compensatory, liquidated, nominal, restitutionary, account of profits, punitive)<br>
+    &#9317; <span class="highlight hl-l">Loss of Profits</span> &mdash; Ph&#432;&#417;ng ph&#225;p t&#237;nh l&#7907;i nhu&#7853;n m&#7845;t &#273;i<br>
+    &#9318; <span class="highlight hl-v">Value Diminution</span> &mdash; Ph&#432;&#417;ng ph&#225;p gi&#7843;m gi&#225; tr&#7883; t&#224;i s&#7843;n
+  </div>
+</div>
+
+<!-- ===== KEY PRINCIPLE ===== -->
+<div class="tip-box">
+  <h3>&#9878;&#65039; Nguy&#234;n T&#7855;c B&#7891;i Th&#432;&#7901;ng (Compensatory Principle)</h3>
+  <div class="big-text">&#272;&#432;a nguy&#234;n &#273;&#417;n v&#7873; v&#7883; tr&#237; NHU TH&#7874; vi ph&#7841;m ch&#432;a x&#7843;y ra</div>
+  <p>
+    M&#7909;c ti&#234;u ch&#237;nh: <em>restitutio in integrum</em> &mdash; kh&#244;i ph&#7909;c nguy&#234;n tr&#7841;ng<br>
+    Thi&#7879;t h&#7841;i ph&#7843;i: <strong style="color:#e2e8f0;">th&#7921;c t&#7871;</strong> &bull; <strong style="color:#e2e8f0;">c&#243; th&#7875; d&#7921; &#273;o&#225;n</strong> &bull; <strong style="color:#e2e8f0;">c&#243; b&#7857;ng ch&#7913;ng</strong> &bull; <strong style="color:#e2e8f0;">kh&#244;ng suy &#273;o&#225;n</strong><br>
+    <em>Courts have consistently emphasised that speculative or unsubstantiated claims will not be entertained.</em>
+  </p>
+</div>
+
+<!-- ===== 7-STEP JOURNEY ===== -->
+<h2 class="section-title">&#128506; 7 Ch&#7911; &#272;&#7873; Ch&#237;nh V&#7873; &#272;&#225;nh Gi&#225; Thi&#7879;t H&#7841;i</h2>
+
+<div class="journey">
+
+  <!-- 1. CAUSATION -->
+  <div class="step s-cause" onclick="toggleStep(this)">
+    <div class="step-left">
+      <div class="step-icon">&#128279;</div>
+      <div class="step-line"></div>
+    </div>
+    <div class="step-content">
+      <div class="step-header">Ch&#7911; &#273;&#7873; 1</div>
+      <div class="step-name">Causation &mdash; Nguy&#234;n Nh&#226;n (But-For Test)</div>
+      <div class="step-vi">N&#7871;u kh&#244;ng c&#243; vi ph&#7841;m, thi&#7879;t h&#7841;i c&#243; x&#7843;y ra kh&#244;ng?</div>
+      <div class="step-hint">&#128073; Nh&#7845;n &#273;&#7875; xem chi ti&#7871;t</div>
+      <div class="step-story">
+        <br><strong style="color:#f87171;">But-for test:</strong> Nguy&#234;n &#273;&#417;n ph&#7843;i ch&#7913;ng minh r&#7857;ng <em>n&#7871;u kh&#244;ng c&#243;</em> (but for) h&#224;nh vi sai c&#7911;a b&#7883; &#273;&#417;n, thi&#7879;t h&#7841;i s&#7869; kh&#244;ng x&#7843;y ra.<br><br>
+        <strong>M&#7889;i quan h&#7879; nh&#226;n qu&#7843;:</strong> Ph&#7843;i ch&#7913;ng minh tr&#234;n c&#417; s&#7903; c&#226;n b&#7857;ng x&#225;c su&#7845;t (balance of probabilities) r&#7857;ng h&#224;nh vi c&#7911;a b&#7883; &#273;&#417;n g&#243;p ph&#7847;n th&#7921;c ch&#7845;t (materially contributed) v&#224;o thi&#7879;t h&#7841;i.<br><br>
+        <strong style="color:#fbbf24;">V&#7909; &#225;n ch&#237;nh:</strong> <em>Sunny Metal &amp; Engineering v Ng Khim Ming Eric</em> [2007] 3 SLR 782 &mdash; T&#242;a Ph&#250;c th&#7849;m kh&#7859;ng &#273;&#7883;nh nguy&#234;n &#273;&#417;n ph&#7843;i ch&#7913;ng minh h&#224;nh vi c&#7911;a b&#7883; &#273;&#417;n g&#243;p ph&#7847;n th&#7921;c ch&#7845;t v&#224;o thi&#7879;t h&#7841;i.<br><br>
+        <strong>&#7912;ng d&#7909;ng &#273;&#7883;nh gi&#225;:</strong> X&#226;y d&#7921;ng <em>counterfactual scenario</em> (k&#7883;ch b&#7843;n gi&#7843; &#273;&#7883;nh): doanh nghi&#7879;p/t&#224;i s&#7843;n &#273;&#225;ng l&#7869; c&#243; gi&#225; tr&#7883; bao nhi&#234;u n&#7871;u kh&#244;ng c&#243; vi ph&#7841;m, so v&#7899;i gi&#225; tr&#7883; th&#7921;c t&#7871;.
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. REMOTENESS -->
+  <div class="step s-remote" onclick="toggleStep(this)">
+    <div class="step-left">
+      <div class="step-icon">&#128301;</div>
+      <div class="step-line"></div>
+    </div>
+    <div class="step-content">
+      <div class="step-header">Ch&#7911; &#273;&#7873; 2</div>
+      <div class="step-name">Remoteness &mdash; M&#7913;c &#272;&#7897; Xa (Hadley v Baxendale)</div>
+      <div class="step-vi">Ch&#7881; b&#7891;i th&#432;&#7901;ng thi&#7879;t h&#7841;i c&#243; th&#7875; d&#7921; &#273;o&#225;n h&#7907;p l&#253; t&#7841;i th&#7901;i &#273;i&#7875;m giao k&#7871;t</div>
+      <div class="step-hint">&#128073; Nh&#7845;n &#273;&#7875; xem chi ti&#7871;t</div>
+      <div class="step-story">
+        <br><strong style="color:#fb923c;">Nguy&#234;n t&#7855;c:</strong> D&#249; &#273;&#227; ch&#7913;ng minh nh&#226;n qu&#7843;, ch&#7881; &#273;&#432;&#7907;c b&#7891;i th&#432;&#7901;ng nh&#7919;ng thi&#7879;t h&#7841;i <em>kh&#244;ng qu&#225; xa</em> (not too remote).<br><br>
+        <strong>2 nh&#225;nh c&#7911;a Hadley v Baxendale (1854):</strong><br>
+        &bull; <strong>Nh&#225;nh 1:</strong> Thi&#7879;t h&#7841;i ph&#225;t sinh t&#7921; nhi&#234;n t&#7915; vi ph&#7841;m (arising naturally)<br>
+        &bull; <strong>Nh&#225;nh 2:</strong> Thi&#7879;t h&#7841;i n&#7857;m trong d&#7921; t&#237;nh h&#7907;p l&#253; c&#7911;a c&#7843; hai b&#234;n t&#7841;i th&#7901;i &#273;i&#7875;m giao k&#7871;t (reasonable contemplation)<br><br>
+        <strong style="color:#fbbf24;">V&#7909; &#225;n Singapore:</strong> <em>Out of the Box v Wanin Industries</em> [2013] SGHC 121 &mdash; T&#242;a &#225;p d&#7909;ng Hadley v Baxendale: xem x&#233;t thi&#7879;t h&#7841;i c&#243; ph&#225;t sinh t&#7921; nhi&#234;n hay n&#7857;m trong d&#7921; t&#237;nh h&#7907;p l&#253;.<br><br>
+        <strong>&#7912;ng d&#7909;ng &#273;&#7883;nh gi&#225;:</strong> Gi&#7899;i h&#7841;n ph&#7841;m vi thi&#7879;t h&#7841;i &#273;&#432;&#7907;c b&#7891;i th&#432;&#7901;ng v&#224;o nh&#7919;ng t&#225;c &#273;&#7897;ng c&#243; th&#7875; d&#7921; &#273;o&#225;n &#273;&#432;&#7907;c v&#7873; m&#7863;t th&#432;&#417;ng m&#7841;i, nh&#432; doanh thu m&#7845;t &#273;i do gi&#225;n &#273;o&#7841;n c&#243; th&#7875; th&#7845;y tr&#432;&#7899;c, kh&#244;ng ph&#7843;i c&#225;c v&#7909; &#273;&#7847;u c&#417; trong t&#432;&#417;ng lai.
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. MITIGATION -->
+  <div class="step s-mitigate" onclick="toggleStep(this)">
+    <div class="step-left">
+      <div class="step-icon">&#128737;&#65039;</div>
+      <div class="step-line"></div>
+    </div>
+    <div class="step-content">
+      <div class="step-header">Ch&#7911; &#273;&#7873; 3</div>
+      <div class="step-name">Mitigation &mdash; Gi&#7843;m Thi&#7875;u Thi&#7879;t H&#7841;i</div>
+      <div class="step-vi">Nguy&#234;n &#273;&#417;n ph&#7843;i h&#224;nh &#273;&#7897;ng h&#7907;p l&#253; &#273;&#7875; gi&#7843;m m&#7845;t m&#225;t</div>
+      <div class="step-hint">&#128073; Nh&#7845;n &#273;&#7875; xem chi ti&#7871;t</div>
+      <div class="step-story">
+        <br><strong style="color:#fbbf24;">Nguy&#234;n t&#7855;c:</strong> Nguy&#234;n &#273;&#417;n c&#243; ngh&#297;a v&#7909; th&#7921;c hi&#7879;n c&#225;c b&#432;&#7899;c h&#7907;p l&#253; &#273;&#7875; gi&#7843;m thi&#7879;t h&#7841;i. N&#7871;u kh&#244;ng l&#224;m, ti&#7873;n b&#7891;i th&#432;&#7901;ng s&#7869; b&#7883; gi&#7843;m t&#432;&#417;ng &#7913;ng.<br><br>
+        <strong>T&#237;nh th&#7921;c d&#7909;ng th&#432;&#417;ng m&#7841;i:</strong> Nh&#7919;ng thi&#7879;t h&#7841;i &#273;&#225;ng l&#7869; c&#243; th&#7875; tr&#225;nh &#273;&#432;&#7907;c m&#7897;t c&#225;ch h&#7907;p l&#253; s&#7869; kh&#244;ng &#273;&#432;&#7907;c b&#7891;i th&#432;&#7901;ng.<br><br>
+        <strong style="color:#fbbf24;">V&#7909; &#225;n ch&#237;nh:</strong> <em>Asia Hotel Investments v Starwood Asia Pacific Management</em> [2007] 1 SLR(R) 908 &mdash; T&#242;a Ph&#250;c th&#7849;m kh&#7859;ng &#273;&#7883;nh mitigation l&#224; v&#7845;n &#273;&#7873; th&#7921;c t&#7871; (factual inquiry).<br><br>
+        <strong>&#7912;ng d&#7909;ng &#273;&#7883;nh gi&#225;:</strong> Chuy&#234;n gia c&#7847;n &#273;&#225;nh gi&#225; xem nguy&#234;n &#273;&#417;n c&#243; h&#224;nh &#273;&#7897;ng h&#7907;p l&#253; kh&#244;ng: t&#236;m h&#7907;p &#273;&#7891;ng thay th&#7871;, b&#225;n t&#224;i s&#7843;n b&#7883; &#7843;nh h&#432;&#7903;ng, t&#225;i c&#417; c&#7845;u ho&#7841;t &#273;&#7897;ng. Valuer ph&#7843;i &#273;&#225;nh gi&#225; c&#7843; k&#7883;ch b&#7843;n th&#7921;c t&#7871; v&#224; k&#7883;ch b&#7843;n mitigation ti&#7873;m n&#259;ng.
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. TIMING -->
+  <div class="step s-timing" onclick="toggleStep(this)">
+    <div class="step-left">
+      <div class="step-icon">&#9200;</div>
+      <div class="step-line"></div>
+    </div>
+    <div class="step-content">
+      <div class="step-header">Ch&#7911; &#273;&#7873; 4</div>
+      <div class="step-name">Timing of Valuation &mdash; Th&#7901;i &#272;i&#7875;m &#272;&#7883;nh Gi&#225;</div>
+      <div class="step-vi">Th&#432;&#7901;ng t&#7841;i ng&#224;y vi ph&#7841;m, nh&#432;ng t&#242;a c&#243; th&#7875; l&#7879;ch</div>
+      <div class="step-hint">&#128073; Nh&#7845;n &#273;&#7875; xem chi ti&#7871;t</div>
+      <div class="step-story">
+        <br><strong style="color:#a78bfa;">Nguy&#234;n t&#7855;c chung:</strong> Thi&#7879;t h&#7841;i &#273;&#432;&#7907;c &#273;&#225;nh gi&#225; t&#7841;i <em>ng&#224;y vi ph&#7841;m</em> (date of breach) cho c&#225;c v&#7909; h&#7907;p &#273;&#7891;ng.<br><br>
+        <strong>Ngo&#7841;i l&#7879;:</strong> T&#242;a c&#243; th&#7875; ch&#7885;n ng&#224;y kh&#225;c n&#7871;u c&#7847;n thi&#7871;t &#273;&#7875; ph&#7843;n &#225;nh &#273;&#250;ng th&#7921;c t&#7871; kinh t&#7871;. V&#237; d&#7909;: khi gi&#225; tr&#7883; t&#224;i s&#7843;n bi&#7871;n &#273;&#7897;ng &#273;&#225;ng k&#7875; sau vi ph&#7841;m.<br><br>
+        <strong style="color:#fbbf24;">V&#7909; &#225;n ch&#237;nh:</strong> <em>Wishing Star v Jurong Town Corp</em> [2008] 2 SLR(R) 909 &mdash; T&#242;a Ph&#250;c th&#7849;m l&#7879;ch kh&#7887;i quy t&#7855;c m&#7863;c &#273;&#7883;nh, ch&#7845;p nh&#7853;n ng&#224;y &#273;&#7883;nh gi&#225; ph&#249; h&#7907;p v&#7899;i thi&#7879;t h&#7841;i th&#7921;c t&#7871;.<br><br>
+        <strong>Thi&#7879;t h&#7841;i li&#234;n t&#7909;c:</strong> Theo <strong>Order 15 r.15(6) ROC</strong>, n&#7871;u thi&#7879;t h&#7841;i li&#234;n t&#7909;c x&#7843;y ra, ph&#7843;i &#273;&#225;nh gi&#225; &#273;&#7871;n ng&#224;y ra quy&#7871;t &#273;&#7883;nh. M&#7909;c &#273;&#237;ch: tr&#225;nh vi&#7879;c nguy&#234;n &#273;&#417;n ph&#7843;i ki&#7879;n l&#7841;i cho c&#249;ng h&#224;nh vi.<br><br>
+        <strong>V&#7909; &#225;n:</strong> <em>Uni Development v Ranjit Singh s/o Mukhtar Singh</em> [2018] SGHC 235 at [59].<br><br>
+        <strong>&#7912;ng d&#7909;ng &#273;&#7883;nh gi&#225;:</strong> Valuer ph&#7843;i x&#225;c &#273;&#7883;nh ng&#224;y &#273;&#7883;nh gi&#225; &#273;&#250;ng ph&#225;p lu&#7853;t v&#224; &#273;&#7843;m b&#7843;o m&#7885;i t&#237;nh to&#225;n &#273;&#7873;u t&#432;&#417;ng &#7913;ng v&#7899;i ng&#224;y &#273;&#243;.
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. TYPES OF DAMAGES -->
+  <div class="step s-types" onclick="toggleStep(this)">
+    <div class="step-left">
+      <div class="step-icon">&#128218;</div>
+      <div class="step-line"></div>
+    </div>
+    <div class="step-content">
+      <div class="step-header">Ch&#7911; &#273;&#7873; 5</div>
+      <div class="step-name">Types of Damages &mdash; 6 Lo&#7841;i Thi&#7879;t H&#7841;i</div>
+      <div class="step-vi">Compensatory, Liquidated, Nominal, Restitutionary, Account of Profits, Punitive</div>
+      <div class="step-hint">&#128073; Nh&#7845;n &#273;&#7875; xem chi ti&#7871;t</div>
+      <div class="step-story">
+        <br><strong style="color:#4ade80;">(a) Compensatory Damages:</strong> Ph&#7893; bi&#7871;n nh&#7845;t &mdash; b&#249; &#273;&#7855;p thi&#7879;t h&#7841;i th&#7921;c t&#7871; c&#7911;a nguy&#234;n &#273;&#417;n.<br><br>
+        <strong style="color:#4ade80;">(b) Liquidated Damages:</strong> S&#7889; ti&#7873;n &#273;&#432;&#7907;c th&#7887;a thu&#7853;n tr&#432;&#7899;c khi vi ph&#7841;m. T&#242;a s&#7869; th&#7921;c thi tr&#7915; khi &#273;&#243; l&#224; <em>penalty</em> (ph&#7841;t).<br><br>
+        <strong style="color:#4ade80;">(c) Nominal Damages:</strong> Khi vi ph&#7841;m &#273;&#432;&#7907;c ch&#7913;ng minh nh&#432;ng kh&#244;ng c&#243; thi&#7879;t h&#7841;i &#273;&#225;ng k&#7875;.<br><br>
+        <strong style="color:#4ade80;">(d) Restitutionary Damages:</strong> Ho&#224;n tr&#7843; kho&#7843;n l&#7907;i &#237;ch b&#7883; &#273;&#417;n nh&#7853;n &#273;&#432;&#7907;c b&#7845;t ch&#237;nh (unjust enrichment).<br><br>
+        <strong style="color:#4ade80;">(e) Account of Profits:</strong> Bu&#7897;c b&#7883; &#273;&#417;n tr&#7843; l&#7841;i l&#7907;i nhu&#7853;n t&#7915; h&#224;nh vi sai tr&#225;i. T&#7853;p trung v&#224;o <em>l&#7907;i c&#7911;a b&#7883; &#273;&#417;n</em>, kh&#244;ng ph&#7843;i thi&#7879;t h&#7841;i c&#7911;a nguy&#234;n &#273;&#417;n. Th&#432;&#7901;ng trong IP v&#224; fiduciary duty.<br>
+        &bull; V&#7909; &#225;n: <em>Sim Poh Ping v Winsta Holding</em> [2020] SGCA 35<br><br>
+        <strong style="color:#4ade80;">(f) Punitive Damages:</strong> &#272;&#7875; r&#259;n &#273;e, ch&#7881; c&#243; th&#7875; trong tort ngo&#7841;i l&#7879;, <strong>KH&#212;NG</strong> trong contract.<br>
+        &bull; <em>ACB v Thomson Medical</em> [2017] 1 SLR 918: T&#242;a n&#243;i c&#7847;n h&#224;nh vi "outrageous"<br>
+        &bull; <em>PH Hydraulics v Airtrust (Hong Kong)</em> [2017] SGCA 26: Kh&#244;ng c&#243; punitive damages trong h&#7907;p &#273;&#7891;ng
+      </div>
+    </div>
+  </div>
+
+  <!-- 6. LOSS OF PROFITS -->
+  <div class="step s-loss" onclick="toggleStep(this)">
+    <div class="step-left">
+      <div class="step-icon">&#128200;</div>
+      <div class="step-line"></div>
+    </div>
+    <div class="step-content">
+      <div class="step-header">Ch&#7911; &#273;&#7873; 6</div>
+      <div class="step-name">Loss of Profits Method &mdash; L&#7907;i Nhu&#7853;n M&#7845;t &#272;i</div>
+      <div class="step-vi">&#431;&#7899;c t&#237;nh l&#7907;i nhu&#7853;n l&#7869; ra c&#243; &#273;&#432;&#7907;c n&#7871;u kh&#244;ng vi ph&#7841;m</div>
+      <div class="step-hint">&#128073; Nh&#7845;n &#273;&#7875; xem chi ti&#7871;t</div>
+      <div class="step-story">
+        <br><strong style="color:#22d3ee;">&#272;&#7883;nh ngh&#297;a:</strong> &#431;&#7899;c t&#237;nh l&#7907;i nhu&#7853;n t&#432;&#417;ng lai m&#224; nguy&#234;n &#273;&#417;n l&#7869; ra &#273;&#432;&#7907;c h&#432;&#7903;ng n&#7871;u kh&#244;ng c&#243; vi ph&#7841;m.<br><br>
+        <strong>&#7912;ng d&#7909;ng:</strong> Ph&#249; h&#7907;p v&#7899;i c&#225;c v&#7909; gi&#225;n &#273;o&#7841;n kinh doanh, m&#7845;t h&#7907;p &#273;&#7891;ng, m&#7845;t c&#417; h&#7897;i kinh doanh.<br><br>
+        <strong>Quy tr&#236;nh:</strong><br>
+        &bull; X&#226;y d&#7921;ng k&#7883;ch b&#7843;n &ldquo;but-for&rdquo; (gi&#7843; &#273;&#7883;nh kh&#244;ng vi ph&#7841;m)<br>
+        &bull; D&#7921; b&#225;o doanh thu v&#224; chi ph&#237; trong k&#7883;ch b&#7843;n &#273;&#243;<br>
+        &bull; So s&#225;nh v&#7899;i k&#7871;t qu&#7843; th&#7921;c t&#7871;<br>
+        &bull; Ch&#234;nh l&#7879;ch = l&#7907;i nhu&#7853;n m&#7845;t &#273;i<br><br>
+        <strong style="color:#fbbf24;">V&#7909; &#225;n:</strong> <em>Phua Seng Kee v Public Utilities Board</em> [1999] 3 SLR(R) 618 &mdash; T&#242;a nh&#7845;n m&#7841;nh thi&#7879;t h&#7841;i ph&#7843;i ph&#7843;n &#225;nh th&#7921;c t&#7871; kinh t&#7871;, kh&#244;ng ch&#7881; l&#224; &#432;&#7899;c t&#237;nh l&#253; thuy&#7871;t. Valuer ph&#7843;i d&#7921;a v&#224;o b&#225;o c&#225;o &#273;&#432;&#7907;c ki&#7875;m to&#225;n, d&#7919; li&#7879;u th&#7883; tr&#432;&#7901;ng, ho&#7863;c giao d&#7883;ch so s&#225;nh.
+      </div>
+    </div>
+  </div>
+
+  <!-- 7. DIMINUTION IN VALUE -->
+  <div class="step s-dimval" onclick="toggleStep(this)">
+    <div class="step-left">
+      <div class="step-icon">&#128201;</div>
+      <div class="step-line"></div>
+    </div>
+    <div class="step-content">
+      <div class="step-header">Ch&#7911; &#273;&#7873; 7</div>
+      <div class="step-name">Diminution in Value &mdash; Gi&#7843;m Gi&#225; Tr&#7883;</div>
+      <div class="step-vi">So s&#225;nh gi&#225; tr&#7883; t&#224;i s&#7843;n tr&#432;&#7899;c v&#224; sau vi ph&#7841;m</div>
+      <div class="step-hint">&#128073; Nh&#7845;n &#273;&#7875; xem chi ti&#7871;t</div>
+      <div class="step-story">
+        <br><strong style="color:#f472b6;">&#272;&#7883;nh ngh&#297;a:</strong> So s&#225;nh gi&#225; tr&#7883; th&#7883; tr&#432;&#7901;ng c&#7911;a t&#224;i s&#7843;n, c&#244;ng ty ho&#7863;c kho&#7843;n &#273;&#7847;u t&#432; <em>tr&#432;&#7899;c</em> v&#224; <em>sau</em> h&#224;nh vi sai tr&#225;i.<br><br>
+        <strong>&#7912;ng d&#7909;ng:</strong> Ph&#249; h&#7907;p khi t&#224;i s&#7843;n b&#7883; h&#432; h&#7841;i tr&#7921;c ti&#7871;p, gi&#225; tr&#7883; c&#7893; ph&#7847;n gi&#7843;m, ho&#7863;c goodwill b&#7883; suy gi&#7843;m.<br><br>
+        <strong>C&#244;ng th&#7913;c:</strong><br>
+        <strong style="color:#f472b6; font-size:16px;">Thi&#7879;t h&#7841;i = Gi&#225; tr&#7883; tr&#432;&#7899;c vi ph&#7841;m &minus; Gi&#225; tr&#7883; sau vi ph&#7841;m</strong><br><br>
+        <strong>Quy tr&#236;nh:</strong><br>
+        &bull; &#272;&#7883;nh gi&#225; t&#224;i s&#7843;n t&#7841;i th&#7901;i &#273;i&#7875;m tr&#432;&#7899;c vi ph&#7841;m (Income/Market/Cost approach)<br>
+        &bull; &#272;&#7883;nh gi&#225; t&#7841;i th&#7901;i &#273;i&#7875;m sau vi ph&#7841;m<br>
+        &bull; Ch&#234;nh l&#7879;ch = thi&#7879;t h&#7841;i<br><br>
+        <strong>So v&#7899;i Loss of Profits:</strong> Diminution in Value t&#7853;p trung v&#224;o <em>gi&#225; tr&#7883; t&#224;i s&#7843;n</em>, trong khi Loss of Profits t&#7853;p trung v&#224;o <em>d&#242;ng thu nh&#7853;p t&#432;&#417;ng lai</em>.
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ===== COMPARISON TABLE ===== -->
+<div class="compare-section">
+  <h2>&#9878;&#65039; So S&#225;nh 6 Lo&#7841;i Thi&#7879;t H&#7841;i / Bi&#7879;n Ph&#225;p B&#7891;i Th&#432;&#7901;ng</h2>
+  <table class="compare-table">
+    <tr>
+      <th>Lo&#7841;i</th>
+      <th>T&#7853;p trung v&#224;o</th>
+      <th>M&#7909;c &#273;&#237;ch</th>
+      <th>&#272;i&#7873;u ki&#7879;n</th>
+      <th>V&#237; d&#7909; / Ghi ch&#250;</th>
+    </tr>
+    <tr>
+      <td style="color:#4ade80;">Compensatory</td>
+      <td>Thi&#7879;t h&#7841;i c&#7911;a nguy&#234;n &#273;&#417;n</td>
+      <td>Kh&#244;i ph&#7909;c v&#7883; th&#7871; nh&#432; ch&#432;a x&#7843;y ra</td>
+      <td>Ch&#7913;ng minh thi&#7879;t h&#7841;i th&#7921;c t&#7871;</td>
+      <td>Ph&#7893; bi&#7871;n nh&#7845;t trong contract &amp; tort</td>
+    </tr>
+    <tr>
+      <td style="color:#60a5fa;">Liquidated</td>
+      <td>S&#7889; ti&#7873;n th&#7887;a thu&#7853;n tr&#432;&#7899;c</td>
+      <td>X&#225;c &#273;&#7883;nh tr&#432;&#7899;c m&#7913;c b&#7891;i th&#432;&#7901;ng</td>
+      <td>Kh&#244;ng l&#224; penalty</td>
+      <td>Clause trong h&#7907;p &#273;&#7891;ng</td>
+    </tr>
+    <tr>
+      <td style="color:#fbbf24;">Nominal</td>
+      <td>Quy&#7873;n b&#7883; vi ph&#7841;m</td>
+      <td>X&#225;c nh&#7853;n vi ph&#7841;m nh&#432;ng thi&#7879;t h&#7841;i nh&#7887;</td>
+      <td>Vi ph&#7841;m nh&#432;ng kh&#244;ng thi&#7879;t h&#7841;i l&#7899;n</td>
+      <td>S&#7889; ti&#7873;n r&#7845;t nh&#7887;</td>
+    </tr>
+    <tr>
+      <td style="color:#fb923c;">Restitutionary</td>
+      <td>L&#7907;i &#237;ch b&#7845;t ch&#237;nh c&#7911;a b&#7883; &#273;&#417;n</td>
+      <td>Ho&#224;n tr&#7843; unjust enrichment</td>
+      <td>B&#7883; &#273;&#417;n &#273;&#432;&#7907;c l&#7907;i b&#7845;t ch&#237;nh</td>
+      <td>&#272;&#7843;o ng&#432;&#7907;c l&#7907;i &#237;ch kh&#244;ng x&#7913;ng &#273;&#225;ng</td>
+    </tr>
+    <tr>
+      <td style="color:#f472b6;">Account of Profits</td>
+      <td>L&#7907;i nhu&#7853;n c&#7911;a b&#7883; &#273;&#417;n</td>
+      <td>T&#7883;ch thu l&#7907;i nhu&#7853;n t&#7915; h&#224;nh vi sai</td>
+      <td>IP / fiduciary duty</td>
+      <td><em>Sim Poh Ping v Winsta</em> [2020]</td>
+    </tr>
+    <tr>
+      <td style="color:#f87171;">Punitive</td>
+      <td>H&#224;nh vi &ldquo;outrageous&rdquo;</td>
+      <td>R&#259;n &#273;e, tr&#7915;ng ph&#7841;t</td>
+      <td>Ch&#7881; trong tort ngo&#7841;i l&#7879;, KH&#212;NG contract</td>
+      <td><em>PH Hydraulics v Airtrust</em> [2017]</td>
+    </tr>
+  </table>
+</div>
+
+<!-- ===== COMPARISON: 2 VALUATION METHODS ===== -->
+<div class="compare-section">
+  <h2>&#128202; So S&#225;nh 2 Ph&#432;&#417;ng Ph&#225;p &#272;&#7883;nh Gi&#225; Thi&#7879;t H&#7841;i</h2>
+  <table class="compare-table">
+    <tr>
+      <th>Ti&#234;u ch&#237;</th>
+      <th>Loss of Profits</th>
+      <th>Diminution in Value</th>
+    </tr>
+    <tr>
+      <td>T&#7853;p trung</td>
+      <td>D&#242;ng thu nh&#7853;p t&#432;&#417;ng lai</td>
+      <td>Gi&#225; tr&#7883; t&#224;i s&#7843;n</td>
+    </tr>
+    <tr>
+      <td>C&#244;ng th&#7913;c</td>
+      <td>L&#7907;i nhu&#7853;n "but-for" &minus; L&#7907;i nhu&#7853;n th&#7921;c t&#7871;</td>
+      <td>Gi&#225; tr&#7883; tr&#432;&#7899;c &minus; Gi&#225; tr&#7883; sau vi ph&#7841;m</td>
+    </tr>
+    <tr>
+      <td>Ph&#249; h&#7907;p v&#7899;i</td>
+      <td>Gi&#225;n &#273;o&#7841;n kinh doanh, m&#7845;t h&#7907;p &#273;&#7891;ng</td>
+      <td>H&#432; h&#7841;i t&#224;i s&#7843;n, gi&#7843;m gi&#225; c&#7893; ph&#7847;n</td>
+    </tr>
+    <tr>
+      <td>D&#7919; li&#7879;u c&#7847;n</td>
+      <td>D&#7921; b&#225;o t&#224;i ch&#237;nh, b&#225;o c&#225;o ki&#7875;m to&#225;n</td>
+      <td>&#272;&#7883;nh gi&#225; t&#224;i s&#7843;n, giao d&#7883;ch so s&#225;nh</td>
+    </tr>
+    <tr>
+      <td>&#272;&#7897; ph&#7913;c t&#7841;p</td>
+      <td>Cao &mdash; d&#7921; b&#225;o c&#243; nhi&#7873;u gi&#7843; &#273;&#7883;nh</td>
+      <td>V&#7915;a &mdash; d&#7921;a tr&#234;n d&#7919; li&#7879;u th&#7883; tr&#432;&#7901;ng</td>
+    </tr>
+    <tr>
+      <td>R&#7911;i ro</td>
+      <td>Suy &#273;o&#225;n qu&#225; m&#7913;c (speculative)</td>
+      <td>Kh&#243; t&#225;ch ri&#234;ng t&#225;c &#273;&#7897;ng vi ph&#7841;m</td>
+    </tr>
+    <tr>
+      <td>V&#7909; &#225;n li&#234;n quan</td>
+      <td><em>Phua Seng Kee v PUB</em> [1999]</td>
+      <td>T&#432;&#417;ng t&#7921; c&#225;c v&#7909; IP, shareholder disputes</td>
+    </tr>
+  </table>
+</div>
+
+<!-- ===== HIGHLIGHT: 3 Legal Principles ===== -->
+<h2 class="section-title">&#128220; 3 Nguy&#234;n T&#7855;c Ph&#225;p L&#253; Gi&#7899;i H&#7841;n B&#7891;i Th&#432;&#7901;ng</h2>
+
+<div class="highlight-box">
+  <h3>&#128279; Causation (Nh&#226;n Qu&#7843;)</h3>
+  <p>
+    <strong>But-for test:</strong> N&#7871;u kh&#244;ng c&#243; vi ph&#7841;m, thi&#7879;t h&#7841;i c&#243; x&#7843;y ra kh&#244;ng?<br>
+    Ch&#7913;ng minh tr&#234;n <em>balance of probabilities</em>.<br>
+    Valuer x&#226;y d&#7921;ng <strong>counterfactual scenario</strong> &mdash; so s&#225;nh gi&#225; tr&#7883; "n&#7871;u kh&#244;ng vi ph&#7841;m" vs th&#7921;c t&#7871;.<br>
+    <strong>&#128218;</strong> <em>Sunny Metal v Ng Khim Ming Eric</em> [2007] 3 SLR 782
+  </p>
+</div>
+
+<div class="highlight-box">
+  <h3>&#128301; Remoteness (M&#7913;c &#272;&#7897; Xa)</h3>
+  <p>
+    <strong>Hadley v Baxendale (1854):</strong> Ch&#7881; b&#7891;i th&#432;&#7901;ng thi&#7879;t h&#7841;i (1) ph&#225;t sinh t&#7921; nhi&#234;n, ho&#7863;c (2) n&#7857;m trong d&#7921; t&#237;nh h&#7907;p l&#253; c&#7911;a c&#7843; hai b&#234;n.<br>
+    Valuer gi&#7899;i h&#7841;n v&#224;o t&#225;c &#273;&#7897;ng c&#243; th&#7875; d&#7921; &#273;o&#225;n th&#432;&#417;ng m&#7841;i &mdash; kh&#244;ng ph&#7843;i suy &#273;o&#225;n.<br>
+    <strong>&#128218;</strong> <em>Out of the Box v Wanin Industries</em> [2013] SGHC 121
+  </p>
+</div>
+
+<div class="highlight-box">
+  <h3>&#128737;&#65039; Mitigation (Gi&#7843;m Thi&#7875;u)</h3>
+  <p>
+    Nguy&#234;n &#273;&#417;n ph&#7843;i h&#224;nh &#273;&#7897;ng h&#7907;p l&#253;: t&#236;m h&#7907;p &#273;&#7891;ng thay th&#7871;, b&#225;n t&#224;i s&#7843;n, t&#225;i c&#417; c&#7845;u.<br>
+    Thi&#7879;t h&#7841;i c&#243; th&#7875; tr&#225;nh &#273;&#432;&#7907;c = kh&#244;ng &#273;&#432;&#7907;c b&#7891;i th&#432;&#7901;ng.<br>
+    Valuer &#273;&#225;nh gi&#225; c&#7843; <strong>actual</strong> v&#224; <strong>potential mitigation</strong> scenarios.<br>
+    <strong>&#128218;</strong> <em>Asia Hotel v Starwood</em> [2007] 1 SLR(R) 908
+  </p>
+</div>
+
+<!-- ===== KEY CASE CARDS ===== -->
+<h2 class="section-title">&#9878;&#65039; C&#225;c V&#7909; &#193;n Ch&#237;nh</h2>
+
+<div class="info-grid">
+
+  <div class="info-card" onclick="toggleCard(this)">
+    <div class="card-icon">&#9878;&#65039;</div>
+    <div class="card-title" style="color:#f87171;">Sunny Metal v Ng Khim Ming Eric</div>
+    <div class="card-subtitle">[2007] 3 SLR 782 &mdash; Causation</div>
+    <div class="card-hint">&#128073; Nh&#7845;n &#273;&#7875; xem</div>
+    <div class="card-detail">
+      <br><strong>V&#7845;n &#273;&#7873;:</strong> Ch&#7913;ng minh m&#7889;i quan h&#7879; nh&#226;n qu&#7843; gi&#7919;a h&#224;nh vi sai v&#224; thi&#7879;t h&#7841;i.<br>
+      <strong>Ph&#225;n quy&#7871;t:</strong> T&#242;a Ph&#250;c th&#7849;m kh&#7859;ng &#273;&#7883;nh nguy&#234;n &#273;&#417;n ph&#7843;i ch&#7913;ng minh h&#224;nh vi b&#7883; &#273;&#417;n <em>g&#243;p ph&#7847;n th&#7921;c ch&#7845;t</em> (materially contributed) v&#224;o thi&#7879;t h&#7841;i, tr&#234;n c&#417; s&#7903; balance of probabilities.<br>
+      <strong>&#7912;ng d&#7909;ng:</strong> Valuer ph&#7843;i x&#226;y d&#7921;ng counterfactual scenario &#273;&#7875; minh h&#7885;a nh&#226;n qu&#7843;.
+    </div>
+  </div>
+
+  <div class="info-card" onclick="toggleCard(this)">
+    <div class="card-icon">&#128220;</div>
+    <div class="card-title" style="color:#fb923c;">Hadley v Baxendale</div>
+    <div class="card-subtitle">(1854) &mdash; Remoteness (Leading Authority)</div>
+    <div class="card-hint">&#128073; Nh&#7845;n &#273;&#7875; xem</div>
+    <div class="card-detail">
+      <br><strong>V&#7845;n &#273;&#7873;:</strong> Gi&#7899;i h&#7841;n ph&#7841;m vi thi&#7879;t h&#7841;i &#273;&#432;&#7907;c b&#7891;i th&#432;&#7901;ng trong contract.<br>
+      <strong>Ph&#225;n quy&#7871;t:</strong> 2 nh&#225;nh: (1) thi&#7879;t h&#7841;i ph&#225;t sinh t&#7921; nhi&#234;n t&#7915; vi ph&#7841;m, (2) thi&#7879;t h&#7841;i n&#7857;m trong d&#7921; t&#237;nh h&#7907;p l&#253; c&#7911;a c&#7843; hai b&#234;n t&#7841;i th&#7901;i &#273;i&#7875;m giao k&#7871;t.<br>
+      <strong>T&#7847;m quan tr&#7885;ng:</strong> Leading authority, &#273;&#432;&#7907;c &#225;p d&#7909;ng t&#7841;i Singapore qua Out of the Box v Wanin.
+    </div>
+  </div>
+
+  <div class="info-card" onclick="toggleCard(this)">
+    <div class="card-icon">&#128203;</div>
+    <div class="card-title" style="color:#fbbf24;">Out of the Box v Wanin Industries</div>
+    <div class="card-subtitle">[2013] SGHC 121 &mdash; Remoteness (SG)</div>
+    <div class="card-hint">&#128073; Nh&#7845;n &#273;&#7875; xem</div>
+    <div class="card-detail">
+      <br><strong>V&#7845;n &#273;&#7873;:</strong> &#193;p d&#7909;ng Hadley v Baxendale t&#7841;i Singapore.<br>
+      <strong>Ph&#225;n quy&#7871;t:</strong> T&#242;a xem x&#233;t thi&#7879;t h&#7841;i c&#243; ph&#225;t sinh t&#7921; nhi&#234;n t&#7915; vi ph&#7841;m hay n&#7857;m trong d&#7921; t&#237;nh h&#7907;p l&#253; c&#7911;a c&#225;c b&#234;n.<br>
+      <strong>&#7912;ng d&#7909;ng:</strong> Gi&#7899;i h&#7841;n ph&#7841;m vi thi&#7879;t h&#7841;i &#273;&#432;&#7907;c &#273;&#7883;nh gi&#225; v&#224;o nh&#7919;ng g&#236; c&#243; th&#7875; d&#7921; &#273;o&#225;n th&#432;&#417;ng m&#7841;i.
+    </div>
+  </div>
+
+  <div class="info-card" onclick="toggleCard(this)">
+    <div class="card-icon">&#128176;</div>
+    <div class="card-title" style="color:#a78bfa;">Asia Hotel v Starwood</div>
+    <div class="card-subtitle">[2007] 1 SLR(R) 908 &mdash; Mitigation</div>
+    <div class="card-hint">&#128073; Nh&#7845;n &#273;&#7875; xem</div>
+    <div class="card-detail">
+      <br><strong>V&#7845;n &#273;&#7873;:</strong> Nguy&#234;n &#273;&#417;n c&#243; h&#224;nh &#273;&#7897;ng h&#7907;p l&#253; &#273;&#7875; gi&#7843;m thi&#7879;t h&#7841;i?<br>
+      <strong>Ph&#225;n quy&#7871;t:</strong> T&#242;a Ph&#250;c th&#7849;m kh&#7859;ng &#273;&#7883;nh mitigation l&#224; factual inquiry &mdash; xem x&#233;t t&#7915;ng t&#236;nh hu&#7889;ng c&#7909; th&#7875;.<br>
+      <strong>&#7912;ng d&#7909;ng:</strong> Valuer &#273;&#225;nh gi&#225; li&#7879;u nguy&#234;n &#273;&#417;n &#273;&#227; t&#236;m h&#7907;p &#273;&#7891;ng thay th&#7871;, b&#225;n t&#224;i s&#7843;n, hay t&#225;i c&#417; c&#7845;u h&#7907;p l&#253;.
+    </div>
+  </div>
+
+  <div class="info-card" onclick="toggleCard(this)">
+    <div class="card-icon">&#9200;</div>
+    <div class="card-title" style="color:#4ade80;">Wishing Star v Jurong Town Corp</div>
+    <div class="card-subtitle">[2008] 2 SLR(R) 909 &mdash; Timing</div>
+    <div class="card-hint">&#128073; Nh&#7845;n &#273;&#7875; xem</div>
+    <div class="card-detail">
+      <br><strong>V&#7845;n &#273;&#7873;:</strong> Ng&#224;y &#273;&#7883;nh gi&#225; thi&#7879;t h&#7841;i c&#243; ph&#7843;i lu&#244;n l&#224; ng&#224;y vi ph&#7841;m?<br>
+      <strong>Ph&#225;n quy&#7871;t:</strong> T&#242;a Ph&#250;c th&#7849;m ch&#7845;p nh&#7853;n l&#7879;ch kh&#7887;i quy t&#7855;c m&#7863;c &#273;&#7883;nh, ch&#7885;n ng&#224;y ph&#7843;n &#225;nh &#273;&#250;ng thi&#7879;t h&#7841;i th&#7921;c t&#7871; khi gi&#225; tr&#7883; bi&#7871;n &#273;&#7897;ng &#273;&#225;ng k&#7875;.<br>
+      <strong>&#7912;ng d&#7909;ng:</strong> Valuer ph&#7843;i x&#225;c &#273;&#7883;nh ng&#224;y &#273;&#7883;nh gi&#225; ph&#249; h&#7907;p ph&#225;p lu&#7853;t, kh&#244;ng m&#7863;c &#273;&#7883;nh ng&#224;y vi ph&#7841;m.
+    </div>
+  </div>
+
+  <div class="info-card" onclick="toggleCard(this)">
+    <div class="card-icon">&#128202;</div>
+    <div class="card-title" style="color:#22d3ee;">Phua Seng Kee v PUB</div>
+    <div class="card-subtitle">[1999] 3 SLR(R) 618 &mdash; Evidence</div>
+    <div class="card-hint">&#128073; Nh&#7845;n &#273;&#7875; xem</div>
+    <div class="card-detail">
+      <br><strong>V&#7845;n &#273;&#7873;:</strong> Y&#234;u c&#7847;u b&#7857;ng ch&#7913;ng cho &#273;&#7883;nh gi&#225; thi&#7879;t h&#7841;i.<br>
+      <strong>Ph&#225;n quy&#7871;t:</strong> T&#242;a nh&#7845;n m&#7841;nh thi&#7879;t h&#7841;i ph&#7843;i ph&#7843;n &#225;nh <em>economic loss actually sustained</em>, kh&#244;ng ch&#7881; l&#224; &#432;&#7899;c t&#237;nh l&#253; thuy&#7871;t.<br>
+      <strong>&#7912;ng d&#7909;ng:</strong> Valuer ph&#7843;i d&#7921;a v&#224;o b&#225;o c&#225;o ki&#7875;m to&#225;n, d&#7919; li&#7879;u th&#7883; tr&#432;&#7901;ng, giao d&#7883;ch so s&#225;nh &#273;&#7875; minh ch&#7913;ng.
+    </div>
+  </div>
+
+  <div class="info-card" onclick="toggleCard(this)">
+    <div class="card-icon">&#9940;</div>
+    <div class="card-title" style="color:#f472b6;">PH Hydraulics v Airtrust</div>
+    <div class="card-subtitle">[2017] SGCA 26 &mdash; No Punitive in Contract</div>
+    <div class="card-hint">&#128073; Nh&#7845;n &#273;&#7875; xem</div>
+    <div class="card-detail">
+      <br><strong>V&#7845;n &#273;&#7873;:</strong> C&#243; &#273;&#432;&#7907;c ph&#7841;t punitive damages trong v&#7909; h&#7907;p &#273;&#7891;ng?<br>
+      <strong>Ph&#225;n quy&#7871;t:</strong> T&#242;a Ph&#250;c th&#7849;m kh&#7859;ng &#273;&#7883;nh: <strong>KH&#212;NG c&#243; punitive damages trong contract</strong>.<br>
+      <strong>&#7912;ng d&#7909;ng:</strong> Punitive damages ch&#7881; c&#243; th&#7875; trong tort v&#7899;i h&#224;nh vi "outrageous" (ACB v Thomson Medical [2017]).
+    </div>
+  </div>
+
+  <div class="info-card" onclick="toggleCard(this)">
+    <div class="card-icon">&#128188;</div>
+    <div class="card-title" style="color:#facc15;">Sim Poh Ping v Winsta Holding</div>
+    <div class="card-subtitle">[2020] SGCA 35 &mdash; Account of Profits</div>
+    <div class="card-hint">&#128073; Nh&#7845;n &#273;&#7875; xem</div>
+    <div class="card-detail">
+      <br><strong>V&#7845;n &#273;&#7873;:</strong> Khi n&#224;o &#225;p d&#7909;ng account of profits thay v&#236; compensatory damages?<br>
+      <strong>Ph&#225;n quy&#7871;t:</strong> Account of profits t&#7853;p trung v&#224;o l&#7907;i nhu&#7853;n c&#7911;a b&#7883; &#273;&#417;n (defendant's gain), kh&#244;ng ph&#7843;i thi&#7879;t h&#7841;i nguy&#234;n &#273;&#417;n. Th&#432;&#7901;ng trong fiduciary duty v&#224; IP.<br>
+      <strong>&#7912;ng d&#7909;ng:</strong> Valuer c&#7847;n ph&#226;n bi&#7879;t r&#245; &#273;ang &#273;&#225;nh gi&#225; <em>l&#7895; c&#7911;a nguy&#234;n &#273;&#417;n</em> hay <em>l&#7907;i c&#7911;a b&#7883; &#273;&#417;n</em>.
+    </div>
+  </div>
+
+</div>
+
+<!-- ===== KEY LEGISLATION ===== -->
+<h2 class="section-title">&#128220; Quy &#272;&#7883;nh Ph&#225;p Lu&#7853;t Quan Tr&#7885;ng</h2>
+
+<div class="leg-grid">
+  <div class="leg-item">
+    <div class="leg-icon">&#128220;</div>
+    <div class="leg-name">Hadley v Baxendale (1854)</div>
+    <div class="leg-desc">Nguy&#234;n t&#7855;c remoteness: 2 nh&#225;nh gi&#7899;i h&#7841;n thi&#7879;t h&#7841;i</div>
+  </div>
+  <div class="leg-item">
+    <div class="leg-icon">&#9878;&#65039;</div>
+    <div class="leg-name">Order 15 r.15(6) ROC</div>
+    <div class="leg-desc">Thi&#7879;t h&#7841;i li&#234;n t&#7909;c: &#273;&#225;nh gi&#225; &#273;&#7871;n ng&#224;y ra quy&#7871;t &#273;&#7883;nh</div>
+  </div>
+  <div class="leg-item">
+    <div class="leg-icon">&#128176;</div>
+    <div class="leg-name">Compensatory Principle</div>
+    <div class="leg-desc">Restitutio in integrum &mdash; kh&#244;i ph&#7909;c v&#7883; th&#7871; ban &#273;&#7847;u</div>
+  </div>
+  <div class="leg-item">
+    <div class="leg-icon">&#128200;</div>
+    <div class="leg-name">Loss of Profits Method</div>
+    <div class="leg-desc">&#431;&#7899;c t&#237;nh l&#7907;i nhu&#7853;n but-for vs th&#7921;c t&#7871;</div>
+  </div>
+  <div class="leg-item">
+    <div class="leg-icon">&#128201;</div>
+    <div class="leg-name">Diminution in Value Method</div>
+    <div class="leg-desc">Gi&#225; tr&#7883; tr&#432;&#7899;c &minus; Gi&#225; tr&#7883; sau vi ph&#7841;m</div>
+  </div>
+  <div class="leg-item">
+    <div class="leg-icon">&#9940;</div>
+    <div class="leg-name">No Punitive in Contract</div>
+    <div class="leg-desc">PH Hydraulics [2017]: kh&#244;ng ph&#7841;t punitive trong h&#7907;p &#273;&#7891;ng</div>
+  </div>
+</div>
+
+<!-- ===== FORMULA BOX ===== -->
+<div class="highlight-box">
+  <h3>&#128270; C&#244;ng Th&#7913;c &#272;&#225;nh Gi&#225; Thi&#7879;t H&#7841;i</h3>
+  <p>
+    <strong style="color:#22d3ee; font-size:15px;">Loss of Profits = L&#7907;i nhu&#7853;n "but-for" (k&#7883;ch b&#7843;n kh&#244;ng vi ph&#7841;m) &minus; L&#7907;i nhu&#7853;n th&#7921;c t&#7871;</strong><br><br>
+    <strong style="color:#f472b6; font-size:15px;">Diminution in Value = Gi&#225; tr&#7883; t&#224;i s&#7843;n tr&#432;&#7899;c vi ph&#7841;m &minus; Gi&#225; tr&#7883; t&#224;i s&#7843;n sau vi ph&#7841;m</strong><br><br>
+    <strong>Y&#234;u c&#7847;u b&#7857;ng ch&#7913;ng (Phua Seng Kee):</strong><br>
+    &bull; B&#225;o c&#225;o t&#224;i ch&#237;nh &#273;&#432;&#7907;c ki&#7875;m to&#225;n (audited accounts)<br>
+    &bull; D&#7919; li&#7879;u th&#7883; tr&#432;&#7901;ng (market data)<br>
+    &bull; Giao d&#7883;ch so s&#225;nh (transaction comparables)<br>
+    &bull; KH&#212;NG &#273;&#432;&#7907;c d&#7921;a tr&#234;n &#432;&#7899;c t&#237;nh l&#253; thuy&#7871;t thu&#7847;n t&#250;y
+  </p>
+</div>
+
+<!-- ===== QUIZ ===== -->
+<h2 class="section-title">&#128221; Ki&#7875;m Tra Ki&#7871;n Th&#7913;c &mdash; 15 C&#226;u MCQ</h2>
+
+<div class="quiz-section">
+  <h2>&#127942; Assessment of Damages Quiz</h2>
+
+  <!-- Q1 -->
+  <div class="quiz-q" id="q1">
+    <div class="q-text"><span class="q-num">C&#226;u 1.</span> M&#7909;c ti&#234;u ch&#237;nh c&#7911;a vi&#7879;c &#273;&#225;nh gi&#225; thi&#7879;t h&#7841;i trong tranh ch&#7845;p th&#432;&#417;ng m&#7841;i l&#224; g&#236;?</div>
+    <div class="q-options">
+      <div class="q-option" onclick="answer(1,this,'B')">A. Tr&#7915;ng ph&#7841;t b&#7883; &#273;&#417;n</div>
+      <div class="q-option" onclick="answer(1,this,'B')">B. &#272;&#432;a nguy&#234;n &#273;&#417;n v&#7873; v&#7883; tr&#237; nh&#432; ch&#432;a x&#7843;y ra vi ph&#7841;m (compensatory)</div>
+      <div class="q-option" onclick="answer(1,this,'B')">C. L&#224;m gi&#224;u cho nguy&#234;n &#273;&#417;n</div>
+      <div class="q-option" onclick="answer(1,this,'B')">D. &#272;&#7843;m b&#7843;o c&#244;ng b&#7857;ng x&#227; h&#7897;i</div>
+    </div>
+    <div class="q-explanation">&#272;&#225;p &#225;n B. Nguy&#234;n t&#7855;c compensatory: &#273;&#432;a nguy&#234;n &#273;&#417;n v&#7873; v&#7883; th&#7871; t&#224;i ch&#237;nh m&#224; h&#7885; l&#7869; ra c&#243; n&#7871;u vi ph&#7841;m kh&#244;ng x&#7843;y ra &mdash; restitutio in integrum.</div>
+  </div>
+
+  <!-- Q2 -->
+  <div class="quiz-q" id="q2">
+    <div class="q-text"><span class="q-num">C&#226;u 2.</span> "But-for test" trong causation y&#234;u c&#7847;u ch&#7913;ng minh &#273;i&#7873;u g&#236;?</div>
+    <div class="q-options">
+      <div class="q-option" onclick="answer(2,this,'A')">A. N&#7871;u kh&#244;ng c&#243; vi ph&#7841;m, thi&#7879;t h&#7841;i s&#7869; kh&#244;ng x&#7843;y ra</div>
+      <div class="q-option" onclick="answer(2,this,'A')">B. Thi&#7879;t h&#7841;i c&#243; th&#7875; d&#7921; &#273;o&#225;n h&#7907;p l&#253;</div>
+      <div class="q-option" onclick="answer(2,this,'A')">C. Nguy&#234;n &#273;&#417;n &#273;&#227; gi&#7843;m thi&#7875;u thi&#7879;t h&#7841;i</div>
+      <div class="q-option" onclick="answer(2,this,'A')">D. Ng&#224;y &#273;&#7883;nh gi&#225; l&#224; ph&#249; h&#7907;p</div>
+    </div>
+    <div class="q-explanation">&#272;&#225;p &#225;n A. But-for test: n&#7871;u kh&#244;ng c&#243; (but for) h&#224;nh vi sai c&#7911;a b&#7883; &#273;&#417;n, thi&#7879;t h&#7841;i s&#7869; kh&#244;ng x&#7843;y ra. V&#7909; &#225;n: Sunny Metal v Ng Khim Ming Eric [2007].</div>
+  </div>
+
+  <!-- Q3 -->
+  <div class="quiz-q" id="q3">
+    <div class="q-text"><span class="q-num">C&#226;u 3.</span> V&#7909; &#225;n n&#224;o l&#224; leading authority v&#7873; remoteness?</div>
+    <div class="q-options">
+      <div class="q-option" onclick="answer(3,this,'C')">A. Sunny Metal v Ng Khim Ming Eric</div>
+      <div class="q-option" onclick="answer(3,this,'C')">B. Wishing Star v Jurong Town</div>
+      <div class="q-option" onclick="answer(3,this,'C')">C. Hadley v Baxendale</div>
+      <div class="q-option" onclick="answer(3,this,'C')">D. Asia Hotel v Starwood</div>
+    </div>
+    <div class="q-explanation">&#272;&#225;p &#225;n C. Hadley v Baxendale (1854) l&#224; leading authority v&#7873; remoteness, &#273;&#432;&#7907;c &#225;p d&#7909;ng t&#7841;i Singapore qua Out of the Box v Wanin Industries [2013].</div>
+  </div>
+
+  <!-- Q4 -->
+  <div class="quiz-q" id="q4">
+    <div class="q-text"><span class="q-num">C&#226;u 4.</span> Theo Hadley v Baxendale, nh&#225;nh th&#7913; 2 c&#7911;a remoteness l&#224; g&#236;?</div>
+    <div class="q-options">
+      <div class="q-option" onclick="answer(4,this,'D')">A. Thi&#7879;t h&#7841;i ph&#225;t sinh t&#7921; nhi&#234;n t&#7915; vi ph&#7841;m</div>
+      <div class="q-option" onclick="answer(4,this,'D')">B. Thi&#7879;t h&#7841;i do l&#7895;i c&#7889; &#253;</div>
+      <div class="q-option" onclick="answer(4,this,'D')">C. Thi&#7879;t h&#7841;i c&#243; b&#7857;ng ch&#7913;ng t&#224;i li&#7879;u</div>
+      <div class="q-option" onclick="answer(4,this,'D')">D. Thi&#7879;t h&#7841;i n&#7857;m trong d&#7921; t&#237;nh h&#7907;p l&#253; c&#7911;a c&#7843; hai b&#234;n t&#7841;i th&#7901;i &#273;i&#7875;m giao k&#7871;t</div>
+    </div>
+    <div class="q-explanation">&#272;&#225;p &#225;n D. Nh&#225;nh 2: thi&#7879;t h&#7841;i n&#7857;m trong d&#7921; t&#237;nh h&#7907;p l&#253; (reasonable contemplation) c&#7911;a c&#7843; hai b&#234;n t&#7841;i th&#7901;i &#273;i&#7875;m giao k&#7871;t h&#7907;p &#273;&#7891;ng.</div>
+  </div>
+
+  <!-- Q5 -->
+  <div class="quiz-q" id="q5">
+    <div class="q-text"><span class="q-num">C&#226;u 5.</span> Nguy&#234;n t&#7855;c mitigation y&#234;u c&#7847;u nguy&#234;n &#273;&#417;n l&#224;m g&#236;?</div>
+    <div class="q-options">
+      <div class="q-option" onclick="answer(5,this,'B')">A. Ch&#7913;ng minh nh&#226;n qu&#7843;</div>
+      <div class="q-option" onclick="answer(5,this,'B')">B. H&#224;nh &#273;&#7897;ng h&#7907;p l&#253; &#273;&#7875; gi&#7843;m thi&#7879;t h&#7841;i</div>
+      <div class="q-option" onclick="answer(5,this,'B')">C. Ch&#7885;n ng&#224;y &#273;&#7883;nh gi&#225; ph&#249; h&#7907;p</div>
+      <div class="q-option" onclick="answer(5,this,'B')">D. N&#7897;p b&#225;o c&#225;o chuy&#234;n gia</div>
+    </div>
+    <div class="q-explanation">&#272;&#225;p &#225;n B. Mitigation: nguy&#234;n &#273;&#417;n ph&#7843;i h&#224;nh &#273;&#7897;ng h&#7907;p l&#253; &#273;&#7875; gi&#7843;m m&#7845;t m&#225;t. Thi&#7879;t h&#7841;i c&#243; th&#7875; tr&#225;nh &#273;&#432;&#7907;c = kh&#244;ng b&#7891;i th&#432;&#7901;ng. Asia Hotel v Starwood [2007].</div>
+  </div>
+
+  <!-- Q6 -->
+  <div class="quiz-q" id="q6">
+    <div class="q-text"><span class="q-num">C&#226;u 6.</span> Theo quy t&#7855;c chung, ng&#224;y &#273;&#7883;nh gi&#225; thi&#7879;t h&#7841;i trong v&#7909; h&#7907;p &#273;&#7891;ng l&#224;?</div>
+    <div class="q-options">
+      <div class="q-option" onclick="answer(6,this,'A')">A. Ng&#224;y vi ph&#7841;m (date of breach)</div>
+      <div class="q-option" onclick="answer(6,this,'A')">B. Ng&#224;y n&#7897;p &#273;&#417;n ki&#7879;n</div>
+      <div class="q-option" onclick="answer(6,this,'A')">C. Ng&#224;y x&#233;t x&#7917;</div>
+      <div class="q-option" onclick="answer(6,this,'A')">D. Ng&#224;y k&#253; h&#7907;p &#273;&#7891;ng</div>
+    </div>
+    <div class="q-explanation">&#272;&#225;p &#225;n A. Quy t&#7855;c chung: &#273;&#225;nh gi&#225; t&#7841;i ng&#224;y vi ph&#7841;m. Tuy nhi&#234;n, t&#242;a c&#243; th&#7875; l&#7879;ch n&#7871;u c&#7847;n &mdash; Wishing Star v Jurong Town [2008].</div>
+  </div>
+
+  <!-- Q7 -->
+  <div class="quiz-q" id="q7">
+    <div class="q-text"><span class="q-num">C&#226;u 7.</span> V&#7909; &#225;n Wishing Star v Jurong Town Corp [2008] li&#234;n quan &#273;&#7871;n v&#7845;n &#273;&#7873; g&#236;?</div>
+    <div class="q-options">
+      <div class="q-option" onclick="answer(7,this,'C')">A. Causation</div>
+      <div class="q-option" onclick="answer(7,this,'C')">B. Remoteness</div>
+      <div class="q-option" onclick="answer(7,this,'C')">C. Timing of valuation &mdash; l&#7879;ch kh&#7887;i ng&#224;y vi ph&#7841;m</div>
+      <div class="q-option" onclick="answer(7,this,'C')">D. Punitive damages</div>
+    </div>
+    <div class="q-explanation">&#272;&#225;p &#225;n C. T&#242;a Ph&#250;c th&#7849;m ch&#7845;p nh&#7853;n l&#7879;ch kh&#7887;i quy t&#7855;c m&#7863;c &#273;&#7883;nh (ng&#224;y vi ph&#7841;m) v&#224; ch&#7885;n ng&#224;y ph&#7843;n &#225;nh &#273;&#250;ng thi&#7879;t h&#7841;i th&#7921;c t&#7871;.</div>
+  </div>
+
+  <!-- Q8 -->
+  <div class="quiz-q" id="q8">
+    <div class="q-text"><span class="q-num">C&#226;u 8.</span> Liquidated damages kh&#244;ng &#273;&#432;&#7907;c th&#7921;c thi khi n&#224;o?</div>
+    <div class="q-options">
+      <div class="q-option" onclick="answer(8,this,'B')">A. Khi s&#7889; ti&#7873;n qu&#225; nh&#7887;</div>
+      <div class="q-option" onclick="answer(8,this,'B')">B. Khi &#273;&#243; l&#224; penalty (ph&#7841;t) ch&#7913; kh&#244;ng ph&#7843;i &#432;&#7899;c t&#237;nh thi&#7879;t h&#7841;i</div>
+      <div class="q-option" onclick="answer(8,this,'B')">C. Khi c&#243; mitigation</div>
+      <div class="q-option" onclick="answer(8,this,'B')">D. Khi ch&#432;a c&#243; vi ph&#7841;m</div>
+    </div>
+    <div class="q-explanation">&#272;&#225;p &#225;n B. T&#242;a s&#7869; th&#7921;c thi liquidated damages clause tr&#7915; khi s&#7889; ti&#7873;n &#273;&#243; th&#7921;c ch&#7845;t l&#224; penalty (ph&#7841;t), kh&#244;ng ph&#7843;i &#432;&#7899;c t&#237;nh h&#7907;p l&#253; v&#7873; thi&#7879;t h&#7841;i.</div>
+  </div>
+
+  <!-- Q9 -->
+  <div class="quiz-q" id="q9">
+    <div class="q-text"><span class="q-num">C&#226;u 9.</span> Account of profits t&#7853;p trung v&#224;o &#273;i&#7873;u g&#236;?</div>
+    <div class="q-options">
+      <div class="q-option" onclick="answer(9,this,'C')">A. Thi&#7879;t h&#7841;i c&#7911;a nguy&#234;n &#273;&#417;n</div>
+      <div class="q-option" onclick="answer(9,this,'C')">B. Quy&#7873;n l&#7907;i c&#7911;a c&#7893; &#273;&#244;ng</div>
+      <div class="q-option" onclick="answer(9,this,'C')">C. L&#7907;i nhu&#7853;n c&#7911;a b&#7883; &#273;&#417;n t&#7915; h&#224;nh vi sai tr&#225;i</div>
+      <div class="q-option" onclick="answer(9,this,'C')">D. S&#7889; ti&#7873;n th&#7887;a thu&#7853;n tr&#432;&#7899;c</div>
+    </div>
+    <div class="q-explanation">&#272;&#225;p &#225;n C. Account of profits t&#7853;p trung v&#224;o l&#7907;i nhu&#7853;n c&#7911;a b&#7883; &#273;&#417;n (defendant's gain) t&#7915; h&#224;nh vi sai, kh&#244;ng ph&#7843;i thi&#7879;t h&#7841;i c&#7911;a nguy&#234;n &#273;&#417;n. V&#7909; &#225;n: Sim Poh Ping v Winsta [2020].</div>
+  </div>
+
+  <!-- Q10 -->
+  <div class="quiz-q" id="q10">
+    <div class="q-text"><span class="q-num">C&#226;u 10.</span> Theo PH Hydraulics v Airtrust [2017], punitive damages c&#243; &#273;&#432;&#7907;c &#225;p d&#7909;ng trong contract kh&#244;ng?</div>
+    <div class="q-options">
+      <div class="q-option" onclick="answer(10,this,'B')">A. C&#243;, trong m&#7885;i tr&#432;&#7901;ng h&#7907;p</div>
+      <div class="q-option" onclick="answer(10,this,'B')">B. Kh&#244;ng, ch&#7881; c&#243; th&#7875; trong tort ngo&#7841;i l&#7879;</div>
+      <div class="q-option" onclick="answer(10,this,'B')">C. C&#243;, n&#7871;u vi ph&#7841;m c&#7889; &#253;</div>
+      <div class="q-option" onclick="answer(10,this,'B')">D. T&#249;y theo t&#242;a quy&#7871;t &#273;&#7883;nh</div>
+    </div>
+    <div class="q-explanation">&#272;&#225;p &#225;n B. T&#242;a Ph&#250;c th&#7849;m kh&#7859;ng &#273;&#7883;nh KH&#212;NG c&#243; punitive damages trong contract. Ch&#7881; c&#243; th&#7875; trong tort v&#7899;i h&#224;nh vi "outrageous" (ACB v Thomson Medical [2017]).</div>
+  </div>
+
+  <!-- Q11 -->
+  <div class="quiz-q" id="q11">
+    <div class="q-text"><span class="q-num">C&#226;u 11.</span> Loss of Profits method t&#237;nh thi&#7879;t h&#7841;i b&#7857;ng c&#225;ch n&#224;o?</div>
+    <div class="q-options">
+      <div class="q-option" onclick="answer(11,this,'A')">A. L&#7907;i nhu&#7853;n "but-for" tr&#7915; l&#7907;i nhu&#7853;n th&#7921;c t&#7871;</div>
+      <div class="q-option" onclick="answer(11,this,'A')">B. Gi&#225; tr&#7883; tr&#432;&#7899;c tr&#7915; gi&#225; tr&#7883; sau</div>
+      <div class="q-option" onclick="answer(11,this,'A')">C. S&#7889; ti&#7873;n th&#7887;a thu&#7853;n trong h&#7907;p &#273;&#7891;ng</div>
+      <div class="q-option" onclick="answer(11,this,'A')">D. L&#7907;i nhu&#7853;n c&#7911;a b&#7883; &#273;&#417;n</div>
+    </div>
+    <div class="q-explanation">&#272;&#225;p &#225;n A. Loss of Profits = L&#7907;i nhu&#7853;n "but-for" (k&#7883;ch b&#7843;n kh&#244;ng vi ph&#7841;m) tr&#7915; l&#7907;i nhu&#7853;n th&#7921;c t&#7871;. &#272;&#225;p &#225;n B l&#224; Diminution in Value.</div>
+  </div>
+
+  <!-- Q12 -->
+  <div class="quiz-q" id="q12">
+    <div class="q-text"><span class="q-num">C&#226;u 12.</span> V&#7909; &#225;n Phua Seng Kee v PUB [1999] nh&#7845;n m&#7841;nh &#273;i&#7873;u g&#236;?</div>
+    <div class="q-options">
+      <div class="q-option" onclick="answer(12,this,'D')">A. Punitive damages l&#224; h&#7907;p l&#253;</div>
+      <div class="q-option" onclick="answer(12,this,'D')">B. Causation kh&#244;ng c&#7847;n ch&#7913;ng minh</div>
+      <div class="q-option" onclick="answer(12,this,'D')">C. Ng&#224;y &#273;&#7883;nh gi&#225; lu&#244;n l&#224; ng&#224;y vi ph&#7841;m</div>
+      <div class="q-option" onclick="answer(12,this,'D')">D. Thi&#7879;t h&#7841;i ph&#7843;i ph&#7843;n &#225;nh th&#7921;c t&#7871; kinh t&#7871;, kh&#244;ng ch&#7881; l&#253; thuy&#7871;t</div>
+    </div>
+    <div class="q-explanation">&#272;&#225;p &#225;n D. T&#242;a nh&#7845;n m&#7841;nh "economic loss actually sustained" &mdash; valuer ph&#7843;i d&#7921;a v&#224;o b&#225;o c&#225;o ki&#7875;m to&#225;n, d&#7919; li&#7879;u th&#7883; tr&#432;&#7901;ng, giao d&#7883;ch so s&#225;nh.</div>
+  </div>
+
+  <!-- Q13 -->
+  <div class="quiz-q" id="q13">
+    <div class="q-text"><span class="q-num">C&#226;u 13.</span> Order 15 r.15(6) ROC &#225;p d&#7909;ng cho tr&#432;&#7901;ng h&#7907;p n&#224;o?</div>
+    <div class="q-options">
+      <div class="q-option" onclick="answer(13,this,'C')">A. B&#225;o c&#225;o chuy&#234;n gia</div>
+      <div class="q-option" onclick="answer(13,this,'C')">B. Remoteness</div>
+      <div class="q-option" onclick="answer(13,this,'C')">C. Thi&#7879;t h&#7841;i li&#234;n t&#7909;c &mdash; &#273;&#225;nh gi&#225; &#273;&#7871;n ng&#224;y ra quy&#7871;t &#273;&#7883;nh</div>
+      <div class="q-option" onclick="answer(13,this,'C')">D. Account of profits</div>
+    </div>
+    <div class="q-explanation">&#272;&#225;p &#225;n C. O.15 r.15(6): khi thi&#7879;t h&#7841;i li&#234;n t&#7909;c x&#7843;y ra (continuing cause of action), &#273;&#225;nh gi&#225; &#273;&#7871;n ng&#224;y ra quy&#7871;t &#273;&#7883;nh. V&#7909; &#225;n: Uni Development v Ranjit Singh [2018].</div>
+  </div>
+
+  <!-- Q14 -->
+  <div class="quiz-q" id="q14">
+    <div class="q-text"><span class="q-num">C&#226;u 14.</span> Restitutionary damages nh&#7857;m m&#7909;c &#273;&#237;ch g&#236;?</div>
+    <div class="q-options">
+      <div class="q-option" onclick="answer(14,this,'B')">A. Tr&#7915;ng ph&#7841;t b&#7883; &#273;&#417;n</div>
+      <div class="q-option" onclick="answer(14,this,'B')">B. Ho&#224;n tr&#7843; kho&#7843;n l&#7907;i &#237;ch b&#7845;t ch&#237;nh (unjust enrichment)</div>
+      <div class="q-option" onclick="answer(14,this,'B')">C. X&#225;c nh&#7853;n vi ph&#7841;m nh&#432;ng kh&#244;ng thi&#7879;t h&#7841;i</div>
+      <div class="q-option" onclick="answer(14,this,'B')">D. &#431;&#7899;c t&#237;nh l&#7907;i nhu&#7853;n t&#432;&#417;ng lai</div>
+    </div>
+    <div class="q-explanation">&#272;&#225;p &#225;n B. Restitutionary damages ho&#224;n tr&#7843; unjust enrichment &mdash; &#273;&#7843;o ng&#432;&#7907;c l&#7907;i &#237;ch kh&#244;ng x&#7913;ng &#273;&#225;ng m&#224; b&#7883; &#273;&#417;n nh&#7853;n &#273;&#432;&#7907;c.</div>
+  </div>
+
+  <!-- Q15 -->
+  <div class="quiz-q" id="q15">
+    <div class="q-text"><span class="q-num">C&#226;u 15.</span> 3 nguy&#234;n t&#7855;c ph&#225;p l&#253; gi&#7899;i h&#7841;n thi&#7879;t h&#7841;i &#273;&#432;&#7907;c b&#7891;i th&#432;&#7901;ng l&#224; g&#236;?</div>
+    <div class="q-options">
+      <div class="q-option" onclick="answer(15,this,'A')">A. Causation, Remoteness, Mitigation</div>
+      <div class="q-option" onclick="answer(15,this,'A')">B. Compensatory, Liquidated, Nominal</div>
+      <div class="q-option" onclick="answer(15,this,'A')">C. Loss of Profits, Diminution, Account of Profits</div>
+      <div class="q-option" onclick="answer(15,this,'A')">D. Income, Market, Cost approach</div>
+    </div>
+    <div class="q-explanation">&#272;&#225;p &#225;n A. Ba nguy&#234;n t&#7855;c gi&#7899;i h&#7841;n: Causation (nh&#226;n qu&#7843;), Remoteness (m&#7913;c &#273;&#7897; xa), Mitigation (gi&#7843;m thi&#7875;u). Ch&#250;ng x&#225;c &#273;&#7883;nh ph&#7841;m vi thi&#7879;t h&#7841;i valuer &#273;&#432;&#7907;c &#273;&#225;nh gi&#225;.</div>
+  </div>
+
+  <div class="quiz-score" id="scoreBox" style="display:none;">
+    <div class="score-text" id="scoreText"></div>
+    <div class="score-label">Tr&#234;n t&#7893;ng 15 c&#226;u</div>
+  </div>
+</div>
+
+</div>
+
+<script>
+function toggleStep(el){el.classList.toggle('open');}
+function toggleCard(el){el.classList.toggle('open');}
+var score=0,answered=0,total=15;
+var correctAnswers={1:'B',2:'A',3:'C',4:'D',5:'B',6:'A',7:'C',8:'B',9:'C',10:'B',11:'A',12:'D',13:'C',14:'B',15:'A'};
+function answer(q,el,selected){
+  var parent=document.getElementById('q'+q);
+  if(parent.dataset.done)return;
+  parent.dataset.done='1';
+  answered++;
+  var correct=correctAnswers[q];
+  var opts=parent.querySelectorAll('.q-option');
+  var letters=['A','B','C','D'];
+  for(var i=0;i<opts.length;i++){
+    opts[i].classList.add('disabled');
+    if(letters[i]===correct)opts[i].classList.add('correct');
+  }
+  if(selected!==correct)el.classList.add('wrong');
+  else score++;
+  parent.querySelector('.q-explanation').style.display='block';
+  if(answered===total){
+    document.getElementById('scoreBox').style.display='block';
+    document.getElementById('scoreText').textContent=score+' / '+total;
+  }
+}
+</script>
+</body>
+</html>

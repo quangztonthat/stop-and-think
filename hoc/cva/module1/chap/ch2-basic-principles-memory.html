@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter 2: 10 Nguy&#234;n T&#7855;c &#272;&#7883;nh Gi&#225; - Memory Aid</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh;padding:20px}
+.container{max-width:900px;margin:0 auto}
+h1{text-align:center;font-size:1.6em;margin-bottom:8px;background:linear-gradient(135deg,#38bdf8,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.subtitle{text-align:center;color:#94a3b8;margin-bottom:24px;font-size:0.95em}
+.mnemonic-box{background:linear-gradient(135deg,#1e293b,#0f172a);border:2px solid #38bdf8;border-radius:16px;padding:20px;margin-bottom:24px;text-align:center}
+.mnemonic-box h2{color:#38bdf8;font-size:1.2em;margin-bottom:10px}
+.mnemonic-letters{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin:12px 0}
+.mnemonic-letters span{background:#1e3a5f;color:#7dd3fc;padding:8px 14px;border-radius:10px;font-weight:bold;font-size:1em;cursor:default;transition:transform 0.2s}
+.mnemonic-letters span:hover{transform:scale(1.1);background:#2563eb}
+.story-box{background:#1a1a2e;border-left:4px solid #a78bfa;border-radius:0 12px 12px 0;padding:18px;margin-bottom:24px}
+.story-box h2{color:#a78bfa;margin-bottom:10px;font-size:1.1em}
+.story-box p{color:#cbd5e1;line-height:1.7;font-size:0.95em}
+.story-box .highlight{color:#fbbf24;font-weight:bold}
+.principles-grid{display:flex;flex-direction:column;gap:12px;margin-bottom:30px}
+.principle-card{background:#1e293b;border-radius:14px;overflow:hidden;border:1px solid #334155;transition:all 0.3s}
+.principle-card:hover{border-color:#38bdf8;box-shadow:0 0 15px rgba(56,189,248,0.15)}
+.principle-header{display:flex;align-items:center;padding:14px 18px;cursor:pointer;gap:14px;user-select:none}
+.principle-num{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:bold;font-size:1.1em;flex-shrink:0}
+.principle-title{flex:1}
+.principle-title .vn{color:#fbbf24;font-size:0.95em;font-weight:600}
+.principle-title .en{color:#94a3b8;font-size:0.82em;margin-top:2px}
+.principle-emoji{font-size:1.5em}
+.principle-arrow{color:#64748b;font-size:1.2em;transition:transform 0.3s}
+.principle-arrow.open{transform:rotate(90deg)}
+.principle-detail{display:none;padding:0 18px 16px 72px;animation:fadeIn 0.3s}
+.principle-detail.show{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
+.principle-detail p{color:#94a3b8;font-size:0.9em;line-height:1.7;margin-bottom:8px}
+.principle-detail .key{color:#34d399;font-weight:600}
+.principle-detail .example{background:#0f172a;border-radius:8px;padding:10px 14px;margin-top:6px;border-left:3px solid #f59e0b;font-size:0.85em;color:#fbbf24}
+.color1{background:#7c3aed;color:#fff}
+.color2{background:#2563eb;color:#fff}
+.color3{background:#0891b2;color:#fff}
+.color4{background:#059669;color:#fff}
+.color5{background:#d97706;color:#fff}
+.color6{background:#dc2626;color:#fff}
+.color7{background:#4f46e5;color:#fff}
+.color8{background:#0d9488;color:#fff}
+.color9{background:#b91c1c;color:#fff}
+.color10{background:#6d28d9;color:#fff}
+.section-title{color:#38bdf8;font-size:1.15em;margin:24px 0 12px;padding-bottom:6px;border-bottom:1px solid #1e3a5f}
+.quiz-section{background:#1e293b;border-radius:16px;padding:20px;margin-top:30px}
+.quiz-section h2{color:#fbbf24;text-align:center;margin-bottom:16px}
+.quiz-info{text-align:center;color:#94a3b8;margin-bottom:16px;font-size:0.9em}
+.quiz-q{background:#0f172a;border-radius:12px;padding:16px;margin-bottom:12px;display:none}
+.quiz-q.active{display:block}
+.quiz-q p{color:#e2e8f0;margin-bottom:12px;font-size:0.95em;line-height:1.5}
+.quiz-opts{display:flex;flex-direction:column;gap:8px}
+.quiz-opt{padding:12px 16px;background:#1e293b;border:2px solid #334155;border-radius:10px;cursor:pointer;color:#cbd5e1;font-size:0.9em;transition:all 0.2s;text-align:left}
+.quiz-opt:hover{border-color:#38bdf8;background:#1e3a5f}
+.quiz-opt.correct{border-color:#22c55e;background:#14532d;color:#86efac}
+.quiz-opt.wrong{border-color:#ef4444;background:#450a0a;color:#fca5a5}
+.quiz-opt.disabled{pointer-events:none}
+.quiz-explain{display:none;margin-top:10px;padding:12px;background:#1a1a2e;border-radius:8px;color:#a78bfa;font-size:0.88em;line-height:1.6}
+.quiz-nav{display:flex;justify-content:space-between;align-items:center;margin-top:16px}
+.quiz-btn{padding:10px 24px;border:none;border-radius:10px;font-size:0.95em;cursor:pointer;font-weight:600}
+.quiz-btn.primary{background:#2563eb;color:#fff}
+.quiz-btn.primary:hover{background:#1d4ed8}
+.quiz-btn:disabled{opacity:0.4;cursor:not-allowed}
+.quiz-score{text-align:center;color:#fbbf24;font-size:1.1em;font-weight:bold}
+.concept-box{background:#0f172a;border:1px solid #334155;border-radius:10px;padding:14px;margin:10px 0}
+.concept-box .label{color:#38bdf8;font-weight:600;font-size:0.9em}
+.concept-box .desc{color:#94a3b8;font-size:0.88em;margin-top:4px}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>&#128218; Chapter 2: 10 Nguy&#234;n T&#7855;c &#272;&#7883;nh Gi&#225; Doanh Nghi&#7879;p</h1>
+<p class="subtitle">Business Valuation &#8211; Basic Principles (2.1 &amp; 2.2)</p>
+
+<div class="mnemonic-box">
+<h2>&#128240; M&#7865;o Nh&#7899; — Ti&#234;u &#273;&#7873; Tin Th&#7901;i S&#7921;:</h2>
+<p style="color:#fbbf24;font-weight:bold;font-size:1.15em;margin:12px 0;line-height:1.6">"<span style="color:#38bdf8">TIN</span> <span style="color:#7dd3fc">TH&#7900;I</span> S&#7920;: <span style="color:#38bdf8">M&#7908;C &#272;&#205;CH</span> <span style="color:#7dd3fc">X&#201;T</span> X&#7916; <span style="color:#38bdf8">GI&#193;</span> <span style="color:#7dd3fc">R&#7910;I</span> RO <span style="color:#38bdf8">T&#431;&#416;NG</span> LAI, <span style="color:#7dd3fc">THANH</span> L&#221; <span style="color:#38bdf8">THI&#7874;U</span> S&#7888; <span style="color:#7dd3fc">PH&#205;</span> T&#7892;N"</p>
+<p style="color:#94a3b8;font-size:0.88em;margin-bottom:10px">10 t&#7915; kh&#243;a in m&#224;u = 10 nguy&#234;n t&#7855;c &#273;&#7883;nh gi&#225;</p>
+<div class="mnemonic-letters">
+<span title="1. Value is information driven">TIN</span>
+<span title="2. Value is time specific">TH&#7900;I</span>
+<span title="3. Value is purpose dependent">M&#7908;C &#272;&#205;CH</span>
+<span title="4. Professional judgement">X&#201;T</span>
+<span title="5. Price &#8800; Value">GI&#193;</span>
+<span title="6. Risk and return">R&#7910;I</span>
+<span title="7. Future returns">T&#431;&#416;NG</span>
+<span title="8. Liquidity affects value">THANH</span>
+<span title="9. Minority &lt; Controlling">THI&#7874;U</span>
+<span title="10. Cost &#8800; Value">PH&#205;</span>
+</div>
+</div>
+
+<div class="story-box">
+<h2>&#128214; C&#226;u Chuy&#7879;n: "Ng&#432;&#7901;i Th&#7849;m &#272;&#7883;nh &#272;i Ch&#7907;"</h2>
+<p>H&#227;y t&#432;&#7903;ng t&#432;&#7907;ng b&#7841;n l&#224; m&#7897;t th&#7849;m &#273;&#7883;nh vi&#234;n &#273;i ch&#7907; mua m&#7897;t c&#225;i nh&#224;...</p>
+<p>&#9312; B&#7841;n c&#7847;n <span class="highlight">TH&#212;NG TIN</span> &#273;&#7847;y &#273;&#7911; v&#7873; c&#259;n nh&#224; (ai bi&#7871;t nhi&#7873;u h&#417;n s&#7869; &#273;&#7883;nh gi&#225; kh&#225;c).
+&#9313; Gi&#225; tr&#7883; ph&#7909; thu&#7897;c <span class="highlight">TH&#7900;I &#272;I&#7874;M</span> &#273;i xem (tr&#432;&#7899;c/sau COVID gi&#225; kh&#225;c nhau).
+&#9314; <span class="highlight">M&#7908;C &#272;&#205;CH</span> mua kh&#225;c nhau: &#7903; hay cho thu&#234; &#8594; gi&#225; kh&#225;c.
+&#9315; Hai chuy&#234;n gia c&#249;ng xem nh&#224; nh&#432;ng <span class="highlight">X&#201;T &#272;O&#193;N</span> kh&#225;c nhau &#8594; gi&#225; kh&#225;c.
+&#9316; <span class="highlight">GI&#193;</span> rao b&#225;n 5 t&#7927; nh&#432;ng gi&#225; tr&#7883; th&#7921;c ch&#7881; 4 t&#7927; (price &#8800; value).
+&#9317; Nh&#224; &#7903; v&#249;ng ng&#7853;p &#8594; <span class="highlight">R&#7910;I RO</span> cao &#8594; gi&#225; tr&#7883; th&#7845;p h&#417;n.
+&#9318; Nh&#224; g&#7847;n tr&#432;&#7901;ng h&#7885;c s&#7855;p x&#226;y &#8594; <span class="highlight">T&#431;&#416;NG LAI</span> t&#7889;t &#8594; gi&#225; tr&#7883; cao.
+&#9319; Nh&#224; d&#7877; b&#225;n l&#7841;i (<span class="highlight">THANH KHO&#7842;N</span>) &#8594; gi&#225; tr&#7883; cao h&#417;n nh&#224; h&#7867;o l&#225;nh.
+&#9320; Mua 10% c&#7893; ph&#7847;n (<span class="highlight">THI&#7874;U S&#7888;</span>) r&#7867; h&#417;n t&#237;nh theo t&#7927; l&#7879; so v&#7899;i mua 90%.
+&#9321; X&#226;y t&#7889;n 5 t&#7927; (<span class="highlight">PH&#205;</span>) nh&#432;ng b&#225;n ch&#7881; &#273;&#432;&#7907;c 3.5 t&#7927; v&#236; l&#7895;i th&#7901;i.</p>
+</div>
+
+<div class="section-title">&#128203; 10 Nguy&#234;n T&#7855;c &#272;&#7883;nh Gi&#225; (click &#273;&#7875; xem chi ti&#7871;t)</div>
+<div class="principles-grid" id="principlesGrid">
+</div>
+
+<div class="quiz-section" id="quizSection">
+<h2>&#127941; Ki&#7875;m Tra Ki&#7871;n Th&#7913;c</h2>
+<div class="quiz-info" id="quizInfo">C&#226;u <span id="qNum">1</span>/12 | &#272;i&#7875;m: <span id="qScore">0</span></div>
+<div id="quizContainer"></div>
+<div class="quiz-nav">
+<button class="quiz-btn primary" id="nextBtn" onclick="nextQ()" disabled>C&#226;u Ti&#7871;p &#10132;</button>
+</div>
+<div class="quiz-score" id="finalScore" style="display:none"></div>
+</div>
+
+</div>
+
+<script>
+var principles = [
+  {
+    num: 1, color: "color1", emoji: "\uD83D\uDCCA",
+    vn: "Gi\u00e1 tr\u1ecb ph\u1ee5 thu\u1ed9c TH\u00d4NG TIN",
+    en: "Value is information driven",
+    detail: "Gi\u00e1 tr\u1ecb \u0111\u01b0\u1ee3c x\u00e1c \u0111\u1ecbnh b\u1edfi th\u00f4ng tin c\u00f3 s\u1eb5n. C\u00f9ng m\u1ed9t c\u00f4ng ty, ng\u01b0\u1eddi c\u00f3 nhi\u1ec1u th\u00f4ng tin h\u01a1n s\u1ebd \u0111\u1ecbnh gi\u00e1 kh\u00e1c.",
+    keyPoint: "Ch\u1ea5t l\u01b0\u1ee3ng & \u0111\u1ed9 \u0111\u1ea7y \u0111\u1ee7 c\u1ee7a th\u00f4ng tin quy\u1ebft \u0111\u1ecbnh \u0111\u1ed9 tin c\u1eady c\u1ee7a k\u1ebft qu\u1ea3 \u0111\u1ecbnh gi\u00e1.",
+    example: "VD: A ch\u1ec9 c\u00f3 b\u00e1o c\u00e1o t\u00e0i ch\u00ednh \u2192 \u0111\u1ecbnh gi\u00e1 $20M. B c\u00f3 th\u00eam d\u1ef1 b\u00e1o & h\u1ee3p \u0111\u1ed3ng m\u1edbi \u2192 \u0111\u1ecbnh gi\u00e1 $30M"
+  },
+  {
+    num: 2, color: "color2", emoji: "\u23F0",
+    vn: "Gi\u00e1 tr\u1ecb g\u1eafn li\u1ec1n TH\u1edcI \u0110I\u1ec2M",
+    en: "Value is time specific",
+    detail: "Gi\u00e1 tr\u1ecb thay \u0111\u1ed5i theo th\u1eddi gian do th\u1ecb tr\u01b0\u1eddng, th\u00f4ng tin m\u1edbi. Th\u1ea9m \u0111\u1ecbnh vi\u00ean ph\u1ea3i x\u00e1c \u0111\u1ecbnh valuation date c\u1ee5 th\u1ec3.",
+    keyPoint: "Valuation date l\u00e0 \u0111i\u1ec3m m\u1ed1c \u0111\u1ec3 x\u00e1c \u0111\u1ecbnh gi\u00e1 tr\u1ecb \u2014 ch\u1ec9 d\u00f9ng th\u00f4ng tin bi\u1ebft \u0111\u01b0\u1ee3c t\u1ea1i th\u1eddi \u0111i\u1ec3m \u0111\u00f3.",
+    example: "VD: C\u00f4ng ty A: 12/2019 = $300M \u2192 6/2020 (COVID) = $200M \u2192 12/2021 = $500M"
+  },
+  {
+    num: 3, color: "color3", emoji: "\uD83C\uDFAF",
+    vn: "Gi\u00e1 tr\u1ecb ph\u1ee5 thu\u1ed9c M\u1ee4C \u0110\u00cdCH",
+    en: "Value is purpose dependent",
+    detail: "M\u1ee5c \u0111\u00edch \u0111\u1ecbnh gi\u00e1 kh\u00e1c nhau s\u1ebd cho k\u1ebft qu\u1ea3 kh\u00e1c nhau. Financing vs acquisition, liquidation vs going concern.",
+    keyPoint: "M\u1ee5c \u0111\u00edch quy\u1ebft \u0111\u1ecbnh basis of value v\u00e0 gi\u1ea3 \u0111\u1ecbnh \u0111\u01b0\u1ee3c \u00e1p d\u1ee5ng.",
+    example: "VD: C\u00f9ng c\u00f4ng ty: Financing (market value) = $60M; Acquisition (investment value + synergies) = $100M"
+  },
+  {
+    num: 4, color: "color4", emoji: "\uD83E\uDDD1\u200D\u2696\uFE0F",
+    vn: "Gi\u00e1 tr\u1ecb ph\u1ee5 thu\u1ed9c X\u00c9T \u0110O\u00c1N chuy\u00ean m\u00f4n",
+    en: "Value is subject to professional judgement",
+    detail: "\u0110\u1ecbnh gi\u00e1 kh\u00f4ng ph\u1ea3i c\u00f4ng th\u1ee9c to\u00e1n h\u1ecdc. C\u00f9ng data, 2 chuy\u00ean gia c\u00f3 th\u1ec3 cho k\u1ebft qu\u1ea3 kh\u00e1c do ch\u1ecdn discount rate, growth rate kh\u00e1c nhau.",
+    keyPoint: "\u0110\u1ecbnh gi\u00e1 = science + art. Professional judgement l\u00e0 y\u1ebfu t\u1ed1 ngh\u1ec7 thu\u1eadt.",
+    example: "VD: Valuer A (l\u1ea1c quan, 15% discount) = $100M; Valuer B (th\u1eadn tr\u1ecdng, 20% discount) = $75M"
+  },
+  {
+    num: 5, color: "color5", emoji: "\uD83D\uDCB0",
+    vn: "GI\u00c1 giao d\u1ecbch \u2260 Gi\u00e1 tr\u1ecb",
+    en: "Value and price are not always the same",
+    detail: "Value = gi\u00e1 tr\u1ecb n\u1ed9i t\u1ea1i (intrinsic worth) t\u00ednh t\u1eeb ph\u01b0\u01a1ng ph\u00e1p \u0111\u1ecbnh gi\u00e1. Price = s\u1ed1 ti\u1ec1n th\u1ef1c t\u1ebf giao d\u1ecbch, b\u1ecb \u1ea3nh h\u01b0\u1edfng b\u1edfi \u0111\u00e0m ph\u00e1n, c\u1ea3m x\u00fac, chi\u1ebfn l\u01b0\u1ee3c.",
+    keyPoint: "Price = observable fact; Value = estimate/opinion. Kh\u00f4ng \u0111\u01b0\u1ee3c suy ra value t\u1eeb price.",
+    example: "VD: Valuer \u0111\u1ecbnh gi\u00e1 $50M (market value), nh\u01b0ng acquirer tr\u1ea3 $60M v\u00ec synergies (+20% premium)"
+  },
+  {
+    num: 6, color: "color6", emoji: "\u26A0\uFE0F",
+    vn: "Gi\u00e1 tr\u1ecb d\u1ef1a tr\u00ean R\u1ee6I RO v\u00e0 l\u1ee3i nhu\u1eadn",
+    en: "Value is based on risk and return",
+    detail: "R\u1ee7i ro cao \u2192 discount rate cao \u2192 gi\u00e1 tr\u1ecb hi\u1ec7n t\u1ea1i th\u1ea5p h\u01a1n. \u0110\u00e2y l\u00e0 n\u1ec1n t\u1ea3ng c\u1ee7a ph\u01b0\u01a1ng ph\u00e1p DCF.",
+    keyPoint: "Risk-return trade-off: r\u1ee7i ro c\u00e0ng cao, nh\u00e0 \u0111\u1ea7u t\u01b0 \u0111\u00f2i l\u1ee3i nhu\u1eadn c\u00e0ng l\u1edbn \u2192 gi\u00e1 tr\u1ecb gi\u1ea3m.",
+    example: "VD: C\u00f9ng earnings $1M/n\u0103m: Cty A (\u1ed5n \u0111\u1ecbnh, multiple 12x) = $12M; Cty B (r\u1ee7i ro, multiple 8x) = $8M"
+  },
+  {
+    num: 7, color: "color7", emoji: "\uD83D\uDD2E",
+    vn: "Gi\u00e1 tr\u1ecb h\u01b0\u1edbng v\u1ec1 T\u01af\u01a0NG LAI",
+    en: "Value is about expectations of future returns",
+    detail: "Gi\u00e1 tr\u1ecb \u0111\u01b0\u1ee3c t\u1ea1o ra b\u1edfi k\u1ef3 v\u1ecdng l\u1ee3i nhu\u1eadn t\u01b0\u01a1ng lai, kh\u00f4ng ph\u1ea3i k\u1ebft qu\u1ea3 qu\u00e1 kh\u1ee9. L\u1ecbch s\u1eed ch\u1ec9 l\u00e0 c\u01a1 s\u1edf tham kh\u1ea3o.",
+    keyPoint: "Forward-looking: qu\u00e1 kh\u1ee9 l\u00e0 guiding indicator, t\u01b0\u01a1ng lai m\u1edbi t\u1ea1o gi\u00e1 tr\u1ecb.",
+    example: "VD: Cty A l\u1ee3i nhu\u1eadn tr\u00ec tr\u1ec7 nh\u01b0ng c\u00f3 patent \u0111\u1ed9c quy\u1ec1n \u2192 $250M > \u0111\u1ed1i th\u1ee7 l\u1ee3i nhu\u1eadn t\u1ed1t h\u01a1n nh\u01b0ng kh\u00f4ng c\u00f3 patent \u2192 $100M"
+  },
+  {
+    num: 8, color: "color8", emoji: "\uD83D\uDCA7",
+    vn: "THANH KHO\u1ea2N \u1ea3nh h\u01b0\u1edfng gi\u00e1 tr\u1ecb",
+    en: "Liquidity affects value",
+    detail: "T\u00e0i s\u1ea3n d\u1ec5 b\u00e1n (liquid) c\u00f3 gi\u00e1 tr\u1ecb cao h\u01a1n t\u00e0i s\u1ea3n kh\u00f3 b\u00e1n (illiquid). Chi\u1ebft kh\u1ea5u do thi\u1ebfu thanh kho\u1ea3n g\u1ecdi l\u00e0 DLOM.",
+    keyPoint: "DLOM = Discount for Lack of Marketability. C\u1ed5 phi\u1ebfu ni\u00eam y\u1ebft > c\u1ed5 ph\u1ea7n c\u00f4ng ty t\u01b0 nh\u00e2n.",
+    example: "VD: Investor A (c\u1ed5 phi\u1ebfu ni\u00eam y\u1ebft) b\u00e1n ngay gi\u00e1 th\u1ecb tr\u01b0\u1eddng; Investor B (10% c\u00f4ng ty t\u01b0 nh\u00e2n) b\u1ecb chi\u1ebft kh\u1ea5u 20% DLOM"
+  },
+  {
+    num: 9, color: "color9", emoji: "\uD83D\uDC65",
+    vn: "C\u1ed5 ph\u1ea7n THI\u1ec2U S\u1ed0 < C\u1ed5 ph\u1ea7n ki\u1ec3m so\u00e1t",
+    en: "Minority < Controlling interest",
+    detail: "C\u1ed5 \u0111\u00f4ng ki\u1ec3m so\u00e1t c\u00f3 quy\u1ec1n chi\u1ebfn l\u01b0\u1ee3c, b\u1ed5 nhi\u1ec7m qu\u1ea3n l\u00fd, chia c\u1ed5 t\u1ee9c. C\u1ed5 \u0111\u00f4ng thi\u1ec3u s\u1ed1 kh\u00f4ng c\u00f3 \u2192 b\u1ecb chi\u1ebft kh\u1ea5u (DLOC).",
+    keyPoint: "DLOC = Discount for Lack of Control. Tr\u00ean per share basis: controlling > minority.",
+    example: "VD: Equity value = $100M. Pro rata 10% = $10M nh\u01b0ng th\u1ef1c t\u1ebf ch\u1ec9 = $8M (DLOC 20%)"
+  },
+  {
+    num: 10, color: "color10", emoji: "\uD83C\uDFD7\uFE0F",
+    vn: "PH\u00cd (chi ph\u00ed) \u2260 Gi\u00e1 tr\u1ecb",
+    en: "Cost and value are not always identical",
+    detail: "Cost = chi ph\u00ed l\u1ecbch s\u1eed \u0111\u1ec3 t\u1ea1o ra t\u00e0i s\u1ea3n. Value = gi\u00e1 tr\u1ecb hi\u1ec7n t\u1ea1i d\u1ef1a tr\u00ean l\u1ee3i \u00edch kinh t\u1ebf t\u01b0\u01a1ng lai. Th\u1ecb tr\u01b0\u1eddng thay \u0111\u1ed5i, c\u00f4ng ngh\u1ec7 l\u1ed7i th\u1eddi c\u00f3 th\u1ec3 l\u00e0m value < cost.",
+    keyPoint: "Kh\u00f4ng \u0111\u01b0\u1ee3c d\u1ef1a qu\u00e1 nhi\u1ec1u v\u00e0o historical cost. Ph\u1ea3i \u0111\u1ea3m b\u1ea3o value ph\u1ea3n \u00e1nh th\u1ef1c t\u1ebf kinh t\u1ebf.",
+    example: "VD: X\u00e2y lab $25M nh\u01b0ng market value ch\u1ec9 $18M v\u00ec thi\u1ebft b\u1ecb l\u1ed7i th\u1eddi & thi\u1ebft k\u1ebf chuy\u00ean bi\u1ec7t kh\u00f3 chuy\u1ec3n nh\u01b0\u1ee3ng"
+  }
+];
+
+var quizData = [
+  {q: "Hai ng\u01b0\u1eddi \u0111\u1ecbnh gi\u00e1 c\u00f9ng 1 c\u00f4ng ty c\u00f9ng ng\u00e0y nh\u01b0ng cho k\u1ebft qu\u1ea3 kh\u00e1c nhau ($20M vs $30M). Nguy\u00ean t\u1eafc n\u00e0o gi\u1ea3i th\u00edch?", opts: ["Value is information driven", "Value is time specific", "Value is purpose dependent", "Cost \u2260 Value"], ai: 0, explain: "Ng\u01b0\u1eddi c\u00f3 nhi\u1ec1u th\u00f4ng tin h\u01a1n (d\u1ef1 b\u00e1o, h\u1ee3p \u0111\u1ed3ng m\u1edbi) \u0111\u1ecbnh gi\u00e1 cao h\u01a1n \u2192 Value is information driven."},
+  {q: "C\u00f4ng ty A \u0111\u01b0\u1ee3c \u0111\u1ecbnh gi\u00e1 $300M (12/2019), $200M (6/2020 - COVID), $500M (12/2021). \u0110i\u1ec1u n\u00e0y minh h\u1ecda nguy\u00ean t\u1eafc g\u00ec?", opts: ["Value is time specific", "Value is purpose dependent", "Liquidity affects value", "Risk and return"], ai: 0, explain: "Gi\u00e1 tr\u1ecb thay \u0111\u1ed5i theo t\u1eebng th\u1eddi \u0111i\u1ec3m v\u00ec \u0111i\u1ec1u ki\u1ec7n th\u1ecb tr\u01b0\u1eddng kh\u00e1c nhau \u2192 Value is time specific."},
+  {q: "C\u00f9ng c\u00f4ng ty: \u0111\u1ecbnh gi\u00e1 cho vay = $60M (market value), \u0111\u1ecbnh gi\u00e1 mua l\u1ea1i = $100M (investment value). T\u1ea1i sao?", opts: ["Value is purpose dependent", "Value and price are different", "Professional judgement", "Information driven"], ai: 0, explain: "M\u1ee5c \u0111\u00edch kh\u00e1c nhau (financing vs acquisition) d\u1eabn \u0111\u1ebfn basis of value kh\u00e1c \u2192 k\u1ebft qu\u1ea3 kh\u00e1c."},
+  {q: "DLOM l\u00e0 vi\u1ebft t\u1eaft c\u1ee7a g\u00ec?", opts: ["Discount for Lack of Marketability", "Discount for Lack of Management", "Discount for Level of Majority", "Discount for Liquidity of Market"], ai: 0, explain: "DLOM = Discount for Lack of Marketability \u2014 chi\u1ebft kh\u1ea5u do t\u00e0i s\u1ea3n thi\u1ebfu thanh kho\u1ea3n."},
+  {q: "Valuer A d\u00f9ng discount rate 15% \u2192 $100M. Valuer B d\u00f9ng 20% \u2192 $75M. C\u00f9ng data, c\u00f9ng ph\u01b0\u01a1ng ph\u00e1p. Nguy\u00ean t\u1eafc n\u00e0o?", opts: ["Professional judgement", "Risk and return", "Information driven", "Purpose dependent"], ai: 0, explain: "C\u00f9ng data nh\u01b0ng ch\u1ecdn discount rate kh\u00e1c do \u0111\u00e1nh gi\u00e1 r\u1ee7i ro kh\u00e1c \u2192 Professional judgement."},
+  {q: "Gi\u00e1 c\u1ed5 phi\u1ebfu Google tr\u00ean s\u00e0n ph\u1ea3n \u00e1nh m\u1ee9c gi\u00e1 tr\u1ecb n\u00e0o?", opts: ["Minority, marketable", "Minority, non-marketable", "Control, marketable", "Control, non-marketable"], ai: 0, explain: "Giao d\u1ecbch tr\u00ean s\u00e0n = mua b\u00e1n c\u1ed5 ph\u1ea7n thi\u1ec3u s\u1ed1 (minority) v\u00e0 d\u1ec5 giao d\u1ecbch (marketable)."},
+  {q: "C\u00f4ng ty x\u00e2y lab t\u1ed1n $25M nh\u01b0ng market value ch\u1ec9 $18M. Nguy\u00ean t\u1eafc n\u00e0o?", opts: ["Cost \u2260 Value", "Price \u2260 Value", "Liquidity affects value", "Risk and return"], ai: 0, explain: "Chi ph\u00ed x\u00e2y d\u1ef1ng (cost) kh\u00e1c v\u1edbi gi\u00e1 tr\u1ecb th\u1ecb tr\u01b0\u1eddng (value) do l\u1ed7i th\u1eddi v\u00e0 \u0111\u1eb7c th\u00f9 thi\u1ebft k\u1ebf."},
+  {q: "Investor A c\u00f3 c\u1ed5 phi\u1ebfu ni\u00eam y\u1ebft, Investor B c\u00f3 10% c\u00f4ng ty t\u01b0 nh\u00e2n. B b\u1ecb chi\u1ebft kh\u1ea5u 20%. T\u1ea1i sao?", opts: ["Liquidity affects value (DLOM)", "Minority discount (DLOC)", "Risk and return", "Cost \u2260 Value"], ai: 0, explain: "C\u1ed5 ph\u1ea7n c\u00f4ng ty t\u01b0 nh\u00e2n kh\u00f3 b\u00e1n h\u01a1n c\u1ed5 phi\u1ebfu ni\u00eam y\u1ebft \u2192 \u00e1p d\u1ee5ng DLOM (Discount for Lack of Marketability)."},
+  {q: "Equity value = $100M. C\u1ed5 \u0111\u00f4ng 10% \u0111\u01b0\u1ee3c \u0111\u1ecbnh gi\u00e1 $8M thay v\u00ec $10M. Chi\u1ebft kh\u1ea5u n\u00e0y g\u1ecdi l\u00e0 g\u00ec?", opts: ["Minority/Lack of Control Discount (DLOC)", "DLOM", "Risk premium", "Liquidity discount"], ai: 0, explain: "C\u1ed5 \u0111\u00f4ng 10% kh\u00f4ng c\u00f3 quy\u1ec1n ki\u1ec3m so\u00e1t \u2192 b\u1ecb \u00e1p d\u1ee5ng DLOC (Discount for Lack of Control)."},
+  {q: "Valuation l\u00e0 s\u1ef1 k\u1ebft h\u1ee3p gi\u1eefa...", opts: ["Science v\u00e0 Art", "Math v\u00e0 Physics", "Theory v\u00e0 Practice", "Law v\u00e0 Finance"], ai: 0, explain: "Valuation = Science (ph\u01b0\u01a1ng ph\u00e1p \u0111\u1ecbnh l\u01b0\u1ee3ng) + Art (ph\u00e1n \u0111o\u00e1n chuy\u00ean m\u00f4n t\u1eeb kinh nghi\u1ec7m)."},
+  {q: "C\u00f4ng ty A l\u1ee3i nhu\u1eadn tr\u00ec tr\u1ec7 nh\u01b0ng c\u00f3 patent \u0111\u1ed9c quy\u1ec1n, \u0111\u01b0\u1ee3c \u0111\u1ecbnh gi\u00e1 $250M. \u0110\u1ed1i th\u1ee7 l\u1ee3i nhu\u1eadn t\u1ed1t h\u01a1n nh\u01b0ng ch\u1ec9 $100M. Nguy\u00ean t\u1eafc?", opts: ["Future returns (k\u1ef3 v\u1ecdng t\u01b0\u01a1ng lai)", "Information driven", "Risk and return", "Purpose dependent"], ai: 0, explain: "Gi\u00e1 tr\u1ecb \u0111\u01b0\u1ee3c t\u1ea1o b\u1edfi k\u1ef3 v\u1ecdng t\u01b0\u01a1ng lai (patent \u2192 cash flow l\u1edbn), kh\u00f4ng ph\u1ea3i k\u1ebft qu\u1ea3 qu\u00e1 kh\u1ee9."},
+  {q: "Valuer \u0111\u1ecbnh gi\u00e1 c\u00f4ng ty $50M, nh\u01b0ng b\u00ean mua tr\u1ea3 $60M. S\u1ef1 kh\u00e1c bi\u1ec7t n\u00e0y minh h\u1ecda \u0111i\u1ec1u g\u00ec?", opts: ["Price \u2260 Value", "Cost \u2260 Value", "Professional judgement", "Purpose dependent"], ai: 0, explain: "Value ($50M) = \u01b0\u1edbc t\u00ednh n\u1ed9i t\u1ea1i. Price ($60M) = s\u1ed1 ti\u1ec1n th\u1ef1c tr\u1ea3 (bao g\u1ed3m premium v\u00ec synergies). Price \u2260 Value."}
+];
+
+function shuffle(arr) {
+  var a = arr.slice();
+  for (var i = a.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var t = a[i]; a[i] = a[j]; a[j] = t;
+  }
+  return a;
+}
+
+// Render principles
+var grid = document.getElementById("principlesGrid");
+principles.forEach(function(p) {
+  var card = document.createElement("div");
+  card.className = "principle-card";
+  card.innerHTML =
+    '<div class="principle-header" onclick="toggleP(this)">' +
+    '<div class="principle-num ' + p.color + '">' + p.num + '</div>' +
+    '<div class="principle-title"><div class="vn">' + p.emoji + ' ' + p.vn + '</div><div class="en">' + p.en + '</div></div>' +
+    '<div class="principle-arrow">\u25B6</div>' +
+    '</div>' +
+    '<div class="principle-detail">' +
+    '<p>' + p.detail + '</p>' +
+    '<p><span class="key">\u0110i\u1ec3m m\u1ea5u ch\u1ed1t:</span> ' + p.keyPoint + '</p>' +
+    '<div class="example">' + p.example + '</div>' +
+    '</div>';
+  grid.appendChild(card);
+});
+
+function toggleP(el) {
+  var detail = el.nextElementSibling;
+  var arrow = el.querySelector(".principle-arrow");
+  if (detail.classList.contains("show")) {
+    detail.classList.remove("show");
+    arrow.classList.remove("open");
+  } else {
+    detail.classList.add("show");
+    arrow.classList.add("open");
+  }
+}
+
+// Quiz logic - index based
+var shuffled, currentQ = 0, score = 0, answered = false;
+
+function initQuiz() {
+  shuffled = shuffle(quizData).map(function(q) {
+    var correctText = q.opts[q.ai];
+    var sOpts = shuffle(q.opts.slice());
+    var newAi = sOpts.indexOf(correctText);
+    return {q: q.q, sOpts: sOpts, correctIdx: newAi, explain: q.explain};
+  });
+  currentQ = 0;
+  score = 0;
+  answered = false;
+  renderQ();
+}
+
+function renderQ() {
+  var container = document.getElementById("quizContainer");
+  container.innerHTML = "";
+  var q = shuffled[currentQ];
+  var div = document.createElement("div");
+  div.className = "quiz-q active";
+  var optsHtml = "";
+  q.sOpts.forEach(function(opt, idx) {
+    optsHtml += '<div class="quiz-opt" data-idx="' + idx + '" onclick="checkQ(this,' + idx + ')">' + String.fromCharCode(65 + idx) + '. ' + opt + '</div>';
+  });
+  div.innerHTML = '<p><strong>C\u00e2u ' + (currentQ + 1) + ':</strong> ' + q.q + '</p>' +
+    '<div class="quiz-opts">' + optsHtml + '</div>' +
+    '<div class="quiz-explain" id="explain' + currentQ + '">' + q.explain + '</div>';
+  container.appendChild(div);
+  document.getElementById("qNum").textContent = currentQ + 1;
+  document.getElementById("qScore").textContent = score;
+  document.getElementById("nextBtn").disabled = true;
+  answered = false;
+}
+
+function checkQ(el, idx) {
+  if (answered) return;
+  answered = true;
+  var q = shuffled[currentQ];
+  var opts = el.parentElement.querySelectorAll(".quiz-opt");
+  opts.forEach(function(o) { o.classList.add("disabled"); });
+  if (idx === q.correctIdx) {
+    el.classList.add("correct");
+    score++;
+  } else {
+    el.classList.add("wrong");
+    opts[q.correctIdx].classList.add("correct");
+  }
+  document.getElementById("qScore").textContent = score;
+  document.getElementById("explain" + currentQ).style.display = "block";
+  document.getElementById("nextBtn").disabled = false;
+  if (currentQ === shuffled.length - 1) {
+    document.getElementById("nextBtn").textContent = "Xem K\u1ebft Qu\u1ea3 \uD83C\uDFC6";
+  }
+}
+
+function nextQ() {
+  if (currentQ < shuffled.length - 1) {
+    currentQ++;
+    renderQ();
+  } else {
+    document.getElementById("quizContainer").innerHTML = "";
+    document.getElementById("nextBtn").style.display = "none";
+    document.getElementById("quizInfo").style.display = "none";
+    var pct = Math.round(score / shuffled.length * 100);
+    var msg = pct >= 80 ? "\uD83C\uDF1F Xu\u1EA5t s\u1EAFc! B\u1EA1n n\u1EAFm v\u1EEFng 10 nguy\u00EAn t\u1EAFc!" :
+              pct >= 60 ? "\uD83D\uDC4D Kh\u00E1 t\u1ED1t! \u00D4n l\u1EA1i v\u00E0i nguy\u00EAn t\u1EAFc n\u1EEFa nh\u00E9." :
+              "\uD83D\uDCDA C\u1EA7n \u00F4n th\u00EAm. H\u00E3y \u0111\u1ECDc l\u1EA1i c\u00E2u chuy\u1EC7n v\u00E0 th\u1EED l\u1EA1i!";
+    var fs = document.getElementById("finalScore");
+    fs.style.display = "block";
+    fs.innerHTML = score + "/" + shuffled.length + " (" + pct + "%)<br><span style='font-size:0.8em;color:#94a3b8'>" + msg + "</span><br><br><button class='quiz-btn primary' onclick='initQuiz();document.getElementById(\"nextBtn\").style.display=\"block\";document.getElementById(\"nextBtn\").textContent=\"C\u00e2u Ti\u1ebfp \u27a1\";document.getElementById(\"quizInfo\").style.display=\"block\";document.getElementById(\"finalScore\").style.display=\"none\"'>L\u00e0m L\u1ea1i \uD83D\uDD04</button>";
+  }
+}
+
+initQuiz();
+</script>
+</body>
+</html>

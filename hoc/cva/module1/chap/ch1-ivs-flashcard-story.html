@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Flashcard & Story — Valuation Landscape 4 Khu Vực</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',sans-serif;background:#0a0f1a;color:#e2e8f0;min-height:100vh;overflow-x:hidden}
+.container{max-width:900px;margin:0 auto;padding:20px}
+
+/* Tab navigation */
+.tabs{display:flex;gap:0;margin-bottom:28px;background:#1e293b;border-radius:14px;overflow:hidden;border:1px solid #334155}
+.tab{flex:1;padding:14px 8px;text-align:center;cursor:pointer;font-size:14px;font-weight:600;transition:all .3s;color:#64748b;border:none;background:none}
+.tab:hover{color:#94a3b8;background:rgba(255,255,255,.03)}
+.tab.active{background:linear-gradient(135deg,#3b82f6,#2563eb);color:#fff}
+.tab-icon{font-size:22px;display:block;margin-bottom:4px}
+
+.panel{display:none}
+.panel.active{display:block}
+
+h1{text-align:center;font-size:24px;color:#60a5fa;margin-bottom:6px}
+.subtitle{text-align:center;color:#64748b;font-size:13px;margin-bottom:24px}
+
+/* ========== PANEL 1: STORY ========== */
+.story-section{margin-bottom:28px}
+.story-chapter{background:linear-gradient(135deg,#1a1f35,#151a2e);border:1px solid #2a3555;border-radius:16px;padding:24px;margin-bottom:20px;position:relative;overflow:hidden;cursor:pointer;transition:all .3s}
+.story-chapter:hover{border-color:#475569;transform:translateY(-2px)}
+.story-chapter::before{content:'';position:absolute;top:0;left:0;width:5px;height:100%;border-radius:16px 0 0 16px}
+.ch-na::before{background:linear-gradient(to bottom,#f87171,#dc2626)}
+.ch-eu::before{background:linear-gradient(to bottom,#60a5fa,#2563eb)}
+.ch-me::before{background:linear-gradient(to bottom,#fbbf24,#d97706)}
+.ch-ap::before{background:linear-gradient(to bottom,#4ade80,#16a34a)}
+.ch-fin::before{background:linear-gradient(to bottom,#c084fc,#9333ea)}
+
+.ch-header{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.ch-num{font-size:32px;font-weight:800;opacity:.15;position:absolute;top:10px;right:20px}
+.ch-emoji{font-size:36px}
+.ch-title{font-size:18px;font-weight:700}
+.ch-na .ch-title{color:#fca5a5}
+.ch-eu .ch-title{color:#93c5fd}
+.ch-me .ch-title{color:#fde68a}
+.ch-ap .ch-title{color:#86efac}
+.ch-fin .ch-title{color:#d8b4fe}
+
+.story-text{font-size:14.5px;line-height:2;color:#cbd5e1;padding-left:12px;border-left:2px solid #334155}
+.story-text .keyword{font-weight:700;padding:1px 6px;border-radius:4px;white-space:nowrap}
+.kw-red{color:#fca5a5;background:rgba(248,113,113,.1)}
+.kw-blue{color:#93c5fd;background:rgba(96,165,250,.1)}
+.kw-yellow{color:#fde68a;background:rgba(251,191,36,.1)}
+.kw-green{color:#86efac;background:rgba(74,222,128,.1)}
+.kw-purple{color:#d8b4fe;background:rgba(192,132,252,.1)}
+
+.story-memory{margin-top:14px;padding:12px 16px;background:rgba(251,191,36,.06);border:1px solid rgba(251,191,36,.15);border-radius:10px;font-size:13px;color:#fde68a;line-height:1.7}
+.story-memory::before{content:'💡 Mẹo nhớ: ';font-weight:700}
+
+.story-hidden{max-height:0;overflow:hidden;transition:max-height .5s ease}
+.story-chapter.open .story-hidden{max-height:800px}
+.ch-toggle{font-size:11px;color:#475569;margin-top:8px;text-align:right}
+
+/* ========== PANEL 2: FLASHCARDS ========== */
+.fc-controls{display:flex;justify-content:center;align-items:center;gap:16px;margin-bottom:20px;flex-wrap:wrap}
+.fc-filter{padding:8px 16px;border-radius:20px;border:1px solid #334155;background:#1e293b;color:#94a3b8;cursor:pointer;font-size:12px;font-weight:600;transition:all .2s}
+.fc-filter:hover{border-color:#60a5fa;color:#e2e8f0}
+.fc-filter.active{background:#3b82f6;color:#fff;border-color:#3b82f6}
+
+.fc-counter{text-align:center;color:#64748b;font-size:13px;margin-bottom:16px}
+
+.fc-stage{perspective:1000px;display:flex;justify-content:center;margin-bottom:20px;min-height:260px}
+.fc-card{width:100%;max-width:480px;height:260px;position:relative;cursor:pointer;transform-style:preserve-3d;transition:transform .6s}
+.fc-card.flipped{transform:rotateY(180deg)}
+
+.fc-face{position:absolute;inset:0;border-radius:16px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:28px;backface-visibility:hidden;text-align:center}
+.fc-front{background:linear-gradient(135deg,#1e293b,#0f172a);border:2px solid #334155}
+.fc-back{background:linear-gradient(135deg,#1a2744,#0f172a);border:2px solid #3b82f6;transform:rotateY(180deg)}
+
+.fc-q-label{font-size:11px;color:#64748b;text-transform:uppercase;letter-spacing:1px;margin-bottom:12px}
+.fc-q-text{font-size:18px;font-weight:600;color:#e2e8f0;line-height:1.6}
+.fc-a-label{font-size:11px;color:#3b82f6;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px}
+.fc-a-text{font-size:16px;color:#93c5fd;line-height:1.7;font-weight:500}
+.fc-a-detail{font-size:12px;color:#64748b;margin-top:10px;line-height:1.6}
+.fc-hint{font-size:11px;color:#475569;margin-top:12px}
+
+.fc-region-tag{position:absolute;top:12px;right:16px;font-size:10px;padding:3px 10px;border-radius:20px;font-weight:700;letter-spacing:.5px}
+.fc-tag-na{background:rgba(248,113,113,.12);color:#fca5a5}
+.fc-tag-eu{background:rgba(96,165,250,.12);color:#93c5fd}
+.fc-tag-me{background:rgba(251,191,36,.12);color:#fde68a}
+.fc-tag-ap{background:rgba(74,222,128,.12);color:#86efac}
+
+.fc-nav{display:flex;justify-content:center;align-items:center;gap:20px}
+.fc-btn{padding:12px 28px;border-radius:12px;border:none;font-size:14px;font-weight:600;cursor:pointer;transition:all .2s}
+.fc-btn:hover{transform:translateY(-2px)}
+.fc-prev{background:#334155;color:#e2e8f0}.fc-prev:hover{background:#475569}
+.fc-next{background:#3b82f6;color:#fff}.fc-next:hover{background:#2563eb}
+.fc-shuffle{background:#0f172a;color:#fbbf24;border:1px solid rgba(251,191,36,.3)}.fc-shuffle:hover{background:rgba(251,191,36,.1)}
+.fc-num{color:#64748b;font-size:14px;font-weight:600;min-width:60px;text-align:center}
+
+.fc-know-btns{display:flex;justify-content:center;gap:10px;margin-top:14px}
+.fc-know{padding:8px 20px;border-radius:8px;border:none;font-size:12px;font-weight:600;cursor:pointer;transition:all .2s}
+.fc-got{background:rgba(74,222,128,.12);color:#4ade80;border:1px solid rgba(74,222,128,.25)}.fc-got:hover{background:rgba(74,222,128,.2)}
+.fc-miss{background:rgba(248,113,113,.12);color:#f87171;border:1px solid rgba(248,113,113,.25)}.fc-miss:hover{background:rgba(248,113,113,.2)}
+.fc-score{text-align:center;color:#64748b;font-size:12px;margin-top:10px}
+
+/* ========== PANEL 3: DRAG & DROP ========== */
+.dnd-instructions{text-align:center;color:#94a3b8;font-size:14px;margin-bottom:20px;line-height:1.7}
+.dnd-score{text-align:center;font-size:16px;margin-bottom:16px;color:#60a5fa;font-weight:600}
+
+.dnd-zones{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:24px}
+@media(max-width:650px){.dnd-zones{grid-template-columns:1fr}}
+
+.dnd-zone{min-height:140px;border-radius:14px;padding:14px;transition:all .3s}
+.dnd-zone.drag-over{transform:scale(1.02)}
+.zone-na{background:linear-gradient(135deg,#1f1215,#150f18);border:2px dashed rgba(248,113,113,.3)}
+.zone-na.drag-over{border-color:#f87171;box-shadow:0 0 20px rgba(248,113,113,.15)}
+.zone-eu{background:linear-gradient(135deg,#101828,#13162a);border:2px dashed rgba(96,165,250,.3)}
+.zone-eu.drag-over{border-color:#60a5fa;box-shadow:0 0 20px rgba(96,165,250,.15)}
+.zone-me{background:linear-gradient(135deg,#1f1a0f,#18150f);border:2px dashed rgba(251,191,36,.3)}
+.zone-me.drag-over{border-color:#fbbf24;box-shadow:0 0 20px rgba(251,191,36,.15)}
+.zone-ap{background:linear-gradient(135deg,#0f1f15,#0f1812);border:2px dashed rgba(74,222,128,.3)}
+.zone-ap.drag-over{border-color:#4ade80;box-shadow:0 0 20px rgba(74,222,128,.15)}
+
+.zone-title{font-size:14px;font-weight:700;margin-bottom:8px;display:flex;align-items:center;gap:8px}
+.zone-na .zone-title{color:#fca5a5}
+.zone-eu .zone-title{color:#93c5fd}
+.zone-me .zone-title{color:#fde68a}
+.zone-ap .zone-title{color:#86efac}
+
+.zone-items{display:flex;flex-wrap:wrap;gap:6px;min-height:30px}
+
+.dnd-pool{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;padding:16px;background:#1e293b;border-radius:14px;border:1px solid #334155;min-height:60px;margin-bottom:16px}
+
+.dnd-chip{padding:8px 14px;border-radius:10px;font-size:12.5px;font-weight:600;cursor:grab;transition:all .2s;user-select:none;border:1px solid #475569;background:#0f172a;color:#e2e8f0}
+.dnd-chip:hover{transform:translateY(-2px);border-color:#60a5fa}
+.dnd-chip:active{cursor:grabbing;opacity:.7}
+.dnd-chip.correct{background:rgba(74,222,128,.12)!important;border-color:#4ade80!important;color:#4ade80!important;cursor:default}
+.dnd-chip.wrong{background:rgba(248,113,113,.12)!important;border-color:#f87171!important;color:#f87171!important;animation:shake .4s}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+
+.dnd-controls{text-align:center;margin-top:16px}
+.dnd-btn{padding:12px 28px;border-radius:12px;border:none;font-size:14px;font-weight:600;cursor:pointer;transition:all .2s;margin:0 6px}
+.dnd-btn:hover{transform:translateY(-2px)}
+.dnd-reset{background:#475569;color:#e2e8f0}.dnd-reset:hover{background:#64748b}
+.dnd-check{background:#3b82f6;color:#fff}.dnd-check:hover{background:#2563eb}
+.dnd-result{text-align:center;margin-top:16px;font-size:15px;min-height:24px}
+
+/* ========== PANEL 4: TIMELINE CHALLENGE ========== */
+.tl-challenge{margin-bottom:20px}
+.tl-instr{text-align:center;color:#94a3b8;font-size:14px;margin-bottom:16px}
+.tl-slots{display:flex;flex-direction:column;gap:8px;margin-bottom:20px;counter-reset:slot}
+.tl-slot{display:flex;align-items:center;gap:12px;padding:12px 16px;background:#1e293b;border:2px dashed #334155;border-radius:12px;min-height:52px;transition:all .3s}
+.tl-slot.drag-over{border-color:#60a5fa;background:#1a2744}
+.tl-slot-num{font-size:12px;color:#475569;font-weight:700;min-width:20px}
+.tl-slot .dnd-chip{cursor:grab}
+.tl-slot.correct-slot{border-color:#4ade80;border-style:solid;background:rgba(74,222,128,.05)}
+.tl-slot.wrong-slot{border-color:#f87171;border-style:solid;background:rgba(248,113,113,.05)}
+
+.tl-pool{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;padding:16px;background:#0f172a;border-radius:14px;border:1px solid #334155;min-height:60px;margin-bottom:16px}
+
+.tl-event-chip{padding:10px 16px;border-radius:10px;font-size:12.5px;font-weight:600;cursor:grab;transition:all .2s;user-select:none;background:#1e293b;border:1px solid #475569;color:#e2e8f0}
+.tl-event-chip:hover{transform:translateY(-2px);border-color:#60a5fa}
+.tl-event-chip .yr{color:#fbbf24;margin-right:6px}
+
+.tl-controls{text-align:center}
+.tl-result{text-align:center;margin-top:14px;font-size:15px;min-height:24px}
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>🧠 Ôn tập: Valuation Landscape</h1>
+  <p class="subtitle">Câu chuyện · Flashcard · Kéo thả · Sắp xếp Timeline</p>
+
+  <div class="tabs">
+    <div class="tab active" onclick="switchTab(0)"><span class="tab-icon">📖</span>Câu chuyện</div>
+    <div class="tab" onclick="switchTab(1)"><span class="tab-icon">🃏</span>Flashcard</div>
+    <div class="tab" onclick="switchTab(2)"><span class="tab-icon">🎯</span>Kéo thả</div>
+    <div class="tab" onclick="switchTab(3)"><span class="tab-icon">⏰</span>Timeline</div>
+  </div>
+
+  <!-- ==================== PANEL 1: STORY ==================== -->
+  <div class="panel active" id="panel0">
+    <div class="story-section">
+      <div class="story-chapter ch-na" onclick="this.classList.toggle('open')">
+        <div class="ch-num">1</div>
+        <div class="ch-header">
+          <div class="ch-emoji">🇺🇸</div>
+          <div class="ch-title">Chương 1: Ông Thuế & Cuộc Khủng Hoảng</div>
+        </div>
+        <div class="story-text">
+          Năm <span class="keyword kw-red">1959</span>, ở Mỹ có một "Ông Thuế" tên là <span class="keyword kw-red">IRS</span>. Ông cần biết giá trị công ty tư nhân để thu thuế, nên viết ra bộ quy tắc <span class="keyword kw-red">Revenue Ruling 59-60</span> — bản hướng dẫn định giá đầu tiên trên thế giới.
+        </div>
+        <div class="story-hidden">
+          <div class="story-text" style="margin-top:14px">
+            30 năm sau (<span class="keyword kw-red">1989</span>), hệ thống ngân hàng Mỹ sụp đổ (khủng hoảng S&L). Quốc hội tức giận, ban hành đạo luật <span class="keyword kw-red">FIRREA</span> — bắt buộc phải có tiêu chuẩn thẩm định. Thế là <span class="keyword kw-red">USPAP</span> ra đời, như "bộ luật giao thông" cho thẩm định viên, do <span class="keyword kw-red">Appraisal Foundation</span> quản lý.
+          </div>
+          <div class="story-text" style="margin-top:14px">
+            Thập niên <span class="keyword kw-red">1990s</span>, ai cũng muốn "bằng lái" thẩm định: <span class="keyword kw-red">NACVA</span> cấp bằng <span class="keyword kw-red">CVA</span>, <span class="keyword kw-red">AICPA</span> (hội kế toán) cấp bằng <span class="keyword kw-red">ABV</span>, còn <span class="keyword kw-red">ASA</span> mở rộng sang business valuation. Đến <span class="keyword kw-red">2007</span>, AICPA ra tiêu chuẩn <span class="keyword kw-red">SSVS No. 1</span> — bắt buộc cho thành viên. Và <span class="keyword kw-red">2017</span> xuất hiện <span class="keyword kw-red">MPF</span> (Mandatory Performance Framework).
+          </div>
+          <div class="story-memory">Bắc Mỹ = "Ông Thuế gây ra tất cả!" — IRS → FIRREA → USPAP → các chứng chỉ CVA, ABV, ASA. Nhớ dãy số: <strong>59 → 89 → 90s → 07 → 17</strong>.</div>
+        </div>
+        <div class="ch-toggle">▸ Bấm để đọc tiếp</div>
+      </div>
+
+      <div class="story-chapter ch-eu" onclick="this.classList.toggle('open')">
+        <div class="ch-num">2</div>
+        <div class="ch-header">
+          <div class="ch-emoji">🇪🇺</div>
+          <div class="ch-title">Chương 2: Ngôi Làng Châu Âu — Ai Cũng Muốn Làm Vua</div>
+        </div>
+        <div class="story-text">
+          Sang Châu Âu, mỗi nước có "vua" riêng. Anh Quốc có <span class="keyword kw-blue">RICS</span> — ông hoàng bất động sản, sau mở rộng sang business valuation và IP valuation (<span class="keyword kw-blue">2020</span>).
+        </div>
+        <div class="story-hidden">
+          <div class="story-text" style="margin-top:14px">
+            Toàn EU có <span class="keyword kw-blue">EACVA</span> — chương Châu Âu của GACVA, cấp chứng chỉ Certified Valuation Analyst. Pháp có <span class="keyword kw-blue">FFEE</span> (hiệp hội chuyên gia). Ý có <span class="keyword kw-blue">OIV</span> (tiêu chuẩn quốc gia). Hà Lan có <span class="keyword kw-blue">NIRV</span> (chứng nhận chuyên gia).
+          </div>
+          <div class="story-text" style="margin-top:14px">
+            Riêng giới PE/VC có "luật chơi" của mình: <span class="keyword kw-blue">IPEV</span> — hướng dẫn định giá private equity, phù hợp cả US GAAP và IFRS.
+          </div>
+          <div class="story-memory">Châu Âu = "Mỗi nước một vua" — nhớ 6 tổ chức theo nước: 🇬🇧RICS · 🇪🇺EACVA · 🇫🇷FFEE · 🇮🇹OIV · 🇳🇱NIRV · 💰IPEV(PE/VC)</div>
+        </div>
+        <div class="ch-toggle">▸ Bấm để đọc tiếp</div>
+      </div>
+
+      <div class="story-chapter ch-me" onclick="this.classList.toggle('open')">
+        <div class="ch-num">3</div>
+        <div class="ch-header">
+          <div class="ch-emoji">🇸🇦</div>
+          <div class="ch-title">Chương 3: Ngôi Sao Sa Mạc — Taqeem</div>
+        </div>
+        <div class="story-text">
+          Giữa sa mạc Ả Rập, năm <span class="keyword kw-yellow">2012</span>, Saudi Arabia dựng lên một ngôi sao duy nhất: <span class="keyword kw-yellow">Taqeem</span>. Đây là cơ quan cấp phép <strong>bắt buộc</strong> — muốn làm thẩm định ở Saudi phải có giấy phép của Taqeem.
+        </div>
+        <div class="story-hidden">
+          <div class="story-text" style="margin-top:14px">
+            Năm <span class="keyword kw-yellow">2017</span>, Taqeem <span class="keyword kw-yellow">dịch IVS sang tiếng Ả Rập</span> — như mở cánh cửa cho cả khu vực Trung Đông. Họ đào tạo IVS ở <span class="keyword kw-yellow">Ai Cập, Kuwait, UAE</span>. Đến <span class="keyword kw-yellow">2024</span>, IVSC mở <span class="keyword kw-yellow">văn phòng khu vực tại Riyadh</span>.
+          </div>
+          <div class="story-memory">Trung Đông = "Chỉ 1 ngôi sao: Taqeem!" — Nhớ: <strong>12 → 17 → 24</strong> (thành lập → dịch IVS → văn phòng IVSC). Dễ nhất trong 4 khu vực!</div>
+        </div>
+        <div class="ch-toggle">▸ Bấm để đọc tiếp</div>
+      </div>
+
+      <div class="story-chapter ch-ap" onclick="this.classList.toggle('open')">
+        <div class="ch-num">4</div>
+        <div class="ch-header">
+          <div class="ch-emoji">🌏</div>
+          <div class="ch-title">Chương 4: Rồng Châu Á Thức Giấc</div>
+        </div>
+        <div class="story-text">
+          Châu Á đi sau nhưng vươn nhanh như rồng. Năm <span class="keyword kw-green">1993</span>, Trung Quốc lập <span class="keyword kw-green">CAS</span> (China Appraisal Society) để quản lý ngành thẩm định khổng lồ.
+        </div>
+        <div class="story-hidden">
+          <div class="story-text" style="margin-top:14px">
+            20 năm sau (<span class="keyword kw-green">2013</span>), Singapore lập <span class="keyword kw-green">IVAS</span>, thuộc ACRA. Đến <span class="keyword kw-green">2016</span>, IVAS bắt đầu cấp chứng chỉ <span class="keyword kw-green">CVA</span> benchmarked theo IVS. Ở phía Nam, Úc có <span class="keyword kw-green">APESB</span> và New Zealand có <span class="keyword kw-green">CAANZ</span> — thẩm định gắn với nghề kế toán, chủ yếu cho M&A, tax, IFRS.
+          </div>
+          <div class="story-text" style="margin-top:14px">
+            Và tin vui: năm <span class="keyword kw-green">2025</span>, IVSC ký <span class="keyword kw-green">MOU với Bộ Tài chính Việt Nam</span> và Hội Thẩm định giá Việt Nam! 🇻🇳
+          </div>
+          <div class="story-memory">Châu Á-TBD = "Rồng thức giấc" — 3 trụ cột: 🇨🇳CAS(93) · 🇸🇬IVAS(13) · 🇦🇺APESB+CAANZ. Nhớ: 93 → 13 → 25(VN).</div>
+        </div>
+        <div class="ch-toggle">▸ Bấm để đọc tiếp</div>
+      </div>
+
+      <div class="story-chapter ch-fin" onclick="this.classList.toggle('open')">
+        <div class="ch-num">★</div>
+        <div class="ch-header">
+          <div class="ch-emoji">🧩</div>
+          <div class="ch-title">Tổng Kết: Câu Thần Chú Ghi Nhớ</div>
+        </div>
+        <div class="story-text">
+          <strong style="color:#d8b4fe;font-size:16px">"Ông Thuế Mỹ → Làng Vua Âu → Sao Sa Mạc → Rồng Á Thức"</strong>
+        </div>
+        <div class="story-hidden">
+          <div class="story-text" style="margin-top:14px">
+            <span class="keyword kw-red">Bắc Mỹ</span>: IRS(59) → FIRREA/USPAP(89) → CVA,ABV,ASA(90s) → SSVS(07) → MPF(17)<br><br>
+            <span class="keyword kw-blue">Châu Âu</span>: 🇬🇧RICS · 🇪🇺EACVA · 🇫🇷FFEE · 🇮🇹OIV · 🇳🇱NIRV · 💰IPEV<br><br>
+            <span class="keyword kw-yellow">Trung Đông</span>: Taqeem(12) → dịch IVS(17) → VP Riyadh(24)<br><br>
+            <span class="keyword kw-green">Châu Á</span>: CAS(93) · IVAS(13) · APESB/CAANZ · MOU VN(25)
+          </div>
+          <div class="story-memory">Khi thi, nhắm mắt tưởng tượng: Bay từ Mỹ(đỏ) → Âu(xanh dương) → Saudi(vàng) → Á(xanh lá). Mỗi điểm dừng có câu chuyện riêng!</div>
+        </div>
+        <div class="ch-toggle">▸ Bấm để đọc tổng kết</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== PANEL 2: FLASHCARDS ==================== -->
+  <div class="panel" id="panel1">
+    <div class="fc-controls">
+      <div class="fc-filter active" data-region="all" onclick="fcFilter('all')">Tất cả</div>
+      <div class="fc-filter" data-region="na" onclick="fcFilter('na')">🇺🇸 Bắc Mỹ</div>
+      <div class="fc-filter" data-region="eu" onclick="fcFilter('eu')">🇪🇺 Châu Âu</div>
+      <div class="fc-filter" data-region="me" onclick="fcFilter('me')">🇸🇦 Trung Đông</div>
+      <div class="fc-filter" data-region="ap" onclick="fcFilter('ap')">🌏 Châu Á-TBD</div>
+    </div>
+    <div class="fc-counter" id="fcCounter"></div>
+    <div class="fc-stage">
+      <div class="fc-card" id="fcCard" onclick="this.classList.toggle('flipped')">
+        <div class="fc-face fc-front" id="fcFront"></div>
+        <div class="fc-face fc-back" id="fcBack"></div>
+      </div>
+    </div>
+    <div class="fc-nav">
+      <button class="fc-btn fc-prev" onclick="fcMove(-1)">← Trước</button>
+      <span class="fc-num" id="fcNum"></span>
+      <button class="fc-btn fc-next" onclick="fcMove(1)">Tiếp →</button>
+    </div>
+    <div class="fc-know-btns">
+      <button class="fc-know fc-miss" onclick="fcMark(false)">❌ Chưa thuộc</button>
+      <button class="fc-know fc-got" onclick="fcMark(true)">✅ Thuộc rồi</button>
+      <button class="fc-btn fc-shuffle" onclick="fcShuffleCards()" style="padding:8px 16px;font-size:12px">🔀 Trộn</button>
+    </div>
+    <div class="fc-score" id="fcScore"></div>
+  </div>
+
+  <!-- ==================== PANEL 3: DRAG & DROP ==================== -->
+  <div class="panel" id="panel2">
+    <div class="dnd-instructions">Kéo từng tổ chức/sự kiện vào đúng khu vực 👇</div>
+    <div class="dnd-score" id="dndScore">0 / 0 đúng</div>
+
+    <div class="dnd-pool" id="dndPool"></div>
+
+    <div class="dnd-zones">
+      <div class="dnd-zone zone-na" id="zone-na"
+        ondragover="dndOver(event)" ondragleave="dndLeave(event)" ondrop="dndDrop(event,'na')">
+        <div class="zone-title">🇺🇸 Bắc Mỹ</div>
+        <div class="zone-items" id="zoneItems-na"></div>
+      </div>
+      <div class="dnd-zone zone-eu" id="zone-eu"
+        ondragover="dndOver(event)" ondragleave="dndLeave(event)" ondrop="dndDrop(event,'eu')">
+        <div class="zone-title">🇪🇺 Châu Âu</div>
+        <div class="zone-items" id="zoneItems-eu"></div>
+      </div>
+      <div class="dnd-zone zone-me" id="zone-me"
+        ondragover="dndOver(event)" ondragleave="dndLeave(event)" ondrop="dndDrop(event,'me')">
+        <div class="zone-title">🇸🇦 Trung Đông</div>
+        <div class="zone-items" id="zoneItems-me"></div>
+      </div>
+      <div class="dnd-zone zone-ap" id="zone-ap"
+        ondragover="dndOver(event)" ondragleave="dndLeave(event)" ondrop="dndDrop(event,'ap')">
+        <div class="zone-title">🌏 Châu Á-TBD</div>
+        <div class="zone-items" id="zoneItems-ap"></div>
+      </div>
+    </div>
+
+    <div class="dnd-controls">
+      <button class="dnd-btn dnd-reset" onclick="dndInit()">🔄 Chơi lại</button>
+    </div>
+    <div class="dnd-result" id="dndResult"></div>
+  </div>
+
+  <!-- ==================== PANEL 4: TIMELINE SORT ==================== -->
+  <div class="panel" id="panel3">
+    <div class="tl-instr">Kéo các sự kiện vào đúng thứ tự thời gian (sớm → muộn) 👇</div>
+    <div class="tl-pool" id="tlPool"></div>
+    <div class="tl-slots" id="tlSlots"></div>
+    <div class="tl-controls">
+      <button class="dnd-btn dnd-check" onclick="tlCheck()">✔ Kiểm tra</button>
+      <button class="dnd-btn dnd-reset" onclick="tlInit()">🔄 Chơi lại</button>
+    </div>
+    <div class="tl-result" id="tlResult"></div>
+  </div>
+</div>
+
+<script>
+/* ===== TAB SWITCHING ===== */
+function switchTab(idx){
+  document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',i===idx));
+  document.querySelectorAll('.panel').forEach((p,i)=>p.classList.toggle('active',i===idx));
+}
+
+/* ===== FLASHCARD DATA ===== */
+const allCards=[
+  // Bắc Mỹ
+  {q:"Revenue Ruling 59-60 là gì?",a:"Hướng dẫn đầu tiên về định giá cổ phần công ty tư nhân",detail:"Do IRS ban hành năm 1959 tại Mỹ",region:"na",tag:"BẮC MỸ"},
+  {q:"FIRREA (1989) dẫn đến điều gì?",a:"Ra đời USPAP và Appraisal Foundation",detail:"Sau khủng hoảng S&L, Quốc hội Mỹ bắt buộc có tiêu chuẩn thẩm định",region:"na",tag:"BẮC MỸ"},
+  {q:"USPAP là gì?",a:"Tiêu chuẩn quốc gia Mỹ về thẩm định giá",detail:"Ra đời 1989 sau đạo luật FIRREA, do Appraisal Foundation quản lý",region:"na",tag:"BẮC MỸ"},
+  {q:"NACVA cấp chứng chỉ gì?",a:"CVA — Certified Valuation Analyst",detail:"Thập niên 1990s, tại Bắc Mỹ",region:"na",tag:"BẮC MỸ"},
+  {q:"AICPA cấp chứng chỉ gì cho thẩm định?",a:"ABV — Accredited in Business Valuation",detail:"Dành cho thành viên AICPA. Năm 2007 ra thêm SSVS No. 1",region:"na",tag:"BẮC MỸ"},
+  {q:"SSVS No. 1 (2007) là gì?",a:"Tiêu chuẩn bắt buộc cho thành viên AICPA",detail:"Statement on Standards for Valuation Services",region:"na",tag:"BẮC MỸ"},
+  {q:"MPF ra đời năm nào?",a:"2017 — Mandatory Performance Framework",detail:"Cùng năm với CEIV (đã ngừng 2023)",region:"na",tag:"BẮC MỸ"},
+  // Châu Âu
+  {q:"RICS là tổ chức của nước nào?",a:"Anh Quốc 🇬🇧",detail:"Từ bất động sản mở rộng sang business valuation. 2020: hướng dẫn IP valuation",region:"eu",tag:"CHÂU ÂU"},
+  {q:"EACVA là gì?",a:"Chương Châu Âu của GACVA",detail:"Cấp chứng chỉ Certified Valuation Analyst cho toàn EU",region:"eu",tag:"CHÂU ÂU"},
+  {q:"FFEE thuộc nước nào?",a:"Pháp 🇫🇷",detail:"Hiệp hội chuyên gia định giá Pháp, tiêu chuẩn phù hợp IVS",region:"eu",tag:"CHÂU ÂU"},
+  {q:"OIV thuộc nước nào?",a:"Ý 🇮🇹",detail:"Tổ chức tiêu chuẩn định giá của Ý, hướng dẫn kỹ thuật quốc gia",region:"eu",tag:"CHÂU ÂU"},
+  {q:"NIRV thuộc nước nào?",a:"Hà Lan 🇳🇱",detail:"Hiệp hội thẩm định viên Hà Lan, chứng nhận chuyên gia",region:"eu",tag:"CHÂU ÂU"},
+  {q:"IPEV dành cho ai?",a:"Private Equity / Venture Capital",detail:"Hướng dẫn định giá riêng cho PE/VC, phù hợp US GAAP & IFRS",region:"eu",tag:"CHÂU ÂU"},
+  // Trung Đông
+  {q:"Taqeem là gì? Thành lập năm nào?",a:"Cơ quan quản lý & cấp phép bắt buộc cho thẩm định viên tại Saudi Arabia",detail:"Thành lập 2012",region:"me",tag:"TRUNG ĐÔNG"},
+  {q:"Taqeem làm gì năm 2017?",a:"Dịch IVS sang tiếng Ả Rập",detail:"Thúc đẩy áp dụng IVS trong khu vực Trung Đông",region:"me",tag:"TRUNG ĐÔNG"},
+  {q:"IVSC mở văn phòng Riyadh năm nào?",a:"2024",detail:"Với sự hỗ trợ của Taqeem",region:"me",tag:"TRUNG ĐÔNG"},
+  // Châu Á-TBD
+  {q:"CAS là gì? Năm nào?",a:"China Appraisal Society — cơ quan quản lý ngành tại Trung Quốc",detail:"Thành lập 1993, dần hội tụ IVS",region:"ap",tag:"CHÂU Á-TBD"},
+  {q:"IVAS thành lập ở đâu, năm nào?",a:"Singapore, năm 2013",detail:"Thuộc ACRA. 2016: bắt đầu cấp chứng chỉ CVA benchmarked theo IVS",region:"ap",tag:"CHÂU Á-TBD"},
+  {q:"APESB và CAANZ quản lý ở đâu?",a:"Úc 🇦🇺 và New Zealand 🇳🇿",detail:"Thẩm định gắn với nghề kế toán, chủ yếu cho M&A, tax, IFRS",region:"ap",tag:"CHÂU Á-TBD"},
+  {q:"IVSC ký MOU với Việt Nam năm nào?",a:"2025",detail:"Ký với Bộ Tài chính Việt Nam và Hội Thẩm định giá Việt Nam",region:"ap",tag:"CHÂU Á-TBD"},
+];
+
+let fcCurrent=0, fcDeck=[...allCards], fcGot=0, fcMiss_=0;
+
+function fcFilter(region){
+  document.querySelectorAll('.fc-filter').forEach(f=>f.classList.toggle('active',f.dataset.region===region));
+  fcDeck=region==='all'?[...allCards]:allCards.filter(c=>c.region===region);
+  fcCurrent=0;fcGot=0;fcMiss_=0;fcRender();
+}
+
+function fcShuffleCards(){
+  for(let i=fcDeck.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[fcDeck[i],fcDeck[j]]=[fcDeck[j],fcDeck[i]]}
+  fcCurrent=0;fcGot=0;fcMiss_=0;fcRender();
+}
+
+function fcRender(){
+  const card=document.getElementById('fcCard');
+  card.classList.remove('flipped');
+  if(!fcDeck.length){
+    document.getElementById('fcFront').innerHTML='<div class="fc-q-text">Không có thẻ nào</div>';
+    document.getElementById('fcBack').innerHTML='';
+    document.getElementById('fcNum').textContent='0/0';
+    document.getElementById('fcCounter').textContent='';
+    return;
+  }
+  const c=fcDeck[fcCurrent];
+  const tagClass={'na':'fc-tag-na','eu':'fc-tag-eu','me':'fc-tag-me','ap':'fc-tag-ap'}[c.region];
+  document.getElementById('fcFront').innerHTML=
+    `<div class="fc-region-tag ${tagClass}">${c.tag}</div>
+     <div class="fc-q-label">Câu hỏi</div>
+     <div class="fc-q-text">${c.q}</div>
+     <div class="fc-hint">👆 Bấm để lật</div>`;
+  document.getElementById('fcBack').innerHTML=
+    `<div class="fc-region-tag ${tagClass}">${c.tag}</div>
+     <div class="fc-a-label">Đáp án</div>
+     <div class="fc-a-text">${c.a}</div>
+     <div class="fc-a-detail">${c.detail}</div>`;
+  document.getElementById('fcNum').textContent=`${fcCurrent+1}/${fcDeck.length}`;
+  document.getElementById('fcCounter').textContent=`${fcDeck.length} thẻ`;
+  document.getElementById('fcScore').textContent=`✅ ${fcGot}  ❌ ${fcMiss_}`;
+}
+
+function fcMove(dir){
+  if(!fcDeck.length)return;
+  fcCurrent=(fcCurrent+dir+fcDeck.length)%fcDeck.length;
+  fcRender();
+}
+function fcMark(got){
+  if(got)fcGot++;else fcMiss_++;
+  document.getElementById('fcScore').textContent=`✅ ${fcGot}  ❌ ${fcMiss_}`;
+  if(fcCurrent<fcDeck.length-1){fcCurrent++;fcRender();}
+  else{document.getElementById('fcScore').textContent=`Hoàn thành! ✅ ${fcGot}  ❌ ${fcMiss_} / ${fcDeck.length} thẻ`;}
+}
+
+/* ===== DRAG & DROP ===== */
+const dndData=[
+  {text:"IRS / Rev. Ruling 59-60",region:"na"},
+  {text:"USPAP / FIRREA",region:"na"},
+  {text:"AICPA (ABV)",region:"na"},
+  {text:"NACVA (CVA)",region:"na"},
+  {text:"ASA",region:"na"},
+  {text:"SSVS No. 1",region:"na"},
+  {text:"MPF (2017)",region:"na"},
+  {text:"RICS 🇬🇧",region:"eu"},
+  {text:"EACVA",region:"eu"},
+  {text:"FFEE 🇫🇷",region:"eu"},
+  {text:"OIV 🇮🇹",region:"eu"},
+  {text:"NIRV 🇳🇱",region:"eu"},
+  {text:"IPEV (PE/VC)",region:"eu"},
+  {text:"Taqeem (2012)",region:"me"},
+  {text:"Dịch IVS → Ả Rập (2017)",region:"me"},
+  {text:"VP IVSC Riyadh (2024)",region:"me"},
+  {text:"CAS 🇨🇳 (1993)",region:"ap"},
+  {text:"IVAS 🇸🇬 (2013)",region:"ap"},
+  {text:"APESB 🇦🇺",region:"ap"},
+  {text:"CAANZ 🇳🇿",region:"ap"},
+  {text:"MOU Việt Nam (2025)",region:"ap"},
+];
+
+let dndCorrect=0,dndTotal=0;
+
+function dndInit(){
+  dndCorrect=0;dndTotal=0;
+  document.getElementById('dndScore').textContent='0 / 0 đúng';
+  document.getElementById('dndResult').textContent='';
+  ['na','eu','me','ap'].forEach(r=>document.getElementById('zoneItems-'+r).innerHTML='');
+  const pool=document.getElementById('dndPool');
+  const shuffled=[...dndData];
+  for(let i=shuffled.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[shuffled[i],shuffled[j]]=[shuffled[j],shuffled[i]]}
+  pool.innerHTML=shuffled.map((d,i)=>
+    `<div class="dnd-chip" draggable="true" data-region="${d.region}" data-idx="${i}"
+      ondragstart="dndStart(event)">${d.text}</div>`
+  ).join('');
+  // Touch support
+  pool.querySelectorAll('.dnd-chip').forEach(addTouchDrag);
+}
+
+function dndStart(e){e.dataTransfer.setData('text/plain',e.target.outerHTML);e.dataTransfer.setData('region',e.target.dataset.region);e.target._source=true;}
+function dndOver(e){e.preventDefault();e.currentTarget.classList.add('drag-over');}
+function dndLeave(e){e.currentTarget.classList.remove('drag-over');}
+function dndDrop(e,zoneRegion){
+  e.preventDefault();e.currentTarget.classList.remove('drag-over');
+  const html=e.dataTransfer.getData('text/plain');
+  const itemRegion=e.dataTransfer.getData('region');
+  // Remove from pool
+  const pool=document.getElementById('dndPool');
+  const chips=pool.querySelectorAll('.dnd-chip');
+  chips.forEach(c=>{if(c._source){c.remove();c._source=false;}});
+  // Also remove any chip that was being dragged (fallback)
+  const dragging=document.querySelector('.dnd-chip[data-dragging]');
+  if(dragging)dragging.remove();
+
+  const container=document.getElementById('zoneItems-'+zoneRegion);
+  const temp=document.createElement('div');temp.innerHTML=html;
+  const chip=temp.firstElementChild;
+  chip.draggable=false;chip.style.cursor='default';
+  chip.removeAttribute('ondragstart');
+
+  dndTotal++;
+  if(itemRegion===zoneRegion){
+    chip.classList.add('correct');dndCorrect++;
+  } else {
+    chip.classList.add('wrong');
+    setTimeout(()=>chip.style.opacity='.5',400);
+  }
+  container.appendChild(chip);
+  document.getElementById('dndScore').textContent=`${dndCorrect} / ${dndTotal} đúng`;
+  // Check if all done
+  if(document.getElementById('dndPool').querySelectorAll('.dnd-chip').length===0){
+    const pct=Math.round(dndCorrect/dndTotal*100);
+    document.getElementById('dndResult').innerHTML=pct>=90
+      ?`<span style="color:#4ade80">🎉 Xuất sắc! ${pct}%</span>`
+      :pct>=60?`<span style="color:#fbbf24">💪 Khá tốt: ${pct}%</span>`
+      :`<span style="color:#fb923c">📖 Ôn lại nhé: ${pct}%</span>`;
+  }
+}
+
+// Simple touch drag support
+let touchDragEl=null,touchClone=null;
+function addTouchDrag(el){
+  el.addEventListener('touchstart',e=>{
+    touchDragEl=el;
+    touchClone=el.cloneNode(true);
+    touchClone.style.position='fixed';touchClone.style.zIndex='9999';touchClone.style.opacity='.8';touchClone.style.pointerEvents='none';
+    document.body.appendChild(touchClone);
+    const t=e.touches[0];touchClone.style.left=(t.clientX-40)+'px';touchClone.style.top=(t.clientY-20)+'px';
+  },{passive:true});
+  el.addEventListener('touchmove',e=>{
+    if(!touchClone)return;e.preventDefault();
+    const t=e.touches[0];touchClone.style.left=(t.clientX-40)+'px';touchClone.style.top=(t.clientY-20)+'px';
+    // Highlight zone under finger
+    document.querySelectorAll('.dnd-zone').forEach(z=>z.classList.remove('drag-over'));
+    const under=document.elementFromPoint(t.clientX,t.clientY);
+    if(under){const zone=under.closest('.dnd-zone');if(zone)zone.classList.add('drag-over');}
+  },{passive:false});
+  el.addEventListener('touchend',e=>{
+    if(!touchClone||!touchDragEl)return;
+    const t=e.changedTouches[0];
+    const under=document.elementFromPoint(t.clientX,t.clientY);
+    document.querySelectorAll('.dnd-zone').forEach(z=>z.classList.remove('drag-over'));
+    if(under){
+      const zone=under.closest('.dnd-zone');
+      if(zone){
+        const zoneRegion=zone.id.replace('zone-','');
+        const itemRegion=touchDragEl.dataset.region;
+        const chip=touchDragEl.cloneNode(true);
+        chip.draggable=false;chip.style.cursor='default';
+        dndTotal++;
+        if(itemRegion===zoneRegion){chip.classList.add('correct');dndCorrect++;}
+        else{chip.classList.add('wrong');setTimeout(()=>chip.style.opacity='.5',400);}
+        zone.querySelector('.zone-items').appendChild(chip);
+        touchDragEl.remove();
+        document.getElementById('dndScore').textContent=`${dndCorrect} / ${dndTotal} đúng`;
+        if(document.getElementById('dndPool').querySelectorAll('.dnd-chip').length===0){
+          const pct=Math.round(dndCorrect/dndTotal*100);
+          document.getElementById('dndResult').innerHTML=pct>=90
+            ?`<span style="color:#4ade80">🎉 Xuất sắc! ${pct}%</span>`
+            :pct>=60?`<span style="color:#fbbf24">💪 Khá tốt: ${pct}%</span>`
+            :`<span style="color:#fb923c">📖 Ôn lại nhé: ${pct}%</span>`;
+        }
+      }
+    }
+    touchClone.remove();touchClone=null;touchDragEl=null;
+  },{passive:true});
+}
+
+/* ===== TIMELINE SORT ===== */
+const tlEvents=[
+  {year:1959,text:"Revenue Ruling 59-60 (IRS, Mỹ)",region:"na"},
+  {year:1989,text:"FIRREA → USPAP ra đời (Mỹ)",region:"na"},
+  {year:1993,text:"CAS thành lập (Trung Quốc)",region:"ap"},
+  {year:2007,text:"SSVS No. 1 (AICPA, Mỹ)",region:"na"},
+  {year:2012,text:"Taqeem thành lập (Saudi Arabia)",region:"me"},
+  {year:2013,text:"IVAS thành lập (Singapore)",region:"ap"},
+  {year:2017,text:"Taqeem dịch IVS sang Ả Rập + MPF ra đời",region:"me"},
+  {year:2020,text:"RICS: hướng dẫn IP valuation",region:"eu"},
+  {year:2024,text:"IVSC mở văn phòng Riyadh",region:"me"},
+  {year:2025,text:"IVSC ký MOU với Việt Nam",region:"ap"},
+];
+
+let tlOrder=[];
+
+function tlInit(){
+  document.getElementById('tlResult').textContent='';
+  const slots=document.getElementById('tlSlots');
+  const pool=document.getElementById('tlPool');
+  // Create empty slots
+  slots.innerHTML=tlEvents.map((_,i)=>
+    `<div class="tl-slot" data-pos="${i}"
+      ondragover="event.preventDefault();this.classList.add('drag-over')"
+      ondragleave="this.classList.remove('drag-over')"
+      ondrop="tlDrop(event,${i})">
+      <div class="tl-slot-num">${i+1}.</div>
+    </div>`
+  ).join('');
+  // Shuffle events into pool
+  const shuffled=[...tlEvents];
+  for(let i=shuffled.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[shuffled[i],shuffled[j]]=[shuffled[j],shuffled[i]]}
+  pool.innerHTML=shuffled.map((ev,i)=>
+    `<div class="tl-event-chip" draggable="true" data-year="${ev.year}" data-text="${ev.text}"
+      ondragstart="event.dataTransfer.setData('year','${ev.year}');event.dataTransfer.setData('text','${ev.text}');event.dataTransfer.setData('idx','${i}')">
+      <span class="yr">${ev.year}</span>${ev.text}
+    </div>`
+  ).join('');
+  tlOrder=new Array(tlEvents.length).fill(null);
+  // Reset slot styles
+  slots.querySelectorAll('.tl-slot').forEach(s=>{s.classList.remove('correct-slot','wrong-slot');});
+}
+
+function tlDrop(e,slotIdx){
+  e.preventDefault();e.currentTarget.classList.remove('drag-over');
+  const year=parseInt(e.dataTransfer.getData('year'));
+  const text=e.dataTransfer.getData('text');
+  if(tlOrder[slotIdx])return; // slot already filled
+  tlOrder[slotIdx]={year,text};
+  // Remove from pool
+  const pool=document.getElementById('tlPool');
+  pool.querySelectorAll('.tl-event-chip').forEach(c=>{
+    if(parseInt(c.dataset.year)===year&&c.dataset.text===text)c.remove();
+  });
+  // Add to slot
+  const slot=document.querySelectorAll('.tl-slot')[slotIdx];
+  const chip=document.createElement('div');
+  chip.className='dnd-chip';chip.style.cursor='default';
+  chip.innerHTML=`<span style="color:#fbbf24;margin-right:6px">${year}</span>${text}`;
+  slot.appendChild(chip);
+}
+
+function tlCheck(){
+  const sorted=[...tlEvents].sort((a,b)=>a.year-b.year);
+  let correct=0;
+  const slots=document.querySelectorAll('.tl-slot');
+  slots.forEach((slot,i)=>{
+    slot.classList.remove('correct-slot','wrong-slot');
+    if(tlOrder[i]){
+      if(tlOrder[i].year===sorted[i].year){
+        slot.classList.add('correct-slot');correct++;
+      } else {
+        slot.classList.add('wrong-slot');
+      }
+    } else {
+      slot.classList.add('wrong-slot');
+    }
+  });
+  const pct=Math.round(correct/tlEvents.length*100);
+  document.getElementById('tlResult').innerHTML=
+    correct===tlEvents.length?'<span style="color:#4ade80">🎉 Hoàn hảo! Bạn nhớ đúng thứ tự!</span>'
+    :pct>=60?`<span style="color:#fbbf24">💪 ${correct}/${tlEvents.length} đúng vị trí</span>`
+    :`<span style="color:#fb923c">📖 ${correct}/${tlEvents.length} — ôn lại timeline nhé!</span>`;
+}
+
+/* ===== INIT ===== */
+fcRender();
+dndInit();
+tlInit();
+</script>
+</body>
+</html>

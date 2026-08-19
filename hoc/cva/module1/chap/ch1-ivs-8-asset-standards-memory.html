@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ghi nhớ 8 IVS Asset Standards</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Segoe UI', sans-serif; background: #0f172a; color: #e2e8f0; min-height: 100vh; }
+  .container { max-width: 1000px; margin: 0 auto; padding: 24px; }
+  h1 { text-align: center; font-size: 28px; margin-bottom: 8px; color: #60a5fa; }
+  .subtitle { text-align: center; color: #94a3b8; margin-bottom: 32px; font-size: 15px; }
+
+  /* Story Section */
+  .story-box {
+    background: linear-gradient(135deg, #1e3a5f, #1a2744);
+    border: 1px solid #334155;
+    border-radius: 16px;
+    padding: 28px;
+    margin-bottom: 36px;
+    position: relative;
+  }
+  .story-box h2 { color: #fbbf24; font-size: 20px; margin-bottom: 16px; }
+  .story-intro { color: #94a3b8; font-size: 15px; margin-bottom: 20px; line-height: 1.7; }
+
+  .story-scene {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    margin-bottom: 18px;
+    padding: 14px;
+    border-radius: 12px;
+    background: rgba(0,0,0,0.2);
+    transition: transform 0.2s;
+  }
+  .story-scene:hover { transform: translateX(4px); }
+  .scene-icon { font-size: 40px; flex-shrink: 0; width: 56px; text-align: center; }
+  .scene-text { flex: 1; }
+  .scene-code { font-size: 12px; font-weight: 700; letter-spacing: 1px; margin-bottom: 2px; }
+  .scene-name { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
+  .scene-vi { font-size: 13px; color: #94a3b8; font-style: italic; margin-bottom: 6px; }
+  .scene-story { font-size: 14px; color: #cbd5e1; line-height: 1.6; }
+  .scene-keyword { font-weight: 700; padding: 1px 4px; border-radius: 3px; }
+
+  .c200 { border-left: 3px solid #f87171; }
+  .c200 .scene-code { color: #f87171; }
+  .c200 .scene-name { color: #fca5a5; }
+  .c200 .scene-keyword { color: #f87171; background: rgba(248,113,113,0.15); }
+
+  .c210 { border-left: 3px solid #fb923c; }
+  .c210 .scene-code { color: #fb923c; }
+  .c210 .scene-name { color: #fdba74; }
+  .c210 .scene-keyword { color: #fb923c; background: rgba(251,146,60,0.15); }
+
+  .c220 { border-left: 3px solid #fbbf24; }
+  .c220 .scene-code { color: #fbbf24; }
+  .c220 .scene-name { color: #fde68a; }
+  .c220 .scene-keyword { color: #fbbf24; background: rgba(251,191,36,0.15); }
+
+  .c230 { border-left: 3px solid #a3e635; }
+  .c230 .scene-code { color: #a3e635; }
+  .c230 .scene-name { color: #d9f99d; }
+  .c230 .scene-keyword { color: #a3e635; background: rgba(163,230,53,0.15); }
+
+  .c300 { border-left: 3px solid #4ade80; }
+  .c300 .scene-code { color: #4ade80; }
+  .c300 .scene-name { color: #86efac; }
+  .c300 .scene-keyword { color: #4ade80; background: rgba(74,222,128,0.15); }
+
+  .c400 { border-left: 3px solid #22d3ee; }
+  .c400 .scene-code { color: #22d3ee; }
+  .c400 .scene-name { color: #67e8f9; }
+  .c400 .scene-keyword { color: #22d3ee; background: rgba(34,211,238,0.15); }
+
+  .c410 { border-left: 3px solid #a78bfa; }
+  .c410 .scene-code { color: #a78bfa; }
+  .c410 .scene-name { color: #c4b5fd; }
+  .c410 .scene-keyword { color: #a78bfa; background: rgba(167,139,250,0.15); }
+
+  .c500 { border-left: 3px solid #f472b6; }
+  .c500 .scene-code { color: #f472b6; }
+  .c500 .scene-name { color: #f9a8d4; }
+  .c500 .scene-keyword { color: #f472b6; background: rgba(244,114,182,0.15); }
+
+  /* Mnemonic tip */
+  .tip-box {
+    background: linear-gradient(135deg, #1a2744, #1e293b);
+    border: 1px solid #334155;
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 32px;
+    text-align: center;
+  }
+  .tip-box h3 { color: #fbbf24; margin-bottom: 12px; font-size: 18px; }
+  .tip-box p { color: #94a3b8; font-size: 14px; line-height: 1.8; }
+  .tip-box .big-text { font-size: 20px; color: #e2e8f0; font-weight: 700; margin: 12px 0; }
+
+  .number-grid {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin: 16px 0;
+  }
+  .num-chip {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px 14px;
+    border-radius: 10px;
+    border: 2px solid;
+    min-width: 80px;
+    transition: transform 0.2s;
+  }
+  .num-chip:hover { transform: scale(1.08); }
+  .num-chip .num { font-size: 22px; font-weight: 800; }
+  .num-chip .emoji { font-size: 20px; margin: 4px 0; }
+  .num-chip .label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+  .nc200 { border-color: #f87171; background: rgba(248,113,113,0.08); }
+  .nc200 .num { color: #f87171; }
+  .nc200 .label { color: #fca5a5; }
+
+  .nc210 { border-color: #fb923c; background: rgba(251,146,60,0.08); }
+  .nc210 .num { color: #fb923c; }
+  .nc210 .label { color: #fdba74; }
+
+  .nc220 { border-color: #fbbf24; background: rgba(251,191,36,0.08); }
+  .nc220 .num { color: #fbbf24; }
+  .nc220 .label { color: #fde68a; }
+
+  .nc230 { border-color: #a3e635; background: rgba(163,230,53,0.08); }
+  .nc230 .num { color: #a3e635; }
+  .nc230 .label { color: #d9f99d; }
+
+  .nc300 { border-color: #4ade80; background: rgba(74,222,128,0.08); }
+  .nc300 .num { color: #4ade80; }
+  .nc300 .label { color: #86efac; }
+
+  .nc400 { border-color: #22d3ee; background: rgba(34,211,238,0.08); }
+  .nc400 .num { color: #22d3ee; }
+  .nc400 .label { color: #67e8f9; }
+
+  .nc410 { border-color: #a78bfa; background: rgba(167,139,250,0.08); }
+  .nc410 .num { color: #a78bfa; }
+  .nc410 .label { color: #c4b5fd; }
+
+  .nc500 { border-color: #f472b6; background: rgba(244,114,182,0.08); }
+  .nc500 .num { color: #f472b6; }
+  .nc500 .label { color: #f9a8d4; }
+
+  /* Map visual */
+  .map-title { text-align: center; font-size: 22px; color: #60a5fa; margin-bottom: 8px; }
+  .map-sub { text-align: center; font-size: 13px; color: #64748b; margin-bottom: 20px; }
+
+  .city-map {
+    position: relative;
+    background: linear-gradient(135deg, #0c1524, #132035);
+    border: 1px solid #1e3a5f;
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 36px;
+    overflow: hidden;
+  }
+  .city-map::before {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #f87171, #fb923c, #fbbf24, #a3e635, #4ade80, #22d3ee, #a78bfa, #f472b6);
+  }
+
+  .city-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+  @media (max-width: 640px) {
+    .city-row { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  .city-card {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid #1e3a5f;
+    border-radius: 12px;
+    padding: 16px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+  .city-card:hover { transform: translateY(-4px); }
+  .city-card .card-icon { font-size: 36px; margin-bottom: 8px; }
+  .city-card .card-code { font-size: 12px; font-weight: 700; letter-spacing: 1px; margin-bottom: 4px; }
+  .city-card .card-name { font-size: 13px; font-weight: 600; margin-bottom: 4px; }
+  .city-card .card-vi { font-size: 11px; font-style: italic; }
+
+  .city-card .card-detail {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s;
+    font-size: 12px;
+    color: #94a3b8;
+    line-height: 1.6;
+    margin-top: 8px;
+    text-align: left;
+  }
+  .city-card.open .card-detail { max-height: 200px; }
+
+  .cc200 { border-color: rgba(248,113,113,0.3); }
+  .cc200:hover { border-color: #f87171; box-shadow: 0 4px 20px rgba(248,113,113,0.15); }
+  .cc200 .card-code { color: #f87171; }
+  .cc200 .card-name { color: #fca5a5; }
+  .cc200 .card-vi { color: #fca5a5; }
+
+  .cc210 { border-color: rgba(251,146,60,0.3); }
+  .cc210:hover { border-color: #fb923c; box-shadow: 0 4px 20px rgba(251,146,60,0.15); }
+  .cc210 .card-code { color: #fb923c; }
+  .cc210 .card-name { color: #fdba74; }
+  .cc210 .card-vi { color: #fdba74; }
+
+  .cc220 { border-color: rgba(251,191,36,0.3); }
+  .cc220:hover { border-color: #fbbf24; box-shadow: 0 4px 20px rgba(251,191,36,0.15); }
+  .cc220 .card-code { color: #fbbf24; }
+  .cc220 .card-name { color: #fde68a; }
+  .cc220 .card-vi { color: #fde68a; }
+
+  .cc230 { border-color: rgba(163,230,53,0.3); }
+  .cc230:hover { border-color: #a3e635; box-shadow: 0 4px 20px rgba(163,230,53,0.15); }
+  .cc230 .card-code { color: #a3e635; }
+  .cc230 .card-name { color: #d9f99d; }
+  .cc230 .card-vi { color: #d9f99d; }
+
+  .cc300 { border-color: rgba(74,222,128,0.3); }
+  .cc300:hover { border-color: #4ade80; box-shadow: 0 4px 20px rgba(74,222,128,0.15); }
+  .cc300 .card-code { color: #4ade80; }
+  .cc300 .card-name { color: #86efac; }
+  .cc300 .card-vi { color: #86efac; }
+
+  .cc400 { border-color: rgba(34,211,238,0.3); }
+  .cc400:hover { border-color: #22d3ee; box-shadow: 0 4px 20px rgba(34,211,238,0.15); }
+  .cc400 .card-code { color: #22d3ee; }
+  .cc400 .card-name { color: #67e8f9; }
+  .cc400 .card-vi { color: #67e8f9; }
+
+  .cc410 { border-color: rgba(167,139,250,0.3); }
+  .cc410:hover { border-color: #a78bfa; box-shadow: 0 4px 20px rgba(167,139,250,0.15); }
+  .cc410 .card-code { color: #a78bfa; }
+  .cc410 .card-name { color: #c4b5fd; }
+  .cc410 .card-vi { color: #c4b5fd; }
+
+  .cc500 { border-color: rgba(244,114,182,0.3); }
+  .cc500:hover { border-color: #f472b6; box-shadow: 0 4px 20px rgba(244,114,182,0.15); }
+  .cc500 .card-code { color: #f472b6; }
+  .cc500 .card-name { color: #f9a8d4; }
+  .cc500 .card-vi { color: #f9a8d4; }
+
+  /* Quiz */
+  .quiz-box {
+    background: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 16px;
+    padding: 28px;
+    margin-bottom: 24px;
+  }
+  .quiz-box h2 { color: #fbbf24; font-size: 20px; margin-bottom: 8px; text-align: center; }
+  .quiz-sub { text-align: center; color: #94a3b8; font-size: 14px; margin-bottom: 20px; }
+
+  .quiz-question {
+    background: #0f172a;
+    border: 2px solid #334155;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 16px;
+    text-align: center;
+    min-height: 80px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  .qq-emoji { font-size: 40px; margin-bottom: 8px; }
+  .qq-text { font-size: 16px; color: #e2e8f0; }
+  .qq-hint { font-size: 13px; color: #64748b; margin-top: 4px; }
+
+  .quiz-answers {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+  @media (max-width: 640px) { .quiz-answers { grid-template-columns: 1fr; } }
+
+  .quiz-ans {
+    padding: 14px;
+    background: #0f172a;
+    border: 2px solid #334155;
+    border-radius: 10px;
+    cursor: pointer;
+    text-align: center;
+    font-size: 14px;
+    transition: all 0.3s;
+  }
+  .quiz-ans:hover { border-color: #60a5fa; background: #1a2744; }
+  .quiz-ans.correct { border-color: #4ade80; background: rgba(74,222,128,0.1); pointer-events: none; }
+  .quiz-ans.wrong { border-color: #f87171; background: rgba(248,113,113,0.1); animation: shake 0.4s; }
+  @keyframes shake {
+    0%,100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+  }
+
+  .quiz-feedback {
+    text-align: center;
+    font-size: 15px;
+    min-height: 24px;
+    margin-bottom: 12px;
+  }
+
+  .quiz-controls { display: flex; justify-content: center; gap: 12px; }
+  .quiz-btn {
+    padding: 12px 28px;
+    background: #3b82f6;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+  .quiz-btn:hover { background: #2563eb; transform: translateY(-1px); }
+  .quiz-btn.secondary { background: #475569; }
+  .quiz-btn.secondary:hover { background: #64748b; }
+
+  .score-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    justify-content: center;
+    margin-bottom: 16px;
+  }
+  .score-dot {
+    width: 14px; height: 14px;
+    border-radius: 50%;
+    background: #334155;
+    transition: background 0.3s;
+  }
+  .score-dot.right { background: #4ade80; }
+  .score-dot.wrongd { background: #f87171; }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>Ghi Nh&#7899; 8 IVS Asset Standards</h1>
+  <p class="subtitle">Module 1 &mdash; Chartered Valuer and Appraiser Programme</p>
+
+  <!-- MNEMONIC: Number grouping -->
+  <div class="tip-box">
+    <h3>&#128272; M&#7865;o nh&#7899; s&#7889; hi&#7879;u: Quy t&#7855;c "2-3-4-5"</h3>
+    <p>C&aacute;c s&#7889; hi&#7879;u kh&ocirc;ng ng&#7851;u nhi&ecirc;n &mdash; ch&uacute;ng &#273;&#432;&#7907;c nh&oacute;m theo lo&#7841;i t&agrave;i s&#7843;n:</p>
+    <div class="big-text">
+      <span style="color:#f87171">2xx</span> = Doanh nghi&#7879;p &amp; V&ocirc; h&igrave;nh &nbsp;&middot;&nbsp;
+      <span style="color:#4ade80">3xx</span> = M&aacute;y m&oacute;c &nbsp;&middot;&nbsp;
+      <span style="color:#22d3ee">4xx</span> = B&#7845;t &#273;&#7897;ng s&#7843;n &nbsp;&middot;&nbsp;
+      <span style="color:#f472b6">5xx</span> = T&agrave;i ch&iacute;nh
+    </div>
+    <div class="number-grid">
+      <div class="num-chip nc200"><span class="num">200</span><span class="emoji">&#127970;</span><span class="label">Business</span></div>
+      <div class="num-chip nc210"><span class="num">210</span><span class="emoji">&#128161;</span><span class="label">Intangible</span></div>
+      <div class="num-chip nc220"><span class="num">220</span><span class="emoji">&#128176;</span><span class="label">Liabilities</span></div>
+      <div class="num-chip nc230"><span class="num">230</span><span class="emoji">&#128230;</span><span class="label">Inventory</span></div>
+      <div class="num-chip nc300"><span class="num">300</span><span class="emoji">&#9881;&#65039;</span><span class="label">Plant/Equip</span></div>
+      <div class="num-chip nc400"><span class="num">400</span><span class="emoji">&#127969;</span><span class="label">Real Estate</span></div>
+      <div class="num-chip nc410"><span class="num">410</span><span class="emoji">&#127959;</span><span class="label">Dev Property</span></div>
+      <div class="num-chip nc500"><span class="num">500</span><span class="emoji">&#128200;</span><span class="label">Financial</span></div>
+    </div>
+    <p style="margin-top:12px;">Nh&#7899;: <strong style="color:#e2e8f0; font-size:16px;">200-210-220-230 &rarr; 300 &rarr; 400-410 &rarr; 500</strong></p>
+    <p>T&#7913;c l&agrave;: <strong style="color:#e2e8f0;">"4 anh em nh&agrave; 200, anh 300 &#7903; gi&#7919;a, c&#7863;p 400 b&ecirc;n c&#7841;nh, v&agrave; anh 500 cu&#7889;i"</strong></p>
+  </div>
+
+  <!-- STORY -->
+  <div class="story-box">
+    <h2>&#128214; C&acirc;u chuy&#7879;n: "Tham Quan Th&agrave;nh Ph&#7889; Doanh Nghi&#7879;p"</h2>
+    <p class="story-intro">H&atilde;y t&#432;&#7903;ng t&#432;&#7907;ng b&#7841;n l&agrave; m&#7897;t th&#7849;m &#273;&#7883;nh vi&ecirc;n &#273;i tham quan m&#7897;t th&agrave;nh ph&#7889; c&oacute; 8 khu v&#7921;c. M&#7895;i khu v&#7921;c &#273;&#7841;i di&#7879;n cho m&#7897;t lo&#7841;i t&agrave;i s&#7843;n c&#7847;n th&#7849;m &#273;&#7883;nh:</p>
+
+    <div class="story-scene c200">
+      <div class="scene-icon">&#127970;</div>
+      <div class="scene-text">
+        <div class="scene-code">IVS 200 &mdash; TR&#7908; S&#7902; CH&Iacute;NH</div>
+        <div class="scene-name">Businesses and Business Interests</div>
+        <div class="scene-vi">Doanh nghi&#7879;p v&agrave; l&#7907;i &iacute;ch kinh doanh</div>
+        <div class="scene-story">B&#7841;n b&#432;&#7899;c v&agrave;o <span class="scene-keyword">tr&#7909; s&#7903; ch&iacute;nh c&#7911;a t&#7853;p &#273;o&agrave;n</span>. &#272;&acirc;y l&agrave; n&#417;i &#273;&#7883;nh gi&aacute; to&agrave;n b&#7897; doanh nghi&#7879;p, c&#7893; ph&#7847;n ki&#7875;m so&aacute;t v&agrave; kh&ocirc;ng ki&#7875;m so&aacute;t. M&#7885;i th&#7913; b&#7855;t &#273;&#7847;u t&#7915; &#273;&acirc;y.</div>
+      </div>
+    </div>
+
+    <div class="story-scene c210">
+      <div class="scene-icon">&#128161;</div>
+      <div class="scene-text">
+        <div class="scene-code">IVS 210 &mdash; PH&Ograve;NG S&Aacute;NG T&#7840;O</div>
+        <div class="scene-name">Intangible Assets</div>
+        <div class="scene-vi">T&agrave;i s&#7843;n v&ocirc; h&igrave;nh</div>
+        <div class="scene-story">K&#7871; b&ecirc;n tr&#7909; s&#7903; l&agrave; <span class="scene-keyword">ph&ograve;ng s&aacute;ng t&#7841;o</span> &mdash; n&#417;i ch&#7913;a nh&#7919;ng th&#7913; b&#7841;n kh&ocirc;ng th&#7875; ch&#7841;m v&agrave;o: th&#432;&#417;ng hi&#7879;u, b&#7857;ng s&aacute;ng ch&#7871;, m&#7889;i quan h&#7879; kh&aacute;ch h&agrave;ng, ph&#7847;n m&#7873;m. V&ocirc; h&igrave;nh nh&#432;ng gi&aacute; tr&#7883; kh&#7893;ng l&#7891;!</div>
+      </div>
+    </div>
+
+    <div class="story-scene c220">
+      <div class="scene-icon">&#128176;</div>
+      <div class="scene-text">
+        <div class="scene-code">IVS 220 &mdash; PH&Ograve;NG K&#7870; TO&Aacute;N N&#7906;</div>
+        <div class="scene-name">Non-Financial Liabilities</div>
+        <div class="scene-vi">N&#7907; phi t&agrave;i ch&iacute;nh</div>
+        <div class="scene-story">B&#7841;n gh&eacute; qua <span class="scene-keyword">ph&ograve;ng k&#7871; to&aacute;n n&#7907;</span> &mdash; kh&ocirc;ng ph&#7843;i n&#7907; ti&#7873;n, m&agrave; l&agrave; ngh&#297;a v&#7909; giao h&agrave;ng/d&#7883;ch v&#7909;: b&#7843;o h&agrave;nh, ngh&#297;a v&#7909; m&ocirc;i tr&#432;&#7901;ng, ch&#432;&#417;ng tr&igrave;nh kh&aacute;ch h&agrave;ng th&acirc;n thi&#7871;t.</div>
+      </div>
+    </div>
+
+    <div class="story-scene c230">
+      <div class="scene-icon">&#128230;</div>
+      <div class="scene-text">
+        <div class="scene-code">IVS 230 &mdash; NH&Agrave; KHO</div>
+        <div class="scene-name">Inventory</div>
+        <div class="scene-vi">H&agrave;ng t&#7891;n kho</div>
+        <div class="scene-story">Ti&#7871;p theo l&agrave; <span class="scene-keyword">nh&agrave; kho kh&#7893;ng l&#7891;</span> &mdash; ch&#7913;a &#273;&#7847;y nguy&ecirc;n v&#7853;t li&#7879;u, h&agrave;ng &#273;ang s&#7843;n xu&#7845;t, v&agrave; th&agrave;nh ph&#7849;m ch&#7901; b&aacute;n. M&#7895;i lo&#7841;i c&oacute; c&aacute;ch &#273;&#7883;nh gi&aacute; kh&aacute;c nhau.</div>
+      </div>
+    </div>
+
+    <div class="story-scene c300">
+      <div class="scene-icon">&#9881;&#65039;</div>
+      <div class="scene-text">
+        <div class="scene-code">IVS 300 &mdash; NH&Agrave; M&Aacute;Y</div>
+        <div class="scene-name">Plant, Equipment and Infrastructure</div>
+        <div class="scene-vi">Nh&agrave; m&aacute;y, thi&#7871;t b&#7883; v&agrave; c&#417; s&#7903; h&#7841; t&#7847;ng</div>
+        <div class="scene-story">B&#7841;n ra ngo&agrave;i, &#273;&#7871;n <span class="scene-keyword">khu nh&agrave; m&aacute;y</span> v&#7899;i m&aacute;y m&oacute;c, d&acirc;y chuy&#7873;n s&#7843;n xu&#7845;t, c&#7847;u &#273;&#432;&#7901;ng. &#272;&#7883;nh gi&aacute; d&#7921;a tr&ecirc;n t&igrave;nh tr&#7841;ng s&#7917; d&#7909;ng, tu&#7893;i th&#7885; c&ograve;n l&#7841;i v&agrave; nhu c&#7847;u th&#7883; tr&#432;&#7901;ng.</div>
+      </div>
+    </div>
+
+    <div class="story-scene c400">
+      <div class="scene-icon">&#127969;</div>
+      <div class="scene-text">
+        <div class="scene-code">IVS 400 &mdash; KHU D&Acirc;N C&#431;</div>
+        <div class="scene-name">Real Property Interests</div>
+        <div class="scene-vi">B&#7845;t &#273;&#7897;ng s&#7843;n</div>
+        <div class="scene-story">Ti&#7871;p t&#7909;c &#273;i, b&#7841;n &#273;&#7871;n <span class="scene-keyword">khu d&acirc;n c&#432; v&agrave; t&ograve;a nh&agrave; v&#259;n ph&ograve;ng</span> &mdash; &#273;&#7845;t &#273;ai, nh&agrave; &#7903;, cao &#7889;c. &#272;&#7883;nh gi&aacute; d&#7921;a tr&ecirc;n v&#7883; tr&iacute;, c&ocirc;ng d&#7909;ng, v&agrave; quy&#7873;n l&#7907;i li&ecirc;n quan.</div>
+      </div>
+    </div>
+
+    <div class="story-scene c410">
+      <div class="scene-icon">&#127959;</div>
+      <div class="scene-text">
+        <div class="scene-code">IVS 410 &mdash; C&Ocirc;NG TR&#431;&#7900;NG</div>
+        <div class="scene-name">Development Property</div>
+        <div class="scene-vi">B&#7845;t &#273;&#7897;ng s&#7843;n &#273;ang ph&aacute;t tri&#7875;n</div>
+        <div class="scene-story">Ngay c&#7841;nh l&agrave; <span class="scene-keyword">c&ocirc;ng tr&#432;&#7901;ng x&acirc;y d&#7921;ng</span> &mdash; b&#7845;t &#273;&#7897;ng s&#7843;n ch&#432;a ho&agrave;n thi&#7879;n. C&#7847;n t&iacute;nh chi ph&iacute; x&acirc;y d&#7921;ng, &#273;i&#7873;u ki&#7879;n th&#7883; tr&#432;&#7901;ng v&agrave; l&#7907;i nhu&#7853;n ti&#7873;m n&#259;ng.</div>
+      </div>
+    </div>
+
+    <div class="story-scene c500">
+      <div class="scene-icon">&#128200;</div>
+      <div class="scene-text">
+        <div class="scene-code">IVS 500 &mdash; TRUNG T&Acirc;M T&Agrave;I CH&Iacute;NH</div>
+        <div class="scene-name">Financial Instruments</div>
+        <div class="scene-vi">C&ocirc;ng c&#7909; t&agrave;i ch&iacute;nh</div>
+        <div class="scene-story">Cu&#7889;i c&ugrave;ng, b&#7841;n &#273;&#7871;n <span class="scene-keyword">trung t&acirc;m t&agrave;i ch&iacute;nh</span> &mdash; n&#417;i giao d&#7883;ch ch&#7913;ng kho&aacute;n, tr&aacute;i phi&#7871;u, ph&aacute;i sinh. &#272;&acirc;y l&agrave; th&#7871; gi&#7899;i c&#7911;a c&aacute;c c&ocirc;ng c&#7909; t&agrave;i ch&iacute;nh ph&#7913;c t&#7841;p.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Interactive city map -->
+  <h2 class="map-title">&#128506;&#65039; B&#7843;n &#272;&#7891; Th&agrave;nh Ph&#7889; Doanh Nghi&#7879;p</h2>
+  <p class="map-sub">B&#7845;m v&agrave;o t&#7915;ng khu v&#7921;c &#273;&#7875; xem chi ti&#7871;t</p>
+
+  <div class="city-map">
+    <div class="city-row">
+      <div class="city-card cc200" onclick="this.classList.toggle('open')">
+        <div class="card-icon">&#127970;</div>
+        <div class="card-code">IVS 200</div>
+        <div class="card-name">Businesses</div>
+        <div class="card-vi">Doanh nghi&#7879;p</div>
+        <div class="card-detail">&#272;&#7883;nh gi&aacute; to&agrave;n b&#7897; doanh nghi&#7879;p ho&#7863;c l&#7907;i &iacute;ch kinh doanh (c&#7893; ph&#7847;n ki&#7875;m so&aacute;t/kh&ocirc;ng ki&#7875;m so&aacute;t). T&iacute;ch h&#7907;p nguy&ecirc;n t&#7855;c &#273;&#7883;nh gi&aacute; v&#7899;i &#273;&#7863;c th&ugrave; c&#7911;a lo&#7841;i t&agrave;i s&#7843;n n&agrave;y.</div>
+      </div>
+      <div class="city-card cc210" onclick="this.classList.toggle('open')">
+        <div class="card-icon">&#128161;</div>
+        <div class="card-code">IVS 210</div>
+        <div class="card-name">Intangibles</div>
+        <div class="card-vi">V&ocirc; h&igrave;nh</div>
+        <div class="card-detail">Trademarks, patents, customer relationships, software, goodwill. &#272;&#7843;m b&#7843;o &#273;&#7883;nh gi&aacute; ch&iacute;nh x&aacute;c ph&#7843;n &aacute;nh &#273;&#7863;c &#273;i&#7875;m ri&ecirc;ng c&#7911;a t&#7915;ng lo&#7841;i t&agrave;i s&#7843;n v&ocirc; h&igrave;nh.</div>
+      </div>
+      <div class="city-card cc220" onclick="this.classList.toggle('open')">
+        <div class="card-icon">&#128176;</div>
+        <div class="card-code">IVS 220</div>
+        <div class="card-name">Non-Fin Liabilities</div>
+        <div class="card-vi">N&#7907; phi t&agrave;i ch&iacute;nh</div>
+        <div class="card-detail">Ngh&#297;a v&#7909; giao h&agrave;ng/d&#7883;ch v&#7909; (kh&ocirc;ng ph&#7843;i tr&#7843; ti&#7873;n): b&#7843;o h&agrave;nh, ngh&#297;a v&#7909; m&ocirc;i tr&#432;&#7901;ng, ch&#432;&#417;ng tr&igrave;nh loyalty, h&#7907;p &#273;&#7891;ng mua &#273;i&#7879;n.</div>
+      </div>
+      <div class="city-card cc230" onclick="this.classList.toggle('open')">
+        <div class="card-icon">&#128230;</div>
+        <div class="card-code">IVS 230</div>
+        <div class="card-name">Inventory</div>
+        <div class="card-vi">H&agrave;ng t&#7891;n kho</div>
+        <div class="card-detail">Nguy&ecirc;n v&#7853;t li&#7879;u, b&aacute;n th&agrave;nh ph&#7849;m, th&agrave;nh ph&#7849;m. M&#7895;i giai &#273;o&#7841;n s&#7843;n xu&#7845;t c&oacute; ph&#432;&#417;ng ph&aacute;p &#273;&#7883;nh gi&aacute; kh&aacute;c nhau.</div>
+      </div>
+    </div>
+    <div class="city-row">
+      <div class="city-card cc300" onclick="this.classList.toggle('open')">
+        <div class="card-icon">&#9881;&#65039;</div>
+        <div class="card-code">IVS 300</div>
+        <div class="card-name">Plant &amp; Equipment</div>
+        <div class="card-vi">Nh&agrave; m&aacute;y &amp; thi&#7871;t b&#7883;</div>
+        <div class="card-detail">M&aacute;y m&oacute;c, d&acirc;y chuy&#7873;n, c&#417; s&#7903; h&#7841; t&#7847;ng. &#272;&#7883;nh gi&aacute; theo t&igrave;nh tr&#7841;ng, c&ocirc;ng su&#7845;t, nhu c&#7847;u th&#7883; tr&#432;&#7901;ng. Bao g&#7891;m c&#7843; gi&aacute; tr&#7883; thanh l&yacute;.</div>
+      </div>
+      <div class="city-card cc400" onclick="this.classList.toggle('open')">
+        <div class="card-icon">&#127969;</div>
+        <div class="card-code">IVS 400</div>
+        <div class="card-name">Real Property</div>
+        <div class="card-vi">B&#7845;t &#273;&#7897;ng s&#7843;n</div>
+        <div class="card-detail">&#272;&#7845;t, nh&agrave;, t&ograve;a nh&agrave; &#273;&atilde; ho&agrave;n th&agrave;nh. &#272;&#7883;nh gi&aacute; theo v&#7883; tr&iacute;, c&ocirc;ng d&#7909;ng, v&agrave; h&#7879; th&#7889;ng quy&#7873;n l&#7907;i (hierarchy of interests).</div>
+      </div>
+      <div class="city-card cc410" onclick="this.classList.toggle('open')">
+        <div class="card-icon">&#127959;</div>
+        <div class="card-code">IVS 410</div>
+        <div class="card-name">Dev Property</div>
+        <div class="card-vi">B&#272;S &#273;ang ph&aacute;t tri&#7875;n</div>
+        <div class="card-detail">D&#7921; &aacute;n ch&#432;a ho&agrave;n thi&#7879;n. C&#7847;n t&iacute;nh: chi ph&iacute; x&acirc;y d&#7921;ng, &#273;i&#7873;u ki&#7879;n th&#7883; tr&#432;&#7901;ng, l&#7907;i nhu&#7853;n ti&#7873;m n&#259;ng, ph&#432;&#417;ng ph&aacute;p th&#7863;ng d&#432; (residual method).</div>
+      </div>
+      <div class="city-card cc500" onclick="this.classList.toggle('open')">
+        <div class="card-icon">&#128200;</div>
+        <div class="card-code">IVS 500</div>
+        <div class="card-name">Financial Instruments</div>
+        <div class="card-vi">C&ocirc;ng c&#7909; t&agrave;i ch&iacute;nh</div>
+        <div class="card-detail">Ch&#7913;ng kho&aacute;n, tr&aacute;i phi&#7871;u, ph&aacute;i sinh (options, futures, swaps). Nguy&ecirc;n t&#7855;c v&agrave; quy tr&igrave;nh &#273;o l&#432;&#7901;ng gi&aacute; tr&#7883; c&ocirc;ng c&#7909; t&agrave;i ch&iacute;nh.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+  <div class="quiz-box">
+    <h2>&#127919; Quiz: Nh&igrave;n h&igrave;nh &#273;o&aacute;n IVS</h2>
+    <p class="quiz-sub">Xem emoji v&agrave; g&#7907;i &yacute;, ch&#7885;n &#273;&uacute;ng ti&ecirc;u chu&#7849;n</p>
+
+    <div class="score-bar" id="scorebar"></div>
+    <div class="quiz-question" id="qqArea"></div>
+    <div class="quiz-answers" id="qaArea"></div>
+    <div class="quiz-feedback" id="qFeedback"></div>
+    <div class="quiz-controls">
+      <button class="quiz-btn" id="nextBtn" onclick="nextQuestion()" style="display:none">C&acirc;u ti&#7871;p &rarr;</button>
+      <button class="quiz-btn secondary" onclick="startQuiz()">&#128260; L&agrave;m l&#7841;i</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const questions = [
+  { emoji: '&#127970;', hint: 'Tr&#7909; s&#7903; ch&iacute;nh c&#7911;a t&#7853;p &#273;o&agrave;n, c&#7893; ph&#7847;n, M&A', answer: 'IVS 200', options: ['IVS 200', 'IVS 300', 'IVS 500', 'IVS 400'] },
+  { emoji: '&#128161;', hint: 'Th&#432;&#417;ng hi&#7879;u, patent, ph&#7847;n m&#7873;m, goodwill', answer: 'IVS 210', options: ['IVS 230', 'IVS 210', 'IVS 200', 'IVS 220'] },
+  { emoji: '&#128176;', hint: 'B&#7843;o h&agrave;nh, ngh&#297;a v&#7909; m&ocirc;i tr&#432;&#7901;ng, loyalty program', answer: 'IVS 220', options: ['IVS 500', 'IVS 210', 'IVS 220', 'IVS 230'] },
+  { emoji: '&#128230;', hint: 'Nguy&ecirc;n li&#7879;u, b&aacute;n th&agrave;nh ph&#7849;m, th&agrave;nh ph&#7849;m trong kho', answer: 'IVS 230', options: ['IVS 230', 'IVS 300', 'IVS 220', 'IVS 200'] },
+  { emoji: '&#9881;&#65039;', hint: 'D&acirc;y chuy&#7873;n s&#7843;n xu&#7845;t, c&#7847;u &#273;&#432;&#7901;ng, thi&#7871;t b&#7883; c&ocirc;ng nghi&#7879;p', answer: 'IVS 300', options: ['IVS 400', 'IVS 300', 'IVS 230', 'IVS 410'] },
+  { emoji: '&#127969;', hint: '&#272;&#7845;t &#273;ai, nh&agrave; &#7903;, t&ograve;a nh&agrave; v&#259;n ph&ograve;ng &#273;&atilde; ho&agrave;n thi&#7879;n', answer: 'IVS 400', options: ['IVS 410', 'IVS 300', 'IVS 400', 'IVS 200'] },
+  { emoji: '&#127959;', hint: 'C&ocirc;ng tr&#432;&#7901;ng, d&#7921; &aacute;n ch&#432;a xong, residual method', answer: 'IVS 410', options: ['IVS 400', 'IVS 410', 'IVS 300', 'IVS 500'] },
+  { emoji: '&#128200;', hint: 'C&#7893; phi&#7871;u, tr&aacute;i phi&#7871;u, options, futures, swaps', answer: 'IVS 500', options: ['IVS 200', 'IVS 220', 'IVS 400', 'IVS 500'] },
+];
+
+let currentQ = 0;
+let score = 0;
+let shuffledQs = [];
+let answered = false;
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function startQuiz() {
+  shuffledQs = shuffle(questions);
+  currentQ = 0;
+  score = 0;
+  answered = false;
+  document.getElementById('qFeedback').innerHTML = '';
+  document.getElementById('nextBtn').style.display = 'none';
+  renderScorebar();
+  renderQuestion();
+}
+
+function renderScorebar() {
+  let html = '';
+  for (let i = 0; i < shuffledQs.length; i++) {
+    let cls = 'score-dot';
+    if (i < currentQ) cls += shuffledQs[i]._correct ? ' right' : ' wrongd';
+    html += '<div class="' + cls + '"></div>';
+  }
+  document.getElementById('scorebar').innerHTML = html;
+}
+
+function renderQuestion() {
+  if (currentQ >= shuffledQs.length) {
+    document.getElementById('qqArea').innerHTML = '<div class="qq-text" style="font-size:22px;">K&#7871;t qu&#7843;: ' + score + '/8</div>';
+    document.getElementById('qaArea').innerHTML = '';
+    document.getElementById('qFeedback').innerHTML = score >= 7 ? '<span style="color:#4ade80">&#127881; Xu&#7845;t s&#7855;c! B&#7841;n &#273;&atilde; thu&#7897;c h&#7847;u h&#7871;t!</span>' : score >= 5 ? '<span style="color:#fbbf24">&#128170; Kh&aacute; t&#7889;t! H&atilde;y &ocirc;n l&#7841;i m&#7897;t ch&uacute;t n&#7919;a.</span>' : '<span style="color:#fb923c">&#128214; H&atilde;y &#273;&#7885;c l&#7841;i c&acirc;u chuy&#7879;n v&agrave; th&#7917; l&#7841;i nh&eacute;!</span>';
+    document.getElementById('nextBtn').style.display = 'none';
+    return;
+  }
+
+  answered = false;
+  const q = shuffledQs[currentQ];
+  const opts = shuffle(q.options);
+
+  document.getElementById('qqArea').innerHTML = '<div class="qq-emoji">' + q.emoji + '</div><div class="qq-text">&#272;&acirc;y l&agrave; ti&ecirc;u chu&#7849;n n&agrave;o?</div><div class="qq-hint">' + q.hint + '</div>';
+
+  document.getElementById('qaArea').innerHTML = opts.map(o =>
+    '<div class="quiz-ans" onclick="checkAnswer(this, \'' + o + '\')">' + o + ' &mdash; ' + getLabel(o) + '</div>'
+  ).join('');
+
+  document.getElementById('qFeedback').innerHTML = '<span style="color:#64748b;">C&acirc;u ' + (currentQ + 1) + '/8</span>';
+  document.getElementById('nextBtn').style.display = 'none';
+}
+
+function getLabel(code) {
+  const map = {
+    'IVS 200': 'Businesses',
+    'IVS 210': 'Intangible Assets',
+    'IVS 220': 'Non-Financial Liabilities',
+    'IVS 230': 'Inventory',
+    'IVS 300': 'Plant, Equipment & Infra',
+    'IVS 400': 'Real Property',
+    'IVS 410': 'Development Property',
+    'IVS 500': 'Financial Instruments'
+  };
+  return map[code] || code;
+}
+
+function checkAnswer(el, chosen) {
+  if (answered) return;
+  answered = true;
+  const q = shuffledQs[currentQ];
+
+  if (chosen === q.answer) {
+    el.classList.add('correct');
+    q._correct = true;
+    score++;
+    document.getElementById('qFeedback').innerHTML = '<span style="color:#4ade80;">&#9989; Ch&iacute;nh x&aacute;c!</span>';
+  } else {
+    el.classList.add('wrong');
+    q._correct = false;
+    document.querySelectorAll('.quiz-ans').forEach(a => {
+      if (a.textContent.startsWith(q.answer)) a.classList.add('correct');
+    });
+    document.getElementById('qFeedback').innerHTML = '<span style="color:#f87171;">&#10060; Sai r&#7891;i! &#272;&aacute;p &aacute;n l&agrave; ' + q.answer + '</span>';
+  }
+  renderScorebar();
+  document.getElementById('nextBtn').style.display = 'inline-block';
+}
+
+function nextQuestion() {
+  currentQ++;
+  renderQuestion();
+  renderScorebar();
+}
+
+startQuiz();
+</script>
+</body>
+</html>

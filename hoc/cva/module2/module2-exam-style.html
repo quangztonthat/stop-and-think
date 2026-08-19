@@ -1,0 +1,1356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CVA Module 2 — Exam-Style Mock (40 Questions)</title>
+<style>
+:root {
+  --bg: #faf6ee;
+  --bg-card: #ffffff;
+  --bg-card-hover: #fffaf0;
+  --ink: #1f1d18;
+  --ink-soft: #4a463d;
+  --ink-muted: #7a7468;
+  --line: #e5dfd0;
+  --line-soft: #f0ebdd;
+  --gold: #b88a3c;
+  --gold-soft: #f0e2c0;
+  --green: #4a7c3a;
+  --green-soft: #d9e9d2;
+  --red: #b04545;
+  --red-soft: #f0d9d9;
+  --blue: #3e6d99;
+  --blue-soft: #d4e3f0;
+  --teal: #2f7a72;
+  --teal-soft: #d0e8e5;
+  --purple: #6f4d8a;
+  --purple-soft: #e2d6ed;
+  --orange: #c2691f;
+  --orange-soft: #f5dec5;
+  --shadow: 0 1px 2px rgba(0,0,0,0.04), 0 4px 12px rgba(31,29,24,0.06);
+  --serif: 'Fraunces', 'Times New Roman', serif;
+  --sans: 'Geist', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  --mono: 'Geist Mono', ui-monospace, monospace;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: var(--sans);
+  background: var(--bg);
+  color: var(--ink);
+  line-height: 1.6;
+  font-size: 15px;
+  padding: 20px 16px 80px;
+  min-height: 100vh;
+}
+.container { max-width: 920px; margin: 0 auto; }
+
+.header {
+  text-align: center;
+  margin-bottom: 24px;
+  padding-bottom: 22px;
+  border-bottom: 1px solid var(--line);
+}
+.header h1 {
+  font-family: var(--serif);
+  font-size: 30px;
+  font-weight: 500;
+  letter-spacing: -0.5px;
+  margin-bottom: 4px;
+}
+.header h1 em { font-style: italic; color: var(--gold); }
+.header p { color: var(--ink-muted); font-size: 13px; }
+.header .subtitle {
+  display: inline-block;
+  margin-top: 8px;
+  padding: 4px 12px;
+  background: var(--purple-soft);
+  color: var(--purple);
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+}
+
+/* MODE SELECTOR */
+.mode-toggle {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 24px;
+  background: var(--bg-card);
+  padding: 6px;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow);
+}
+.mode-tab {
+  flex: 1;
+  padding: 12px 16px;
+  text-align: center;
+  cursor: pointer;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink-soft);
+  transition: all 0.2s;
+  user-select: none;
+}
+.mode-tab:hover { background: var(--bg-card-hover); }
+.mode-tab.active { background: var(--ink); color: var(--bg); }
+.mode-tab .icon { font-size: 16px; display: block; margin-bottom: 2px; }
+.mode-tab .label { font-size: 12px; }
+
+/* TIMER BAR (when timed mode) */
+.timer-bar {
+  background: var(--bg-card);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 14px 18px;
+  margin-bottom: 18px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  box-shadow: var(--shadow);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.timer-bar.hidden { display: none; }
+.timer-bar .timer {
+  font-family: var(--mono);
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--green);
+  font-variant-numeric: tabular-nums;
+  background: var(--green-soft);
+  padding: 8px 16px;
+  border-radius: 8px;
+}
+.timer-bar .timer.warning { color: var(--orange); background: var(--orange-soft); }
+.timer-bar .timer.critical { color: var(--red); background: var(--red-soft); animation: pulse 1s infinite; }
+@keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.7; } }
+.timer-bar .progress {
+  flex: 1;
+  font-size: 13px;
+  color: var(--ink-soft);
+  font-variant-numeric: tabular-nums;
+}
+.btn {
+  padding: 9px 16px;
+  border: 1px solid var(--line);
+  background: var(--bg);
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  font-family: inherit;
+  color: var(--ink);
+  transition: all 0.15s;
+}
+.btn:hover { background: var(--bg-card-hover); }
+.btn-primary { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.btn-primary:hover { background: var(--ink-soft); }
+.btn-success { background: var(--green); color: white; border-color: var(--green); }
+
+/* SECTION TITLE */
+.section-title {
+  font-family: var(--serif);
+  font-size: 20px;
+  font-style: italic;
+  font-weight: 500;
+  margin: 28px 0 14px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid var(--gold);
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.section-title .count {
+  font-family: var(--sans);
+  font-style: normal;
+  font-size: 12px;
+  color: var(--ink-muted);
+  font-weight: 400;
+}
+
+/* CLUSTER INTRO CARD */
+.cluster-intro {
+  background: linear-gradient(135deg, var(--blue-soft), var(--bg-card));
+  border: 2px solid var(--blue);
+  border-radius: 12px;
+  padding: 22px;
+  margin-bottom: 16px;
+  box-shadow: var(--shadow);
+}
+.cluster-intro .label {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--blue);
+  background: white;
+  padding: 4px 10px;
+  border-radius: 4px;
+  margin-bottom: 12px;
+}
+.cluster-intro p {
+  font-size: 14px;
+  line-height: 1.7;
+  margin-bottom: 8px;
+  color: var(--ink-soft);
+}
+.cluster-intro p strong { color: var(--ink); }
+
+/* QUESTION CARD */
+.q-card {
+  background: var(--bg-card);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 14px;
+  box-shadow: var(--shadow);
+}
+.q-card.cluster-q {
+  border-left: 3px solid var(--blue);
+  background: var(--bg-card);
+}
+.q-card.flagged { border-color: var(--gold); border-width: 2px; padding: 19px; }
+
+.q-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+.q-num {
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink-muted);
+  background: var(--line-soft);
+  padding: 3px 10px;
+  border-radius: 6px;
+  min-width: 36px;
+  text-align: center;
+}
+.q-badge {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 4px;
+  border: 1px solid var(--line);
+}
+.q-badge.multi { color: var(--teal); background: var(--teal-soft); border-color: var(--teal); }
+.q-badge.scenario { color: var(--gold); background: var(--gold-soft); border-color: var(--gold); }
+.q-badge.cluster { color: var(--blue); background: var(--blue-soft); border-color: var(--blue); }
+.q-badge.chapter {
+  background: var(--bg);
+  color: var(--ink-soft);
+  font-family: var(--mono);
+}
+.q-topic {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 13px;
+  color: var(--ink-muted);
+  flex: 1;
+  min-width: 180px;
+}
+.q-flag {
+  cursor: pointer;
+  font-size: 16px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  user-select: none;
+}
+.q-flag:hover { background: var(--gold-soft); }
+.q-flag.active { background: var(--gold); color: white; }
+
+.q-text {
+  font-size: 15px;
+  margin-bottom: 14px;
+  line-height: 1.7;
+  white-space: pre-wrap;
+}
+
+.q-options {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.q-option {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 11px 14px;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  line-height: 1.55;
+  transition: all 0.15s;
+  user-select: none;
+}
+.q-option:hover:not(.disabled) { background: var(--bg-card-hover); border-color: var(--ink-muted); }
+.q-option .letter {
+  flex-shrink: 0;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--line-soft);
+  color: var(--ink-soft);
+  font-weight: 600;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 0;
+}
+.q-option.selected {
+  background: var(--blue-soft);
+  border-color: var(--blue);
+  border-width: 2px;
+  padding: 10px 13px;
+}
+.q-option.selected .letter { background: var(--blue); color: white; }
+
+.q-card.submitted .q-option,
+.q-card.show-answer .q-option {
+  cursor: default;
+}
+.q-card.submitted .q-option.correct,
+.q-card.show-answer .q-option.correct {
+  background: var(--green-soft);
+  border-color: var(--green);
+  border-width: 2px;
+  padding: 10px 13px;
+}
+.q-card.submitted .q-option.correct .letter,
+.q-card.show-answer .q-option.correct .letter { background: var(--green); color: white; }
+.q-card.submitted .q-option.incorrect,
+.q-card.show-answer .q-option.incorrect {
+  background: var(--red-soft);
+  border-color: var(--red);
+  border-width: 2px;
+  padding: 10px 13px;
+}
+.q-card.submitted .q-option.incorrect .letter,
+.q-card.show-answer .q-option.incorrect .letter { background: var(--red); color: white; }
+
+.q-reasoning {
+  margin-top: 14px;
+  padding: 12px 14px;
+  background: var(--line-soft);
+  border-left: 3px solid var(--gold);
+  border-radius: 0 8px 8px 0;
+  font-size: 13px;
+  line-height: 1.65;
+  color: var(--ink-soft);
+}
+.q-reasoning.correct { background: var(--green-soft); border-left-color: var(--green); }
+.q-reasoning.wrong { background: var(--red-soft); border-left-color: var(--red); }
+.q-reasoning strong { color: var(--ink); }
+.q-reasoning .reasoning-label {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--ink);
+  margin-bottom: 4px;
+}
+
+.show-answer-btn {
+  margin-top: 12px;
+  padding: 8px 14px;
+  background: var(--gold-soft);
+  color: var(--gold);
+  border: 1px solid var(--gold);
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 500;
+  font-family: inherit;
+}
+.show-answer-btn:hover { background: var(--gold); color: white; }
+
+/* SUBMIT BAR */
+.submit-bar {
+  position: sticky;
+  bottom: 14px;
+  background: var(--bg-card);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 14px 18px;
+  margin-top: 24px;
+  box-shadow: 0 -4px 12px rgba(0,0,0,0.05), 0 4px 16px rgba(31,29,24,0.1);
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.submit-bar .progress-text {
+  flex: 1;
+  font-size: 13px;
+  color: var(--ink-soft);
+  font-variant-numeric: tabular-nums;
+}
+
+/* RESULTS */
+.results-card {
+  background: linear-gradient(135deg, var(--bg-card), var(--gold-soft));
+  border: 2px solid var(--gold);
+  border-radius: 16px;
+  padding: 28px;
+  margin-bottom: 24px;
+  text-align: center;
+}
+.results-card.hidden { display: none; }
+.results-score {
+  font-family: var(--serif);
+  font-size: 56px;
+  font-weight: 500;
+  font-style: italic;
+  line-height: 1;
+  margin-bottom: 6px;
+}
+.results-score .denom {
+  color: var(--ink-muted);
+  font-size: 28px;
+  font-style: normal;
+}
+.results-pct {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 14px;
+}
+.results-pct.pass { color: var(--green); }
+.results-pct.fail { color: var(--red); }
+.results-summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 12px;
+  margin-top: 14px;
+}
+.summary-stat {
+  background: var(--bg);
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+}
+.summary-stat .label {
+  font-size: 11px;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+  letter-spacing: 0.5px;
+  margin-bottom: 2px;
+}
+.summary-stat .value { font-size: 18px; font-weight: 600; font-variant-numeric: tabular-nums; }
+
+/* RESPONSIVE */
+@media (max-width: 700px) {
+  body { padding: 14px 10px 60px; }
+  .header h1 { font-size: 23px; }
+  .q-card { padding: 16px; }
+  .cluster-intro { padding: 16px; }
+  .q-text { font-size: 14px; }
+  .q-option { font-size: 13px; padding: 10px 12px; }
+  .timer-bar .timer { font-size: 18px; padding: 6px 12px; }
+  .section-title { font-size: 17px; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="header">
+    <h1>CVA Module 2 <em>—</em> Exam-Style Mock</h1>
+    <p>40 questions following the actual CVA exam format · 3 options · multi-statement + scenarios + clusters</p>
+    <span class="subtitle">Closest match to real exam format</span>
+  </div>
+
+  <!-- MODE TOGGLE -->
+  <div class="mode-toggle">
+    <div class="mode-tab active" data-mode="practice" onclick="setMode('practice')">
+      <span class="icon">📖</span><span class="label">Practice Mode</span>
+    </div>
+    <div class="mode-tab" data-mode="exam" onclick="setMode('exam')">
+      <span class="icon">⏱️</span><span class="label">Timed Exam (60 min)</span>
+    </div>
+  </div>
+
+  <!-- TIMER BAR (shown only in exam mode) -->
+  <div class="timer-bar hidden" id="timerBar">
+    <div class="timer" id="timer">60:00</div>
+    <div class="progress" id="progressMini">0 / 39 answered</div>
+    <button class="btn btn-primary" onclick="submitExam()">Submit</button>
+  </div>
+
+  <!-- RESULTS (shown after submit) -->
+  <div class="results-card hidden" id="resultsCard"></div>
+
+  <!-- QUESTIONS -->
+  <div id="questionsArea"></div>
+
+  <!-- SUBMIT BAR (practice mode) -->
+  <div class="submit-bar" id="submitBar">
+    <span class="progress-text" id="progressText">0 / 39 answered · 0 flagged</span>
+    <button class="btn" onclick="jumpToUnanswered()">Next unanswered</button>
+    <button class="btn btn-primary" onclick="submitExam()">Submit & see results</button>
+    <button class="btn" onclick="resetAll()">Reset</button>
+  </div>
+
+</div>
+
+<script>
+const QUESTIONS = [
+  {
+    format: 'multi_statement',
+    ch: 'ch1',
+    topic: 'Sources & courts',
+    text: 'Read the following statements about Singapore\'s legal system:\n(I) The Constitution is the supreme law and prevails over inconsistent statutes.\n(II) Decisions of the High Court bind subsequent decisions of the Court of Appeal.\n(III) Case law is one of three primary sources of Singapore law alongside written law and international law.\n\nWhich of the above statements are true?',
+    options: [
+      '(I) and (II) only.',
+      '(I), (II) and (III).',
+      '(I) and (III) only.'
+    ],
+    answer: 2,
+    reasoning: 'The Constitution is supreme, and case law is one of three primary sources of Singapore law alongside written law and international law. However, the High Court does not bind the Court of Appeal — appellate authority flows downwards under stare decisis, not upwards.'
+  },
+  {
+    format: 'multi_statement',
+    ch: 'ch1',
+    topic: 'Dispute resolution mechanisms',
+    text: 'Read the following statements about dispute resolution in Singapore:\n(I) Arbitration is governed by the International Arbitration Act 1994 for international cases and the Arbitration Act 2001 for domestic cases.\n(II) A mediator has the power to impose a binding decision if the parties cannot agree.\n(III) Court proceedings in Singapore are generally public, whereas arbitration is typically confidential.\n\nWhich of the above statements are true?',
+    options: [
+      '(I) and (III) only.',
+      '(II) and (III) only.',
+      '(I), (II) and (III).'
+    ],
+    answer: 0,
+    reasoning: 'Arbitration is governed by the IAA for international and AA for domestic disputes, and Singapore court proceedings are public while arbitration is typically confidential. However, a mediator only facilitates a voluntary settlement and cannot impose a binding decision on the parties.'
+  },
+  {
+    format: 'multi_statement',
+    ch: 'ch2',
+    topic: 'Business forms',
+    text: 'Read the following statements about business organisations in Singapore:\n(I) A sole proprietorship does not create a separate legal entity from its owner.\n(II) A limited liability partnership has a separate legal personality and perpetual succession.\n(III) An exempt private company may have any number of shareholders provided they are individuals.\n\nWhich of the above statements are true?',
+    options: [
+      '(II) and (III) only.',
+      '(I), (II) and (III).',
+      '(I) and (II) only.'
+    ],
+    answer: 2,
+    reasoning: 'A sole proprietorship is not separate from its owner, and an LLP is a separate legal entity with perpetual succession. However, an exempt private company is capped at 20 shareholders, all of whom must be individuals (no corporate shareholders).'
+  },
+  {
+    format: 'multi_statement',
+    ch: 'ch2',
+    topic: 'Share classes & rights',
+    text: 'Read the following statements about shares in a Singapore company:\n(I) Holders of ordinary shares typically rank last on a winding up, after creditors and preference shareholders.\n(II) Preference shares always carry full voting rights identical to ordinary shares.\n(III) A shareholder holding more than 25 percent of voting shares can block a special resolution.\n\nWhich of the above statements are true?',
+    options: [
+      '(II) and (III) only.',
+      '(I), (II) and (III).',
+      '(I) and (III) only.'
+    ],
+    answer: 2,
+    reasoning: 'Ordinary shares rank last on winding up, reflecting their residual nature, and a holder of more than 25 percent has a blocking stake against special resolutions which require 75 percent approval. However, preference shares typically have limited or no voting rights — they trade voting for priority on dividends and winding up.'
+  },
+  {
+    format: 'multi_statement',
+    ch: 'ch3',
+    topic: 'Contract damages',
+    text: 'Read the following statements about contract damages in Singapore:\n(I) The compensatory principle aims to place the claimant in the position as if the contract had been performed.\n(II) A claimant who fails to take reasonable steps to mitigate loss may have damages reduced.\n(III) Punitive damages are routinely available for deliberate breach of contract.\n\nWhich of the above statements are true?',
+    options: [
+      '(I) and (II) only.',
+      '(I) and (III) only.',
+      '(II) and (III) only.'
+    ],
+    answer: 0,
+    reasoning: 'The compensatory principle protects expectation interest, and the duty to mitigate reduces damages for unreasonable inaction. However, punitive damages are NOT available for pure breach of contract in Singapore — only the compensatory principle applies. Punitive damages may exist in tort with outrageous conduct, but not in contract.'
+  },
+  {
+    format: 'multi_statement',
+    ch: 'ch3',
+    topic: 'Tort and negligence',
+    text: 'Read the following statements about negligence in Singapore:\n(I) The claimant must establish duty of care, breach, causation, and damage.\n(II) The duty of care test in Singapore is the two-stage framework of factual foreseeability followed by legal proximity and policy.\n(III) A defendant is liable for any loss, regardless of how remote it may be from the breach.\n\nWhich of the above statements are true?',
+    options: [
+      '(I) and (II) only.',
+      '(I) and (III) only.',
+      '(I), (II) and (III).'
+    ],
+    answer: 0,
+    reasoning: 'The four elements of negligence and the Singapore two-stage duty of care test are well established. However, remoteness is a limiting principle — a defendant is not liable for loss that is too remote, even if causation is shown. Remoteness limits recoverable damages.'
+  },
+  {
+    format: 'multi_statement',
+    ch: 'ch3',
+    topic: 'Section 216 oppression',
+    text: 'Read the following statements about minority shareholder oppression under section 216 Companies Act 1967:\n(I) Section 216 provides relief where the company\'s affairs are conducted in a manner oppressive or unfairly prejudicial.\n(II) The court may order the majority to buy out the minority\'s shares at fair value.\n(III) Minority discounts are usually applied to ensure the majority is not overburdened.\n\nWhich of the above statements are true?',
+    options: [
+      '(II) and (III) only.',
+      '(I), (II) and (III).',
+      '(I) and (II) only.'
+    ],
+    answer: 2,
+    reasoning: 'Section 216 addresses oppressive or unfairly prejudicial conduct, and buy-out at fair value is a primary remedy. However, minority discounts are usually DISALLOWED in oppression buyouts to ensure fairness to the oppressed minority — otherwise the oppressor would benefit from their own wrongdoing.'
+  },
+  {
+    format: 'multi_statement',
+    ch: 'ch4',
+    topic: 'Expert duty',
+    text: 'Read the following statements about an expert valuer in Singapore proceedings:\n(I) The expert\'s primary duty is to the court or tribunal, overriding the duty to the instructing client.\n(II) The expert may accept a contingent fee arrangement provided this is disclosed in the report.\n(III) The expert must disclose any range of professional opinion on the issues and give reasons for adopting their own view.\n\nWhich of the above statements are true?',
+    options: [
+      '(I) and (III) only.',
+      '(I) and (II) only.',
+      '(I), (II) and (III).'
+    ],
+    answer: 0,
+    reasoning: 'The expert\'s primary duty to the court and the requirement to disclose a range of professional opinion are codified in Order 12 of the Rules of Court 2021. However, contingent fees are not permissible — they compromise the expert\'s independence regardless of disclosure.'
+  },
+  {
+    format: 'multi_statement',
+    ch: 'ch4',
+    topic: 'Expert report contents',
+    text: 'Read the following statements about an expert report under Order 12 rule 5(2) of the Rules of Court 2021:\n(I) The report must contain a statement of the expert\'s qualifications.\n(II) The report must identify the materials relied upon in forming the opinion.\n(III) The report must omit any range of professional opinion to avoid confusion.\n\nWhich of the above statements are true?',
+    options: [
+      '(I) and (III) only.',
+      '(II) and (III) only.',
+      '(I) and (II) only.'
+    ],
+    answer: 2,
+    reasoning: 'Order 12 rule 5(2) requires both the expert\'s qualifications and identification of materials relied upon. However, the report must INCLUDE any range of professional opinion and give reasons for the expert\'s own view — omission would breach the duty of independence and transparency.'
+  },
+  {
+    format: 'multi_statement',
+    ch: 'ch4',
+    topic: 'Valuer liability',
+    text: 'Read the following statements about a valuer\'s potential liability:\n(I) A valuer may be liable in contract to the engaging client for breach of the engagement letter.\n(II) A valuer may be liable in negligence to third parties who reasonably rely on the report.\n(III) Professional indemnity insurance covers all losses including fraud and deliberate misconduct.\n\nWhich of the above statements are true?',
+    options: [
+      '(II) and (III) only.',
+      '(I), (II) and (III).',
+      '(I) and (II) only.'
+    ],
+    answer: 2,
+    reasoning: 'A valuer may face both contractual liability to the client and tortious liability to foreseeable third parties who rely on the report. However, professional indemnity insurance does NOT cover fraud or deliberate misconduct — it covers negligent acts and errors, not deliberate wrongdoing.'
+  },
+  {
+    format: 'multi_statement',
+    ch: 'ch5',
+    topic: 'Damages principles',
+    text: 'Read the following statements about the assessment of damages:\n(I) The "but for" test requires the claimant to show that the loss would not have occurred but for the breach.\n(II) Damages are generally valued at the date of judgment in all cases without exception.\n(III) The remoteness rule limits recovery to losses arising naturally or within reasonable contemplation of both parties at contracting.\n\nWhich of the above statements are true?',
+    options: [
+      '(I) and (III) only.',
+      '(I) and (II) only.',
+      '(II) and (III) only.'
+    ],
+    answer: 0,
+    reasoning: 'The "but for" test and the two-limb remoteness rule are well-established principles of damages assessment. However, damages are generally valued at the date of BREACH, not judgment — though courts may depart from this where justice requires, particularly in fluctuating markets.'
+  },
+  {
+    format: 'multi_statement',
+    ch: 'ch5',
+    topic: 'Damages quantification methods',
+    text: 'Read the following statements about valuation methods used in damages assessment:\n(I) The loss of profits method calculates damages as the difference between but-for profits and actual profits.\n(II) The diminution in value method compares asset value before and after the breach.\n(III) Account of profits and compensatory damages may both be awarded together for the same wrong.\n\nWhich of the above statements are true?',
+    options: [
+      '(I) and (III) only.',
+      '(I), (II) and (III).',
+      '(I) and (II) only.'
+    ],
+    answer: 2,
+    reasoning: 'The loss of profits method (counterfactual analysis) and diminution in value method (before-and-after) are standard quantification approaches. However, the claimant must ELECT between account of profits (defendant-focused) and compensatory damages (claimant-focused) — they cannot have both, as this would amount to double recovery.'
+  },
+  {
+    format: 'multi_statement',
+    ch: 'ch6',
+    topic: 'Hot-tubbing and expert conferencing',
+    text: 'Read the following statements about concurrent expert evidence (hot-tubbing):\n(I) Hot-tubbing involves opposing experts testifying together before the tribunal.\n(II) Order 12 rule 8 of the Rules of Court 2021 expressly empowers courts to direct concurrent expert evidence.\n(III) Hot-tubbing eliminates the need for individual expert reports.\n\nWhich of the above statements are true?',
+    options: [
+      '(I) and (II) only.',
+      '(II) and (III) only.',
+      '(I), (II) and (III).'
+    ],
+    answer: 0,
+    reasoning: 'Hot-tubbing brings opposing experts together for concurrent testimony, and Order 12 rule 8 of the Rules of Court 2021 expressly authorises this procedure. However, individual expert reports are still required — hot-tubbing is the manner of giving oral evidence, not a replacement for the underlying reports.'
+  },
+  {
+    format: 'multi_statement',
+    ch: 'ch6',
+    topic: 'Common pitfalls of expert witnesses',
+    text: 'Read the following statements about common pitfalls that may undermine an expert\'s credibility:\n(I) Adopting an advocacy-driven stance inconsistent with the duty of independence.\n(II) Failing to engage meaningfully with the opposing expert\'s methodology.\n(III) Disclosing alternative views and reasons for adopting the expert\'s own conclusion.\n\nWhich of the above are pitfalls that undermine credibility?',
+    options: [
+      '(I) and (II) only.',
+      '(I) and (III) only.',
+      '(I), (II) and (III).'
+    ],
+    answer: 0,
+    reasoning: 'Advocacy-driven stances and failure to engage with opposing methodology are well-documented pitfalls that erode credibility. Disclosing alternative views, however, is the OPPOSITE — it is required of an independent expert and strengthens credibility rather than undermining it.'
+  },
+  {
+    format: 'multi_statement',
+    ch: 'ch7',
+    topic: 'Singapore expert witness cases',
+    text: 'Read the following statements about Singapore expert witness principles:\n(I) An expert must not "hide" adverse opinions or "side" with the instructing party.\n(II) The standard of care for a valuer is that of an ordinarily competent professional exercising reasonable skill.\n(III) An expert is permitted to decide legal issues such as contract interpretation in their report.\n\nWhich of the above statements are true?',
+    options: [
+      '(II) and (III) only.',
+      '(I), (II) and (III).',
+      '(I) and (II) only.'
+    ],
+    answer: 2,
+    reasoning: 'The "no hiding and siding" principle and the ordinarily competent valuer standard are well-established Singapore principles. However, legal issues such as contract interpretation are reserved for the court — an expert who decides these matters oversteps their proper role and the opinion will be discounted.'
+  },
+  {
+    format: 'multi_statement',
+    ch: 'ch3',
+    topic: 'Valuation approaches',
+    text: 'Read the following statements about valuation approaches:\n(I) The market approach derives value from comparable transactions or trading multiples.\n(II) The income approach values an asset based on its expected future economic benefits.\n(III) The cost approach is always the most reliable method regardless of the asset type.\n\nWhich of the above statements are true?',
+    options: [
+      '(I) and (III) only.',
+      '(I), (II) and (III).',
+      '(I) and (II) only.'
+    ],
+    answer: 2,
+    reasoning: 'The market approach uses comparables and multiples, while the income approach values an asset by reference to its expected economic benefits. However, no approach is always the most reliable — the valuer must select the appropriate method based on the asset, available data, and purpose of the valuation.'
+  },
+  {
+    format: 'multi_statement',
+    ch: 'ch3',
+    topic: 'Insolvency tests',
+    text: 'Read the following statements about insolvency under Singapore law:\n(I) The cash flow test asks whether the company can pay its debts as they fall due.\n(II) The balance sheet test asks whether total assets exceed total liabilities.\n(III) Only the cash flow test is recognised under Singapore law for assessing insolvency.\n\nWhich of the above statements are true?',
+    options: [
+      '(II) and (III) only.',
+      '(I), (II) and (III).',
+      '(I) and (II) only.'
+    ],
+    answer: 2,
+    reasoning: 'Both the cash flow test (current assets vs current liabilities, ability to pay debts as due) and the balance sheet test (total assets vs total liabilities) are recognised tests for insolvency. They are complementary — either may support a finding of insolvency depending on the circumstances.'
+  },
+  {
+    format: 'multi_statement',
+    ch: 'ch3',
+    topic: 'Matrimonial assets',
+    text: 'Read the following statements about division of matrimonial assets in Singapore:\n(I) Division is governed by section 112 of the Women\'s Charter.\n(II) The court has discretion to order a just and equitable division of matrimonial assets.\n(III) Assets acquired before the marriage are always excluded from division regardless of how they were used during the marriage.\n\nWhich of the above statements are true?',
+    options: [
+      '(II) and (III) only.',
+      '(I) and (II) only.',
+      '(I), (II) and (III).'
+    ],
+    answer: 1,
+    reasoning: 'Section 112 of the Women\'s Charter governs division, and the court has wide discretion to order a just and equitable outcome. However, pre-marital assets may enter the matrimonial pool if they were used jointly during the marriage or substantially improved by the other spouse\'s contributions.'
+  },
+  {
+    format: 'scenario',
+    ch: 'ch1',
+    topic: 'Bifurcation purpose',
+    text: 'In a complex commercial dispute, the court orders that the questions of liability and quantum (including valuation evidence) be tried separately. What is the most likely reason for ordering this bifurcation?',
+    options: [
+      'To allow the expert valuer to determine liability before the trial judge considers damages.',
+      'To streamline proceedings so valuation work is only undertaken if liability is first established.',
+      'To ensure that expert evidence is heard before any factual witness evidence at trial.'
+    ],
+    answer: 1,
+    reasoning: 'Bifurcation enables the court to determine liability first and proceed to assess damages only if liability is found. This avoids unnecessary valuation costs where the claim fails on liability and may also facilitate settlement once liability is resolved.'
+  },
+  {
+    format: 'scenario',
+    ch: 'ch1',
+    topic: 'Arbitration features',
+    text: 'A client is choosing between Singapore court litigation and Singapore-seated arbitration for a high-value commercial dispute involving sensitive trade secrets. From the valuer\'s perspective, which factor most strongly favours arbitration?',
+    options: [
+      'Arbitration uses informal valuation methods not accepted in court proceedings.',
+      'Arbitration is typically confidential, allowing sensitive valuation evidence to be presented privately.',
+      'Arbitration awards are non-binding, so valuation evidence carries less weight.'
+    ],
+    answer: 1,
+    reasoning: 'Confidentiality is arbitration\'s most distinctive feature, allowing parties to keep sensitive commercial or technical valuation evidence private. Arbitration uses the same accepted valuation methodologies as the courts, and awards are binding and enforceable.'
+  },
+  {
+    format: 'scenario',
+    ch: 'ch4',
+    topic: 'Valuer engagement scope',
+    text: 'A client engages a valuer to assess potential damages in a contractual dispute and asks the valuer to also provide an opinion on whether the contract was breached. The valuer should:',
+    options: [
+      'Decline to opine on the legal question of breach and confine the work to valuation issues once counsel frames the legal position.',
+      'Provide a comprehensive opinion covering both the legal question of breach and the quantum of damages.',
+      'Refer the entire matter back to the client and refuse to undertake the engagement.'
+    ],
+    answer: 0,
+    reasoning: 'Questions of contractual interpretation and whether a breach occurred are legal matters for counsel and the court or tribunal. The valuer should limit their opinion to financial and valuation issues, applying their analysis to the legal framework once it has been settled.'
+  },
+  {
+    format: 'scenario',
+    ch: 'ch4',
+    topic: 'Reliance on client information',
+    text: 'In preparing a valuation report for litigation, the valuer receives detailed financial projections from the claimant\'s management. The valuer should:',
+    options: [
+      'Adopt the projections without inquiry, since responsibility for accuracy rests with management.',
+      'Disregard the projections entirely and rely only on publicly available data to maintain independence.',
+      'Assess whether the projections are reasonable, internally consistent, and aligned with available evidence.'
+    ],
+    answer: 2,
+    reasoning: 'A valuer may rely on client information but must apply independent professional judgment to assess its reasonableness. Blind acceptance or wholesale rejection are both improper — the valuer must evaluate, identify inconsistencies, and seek clarification where the evidence is inadequate.'
+  },
+  {
+    format: 'scenario',
+    ch: 'ch5',
+    topic: 'Mitigation in practice',
+    text: 'A valuer is assessing economic loss arising from the cancellation of a 5-year supply contract. Which scenario most clearly engages the mitigation principle?',
+    options: [
+      'The claimant secured a partial replacement contract within three months that reduced the lost income.',
+      'The claimant made no attempt to seek substitute customers despite substitute demand being readily available.',
+      'The claimant immediately changed its company logo and marketing materials after the breach.'
+    ],
+    answer: 1,
+    reasoning: 'Mitigation requires the claimant to take reasonable steps to reduce loss. A complete failure to seek substitute work, where such work is readily available, raises a clear mitigation issue and may reduce the recoverable damages. A partial replacement contract is mitigation in action but a less stark illustration of the principle.'
+  },
+  {
+    format: 'scenario',
+    ch: 'ch5',
+    topic: 'Causation in damages',
+    text: 'In a commercial dispute, the claimant attributes business losses to the defendant\'s breach. The valuer is asked to assess damages. The "but for" test requires the valuer to:',
+    options: [
+      'Identify losses that would not have occurred but for the wrongful act and quantify them.',
+      'Quantify all financial losses suffered by the claimant during the relevant period.',
+      'Include all hypothetical opportunities the claimant might have pursued under favourable conditions.'
+    ],
+    answer: 0,
+    reasoning: 'Causation limits recovery to losses attributable to the defendant\'s conduct. The valuer must construct a counterfactual scenario and identify only those losses that would not have occurred but for the breach. Speculative opportunities and losses unconnected to the wrong cannot be included.'
+  },
+  {
+    format: 'scenario',
+    ch: 'ch5',
+    topic: 'Valuation date selection',
+    text: 'A claimant seeks damages for breach of contract that occurred in a volatile market. The general rule in Singapore is that damages are assessed at the date of breach, but the court has flexibility to depart from this. The most likely justification for departing is:',
+    options: [
+      'The claimant prefers a later date that gives a higher figure.',
+      'A later date better reflects the economic reality of the loss given market conditions.',
+      'The market remained stable and the breach date is convenient.'
+    ],
+    answer: 1,
+    reasoning: 'Departure from the breach-date rule is permitted where it better reflects the actual economic loss, particularly in fluctuating markets or where the claimant reasonably needed time to procure substitutes. Mere preference for a higher figure is not a sufficient basis to depart.'
+  },
+  {
+    format: 'scenario',
+    ch: 'ch3',
+    topic: 'Section 216 buyout valuation',
+    text: 'In a section 216 oppression action, the court orders the majority to buy out the minority\'s 25 percent shareholding at fair value. In conducting the valuation, the valuer should:',
+    options: [
+      'Apply a substantial minority discount to reflect the lack of control attaching to the holding.',
+      'Disregard any minority discount to ensure fairness to the oppressed minority shareholder.',
+      'Apply a minority discount only if the company constitution expressly provides for one.'
+    ],
+    answer: 1,
+    reasoning: 'Applying a minority discount in an oppression buyout would allow the oppressor to benefit from their own wrongdoing — they would acquire the minority\'s shares at a discount caused by the very oppression. Fair value in oppression cases is generally a pro-rata share of the company\'s value, without minority discount.'
+  },
+  {
+    format: 'scenario',
+    ch: 'ch3',
+    topic: 'Implied terms doctrine',
+    text: 'Two parties are in dispute over a commercial contract that does not address an issue that has now arisen. One party asks the court to imply a term to fill the gap. When will the court agree?',
+    options: [
+      'Whenever it would be reasonable to imply the term in the circumstances.',
+      'Where the parties did not contemplate the issue and the term is necessary for business efficacy.',
+      'Where one party proposes the term and the other does not strongly object.'
+    ],
+    answer: 1,
+    reasoning: 'Singapore courts apply a structured test: there must be a true gap from the parties not contemplating the issue, and the term must be necessary for business efficacy. Mere reasonableness is not enough — the term must be one the parties would have agreed to had it been put to them at contracting.'
+  },
+  {
+    format: 'scenario',
+    ch: 'ch4',
+    topic: 'Cross-examination conduct',
+    text: 'During cross-examination, opposing counsel exposes an arithmetic error in the valuer\'s discounted cash flow model that materially affects the result. The valuer should:',
+    options: [
+      'Defend the model and dismiss the error to preserve credibility.',
+      'Acknowledge the error promptly and explain its impact on the conclusion.',
+      'Refuse to comment until the next break to consult the instructing solicitor.'
+    ],
+    answer: 1,
+    reasoning: 'An expert\'s duty of independence and candour requires prompt acknowledgement of errors. Defending an incorrect figure damages credibility and breaches the duty of independence. The expert may submit a corrected calculation showing the impact, which preserves their professional reputation.'
+  },
+  {
+    format: 'scenario',
+    ch: 'ch4',
+    topic: 'Pressure from instructing solicitor',
+    text: 'The instructing solicitor pressures the valuer to adjust the valuation conclusion upward to support the client\'s claim, suggesting the original figure is "too conservative". The valuer should:',
+    options: [
+      'Adjust the conclusion as suggested, since the solicitor knows the case strategy.',
+      'Resign from the engagement immediately and inform the court of the pressure.',
+      'Refuse to alter the technical conclusion and document the request and the refusal.'
+    ],
+    answer: 2,
+    reasoning: 'Independence requires the expert to reach the same conclusion regardless of which party instructed them. The expert should refuse improper pressure and document the request and their refusal in writing. Resignation may be appropriate only if pressure continues or escalates.'
+  },
+  {
+    format: 'scenario',
+    ch: 'ch5',
+    topic: 'Liquidated damages clauses',
+    text: 'A construction contract provides for liquidated damages of S$10,000 per day for late completion. The actual likely loss from a one-day delay would be approximately S$500. A court considering enforcement is most likely to:',
+    options: [
+      'Enforce the clause as written, since the parties freely agreed to it.',
+      'Strike down the clause as a penalty and award actual loss as proved.',
+      'Reduce the clause to a reasonable figure determined at the court\'s discretion.'
+    ],
+    answer: 1,
+    reasoning: 'Liquidated damages clauses are enforceable only if they represent a genuine pre-estimate of loss. A clause that is grossly disproportionate to the actual likely loss is treated as a penalty and unenforceable. The claimant may still recover actual loss proved at common law.'
+  },
+  {
+    format: 'scenario',
+    ch: 'ch6',
+    topic: 'Hot-tubbing preparation',
+    text: 'A valuer has been instructed to participate in a hot-tubbing session with the opposing expert. To maximise effectiveness, the valuer should:',
+    options: [
+      'Prepare to challenge every point made by the opposing expert.',
+      'Avoid engaging with the opposing expert\'s report to preserve independence.',
+      'Identify points of agreement and disagreement with the opposing expert in advance.'
+    ],
+    answer: 2,
+    reasoning: 'Best practice in hot-tubbing involves engaging substantively with the opposing expert\'s methodology, identifying genuine common ground, and articulating the basis for genuine disagreement. This demonstrates impartiality, narrows the tribunal\'s focus, and is more persuasive than blanket opposition.'
+  },
+  {
+    format: 'scenario',
+    ch: 'ch3',
+    topic: 'Transfer pricing methodology',
+    text: 'A multinational must determine an arm\'s length price for an intra-group transaction. Reliable comparable transactions between independent parties exist. The most appropriate method to use is:',
+    options: [
+      'The Comparable Uncontrolled Price method, given the availability of reliable comparables.',
+      'The cost-plus method with a standard 10 percent markup over the supplier\'s costs.',
+      'A profit split between the two related parties on a 50/50 basis.'
+    ],
+    answer: 0,
+    reasoning: 'Where reliable comparable uncontrolled transactions exist, the CUP method is generally preferred because it directly tests the price against independent market evidence. Other methods such as cost-plus or profit split apply where reliable comparables are not available or the transaction has unique characteristics.'
+  },
+  {
+    format: 'scenario',
+    ch: 'ch5',
+    topic: 'Account of profits election',
+    text: 'The claimant has a choice between (a) compensatory damages of S$500,000 reflecting their own loss and (b) an account of profits of S$800,000 reflecting the defendant\'s wrongful gain. The claimant\'s position is that:',
+    options: [
+      'They must elect between the two remedies and cannot have both.',
+      'They may claim both remedies in full because each addresses a different concept.',
+      'They are entitled to the higher figure automatically without election.'
+    ],
+    answer: 0,
+    reasoning: 'Compensatory damages and account of profits address conceptually different things — the claimant\'s loss versus the defendant\'s gain — and awarding both for the same wrong would amount to double recovery. The claimant must elect between them, typically at judgment, choosing whichever yields the more favourable outcome.'
+  },
+  {
+    format: 'scenario',
+    ch: 'ch7',
+    topic: 'Standard of care for valuers',
+    text: 'A valuer is sued for negligence after a valuation in a commercial dispute. The court applies the standard of care expected of:',
+    options: [
+      'The best-in-class expert in the relevant field at the time of the valuation.',
+      'An ordinarily competent professional exercising reasonable skill and care.',
+      'A strict liability standard where any error in the figure attracts liability.'
+    ],
+    answer: 1,
+    reasoning: 'The standard is that of an ordinarily competent professional exercising reasonable skill and care, not perfection nor best-in-class. Valuation is inexact, and competent professionals may reasonably differ. A negligence claim requires an error of principle or methodology, not mere disagreement on the final figure.'
+  },
+  {
+    format: 'cluster_setup',
+    ch: 'ch3',
+    topic: 'ValuTech cluster setup',
+    text: '**Scenario — ValuTech Pte Ltd (Questions 36-40)**\n\nValuTech Pte Ltd is a Singapore private company in the software sector with three shareholders: Mr Ang (50 percent), Ms Bay (30 percent) and Mr Chen (20 percent). All three are also directors. Following a falling-out, Mr Chen brings a claim under section 216 Companies Act 1967, alleging that Mr Ang and Ms Bay have been diverting business to a related company without disclosure.\n\nThe High Court finds oppression established. The court orders that Mr Chen\'s 20 percent shareholding be bought out at fair value as at 1 March 2024, and directs the parties to appoint Ms Wong, an independent valuer, to conduct the valuation. The court order requires Ms Wong to:\n(a) value the shareholding on a going concern basis;\n(b) disregard the diversion of business from valuation date onwards;\n(c) write back the value of business wrongfully diverted into the valuation; and\n(d) apply no minority discount.\n\nMs Wong issues a draft report. Mr Ang then privately writes to Ms Wong suggesting she apply a 25 percent discount for lack of marketability because "Mr Chen\'s shares would be hard to sell anyway." Mr Ang offers to introduce Ms Wong to other engagement opportunities if she "considers his point properly".\n\nUse this scenario for the following questions.',
+    options: null,
+    cluster_intro: true
+  },
+  {
+    format: 'cluster_q',
+    ch: 'ch3',
+    topic: 'ValuTech Q1 — Primary duty',
+    text: 'What is Ms Wong\'s primary duty in preparing the valuation report?',
+    options: [
+      'To maximise the price Mr Chen receives, since he is the oppressed shareholder.',
+      'To the court, to provide an impartial valuation in accordance with the court\'s directions.',
+      'To the parties equally, since both contribute to Ms Wong\'s fees.'
+    ],
+    answer: 1,
+    reasoning: 'As a court-appointed expert, Ms Wong\'s overriding duty is to assist the court with an independent and impartial valuation in accordance with the court\'s specific directions. The duty does not extend to maximising recovery for any particular party, regardless of which party is described as the oppressed minority.'
+  },
+  {
+    format: 'cluster_q',
+    ch: 'ch3',
+    topic: 'ValuTech Q2 — Improper pressure',
+    text: 'How should Ms Wong respond to Mr Ang\'s private suggestion about the marketability discount and the offer of future engagement opportunities?',
+    options: [
+      'Decline the suggestion, document the request in writing, and ensure all substantive communications are shared with both parties.',
+      'Apply the discount, since the suggestion has technical merit and is professionally relevant.',
+      'Accept the introduction to future opportunities while declining the substantive suggestion on the discount.'
+    ],
+    answer: 0,
+    reasoning: 'Private attempts to influence an expert\'s opinion are improper and must be declined. The expert should document the request, refuse to act on it, and ensure all substantive communications occur through joint channels. Accepting the offer of future opportunities would also compromise independence, even if the immediate substantive suggestion is rejected.'
+  },
+  {
+    format: 'cluster_q',
+    ch: 'ch3',
+    topic: 'ValuTech Q3 — Minority discount',
+    text: 'Setting aside the impropriety of the request, would Ms Wong be justified in applying a minority discount to Mr Chen\'s 20 percent shareholding?',
+    options: [
+      'No, because the court has expressly directed that no minority discount is to be applied.',
+      'Yes, because a 20 percent holding lacks control and a discount reflects market reality.',
+      'Yes, if the discount is supported by independent evidence on comparable transactions.'
+    ],
+    answer: 0,
+    reasoning: 'The court has specifically directed that no minority discount be applied. The valuer must comply with the court\'s directions and cannot depart from them based on professional preference or market evidence. In oppression buyouts, courts commonly direct that no minority discount apply, to prevent the oppressor benefiting from their own wrongdoing.'
+  },
+  {
+    format: 'cluster_q',
+    ch: 'ch3',
+    topic: 'ValuTech Q4 — Written-back value',
+    text: 'In writing back the value of the wrongfully diverted business into the valuation, Ms Wong should:',
+    options: [
+      'Apply a punitive uplift to discourage similar conduct by other majority shareholders.',
+      'Estimate the value as if the diversion had not occurred, supported by evidence on the diverted revenue and margins.',
+      'Use the book value of the related company that received the diverted business.'
+    ],
+    answer: 1,
+    reasoning: 'Writing back the value requires a counterfactual analysis — estimating what the company\'s value would have been had the diversion not occurred. This is supported by evidence on the diverted revenue, applicable margins, and reasonable assumptions about the company\'s continuing operations. Punitive uplifts and book-value substitutes are inappropriate substitutes for proper counterfactual quantification.'
+  },
+  {
+    format: 'cluster_q',
+    ch: 'ch3',
+    topic: 'ValuTech Q5 — Valuation date constraint',
+    text: 'Six months after the valuation date of 1 March 2024, ValuTech secures a major new customer contract that substantially increases its prospective earnings. Should Ms Wong reflect this in her valuation?',
+    options: [
+      'Yes, the new contract is material and should be included in the projections.',
+      'No, the valuation is fixed at 1 March 2024 and post-valuation-date developments are excluded.',
+      'Yes, but only if the customer contract was foreseeable at the valuation date.'
+    ],
+    answer: 1,
+    reasoning: 'The valuation is conducted as at the valuation date specified by the court, and only information known or reasonably knowable at that date may be considered. Post-valuation-date developments are excluded from the analysis, even if they are material to the company\'s current value, because the court has fixed the relevant point in time.'
+  }
+];
+
+const EXAM_DURATION = 60 * 60; // 60 min
+let mode = 'practice';
+let answers = {};
+let flagged = new Set();
+let isSubmitted = false;
+let timeRemaining = EXAM_DURATION;
+let timerInterval = null;
+
+function setMode(m) {
+  if (isSubmitted) {
+    if (!confirm('Resetting to ' + m + ' mode will clear your results. Continue?')) return;
+    resetAll();
+  }
+  mode = m;
+  document.querySelectorAll('.mode-tab').forEach(t => t.classList.remove('active'));
+  document.querySelector(`.mode-tab[data-mode="${m}"]`).classList.add('active');
+  if (m === 'exam') {
+    timeRemaining = EXAM_DURATION;
+    document.getElementById('timerBar').classList.remove('hidden');
+    document.getElementById('submitBar').style.display = 'flex';
+    startTimer();
+  } else {
+    document.getElementById('timerBar').classList.add('hidden');
+    document.getElementById('submitBar').style.display = 'flex';
+    stopTimer();
+  }
+  renderQuestions();
+}
+
+function renderQuestions() {
+  const area = document.getElementById('questionsArea');
+  let html = '';
+  let questionNum = 0;  // for numbered Q labels
+  let inMultiSection = false;
+  let inScenarioSection = false;
+  let inClusterSection = false;
+  
+  QUESTIONS.forEach((q, idx) => {
+    // Section headers
+    if (q.format === 'multi_statement' && !inMultiSection) {
+      const count = QUESTIONS.filter(qq => qq.format === 'multi_statement').length;
+      html += `<div class="section-title">Section A — Multi-statement <span class="count">${count} questions · evaluate (I)(II)(III)</span></div>`;
+      inMultiSection = true;
+    }
+    if (q.format === 'scenario' && !inScenarioSection) {
+      const count = QUESTIONS.filter(qq => qq.format === 'scenario').length;
+      html += `<div class="section-title">Section B — Scenarios <span class="count">${count} questions · application of principle</span></div>`;
+      inScenarioSection = true;
+    }
+    if ((q.format === 'cluster_setup' || q.format === 'cluster_q') && !inClusterSection) {
+      const count = QUESTIONS.filter(qq => qq.format === 'cluster_q').length;
+      html += `<div class="section-title">Section C — Long Scenario Cluster <span class="count">${count} questions · shared fact pattern</span></div>`;
+      inClusterSection = true;
+    }
+    
+    if (q.format === 'cluster_setup') {
+      // Render intro card
+      html += `<div class="cluster-intro">
+        <span class="label">📋 Read carefully — applies to next questions</span>
+        ${formatText(q.text)}
+      </div>`;
+      return;
+    }
+    
+    questionNum++;
+    const isCluster = q.format === 'cluster_q';
+    const badgeClass = q.format === 'multi_statement' ? 'multi' : (isCluster ? 'cluster' : 'scenario');
+    const badgeText = q.format === 'multi_statement' ? '(I)(II)(III)' : (isCluster ? 'Cluster' : 'Scenario');
+    const isFlagged = flagged.has(idx);
+    const selected = answers[idx];
+    
+    const optionsHtml = q.options.map((opt, j) => {
+      let cls = '';
+      const submitted = isSubmitted;
+      if (submitted) {
+        if (j === q.answer) cls = 'correct';
+        else if (j === selected) cls = 'incorrect';
+      } else if (selected === j) {
+        cls = 'selected';
+      }
+      const onclick = submitted ? '' : `onclick="selectAnswer(${idx}, ${j})"`;
+      return `
+        <div class="q-option ${cls} ${submitted ? 'disabled' : ''}" ${onclick}>
+          <span class="letter">${String.fromCharCode(65 + j)}</span>
+          <span>${escapeHtml(opt)}</span>
+        </div>
+      `;
+    }).join('');
+    
+    let reasoningHtml = '';
+    if (isSubmitted) {
+      const correct = selected === q.answer;
+      const userText = selected === undefined ? '<strong>Not answered.</strong> ' :
+                       (correct ? '<strong>✓ Correct.</strong> ' : `<strong>✗ Incorrect</strong> — your answer: ${String.fromCharCode(65 + selected)}. `);
+      reasoningHtml = `<div class="q-reasoning ${selected === undefined ? '' : (correct ? 'correct' : 'wrong')}">
+        <span class="reasoning-label">Reasoning</span>
+        ${userText}${escapeHtml(q.reasoning)}
+      </div>`;
+    }
+    
+    const showAnswerBtn = (mode === 'practice' && !isSubmitted && selected !== undefined) ?
+      `<button class="show-answer-btn" onclick="showAnswer(${idx})">Show answer</button>` : '';
+    
+    html += `
+      <div class="q-card ${isCluster ? 'cluster-q' : ''} ${isFlagged ? 'flagged' : ''} ${isSubmitted ? 'submitted' : ''}" id="qcard-${idx}">
+        <div class="q-header">
+          <span class="q-num">${questionNum}</span>
+          <span class="q-badge chapter">${escapeHtml(q.ch.toUpperCase())}</span>
+          <span class="q-badge ${badgeClass}">${badgeText}</span>
+          <span class="q-topic">${escapeHtml(q.topic)}</span>
+          ${!isSubmitted ? `<span class="q-flag${isFlagged ? ' active' : ''}" onclick="event.stopPropagation(); toggleFlag(${idx})" title="Flag for review">🚩</span>` : ''}
+        </div>
+        <div class="q-text">${formatTextInline(q.text)}</div>
+        <div class="q-options">${optionsHtml}</div>
+        ${showAnswerBtn}
+        ${reasoningHtml}
+      </div>
+    `;
+  });
+  area.innerHTML = html;
+  updateProgress();
+}
+
+function formatText(t) {
+  // Convert markdown-style **bold** to <strong>
+  let html = escapeHtml(t).replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+  // Convert newlines to paragraphs
+  return html.split('\n\n').map(p => `<p>${p.replace(/\n/g, '<br>')}</p>`).join('');
+}
+
+function formatTextInline(t) {
+  // For question text: preserve line breaks but no bold
+  return escapeHtml(t).replace(/\n/g, '<br>');
+}
+
+function selectAnswer(idx, optIdx) {
+  if (isSubmitted) return;
+  answers[idx] = optIdx;
+  // Update DOM
+  const card = document.getElementById(`qcard-${idx}`);
+  const opts = card.querySelectorAll('.q-option');
+  opts.forEach((el, j) => {
+    if (j === optIdx) el.classList.add('selected');
+    else el.classList.remove('selected');
+  });
+  // Add show-answer button if practice mode
+  if (mode === 'practice') {
+    let btn = card.querySelector('.show-answer-btn');
+    if (!btn) {
+      btn = document.createElement('button');
+      btn.className = 'show-answer-btn';
+      btn.textContent = 'Show answer';
+      btn.onclick = () => showAnswer(idx);
+      const reasoning = card.querySelector('.q-reasoning');
+      if (reasoning) card.insertBefore(btn, reasoning);
+      else card.appendChild(btn);
+    }
+  }
+  updateProgress();
+}
+
+function showAnswer(idx) {
+  const q = QUESTIONS[idx];
+  const card = document.getElementById(`qcard-${idx}`);
+  card.classList.add('show-answer');
+  const opts = card.querySelectorAll('.q-option');
+  const userAns = answers[idx];
+  opts.forEach((el, j) => {
+    el.classList.remove('selected');
+    if (j === q.answer) el.classList.add('correct');
+    else if (j === userAns) el.classList.add('incorrect');
+  });
+  // Add reasoning
+  let reasoning = card.querySelector('.q-reasoning');
+  if (!reasoning) {
+    reasoning = document.createElement('div');
+    const correct = userAns === q.answer;
+    reasoning.className = 'q-reasoning ' + (correct ? 'correct' : 'wrong');
+    const userText = correct ? '<strong>✓ Correct.</strong> ' : `<strong>✗ Incorrect</strong> — your answer: ${String.fromCharCode(65 + userAns)}. `;
+    reasoning.innerHTML = '<span class="reasoning-label">Reasoning</span>' + userText + escapeHtml(q.reasoning);
+    card.appendChild(reasoning);
+  }
+  // Hide show-answer button
+  const btn = card.querySelector('.show-answer-btn');
+  if (btn) btn.remove();
+}
+
+function toggleFlag(idx) {
+  if (flagged.has(idx)) flagged.delete(idx);
+  else flagged.add(idx);
+  const card = document.getElementById(`qcard-${idx}`);
+  const flag = card.querySelector('.q-flag');
+  if (flagged.has(idx)) {
+    card.classList.add('flagged');
+    if (flag) flag.classList.add('active');
+  } else {
+    card.classList.remove('flagged');
+    if (flag) flag.classList.remove('active');
+  }
+  updateProgress();
+}
+
+function jumpToUnanswered() {
+  for (let i = 0; i < QUESTIONS.length; i++) {
+    if (QUESTIONS[i].format === 'cluster_setup') continue;
+    if (answers[i] === undefined) {
+      document.getElementById(`qcard-${i}`).scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
+  }
+  alert('All questions answered.');
+}
+
+function updateProgress() {
+  const total = QUESTIONS.filter(q => q.options).length;
+  const answered = Object.keys(answers).length;
+  document.getElementById('progressText').textContent = `${answered} / ${total} answered · ${flagged.size} flagged`;
+  document.getElementById('progressMini').textContent = `${answered} / ${total} answered`;
+}
+
+function startTimer() {
+  stopTimer();
+  updateTimerDisplay();
+  timerInterval = setInterval(() => {
+    timeRemaining--;
+    updateTimerDisplay();
+    if (timeRemaining <= 0) {
+      clearInterval(timerInterval);
+      alert("Time's up — auto-submitting your exam.");
+      submitExam();
+    }
+  }, 1000);
+}
+
+function stopTimer() {
+  if (timerInterval) {
+    clearInterval(timerInterval);
+    timerInterval = null;
+  }
+}
+
+function updateTimerDisplay() {
+  const t = document.getElementById('timer');
+  const mins = Math.floor(timeRemaining / 60);
+  const secs = timeRemaining % 60;
+  t.textContent = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+  t.classList.remove('warning', 'critical');
+  if (timeRemaining <= 60) t.classList.add('critical');
+  else if (timeRemaining <= 600) t.classList.add('warning');
+}
+
+function submitExam() {
+  const total = QUESTIONS.filter(q => q.options).length;
+  const answered = Object.keys(answers).length;
+  const unanswered = total - answered;
+  if (unanswered > 0 && timeRemaining > 0) {
+    if (!confirm(`You have ${unanswered} unanswered question${unanswered > 1 ? 's' : ''}. Submit anyway?`)) return;
+  }
+  isSubmitted = true;
+  stopTimer();
+  
+  // Compute scores
+  let score = 0;
+  const sectionStats = { multi: {c:0,t:0}, scenario: {c:0,t:0}, cluster_q: {c:0,t:0} };
+  QUESTIONS.forEach((q, idx) => {
+    if (!q.options) return;
+    const key = q.format === 'multi_statement' ? 'multi' : (q.format === 'cluster_q' ? 'cluster_q' : 'scenario');
+    sectionStats[key].t++;
+    if (answers[idx] === q.answer) {
+      score++;
+      sectionStats[key].c++;
+    }
+  });
+  
+  const pct = (score / total * 100).toFixed(0);
+  const passClass = pct >= 70 ? 'pass' : 'fail';
+  const passText = pct >= 70 ? 'Pass (≥70%)' : 'Below pass mark';
+  
+  document.getElementById('resultsCard').classList.remove('hidden');
+  document.getElementById('resultsCard').innerHTML = `
+    <div class="results-score">${score}<span class="denom">/${total}</span></div>
+    <div class="results-pct ${passClass}">${pct}% — ${passText}</div>
+    <div style="font-size: 13px; color: var(--ink-muted); margin-bottom: 10px;">By section:</div>
+    <div class="results-summary">
+      <div class="summary-stat"><div class="label">Multi-statement</div><div class="value">${sectionStats.multi.c}/${sectionStats.multi.t}</div></div>
+      <div class="summary-stat"><div class="label">Scenarios</div><div class="value">${sectionStats.scenario.c}/${sectionStats.scenario.t}</div></div>
+      <div class="summary-stat"><div class="label">Cluster</div><div class="value">${sectionStats.cluster_q.c}/${sectionStats.cluster_q.t}</div></div>
+    </div>
+  `;
+  
+  renderQuestions();
+  window.scrollTo({ top: document.getElementById('resultsCard').offsetTop - 20, behavior: 'smooth' });
+}
+
+function resetAll() {
+  if (isSubmitted || Object.keys(answers).length > 0) {
+    if (!confirm('Reset all answers? This will clear your progress.')) return;
+  }
+  answers = {};
+  flagged = new Set();
+  isSubmitted = false;
+  timeRemaining = EXAM_DURATION;
+  stopTimer();
+  document.getElementById('resultsCard').classList.add('hidden');
+  if (mode === 'exam') startTimer();
+  renderQuestions();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function escapeHtml(s) {
+  return String(s)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+// Init
+renderQuestions();
+</script>
+</body>
+</html>

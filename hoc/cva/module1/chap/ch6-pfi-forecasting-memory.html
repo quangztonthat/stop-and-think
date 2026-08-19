@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter 6: Best Practices in Preparing PFI</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',Tahoma,sans-serif;background:#0f172a;color:#e2e8f0;line-height:1.7;padding:16px;max-width:960px;margin:0 auto}
+h1{text-align:center;color:#fbbf24;font-size:1.6em;margin-bottom:6px}
+.subtitle{text-align:center;color:#94a3b8;margin-bottom:20px;font-size:0.93em}
+.tabs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:18px;justify-content:center}
+.tabs button{padding:8px 13px;border:2px solid #334155;border-radius:8px;background:#1e293b;color:#94a3b8;cursor:pointer;font-size:0.83em;transition:all 0.2s}
+.tabs button:hover{border-color:#f59e0b;color:#fbbf24}
+.tabs button.active{background:#f59e0b;color:#0f172a;border-color:#f59e0b;font-weight:700}
+.tab-content{display:none}
+.tab-content.active{display:block}
+.mnemonic-box{background:linear-gradient(135deg,#1e3a5f,#1e293b);border:2px solid #f59e0b;border-radius:14px;padding:20px;margin:16px 0;text-align:center}
+.mnemonic-box h2{color:#f59e0b;font-size:1.2em;margin-bottom:10px}
+.mnemonic-big{font-size:1.3em;color:#fbbf24;font-weight:700;margin:10px 0;line-height:1.5}
+.mnemonic-explain{color:#cbd5e1;font-size:0.9em;margin-top:8px}
+.story-box{background:linear-gradient(135deg,#1a2744,#162032);border-left:4px solid #8b5cf6;border-radius:10px;padding:18px;margin:16px 0}
+.story-box h3{color:#a78bfa;margin-bottom:10px}
+.story-box p{color:#cbd5e1;margin-bottom:8px;font-size:0.93em}
+.story-highlight{color:#fbbf24;font-weight:600}
+.card{background:#1e293b;border:1px solid #334155;border-radius:12px;padding:16px;margin:12px 0;cursor:pointer;transition:all 0.2s}
+.card:hover{border-color:#f59e0b}
+.card-header{display:flex;justify-content:space-between;align-items:center}
+.card-title{font-weight:700;font-size:1.02em}
+.card-badge{font-size:0.73em;padding:3px 10px;border-radius:20px;font-weight:600}
+.badge-role{background:#065f46;color:#6ee7b7}
+.badge-info{background:#1e3a5f;color:#7dd3fc}
+.badge-model{background:#4c1d95;color:#c4b5fd}
+.badge-test{background:#7c2d12;color:#fdba74}
+.badge-case{background:#831843;color:#f9a8d4}
+.card-arrow{color:#64748b;transition:transform 0.2s}
+.card-arrow.open{transform:rotate(90deg)}
+.card-body{display:none;margin-top:14px;padding-top:14px;border-top:1px solid #334155}
+.card-body.show{display:block}
+.def-box{background:#0f172a;border-left:3px solid #38bdf8;border-radius:6px;padding:12px;margin:8px 0}
+.def-box strong{color:#38bdf8}
+.keyword{display:inline-block;background:#1e3a5f;color:#7dd3fc;padding:2px 8px;border-radius:4px;font-size:0.82em;margin:2px}
+.warn-box{background:#2d1b0e;border-left:3px solid #f59e0b;border-radius:6px;padding:12px;margin:8px 0}
+.warn-box strong{color:#fbbf24}
+.insight-box{background:linear-gradient(135deg,#1a0a2e,#1e293b);border:2px solid #a78bfa;border-radius:10px;padding:16px;margin:14px 0}
+.insight-box h4{color:#a78bfa;margin-bottom:8px}
+.flow-diagram{display:flex;flex-direction:column;align-items:center;gap:4px;margin:16px 0}
+.flow-step{background:#1e293b;border:2px solid #8b5cf6;border-radius:10px;padding:12px 20px;width:90%;max-width:550px;text-align:center}
+.flow-arrow{color:#8b5cf6;font-size:1.3em}
+.table-wrap{overflow-x:auto;margin:14px 0}
+table{width:100%;border-collapse:collapse;font-size:0.86em}
+th{background:#1e3a5f;color:#7dd3fc;padding:10px;text-align:left;border:1px solid #334155}
+td{padding:10px;border:1px solid #334155;background:#1e293b}
+tr:hover td{background:#253347}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:12px 0}
+@media(max-width:600px){.grid-2{grid-template-columns:1fr}}
+.grid-box{background:#0f172a;border:2px solid #334155;border-radius:10px;padding:14px}
+.grid-box h4{margin-bottom:8px}
+.formula-box{background:#1a0a2e;border:2px solid #a78bfa;border-radius:10px;padding:16px;margin:12px 0;text-align:center}
+.formula-box .formula{font-size:1.15em;color:#fbbf24;font-weight:700;margin:8px 0}
+.formula-box .formula-note{color:#cbd5e1;font-size:0.85em}
+.quiz-section{margin-top:20px}
+.quiz-q{background:#1e293b;border:1px solid #334155;border-radius:10px;padding:16px;margin:12px 0}
+.quiz-q h4{color:#7dd3fc;margin-bottom:10px}
+.quiz-opts label{display:block;padding:8px 12px;margin:4px 0;border:1px solid #334155;border-radius:8px;cursor:pointer;transition:all 0.15s}
+.quiz-opts label:hover{border-color:#f59e0b;background:#1e3a5f}
+.quiz-opts input{margin-right:8px}
+.quiz-btn{background:#f59e0b;color:#0f172a;border:none;padding:10px 24px;border-radius:8px;cursor:pointer;font-weight:700;font-size:1em;margin-top:14px}
+.quiz-btn:hover{background:#d97706}
+.quiz-result{margin-top:12px;padding:14px;border-radius:8px;font-weight:600;display:none}
+.quiz-correct{background:#065f46;color:#6ee7b7;display:block}
+.quiz-wrong{background:#7f1d1d;color:#fca5a5;display:block}
+.score-box{text-align:center;padding:20px;background:linear-gradient(135deg,#1e3a5f,#1e293b);border:2px solid #f59e0b;border-radius:14px;margin:16px 0;display:none}
+.score-box h3{color:#f59e0b;font-size:1.4em}
+</style>
+</head>
+<body>
+
+<h1>&#128202; Chapter 6: Best Practices in Preparing PFI</h1>
+<p class="subtitle">Prospective Financial Information | Financial Model | Assumptions | Uncertainty</p>
+
+<div class="tabs" id="mainTabs">
+<button class="active" onclick="showTab(0)">&#127919; T&#7893;ng quan</button>
+<button onclick="showTab(1)">&#128270; Ngu&#7891;n tin</button>
+<button onclick="showTab(2)">&#128736;&#65039; X&#226;y Model</button>
+<button onclick="showTab(3)">&#127981; V&#237; d&#7909; Z</button>
+<button onclick="showTab(4)">&#128260; So s&#225;nh</button>
+<button onclick="showTab(5)">&#9888;&#65039; B&#7851;y thi</button>
+<button onclick="showTab(6)">&#128221; Quiz</button>
+</div>
+
+<!-- TAB 0: OVERVIEW -->
+<div class="tab-content active" id="tab0">
+<div class="mnemonic-box">
+<h2>&#127911; PFI l&#224; g&#236;?</h2>
+<div class="mnemonic-big">PFI = D&#7920; B&#193;O T&#192;I CH&#205;NH T&#431;&#416;NG LAI</div>
+<div class="mnemonic-explain">Prospective Financial Information = "financial forecasts"<br>D&#7921; b&#225;o doanh thu, chi ph&#237;, l&#7907;i nhu&#7853;n, d&#242;ng ti&#7873;n t&#432;&#417;ng lai &#8594; n&#7873;n t&#7843;ng c&#7911;a market &amp; income approach</div>
+</div>
+
+<div class="mnemonic-box">
+<h2>&#127911; 5 B&#432;&#7899;c x&#226;y Model: CH&#7884;N - THU - &#272;&#7862;T - X&#194;Y - KI&#7874;M</h2>
+<div class="mnemonic-big">CH&#7884;N approach &#8594; THU th&#7853;p data &#8594; &#272;&#7862;T gi&#7843; &#273;&#7883;nh &#8594; X&#194;Y model &#8594; KI&#7874;M tra</div>
+<div class="mnemonic-explain">Step 1: Approach | Step 2: Data | Step 3: Assumptions | Step 4: Model | Step 5: Test &amp; Report</div>
+</div>
+
+<div class="mnemonic-box">
+<h2>&#127911; 4 thu&#7897;c t&#237;nh c&#7911;a Model: MINH - H&#7906;P - NH&#7844;T - LINH</h2>
+<div class="mnemonic-big">MINH b&#7841;ch &#8594; H&#7906;P l&#253; &#8594; NH&#7844;T qu&#225;n &#8594; LINH ho&#7841;t</div>
+<div class="mnemonic-explain">Transparency | Logical integrity | Consistency | Flexibility<br>"M&#244; h&#236;nh MINH b&#7841;ch, H&#7906;P l&#253;, NH&#7844;T qu&#225;n, LINH ho&#7841;t"</div>
+</div>
+
+<div class="mnemonic-box">
+<h2>&#127911; 4 Tab c&#7911;a Model Excel</h2>
+<div class="mnemonic-big">L&#7882;CH S&#7916; &#8594; GI&#7842; &#272;&#7882;NH &#8594; D&#7920; B&#193;O &#8594; &#272;&#7882;NH GI&#193;</div>
+<div class="mnemonic-explain">Historical | Assumptions | Forecast | Valuation</div>
+</div>
+
+<div class="story-box">
+<h3>&#128214; C&#226;u chuy&#7879;n: "Th&#7849;m &#273;&#7883;nh vi&#234;n &#273;&#7883;nh gi&#225; chu&#7895;i c&#7917;a h&#224;ng ZX"</h3>
+<p>C&#244;ng ty A mu&#7889;n mua c&#244;ng ty Z (b&#225;n l&#7867; th&#7901;i trang ZX). Th&#7849;m &#273;&#7883;nh vi&#234;n &#273;&#432;&#7907;c thu&#234; &#273;&#7883;nh gi&#225;.</p>
+<p><span class="story-highlight">B&#432;&#7899;c 1 - CH&#7884;N:</span> DCF l&#224;m primary, Market approach l&#224;m cross-check. Basis: Market value, Premise: Going concern.</p>
+<p><span class="story-highlight">B&#432;&#7899;c 2 - THU:</span> Thu th&#7853;p BCTC ki&#7875;m to&#225;n, ph&#226;n t&#237;ch ng&#224;nh b&#225;n l&#7867;, g&#7863;p ban l&#227;nh &#273;&#7841;o.</p>
+<p><span class="story-highlight">B&#432;&#7899;c 3 - &#272;&#7862;T:</span> Revenue growth cao 2 n&#259;m &#273;&#7847;u (flagship renovation), sau &#273;&#243; v&#7873; 4%. GP margin 70%, EBITDA 20%, WC 10% revenue, Capex 15%, terminal growth 2.5%.</p>
+<p><span class="story-highlight">B&#432;&#7899;c 4 - X&#194;Y:</span> Excel model v&#7899;i 4 tab (Historical, Assumptions, Forecast, Valuation). &#272;&#7843;m b&#7843;o MINH b&#7841;ch, H&#7906;P l&#253;, NH&#7844;T qu&#225;n, LINH ho&#7841;t.</p>
+<p><span class="story-highlight">B&#432;&#7899;c 5 - KI&#7874;M:</span> DCF ra $100-120M equity. Cross-check: EV/EBITDA = 7.0-8.0x (comparable companies 6.5-9.0x, transactions 7-8.5x) &#8594; h&#7907;p l&#253;! Sensitivity analysis, document, report.</p>
+</div>
+
+<h3 style="color:#7dd3fc;margin:16px 0 10px">&#128218; C&#7845;u tr&#250;c ch&#432;&#417;ng</h3>
+<div class="grid-2">
+<div class="grid-box" style="border-color:#065f46">
+<h4 style="color:#6ee7b7">6.1 Vai tr&#242; c&#7911;a valuer</h4>
+<p style="font-size:0.88em;color:#94a3b8">PFI l&#224; n&#7873;n t&#7843;ng c&#7911;a valuation<br>4 vai tr&#242; ki&#7875;m tra PFI<br>Professional scepticism</p>
+</div>
+<div class="grid-box" style="border-color:#1e3a5f">
+<h4 style="color:#7dd3fc">6.2 Ngu&#7891;n th&#244;ng tin</h4>
+<p style="font-size:0.88em;color:#94a3b8">Approach, CF types, Duration, Scenarios<br>Market = ng&#7855;n h&#417;n, earnings focus<br>Income = d&#224;i h&#417;n, cash flow focus</p>
+</div>
+<div class="grid-box" style="border-color:#4c1d95">
+<h4 style="color:#c4b5fd">6.3 X&#226;y d&#7921;ng Model</h4>
+<p style="font-size:0.88em;color:#94a3b8">5 b&#432;&#7899;c: CH&#7884;N-THU-&#272;&#7862;T-X&#194;Y-KI&#7874;M<br>Key assumptions: Revenue, OpEx, WC, Capex<br>DCF: explicit period + terminal value</p>
+</div>
+<div class="grid-box" style="border-color:#7c2d12">
+<h4 style="color:#fdba74">6.4-6.5 Model &amp; Uncertainty</h4>
+<p style="font-size:0.88em;color:#94a3b8">4 Model tabs, 4 attributes (TLCF)<br>3 uncertainty types<br>Sensitivity + Scenario analysis</p>
+</div>
+</div>
+</div>
+
+<!-- TAB 1: INFORMATION SOURCES -->
+<div class="tab-content" id="tab1">
+<h2 style="color:#7dd3fc;margin-bottom:14px">&#128270; 6.1-6.2 Vai tr&#242; &amp; Ngu&#7891;n th&#244;ng tin</h2>
+
+<div class="card" onclick="toggleC(this)">
+<div class="card-header">
+<span class="card-title">&#128100; 6.1 Vai tr&#242; c&#7911;a Valuer trong PFI</span>
+<span class="card-badge badge-role">Role</span>
+<span class="card-arrow">&#9654;</span>
+</div>
+<div class="card-body">
+<div class="def-box"><strong>PFI (Prospective Financial Information):</strong> D&#7921; b&#225;o t&#224;i ch&#237;nh t&#432;&#417;ng lai v&#7873; doanh thu, chi ph&#237;, l&#7907;i nhu&#7853;n, d&#242;ng ti&#7873;n. Kh&#225;c v&#7899;i d&#7919; li&#7879;u l&#7883;ch s&#7917; v&#236; PFI d&#7921;a tr&#234;n gi&#7843; &#273;&#7883;nh v&#224; ph&#225;n &#273;o&#225;n &#8594; t&#237;nh ch&#7911; quan cao.</div>
+
+<p style="margin:10px 0;color:#fbbf24;font-weight:600">4 vai tr&#242; ki&#7875;m tra PFI c&#7911;a valuer:</p>
+<div class="table-wrap"><table>
+<tr><th>#</th><th>Vai tr&#242;</th><th>M&#244; t&#7843;</th></tr>
+<tr><td>1</td><td><strong style="color:#6ee7b7">&#272;&#225;nh gi&#225; gi&#7843; &#273;&#7883;nh</strong></td><td>Ki&#7875;m tra &#273;&#7897; ch&#237;nh x&#225;c v&#224; tin c&#7853;y c&#7911;a gi&#7843; &#273;&#7883;nh v&#7873; revenue growth, cost, capex</td></tr>
+<tr><td>2</td><td><strong style="color:#6ee7b7">So s&#225;nh</strong></td><td>So s&#225;nh d&#7921; b&#225;o v&#7899;i d&#7919; li&#7879;u l&#7883;ch s&#7917; v&#224; th&#7883; tr&#432;&#7901;ng b&#234;n ngo&#224;i</td></tr>
+<tr><td>3</td><td><strong style="color:#6ee7b7">Ki&#7875;m tra nh&#7845;t qu&#225;n</strong></td><td>&#272;&#7843;m b&#7843;o t&#237;nh nh&#7845;t qu&#225;n gi&#7919;a P&amp;L, BS, v&#224; CF statement</td></tr>
+<tr><td>4</td><td><strong style="color:#6ee7b7">Ph&#225;t hi&#7879;n thi&#234;n l&#7879;ch</strong></td><td>Nh&#7853;n di&#7879;n s&#7921; l&#7841;c quan qu&#225; m&#7913;c trong d&#7921; b&#225;o c&#7911;a ban l&#227;nh &#273;&#7841;o</td></tr>
+</table></div>
+
+<div class="warn-box"><strong>&#128161; Professional Scepticism:</strong> Valuer KH&#212;NG &#273;&#432;&#7907;c ch&#7881; d&#7921;a v&#224;o th&#244;ng tin t&#7915; management m&#224; kh&#244;ng ki&#7875;m ch&#7913;ng &#273;&#7897;c l&#7853;p. Ph&#7843;i &#273;&#7843;m b&#7843;o PFI l&#224; sensible, reasonable, unbiased, defensible.</div>
+</div>
+</div>
+
+<div class="card" onclick="toggleC(this)">
+<div class="card-header">
+<span class="card-title">&#128203; 6.2 C&#225;c y&#7871;u t&#7889; c&#7847;n x&#225;c &#273;&#7883;nh tr&#432;&#7899;c khi d&#7921; b&#225;o</span>
+<span class="card-badge badge-info">Pre-forecast</span>
+<span class="card-arrow">&#9654;</span>
+</div>
+<div class="card-body">
+<p>Tr&#432;&#7899;c khi l&#7853;p PFI, valuer c&#7847;n hi&#7875;u r&#245; 4 v&#7845;n &#273;&#7873; l&#7899;n:</p>
+
+<div class="table-wrap"><table>
+<tr><th>Y&#7871;u t&#7889;</th><th>Chi ti&#7871;t</th><th>L&#432;u &#253;</th></tr>
+<tr><td><strong style="color:#fbbf24">1. Valuation Approach</strong></td><td>Market approach &#8594; earnings focus, ng&#7855;n h&#417;n<br>Income approach (DCF) &#8594; cash flow focus, d&#224;i h&#417;n</td><td>Approach quy&#7871;t &#273;&#7883;nh d&#7921; b&#225;o c&#225;i g&#236; v&#224; bao l&#226;u</td></tr>
+<tr><td><strong style="color:#fbbf24">2. Lo&#7841;i CF d&#7921; b&#225;o</strong></td><td>&#8226; Annual / Quarterly / Semi-annual<br>&#8226; Nominal (c&#243; inflation) / Real<br>&#8226; FCFF / FCFE</td><td>Nominal CF &#8594; nominal discount rate<br>Real CF &#8594; real discount rate<br>FCFE c&#7847;n d&#7921; b&#225;o th&#234;m debt items</td></tr>
+<tr><td><strong style="color:#fbbf24">3. Th&#7901;i gian d&#7921; b&#225;o</strong></td><td>Market: ng&#7855;n h&#417;n<br>Income (DCF): explicit + terminal period<br>Th&#7921;c t&#7871;: th&#432;&#7901;ng 5 n&#259;m explicit</td><td>N&#234;n bao g&#7891;m &#8805;1 full business cycle<br>Kh&#243; d&#7921; b&#225;o &#273;&#225;ng tin c&#7853;y &gt;10 n&#259;m</td></tr>
+<tr><td><strong style="color:#fbbf24">4. K&#7883;ch b&#7843;n</strong></td><td>Base case / Optimistic / Pessimistic (Worst case / Best case)</td><td>D&#249;ng khi th&#7883; tr&#432;&#7901;ng b&#7845;t &#273;&#7883;nh cao</td></tr>
+</table></div>
+
+<div class="warn-box"><strong>&#128161; Matching Rule (l&#7841;i xu&#7845;t hi&#7879;n!):</strong><br>
+Nominal CF &#8596; Nominal discount rate<br>
+Real CF &#8596; Real discount rate<br>
+FCFF &#8596; WACC | FCFE &#8596; Cost of Equity<br>
+Lu&#244;n gh&#233;p &#273;&#244;i &#273;&#250;ng lo&#7841;i!</div>
+
+<div class="def-box"><strong>Terminal Value:</strong> Gi&#225; tr&#7883; c&#242;n l&#7841;i sau giai &#273;o&#7841;n d&#7921; b&#225;o r&#245; r&#224;ng. T&#237;nh b&#7857;ng perpetuity growth ho&#7863;c exit multiple. Gi&#7843; &#273;&#7883;nh c&#244;ng ty &#273;&#7841;t tr&#7841;ng th&#225;i t&#259;ng tr&#432;&#7903;ng &#7893;n &#273;&#7883;nh cu&#7889;i k&#7923; explicit.</div>
+</div>
+</div>
+</div>
+
+<!-- TAB 2: BUILD MODEL -->
+<div class="tab-content" id="tab2">
+<h2 style="color:#c4b5fd;margin-bottom:14px">&#128736;&#65039; 6.3-6.4-6.5 X&#226;y d&#7921;ng &amp; Ki&#7875;m tra Model</h2>
+
+<div class="card" onclick="toggleC(this)">
+<div class="card-header">
+<span class="card-title">&#128295; 5 B&#432;&#7899;c x&#226;y Model (6.3)</span>
+<span class="card-badge badge-model">5 Steps</span>
+<span class="card-arrow">&#9654;</span>
+</div>
+<div class="card-body">
+<div class="flow-diagram">
+<div class="flow-step" style="border-color:#f59e0b"><strong style="color:#fbbf24">Step 1: CH&#7884;N Approach</strong><br><span style="font-size:0.85em">Income (DCF), Market (Comparable), Asset-based (Summation)</span></div>
+<div class="flow-arrow">&#8595;</div>
+<div class="flow-step" style="border-color:#38bdf8"><strong style="color:#7dd3fc">Step 2: THU th&#7853;p Data</strong><br><span style="font-size:0.85em">BCTC, industry reports, macro data, management meetings<br>IVS 104: maximize observable data, ensure fitness for use</span></div>
+<div class="flow-arrow">&#8595;</div>
+<div class="flow-step" style="border-color:#8b5cf6"><strong style="color:#c4b5fd">Step 3: &#272;&#7862;T Gi&#7843; &#273;&#7883;nh &amp; D&#7921; b&#225;o</strong><br><span style="font-size:0.85em">Revenue, OpEx, WC, Capex + Valuation parameters<br>Base year &#8594; project forward. Must be reasonable &amp; defensible</span></div>
+<div class="flow-arrow">&#8595;</div>
+<div class="flow-step" style="border-color:#22c55e"><strong style="color:#6ee7b7">Step 4: X&#194;Y Model (Excel)</strong><br><span style="font-size:0.85em">4 tabs: Historical | Assumptions | Forecast | Valuation<br>4 attributes: MINH b&#7841;ch | H&#7906;P l&#253; | NH&#7844;T qu&#225;n | LINH ho&#7841;t</span></div>
+<div class="flow-arrow">&#8595;</div>
+<div class="flow-step" style="border-color:#ef4444"><strong style="color:#fca5a5">Step 5: KI&#7874;M tra &amp; B&#225;o c&#225;o</strong><br><span style="font-size:0.85em">Cross-check (secondary approach), Sensitivity analysis<br>Quality checks, Document all assumptions, Final report</span></div>
+</div>
+</div>
+</div>
+
+<div class="card" onclick="toggleC(this)">
+<div class="card-header">
+<span class="card-title">&#128200; Step 3 chi ti&#7871;t: 4 nh&#243;m gi&#7843; &#273;&#7883;nh kinh doanh</span>
+<span class="card-badge badge-model">Assumptions</span>
+<span class="card-arrow">&#9654;</span>
+</div>
+<div class="card-body">
+<div class="table-wrap"><table>
+<tr><th>Nh&#243;m</th><th>N&#7897;i dung</th><th>L&#432;u &#253;</th></tr>
+<tr><td><strong style="color:#6ee7b7">Revenue</strong></td><td>Growth rate, pricing, volume, capacity constraints, tech changes, competition</td><td>Key driver - ph&#7843;n &#225;nh stage c&#7911;a business<br>Ph&#7843;i h&#7907;p l&#253; so v&#7899;i l&#7883;ch s&#7917;</td></tr>
+<tr><td><strong style="color:#6ee7b7">Operating Expenses</strong></td><td>COGS (volume &times; unit cost), fixed vs variable costs, overheads, supply chain</td><td>Bottom-up (vol &times; cost) ho&#7863;c % of sales<br>Fixed costs t&#259;ng theo b&#7853;c (stepwise)</td></tr>
+<tr><td><strong style="color:#6ee7b7">Working Capital</strong></td><td>Receivables + Inventories - Payables = Net WC<br>Th&#432;&#7901;ng % of revenue</td><td>&#8593; Net WC = cash outflow<br>&#8595; Net WC = cash inflow</td></tr>
+<tr><td><strong style="color:#6ee7b7">Capital Expenditure</strong></td><td>Maintenance capex (thay th&#7871;, s&#7917;a ch&#7919;a)<br>Growth capex (m&#7903; r&#7897;ng, c&#244;ng ngh&#7879;)</td><td>Th&#432;&#7901;ng % of revenue<br>Hai lo&#7841;i kh&#225;c nhau v&#7873; m&#7909;c &#273;&#237;ch</td></tr>
+</table></div>
+
+<div class="def-box"><strong>Valuation Parameters (ngo&#224;i business assumptions):</strong><br>
+&#8226; Explicit forecast period (th&#432;&#7901;ng 5 n&#259;m)<br>
+&#8226; Terminal growth rate (th&#432;&#7901;ng = long-term GDP growth)<br>
+&#8226; Discount rate (WACC ho&#7863;c CoE)<br>
+&#8226; Assumptions must be: <span class="keyword">Reasonable</span> <span class="keyword">Consistent</span> <span class="keyword">Supported by evidence</span> <span class="keyword">Defensible</span></div>
+
+<div class="warn-box"><strong>&#128161; 3 quy t&#7855;c gi&#7843; &#273;&#7883;nh:</strong><br>
+1. D&#249;ng d&#7919; li&#7879;u l&#7883;ch s&#7917; &#273;&#7875; x&#225;c &#273;&#7883;nh xu h&#432;&#7899;ng v&#224; m&#7889;i quan h&#7879;<br>
+2. &#272;&#7843;m b&#7843;o gi&#7843; &#273;&#7883;nh nh&#7845;t qu&#225;n v&#224; t&#237;ch h&#7907;p v&#7899;i nhau<br>
+3. Gi&#7843; &#273;&#7883;nh ph&#7843;i ph&#7843;n &#225;nh th&#7921;c tr&#7841;ng v&#224; r&#7911;i ro c&#7911;a doanh nghi&#7879;p</div>
+</div>
+</div>
+
+<div class="card" onclick="toggleC(this)">
+<div class="card-header">
+<span class="card-title">&#128203; Step 4: C&#7845;u tr&#250;c Model (6.4)</span>
+<span class="card-badge badge-model">Model</span>
+<span class="card-arrow">&#9654;</span>
+</div>
+<div class="card-body">
+<h4 style="color:#fbbf24;margin-bottom:10px">4 Tab c&#7911;a Model Excel</h4>
+<div class="grid-2">
+<div class="grid-box" style="border-color:#38bdf8">
+<h4 style="color:#7dd3fc">&#128196; Historical Tab</h4>
+<p style="font-size:0.88em">BCTC l&#7883;ch s&#7917; &#273;&#7875; ph&#226;n t&#237;ch trend v&#224; ratio</p>
+</div>
+<div class="grid-box" style="border-color:#f59e0b">
+<h4 style="color:#fbbf24">&#128196; Assumptions Tab</h4>
+<p style="font-size:0.88em">Ghi nh&#7853;n c&#225;c gi&#7843; &#273;&#7883;nh v&#224; c&#417; s&#7903;</p>
+</div>
+<div class="grid-box" style="border-color:#8b5cf6">
+<h4 style="color:#c4b5fd">&#128196; Forecast Tab</h4>
+<p style="font-size:0.88em">BCTC d&#7921; b&#225;o (P&amp;L, BS, CF)</p>
+</div>
+<div class="grid-box" style="border-color:#22c55e">
+<h4 style="color:#6ee7b7">&#128196; Valuation Tab</h4>
+<p style="font-size:0.88em">FCF, DCF, gi&#225; tr&#7883;, sensitivity</p>
+</div>
+</div>
+
+<h4 style="color:#fbbf24;margin:14px 0 10px">4 Thu&#7897;c t&#237;nh b&#7855;t bu&#7897;c (MINH - H&#7906;P - NH&#7844;T - LINH)</h4>
+<div class="table-wrap"><table>
+<tr><th>Thu&#7897;c t&#237;nh</th><th>Ti&#7871;ng Anh</th><th>&#221; ngh&#297;a</th></tr>
+<tr><td><strong style="color:#6ee7b7">MINH b&#7841;ch</strong></td><td>Transparency</td><td>R&#245; r&#224;ng c&#225;ch inputs tr&#7903; th&#224;nh outputs</td></tr>
+<tr><td><strong style="color:#6ee7b7">H&#7906;P l&#253;</strong></td><td>Logical integrity</td><td>M&#7889;i quan h&#7879; revenue-opex-capex-CF ph&#7843;i logic</td></tr>
+<tr><td><strong style="color:#6ee7b7">NH&#7844;T qu&#225;n</strong></td><td>Consistency</td><td>Gi&#7843; &#273;&#7883;nh &#273;&#7891;ng b&#7897; gi&#7919;a c&#225;c BCTC (e.g. capex &#8596; depreciation)</td></tr>
+<tr><td><strong style="color:#6ee7b7">LINH ho&#7841;t</strong></td><td>Flexibility</td><td>D&#7877; d&#224;ng ch&#7841;y sensitivity v&#224; scenario analysis</td></tr>
+</table></div>
+
+<div class="def-box"><strong>Quality Checks:</strong> Internal consistency, mathematical integrity, reasonableness. Cross-check k&#7871;t qu&#7843; primary approach (e.g. DCF) b&#7857;ng secondary approach (e.g. market multiples).</div>
+
+<div class="def-box"><strong>L&#432;u &#253; v&#7873; Market approach:</strong> Khi d&#249;ng market approach, forecast balance sheet v&#224; cash flow statement c&#243; th&#7875; KH&#212;NG c&#7847;n thi&#7871;t. Ch&#7881; c&#7847;n forecast income statement (&#273;&#7875; c&#243; earnings base cho multiples).</div>
+</div>
+</div>
+
+<div class="card" onclick="toggleC(this)">
+<div class="card-header">
+<span class="card-title">&#127754; 6.5 X&#7917; l&#253; b&#7845;t &#273;&#7883;nh (Uncertainty)</span>
+<span class="card-badge badge-test">Uncertainty</span>
+<span class="card-arrow">&#9654;</span>
+</div>
+<div class="card-body">
+<h4 style="color:#fbbf24;margin-bottom:10px">3 lo&#7841;i b&#7845;t &#273;&#7883;nh</h4>
+<div class="table-wrap"><table>
+<tr><th>Lo&#7841;i</th><th>M&#244; t&#7843;</th><th>V&#237; d&#7909;</th></tr>
+<tr><td><strong style="color:#fca5a5">Forecast Uncertainty</strong></td><td>T&#432;&#417;ng lai b&#7845;t &#273;&#7883;nh, gi&#7843; &#273;&#7883;nh c&#243; th&#7875; sai</td><td>Macro shocks, tech disruption, regulation</td></tr>
+<tr><td><strong style="color:#fca5a5">Data Uncertainty</strong></td><td>D&#7919; li&#7879;u c&#243; nh&#432;ng kh&#244;ng &#273;&#225;ng tin c&#7853;y</td><td>Management projections qu&#225; l&#7841;c quan, biased</td></tr>
+<tr><td><strong style="color:#fca5a5">Data Availability</strong></td><td>D&#7919; li&#7879;u thi&#7871;u ho&#7863;c kh&#244;ng c&#243;</td><td>Start-up, COVID period, private company</td></tr>
+</table></div>
+
+<h4 style="color:#fbbf24;margin:14px 0 10px">C&#244;ng c&#7909; qu&#7843;n l&#253; b&#7845;t &#273;&#7883;nh</h4>
+<div class="grid-2">
+<div class="grid-box" style="border-color:#f59e0b">
+<h4 style="color:#fbbf24">&#128200; Sensitivity Analysis</h4>
+<p style="font-size:0.88em">Thay &#273;&#7893;i 1 bi&#7871;n t&#7841;i 1 th&#7901;i &#273;i&#7875;m &#273;&#7875; xem t&#225;c &#273;&#7897;ng l&#234;n gi&#225; tr&#7883;. V&#237; d&#7909;: discount rate &plusmn;1%, growth &plusmn;0.5%</p>
+</div>
+<div class="grid-box" style="border-color:#8b5cf6">
+<h4 style="color:#c4b5fd">&#127922; Scenario Analysis</h4>
+<p style="font-size:0.88em">Nhi&#7873;u bi&#7871;n thay &#273;&#7893;i c&#249;ng l&#250;c theo k&#7883;ch b&#7843;n. Base / Optimistic / Pessimistic. C&#243; th&#7875; cross-validate khi data incomplete.</p>
+</div>
+</div>
+
+<div class="warn-box"><strong>&#9888;&#65039; Khi b&#7845;t &#273;&#7883;nh qu&#225; cao:</strong> Valuer c&#243; th&#7875; quy&#7871;t &#273;&#7883;nh KH&#212;NG s&#7917; d&#7909;ng approach &#273;&#243;. V&#237; d&#7909;: COVID &#8594; management kh&#244;ng th&#7875; cung c&#7845;p PFI &#8594; DCF kh&#244;ng &#225;p d&#7909;ng &#273;&#432;&#7907;c &#8594; ph&#7843;i d&#249;ng alternative approaches. Ph&#7843;i document limitations trong b&#225;o c&#225;o.</div>
+</div>
+</div>
+</div>
+
+<!-- TAB 3: CASE STUDY -->
+<div class="tab-content" id="tab3">
+<h2 style="color:#f9a8d4;margin-bottom:14px">&#127981; V&#237; d&#7909; minh h&#7885;a: C&#244;ng ty Z (ZX Retail)</h2>
+
+<div class="def-box"><strong>B&#7889;i c&#7843;nh:</strong> Company A (Asian retail) mu&#7889;n mua 100% equity c&#7911;a Company Z (ZX brand, lifestyle retail, 20+ n&#259;m, Singapore). Valuation date: 31 Dec 20X5. Basis: Market value. Premise: Going concern, standalone.</div>
+
+<div class="card" onclick="toggleC(this)">
+<div class="card-header">
+<span class="card-title">&#128203; Scope of Work &amp; Approach</span>
+<span class="card-badge badge-case">Step 1</span>
+<span class="card-arrow">&#9654;</span>
+</div>
+<div class="card-body">
+<div class="table-wrap"><table>
+<tr><td><strong>Basis of value</strong></td><td>Market value</td></tr>
+<tr><td><strong>Premise</strong></td><td>Going concern, standalone</td></tr>
+<tr><td><strong>Valuation date</strong></td><td>31 December 20X5</td></tr>
+<tr><td><strong>Subject</strong></td><td>Company Z (100% equity interest)</td></tr>
+<tr><td><strong>User</strong></td><td>Company A</td></tr>
+<tr><td><strong>Purpose</strong></td><td>Prospective acquisition (internal decision-making)</td></tr>
+<tr><td><strong>Primary approach</strong></td><td>Income approach / DCF method</td></tr>
+<tr><td><strong>Secondary approach</strong></td><td>Market approach (Guideline publicly traded comparable + Comparable transactions)</td></tr>
+<tr><td><strong>Reporting</strong></td><td>Comprehensive narrative report per IVS</td></tr>
+</table></div>
+</div>
+</div>
+
+<div class="card" onclick="toggleC(this)">
+<div class="card-header">
+<span class="card-title">&#128200; Key Assumptions (Company Z)</span>
+<span class="card-badge badge-case">Step 3</span>
+<span class="card-arrow">&#9654;</span>
+</div>
+<div class="card-body">
+<div class="table-wrap"><table>
+<tr><th>Gi&#7843; &#273;&#7883;nh</th><th>Gi&#225; tr&#7883;</th><th>C&#417; s&#7903;</th></tr>
+<tr><td><strong>Revenue growth (Y1-2)</strong></td><td>Cao h&#417;n l&#7883;ch s&#7917;</td><td>Flagship store renovation &#8594; h&#250;t kh&#225;ch</td></tr>
+<tr><td><strong>Revenue growth (Y3+)</strong></td><td>~4.0%</td><td>V&#7873; m&#7913;c historical b&#236;nh th&#432;&#7901;ng</td></tr>
+<tr><td><strong>Terminal growth</strong></td><td>2.5%</td><td>= Long-term GDP growth c&#7911;a th&#7883; tr&#432;&#7901;ng</td></tr>
+<tr><td><strong>Gross Profit margin</strong></td><td>~70%</td><td>&#7892;n &#273;&#7883;nh theo l&#7883;ch s&#7917;</td></tr>
+<tr><td><strong>EBITDA margin</strong></td><td>~20%</td><td>&#7892;n &#273;&#7883;nh theo l&#7883;ch s&#7917;</td></tr>
+<tr><td><strong>Net Working Capital</strong></td><td>10% of revenue</td><td>Historical WC requirements</td></tr>
+<tr><td><strong>Capital Expenditure</strong></td><td>15% of revenue</td><td>Historical trend (maintenance + growth)</td></tr>
+<tr><td><strong>Explicit forecast period</strong></td><td>5 n&#259;m</td><td>Th&#7921;c t&#7871; ph&#7893; bi&#7871;n</td></tr>
+<tr><td><strong>Discount rate</strong></td><td>11.0%</td><td>Ph&#7843;n &#225;nh r&#7911;i ro c&#7911;a &#273;&#7847;u t&#432;</td></tr>
+</table></div>
+
+<div class="insight-box">
+<h4>&#128161; Key value driver c&#7911;a retail business</h4>
+<p style="font-size:0.9em">S&#7889; c&#7917;a h&#224;ng m&#7899;i m&#7903; = driver ch&#237;nh c&#7911;a revenue growth &#8594; &#7843;nh h&#432;&#7903;ng l&#234;n t&#7845;t c&#7843;: doanh thu, chi ph&#237; v&#7853;n h&#224;nh, capex. &#272;&#226;y l&#224; &#273;&#7863;c th&#249; c&#7911;a ng&#224;nh retail.</p>
+</div>
+</div>
+</div>
+
+<div class="card" onclick="toggleC(this)">
+<div class="card-header">
+<span class="card-title">&#9989; K&#7871;t qu&#7843; v&#224; Cross-check</span>
+<span class="card-badge badge-case">Step 5</span>
+<span class="card-arrow">&#9654;</span>
+</div>
+<div class="card-body">
+<div class="table-wrap"><table>
+<tr><th>Ph&#432;&#417;ng ph&#225;p</th><th>K&#7871;t qu&#7843;</th></tr>
+<tr><td><strong style="color:#6ee7b7">DCF (Primary)</strong></td><td>100% equity value: $100M - $120M</td></tr>
+<tr><td><strong style="color:#7dd3fc">Implied EV/EBITDA</strong></td><td>7.0x - 8.0x</td></tr>
+<tr><td><strong style="color:#94a3b8">Comparable companies</strong></td><td>EV/EBITDA: 6.5x - 9.0x</td></tr>
+<tr><td><strong style="color:#94a3b8">Comparable transactions</strong></td><td>EV/EBITDA: 7.0x - 8.5x</td></tr>
+</table></div>
+<div class="def-box"><strong>&#9989; Cross-check passed:</strong> DCF implied EV/EBITDA (7.0-8.0x) n&#7857;m trong range c&#7911;a comparable companies (6.5-9.0x) v&#224; comparable transactions (7.0-8.5x) &#8594; k&#7871;t qu&#7843; h&#7907;p l&#253;.</div>
+</div>
+</div>
+</div>
+
+<!-- TAB 4: COMPARISONS -->
+<div class="tab-content" id="tab4">
+<h2 style="color:#38bdf8;margin-bottom:14px">&#128260; So s&#225;nh c&#225;c kh&#225;i ni&#7879;m</h2>
+
+<div class="table-wrap"><table>
+<tr><th>Ti&#234;u ch&#237;</th><th style="color:#6ee7b7">Market Approach PFI</th><th style="color:#c4b5fd">Income Approach (DCF) PFI</th></tr>
+<tr><td>Focus d&#7921; b&#225;o</td><td>Earnings (P&amp;L focus)</td><td>Cash flows (CF focus)</td></tr>
+<tr><td>Th&#7901;i gian</td><td>Ng&#7855;n h&#417;n</td><td>D&#224;i h&#417;n (explicit + terminal)</td></tr>
+<tr><td>BCTC c&#7847;n d&#7921; b&#225;o</td><td><strong>Ch&#7881; Income Statement</strong></td><td>P&amp;L + BS + CF (&#273;&#7847;y &#273;&#7911;)</td></tr>
+<tr><td>Valuation tool</td><td>Multiples (P/E, EV/EBITDA)</td><td>Discount rate (WACC, CoE)</td></tr>
+<tr><td>Terminal value?</td><td>Kh&#244;ng</td><td>C&#243; (perpetuity growth / exit multiple)</td></tr>
+</table></div>
+
+<div class="table-wrap" style="margin-top:20px"><table>
+<tr><th>Ti&#234;u ch&#237;</th><th style="color:#6ee7b7">Sensitivity Analysis</th><th style="color:#c4b5fd">Scenario Analysis</th></tr>
+<tr><td>S&#7889; bi&#7871;n thay &#273;&#7893;i</td><td>1 bi&#7871;n t&#7841;i 1 th&#7901;i &#273;i&#7875;m</td><td>Nhi&#7873;u bi&#7871;n c&#249;ng l&#250;c</td></tr>
+<tr><td>M&#7909;c &#273;&#237;ch</td><td>X&#225;c &#273;&#7883;nh key driver &#7843;nh h&#432;&#7903;ng nh&#7845;t</td><td>&#272;&#225;nh gi&#225; range c&#7911;a k&#7871;t qu&#7843;</td></tr>
+<tr><td>Output</td><td>Sensitivity table (e.g. WACC vs growth)</td><td>Base / Best / Worst case values</td></tr>
+<tr><td>Khi n&#224;o d&#249;ng</td><td>Lu&#244;n lu&#244;n (standard practice)</td><td>Khi b&#7845;t &#273;&#7883;nh cao, data incomplete</td></tr>
+</table></div>
+
+<div class="table-wrap" style="margin-top:20px"><table>
+<tr><th>Ti&#234;u ch&#237;</th><th style="color:#6ee7b7">Maintenance Capex</th><th style="color:#c4b5fd">Growth Capex</th></tr>
+<tr><td>M&#7909;c &#273;&#237;ch</td><td>Duy tr&#236; t&#224;i s&#7843;n hi&#7879;n t&#7841;i</td><td>M&#7903; r&#7897;ng, ph&#225;t tri&#7875;n</td></tr>
+<tr><td>V&#237; d&#7909;</td><td>S&#7917;a c&#7917;a h&#224;ng, thay thi&#7871;t b&#7883;</td><td>M&#7903; c&#7917;a h&#224;ng m&#7899;i, &#273;&#7847;u t&#432; c&#244;ng ngh&#7879;</td></tr>
+<tr><td>Thi&#7871;u &#273;i</td><td>T&#224;i s&#7843;n xu&#7889;ng c&#7845;p, m&#7845;t c&#7841;nh tranh</td><td>Kh&#244;ng t&#259;ng tr&#432;&#7903;ng</td></tr>
+</table></div>
+
+<div class="table-wrap" style="margin-top:20px"><table>
+<tr><th>Lo&#7841;i b&#7845;t &#273;&#7883;nh</th><th>V&#7845;n &#273;&#7873;</th><th>Gi&#7843;i ph&#225;p</th></tr>
+<tr><td><strong style="color:#fca5a5">Forecast</strong></td><td>T&#432;&#417;ng lai kh&#244;ng ch&#7855;c ch&#7855;n</td><td>Sensitivity + Scenario analysis</td></tr>
+<tr><td><strong style="color:#fca5a5">Data</strong></td><td>D&#7919; li&#7879;u kh&#244;ng &#273;&#225;ng tin c&#7853;y</td><td>Independent verification, professional scepticism</td></tr>
+<tr><td><strong style="color:#fca5a5">Data Availability</strong></td><td>D&#7919; li&#7879;u thi&#7871;u/kh&#244;ng c&#243;</td><td>Proxies, estimates, multiple approaches, ho&#7863;c refrain from approach</td></tr>
+</table></div>
+</div>
+
+<!-- TAB 5: EXAM TRAPS -->
+<div class="tab-content" id="tab5">
+<h2 style="color:#f59e0b;margin-bottom:14px">&#9888;&#65039; B&#7851;y thi t&#7915; Review Questions</h2>
+
+<div class="card" onclick="toggleC(this)">
+<div class="card-header">
+<span class="card-title">&#128163; B&#7851;y 1: Ch&#7881; c&#7847;n &#273;&#225;nh gi&#225; v&#224; &#273;i&#7873;u tra?</span>
+<span class="card-badge badge-test">RQ1</span>
+<span class="card-arrow">&#9654;</span>
+</div>
+<div class="card-body">
+<div class="warn-box"><strong>&#10060; SAI:</strong> "Ch&#7881; c&#7847;n (I) evaluate management info v&#224; (II) investigate inputs"</div>
+<div class="def-box"><strong>&#9989; &#272;&#218;NG:</strong> C&#7843; 3 &#273;&#7873;u &#273;&#250;ng: (I) &#272;&#225;nh gi&#225; th&#244;ng tin t&#7915; management, (II) &#272;i&#7873;u tra/ki&#7875;m ch&#7913;ng inputs quan tr&#7885;ng, (III) X&#225;c &#273;&#7883;nh m&#7913;c &#273;&#7897; b&#7857;ng ch&#7913;ng c&#7847;n thi&#7871;t. <span class="keyword">Professional judgement</span> c&#7847;n trong t&#7845;t c&#7843;.</div>
+</div>
+</div>
+
+<div class="card" onclick="toggleC(this)">
+<div class="card-header">
+<span class="card-title">&#128163; B&#7851;y 2: Kh&#244;ng c&#7847;n gi&#7919; records ho&#7863;c xem x&#233;t risks?</span>
+<span class="card-badge badge-test">RQ2</span>
+<span class="card-arrow">&#9654;</span>
+</div>
+<div class="card-body">
+<div class="warn-box"><strong>&#10060; SAI:</strong> "Ch&#7881; c&#7847;n 2 trong 3 y&#234;u c&#7847;u"</div>
+<div class="def-box"><strong>&#9989; &#272;&#218;NG:</strong> C&#7843; 3: (I) Keep records c&#7911;a model selection/creation, (II) Outputs ph&#7843;i consistent v&#7899;i basis of value v&#224; scope, (III) Consider key risks c&#7911;a assumptions. <span class="keyword">T&#7845;t c&#7843; &#273;&#7873;u b&#7855;t bu&#7897;c</span>.</div>
+</div>
+</div>
+
+<div class="card" onclick="toggleC(this)">
+<div class="card-header">
+<span class="card-title">&#128163; B&#7851;y 3: Market approach c&#7847;n d&#7921; b&#225;o c&#7843; BS v&#224; CF?</span>
+<span class="card-badge badge-test">RQ3</span>
+<span class="card-arrow">&#9654;</span>
+</div>
+<div class="card-body">
+<div class="warn-box"><strong>&#10060; SAI:</strong> "Market approach c&#7847;n d&#7921; b&#225;o income + cash flow + balance sheet"</div>
+<div class="def-box"><strong>&#9989; &#272;&#218;NG:</strong> Khi d&#249;ng market approach, ch&#7881; c&#7847;n d&#7921; b&#225;o <span class="keyword">Income Statement</span> (&#273;&#7875; c&#243; earnings base cho multiples). Cash flow statement v&#224; balance sheet c&#243; th&#7875; KH&#212;NG c&#7847;n thi&#7871;t. Kh&#225;c v&#7899;i DCF c&#7847;n d&#7921; b&#225;o &#273;&#7847;y &#273;&#7911;.</div>
+</div>
+</div>
+
+<div class="card" onclick="toggleC(this)">
+<div class="card-header">
+<span class="card-title">&#128163; B&#7851;y 4: Kh&#244;ng c&#7847;n hi&#7875;u approach khi x&#226;y model?</span>
+<span class="card-badge badge-test">RQ4</span>
+<span class="card-arrow">&#9654;</span>
+</div>
+<div class="card-body">
+<div class="warn-box"><strong>&#10060; SAI:</strong> "Understanding the valuation approach to be adopted is not a necessary consideration"</div>
+<div class="def-box"><strong>&#9989; &#272;&#218;NG:</strong> Valuer PH&#7842;I hi&#7875;u r&#245; approach s&#7869; d&#249;ng TR&#431;&#7898;C khi x&#226;y model. V&#236; approach quy&#7871;t &#273;&#7883;nh: lo&#7841;i gi&#7843; &#273;&#7883;nh c&#7847;n l&#224;m, parameters c&#7847;n t&#237;nh (discount rates, multiples, asset values), v&#224; c&#7845;u tr&#250;c model.</div>
+</div>
+</div>
+
+<div class="card" onclick="toggleC(this)">
+<div class="card-header">
+<span class="card-title">&#128163; B&#7851;y 5: Ch&#7881; c&#243; Sensitivity, kh&#244;ng c&#243; Scenario?</span>
+<span class="card-badge badge-test">RQ5</span>
+<span class="card-arrow">&#9654;</span>
+</div>
+<div class="card-body">
+<div class="warn-box"><strong>&#10060; SAI:</strong> "Only sensitivity analysis, and not scenario analysis, can be modelled by valuers"</div>
+<div class="def-box"><strong>&#9989; &#272;&#218;NG:</strong> C&#7842; HAI &#273;&#7873;u c&#243; th&#7875; d&#249;ng: <span class="keyword">Sensitivity analysis</span> (thay &#273;&#7893;i 1 bi&#7871;n) V&#192; <span class="keyword">Scenario analysis</span> (nhi&#7873;u bi&#7871;n, base/optimistic/pessimistic). Kh&#244;ng c&#243; gi&#7899;i h&#7841;n n&#224;o.</div>
+</div>
+</div>
+
+<div class="insight-box">
+<h4>&#128161; T&#7893;ng h&#7907;p 5 b&#7851;y ch&#432;&#417;ng 6</h4>
+<p style="font-size:0.9em">1. C&#7843; 3 vai tr&#242; valuer &#273;&#7873;u c&#7847;n (evaluate + investigate + determine evidence)<br>
+2. C&#7843; 3 y&#234;u c&#7847;u model &#273;&#7873;u b&#7855;t bu&#7897;c (records + consistency + risk consideration)<br>
+3. Market approach ch&#7881; c&#7847;n <strong>Income Statement</strong> (kh&#244;ng c&#7847;n BS, CF)<br>
+4. PH&#7842;I hi&#7875;u approach <strong>TR&#431;&#7898;C</strong> khi x&#226;y model<br>
+5. C&#7843; Sensitivity V&#192; Scenario analysis &#273;&#7873;u &#273;&#432;&#7907;c d&#249;ng</p>
+</div>
+</div>
+
+<!-- TAB 6: QUIZ -->
+<div class="tab-content" id="tab6">
+<h2 style="color:#7dd3fc;margin-bottom:14px">&#128221; Quiz - Chapter 6</h2>
+<div id="quizArea"></div>
+<button class="quiz-btn" onclick="submitQuiz()" id="submitBtn" style="display:none">N&#7897;p b&#224;i</button>
+<div class="score-box" id="scoreBox"><h3 id="scoreText"></h3><p id="scoreDetail" style="color:#cbd5e1;margin-top:8px"></p></div>
+<button class="quiz-btn" onclick="startQuiz()">B&#7855;t &#273;&#7847;u Quiz</button>
+</div>
+
+<script>
+function showTab(n){var tabs=document.querySelectorAll('.tab-content');var btns=document.querySelectorAll('.tabs button');for(var i=0;i<tabs.length;i++){tabs[i].className='tab-content';btns[i].className='';}document.getElementById('tab'+n).className='tab-content active';btns[n].className='active';}
+function toggleC(el){var body=el.querySelector('.card-body');var arrow=el.querySelector('.card-arrow');if(body.classList.contains('show')){body.classList.remove('show');arrow.classList.remove('open');}else{body.classList.add('show');arrow.classList.add('open');}}
+
+var quizData=[
+{q:"PFI (Prospective Financial Information) is commonly referred to as:",opts:["Historical financial data","Financial forecasts","Audit reports"],ai:1,explain:"PFI = financial forecasts about future revenues, costs, profits, and cash flows."},
+{q:"When performing valuation, the valuer needs to: (I) evaluate management info, (II) investigate inputs, (III) determine evidence sufficiency. Which are true?",opts:["(I) and (II) only","(II) and (III) only","(I), (II) and (III)"],ai:2,explain:"All three are true. Professional judgement is required in all situations (Review Q1)."},
+{q:"When using or creating a valuation model, the valuer must: (I) keep records, (II) ensure outputs consistent with scope, (III) consider key risks. Which are true?",opts:["(I) and (II) only","(I) and (III) only","(I), (II) and (III)"],ai:2,explain:"All three statements are true (Review Q2)."},
+{q:"When using market approach to perform valuation, which financial statements must always be forecasted?",opts:["Income statement only","Income and cash flow statements","Income, cash flow and balance sheet"],ai:0,explain:"Market approach only requires forecasting the income statement for earnings multiples. BS and CF may not be necessary (Review Q3)."},
+{q:"Which is FALSE about building a financial model for valuation?",opts:["Understanding key value drivers is critical","Understanding the valuation approach is NOT a necessary consideration","Understanding the nature and life cycle of the business is important"],ai:1,explain:"Understanding the approach IS necessary - it determines what assumptions and parameters to build into the model (Review Q4)."},
+{q:"Which is FALSE about analysis tools for managing uncertainty?",opts:["Forecasts must be reliable and assumptions reasonable","Valuers must ensure mathematical accuracy","Only sensitivity analysis (not scenario analysis) can be modelled"],ai:2,explain:"BOTH sensitivity AND scenario analysis can be modelled by valuers (Review Q5)."},
+{q:"The 4 key attributes of a well-constructed financial model are:",opts:["Speed, Accuracy, Detail, Length","Transparency, Logical integrity, Consistency, Flexibility","Simplicity, Complexity, Accuracy, Speed"],ai:1,explain:"TLCF: Transparency (clear inputs→outputs), Logical integrity, Consistency across statements, Flexibility for sensitivity/scenarios."},
+{q:"The financial model for DCF method typically comprises which tabs?",opts:["Only Forecast and Valuation tabs","Historical, Assumptions, Forecast, Valuation tabs","Revenue, Expense, Balance Sheet tabs"],ai:1,explain:"4 tabs: Historical (trends/ratios), Assumptions (documented), Forecast (projected statements), Valuation (DCF/sensitivity)."},
+{q:"In the Company Z case, the primary valuation approach was:",opts:["Market approach","Income approach (DCF method)","Cost (asset-based) approach"],ai:1,explain:"DCF was the primary approach. Market approach (comparable companies + transactions) was used as cross-check."},
+{q:"Terminal value is based on the assumption that:",opts:["The company will be liquidated","The company has achieved a steady state of growth at the end of the explicit forecast period","Cash flows will stop after the explicit period"],ai:1,explain:"Terminal value assumes the company continues as going concern with steady-state growth after the explicit forecast period ends."},
+{q:"In the Company Z case, the terminal growth rate of 2.5% was based on:",opts:["Company Z's historical revenue growth","Long-term GDP growth rate of the markets Company Z operates in","Industry average growth rate"],ai:1,explain:"Terminal growth rate = long-term GDP growth rate. It should not exceed the economy's long-term growth."},
+{q:"When forecasting assumptions, the base year is typically:",opts:["The first year of the forecast","The most recent historical year","The terminal year"],ai:1,explain:"Base year = most recent historical year. Projections start from base year and project forward."},
+{q:"Data availability uncertainty arises when:",opts:["The available data is unreliable","The required data is missing, incomplete, or unavailable","Future conditions are unpredictable"],ai:1,explain:"Data availability = data is MISSING. Data uncertainty = data EXISTS but is unreliable. Forecast uncertainty = future is unpredictable."},
+{q:"The valuer's role regarding management's PFI includes all EXCEPT:",opts:["Identifying potential biases or optimism","Blindly accepting management projections","Comparing forecasts with historical performance"],ai:1,explain:"Valuer must exercise PROFESSIONAL SCEPTICISM, NOT blindly accept management info without independent verification."},
+{q:"Cross-checking in the Company Z case involved:",opts:["Re-running the DCF with different assumptions","Comparing DCF results with market approach multiples (comparable companies and transactions)","Asking management to verify the model"],ai:1,explain:"Cross-check = comparing primary approach (DCF) result with secondary approach (market multiples). DCF implied EV/EBITDA 7-8x vs comparables 6.5-9x."},
+{q:"For the income approach (DCF), the PFI encompasses:",opts:["Only the explicit forecast period","Both explicit and terminal periods","Only the terminal period"],ai:1,explain:"DCF PFI includes both: explicit forecast period (typically 5 years) AND terminal period (perpetuity growth or exit multiple)."},
+{q:"Working capital in the Company Z case was forecasted as:",opts:["A fixed dollar amount each year","Approximately 10% of sales revenue","Based on industry average"],ai:1,explain:"Net WC = approx 10% of revenue, based on historical working capital requirements. WC is typically modelled as % of revenue."},
+{q:"If uncertainty is too high and management cannot provide PFI, the valuer should:",opts:["Make up assumptions independently","Refrain from the approach and use alternatives, documenting limitations","Cancel the engagement entirely"],ai:1,explain:"When uncertainty is too high (e.g. COVID), valuer may refrain from DCF and use alternative approaches. Must document all limitations."}
+];
+
+function shuffle(arr){var a=arr.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;}return a;}
+var shuffled=[];var answered=[];
+function startQuiz(){
+shuffled=shuffle(quizData).slice(0,15).map(function(q){var correctText=q.opts[q.ai];var sOpts=shuffle(q.opts.slice());var newAi=sOpts.indexOf(correctText);return{q:q.q,sOpts:sOpts,correctIdx:newAi,explain:q.explain};});
+answered=new Array(shuffled.length).fill(-1);
+var html='';for(var i=0;i<shuffled.length;i++){html+='<div class="quiz-q" id="qq'+i+'"><h4>C&#226;u '+(i+1)+': '+shuffled[i].q+'</h4><div class="quiz-opts">';for(var j=0;j<shuffled[i].sOpts.length;j++){html+='<label><input type="radio" name="q'+i+'" value="'+j+'" onchange="answered['+i+']='+j+'"> '+shuffled[i].sOpts[j]+'</label>';}html+='</div><div class="quiz-result" id="qr'+i+'"></div></div>';}
+document.getElementById('quizArea').innerHTML=html;document.getElementById('submitBtn').style.display='inline-block';document.getElementById('scoreBox').style.display='none';}
+function submitQuiz(){var score=0;for(var i=0;i<shuffled.length;i++){var res=document.getElementById('qr'+i);if(answered[i]===shuffled[i].correctIdx){score++;res.className='quiz-result quiz-correct';res.innerHTML='&#9989; &#272;&#250;ng! '+shuffled[i].explain;}else{res.className='quiz-result quiz-wrong';res.innerHTML='&#10060; Sai! &#272;&#225;p &#225;n: '+shuffled[i].sOpts[shuffled[i].correctIdx]+'. '+shuffled[i].explain;}}
+var box=document.getElementById('scoreBox');box.style.display='block';document.getElementById('scoreText').innerHTML=score+'/'+shuffled.length;var pct=Math.round(score/shuffled.length*100);document.getElementById('scoreDetail').innerHTML=pct+'% - '+(pct>=80?'Xu&#7845;t s&#7855;c!':pct>=60?'Kh&#225; t&#7889;t!':'C&#7847;n &#244;n t&#7853;p th&#234;m!');document.getElementById('submitBtn').style.display='none';}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter 2: What, Why, How, Who - Memory Aid</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh;padding:20px}
+.container{max-width:920px;margin:0 auto}
+h1{text-align:center;font-size:1.5em;margin-bottom:6px;background:linear-gradient(135deg,#22c55e,#38bdf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.subtitle{text-align:center;color:#94a3b8;margin-bottom:20px;font-size:0.9em}
+
+.mnemonic-box{background:linear-gradient(135deg,#1e293b,#0f172a);border:2px solid #22c55e;border-radius:16px;padding:20px;margin-bottom:24px;text-align:center}
+.mnemonic-box h2{color:#22c55e;font-size:1.15em;margin-bottom:10px}
+.mnemonic-big{display:flex;flex-wrap:wrap;justify-content:center;gap:12px;margin:16px 0}
+.mnemonic-big .card{background:#0f172a;border:2px solid #334155;border-radius:14px;padding:16px 20px;min-width:140px;cursor:default;transition:all 0.3s}
+.mnemonic-big .card:hover{transform:translateY(-4px);box-shadow:0 8px 20px rgba(0,0,0,0.3)}
+.mnemonic-big .card .emoji{font-size:2em;margin-bottom:6px}
+.mnemonic-big .card .label{font-weight:700;font-size:1.1em}
+.mnemonic-big .card .sub{color:#94a3b8;font-size:0.8em;margin-top:4px}
+.card-what{border-color:#3b82f6}.card-what .label{color:#3b82f6}
+.card-why{border-color:#f59e0b}.card-why .label{color:#f59e0b}
+.card-how{border-color:#22c55e}.card-how .label{color:#22c55e}
+.card-who{border-color:#a78bfa}.card-who .label{color:#a78bfa}
+
+.story-box{background:#1a1a2e;border-left:4px solid #f59e0b;border-radius:0 12px 12px 0;padding:18px;margin-bottom:24px}
+.story-box h2{color:#f59e0b;margin-bottom:10px;font-size:1.05em}
+.story-box p{color:#cbd5e1;line-height:1.7;font-size:0.92em}
+.story-box .hl{color:#fbbf24;font-weight:bold}
+
+.section{margin-bottom:28px}
+.section-header{display:flex;align-items:center;gap:10px;margin-bottom:14px;padding-bottom:8px;border-bottom:2px solid #1e3a5f}
+.section-header .icon{font-size:1.5em}
+.section-header h2{font-size:1.1em}
+.section-header .num{background:#2563eb;color:#fff;padding:2px 10px;border-radius:8px;font-size:0.82em;font-weight:600}
+
+/* Cards */
+.cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px}
+.item-card{background:#1e293b;border-radius:12px;overflow:hidden;border:1px solid #334155;transition:all 0.3s}
+.item-card:hover{border-color:#38bdf8;box-shadow:0 0 12px rgba(56,189,248,0.1)}
+.item-card-header{padding:12px 14px;cursor:pointer;display:flex;align-items:center;gap:10px;user-select:none}
+.item-card-header .em{font-size:1.3em}
+.item-card-header .ttl{flex:1;font-weight:600;font-size:0.92em}
+.item-card-header .arr{color:#64748b;transition:transform 0.3s}
+.item-card-header .arr.open{transform:rotate(90deg)}
+.item-card-body{display:none;padding:0 14px 14px;font-size:0.86em;color:#94a3b8;line-height:1.6}
+.item-card-body.show{display:block;animation:fadeIn 0.3s}
+@keyframes fadeIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
+.item-card-body .def{color:#e2e8f0;margin-bottom:6px}
+.item-card-body .ex{background:#0f172a;border-radius:8px;padding:10px;margin-top:8px;border-left:3px solid #f59e0b;font-size:0.92em;color:#fbbf24}
+
+/* Color variants */
+.clr-blue .item-card-header .ttl{color:#60a5fa}
+.clr-amber .item-card-header .ttl{color:#fbbf24}
+.clr-green .item-card-header .ttl{color:#4ade80}
+.clr-purple .item-card-header .ttl{color:#c084fc}
+
+/* Flow diagram */
+.flow-vertical{display:flex;flex-direction:column;align-items:center;gap:4px;margin:16px 0}
+.flow-step{background:#1e3a5f;color:#7dd3fc;padding:10px 24px;border-radius:10px;font-size:0.88em;font-weight:600;text-align:center;width:100%;max-width:500px}
+.flow-arrow-down{color:#64748b;font-size:1.2em}
+.flow-step:hover{background:#2563eb;color:#fff}
+
+/* Approach cards */
+.approach-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:12px 0}
+.approach-card{background:#0f172a;border-radius:10px;padding:14px;border:2px solid #334155;text-align:center}
+.approach-card h4{font-size:0.95em;margin-bottom:6px}
+.approach-card p{color:#94a3b8;font-size:0.82em;line-height:1.5}
+.approach-card .code{color:#7dd3fc;font-weight:600;font-size:0.85em;margin-top:4px}
+.ap-market{border-color:#3b82f6}.ap-market h4{color:#3b82f6}
+.ap-income{border-color:#22c55e}.ap-income h4{color:#22c55e}
+.ap-cost{border-color:#f59e0b}.ap-cost h4{color:#f59e0b}
+
+/* User groups */
+.user-tags{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
+.user-tag{padding:8px 14px;border-radius:10px;font-size:0.85em;font-weight:600;cursor:default;transition:transform 0.2s}
+.user-tag:hover{transform:scale(1.05)}
+.ut1{background:#1e3a5f;color:#7dd3fc}
+.ut2{background:#14532d;color:#86efac}
+.ut3{background:#422006;color:#fbbf24}
+.ut4{background:#3b0764;color:#d8b4fe}
+.ut5{background:#450a0a;color:#fca5a5}
+.ut6{background:#1e293b;color:#94a3b8;border:1px solid #475569}
+
+.insight{background:#1a1a2e;border-left:4px solid #a78bfa;padding:14px 16px;border-radius:0 10px 10px 0;margin:12px 0;color:#c4b5fd;font-size:0.88em;line-height:1.6}
+.insight strong{color:#e2e8f0}
+
+/* Valuation types */
+.val-types{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:12px 0}
+.val-type{background:#0f172a;border-radius:10px;padding:14px;border:1px solid #334155}
+.val-type h4{margin-bottom:6px;font-size:0.92em}
+.val-type p{color:#94a3b8;font-size:0.84em;line-height:1.5}
+
+/* Quiz */
+.quiz-section{background:#1e293b;border-radius:16px;padding:20px;margin-top:28px}
+.quiz-section h2{color:#fbbf24;text-align:center;margin-bottom:16px}
+.quiz-info{text-align:center;color:#94a3b8;margin-bottom:16px;font-size:0.9em}
+.quiz-q p{color:#e2e8f0;margin-bottom:12px;font-size:0.93em;line-height:1.5}
+.quiz-opts{display:flex;flex-direction:column;gap:8px}
+.quiz-opt{padding:12px 16px;background:#0f172a;border:2px solid #334155;border-radius:10px;cursor:pointer;color:#cbd5e1;font-size:0.88em;transition:all 0.2s;text-align:left}
+.quiz-opt:hover{border-color:#38bdf8;background:#1e3a5f}
+.quiz-opt.correct{border-color:#22c55e;background:#14532d;color:#86efac}
+.quiz-opt.wrong{border-color:#ef4444;background:#450a0a;color:#fca5a5}
+.quiz-opt.disabled{pointer-events:none}
+.quiz-explain{display:none;margin-top:10px;padding:12px;background:#1a1a2e;border-radius:8px;color:#a78bfa;font-size:0.86em;line-height:1.6}
+.quiz-nav{display:flex;justify-content:center;margin-top:16px}
+.quiz-btn{padding:10px 24px;border:none;border-radius:10px;font-size:0.95em;cursor:pointer;font-weight:600;background:#22c55e;color:#0f172a}
+.quiz-btn:hover{background:#16a34a}
+.quiz-btn:disabled{opacity:0.4;cursor:not-allowed}
+.quiz-score{text-align:center;color:#fbbf24;font-size:1.1em;font-weight:bold}
+
+@media(max-width:600px){
+  .cards-grid{grid-template-columns:1fr}
+  .approach-row{grid-template-columns:1fr}
+  .val-types{grid-template-columns:1fr}
+  .mnemonic-big{flex-direction:column;align-items:center}
+}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>&#128218; Chapter 2: What, Why, How &amp; Who</h1>
+<p class="subtitle">&#272;&#7883;nh gi&#225; C&#193;I G&#204;, T&#7840;I SAO, B&#7856;NG C&#193;CH N&#192;O, v&#224; CHO AI?</p>
+
+<div class="mnemonic-box">
+<h2>&#127919; B&#7889;n c&#226;u h&#7887;i c&#7889;t l&#245;i c&#7911;a m&#7885;i cu&#7897;c &#273;&#7883;nh gi&#225;</h2>
+<div class="mnemonic-big">
+<div class="card card-what"><div class="emoji">&#128269;</div><div class="label">WHAT</div><div class="sub">&#272;&#7883;nh gi&#225; c&#225;i g&#236;?</div><div class="sub">4 lo&#7841;i &#273;&#7889;i t&#432;&#7907;ng</div></div>
+<div class="card card-why"><div class="emoji">&#10068;</div><div class="label">WHY</div><div class="sub">T&#7841;i sao &#273;&#7883;nh gi&#225;?</div><div class="sub">6 m&#7909;c &#273;&#237;ch</div></div>
+<div class="card card-how"><div class="emoji">&#9881;&#65039;</div><div class="label">HOW</div><div class="sub">&#272;&#7883;nh gi&#225; th&#7871; n&#224;o?</div><div class="sub">6 b&#432;&#7899;c + 3 approaches</div></div>
+<div class="card card-who"><div class="emoji">&#128101;</div><div class="label">WHO</div><div class="sub">&#272;&#7883;nh gi&#225; cho ai?</div><div class="sub">6 nh&#243;m users</div></div>
+</div>
+<p style="color:#fbbf24;font-weight:bold;font-size:1em;margin-top:12px">Nh&#7899;: "C&#193;I G&#204; &#8594; T&#7840;I SAO &#8594; TH&#7870; N&#192;O &#8594; CHO AI"</p>
+</div>
+
+<div class="story-box">
+<h2>&#128214; C&#226;u chuy&#7879;n: "Th&#7849;m &#273;&#7883;nh vi&#234;n nh&#7853;n vi&#7879;c m&#7899;i"</h2>
+<p>B&#7841;n l&#224; th&#7849;m &#273;&#7883;nh vi&#234;n v&#7915;a &#273;&#432;&#7907;c giao m&#7897;t engagement m&#7899;i. 4 c&#226;u h&#7887;i &#273;&#7847;u ti&#234;n b&#7841;n ph&#7843;i tr&#7843; l&#7901;i:<br><br>
+&#9312; <span class="hl">WHAT</span> &#8212; "T&#244;i &#273;ang &#273;&#7883;nh gi&#225; c&#225;i g&#236;?" To&#224;n b&#7897; c&#244;ng ty? C&#7893; ph&#7847;n 10%? Th&#432;&#417;ng hi&#7879;u? Hay m&#7897;t h&#7907;p &#273;&#7891;ng t&#224;i ch&#237;nh?<br>
+&#9313; <span class="hl">WHY</span> &#8212; "&#272;&#7883;nh gi&#225; &#273;&#7875; l&#224;m g&#236;?" &#272;&#7875; mua b&#225;n? N&#7897;p thu&#7871;? Ki&#7879;n t&#7909;ng? B&#225;o c&#225;o t&#224;i ch&#237;nh? G&#7885;i v&#7889;n?<br>
+&#9314; <span class="hl">HOW</span> &#8212; "D&#249;ng ph&#432;&#417;ng ph&#225;p n&#224;o?" 6 b&#432;&#7899;c quy tr&#236;nh, ch&#7885;n Market/Income/Cost approach.<br>
+&#9315; <span class="hl">WHO</span> &#8212; "Ai s&#7869; &#273;&#7885;c b&#225;o c&#225;o n&#224;y?" Nh&#224; &#273;&#7847;u t&#432;? Th&#7849;m ph&#225;n? C&#417; quan thu&#7871;? H&#7897;i &#273;&#7891;ng qu&#7843;n tr&#7883;?</p>
+</div>
+
+<!-- ===== 2.3 WHAT ===== -->
+<div class="section">
+<div class="section-header">
+<span class="icon">&#128269;</span>
+<h2 style="color:#3b82f6">2.3 WHAT &#8212; &#272;&#7883;nh gi&#225; c&#225;i g&#236;?</h2>
+<span class="num">4 lo&#7841;i &#273;&#7889;i t&#432;&#7907;ng</span>
+</div>
+<div class="cards-grid clr-blue">
+<div class="item-card"><div class="item-card-header" onclick="toggle(this)"><span class="em">&#127970;</span><span class="ttl">Doanh nghi&#7879;p / L&#7907;i &#237;ch kinh doanh</span><span class="arr">&#9654;</span></div>
+<div class="item-card-body"><div class="def">To&#224;n b&#7897; doanh nghi&#7879;p (entire business), ho&#7863;c c&#7893; ph&#7847;n ki&#7875;m so&#225;t (controlling), ho&#7863;c c&#7893; ph&#7847;n thi&#7875;u s&#7889; (minority interest).</div><p>Focus ch&#237;nh c&#7911;a CVA Programme: <strong>IVS 200</strong> (Businesses and Business Interests)</p></div></div>
+
+<div class="item-card"><div class="item-card-header" onclick="toggle(this)"><span class="em">&#128161;</span><span class="ttl">T&#224;i s&#7843;n v&#244; h&#236;nh (Intangible Assets)</span><span class="arr">&#9654;</span></div>
+<div class="item-card-body"><div class="def">Customer-related, marketing-related, technology-based, goodwill... Ng&#224;y c&#224;ng quan tr&#7885;ng v&#236; chi&#7871;m t&#7927; tr&#7885;ng l&#7899;n trong gi&#225; tr&#7883; doanh nghi&#7879;p.</div><p>Focus c&#7911;a CVA: <strong>IVS 210</strong> (Intangible Assets). L&#224; t&#224;i s&#7843;n phi ti&#7873;n t&#7879;, c&#243; th&#7875; s&#7903; h&#7919;u, ki&#7875;m so&#225;t, chuy&#7875;n nh&#432;&#7907;ng.</p></div></div>
+
+<div class="item-card"><div class="item-card-header" onclick="toggle(this)"><span class="em">&#127981;</span><span class="ttl">T&#224;i s&#7843;n h&#7919;u h&#236;nh (Tangible Assets)</span><span class="arr">&#9654;</span></div>
+<div class="item-card-body"><div class="def">H&#224;ng t&#7891;n kho (inventory), b&#7845;t &#273;&#7897;ng s&#7843;n (property), nh&#224; x&#432;&#7903;ng v&#224; thi&#7871;t b&#7883; (plant &amp; equipment).</div></div></div>
+
+<div class="item-card"><div class="item-card-header" onclick="toggle(this)"><span class="em">&#128179;</span><span class="ttl">C&#244;ng c&#7909; t&#224;i ch&#237;nh &amp; N&#7907;</span><span class="arr">&#9654;</span></div>
+<div class="item-card-body"><div class="def">N&#7907; (debt), ph&#225;i sinh (derivatives), ngh&#297;a v&#7909; h&#7907;p &#273;&#7891;ng (contractual obligations)... Bao g&#7891;m c&#7843; t&#224;i s&#7843;n v&#224; n&#7907; ph&#7843;i tr&#7843;.</div></div></div>
+</div>
+
+<div class="insight">&#128161; <strong>Kh&#225;i ni&#7879;m then ch&#7889;t:</strong> <strong style="color:#fbbf24">Enterprise Value</strong> = gi&#225; tr&#7883; t&#7841;o ra t&#7915; cash flow t&#432;&#417;ng lai c&#7911;a to&#224;n b&#7897; doanh nghi&#7879;p. V&#236; DN &#273;&#432;&#7907;c t&#224;i tr&#7907; b&#7857;ng equity + debt, Enterprise Value ph&#7843;i &#273;&#432;&#7907;c chia cho c&#7843; hai nh&#243;m n&#224;y.</div>
+
+<div class="val-types">
+<div class="val-type"><h4 style="color:#3b82f6">&#128200; Share Market Valuation</h4><p>G&#243;c nh&#236;n nh&#224; &#273;&#7847;u t&#432;: &#273;&#225;nh gi&#225; c&#7893; phi&#7871;u c&#244;ng ty ni&#234;m y&#7871;t, d&#249;ng cho quy&#7871;t &#273;&#7883;nh &#273;&#7847;u t&#432;. Do equity analysts th&#7921;c hi&#7879;n.</p></div>
+<div class="val-type"><h4 style="color:#22c55e">&#127970; Corporate Valuation</h4><p>G&#243;c nh&#236;n management/board: M&amp;A, t&#225;i c&#417; c&#7845;u, b&#225;o c&#225;o t&#224;i ch&#237;nh. <strong>Focus ch&#237;nh c&#7911;a module n&#224;y.</strong></p></div>
+</div>
+</div>
+
+<!-- ===== 2.4 WHY ===== -->
+<div class="section">
+<div class="section-header">
+<span class="icon">&#10068;</span>
+<h2 style="color:#f59e0b">2.4 WHY &#8212; T&#7841;i sao &#273;&#7883;nh gi&#225;?</h2>
+<span class="num">6 m&#7909;c &#273;&#237;ch</span>
+</div>
+<p style="color:#94a3b8;font-size:0.88em;margin-bottom:10px">M&#7865;o nh&#7899;: <strong style="color:#fbbf24">"MUA - C&#7844;U - THU&#7870; - KI&#7878;N - B&#193;O - V&#7888;N"</strong> (Mua c&#7845;u thu&#7871; ki&#7879;n b&#225;o v&#7889;n)</p>
+
+<div class="cards-grid clr-amber">
+<div class="item-card"><div class="item-card-header" onclick="toggle(this)"><span class="em">&#129309;</span><span class="ttl">MUA b&#225;n s&#225;p nh&#7853;p (M&amp;A)</span><span class="arr">&#9654;</span></div>
+<div class="item-card-body"><div class="def">Mergers, Acquisitions, Divestments. Cung c&#7845;p gi&#225; tr&#7883; &#273;&#7897;c l&#7853;p, kh&#225;ch quan l&#224;m c&#417; s&#7903; &#273;&#224;m ph&#225;n. Tr&#225;nh &#273;&#7883;nh gi&#225; theo c&#7843;m x&#250;c ho&#7863;c ph&#226;n t&#237;ch h&#7901;i h&#7907;t.</div>
+<div class="ex">VD: Cty A mua Cty Z. Market value = $100M, investment value (+ synergies) = $150M. Th&#432;&#417;ng l&#432;&#7907;ng &#7903; $125M.</div></div></div>
+
+<div class="item-card"><div class="item-card-header" onclick="toggle(this)"><span class="em">&#128260;</span><span class="ttl">T&#225;i C&#7844;U tr&#250;c (Restructuring)</span><span class="arr">&#9654;</span></div>
+<div class="item-card-body"><div class="def">Spin-off, equity injection, t&#225;i c&#417; c&#7845;u n&#7907;, gi&#7843;i th&#7875; li&#234;n doanh. Gi&#250;p ban l&#227;nh &#273;&#7841;o hi&#7875;u gi&#225; tr&#7883; c&#225;c &#273;&#417;n v&#7883; kinh doanh.</div>
+<div class="ex">VD: Cty c&#243; m&#7843;ng &#244; t&#244; (thua l&#7895;) v&#224; m&#7843;ng c&#244;ng ngh&#7879; (ti&#7873;m n&#259;ng). &#272;&#7883;nh gi&#225; &#273;&#7875; quy&#7871;t &#273;&#7883;nh b&#225;n m&#7843;ng &#244; t&#244;, spin-off m&#7843;ng c&#244;ng ngh&#7879;.</div></div></div>
+
+<div class="item-card"><div class="item-card-header" onclick="toggle(this)"><span class="em">&#128181;</span><span class="ttl">THU&#7870; (Taxation)</span><span class="arr">&#9654;</span></div>
+<div class="item-card-body"><div class="def">Transfer pricing, capital gains, estate tax, IP write-downs. X&#225;c &#273;&#7883;nh gi&#225; tr&#7883; &#273;&#7875; tu&#226;n th&#7911; quy &#273;&#7883;nh thu&#7871;.</div>
+<div class="ex">VD: Cty A chuy&#7875;n license c&#244;ng ngh&#7879; cho c&#244;ng ty con &#8594; valuer x&#225;c &#273;&#7883;nh royalty rate 5% tr&#234;n net sales &#273;&#7875; tu&#226;n th&#7911; transfer pricing.</div></div></div>
+
+<div class="item-card"><div class="item-card-header" onclick="toggle(this)"><span class="em">&#9878;&#65039;</span><span class="ttl">Tranh ch&#7845;p &amp; KI&#7878;N t&#7909;ng</span><span class="arr">&#9654;</span></div>
+<div class="item-card-body"><div class="def">Shareholder buyouts, ly h&#244;n, b&#7891;i th&#432;&#7901;ng thi&#7879;t h&#7841;i, vi ph&#7841;m h&#7907;p &#273;&#7891;ng, b&#7857;ng s&#225;ng ch&#7871;. Valuer l&#224;m chuy&#234;n gia &#273;&#7897;c l&#7853;p h&#7895; tr&#7907; t&#242;a &#225;n.</div>
+<div class="ex">VD: 2 c&#7893; &#273;&#244;ng 50-50 tranh ch&#7845;p. Valuer x&#225;c &#273;&#7883;nh equitable value = $10M cho ph&#7847;n c&#7893; &#273;&#244;ng mu&#7889;n r&#250;t.</div></div></div>
+
+<div class="item-card"><div class="item-card-header" onclick="toggle(this)"><span class="em">&#128202;</span><span class="ttl">B&#193;O c&#225;o t&#224;i ch&#237;nh (Financial Reporting)</span><span class="arr">&#9654;</span></div>
+<div class="item-card-body"><div class="def">Fair value cho BCTC: IFRS 3 (PPA - Purchase Price Allocation), impairment testing (IAS 36), fair value c&#7911;a t&#224;i s&#7843;n v&#224; n&#7907;. &#272;&#7843;m b&#7843;o minh b&#7841;ch v&#224; tu&#226;n th&#7911; chu&#7849;n m&#7921;c.</div>
+<div class="ex">VD: Cty A mua Cty B gi&#225; $50M. Valuer ph&#226;n b&#7893;: customer + patents = $15M, c&#242;n l&#7841;i = net tangible + goodwill.</div></div></div>
+
+<div class="item-card"><div class="item-card-header" onclick="toggle(this)"><span class="em">&#128176;</span><span class="ttl">&#272;&#7847;u t&#432; &amp; G&#7885;i V&#7888;N (Fund Raising)</span><span class="arr">&#9654;</span></div>
+<div class="item-card-body"><div class="def">PE, VC, IPO, ph&#225;t h&#224;nh c&#7893; phi&#7871;u. X&#225;c &#273;&#7883;nh pre-money v&#224; post-money valuation. &#272;&#7843;m b&#7843;o &#273;&#7883;nh gi&#225; c&#244;ng b&#7857;ng cho c&#7843; founder v&#224; nh&#224; &#273;&#7847;u t&#432;.</div>
+<div class="ex">VD: Startup: pre-money = $15M. Investor g&#243;p $5M = 25% equity &#8594; post-money = $20M.</div></div></div>
+</div>
+</div>
+
+<!-- ===== 2.5 HOW ===== -->
+<div class="section">
+<div class="section-header">
+<span class="icon">&#9881;&#65039;</span>
+<h2 style="color:#22c55e">2.5 HOW &#8212; &#272;&#7883;nh gi&#225; th&#7871; n&#224;o?</h2>
+<span class="num">6 b&#432;&#7899;c + 3 approaches</span>
+</div>
+
+<h3 style="color:#4ade80;margin-bottom:10px">&#9998; 6 B&#432;&#7899;c Quy Tr&#236;nh &#272;&#7883;nh Gi&#225;</h3>
+<p style="color:#94a3b8;font-size:0.85em;margin-bottom:10px">M&#7865;o nh&#7899;: <strong style="color:#fbbf24">"&#272;&#7882;NH - HI&#7874;U - T&#204;M - CH&#7884;N - T&#205;NH - KI&#7874;M"</strong></p>
+<div class="flow-vertical">
+<div class="flow-step">&#9312; &#272;&#7882;NH ph&#7841;m vi engagement v&#224; scope of work</div>
+<div class="flow-arrow-down">&#9660;</div>
+<div class="flow-step">&#9313; HI&#7874;U &#273;&#7889;i t&#432;&#7907;ng &#273;&#7883;nh gi&#225; v&#224; doanh nghi&#7879;p</div>
+<div class="flow-arrow-down">&#9660;</div>
+<div class="flow-step">&#9314; T&#204;M th&#244;ng tin: y&#234;u c&#7847;u, ch&#7845;t l&#432;&#7907;ng, kh&#7843; d&#7909;ng</div>
+<div class="flow-arrow-down">&#9660;</div>
+<div class="flow-step">&#9315; CH&#7884;N approach(es) v&#224; method(s)</div>
+<div class="flow-arrow-down">&#9660;</div>
+<div class="flow-step">&#9316; T&#205;NH c&#225;c tham s&#7889; v&#224; k&#7871;t qu&#7843; &#273;&#7883;nh gi&#225;</div>
+<div class="flow-arrow-down">&#9660;</div>
+<div class="flow-step">&#9317; KI&#7874;M tra &#273;&#7897; nh&#7841;y (sensitivity) v&#224; cross-check</div>
+</div>
+
+<h3 style="color:#4ade80;margin:16px 0 10px">&#128736;&#65039; 3 Approaches &#272;&#7883;nh Gi&#225;</h3>
+<div class="approach-row">
+<div class="approach-card ap-market"><h4>&#128200; Market Approach</h4><p>So s&#225;nh v&#7899;i giao d&#7883;ch / c&#244;ng ty t&#432;&#417;ng t&#7921;</p><div class="code">IVS 103 - A10</div><p style="margin-top:6px;color:#64748b;font-size:0.78em">Comparable transactions<br>Guideline public companies</p></div>
+<div class="approach-card ap-income"><h4>&#128178; Income Approach</h4><p>Chi&#7871;t kh&#7845;u d&#242;ng ti&#7873;n t&#432;&#417;ng lai v&#7873; hi&#7879;n t&#7841;i</p><div class="code">IVS 103 - A20</div><p style="margin-top:6px;color:#64748b;font-size:0.78em">Discounted Cash Flow (DCF)</p></div>
+<div class="approach-card ap-cost"><h4>&#127959;&#65039; Cost Approach</h4><p>Chi ph&#237; thay th&#7871; / t&#225;i t&#7841;o t&#224;i s&#7843;n</p><div class="code">IVS 103 - A30</div><p style="margin-top:6px;color:#64748b;font-size:0.78em">Replacement cost<br>Reproduction cost<br>Summation method</p></div>
+</div>
+
+<div class="insight">&#128161; <strong>Ch&#250; &#253;:</strong> DCF, Comparable transactions, Comparable companies l&#224; <em>methods</em> (ph&#432;&#417;ng ph&#225;p), kh&#244;ng ph&#7843;i <em>approaches</em> (c&#225;ch ti&#7871;p c&#7853;n). &#272;&#226;y l&#224; b&#7851;y trong &#273;&#7873; thi! (Review Q2: &#273;&#225;p &#225;n A &#273;&#250;ng, B sai v&#236; nh&#7847;m method th&#224;nh approach)</div>
+</div>
+
+<!-- ===== 2.6 WHO ===== -->
+<div class="section">
+<div class="section-header">
+<span class="icon">&#128101;</span>
+<h2 style="color:#a78bfa">2.6 WHO &#8212; &#272;&#7883;nh gi&#225; cho ai?</h2>
+<span class="num">6 nh&#243;m users</span>
+</div>
+<p style="color:#94a3b8;font-size:0.88em;margin-bottom:10px">M&#7865;o nh&#7899;: <strong style="color:#fbbf24">"&#272;&#7846;U - K&#7870; - LU&#7852;T - CH&#7910; - V&#7888;N - QU&#7842;N"</strong> (&#272;&#7847;u k&#7871; lu&#7853;t ch&#7911; v&#7889;n qu&#7843;n)</p>
+
+<div class="user-tags">
+<span class="user-tag ut1">&#128200; &#272;&#7846;U t&#432; (Investment community)</span>
+<span class="user-tag ut2">&#128209; K&#7870; to&#225;n (Accounting community)</span>
+<span class="user-tag ut3">&#9878;&#65039; LU&#7852;T (Legal community)</span>
+<span class="user-tag ut4">&#127970; CH&#7910; doanh nghi&#7879;p (Corporate community)</span>
+<span class="user-tag ut5">&#128176; Nh&#224; cung c&#7845;p V&#7888;N (Capital providers)</span>
+<span class="user-tag ut6">&#127963;&#65039; C&#417; QU&#7842;N qu&#7843;n l&#253; (Regulatory bodies)</span>
+</div>
+
+<div class="cards-grid clr-purple">
+<div class="item-card"><div class="item-card-header" onclick="toggle(this)"><span class="em">&#128200;</span><span class="ttl">Investment community</span><span class="arr">&#9654;</span></div>
+<div class="item-card-body"><div class="def">Retail, corporate, institutional investors. D&#249;ng valuation &#273;&#7875; quy&#7871;t &#273;&#7883;nh &#273;&#7847;u t&#432;/tho&#225;i v&#7889;n.</div></div></div>
+
+<div class="item-card"><div class="item-card-header" onclick="toggle(this)"><span class="em">&#128209;</span><span class="ttl">Accounting community</span><span class="arr">&#9654;</span></div>
+<div class="item-card-body"><div class="def">Accountants, auditors. D&#249;ng valuation cho fair value trong BCTC, PPA, impairment.</div></div></div>
+
+<div class="item-card"><div class="item-card-header" onclick="toggle(this)"><span class="em">&#9878;&#65039;</span><span class="ttl">Legal community</span><span class="arr">&#9654;</span></div>
+<div class="item-card-body"><div class="def">Lawyers, judges, arbitrators, mediators. D&#249;ng trong ki&#7879;n t&#7909;ng, tranh ch&#7845;p, ph&#226;n chia t&#224;i s&#7843;n.</div></div></div>
+
+<div class="item-card"><div class="item-card-header" onclick="toggle(this)"><span class="em">&#127970;</span><span class="ttl">Corporate community</span><span class="arr">&#9654;</span></div>
+<div class="item-card-body"><div class="def">Shareholders, company management, board of directors. D&#249;ng cho chi&#7871;n l&#432;&#7907;c, M&amp;A, t&#225;i c&#417; c&#7845;u.</div></div></div>
+
+<div class="item-card"><div class="item-card-header" onclick="toggle(this)"><span class="em">&#128176;</span><span class="ttl">Capital providers</span><span class="arr">&#9654;</span></div>
+<div class="item-card-body"><div class="def">Private equity, venture capitalists, ng&#226;n h&#224;ng, t&#7893; ch&#7913;c t&#224;i ch&#237;nh. D&#249;ng &#273;&#7875; &#273;&#225;nh gi&#225; kho&#7843;n &#273;&#7847;u t&#432;/cho vay.</div></div></div>
+
+<div class="item-card"><div class="item-card-header" onclick="toggle(this)"><span class="em">&#127963;&#65039;</span><span class="ttl">Regulatory bodies</span><span class="arr">&#9654;</span></div>
+<div class="item-card-body"><div class="def">S&#224;n ch&#7913;ng kho&#225;n, c&#417; quan thu&#7871;. D&#249;ng &#273;&#7875; gi&#225;m s&#225;t, &#273;&#7843;m b&#7843;o tu&#226;n th&#7911;.</div></div></div>
+</div>
+
+<div class="insight">&#9888;&#65039; <strong>&#272;i&#7875;m thi quan tr&#7885;ng: Client &#8800; Intended User!</strong><br>
+&#8226; Thu&#7871;: Client = ng&#432;&#7901;i n&#7897;p thu&#7871; (taxpayer), Intended User = <strong>c&#417; quan thu&#7871;</strong><br>
+&#8226; Ki&#7879;n t&#7909;ng: Client = hai b&#234;n tranh ch&#7845;p, Intended User = <strong>th&#7849;m ph&#225;n</strong><br>
+Intended user &#7843;nh h&#432;&#7903;ng scope, gi&#7843; &#273;&#7883;nh, v&#224; c&#225;ch tr&#236;nh b&#224;y b&#225;o c&#225;o!</div>
+</div>
+
+<!-- ===== QUIZ ===== -->
+<div class="quiz-section">
+<h2>&#127941; Ki&#7875;m Tra Ki&#7871;n Th&#7913;c</h2>
+<div class="quiz-info">C&#226;u <span id="qNum">1</span>/15 | &#272;i&#7875;m: <span id="qScore">0</span></div>
+<div id="quizContainer"></div>
+<div class="quiz-nav"><button class="quiz-btn" id="nextBtn" onclick="nextQ()" disabled>C&#226;u Ti&#7871;p &#10132;</button></div>
+<div class="quiz-score" id="finalScore" style="display:none"></div>
+</div>
+
+</div>
+
+<script>
+function toggle(el){var b=el.nextElementSibling;var a=el.querySelector('.arr');b.classList.toggle('show');a.classList.toggle('open');}
+
+var quizData=[
+{q:"4 lo\u1ea1i \u0111\u1ed1i t\u01b0\u1ee3ng \u0111\u1ecbnh gi\u00e1 (WHAT) g\u1ed3m: Doanh nghi\u1ec7p, T\u00e0i s\u1ea3n v\u00f4 h\u00ecnh, T\u00e0i s\u1ea3n h\u1eefu h\u00ecnh, v\u00e0...?",opts:["C\u00f4ng c\u1ee5 t\u00e0i ch\u00ednh & N\u1ee3","Goodwill","Th\u01b0\u01a1ng hi\u1ec7u","B\u1ea5t \u0111\u1ed9ng s\u1ea3n"],ai:0,explain:"4 lo\u1ea1i: Business/interests, Intangible assets, Tangible assets, Financial instruments & liabilities."},
+{q:"Enterprise Value l\u00e0 g\u00ec?",opts:["T\u1ed5ng gi\u00e1 tr\u1ecb DN t\u1eeb cash flow, chia cho equity + debt","Ch\u1ec9 gi\u00e1 tr\u1ecb equity","Gi\u00e1 c\u1ed5 phi\u1ebfu x s\u1ed1 l\u01b0\u1ee3ng","Gi\u00e1 tr\u1ecb s\u1ed5 s\u00e1ch"],ai:0,explain:"Enterprise Value = gi\u00e1 tr\u1ecb to\u00e0n b\u1ed9 DN, chia cho c\u1ea3 equity holders v\u00e0 debt holders."},
+{q:"6 m\u1ee5c \u0111\u00edch \u0111\u1ecbnh gi\u00e1 (WHY) kh\u00f4ng bao g\u1ed3m?",opts:["Marketing","M&A","Thu\u1ebf","Ki\u1ec7n t\u1ee5ng"],ai:0,explain:"6 m\u1ee5c \u0111\u00edch: M&A, T\u00e1i c\u01a1 c\u1ea5u, Thu\u1ebf, Ki\u1ec7n t\u1ee5ng, BCTC, G\u1ecdi v\u1ed1n. Marketing kh\u00f4ng ph\u1ea3i m\u1ee5c \u0111\u00edch \u0111\u1ecbnh gi\u00e1."},
+{q:"Trong transfer pricing, valuer x\u00e1c \u0111\u1ecbnh g\u00ec?",opts:["Royalty rate / gi\u00e1 chuy\u1ec3n nh\u01b0\u1ee3ng h\u1ee3p l\u00fd","Gi\u00e1 c\u1ed5 phi\u1ebfu","Enterprise value","DLOM"],ai:0,explain:"Transfer pricing: valuer x\u00e1c \u0111\u1ecbnh gi\u00e1 chuy\u1ec3n nh\u01b0\u1ee3ng h\u1ee3p l\u00fd (v\u00ed d\u1ee5: royalty rate 5%) \u0111\u1ec3 tu\u00e2n th\u1ee7 thu\u1ebf."},
+{q:"IFRS 3 li\u00ean quan \u0111\u1ebfn m\u1ee5c \u0111\u00edch \u0111\u1ecbnh gi\u00e1 n\u00e0o?",opts:["B\u00e1o c\u00e1o t\u00e0i ch\u00ednh (PPA)","Thu\u1ebf","Ki\u1ec7n t\u1ee5ng","G\u1ecdi v\u1ed1n"],ai:0,explain:"IFRS 3 Business Combinations \u2192 PPA (Purchase Price Allocation) \u2192 Financial Reporting."},
+{q:"Pre-money = $15M, investor g\u00f3p $5M. Post-money = ?",opts:["$20M","$15M","$10M","$25M"],ai:0,explain:"Post-money = Pre-money + Investment = $15M + $5M = $20M."},
+{q:"Quy tr\u00ecnh \u0111\u1ecbnh gi\u00e1 c\u00f3 m\u1ea5y b\u01b0\u1edbc?",opts:["6 b\u01b0\u1edbc","4 b\u01b0\u1edbc","5 b\u01b0\u1edbc","8 b\u01b0\u1edbc"],ai:0,explain:"6 b\u01b0\u1edbc: \u0110\u1ecbnh scope \u2192 Hi\u1ec3u DN \u2192 T\u00ecm data \u2192 Ch\u1ecdn approach \u2192 T\u00ednh k\u1ebft qu\u1ea3 \u2192 Ki\u1ec3m tra sensitivity."},
+{q:"3 approaches \u0111\u1ecbnh gi\u00e1 l\u00e0 g\u00ec?",opts:["Market, Income, Cost","DCF, Comparable, Replacement","Market, Book, Liquidation","Income, Equity, Debt"],ai:0,explain:"3 approaches: Market (A10), Income (A20), Cost (A30). DCF l\u00e0 method, kh\u00f4ng ph\u1ea3i approach."},
+{q:"DCF l\u00e0 method thu\u1ed9c approach n\u00e0o?",opts:["Income Approach","Market Approach","Cost Approach","Kh\u00f4ng thu\u1ed9c approach n\u00e0o"],ai:0,explain:"DCF = Discounted Cash Flow, l\u00e0 method c\u1ee7a Income Approach (A20)."},
+{q:"Comparable transactions l\u00e0 method thu\u1ed9c approach n\u00e0o?",opts:["Market Approach","Income Approach","Cost Approach","C\u1ea3 3"],ai:0,explain:"Comparable transactions l\u00e0 method c\u1ee7a Market Approach (A10)."},
+{q:"Trong t\u00ecnh hu\u1ed1ng thu\u1ebf: Client l\u00e0 taxpayer, Intended User l\u00e0 ai?",opts:["C\u01a1 quan thu\u1ebf","Taxpayer","Valuer","Auditor"],ai:0,explain:"Client \u2260 Intended User! Taxpayer l\u00e0 client, nh\u01b0ng intended user l\u00e0 c\u01a1 quan thu\u1ebf."},
+{q:"Trong ki\u1ec7n t\u1ee5ng: Intended User c\u1ee7a b\u00e1o c\u00e1o \u0111\u1ecbnh gi\u00e1 l\u00e0 ai?",opts:["Th\u1ea9m ph\u00e1n","Hai b\u00ean tranh ch\u1ea5p","Lu\u1eadt s\u01b0","Valuer"],ai:0,explain:"Hai b\u00ean tranh ch\u1ea5p l\u00e0 client, nh\u01b0ng intended user l\u00e0 th\u1ea9m ph\u00e1n."},
+{q:"Gi\u00e1 c\u1ed5 phi\u1ebfu Google tr\u00ean s\u00e0n ph\u1ea3n \u00e1nh m\u1ee9c gi\u00e1 tr\u1ecb n\u00e0o?",opts:["Minority, marketable","Minority, non-marketable","Control, marketable","Control, non-marketable"],ai:0,explain:"S\u00e0n ch\u1ee9ng kho\u00e1n = mua b\u00e1n c\u1ed5 ph\u1ea7n thi\u1ec3u s\u1ed1 (minority) v\u00e0 d\u1ec5 giao d\u1ecbch (marketable)."},
+{q:"Share market valuation do ai th\u1ef1c hi\u1ec7n?",opts:["Equity analysts","Auditors","Board of directors","Tax authority"],ai:0,explain:"Share market valuation do equity analysts th\u1ef1c hi\u1ec7n, cho investor decision-making."},
+{q:"Focus ch\u00ednh c\u1ee7a Module 1 l\u00e0 lo\u1ea1i valuation n\u00e0o?",opts:["Corporate valuation","Share market valuation","Real estate valuation","Financial instrument valuation"],ai:0,explain:"Module 1 focus v\u00e0o corporate valuation (g\u00f3c nh\u00ecn management/board)."}
+];
+
+function shuffle(arr){var a=arr.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;}return a;}
+var shuffled,currentQ=0,score=0,answered=false;
+function initQuiz(){
+  shuffled=shuffle(quizData).map(function(q){
+    var ct=q.opts[q.ai];var so=shuffle(q.opts.slice());var ni=so.indexOf(ct);
+    return{q:q.q,sOpts:so,correctIdx:ni,explain:q.explain};
+  });
+  currentQ=0;score=0;answered=false;renderQ();
+}
+function renderQ(){
+  var c=document.getElementById("quizContainer");c.innerHTML="";var q=shuffled[currentQ];
+  var d=document.createElement("div");d.className="quiz-q";d.style.display="block";var oh="";
+  q.sOpts.forEach(function(o,i){oh+='<div class="quiz-opt" onclick="checkQ(this,'+i+')">'+String.fromCharCode(65+i)+'. '+o+'</div>';});
+  d.innerHTML='<p><strong>C\u00e2u '+(currentQ+1)+':</strong> '+q.q+'</p><div class="quiz-opts">'+oh+'</div><div class="quiz-explain" id="ex'+currentQ+'">'+q.explain+'</div>';
+  c.appendChild(d);
+  document.getElementById("qNum").textContent=currentQ+1;
+  document.getElementById("qScore").textContent=score;
+  document.getElementById("nextBtn").disabled=true;
+  document.getElementById("nextBtn").textContent="C\u00e2u Ti\u1ebfp \u27a1";answered=false;
+}
+function checkQ(el,idx){
+  if(answered)return;answered=true;var q=shuffled[currentQ];
+  var opts=el.parentElement.querySelectorAll(".quiz-opt");
+  opts.forEach(function(o){o.classList.add("disabled");});
+  if(idx===q.correctIdx){el.classList.add("correct");score++;}
+  else{el.classList.add("wrong");opts[q.correctIdx].classList.add("correct");}
+  document.getElementById("qScore").textContent=score;
+  document.getElementById("ex"+currentQ).style.display="block";
+  document.getElementById("nextBtn").disabled=false;
+  if(currentQ===shuffled.length-1)document.getElementById("nextBtn").textContent="Xem K\u1ebft Qu\u1ea3 \uD83C\uDFC6";
+}
+function nextQ(){
+  if(currentQ<shuffled.length-1){currentQ++;renderQ();}
+  else{
+    document.getElementById("quizContainer").innerHTML="";
+    document.getElementById("nextBtn").style.display="none";
+    document.getElementById("quizInfo").style.display="none";
+    var pct=Math.round(score/shuffled.length*100);
+    var msg=pct>=80?"\uD83C\uDF1F Xu\u1EA5t s\u1EAFc!":pct>=60?"\uD83D\uDC4D Kh\u00E1!":"\uD83D\uDCDA \u00D4n l\u1EA1i nh\u00E9!";
+    var fs=document.getElementById("finalScore");fs.style.display="block";
+    fs.innerHTML=score+"/"+shuffled.length+" ("+pct+"%)<br><span style='font-size:0.8em;color:#94a3b8'>"+msg+"</span><br><br><button class='quiz-btn' onclick='initQuiz();document.getElementById(\"nextBtn\").style.display=\"block\";document.getElementById(\"quizInfo\").style.display=\"block\";document.getElementById(\"finalScore\").style.display=\"none\"'>L\u00e0m L\u1ea1i \uD83D\uDD04</button>";
+  }
+}
+initQuiz();
+</script>
+</body>
+</html>

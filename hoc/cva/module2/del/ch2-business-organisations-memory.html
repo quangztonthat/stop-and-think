@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ch2 - C&aacute;c H&igrave;nh Th&#7913;c T&#7893; Ch&#7913;c Kinh Doanh</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh}
+.container{max-width:1060px;margin:0 auto;padding:24px}
+h1{text-align:center;font-size:25px;margin-bottom:8px;color:#60a5fa}
+.subtitle{text-align:center;color:#94a3b8;margin-bottom:32px;font-size:15px}
+
+/* Story Box */
+.story-box{background:linear-gradient(135deg,#1e3a5f,#1a2744);border:1px solid #334155;border-radius:16px;padding:28px;margin-bottom:36px;position:relative;overflow:hidden}
+.story-box h2{color:#fbbf24;font-size:20px;margin-bottom:16px}
+.story-box .mnemonic{font-size:32px;font-weight:800;text-align:center;margin:16px 0;letter-spacing:8px}
+.story-box .mnemonic span{display:inline-block;transition:transform .3s;cursor:pointer}
+.story-box .mnemonic span:hover{transform:scale(1.3)}
+.story-text{font-size:15px;line-height:1.9;color:#cbd5e1}
+.hl{font-weight:700;padding:1px 4px;border-radius:4px}
+.hl-1{color:#f87171;background:rgba(248,113,113,.15)}.hl-2{color:#fb923c;background:rgba(251,146,60,.15)}
+.hl-3{color:#fbbf24;background:rgba(251,191,36,.15)}.hl-4{color:#4ade80;background:rgba(74,222,128,.15)}
+.hl-5{color:#60a5fa;background:rgba(96,165,250,.15)}.hl-6{color:#a78bfa;background:rgba(167,139,250,.15)}
+.hl-7{color:#f472b6;background:rgba(244,114,182,.15)}.hl-8{color:#2dd4bf;background:rgba(45,212,191,.15)}
+
+.tip-box{background:linear-gradient(135deg,#1a2744,#1e293b);border:1px solid #334155;border-radius:12px;padding:20px;margin-bottom:28px;text-align:center}
+.tip-box h3{color:#fbbf24;margin-bottom:10px}
+.tip-box p{color:#94a3b8;font-size:14px;line-height:1.7}
+.tip-box .big-text{font-size:18px;color:#e2e8f0;font-weight:700;margin:12px 0}
+
+/* Section Title */
+.sec-title{text-align:center;font-size:22px;color:#60a5fa;margin-bottom:24px}
+
+/* Comparison Table */
+.table-wrap{background:#1e293b;border:1px solid #334155;border-radius:16px;padding:20px;margin-bottom:36px;overflow-x:auto}
+.table-wrap h2{color:#fbbf24;font-size:19px;margin-bottom:16px;text-align:center}
+table.cmp{width:100%;border-collapse:collapse;font-size:12px}
+table.cmp th{background:#0f172a;color:#fbbf24;padding:10px 6px;text-align:center;border:1px solid #334155;font-size:12px;position:sticky;top:0}
+table.cmp td{padding:8px 6px;border:1px solid #334155;vertical-align:top;line-height:1.5}
+table.cmp tr:nth-child(even) td{background:rgba(15,23,42,.5)}
+table.cmp tr:hover td{background:rgba(96,165,250,.05)}
+table.cmp td:first-child{font-weight:700;color:#94a3b8;white-space:nowrap;min-width:90px}
+.y{color:#4ade80}.n{color:#f87171}.p{color:#fbbf24}
+
+/* Cards Grid */
+.cards{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:36px}
+.card{background:#1e293b;border:1px solid #334155;border-radius:14px;padding:18px;transition:all .3s;cursor:pointer}
+.card:hover{border-color:#60a5fa;transform:translateY(-2px)}
+.card-icon{font-size:32px;margin-bottom:8px}
+.card-title{font-size:16px;font-weight:700;margin-bottom:4px}
+.card-sub{font-size:12px;color:#94a3b8;margin-bottom:8px;font-style:italic}
+.card-body{font-size:13px;color:#cbd5e1;line-height:1.6;max-height:0;overflow:hidden;transition:max-height .5s}
+.card.open .card-body{max-height:500px}
+.card-hint{font-size:11px;color:#64748b;margin-top:6px}
+.card .law-tag{display:inline-block;background:#0f172a;border:1px solid #475569;border-radius:6px;padding:2px 8px;font-size:11px;font-weight:600;margin-right:4px;margin-top:6px}
+
+/* Shares Section */
+.shares-section{background:linear-gradient(135deg,#1a2744,#1e293b);border:1px solid #334155;border-radius:16px;padding:24px;margin-bottom:36px}
+.shares-section h2{color:#fbbf24;font-size:19px;margin-bottom:18px;text-align:center}
+.share-row{display:flex;gap:12px;margin-bottom:12px;flex-wrap:wrap}
+.share-card{flex:1;min-width:140px;background:#0f172a;border:1px solid #334155;border-radius:12px;padding:14px;transition:all .3s}
+.share-card:hover{border-color:#a78bfa}
+.share-name{font-size:14px;font-weight:700;margin-bottom:6px}
+.share-desc{font-size:12px;color:#94a3b8;line-height:1.5}
+.share-tag{display:inline-block;font-size:10px;padding:2px 6px;border-radius:4px;font-weight:600;margin-top:6px}
+.tag-vote{background:rgba(96,165,250,.15);color:#60a5fa}
+.tag-div{background:rgba(74,222,128,.15);color:#4ade80}
+.tag-none{background:rgba(248,113,113,.15);color:#f87171}
+.tag-hybrid{background:rgba(167,139,250,.15);color:#a78bfa}
+
+/* Rights Box */
+.rights-box{background:#1e293b;border:1px solid #334155;border-radius:16px;padding:24px;margin-bottom:36px}
+.rights-box h2{color:#fbbf24;font-size:19px;margin-bottom:16px;text-align:center}
+.rights-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.right-item{background:#0f172a;border:1px solid #334155;border-radius:10px;padding:14px;transition:all .3s}
+.right-item:hover{border-color:#60a5fa}
+.right-name{font-size:14px;font-weight:700;color:#60a5fa;margin-bottom:4px}
+.right-desc{font-size:12px;color:#cbd5e1;line-height:1.5}
+
+/* Quiz */
+.quiz-box{background:#1e293b;border:1px solid #334155;border-radius:16px;padding:28px;margin-bottom:24px}
+.quiz-box h2{color:#fbbf24;font-size:20px;margin-bottom:20px;text-align:center}
+.q-card{background:#0f172a;border:2px solid #334155;border-radius:12px;padding:18px;margin-bottom:14px;transition:all .3s}
+.q-card.ok{border-color:#4ade80}.q-card.no{border-color:#f87171}
+.q-text{font-size:14px;font-weight:600;margin-bottom:12px;color:#e2e8f0;line-height:1.6}
+.q-num{display:inline-block;background:#3b82f6;color:#fff;width:26px;height:26px;border-radius:50%;text-align:center;line-height:26px;font-size:12px;margin-right:8px}
+.q-opts{display:flex;flex-direction:column;gap:7px}
+.q-opt{background:#1e293b;border:2px solid #334155;border-radius:9px;padding:10px 14px;cursor:pointer;font-size:13px;transition:all .3s;color:#cbd5e1}
+.q-opt:hover{border-color:#60a5fa;background:#1a2744}
+.q-opt.correct{border-color:#4ade80;background:rgba(74,222,128,.1);color:#4ade80}
+.q-opt.wrong{border-color:#f87171;background:rgba(248,113,113,.1);color:#f87171}
+.q-opt.off{pointer-events:none;opacity:.6}.q-opt.correct.off{opacity:1}
+.q-exp{margin-top:10px;padding:10px;border-radius:8px;font-size:12px;line-height:1.6;display:none}
+.q-exp.show{display:block}
+.q-exp.gc{background:rgba(74,222,128,.08);color:#86efac;border:1px solid rgba(74,222,128,.2)}
+.q-exp.bc{background:rgba(248,113,113,.08);color:#fca5a5;border:1px solid rgba(248,113,113,.2)}
+.score{text-align:center;padding:18px;font-size:20px;font-weight:700;color:#4ade80;display:none}
+.score.show{display:block}
+.btn{display:block;margin:18px auto 0;padding:11px 30px;background:#3b82f6;color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;transition:all .3s}
+.btn:hover{background:#2563eb;transform:translateY(-1px)}
+
+@media(max-width:640px){.cards{grid-template-columns:1fr}.rights-grid{grid-template-columns:1fr}.share-row{flex-direction:column}.story-box .mnemonic{font-size:22px;letter-spacing:4px}table.cmp{font-size:10px}}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>Ch2: C&aacute;c H&igrave;nh Th&#7913;c T&#7893; Ch&#7913;c Kinh Doanh</h1>
+<p class="subtitle">Module 2 &mdash; Law and Valuation &mdash; CVA Programme</p>
+
+<!-- MNEMONIC -->
+<div class="story-box">
+<h2>&#128161; C&acirc;u chuy&#7879;n: "Con &#273;&#432;&#7901;ng kh&#7903;i nghi&#7879;p Singapore"</h2>
+<div class="mnemonic">
+<span style="color:#f87171">S</span>
+<span style="color:#fb923c">P</span>
+<span style="color:#fbbf24">L</span>
+<span style="color:#4ade80">L</span>
+<span style="color:#60a5fa">C</span>
+<span style="color:#a78bfa">T</span>
+<span style="color:#f472b6">C</span>
+<span style="color:#2dd4bf">S</span>
+</div>
+<div class="story-text">
+<p>H&atilde;y t&#432;&#7903;ng t&#432;&#7907;ng h&agrave;nh tr&igrave;nh kinh doanh nh&#432; m&#7897;t con &#273;&#432;&#7901;ng ti&#7871;n h&oacute;a:</p><br>
+<p>&#9312; B&#7841;n b&#7855;t &#273;&#7847;u m&#7897;t m&igrave;nh &mdash; <span class="hl hl-1">Sole Proprietorship</span> &mdash; &#273;&#417;n gi&#7843;n nh&#7845;t, nh&#432;ng ch&#7883;u tr&aacute;ch nhi&#7879;m v&ocirc; h&#7841;n.</p>
+<p>&#9313; R&#7911; b&#7841;n b&egrave; c&ugrave;ng l&agrave;m &mdash; <span class="hl hl-2">Partnership</span> &mdash; chia l&#7901;i chia l&#7895;, v&#7851;n ch&#7883;u tr&aacute;ch nhi&#7879;m v&ocirc; h&#7841;n.</p>
+<p>&#9314; M&#7901;i nh&agrave; &#273;&#7847;u t&#432; th&#7909; &#273;&#7897;ng &mdash; <span class="hl hl-3">Limited Partnership</span> &mdash; GP qu&#7843;n l&yacute;, LP g&oacute;p v&#7889;n.</p>
+<p>&#9315; N&acirc;ng c&#7845;p b&#7843;o v&#7879; &mdash; <span class="hl hl-4">LLP</span> &mdash; t&#432; c&aacute;ch ph&aacute;p nh&acirc;n ri&ecirc;ng, tr&aacute;ch nhi&#7879;m h&#7919;u h&#7841;n.</p>
+<p>&#9316; Th&agrave;nh l&#7853;p c&ocirc;ng ty &mdash; <span class="hl hl-5">Company</span> &mdash; Pte Ltd / Public, c&#7893; ph&#7847;n, Board of Directors.</p>
+<p>&#9317; Qu&#7843;n l&yacute; t&agrave;i s&#7843;n cho ng&#432;&#7901;i kh&aacute;c &mdash; <span class="hl hl-6">Trust</span> &mdash; Settlor, Trustee, Beneficiary.</p>
+<p>&#9318; L&agrave;m t&#7915; thi&#7879;n &mdash; <span class="hl hl-7">Charity</span> &mdash; kh&ocirc;ng v&igrave; l&#7907;i nhu&#7853;n, COC gi&aacute;m s&aacute;t.</p>
+<p>&#9319; T&#7853;p h&#7907;p c&#7897;ng &#273;&#7891;ng &mdash; <span class="hl hl-8">Society</span> &mdash; c&acirc;u l&#7841;c b&#7897;, hi&#7879;p h&#7897;i.</p>
+</div>
+</div>
+
+<div class="tip-box">
+<h3>&#128272; M&#7865;o nh&#7899; nhanh: "S &ndash; P &ndash; LP &ndash; LLP &ndash; Co &ndash; T &ndash; Ch &ndash; So"</h3>
+<div class="big-text">"Solo &rarr; Partners &rarr; Limited Partners &rarr; Limited Liability &rarr; Company &rarr; Trust &rarr; Charity &rarr; Society"</div>
+<p>Ti&#7871;ng Vi&#7879;t: <strong style="color:#e2e8f0">"S&#7855;p Ph&#7843;i L&#7853;p L&#7841;i C&ocirc;ng Ty Ch&#432;a S&#7861;n"</strong></p>
+</div>
+
+<!-- MAIN COMPARISON TABLE -->
+<div class="table-wrap">
+<h2>&#9878;&#65039; So S&aacute;nh T&#7893;ng Quan C&aacute;c H&igrave;nh Th&#7913;c</h2>
+<table class="cmp">
+<thead><tr>
+<th>Ti&ecirc;u ch&iacute;</th>
+<th style="color:#f87171">Sole Prop</th>
+<th style="color:#fb923c">Partner&shy;ship</th>
+<th style="color:#fbbf24">LP</th>
+<th style="color:#4ade80">LLP</th>
+<th style="color:#60a5fa">Pte Ltd</th>
+<th style="color:#a78bfa">Public Co</th>
+</tr></thead>
+<tbody>
+<tr><td>T&#432; c&aacute;ch ph&aacute;p nh&acirc;n ri&ecirc;ng</td><td class="n">&#10007;</td><td class="n">&#10007;</td><td class="n">&#10007;</td><td class="y">&#10003;</td><td class="y">&#10003;</td><td class="y">&#10003;</td></tr>
+<tr><td>Tr&aacute;ch nhi&#7879;m</td><td class="n">V&ocirc; h&#7841;n</td><td class="n">V&ocirc; h&#7841;n (jointly &amp; severally)</td><td class="p">GP: v&ocirc; h&#7841;n<br>LP: h&#7919;u h&#7841;n</td><td class="y">H&#7919;u h&#7841;n</td><td class="y">H&#7919;u h&#7841;n (theo c&#7893; ph&#7847;n)</td><td class="y">H&#7919;u h&#7841;n</td></tr>
+<tr><td>S&#7889; ng&#432;&#7901;i t&#7889;i thi&#7875;u</td><td>1</td><td>2+</td><td>1 GP + 1 LP</td><td>2+</td><td>1</td><td>50+ SH, 2+ Dir</td></tr>
+<tr><td>Chuy&#7875;n nh&#432;&#7907;ng</td><td class="n">Kh&ocirc;ng</td><td class="n">C&#7847;n &#273;&#7891;ng &yacute; t&#7845;t c&#7843;</td><td class="p">LP c&oacute; th&#7875;</td><td class="n">Kh&ocirc;ng c&#7893; ph&#7847;n</td><td class="y">C&#7893; ph&#7847;n (&#8804;50 SH)</td><td class="y">T&#7921; do tr&ecirc;n SGX</td></tr>
+<tr><td>Ti&#7871;p t&#7909;c v&#297;nh vi&#7877;n</td><td class="n">&#10007;</td><td class="n">&#10007;</td><td class="n">&#10007;</td><td class="y">&#10003;</td><td class="y">&#10003;</td><td class="y">&#10003;</td></tr>
+<tr><td>Compliance</td><td class="y">Th&#7845;p</td><td class="y">Th&#7845;p</td><td class="y">Th&#7845;p</td><td class="p">Trung b&igrave;nh</td><td class="p">Cao</td><td class="n">R&#7845;t cao</td></tr>
+<tr><td>Thu&#7871;</td><td>C&aacute; nh&acirc;n</td><td>C&aacute; nh&acirc;n</td><td>C&aacute; nh&acirc;n</td><td>C&aacute; nh&acirc;n</td><td>C&ocirc;ng ty (17%)</td><td>C&ocirc;ng ty (17%)</td></tr>
+<tr><td>Lu&#7853;t ch&iacute;nh</td><td>BNRA</td><td>PA + BNRA</td><td>LPA + PA</td><td>LLPA</td><td>CA</td><td>CA + SFA</td></tr>
+<tr><td>Ph&ugrave; h&#7907;p</td><td>Freelancer, nh&#7887;</td><td>Gia &#273;&igrave;nh, nh&#7887;</td><td>PE/VC funds</td><td>Lu&#7853;t s&#432;, k&#7871; to&aacute;n</td><td>SME</td><td>L&#7899;n, huy &#273;&#7897;ng v&#7889;n</td></tr>
+</tbody>
+</table>
+</div>
+
+<!-- ENTITY CARDS -->
+<h2 class="sec-title">&#127970; Chi Ti&#7871;t T&#7915;ng H&igrave;nh Th&#7913;c</h2>
+<p style="text-align:center;color:#64748b;margin-bottom:18px;font-size:13px">(B&#7845;m v&agrave;o m&#7895;i th&#7867; &#273;&#7875; xem chi ti&#7871;t)</p>
+
+<div class="cards">
+<!-- Sole Prop -->
+<div class="card" onclick="this.classList.toggle('open')">
+<div class="card-icon">&#128100;</div>
+<div class="card-title" style="color:#f87171">Sole Proprietorship</div>
+<div class="card-sub">Doanh nghi&#7879;p c&aacute; th&#7875;</div>
+<div class="card-body">
+&#8226; <strong>Kh&ocirc;ng</strong> c&oacute; t&#432; c&aacute;ch ph&aacute;p nh&acirc;n ri&ecirc;ng &mdash; ch&#7911; = doanh nghi&#7879;p<br>
+&#8226; Ch&#7911; ch&#7883;u tr&aacute;ch nhi&#7879;m <strong>v&ocirc; h&#7841;n</strong> v&#7873; n&#7907; v&agrave; ngh&#297;a v&#7909;<br>
+&#8226; &#272;&#259;ng k&yacute; v&#7899;i ACRA theo <strong>BNRA</strong>, hi&#7879;u l&#7921;c 1-3 n&#259;m<br>
+&#8226; Kh&ocirc;ng c&#7847;n annual return, kh&ocirc;ng AGM, kh&ocirc;ng audit<br>
+&#8226; Thu&#7871;: l&#7907;i nhu&#7853;n b&aacute;o c&aacute;o nh&#432; thu nh&#7853;p c&aacute; nh&acirc;n (IRAS)<br>
+&#8226; <strong>Kh&ocirc;ng th&#7875; chuy&#7875;n nh&#432;&#7907;ng</strong> &mdash; thay &#273;&#7893;i ch&#7911; = gi&#7843;i th&#7875; + &#273;&#259;ng k&yacute; m&#7899;i<br>
+&#8226; Gi&#7843;i th&#7875;: kh&ocirc;ng gia h&#7841;n, ph&aacute; s&#7843;n, ch&#7871;t, m&#7845;t n&#259;ng l&#7921;c
+<span class="law-tag" style="color:#f87171">BNRA</span>
+</div>
+<div class="card-hint">&#9654; B&#7845;m xem th&ecirc;m</div>
+</div>
+
+<!-- Partnership -->
+<div class="card" onclick="this.classList.toggle('open')">
+<div class="card-icon">&#129309;</div>
+<div class="card-title" style="color:#fb923c">Partnership</div>
+<div class="card-sub">H&#7907;p danh</div>
+<div class="card-body">
+&#8226; 2+ ng&#432;&#7901;i kinh doanh chung &#273;&#7875; ki&#7871;m l&#7901;i<br>
+&#8226; <strong>Kh&ocirc;ng</strong> t&#432; c&aacute;ch ph&aacute;p nh&acirc;n ri&ecirc;ng<br>
+&#8226; M&#7895;i partner ch&#7883;u tr&aacute;ch nhi&#7879;m <strong>jointly &amp; severally</strong> (v&ocirc; h&#7841;n)<br>
+&#8226; Chuy&#7875;n nh&#432;&#7907;ng c&#7847;n &#273;&#7891;ng &yacute; <strong>t&#7845;t c&#7843;</strong> partners<br>
+&#8226; Qu&#7843;n l&yacute; theo partnership agreement (m&#7863;c &#273;&#7883;nh: chia &#273;&#7873;u)<br>
+&#8226; Thu&#7871;: transparent &mdash; m&#7895;i partner t&#7921; khai thu&#7871;<br>
+&#8226; Gi&#7843;i th&#7875;: h&#7871;t h&#7841;n, ch&#7871;t/ph&aacute; s&#7843;n partner, th&#7887;a thu&#7853;n, court order<br>
+&#8226; <strong>Kh&ocirc;ng perpetual succession</strong>
+<span class="law-tag" style="color:#fb923c">PA 1890</span><span class="law-tag" style="color:#fb923c">BNRA</span>
+</div>
+<div class="card-hint">&#9654; B&#7845;m xem th&ecirc;m</div>
+</div>
+
+<!-- LP -->
+<div class="card" onclick="this.classList.toggle('open')">
+<div class="card-icon">&#128176;</div>
+<div class="card-title" style="color:#fbbf24">Limited Partnership (LP)</div>
+<div class="card-sub">H&#7907;p danh h&#7919;u h&#7841;n</div>
+<div class="card-body">
+&#8226; 2 lo&#7841;i partner: <strong>General Partner</strong> (v&ocirc; h&#7841;n, qu&#7843;n l&yacute;) + <strong>Limited Partner</strong> (h&#7919;u h&#7841;n, th&#7909; &#273;&#7897;ng)<br>
+&#8226; LP tham gia qu&#7843;n l&yacute; &rarr; <strong>m&#7845;t quy&#7873;n h&#7919;u h&#7841;n</strong><br>
+&#8226; T&#7889;i thi&#7875;u 1 GP + 1 LP<br>
+&#8226; LP c&oacute; th&#7875; chuy&#7875;n nh&#432;&#7907;ng (theo agreement)<br>
+&#8226; <strong>Kh&ocirc;ng perpetual succession</strong><br>
+&#8226; Th&#432;&#7901;ng d&ugrave;ng cho <strong>PE/VC funds, investment vehicles</strong>
+<span class="law-tag" style="color:#fbbf24">LPA 2008</span>
+</div>
+<div class="card-hint">&#9654; B&#7845;m xem th&ecirc;m</div>
+</div>
+
+<!-- LLP -->
+<div class="card" onclick="this.classList.toggle('open')">
+<div class="card-icon">&#128737;</div>
+<div class="card-title" style="color:#4ade80">LLP</div>
+<div class="card-sub">H&#7907;p danh tr&aacute;ch nhi&#7879;m h&#7919;u h&#7841;n</div>
+<div class="card-body">
+&#8226; <strong>C&Oacute; t&#432; c&aacute;ch ph&aacute;p nh&acirc;n ri&ecirc;ng</strong> (kh&aacute;c GP &amp; LP!)<br>
+&#8226; Partner kh&ocirc;ng ch&#7883;u tr&aacute;ch nhi&#7879;m v&#7873; l&#7895;i c&#7911;a partner kh&aacute;c<br>
+&#8226; <strong>Perpetual succession</strong> (partner r&#7901;i/ch&#7871;t &rarr; LLP v&#7851;n t&#7891;n t&#7841;i)<br>
+&#8226; Kh&ocirc;ng ph&aacute;t h&agrave;nh c&#7893; ph&#7847;n<br>
+&#8226; Thu&#7871; transparent<br>
+&#8226; Annual declaration of solvency v&#7899;i ACRA<br>
+&#8226; Ph&ugrave; h&#7907;p: <strong>lu&#7853;t s&#432;, k&#7871; to&aacute;n, t&#432; v&#7845;n</strong>
+<span class="law-tag" style="color:#4ade80">LLPA 2005</span>
+</div>
+<div class="card-hint">&#9654; B&#7845;m xem th&ecirc;m</div>
+</div>
+
+<!-- Pte Ltd -->
+<div class="card" onclick="this.classList.toggle('open')">
+<div class="card-icon">&#127970;</div>
+<div class="card-title" style="color:#60a5fa">Private Company (Pte Ltd)</div>
+<div class="card-sub">C&ocirc;ng ty TNHH t&#432; nh&acirc;n</div>
+<div class="card-body">
+&#8226; <strong>Ph&#7893; bi&#7871;n nh&#7845;t</strong> t&#7841;i Singapore<br>
+&#8226; T&#432; c&aacute;ch ph&aacute;p nh&acirc;n ri&ecirc;ng, tr&aacute;ch nhi&#7879;m h&#7919;u h&#7841;n<br>
+&#8226; T&#7889;i &#273;a <strong>50 c&#7893; &#273;&ocirc;ng</strong>, kh&ocirc;ng &#273;&#432;&#7907;c ch&agrave;o b&aacute;n ra c&ocirc;ng ch&uacute;ng<br>
+&#8226; V&#7889;n t&#7889;i thi&#7875;u: <strong>S$1</strong><br>
+&#8226; C&#7847;n: 1 director (resident SG), company secretary, registered office<br>
+&#8226; Compliance: annual return, AGM, SFRS, audit (tr&#7915; small co)<br>
+&#8226; Board of Directors &#273;i&#7873;u h&agrave;nh, fiduciary duties<br>
+&#8226; <strong>EPC</strong>: &#8804;20 SH (kh&ocirc;ng corporate SH) &rarr; mi&#7877;n audit n&#7871;u small company<br>
+&#8226; <strong>CLG</strong>: kh&ocirc;ng c&#7893; ph&#7847;n, non-profit, members b&#7843;o &#273;&#7843;m b&#7857;ng guarantee
+<span class="law-tag" style="color:#60a5fa">CA 1967</span>
+</div>
+<div class="card-hint">&#9654; B&#7845;m xem th&ecirc;m</div>
+</div>
+
+<!-- Public Co -->
+<div class="card" onclick="this.classList.toggle('open')">
+<div class="card-icon">&#127963;</div>
+<div class="card-title" style="color:#a78bfa">Public Company</div>
+<div class="card-sub">C&ocirc;ng ty &#273;&#7841;i ch&uacute;ng</div>
+<div class="card-body">
+&#8226; <strong>&gt;50 c&#7893; &#273;&ocirc;ng</strong>, c&oacute; th&#7875; huy &#273;&#7897;ng v&#7889;n c&ocirc;ng ch&uacute;ng<br>
+&#8226; C&#7893; ph&#7847;n t&#7921; do chuy&#7875;n nh&#432;&#7907;ng (&#273;&#7863;c bi&#7879;t n&#7871;u listed tr&ecirc;n <strong>SGX</strong>)<br>
+&#8226; T&#7889;i thi&#7875;u <strong>2 directors</strong> (resident SG), company secretary<br>
+&#8226; Compliance r&#7845;t cao: audited FS, AGM, continuous disclosure<br>
+&#8226; Listed companies: th&ecirc;m <strong>SFA + SGX Listing Rules</strong><br>
+&#8226; C&#7847;n independent directors, audit/remuneration committees<br>
+&#8226; Public CLG: non-profit, kh&ocirc;ng c&#7893; ph&#7847;n, national councils
+<span class="law-tag" style="color:#a78bfa">CA</span><span class="law-tag" style="color:#a78bfa">SFA</span><span class="law-tag" style="color:#a78bfa">SGX Rules</span>
+</div>
+<div class="card-hint">&#9654; B&#7845;m xem th&ecirc;m</div>
+</div>
+
+<!-- Trust -->
+<div class="card" onclick="this.classList.toggle('open')">
+<div class="card-icon">&#128274;</div>
+<div class="card-title" style="color:#f472b6">Trust</div>
+<div class="card-sub">&#7910;y th&aacute;c</div>
+<div class="card-body">
+&#8226; <strong>Kh&ocirc;ng ph&#7843;i ph&aacute;p nh&acirc;n</strong> m&agrave; l&agrave; quan h&#7879; ph&aacute;p l&yacute;<br>
+&#8226; 3 b&ecirc;n: <strong>Settlor</strong> (t&#7841;o) &rarr; <strong>Trustee</strong> (qu&#7843;n l&yacute;) &rarr; <strong>Beneficiary</strong> (h&#432;&#7903;ng l&#7907;i)<br>
+&#8226; <strong>Three Certainties</strong>: Intention, Subject Matter, Objects<br>
+&#8226; Trustee c&oacute; ngh&#297;a v&#7909; fiduciary nghi&ecirc;m ng&#7863;t<br>
+&#8226; D&#7841;ng: private trust, charitable trust, unit trust, <strong>REIT</strong><br>
+&#8226; REIT: &#273;&#432;&#7907;c li&#7879;t k&ecirc; tr&ecirc;n SGX, &#273;&#7847;u t&#432; b&#7845;t &#273;&#7897;ng s&#7843;n
+<span class="law-tag" style="color:#f472b6">Trustees Act 1967</span><span class="law-tag" style="color:#f472b6">BTA 2004</span>
+</div>
+<div class="card-hint">&#9654; B&#7845;m xem th&ecirc;m</div>
+</div>
+
+<!-- Charity & Society -->
+<div class="card" onclick="this.classList.toggle('open')">
+<div class="card-icon">&#127775;</div>
+<div class="card-title" style="color:#2dd4bf">Charity &amp; Society</div>
+<div class="card-sub">T&#7915; thi&#7879;n &amp; Hi&#7879;p h&#7897;i</div>
+<div class="card-body">
+<strong>Charity:</strong><br>
+&#8226; &#272;&#259;ng k&yacute; v&#7899;i Commissioner of Charities (<strong>COC</strong>)<br>
+&#8226; Kh&ocirc;ng ph&acirc;n ph&#7889;i l&#7907;i nhu&#7853;n, surplus &rarr; t&#7893; ch&#7913;c t&#432;&#417;ng t&#7921;<br>
+&#8226; IPC: &#273;&#432;&#7907;c ph&aacute;t bi&ecirc;n lai kh&#7845;u tr&#7915; thu&#7871;<br>
+&#8226; H&igrave;nh th&#7913;c: CLG, society, ho&#7863;c charitable trust<br><br>
+<strong>Society:</strong><br>
+&#8226; &#272;&#259;ng k&yacute; v&#7899;i Registrar of Societies (&#8805;10 ng&#432;&#7901;i)<br>
+&#8226; <strong>Kh&ocirc;ng</strong> t&#432; c&aacute;ch ph&aacute;p nh&acirc;n ri&ecirc;ng<br>
+&#8226; C&acirc;u l&#7841;c b&#7897;, hi&#7879;p h&#7897;i, grassroots<br>
+&#8226; Qu&#7843;n l&yacute; b&#7903;i management committee
+<span class="law-tag" style="color:#2dd4bf">CHA 1994</span><span class="law-tag" style="color:#2dd4bf">SA 1966</span>
+</div>
+<div class="card-hint">&#9654; B&#7845;m xem th&ecirc;m</div>
+</div>
+</div>
+
+<!-- SHARES SECTION -->
+<div class="shares-section">
+<h2>&#128200; C&aacute;c Lo&#7841;i C&#7893; Ph&#7847;n &amp; C&ocirc;ng C&#7909; Hybrid</h2>
+<div class="share-row">
+<div class="share-card">
+<div class="share-name" style="color:#60a5fa">Ordinary Shares</div>
+<div class="share-desc">C&#7893; ph&#7847;n th&#432;&#7901;ng &mdash; full voting, dividends, residual rights. Rủi ro cao nhất nhưng upside lớn nhất.</div>
+<span class="share-tag tag-vote">Voting &#10003;</span><span class="share-tag tag-div">Dividend &#10003;</span>
+</div>
+<div class="share-card">
+<div class="share-name" style="color:#fbbf24">Preference Shares</div>
+<div class="share-desc">&#431;u ti&ecirc;n dividends &amp; repayment. Th&#432;&#7901;ng &iacute;t/kh&ocirc;ng voting. Quy&#7873;n theo constitution.</div>
+<span class="share-tag tag-div">Priority Dividend</span><span class="share-tag tag-none">Limited Vote</span>
+</div>
+</div>
+<div class="share-row">
+<div class="share-card">
+<div class="share-name" style="color:#4ade80">Redeemable Shares</div>
+<div class="share-desc">C&ocirc;ng ty c&oacute; th&#7875; mua l&#7841;i (redeem) theo &#273;i&#7873;u ki&#7879;n &#273;&atilde; th&#7887;a thu&#7853;n. Predictable exit.</div>
+<span class="share-tag tag-hybrid">Redeemable</span>
+</div>
+<div class="share-card">
+<div class="share-name" style="color:#a78bfa">RCPS</div>
+<div class="share-desc"><strong>Redeemable Convertible Preference Shares</strong> &mdash; v&#7915;a redeem v&#7915;a convert. Ph&#7893; bi&#7871;n trong VC/PE. Debt + Equity features.</div>
+<span class="share-tag tag-hybrid">Redeem + Convert</span><span class="share-tag tag-div">Priority</span>
+</div>
+</div>
+<div class="share-row">
+<div class="share-card">
+<div class="share-name" style="color:#f472b6">Perpetual Securities</div>
+<div class="share-desc">Kh&ocirc;ng maturity date, coupon c&#7889; &#273;&#7883;nh/th&#7843; n&#7893;i. Quasi-equity. MAS c&ocirc;ng nh&#7853;n hybrid.</div>
+<span class="share-tag tag-hybrid">No Maturity</span>
+</div>
+<div class="share-card">
+<div class="share-name" style="color:#2dd4bf">Convertible Bonds</div>
+<div class="share-desc">Tr&aacute;i phi&#7871;u c&oacute; quy&#7873;n chuy&#7875;n &#273;&#7893;i th&agrave;nh c&#7893; ph&#7847;n. Fixed income + equity upside.</div>
+<span class="share-tag tag-hybrid">Debt &rarr; Equity</span>
+</div>
+</div>
+</div>
+
+<!-- SHAREHOLDER RIGHTS -->
+<div class="rights-box">
+<h2>&#9878;&#65039; Quy&#7873;n C&#7893; &#272;&ocirc;ng &amp; &#221; Ngh&#297;a &#272;&#7883;nh Gi&aacute;</h2>
+<div class="rights-grid">
+<div class="right-item">
+<div class="right-name">&#128499; Voting Rights</div>
+<div class="right-desc">B&#7847;u/b&#227;i nhi&#7879;m directors, s&#7917;a constitution, ph&ecirc; duy&#7879;t giao d&#7883;ch l&#7899;n. G&#7855;n v&#7899;i ordinary shares.</div>
+</div>
+<div class="right-item">
+<div class="right-name">&#128176; Dividend Rights</div>
+<div class="right-desc">Nh&#7853;n c&#7893; t&#7913;c khi Board tuy&ecirc;n b&#7889;. Preference shares &#273;&#432;&#7907;c &#432;u ti&ecirc;n.</div>
+</div>
+<div class="right-item">
+<div class="right-name">&#128274; Pre-emption Rights</div>
+<div class="right-desc">Quy&#7873;n mua tr&#432;&#7899;c khi c&ocirc;ng ty ph&aacute;t h&agrave;nh th&ecirc;m &mdash; ch&#7889;ng pha lo&atilde;ng.</div>
+</div>
+<div class="right-item">
+<div class="right-name">&#128101; Tag-along Rights</div>
+<div class="right-desc">Minority &#273;&#432;&#7907;c b&aacute;n c&ugrave;ng &#273;i&#7873;u ki&#7879;n v&#7899;i majority khi majority b&aacute;n.</div>
+</div>
+<div class="right-item">
+<div class="right-name">&#128170; Drag-along Rights</div>
+<div class="right-desc">Majority c&oacute; th&#7875; bu&#7897;c minority b&aacute;n c&ugrave;ng trong M&amp;A deal.</div>
+</div>
+<div class="right-item">
+<div class="right-name">&#9940; Veto Rights</div>
+<div class="right-desc">Quy&#7873;n ph&#7911; quy&#7871;t v&#7873; s&#7917;a &#273;&#7893;i v&#7889;n, vay n&#7907; l&#7899;n, giao d&#7883;ch li&ecirc;n quan.</div>
+</div>
+<div class="right-item">
+<div class="right-name">&#9878; s.216 CA &mdash; Oppression</div>
+<div class="right-desc">Minority c&oacute; th&#7875; ki&#7879;n n&#7871;u b&#7883; &#273;&#7889;i x&#7917; b&#7845;t c&ocirc;ng. T&ograve;a c&oacute; th&#7875; y&ecirc;u c&#7847;u mua l&#7841;i c&#7893; ph&#7847;n t&#7841;i fair value.</div>
+</div>
+<div class="right-item">
+<div class="right-name">&#128200; Valuation Impact</div>
+<div class="right-desc"><strong>Majority</strong>: control premium. <strong>Minority</strong>: discount. <strong>Blocking stake (>25%)</strong>: c&oacute; th&#7875; ch&#7863;n special resolution &rarr; premium. Substance > Form!</div>
+</div>
+</div>
+</div>
+
+<!-- QUIZ -->
+<div class="quiz-box">
+<h2>&#127919; Ki&#7875;m Tra Tr&iacute; Nh&#7899; &mdash; 15 C&acirc;u</h2>
+<div id="qC"></div>
+<div class="score" id="sc"></div>
+<button class="btn" onclick="resetQ()">&#128260; L&agrave;m l&#7841;i</button>
+</div>
+</div>
+
+<script>
+const Q=[
+{q:"&#272;i&#7875;m kh&aacute;c bi&#7879;t c&#417; b&#7843;n gi&#7919;a Sole Proprietorship v&agrave; Company l&agrave; g&igrave;?",o:["S&#7889; nh&acirc;n vi&ecirc;n","T&#432; c&aacute;ch ph&aacute;p nh&acirc;n ri&ecirc;ng (separate legal personality)","Lo&#7841;i h&igrave;nh kinh doanh","&#272;&#7883;a ch&#7881; &#273;&#259;ng k&yacute;"],c:1,e:"Sole prop kh&ocirc;ng c&oacute; t&#432; c&aacute;ch ph&aacute;p nh&acirc;n ri&ecirc;ng (ch&#7911; = DN). Company l&agrave; m&#7897;t th&#7921;c th&#7875; ph&aacute;p l&yacute; &#273;&#7897;c l&#7853;p."},
+{q:"Trong Partnership, c&aacute;c partner ch&#7883;u tr&aacute;ch nhi&#7879;m nh&#432; th&#7871; n&agrave;o?",o:["H&#7919;u h&#7841;n theo v&#7889;n g&oacute;p","Jointly &amp; severally &mdash; v&ocirc; h&#7841;n","Ch&#7881; trong ph&#7841;m vi h&#7907;p &#273;&#7891;ng","Kh&ocirc;ng ch&#7883;u tr&aacute;ch nhi&#7879;m"],c:1,e:"Partners ch&#7883;u tr&aacute;ch nhi&#7879;m li&ecirc;n &#273;&#7899;i v&agrave; ri&ecirc;ng r&#7869; (jointly & severally), v&ocirc; h&#7841;n v&#7873; n&#7907; c&#7911;a partnership."},
+{q:"Khi n&agrave;o Limited Partner trong LP m&#7845;t quy&#7873;n h&#7919;u h&#7841;n?",o:["Khi g&oacute;p th&ecirc;m v&#7889;n","Khi tham gia qu&#7843;n l&yacute; (management)","Khi r&uacute;t v&#7889;n","Khi c&oacute; l&#7895;"],c:1,e:"N&#7871;u LP tham gia qu&#7843;n l&yacute; DN &rarr; m&#7845;t quy&#7873;n tr&aacute;ch nhi&#7879;m h&#7919;u h&#7841;n, tr&#7903; th&agrave;nh nh&#432; GP."},
+{q:"LLP kh&aacute;c g&igrave; so v&#7899;i General Partnership?",o:["LLP c&oacute; t&#432; c&aacute;ch ph&aacute;p nh&acirc;n ri&ecirc;ng v&agrave; perpetual succession","LLP kh&ocirc;ng c&#7847;n &#273;&#259;ng k&yacute;","LLP ch&#7881; d&agrave;nh cho 1 ng&#432;&#7901;i","LLP ph&#7843;i n&#7897;p thu&#7871; c&ocirc;ng ty"],c:0,e:"LLP c&oacute; separate legal personality v&agrave; perpetual succession. GP kh&ocirc;ng c&oacute; c&#7843; hai."},
+{q:"C&ocirc;ng ty Pte Ltd &#273;&#432;&#7907;c gi&#7899;i h&#7841;n t&#7889;i &#273;a bao nhi&ecirc;u c&#7893; &#273;&ocirc;ng?",o:["20","50","100","Kh&ocirc;ng gi&#7899;i h&#7841;n"],c:1,e:"Pte Ltd gi&#7899;i h&#7841;n 50 c&#7893; &#273;&ocirc;ng v&agrave; kh&ocirc;ng &#273;&#432;&#7907;c ch&agrave;o b&aacute;n c&#7893; ph&#7847;n ra c&ocirc;ng ch&uacute;ng."},
+{q:"EPC (Exempt Private Company) l&agrave; g&igrave;?",o:["C&ocirc;ng ty &#273;&#7841;i ch&uacute;ng &#273;&#432;&#7907;c mi&#7877;n thu&#7871;","Pte Ltd &#8804;20 SH, kh&ocirc;ng corporate SH, c&oacute; th&#7875; mi&#7877;n audit","C&ocirc;ng ty nh&agrave; n&#432;&#7899;c","C&ocirc;ng ty kh&ocirc;ng c&#7847;n &#273;&#259;ng k&yacute;"],c:1,e:"EPC: &#8804;20 shareholders, kh&ocirc;ng c&oacute; corporate shareholder. &#272;&#432;&#7907;c mi&#7877;n audit n&#7871;u l&agrave; 'small company' (revenue/assets &#8804;S$10M, &#8804;50 NV)."},
+{q:"CLG (Company Limited by Guarantee) kh&aacute;c g&igrave; Pte Ltd?",o:["CLG kh&ocirc;ng c&oacute; share capital, d&agrave;nh cho non-profit","CLG c&oacute; nhi&#7873;u c&#7893; &#273;&ocirc;ng h&#417;n","CLG kh&ocirc;ng c&#7847;n directors","CLG kh&ocirc;ng c&#7847;n &#273;&#259;ng k&yacute; ACRA"],c:0,e:"CLG kh&ocirc;ng ph&aacute;t h&agrave;nh c&#7893; ph&#7847;n. Members b&#7843;o &#273;&#7843;m b&#7857;ng s&#7889; ti&#7873;n guarantee. Th&#432;&#7901;ng d&ugrave;ng cho non-profit, professional bodies."},
+{q:"Trust c&#7847;n th&#7887;a m&atilde;n 'Three Certainties' n&agrave;o?",o:["Intention, Subject Matter, Objects","Time, Place, Purpose","Settlor, Trustee, Beneficiary","Value, Risk, Return"],c:0,e:"Three Certainties: (1) Certainty of Intention, (2) Certainty of Subject Matter, (3) Certainty of Objects (beneficiaries)."},
+{q:"REIT &#273;&#432;&#7907;c c&#7845;u tr&uacute;c d&#432;&#7899;i h&igrave;nh th&#7913;c n&agrave;o?",o:["Partnership","Company","Unit Trust","Society"],c:2,e:"REIT l&agrave; unit trust, &#273;&#432;&#7907;c listed tr&ecirc;n SGX, &#273;i&#7873;u ch&#7881;nh b&#7903;i SFA."},
+{q:"Charity mu&#7889;n &#273;&#432;&#7907;c ph&aacute;t bi&ecirc;n lai kh&#7845;u tr&#7915; thu&#7871; c&#7847;n &#273;&#259;ng k&yacute; l&agrave; g&igrave;?",o:["Public Company","IPC (Institution of a Public Character)","EPC","Trust"],c:1,e:"IPC status cho ph&eacute;p charity ph&aacute;t bi&ecirc;n lai tax-deductible receipts cho donors."},
+{q:"Ordinary shares c&oacute; &#273;&#7863;c &#273;i&#7875;m g&igrave;?",o:["Fixed dividend, no voting","Full voting rights, residual rights, dividends when declared","Guaranteed return","Priority repayment"],c:1,e:"Ordinary shares: full voting, dividends (kh&ocirc;ng &#273;&#7843;m b&#7843;o), residual rights khi winding up. Rủi ro cao nhất nhưng upside lớn nhất."},
+{q:"RCPS ph&#7893; bi&#7871;n trong lo&#7841;i giao d&#7883;ch n&agrave;o?",o:["B&#7845;t &#273;&#7897;ng s&#7843;n","VC / PE deals","B&#7843;o hi&#7875;m","Ng&acirc;n h&agrave;ng b&aacute;n l&#7867;"],c:1,e:"RCPS = Redeemable Convertible Preference Shares. Ph&#7893; bi&#7871;n trong VC/PE v&igrave; k&#7871;t h&#7907;p downside protection (redeem) v&agrave; upside (convert)."},
+{q:"Tag-along rights b&#7843;o v&#7879; ai?",o:["Majority shareholders","Minority shareholders","Directors","Creditors"],c:1,e:"Tag-along cho ph&eacute;p minority b&aacute;n c&#7893; ph&#7847;n c&ugrave;ng &#273;i&#7873;u ki&#7879;n khi majority b&aacute;n."},
+{q:"Blocking stake cho special resolution &#7903; Singapore l&agrave; bao nhi&ecirc;u?",o:[">10%",">25%",">50%",">75%"],c:1,e:"Special resolution c&#7847;n 75% approval (s.184 CA). V&#7853;y >25% c&oacute; th&#7875; ch&#7863;n (block) &rarr; c&oacute; th&#7875; &#273;&#432;&#7907;c valuation premium."},
+{q:"T&ograve;a &aacute;n Singapore nh&#7845;n m&#7841;nh nguy&ecirc;n t&#7855;c n&agrave;o khi &#273;&#7883;nh gi&aacute; c&#7893; ph&#7847;n?",o:["Form over substance","Substance over form","Par value","Book value"],c:1,e:"Substance prevails over form. T&ograve;a xem x&eacute;t quy&#7873;n th&#7921;c t&#7871; (rights, obligations, economic risks) ch&#7913; kh&ocirc;ng ph&#7843;i t&ecirc;n g&#7885;i."}
+];
+let ans=0,cor=0;
+function renderQ(){
+const c=document.getElementById('qC');
+c.innerHTML=Q.map((q,i)=>`<div class="q-card" id="qc${i}"><div class="q-text"><span class="q-num">${i+1}</span>${q.q}</div><div class="q-opts">${q.o.map((o,j)=>`<div class="q-opt" data-q="${i}" data-o="${j}" onclick="pick(${i},${j})">${String.fromCharCode(65+j)}. ${o}</div>`).join('')}</div><div class="q-exp" id="qe${i}">${q.e}</div></div>`).join('');
+}
+function pick(qi,oi){
+const card=document.getElementById('qc'+qi);
+if(card.classList.contains('ok')||card.classList.contains('no'))return;
+const opts=card.querySelectorAll('.q-opt'),exp=document.getElementById('qe'+qi);
+ans++;
+opts.forEach((o,j)=>{if(j===Q[qi].c)o.classList.add('correct');if(j===oi&&j!==Q[qi].c)o.classList.add('wrong');o.classList.add('off')});
+if(oi===Q[qi].c){card.classList.add('ok');exp.classList.add('gc');cor++}else{card.classList.add('no');exp.classList.add('bc')}
+exp.classList.add('show');
+if(ans===Q.length){const s=document.getElementById('sc'),p=Math.round(cor/Q.length*100);s.innerHTML=`${p>=80?'&#127881;':p>=60?'&#128170;':'&#128218;'} ${cor}/${Q.length} (${p}%)${p>=80?' — Xu&#7845;t s&#7855;c!':p>=60?' — Kh&aacute;!':' — &#212;n l&#7841;i nh&eacute;!'}`;s.classList.add('show')}
+}
+function resetQ(){ans=0;cor=0;document.getElementById('sc').classList.remove('show');renderQ()}
+renderQ();
+</script>
+</body>
+</html>

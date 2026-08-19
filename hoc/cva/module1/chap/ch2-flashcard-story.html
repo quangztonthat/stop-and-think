@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Flashcard & Story — Chapter 2: Nguyên Tắc & What/Why/How/Who</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',sans-serif;background:#0a0f1a;color:#e2e8f0;min-height:100vh;overflow-x:hidden}
+.container{max-width:920px;margin:0 auto;padding:20px}
+.tabs{display:flex;gap:0;margin-bottom:28px;background:#1e293b;border-radius:14px;overflow:hidden;border:1px solid #334155}
+.tab{flex:1;padding:14px 6px;text-align:center;cursor:pointer;font-size:13px;font-weight:600;transition:all .3s;color:#64748b;border:none;background:none}
+.tab:hover{color:#94a3b8;background:rgba(255,255,255,.03)}
+.tab.active{background:linear-gradient(135deg,#7c3aed,#6d28d9);color:#fff}
+.tab-icon{font-size:20px;display:block;margin-bottom:3px}
+.panel{display:none}.panel.active{display:block}
+h1{text-align:center;font-size:23px;margin-bottom:6px;background:linear-gradient(135deg,#a78bfa,#38bdf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.subtitle{text-align:center;color:#64748b;font-size:13px;margin-bottom:24px}
+
+/* ===== STORY ===== */
+.story-chapter{background:linear-gradient(135deg,#1a1f35,#151a2e);border:1px solid #2a3555;border-radius:16px;padding:22px;margin-bottom:18px;position:relative;overflow:hidden;cursor:pointer;transition:all .3s}
+.story-chapter:hover{border-color:#475569;transform:translateY(-2px)}
+.story-chapter::before{content:'';position:absolute;top:0;left:0;width:5px;height:100%;border-radius:16px 0 0 16px}
+.ch-purple::before{background:linear-gradient(to bottom,#a78bfa,#7c3aed)}
+.ch-blue::before{background:linear-gradient(to bottom,#60a5fa,#2563eb)}
+.ch-amber::before{background:linear-gradient(to bottom,#fbbf24,#d97706)}
+.ch-green::before{background:linear-gradient(to bottom,#4ade80,#16a34a)}
+.ch-rose::before{background:linear-gradient(to bottom,#fb7185,#e11d48)}
+.ch-header{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+.ch-num{font-size:32px;font-weight:800;opacity:.12;position:absolute;top:8px;right:18px}
+.ch-emoji{font-size:34px}
+.ch-title{font-size:17px;font-weight:700}
+.ch-purple .ch-title{color:#c4b5fd}
+.ch-blue .ch-title{color:#93c5fd}
+.ch-amber .ch-title{color:#fde68a}
+.ch-green .ch-title{color:#86efac}
+.ch-rose .ch-title{color:#fda4af}
+.story-text{font-size:14px;line-height:2;color:#cbd5e1;padding-left:12px;border-left:2px solid #334155}
+.kw{font-weight:700;padding:1px 6px;border-radius:4px;white-space:nowrap}
+.kw-p{color:#c4b5fd;background:rgba(167,139,250,.1)}
+.kw-b{color:#93c5fd;background:rgba(96,165,250,.1)}
+.kw-a{color:#fde68a;background:rgba(251,191,36,.1)}
+.kw-g{color:#86efac;background:rgba(74,222,128,.1)}
+.kw-r{color:#fda4af;background:rgba(251,113,133,.1)}
+.story-memory{margin-top:12px;padding:11px 14px;background:rgba(251,191,36,.06);border:1px solid rgba(251,191,36,.15);border-radius:10px;font-size:12.5px;color:#fde68a;line-height:1.7}
+.story-memory::before{content:'💡 Mẹo nhớ: ';font-weight:700}
+.story-hidden{max-height:0;overflow:hidden;transition:max-height .5s ease}
+.story-chapter.open .story-hidden{max-height:900px}
+.ch-toggle{font-size:11px;color:#475569;margin-top:8px;text-align:right}
+
+/* ===== FLASHCARD ===== */
+.fc-controls{display:flex;justify-content:center;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap}
+.fc-filter{padding:7px 14px;border-radius:20px;border:1px solid #334155;background:#1e293b;color:#94a3b8;cursor:pointer;font-size:11.5px;font-weight:600;transition:all .2s}
+.fc-filter:hover{border-color:#a78bfa;color:#e2e8f0}
+.fc-filter.active{background:#7c3aed;color:#fff;border-color:#7c3aed}
+.fc-counter{text-align:center;color:#64748b;font-size:12px;margin-bottom:14px}
+.fc-stage{perspective:1000px;display:flex;justify-content:center;margin-bottom:18px;min-height:250px}
+.fc-card{width:100%;max-width:500px;height:250px;position:relative;cursor:pointer;transform-style:preserve-3d;transition:transform .6s}
+.fc-card.flipped{transform:rotateY(180deg)}
+.fc-face{position:absolute;inset:0;border-radius:16px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:26px;backface-visibility:hidden;text-align:center}
+.fc-front{background:linear-gradient(135deg,#1e293b,#0f172a);border:2px solid #334155}
+.fc-back{background:linear-gradient(135deg,#1a2744,#0f172a);border:2px solid #7c3aed;transform:rotateY(180deg)}
+.fc-q-label{font-size:10px;color:#64748b;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px}
+.fc-q-text{font-size:17px;font-weight:600;color:#e2e8f0;line-height:1.6}
+.fc-a-label{font-size:10px;color:#7c3aed;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px}
+.fc-a-text{font-size:15px;color:#c4b5fd;line-height:1.7;font-weight:500}
+.fc-a-detail{font-size:11.5px;color:#64748b;margin-top:8px;line-height:1.6}
+.fc-hint{font-size:11px;color:#475569;margin-top:10px}
+.fc-tag{position:absolute;top:12px;right:14px;font-size:10px;padding:3px 10px;border-radius:20px;font-weight:700;letter-spacing:.5px}
+.fc-tag-principle{background:rgba(167,139,250,.12);color:#c4b5fd}
+.fc-tag-what{background:rgba(96,165,250,.12);color:#93c5fd}
+.fc-tag-why{background:rgba(251,191,36,.12);color:#fde68a}
+.fc-tag-how{background:rgba(74,222,128,.12);color:#86efac}
+.fc-tag-who{background:rgba(251,113,133,.12);color:#fda4af}
+.fc-nav{display:flex;justify-content:center;align-items:center;gap:16px}
+.fc-btn{padding:10px 24px;border-radius:12px;border:none;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s}
+.fc-btn:hover{transform:translateY(-2px)}
+.fc-prev{background:#334155;color:#e2e8f0}.fc-next{background:#7c3aed;color:#fff}
+.fc-shuffle{background:#0f172a;color:#fbbf24;border:1px solid rgba(251,191,36,.3);padding:10px 16px;border-radius:12px;font-size:12px;font-weight:600;cursor:pointer}
+.fc-num{color:#64748b;font-size:13px;font-weight:600;min-width:60px;text-align:center}
+.fc-know-btns{display:flex;justify-content:center;gap:10px;margin-top:12px}
+.fc-know{padding:7px 18px;border-radius:8px;border:none;font-size:12px;font-weight:600;cursor:pointer;transition:all .2s}
+.fc-got{background:rgba(74,222,128,.12);color:#4ade80;border:1px solid rgba(74,222,128,.25)}
+.fc-miss{background:rgba(248,113,113,.12);color:#f87171;border:1px solid rgba(248,113,113,.25)}
+.fc-score{text-align:center;color:#64748b;font-size:12px;margin-top:8px}
+
+/* ===== DRAG & DROP: Match Pairs ===== */
+.match-instr{text-align:center;color:#94a3b8;font-size:14px;margin-bottom:16px;line-height:1.7}
+.match-score{text-align:center;font-size:15px;margin-bottom:14px;color:#a78bfa;font-weight:600}
+.match-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
+@media(max-width:650px){.match-grid{grid-template-columns:1fr}}
+.match-col-title{text-align:center;font-size:12px;color:#64748b;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;font-weight:600}
+.match-item{padding:12px 14px;background:#1e293b;border:2px solid #334155;border-radius:12px;cursor:pointer;font-size:13px;color:#e2e8f0;transition:all .2s;margin-bottom:6px;text-align:center;line-height:1.5}
+.match-item:hover{border-color:#a78bfa;background:#1a2744}
+.match-item.selected{border-color:#a78bfa;background:rgba(167,139,250,.1);box-shadow:0 0 12px rgba(167,139,250,.15)}
+.match-item.correct{border-color:#4ade80;background:rgba(74,222,128,.08);color:#4ade80;pointer-events:none}
+.match-item.wrong{border-color:#f87171;background:rgba(248,113,113,.08);animation:shake .4s}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+.match-controls{text-align:center;margin-top:14px}
+.match-btn{padding:10px 24px;border-radius:12px;border:none;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;margin:0 6px}
+.match-reset{background:#475569;color:#e2e8f0}.match-reset:hover{background:#64748b}
+.match-result{text-align:center;margin-top:14px;font-size:15px;min-height:24px}
+
+/* ===== DND: Org into Categories ===== */
+.dnd-instr{text-align:center;color:#94a3b8;font-size:14px;margin-bottom:16px}
+.dnd-score{text-align:center;font-size:15px;margin-bottom:14px;color:#a78bfa;font-weight:600}
+.dnd-pool{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;padding:14px;background:#1e293b;border-radius:14px;border:1px solid #334155;min-height:55px;margin-bottom:16px}
+.dnd-chip{padding:8px 14px;border-radius:10px;font-size:12px;font-weight:600;cursor:grab;transition:all .2s;user-select:none;border:1px solid #475569;background:#0f172a;color:#e2e8f0}
+.dnd-chip:hover{transform:translateY(-2px);border-color:#a78bfa}
+.dnd-chip.correct{background:rgba(74,222,128,.12)!important;border-color:#4ade80!important;color:#4ade80!important;cursor:default}
+.dnd-chip.wrong{background:rgba(248,113,113,.12)!important;border-color:#f87171!important;color:#f87171!important;animation:shake .4s}
+.dnd-zones{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
+@media(max-width:650px){.dnd-zones{grid-template-columns:1fr}}
+.dnd-zone{min-height:100px;border-radius:14px;padding:12px;transition:all .3s}
+.dnd-zone.drag-over{transform:scale(1.02)}
+.zone-p10{background:linear-gradient(135deg,#1a152e,#15122a);border:2px dashed rgba(167,139,250,.3)}
+.zone-p10.drag-over{border-color:#a78bfa;box-shadow:0 0 18px rgba(167,139,250,.12)}
+.zone-wwwh{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media(max-width:650px){.zone-wwwh{grid-template-columns:1fr}}
+.zone-what{background:linear-gradient(135deg,#101828,#13162a);border:2px dashed rgba(96,165,250,.3)}
+.zone-what.drag-over{border-color:#60a5fa;box-shadow:0 0 18px rgba(96,165,250,.12)}
+.zone-why{background:linear-gradient(135deg,#1f1a0f,#18150f);border:2px dashed rgba(251,191,36,.3)}
+.zone-why.drag-over{border-color:#fbbf24;box-shadow:0 0 18px rgba(251,191,36,.12)}
+.zone-how{background:linear-gradient(135deg,#0f1f15,#0f1812);border:2px dashed rgba(74,222,128,.3)}
+.zone-how.drag-over{border-color:#4ade80;box-shadow:0 0 18px rgba(74,222,128,.12)}
+.zone-who{background:linear-gradient(135deg,#1f1015,#1a0f14);border:2px dashed rgba(251,113,133,.3)}
+.zone-who.drag-over{border-color:#fb7185;box-shadow:0 0 18px rgba(251,113,133,.12)}
+.zone-title{font-size:13px;font-weight:700;margin-bottom:6px;display:flex;align-items:center;gap:6px}
+.zone-what .zone-title{color:#93c5fd}
+.zone-why .zone-title{color:#fde68a}
+.zone-how .zone-title{color:#86efac}
+.zone-who .zone-title{color:#fda4af}
+.zone-items{display:flex;flex-wrap:wrap;gap:5px;min-height:28px}
+.dnd-controls{text-align:center;margin-top:14px}
+.dnd-btn{padding:10px 24px;border-radius:12px;border:none;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;margin:0 6px}
+.dnd-reset{background:#475569;color:#e2e8f0}.dnd-reset:hover{background:#64748b}
+.dnd-result{text-align:center;margin-top:14px;font-size:15px;min-height:24px}
+
+/* ===== PANEL 4: Scenario Game ===== */
+.scenario-box{background:#1e293b;border:1px solid #334155;border-radius:16px;padding:22px;margin-bottom:16px}
+.scenario-title{font-size:16px;color:#fbbf24;margin-bottom:6px;text-align:center;font-weight:700}
+.scenario-sub{text-align:center;color:#64748b;font-size:12px;margin-bottom:16px}
+.scenario-card{background:#0f172a;border:2px solid #334155;border-radius:12px;padding:18px;margin-bottom:14px;text-align:center}
+.scenario-text{font-size:14.5px;color:#e2e8f0;line-height:1.7}
+.scenario-opts{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:14px 0}
+@media(max-width:600px){.scenario-opts{grid-template-columns:1fr}}
+.sc-opt{padding:12px;background:#1e293b;border:2px solid #334155;border-radius:10px;cursor:pointer;font-size:12.5px;text-align:center;transition:all .2s;line-height:1.4;color:#cbd5e1}
+.sc-opt:hover{border-color:#a78bfa;background:#1a2744}
+.sc-opt.correct{border-color:#4ade80;background:rgba(74,222,128,.08);color:#4ade80;pointer-events:none}
+.sc-opt.wrong{border-color:#f87171;background:rgba(248,113,113,.08);color:#f87171;animation:shake .4s}
+.sc-feedback{text-align:center;font-size:13px;min-height:40px;margin:8px 0;line-height:1.6}
+.sc-nav{text-align:center}
+.sc-btn{padding:10px 24px;border-radius:12px;border:none;font-size:13px;font-weight:600;cursor:pointer;background:#7c3aed;color:#fff;transition:all .2s;margin:0 6px;display:none}
+.sc-btn:hover{background:#6d28d9}
+.sc-btn.sec{background:#475569}.sc-btn.sec:hover{background:#64748b}
+.sc-progress{display:flex;justify-content:center;gap:5px;margin-bottom:14px}
+.sc-dot{width:11px;height:11px;border-radius:50%;background:#334155;transition:background .3s}
+.sc-dot.right{background:#4ade80}.sc-dot.wrong{background:#f87171}
+.sc-score-final{text-align:center;font-size:16px;margin-top:14px}
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>🧠 Chapter 2: Nguyên Tắc & Framework</h1>
+  <p class="subtitle">10 Nguyên Tắc · What/Why/How/Who · Flashcard · Game</p>
+
+  <div class="tabs">
+    <div class="tab active" onclick="switchTab(0)"><span class="tab-icon">📖</span>Câu chuyện</div>
+    <div class="tab" onclick="switchTab(1)"><span class="tab-icon">🃏</span>Flashcard</div>
+    <div class="tab" onclick="switchTab(2)"><span class="tab-icon">🔗</span>Nối cặp</div>
+    <div class="tab" onclick="switchTab(3)"><span class="tab-icon">🎯</span>Kéo thả</div>
+    <div class="tab" onclick="switchTab(4)"><span class="tab-icon">🧩</span>Tình huống</div>
+  </div>
+
+  <!-- ======= PANEL 0: STORY ======= -->
+  <div class="panel active" id="panel0">
+
+    <div class="story-chapter ch-purple" onclick="this.classList.toggle('open')">
+      <div class="ch-num">★</div>
+      <div class="ch-header"><div class="ch-emoji">📰</div><div class="ch-title">Câu Thần Chú: "TIN THỜI MỤC XÉT GIÁ RỦI TƯƠNG THANH THIỂU PHÍ"</div></div>
+      <div class="story-text">
+        Hãy tưởng tượng một <span class="kw kw-p">tờ báo thời sự</span> có tiêu đề:<br>
+        <strong style="color:#c4b5fd;font-size:15px">"TIN THỜI SỰ: MỤC ĐÍCH XÉT XỬ GIÁ RỦI RO TƯƠNG LAI, THANH LÝ THIỂU SỐ PHÍ TỔN"</strong>
+      </div>
+      <div class="story-hidden">
+        <div class="story-text" style="margin-top:12px">
+          10 từ in đậm = 10 nguyên tắc:<br>
+          <span class="kw kw-p">TIN</span> = Thông tin · <span class="kw kw-p">THỜI</span> = Thời điểm · <span class="kw kw-p">MỤC ĐÍCH</span> = Purpose · <span class="kw kw-p">XÉT</span> = Xét đoán ·
+          <span class="kw kw-p">GIÁ</span> = Price≠Value · <span class="kw kw-p">RỦI</span> = Rủi ro · <span class="kw kw-p">TƯƠNG</span> = Tương lai ·
+          <span class="kw kw-p">THANH</span> = Thanh khoản · <span class="kw kw-p">THIỂU</span> = Thiểu số · <span class="kw kw-p">PHÍ</span> = Cost≠Value
+        </div>
+        <div class="story-memory">Đọc to câu này 3 lần, rồi nhắm mắt nói lại. Mỗi từ = 1 nguyên tắc!</div>
+      </div>
+      <div class="ch-toggle">▸ Bấm mở chi tiết</div>
+    </div>
+
+    <div class="story-chapter ch-purple" onclick="this.classList.toggle('open')">
+      <div class="ch-num">1</div>
+      <div class="ch-header"><div class="ch-emoji">🏠</div><div class="ch-title">Chương 1: Thẩm Định Viên Đi Chợ Mua Nhà</div></div>
+      <div class="story-text">
+        Bạn là thẩm định viên đi xem một căn nhà. Từng bước đi, bạn gặp 10 "bài học" — chính là 10 nguyên tắc:
+      </div>
+      <div class="story-hidden">
+        <div class="story-text" style="margin-top:12px">
+          ① Bạn cần <span class="kw kw-p">THÔNG TIN</span> đầy đủ — ai biết nhiều hơn sẽ định giá khác. <em>(#1 Information)</em><br><br>
+          ② Giá trị phụ thuộc <span class="kw kw-p">THỜI ĐIỂM</span> đi xem — trước/sau COVID giá khác xa. <em>(#2 Time specific)</em><br><br>
+          ③ <span class="kw kw-p">MỤC ĐÍCH</span> mua khác nhau: ở hay cho thuê → giá khác. <em>(#3 Purpose)</em><br><br>
+          ④ Hai chuyên gia cùng xem nhà nhưng <span class="kw kw-p">XÉT ĐOÁN</span> khác → giá khác. <em>(#4 Judgement)</em><br><br>
+          ⑤ <span class="kw kw-p">GIÁ</span> rao bán 5 tỷ nhưng giá trị thực chỉ 4 tỷ — price ≠ value! <em>(#5 Price≠Value)</em><br><br>
+          ⑥ Nhà vùng ngập → <span class="kw kw-p">RỦI RO</span> cao → giá trị thấp hơn. <em>(#6 Risk & return)</em><br><br>
+          ⑦ Nhà gần trường học sắp xây → <span class="kw kw-p">TƯƠNG LAI</span> tốt → giá trị cao. <em>(#7 Future)</em><br><br>
+          ⑧ Nhà dễ bán lại (<span class="kw kw-p">THANH KHOẢN</span>) → giá trị cao hơn nhà hẻo lánh. <em>(#8 Liquidity/DLOM)</em><br><br>
+          ⑨ Mua 10% cổ phần (<span class="kw kw-p">THIỂU SỐ</span>) rẻ hơn tính theo tỷ lệ so 90%. <em>(#9 Minority/DLOC)</em><br><br>
+          ⑩ Xây tốn 5 tỷ (<span class="kw kw-p">PHÍ</span>) nhưng bán chỉ 3.5 tỷ vì lỗi thời. <em>(#10 Cost≠Value)</em>
+        </div>
+        <div class="story-memory">Nhớ dãy: TIN → THỜI → MỤC ĐÍCH → XÉT → GIÁ → RỦI → TƯƠNG → THANH → THIỂU → PHÍ. Mỗi bước chân trong chợ = 1 nguyên tắc!</div>
+      </div>
+      <div class="ch-toggle">▸ Bấm mở câu chuyện</div>
+    </div>
+
+    <div class="story-chapter ch-blue" onclick="this.classList.toggle('open')">
+      <div class="ch-num">2</div>
+      <div class="ch-header"><div class="ch-emoji">🔍</div><div class="ch-title">Chương 2: WHAT — Định giá CÁI GÌ? (4 loại)</div></div>
+      <div class="story-text">
+        Bạn nhận một engagement mới. Câu hỏi đầu tiên: "Tôi đang định giá <span class="kw kw-b">CÁI GÌ</span>?" Có 4 loại đối tượng:
+      </div>
+      <div class="story-hidden">
+        <div class="story-text" style="margin-top:12px">
+          🏢 <span class="kw kw-b">Doanh nghiệp / Lợi ích kinh doanh</span> — toàn bộ DN, controlling, minority interest → IVS 200<br><br>
+          💡 <span class="kw kw-b">Tài sản vô hình</span> — thương hiệu, patent, customer list, goodwill → IVS 210<br><br>
+          🏭 <span class="kw kw-b">Tài sản hữu hình</span> — hàng tồn kho, BĐS, nhà xưởng, thiết bị<br><br>
+          💳 <span class="kw kw-b">Công cụ tài chính & Nợ</span> — debt, derivatives, nghĩa vụ hợp đồng
+        </div>
+        <div class="story-memory">Nhớ "DN - Vô - Hữu - Tài": Doanh nghiệp → Vô hình → Hữu hình → Tài chính. Enterprise Value = giá trị toàn bộ DN, chia cho cả equity + debt holders.</div>
+      </div>
+      <div class="ch-toggle">▸ Bấm mở</div>
+    </div>
+
+    <div class="story-chapter ch-amber" onclick="this.classList.toggle('open')">
+      <div class="ch-num">3</div>
+      <div class="ch-header"><div class="ch-emoji">❓</div><div class="ch-title">Chương 3: WHY — Tại sao định giá? (6 mục đích)</div></div>
+      <div class="story-text">
+        Câu hỏi thứ hai: "<span class="kw kw-a">TẠI SAO</span> định giá?" — 6 mục đích. Mẹo: <strong>"MUA - CẤU - THUẾ - KIỆN - BÁO - VỐN"</strong>
+      </div>
+      <div class="story-hidden">
+        <div class="story-text" style="margin-top:12px">
+          🤝 <span class="kw kw-a">MUA</span> bán sáp nhập (M&A) — cơ sở đàm phán khách quan<br><br>
+          🔄 Tái <span class="kw kw-a">CẤU</span> trúc — spin-off, equity injection, giải thể liên doanh<br><br>
+          💵 <span class="kw kw-a">THUẾ</span> — transfer pricing, capital gains, estate tax<br><br>
+          ⚖️ <span class="kw kw-a">KIỆN</span> tụng — shareholder buyouts, ly hôn, bồi thường, patent disputes<br><br>
+          📊 <span class="kw kw-a">BÁO</span> cáo tài chính — PPA (IFRS 3), impairment (IAS 36), fair value<br><br>
+          💰 Gọi <span class="kw kw-a">VỐN</span> — PE, VC, IPO. Pre-money + Investment = Post-money
+        </div>
+        <div class="story-memory">"MUA CẤU THUẾ KIỆN BÁO VỐN" — đọc nhanh như một câu: "Mua cấu thuế kiện báo vốn!"<br>⚠️ Client ≠ Intended User! Thuế: client = taxpayer, intended user = cơ quan thuế. Kiện: client = hai bên, intended user = thẩm phán.</div>
+      </div>
+      <div class="ch-toggle">▸ Bấm mở</div>
+    </div>
+
+    <div class="story-chapter ch-green" onclick="this.classList.toggle('open')">
+      <div class="ch-num">4</div>
+      <div class="ch-header"><div class="ch-emoji">⚙️</div><div class="ch-title">Chương 4: HOW — Định giá bằng cách nào?</div></div>
+      <div class="story-text">
+        <span class="kw kw-g">6 bước quy trình</span>: "ĐỊNH - HIỂU - TÌM - CHỌN - TÍNH - KIỂM" + <span class="kw kw-g">3 Approaches</span>
+      </div>
+      <div class="story-hidden">
+        <div class="story-text" style="margin-top:12px">
+          ① <span class="kw kw-g">ĐỊNH</span> phạm vi engagement → ② <span class="kw kw-g">HIỂU</span> đối tượng & DN → ③ <span class="kw kw-g">TÌM</span> thông tin → ④ <span class="kw kw-g">CHỌN</span> approach & method → ⑤ <span class="kw kw-g">TÍNH</span> kết quả → ⑥ <span class="kw kw-g">KIỂM</span> tra sensitivity<br><br>
+          3 Approaches:<br>
+          📈 <span class="kw kw-g">Market</span> Approach (IVS 103-A10) — so sánh giao dịch / cty tương tự<br>
+          💲 <span class="kw kw-g">Income</span> Approach (IVS 103-A20) — DCF chiết khấu dòng tiền<br>
+          🏗️ <span class="kw kw-g">Cost</span> Approach (IVS 103-A30) — chi phí thay thế / tái tạo
+        </div>
+        <div class="story-memory">⚠️ BẪY THI: DCF, Comparable transactions là METHODS, không phải APPROACHES! Approach = cách tiếp cận (3 loại). Method = phương pháp cụ thể bên trong.</div>
+      </div>
+      <div class="ch-toggle">▸ Bấm mở</div>
+    </div>
+
+    <div class="story-chapter ch-rose" onclick="this.classList.toggle('open')">
+      <div class="ch-num">5</div>
+      <div class="ch-header"><div class="ch-emoji">👥</div><div class="ch-title">Chương 5: WHO — Định giá cho ai? (6 nhóm)</div></div>
+      <div class="story-text">
+        <span class="kw kw-r">6 nhóm người dùng</span>: "ĐẦU - KẾ - LUẬT - CHỦ - VỐN - QUẢN"
+      </div>
+      <div class="story-hidden">
+        <div class="story-text" style="margin-top:12px">
+          📈 <span class="kw kw-r">ĐẦU</span> tư — retail, corporate, institutional investors<br>
+          📋 <span class="kw kw-r">KẾ</span> toán — accountants, auditors (PPA, impairment, fair value)<br>
+          ⚖️ <span class="kw kw-r">LUẬT</span> — lawyers, judges, arbitrators<br>
+          🏢 <span class="kw kw-r">CHỦ</span> doanh nghiệp — shareholders, board, management<br>
+          💰 Nhà cung cấp <span class="kw kw-r">VỐN</span> — PE, VC, ngân hàng<br>
+          🏛️ Cơ <span class="kw kw-r">QUẢN</span> lý — sàn chứng khoán, cơ quan thuế
+        </div>
+        <div class="story-memory">"ĐẦU KẾ LUẬT CHỦ VỐN QUẢN" — tưởng tượng 6 người ngồi quanh bàn họp, mỗi người cần báo cáo định giá vì lý do khác nhau!</div>
+      </div>
+      <div class="ch-toggle">▸ Bấm mở</div>
+    </div>
+  </div>
+
+  <!-- ======= PANEL 1: FLASHCARD ======= -->
+  <div class="panel" id="panel1">
+    <div class="fc-controls">
+      <div class="fc-filter active" data-cat="all" onclick="fcFilter('all')">Tất cả</div>
+      <div class="fc-filter" data-cat="principle" onclick="fcFilter('principle')">10 Nguyên tắc</div>
+      <div class="fc-filter" data-cat="what" onclick="fcFilter('what')">WHAT</div>
+      <div class="fc-filter" data-cat="why" onclick="fcFilter('why')">WHY</div>
+      <div class="fc-filter" data-cat="how" onclick="fcFilter('how')">HOW</div>
+      <div class="fc-filter" data-cat="who" onclick="fcFilter('who')">WHO</div>
+    </div>
+    <div class="fc-counter" id="fcCounter"></div>
+    <div class="fc-stage"><div class="fc-card" id="fcCard" onclick="this.classList.toggle('flipped')"><div class="fc-face fc-front" id="fcFront"></div><div class="fc-face fc-back" id="fcBack"></div></div></div>
+    <div class="fc-nav">
+      <button class="fc-btn fc-prev" onclick="fcMove(-1)">← Trước</button>
+      <span class="fc-num" id="fcNum"></span>
+      <button class="fc-btn fc-next" onclick="fcMove(1)">Tiếp →</button>
+    </div>
+    <div class="fc-know-btns">
+      <button class="fc-know fc-miss" onclick="fcMark(false)">❌ Chưa thuộc</button>
+      <button class="fc-know fc-got" onclick="fcMark(true)">✅ Thuộc rồi</button>
+      <button class="fc-shuffle" onclick="fcShuffle()">🔀 Trộn</button>
+    </div>
+    <div class="fc-score" id="fcScoreEl"></div>
+  </div>
+
+  <!-- ======= PANEL 2: MATCH PAIRS ======= -->
+  <div class="panel" id="panel2">
+    <div class="match-instr">Bấm 1 ô bên trái, rồi bấm ô đúng bên phải để nối cặp 👇</div>
+    <div class="match-score" id="matchScore">0 / 0 đúng</div>
+    <div class="match-grid">
+      <div><div class="match-col-title">Nguyên tắc / Khái niệm</div><div id="matchLeft"></div></div>
+      <div><div class="match-col-title">Ý nghĩa / Ví dụ</div><div id="matchRight"></div></div>
+    </div>
+    <div class="match-controls"><button class="match-btn match-reset" onclick="matchInit()">🔄 Chơi lại</button></div>
+    <div class="match-result" id="matchResult"></div>
+  </div>
+
+  <!-- ======= PANEL 3: DND ======= -->
+  <div class="panel" id="panel3">
+    <div class="dnd-instr">Kéo từng khái niệm vào đúng nhóm WHAT / WHY / HOW / WHO 👇</div>
+    <div class="dnd-score" id="dndScore2">0 / 0 đúng</div>
+    <div class="dnd-pool" id="dndPool2"></div>
+    <div class="zone-wwwh">
+      <div class="dnd-zone zone-what" id="zone-what" ondragover="d2Over(event)" ondragleave="d2Leave(event)" ondrop="d2Drop(event,'what')"><div class="zone-title">🔍 WHAT</div><div class="zone-items" id="zi-what"></div></div>
+      <div class="dnd-zone zone-why" id="zone-why" ondragover="d2Over(event)" ondragleave="d2Leave(event)" ondrop="d2Drop(event,'why')"><div class="zone-title">❓ WHY</div><div class="zone-items" id="zi-why"></div></div>
+      <div class="dnd-zone zone-how" id="zone-how" ondragover="d2Over(event)" ondragleave="d2Leave(event)" ondrop="d2Drop(event,'how')"><div class="zone-title">⚙️ HOW</div><div class="zone-items" id="zi-how"></div></div>
+      <div class="dnd-zone zone-who" id="zone-who" ondragover="d2Over(event)" ondragleave="d2Leave(event)" ondrop="d2Drop(event,'who')"><div class="zone-title">👥 WHO</div><div class="zone-items" id="zi-who"></div></div>
+    </div>
+    <div class="dnd-controls"><button class="dnd-btn dnd-reset" onclick="d2Init()">🔄 Chơi lại</button></div>
+    <div class="dnd-result" id="dndResult2"></div>
+  </div>
+
+  <!-- ======= PANEL 4: SCENARIO ======= -->
+  <div class="panel" id="panel4">
+    <div class="scenario-box">
+      <div class="scenario-title">🧩 Tình Huống Thực Tế</div>
+      <div class="scenario-sub">Đọc tình huống, chọn nguyên tắc/khái niệm đúng nhất</div>
+      <div class="sc-progress" id="scProgress"></div>
+      <div class="scenario-card" id="scCard"></div>
+      <div class="scenario-opts" id="scOpts"></div>
+      <div class="sc-feedback" id="scFeedback"></div>
+      <div class="sc-nav">
+        <button class="sc-btn" id="scNext" onclick="scNext()">Câu tiếp →</button>
+        <button class="sc-btn sec" onclick="scInit()" style="display:inline-block">🔄 Làm lại</button>
+      </div>
+      <div class="sc-score-final" id="scFinal"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ===== TABS ===== */
+function switchTab(i){document.querySelectorAll('.tab').forEach((t,j)=>t.classList.toggle('active',j===i));document.querySelectorAll('.panel').forEach((p,j)=>p.classList.toggle('active',j===i));}
+
+/* ===== FLASHCARD DATA ===== */
+const allCards=[
+  // 10 Principles
+  {q:"Nguyên tắc 1: TIN — Value is information driven",a:"Giá trị phụ thuộc chất lượng & độ đầy đủ của thông tin",detail:"A có ít data → $20M. B có thêm dự báo → $30M. Cùng cty, khác data = khác kết quả.",cat:"principle",tag:"NGUYÊN TẮC"},
+  {q:"Nguyên tắc 2: THỜI — Value is time specific",a:"Giá trị thay đổi theo thời điểm",detail:"Cty A: $300M(12/2019) → $200M(COVID) → $500M(12/2021). Phải xác lập valuation date.",cat:"principle",tag:"NGUYÊN TẮC"},
+  {q:"Nguyên tắc 3: MỤC ĐÍCH — Value is purpose dependent",a:"Mục đích khác → basis of value khác → kết quả khác",detail:"Financing (market value)=$60M; Acquisition (investment value+synergies)=$100M.",cat:"principle",tag:"NGUYÊN TẮC"},
+  {q:"Nguyên tắc 4: XÉT — Professional judgement",a:"Cùng data nhưng chuyên gia diễn giải khác → kết quả khác",detail:"Valuer A (discount 15%)=$100M; Valuer B (discount 20%)=$75M. Valuation = Science + Art.",cat:"principle",tag:"NGUYÊN TẮC"},
+  {q:"Nguyên tắc 5: GIÁ — Price ≠ Value",a:"Price = số tiền thực trả. Value = ước tính nội tại.",detail:"Valuer: $50M, nhưng acquirer trả $60M (premium vì synergies). Price ≠ Value.",cat:"principle",tag:"NGUYÊN TẮC"},
+  {q:"Nguyên tắc 6: RỦI — Risk and return",a:"Rủi ro cao → discount rate cao → giá trị thấp hơn",detail:"Cty ổn định (12x multiple)=$12M; Cty rủi ro (8x)=$8M. Nền tảng của DCF.",cat:"principle",tag:"NGUYÊN TẮC"},
+  {q:"Nguyên tắc 7: TƯƠNG — Future returns",a:"Giá trị dựa trên kỳ vọng tương lai, không phải quá khứ",detail:"Cty lợi nhuận trì trệ nhưng có patent → $250M > đối thủ $100M.",cat:"principle",tag:"NGUYÊN TẮC"},
+  {q:"Nguyên tắc 8: THANH — Liquidity affects value",a:"Tài sản dễ bán (liquid) có giá trị cao hơn",detail:"DLOM = Discount for Lack of Marketability. CP niêm yết > cổ phần tư nhân.",cat:"principle",tag:"NGUYÊN TẮC"},
+  {q:"Nguyên tắc 9: THIỂU — Minority < Controlling",a:"Cổ đông thiểu số bị chiết khấu vì không có quyền kiểm soát",detail:"DLOC = Discount for Lack of Control. Pro rata 10% = $10M → thực tế $8M.",cat:"principle",tag:"NGUYÊN TẮC"},
+  {q:"Nguyên tắc 10: PHÍ — Cost ≠ Value",a:"Chi phí lịch sử ≠ giá trị hiện tại",detail:"Xây lab $25M nhưng market value chỉ $18M vì lỗi thời.",cat:"principle",tag:"NGUYÊN TẮC"},
+  // WHAT
+  {q:"4 loại đối tượng định giá (WHAT)?",a:"DN/Lợi ích KD, Tài sản vô hình, Tài sản hữu hình, Công cụ tài chính & Nợ",detail:"Focus CVA: IVS 200 (DN), IVS 210 (Vô hình)",cat:"what",tag:"WHAT"},
+  {q:"Enterprise Value là gì?",a:"Tổng giá trị DN từ cash flow, chia cho cả equity + debt holders",detail:"DN được tài trợ bằng equity + debt → EV phải chia cho cả hai.",cat:"what",tag:"WHAT"},
+  {q:"Share Market vs Corporate Valuation?",a:"Share = góc nhìn investor (equity analysts). Corporate = góc nhìn management/board.",detail:"Module 1 focus vào Corporate Valuation.",cat:"what",tag:"WHAT"},
+  // WHY
+  {q:"6 mục đích định giá (WHY)?",a:"MUA - CẤU - THUẾ - KIỆN - BÁO - VỐN",detail:"M&A, Tái cấu trúc, Thuế, Kiện tụng, BCTC, Gọi vốn",cat:"why",tag:"WHY"},
+  {q:"Transfer pricing liên quan mục đích nào?",a:"THUẾ — xác định giá chuyển nhượng hợp lý",detail:"VD: royalty rate 5% trên net sales cho license công nghệ.",cat:"why",tag:"WHY"},
+  {q:"PPA (Purchase Price Allocation) thuộc mục đích nào?",a:"BÁO cáo tài chính — IFRS 3 Business Combinations",detail:"Phân bổ giá mua thành intangibles, tangibles, goodwill.",cat:"why",tag:"WHY"},
+  {q:"Pre-money $15M + investor góp $5M = Post-money?",a:"$20M. Investor sở hữu 25% ($5M/$20M).",detail:"Thuộc mục đích Gọi VỐN.",cat:"why",tag:"WHY"},
+  // HOW
+  {q:"6 bước quy trình định giá?",a:"ĐỊNH scope → HIỂU DN → TÌM data → CHỌN approach → TÍNH kết quả → KIỂM tra",detail:"Mẹo: ĐỊNH - HIỂU - TÌM - CHỌN - TÍNH - KIỂM",cat:"how",tag:"HOW"},
+  {q:"3 Approaches định giá?",a:"Market (A10), Income (A20), Cost (A30)",detail:"DCF = method của Income. Comparable transactions = method của Market.",cat:"how",tag:"HOW"},
+  {q:"DCF là method hay approach?",a:"METHOD — thuộc Income Approach (A20)",detail:"⚠️ Bẫy thi: DCF, Comparable transactions là methods, KHÔNG phải approaches!",cat:"how",tag:"HOW"},
+  // WHO
+  {q:"6 nhóm người dùng (WHO)?",a:"ĐẦU tư - KẾ toán - LUẬT - CHỦ DN - VỐN - cơ QUẢN lý",detail:"Mẹo: ĐẦU KẾ LUẬT CHỦ VỐN QUẢN",cat:"who",tag:"WHO"},
+  {q:"Client ≠ Intended User. Trong kiện tụng: Intended user là ai?",a:"Thẩm phán (không phải hai bên tranh chấp)",detail:"Hai bên là client, nhưng thẩm phán mới là người đọc & dùng báo cáo.",cat:"who",tag:"WHO"},
+];
+
+let fcIdx=0,fcDeck=[...allCards],fcGot=0,fcMiss=0;
+function fcFilter(cat){document.querySelectorAll('.fc-filter').forEach(f=>f.classList.toggle('active',f.dataset.cat===cat));fcDeck=cat==='all'?[...allCards]:allCards.filter(c=>c.cat===cat);fcIdx=0;fcGot=0;fcMiss=0;fcRender();}
+function fcShuffle(){for(let i=fcDeck.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[fcDeck[i],fcDeck[j]]=[fcDeck[j],fcDeck[i]];}fcIdx=0;fcGot=0;fcMiss=0;fcRender();}
+function fcRender(){
+  document.getElementById('fcCard').classList.remove('flipped');
+  if(!fcDeck.length){document.getElementById('fcFront').innerHTML='<div class="fc-q-text">Không có thẻ</div>';document.getElementById('fcBack').innerHTML='';document.getElementById('fcNum').textContent='0/0';return;}
+  const c=fcDeck[fcIdx];const tc={'principle':'fc-tag-principle','what':'fc-tag-what','why':'fc-tag-why','how':'fc-tag-how','who':'fc-tag-who'}[c.cat];
+  document.getElementById('fcFront').innerHTML=`<div class="fc-tag ${tc}">${c.tag}</div><div class="fc-q-label">Câu hỏi</div><div class="fc-q-text">${c.q}</div><div class="fc-hint">👆 Bấm để lật</div>`;
+  document.getElementById('fcBack').innerHTML=`<div class="fc-tag ${tc}">${c.tag}</div><div class="fc-a-label">Đáp án</div><div class="fc-a-text">${c.a}</div><div class="fc-a-detail">${c.detail}</div>`;
+  document.getElementById('fcNum').textContent=`${fcIdx+1}/${fcDeck.length}`;
+  document.getElementById('fcCounter').textContent=`${fcDeck.length} thẻ`;
+  document.getElementById('fcScoreEl').textContent=`✅ ${fcGot}  ❌ ${fcMiss}`;
+}
+function fcMove(d){if(!fcDeck.length)return;fcIdx=(fcIdx+d+fcDeck.length)%fcDeck.length;fcRender();}
+function fcMark(got){if(got)fcGot++;else fcMiss++;document.getElementById('fcScoreEl').textContent=`✅ ${fcGot}  ❌ ${fcMiss}`;if(fcIdx<fcDeck.length-1){fcIdx++;fcRender();}else{document.getElementById('fcScoreEl').textContent=`Hoàn thành! ✅ ${fcGot}  ❌ ${fcMiss} / ${fcDeck.length}`;}}
+
+/* ===== MATCH PAIRS ===== */
+const matchData=[
+  {l:"#1 TIN (Information)",r:"Ai có nhiều data hơn → định giá khác"},
+  {l:"#2 THỜI (Time specific)",r:"Valuation date — giá trị thay đổi theo thời điểm"},
+  {l:"#3 MỤC ĐÍCH (Purpose)",r:"Financing vs Acquisition → kết quả khác"},
+  {l:"#4 XÉT (Judgement)",r:"Cùng data nhưng chọn discount rate khác"},
+  {l:"#5 GIÁ (Price≠Value)",r:"Acquirer trả $60M nhưng value chỉ $50M"},
+  {l:"#6 RỦI (Risk & Return)",r:"Rủi ro cao → multiple thấp → giá trị thấp"},
+  {l:"#7 TƯƠNG (Future)",r:"Patent độc quyền → kỳ vọng tương lai cao"},
+  {l:"#8 THANH (Liquidity)",r:"DLOM — cổ phần tư nhân bị chiết khấu"},
+  {l:"#9 THIỂU (Minority)",r:"DLOC — 10% không có quyền kiểm soát"},
+  {l:"#10 PHÍ (Cost≠Value)",r:"Xây $25M nhưng market value chỉ $18M"},
+];
+let matchSel=null,matchOk=0,matchTot=0;
+function shuffle(a){const b=[...a];for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]];}return b;}
+function matchInit(){
+  matchSel=null;matchOk=0;matchTot=0;
+  document.getElementById('matchScore').textContent='0 / 0 đúng';
+  document.getElementById('matchResult').textContent='';
+  const left=shuffle(matchData.map((d,i)=>({text:d.l,idx:i})));
+  const right=shuffle(matchData.map((d,i)=>({text:d.r,idx:i})));
+  document.getElementById('matchLeft').innerHTML=left.map(d=>`<div class="match-item" data-idx="${d.idx}" data-side="l" onclick="matchClick(this)">${d.text}</div>`).join('');
+  document.getElementById('matchRight').innerHTML=right.map(d=>`<div class="match-item" data-idx="${d.idx}" data-side="r" onclick="matchClick(this)">${d.text}</div>`).join('');
+}
+function matchClick(el){
+  if(el.classList.contains('correct'))return;
+  if(!matchSel){matchSel=el;el.classList.add('selected');return;}
+  if(el.dataset.side===matchSel.dataset.side){matchSel.classList.remove('selected');matchSel=el;el.classList.add('selected');return;}
+  matchTot++;
+  const lEl=matchSel.dataset.side==='l'?matchSel:el;
+  const rEl=matchSel.dataset.side==='r'?matchSel:el;
+  if(lEl.dataset.idx===rEl.dataset.idx){
+    lEl.classList.remove('selected');lEl.classList.add('correct');rEl.classList.add('correct');matchOk++;
+  } else {
+    lEl.classList.remove('selected');rEl.classList.add('wrong');matchSel.classList.add('wrong');
+    setTimeout(()=>{rEl.classList.remove('wrong');lEl.classList.remove('wrong');matchSel?.classList?.remove('wrong');},600);
+  }
+  matchSel=null;
+  document.getElementById('matchScore').textContent=`${matchOk} / ${matchTot} đúng`;
+  if(matchOk===matchData.length){
+    const pct=Math.round(matchOk/matchTot*100);
+    document.getElementById('matchResult').innerHTML=pct>=80?'<span style="color:#4ade80">🎉 Xuất sắc!</span>':'<span style="color:#fbbf24">💪 Tốt lắm!</span>';
+  }
+}
+
+/* ===== DND: WHAT/WHY/HOW/WHO ===== */
+const d2Data=[
+  {text:"Doanh nghiệp / IVS 200",cat:"what"},
+  {text:"Tài sản vô hình / IVS 210",cat:"what"},
+  {text:"Tài sản hữu hình",cat:"what"},
+  {text:"Công cụ tài chính & Nợ",cat:"what"},
+  {text:"M&A (Mua bán sáp nhập)",cat:"why"},
+  {text:"Tái cấu trúc",cat:"why"},
+  {text:"Thuế / Transfer pricing",cat:"why"},
+  {text:"Kiện tụng / Tranh chấp",cat:"why"},
+  {text:"BCTC / PPA / IFRS 3",cat:"why"},
+  {text:"Gọi vốn (PE, VC, IPO)",cat:"why"},
+  {text:"Market Approach (A10)",cat:"how"},
+  {text:"Income Approach (A20)",cat:"how"},
+  {text:"Cost Approach (A30)",cat:"how"},
+  {text:"6 bước: Định-Hiểu-Tìm-Chọn-Tính-Kiểm",cat:"how"},
+  {text:"Investment community",cat:"who"},
+  {text:"Accounting community",cat:"who"},
+  {text:"Legal community",cat:"who"},
+  {text:"Corporate community",cat:"who"},
+  {text:"Capital providers (PE/VC/Bank)",cat:"who"},
+  {text:"Regulatory bodies",cat:"who"},
+];
+let d2Ok=0,d2Tot=0;
+function d2Init(){
+  d2Ok=0;d2Tot=0;
+  document.getElementById('dndScore2').textContent='0 / 0 đúng';
+  document.getElementById('dndResult2').textContent='';
+  ['what','why','how','who'].forEach(c=>document.getElementById('zi-'+c).innerHTML='');
+  const pool=document.getElementById('dndPool2');
+  const sh=shuffle(d2Data);
+  pool.innerHTML=sh.map((d,i)=>`<div class="dnd-chip" draggable="true" data-cat="${d.cat}" ondragstart="event.dataTransfer.setData('text',this.outerHTML);event.dataTransfer.setData('cat','${d.cat}');this._src=true">${d.text}</div>`).join('');
+  // Touch support
+  pool.querySelectorAll('.dnd-chip').forEach(addTouch2);
+}
+function d2Over(e){e.preventDefault();e.currentTarget.classList.add('drag-over');}
+function d2Leave(e){e.currentTarget.classList.remove('drag-over');}
+function d2Drop(e,zone){
+  e.preventDefault();e.currentTarget.classList.remove('drag-over');
+  const html=e.dataTransfer.getData('text');const cat=e.dataTransfer.getData('cat');
+  document.querySelectorAll('#dndPool2 .dnd-chip').forEach(c=>{if(c._src){c.remove();c._src=false;}});
+  const container=document.getElementById('zi-'+zone);
+  const tmp=document.createElement('div');tmp.innerHTML=html;const chip=tmp.firstElementChild;
+  chip.draggable=false;chip.style.cursor='default';chip.removeAttribute('ondragstart');
+  d2Tot++;
+  if(cat===zone){chip.classList.add('correct');d2Ok++;}else{chip.classList.add('wrong');setTimeout(()=>chip.style.opacity='.5',400);}
+  container.appendChild(chip);
+  document.getElementById('dndScore2').textContent=`${d2Ok} / ${d2Tot} đúng`;
+  if(!document.querySelectorAll('#dndPool2 .dnd-chip').length){
+    const pct=Math.round(d2Ok/d2Tot*100);
+    document.getElementById('dndResult2').innerHTML=pct>=90?'<span style="color:#4ade80">🎉 Xuất sắc! '+pct+'%</span>':pct>=60?'<span style="color:#fbbf24">💪 Khá: '+pct+'%</span>':'<span style="color:#fb923c">📖 Ôn lại: '+pct+'%</span>';
+  }
+}
+let t2El=null,t2Clone=null;
+function addTouch2(el){
+  el.addEventListener('touchstart',e=>{t2El=el;t2Clone=el.cloneNode(true);t2Clone.style.cssText='position:fixed;z-index:9999;opacity:.8;pointer-events:none';document.body.appendChild(t2Clone);const t=e.touches[0];t2Clone.style.left=(t.clientX-40)+'px';t2Clone.style.top=(t.clientY-20)+'px';},{passive:true});
+  el.addEventListener('touchmove',e=>{if(!t2Clone)return;e.preventDefault();const t=e.touches[0];t2Clone.style.left=(t.clientX-40)+'px';t2Clone.style.top=(t.clientY-20)+'px';document.querySelectorAll('.dnd-zone').forEach(z=>z.classList.remove('drag-over'));const u=document.elementFromPoint(t.clientX,t.clientY);if(u){const z=u.closest('.dnd-zone');if(z)z.classList.add('drag-over');}},{passive:false});
+  el.addEventListener('touchend',e=>{if(!t2Clone||!t2El)return;const t=e.changedTouches[0];document.querySelectorAll('.dnd-zone').forEach(z=>z.classList.remove('drag-over'));const u=document.elementFromPoint(t.clientX,t.clientY);if(u){const z=u.closest('.dnd-zone');if(z){const zc=z.id.replace('zone-','');const ic=t2El.dataset.cat;const chip=t2El.cloneNode(true);chip.draggable=false;chip.style.cursor='default';d2Tot++;if(ic===zc){chip.classList.add('correct');d2Ok++;}else{chip.classList.add('wrong');setTimeout(()=>chip.style.opacity='.5',400);}z.querySelector('.zone-items').appendChild(chip);t2El.remove();document.getElementById('dndScore2').textContent=`${d2Ok} / ${d2Tot} đúng`;if(!document.querySelectorAll('#dndPool2 .dnd-chip').length){const p=Math.round(d2Ok/d2Tot*100);document.getElementById('dndResult2').innerHTML=p>=90?'<span style="color:#4ade80">🎉 '+p+'%</span>':p>=60?'<span style="color:#fbbf24">💪 '+p+'%</span>':'<span style="color:#fb923c">📖 '+p+'%</span>';}}}t2Clone.remove();t2Clone=null;t2El=null;},{passive:true});
+}
+
+/* ===== SCENARIO QUIZ ===== */
+const scenarios=[
+  {q:"Hai valuer cùng định giá Cty X cùng ngày. A có thêm forecast 5 năm nên định giá $30M, B chỉ có BCTC nên ra $20M. Nguyên tắc nào giải thích?",ai:0,opts:["#1 TIN — Information driven","#4 XÉT — Professional judgement","#2 THỜI — Time specific","#5 GIÁ — Price ≠ Value"],explain:"Data khác nhau (A nhiều hơn B) → kết quả khác. Đây là Information driven, KHÔNG phải Judgement (vì data khác, không phải cùng data mà diễn giải khác)."},
+  {q:"Cùng Cty X, cùng ngày, cùng data. Valuer A dùng discount rate 15%→$100M, Valuer B dùng 20%→$75M. Nguyên tắc nào?",ai:0,opts:["#4 XÉT — Professional judgement","#1 TIN — Information driven","#6 RỦI — Risk & Return","#3 MỤC ĐÍCH — Purpose"],explain:"Cùng data nhưng phán đoán khác (chọn discount rate khác) → Professional Judgement."},
+  {q:"Cty Y được định giá $60M cho mục đích cho vay (financing), nhưng $100M cho mục đích mua lại (acquisition có synergies). Tại sao?",ai:0,opts:["#3 MỤC ĐÍCH — Purpose dependent","#5 GIÁ — Price ≠ Value","#1 TIN — Information","#4 XÉT — Judgement"],explain:"Mục đích khác → basis of value khác (market value vs investment value) → kết quả khác."},
+  {q:"Investor A có CP niêm yết, bán ngay được giá thị trường. Investor B có 10% cty tư nhân, bị chiết khấu 20%. Loại chiết khấu gì?",ai:0,opts:["DLOM — Discount for Lack of Marketability","DLOC — Discount for Lack of Control","Risk premium","Liquidity premium"],explain:"Cổ phần tư nhân khó bán hơn CP niêm yết → áp dụng DLOM (thiếu thanh khoản)."},
+  {q:"Equity value = $100M. Cổ đông 10% được định giá $8M (không phải $10M). Chiết khấu này gọi là?",ai:0,opts:["DLOC — Discount for Lack of Control","DLOM — Discount for Lack of Marketability","Risk premium","Synergy discount"],explain:"Cổ đông 10% không có quyền kiểm soát → DLOC. Khác với DLOM (thiếu thanh khoản)."},
+  {q:"Cty xây lab tốn $25M nhưng market value chỉ $18M vì thiết bị lỗi thời. Nguyên tắc nào?",ai:0,opts:["#10 PHÍ — Cost ≠ Value","#5 GIÁ — Price ≠ Value","#8 THANH — Liquidity","#6 RỦI — Risk"],explain:"Chi phí xây dựng (cost) ≠ giá trị thị trường (value). Cost phản ánh quá khứ, value phản ánh lợi ích tương lai."},
+  {q:"DCF (Discounted Cash Flow) là gì?",ai:0,opts:["Một METHOD thuộc Income Approach","Một APPROACH","Một METHOD thuộc Market Approach","Một tiêu chuẩn IVS"],explain:"DCF là method (phương pháp) nằm trong Income Approach (A20). Đây là bẫy thi phổ biến!"},
+  {q:"Cty A mua Cty B giá $50M. Valuer phân bổ: customer + patents = $15M, còn lại = tangibles + goodwill. Đây thuộc mục đích nào?",ai:0,opts:["BÁO cáo tài chính — PPA (IFRS 3)","THUẾ — Transfer pricing","MUA — M&A","Gọi VỐN"],explain:"Purchase Price Allocation (PPA) theo IFRS 3 → mục đích Báo cáo tài chính."},
+  {q:"Thuế: Client = người nộp thuế. Intended User của báo cáo định giá là ai?",ai:0,opts:["Cơ quan thuế","Người nộp thuế","Valuer","Auditor"],explain:"Client ≠ Intended User! Taxpayer là client, nhưng cơ quan thuế mới là intended user."},
+  {q:"Cty A lợi nhuận trì trệ nhưng có patent độc quyền → $250M. Đối thủ lợi nhuận tốt hơn → chỉ $100M. Nguyên tắc?",ai:0,opts:["#7 TƯƠNG — Future returns","#1 TIN — Information","#6 RỦI — Risk","#4 XÉT — Judgement"],explain:"Giá trị dựa trên kỳ vọng tương lai (patent → cash flow lớn), KHÔNG phải kết quả quá khứ."},
+  {q:"Giá cổ phiếu Google trên sàn phản ánh mức giá trị nào?",ai:0,opts:["Minority, marketable","Minority, non-marketable","Control, marketable","Control, non-marketable"],explain:"Giao dịch trên sàn = mua bán cổ phần thiểu số (minority) và dễ giao dịch (marketable)."},
+  {q:"Focus chính của Module 1 là loại valuation nào?",ai:0,opts:["Corporate valuation","Share market valuation","Real estate valuation","Intangible asset valuation"],explain:"Module 1 focus vào Corporate Valuation (góc nhìn management/board), không phải Share Market (equity analysts)."},
+];
+
+let scIdx=0,scScore=0,scAns=false,scShuffled=[];
+function scInit(){
+  scShuffled=shuffle(scenarios).map(s=>{const ct=s.opts[s.ai];const so=shuffle([...s.opts]);return{...s,sOpts:so,ci:so.indexOf(ct)};});
+  scIdx=0;scScore=0;scAns=false;
+  document.getElementById('scFinal').textContent='';
+  document.getElementById('scNext').style.display='none';
+  scRenderProgress();scRender();
+}
+function scRenderProgress(){document.getElementById('scProgress').innerHTML=scShuffled.map((_,i)=>{let c='sc-dot';if(i<scIdx)c+=scShuffled[i]._ok?' right':' wrong';return`<div class="${c}"></div>`;}).join('');}
+function scRender(){
+  if(scIdx>=scShuffled.length){
+    document.getElementById('scCard').innerHTML=`<div class="scenario-text" style="font-size:18px">Kết quả: ${scScore}/${scShuffled.length}</div>`;
+    document.getElementById('scOpts').innerHTML='';
+    const p=Math.round(scScore/scShuffled.length*100);
+    document.getElementById('scFinal').innerHTML=p>=80?'<span style="color:#4ade80">🎉 Xuất sắc!</span>':p>=50?'<span style="color:#fbbf24">💪 Khá tốt!</span>':'<span style="color:#fb923c">📖 Ôn lại nhé!</span>';
+    document.getElementById('scNext').style.display='none';
+    return;
+  }
+  scAns=false;const s=scShuffled[scIdx];
+  document.getElementById('scCard').innerHTML=`<div class="scenario-text">${s.q}</div>`;
+  document.getElementById('scOpts').innerHTML=s.sOpts.map((o,i)=>`<div class="sc-opt" onclick="scCheck(this,${i})">${o}</div>`).join('');
+  document.getElementById('scFeedback').innerHTML=`<span style="color:#64748b">Câu ${scIdx+1}/${scShuffled.length}</span>`;
+  document.getElementById('scNext').style.display='none';
+}
+function scCheck(el,idx){
+  if(scAns)return;scAns=true;const s=scShuffled[scIdx];
+  if(idx===s.ci){el.classList.add('correct');s._ok=true;scScore++;document.getElementById('scFeedback').innerHTML=`<span style="color:#4ade80">✅ Chính xác!</span><br><span style="color:#94a3b8;font-size:12px">${s.explain}</span>`;}
+  else{el.classList.add('wrong');s._ok=false;document.querySelectorAll('.sc-opt').forEach((o,i)=>{if(i===s.ci)o.classList.add('correct');});document.getElementById('scFeedback').innerHTML=`<span style="color:#f87171">❌ Sai!</span><br><span style="color:#94a3b8;font-size:12px">${s.explain}</span>`;}
+  document.querySelectorAll('.sc-opt').forEach(o=>{if(!o.classList.contains('correct')&&!o.classList.contains('wrong'))o.style.pointerEvents='none';});
+  scRenderProgress();document.getElementById('scNext').style.display='inline-block';
+}
+function scNext(){scIdx++;scRender();scRenderProgress();}
+
+/* ===== INIT ===== */
+fcRender();matchInit();d2Init();scInit();
+</script>
+</body>
+</html>

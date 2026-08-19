@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ghi nhớ 1.1 - Valuation Landscape theo 4 Khu Vực</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Segoe UI',sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh}
+  .container{max-width:1050px;margin:0 auto;padding:24px}
+  h1{text-align:center;font-size:26px;margin-bottom:6px;color:#60a5fa}
+  .subtitle{text-align:center;color:#94a3b8;margin-bottom:28px;font-size:14px}
+
+  /* Story box */
+  .story-box{background:linear-gradient(135deg,#1e3a5f,#1a2744);border:1px solid #334155;border-radius:16px;padding:24px;margin-bottom:32px}
+  .story-box h2{color:#fbbf24;font-size:20px;margin-bottom:14px}
+  .story-intro{color:#94a3b8;font-size:14px;line-height:1.7;margin-bottom:16px}
+
+  .mnemonic-row{display:flex;justify-content:center;gap:16px;flex-wrap:wrap;margin:20px 0}
+  .mn-card{display:flex;flex-direction:column;align-items:center;padding:16px 20px;border-radius:14px;border:2px solid;min-width:110px;transition:transform .2s;cursor:default}
+  .mn-card:hover{transform:scale(1.06)}
+  .mn-emoji{font-size:36px;margin-bottom:6px}
+  .mn-label{font-size:12px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-bottom:2px}
+  .mn-sub{font-size:11px;text-align:center}
+
+  .mn-na{border-color:#f87171;background:rgba(248,113,113,.08)}.mn-na .mn-label{color:#f87171}.mn-na .mn-sub{color:#fca5a5}
+  .mn-eu{border-color:#60a5fa;background:rgba(96,165,250,.08)}.mn-eu .mn-label{color:#60a5fa}.mn-eu .mn-sub{color:#93c5fd}
+  .mn-me{border-color:#fbbf24;background:rgba(251,191,36,.08)}.mn-me .mn-label{color:#fbbf24}.mn-me .mn-sub{color:#fde68a}
+  .mn-ap{border-color:#4ade80;background:rgba(74,222,128,.08)}.mn-ap .mn-label{color:#4ade80}.mn-ap .mn-sub{color:#86efac}
+
+  .tip{text-align:center;color:#94a3b8;font-size:14px;margin:12px 0;line-height:1.8}
+  .tip strong{color:#e2e8f0}
+
+  /* World map — 4 region panels */
+  .regions{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:32px}
+  @media(max-width:700px){.regions{grid-template-columns:1fr}}
+
+  .region{border-radius:14px;padding:20px;cursor:pointer;transition:all .3s;position:relative;overflow:hidden}
+  .region:hover{transform:translateY(-3px)}
+  .region::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;border-radius:0 0 14px 14px}
+
+  .r-na{background:linear-gradient(135deg,#2a1215,#1a1520);border:1px solid rgba(248,113,113,.25)}
+  .r-na:hover{border-color:#f87171;box-shadow:0 4px 24px rgba(248,113,113,.12)}
+  .r-na::after{background:#f87171}
+
+  .r-eu{background:linear-gradient(135deg,#121a2e,#151a28);border:1px solid rgba(96,165,250,.25)}
+  .r-eu:hover{border-color:#60a5fa;box-shadow:0 4px 24px rgba(96,165,250,.12)}
+  .r-eu::after{background:#60a5fa}
+
+  .r-me{background:linear-gradient(135deg,#2a2412,#1a1815);border:1px solid rgba(251,191,36,.25)}
+  .r-me:hover{border-color:#fbbf24;box-shadow:0 4px 24px rgba(251,191,36,.12)}
+  .r-me::after{background:#fbbf24}
+
+  .r-ap{background:linear-gradient(135deg,#122a1a,#151f18);border:1px solid rgba(74,222,128,.25)}
+  .r-ap:hover{border-color:#4ade80;box-shadow:0 4px 24px rgba(74,222,128,.12)}
+  .r-ap::after{background:#4ade80}
+
+  .reg-header{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+  .reg-flag{font-size:28px}
+  .reg-name{font-size:17px;font-weight:700}
+
+  .r-na .reg-name{color:#fca5a5}
+  .r-eu .reg-name{color:#93c5fd}
+  .r-me .reg-name{color:#fde68a}
+  .r-ap .reg-name{color:#86efac}
+
+  .reg-summary{font-size:13px;color:#94a3b8;line-height:1.6;margin-bottom:10px}
+
+  .reg-detail{max-height:0;overflow:hidden;transition:max-height .5s ease}
+  .region.open .reg-detail{max-height:600px}
+
+  .milestone{display:flex;align-items:flex-start;gap:10px;margin-bottom:10px;padding:8px 10px;border-radius:8px;background:rgba(255,255,255,.03)}
+  .ms-year{font-size:12px;font-weight:700;min-width:42px;padding:3px 6px;border-radius:6px;text-align:center;flex-shrink:0}
+  .r-na .ms-year{background:rgba(248,113,113,.15);color:#f87171}
+  .r-eu .ms-year{background:rgba(96,165,250,.15);color:#60a5fa}
+  .r-me .ms-year{background:rgba(251,191,36,.15);color:#fbbf24}
+  .r-ap .ms-year{background:rgba(74,222,128,.15);color:#4ade80}
+
+  .ms-text{font-size:13px;color:#cbd5e1;line-height:1.5}
+  .ms-text strong{font-weight:700}
+
+  .r-na .ms-text strong{color:#fca5a5}
+  .r-eu .ms-text strong{color:#93c5fd}
+  .r-me .ms-text strong{color:#fde68a}
+  .r-ap .ms-text strong{color:#86efac}
+
+  .org-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+  .org-tag{font-size:11px;padding:3px 8px;border-radius:20px;font-weight:600}
+  .r-na .org-tag{background:rgba(248,113,113,.12);color:#fca5a5;border:1px solid rgba(248,113,113,.25)}
+  .r-eu .org-tag{background:rgba(96,165,250,.12);color:#93c5fd;border:1px solid rgba(96,165,250,.25)}
+  .r-me .org-tag{background:rgba(251,191,36,.12);color:#fde68a;border:1px solid rgba(251,191,36,.25)}
+  .r-ap .org-tag{background:rgba(74,222,128,.12);color:#86efac;border:1px solid rgba(74,222,128,.25)}
+
+  .click-hint{font-size:11px;color:#475569;margin-top:8px}
+
+  /* Timeline */
+  .timeline-title{text-align:center;font-size:20px;color:#60a5fa;margin-bottom:16px}
+  .timeline{position:relative;margin-bottom:36px;padding-left:40px}
+  .timeline::before{content:'';position:absolute;left:18px;top:0;bottom:0;width:2px;background:linear-gradient(to bottom,#f87171,#60a5fa,#fbbf24,#4ade80)}
+
+  .tl-item{position:relative;margin-bottom:16px;padding:12px 16px;border-radius:10px;background:rgba(255,255,255,.03);border:1px solid #1e3a5f;cursor:pointer;transition:all .2s}
+  .tl-item:hover{background:rgba(255,255,255,.05);border-color:#334155}
+  .tl-dot{position:absolute;left:-30px;top:16px;width:12px;height:12px;border-radius:50%;border:2px solid}
+  .tl-year{font-size:12px;font-weight:700;margin-bottom:2px}
+  .tl-text{font-size:13px;color:#cbd5e1;line-height:1.5}
+  .tl-region{font-size:10px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;padding:2px 6px;border-radius:4px;margin-left:8px}
+
+  .tl-na .tl-dot{border-color:#f87171;background:rgba(248,113,113,.3)}
+  .tl-na .tl-year{color:#f87171}
+  .tl-na .tl-region{background:rgba(248,113,113,.15);color:#fca5a5}
+
+  .tl-eu .tl-dot{border-color:#60a5fa;background:rgba(96,165,250,.3)}
+  .tl-eu .tl-year{color:#60a5fa}
+  .tl-eu .tl-region{background:rgba(96,165,250,.15);color:#93c5fd}
+
+  .tl-me .tl-dot{border-color:#fbbf24;background:rgba(251,191,36,.3)}
+  .tl-me .tl-year{color:#fbbf24}
+  .tl-me .tl-region{background:rgba(251,191,36,.15);color:#fde68a}
+
+  .tl-ap .tl-dot{border-color:#4ade80;background:rgba(74,222,128,.3)}
+  .tl-ap .tl-year{color:#4ade80}
+  .tl-ap .tl-region{background:rgba(74,222,128,.15);color:#86efac}
+
+  /* Quiz */
+  .quiz-box{background:#1e293b;border:1px solid #334155;border-radius:16px;padding:24px;margin-bottom:24px}
+  .quiz-box h2{color:#fbbf24;font-size:20px;margin-bottom:6px;text-align:center}
+  .quiz-sub{text-align:center;color:#94a3b8;font-size:13px;margin-bottom:16px}
+
+  .q-progress{display:flex;justify-content:center;gap:6px;margin-bottom:16px}
+  .q-dot{width:12px;height:12px;border-radius:50%;background:#334155;transition:background .3s}
+  .q-dot.right{background:#4ade80}.q-dot.wrong{background:#f87171}
+
+  .q-card{background:#0f172a;border:2px solid #334155;border-radius:12px;padding:18px;margin-bottom:14px;text-align:center}
+  .q-text{font-size:15px;color:#e2e8f0;line-height:1.6}
+
+  .q-options{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+  @media(max-width:600px){.q-options{grid-template-columns:1fr}}
+  .q-opt{padding:12px;background:#0f172a;border:2px solid #334155;border-radius:10px;cursor:pointer;font-size:13px;text-align:center;transition:all .2s;line-height:1.4}
+  .q-opt:hover{border-color:#60a5fa;background:#1a2744}
+  .q-opt.correct{border-color:#4ade80;background:rgba(74,222,128,.1);pointer-events:none}
+  .q-opt.wrong{border-color:#f87171;background:rgba(248,113,113,.1);animation:shake .4s}
+  @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+
+  .q-feedback{text-align:center;font-size:14px;min-height:22px;margin-bottom:10px}
+  .q-btn{display:inline-block;padding:10px 24px;background:#3b82f6;color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;transition:all .2s;margin:0 6px}
+  .q-btn:hover{background:#2563eb;transform:translateY(-1px)}
+  .q-btn.sec{background:#475569}.q-btn.sec:hover{background:#64748b}
+  .q-controls{text-align:center}
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>1.1 B&#7889;i C&#7843;nh Ng&agrave;nh Th&#7849;m &#272;&#7883;nh Gi&aacute;</h1>
+  <p class="subtitle">4 Khu V&#7921;c &mdash; C&aacute;c T&#7893; Ch&#7913;c &amp; M&#7889;c Quan Tr&#7885;ng</p>
+
+  <!-- Mnemonic -->
+  <div class="story-box">
+    <h2>&#128161; C&acirc;u chuy&#7879;n: "Chuy&#7871;n Bay V&ograve;ng Quanh Th&#7871; Gi&#7899;i Th&#7849;m &#272;&#7883;nh"</h2>
+    <p class="story-intro">H&atilde;y t&#432;&#7903;ng t&#432;&#7907;ng b&#7841;n l&agrave; m&#7897;t th&#7849;m &#273;&#7883;nh vi&ecirc;n bay v&ograve;ng quanh th&#7871; gi&#7899;i, d&#7915;ng &#7903; 4 &#273;i&#7875;m. M&#7895;i &#273;i&#7875;m d&#7915;ng c&oacute; "ng&#432;&#7901;i h&#7847;u" &mdash; c&aacute;c t&#7893; ch&#7913;c ch&iacute;nh m&agrave; b&#7841;n c&#7847;n nh&#7899;:</p>
+
+    <div class="mnemonic-row">
+      <div class="mn-card mn-na">
+        <div class="mn-emoji">&#127482;&#127480;</div>
+        <div class="mn-label">B&#7855;c M&#7929;</div>
+        <div class="mn-sub">"C&#7897;i ngu&#7891;n"<br>IRS &bull; USPAP &bull; AICPA<br>ASA &bull; NACVA &bull; MPF</div>
+      </div>
+      <div class="mn-card mn-eu">
+        <div class="mn-emoji">&#127466;&#127482;</div>
+        <div class="mn-label">Ch&acirc;u &Acirc;u</div>
+        <div class="mn-sub">"H&agrave;i h&ograve;a h&oacute;a"<br>RICS &bull; EACVA &bull; FFEE<br>OIV &bull; NIRV &bull; IPEV</div>
+      </div>
+      <div class="mn-card mn-me">
+        <div class="mn-emoji">&#127474;&#127466;</div>
+        <div class="mn-label">Trung &#272;&ocirc;ng</div>
+        <div class="mn-sub">"Taqeem"<br>C&#7845;p ph&eacute;p b&#7855;t bu&#7897;c<br>D&#7883;ch IVS sang Arabic</div>
+      </div>
+      <div class="mn-card mn-ap">
+        <div class="mn-emoji">&#127462;&#127480;</div>
+        <div class="mn-label">Ch&acirc;u &Aacute;-TBD</div>
+        <div class="mn-sub">"V&#432;&#417;n l&ecirc;n"<br>CAS &bull; IVAS &bull; CVA<br>APESB &bull; CAANZ</div>
+      </div>
+    </div>
+
+    <p class="tip">&#128272; <strong>M&#7865;o nh&#7899;:</strong> M&#7895;i khu v&#7921;c c&oacute; m&#7897;t "t&iacute;nh c&aacute;ch" ri&ecirc;ng:<br>
+    <strong style="color:#fca5a5">B&#7855;c M&#7929;</strong> = Khai sinh &#127476; &nbsp;&bull;&nbsp;
+    <strong style="color:#93c5fd">Ch&acirc;u &Acirc;u</strong> = H&agrave;i h&ograve;a &#127908; &nbsp;&bull;&nbsp;
+    <strong style="color:#fde68a">Trung &#272;&ocirc;ng</strong> = Taqeem &#127775; &nbsp;&bull;&nbsp;
+    <strong style="color:#86efac">Ch&acirc;u &Aacute;-TBD</strong> = V&#432;&#417;n l&ecirc;n &#128640;</p>
+  </div>
+
+  <!-- 4 Region Cards -->
+  <div class="regions">
+    <!-- NORTH AMERICA -->
+    <div class="region r-na" onclick="this.classList.toggle('open')">
+      <div class="reg-header">
+        <div class="reg-flag">&#127482;&#127480;</div>
+        <div class="reg-name">B&#7855;c M&#7929; &mdash; "C&#7897;i Ngu&#7891;n"</div>
+      </div>
+      <div class="reg-summary">N&#417;i khai sinh ng&agrave;nh th&#7849;m &#273;&#7883;nh gi&aacute; hi&#7879;n &#273;&#7841;i. Ti&ecirc;u chu&#7849;n M&#7929; &#273;ang d&#7847;n h&#7897;i t&#7909; v&#7899;i IVS qu&#7889;c t&#7871;.</div>
+      <div class="reg-detail">
+        <div class="milestone"><div class="ms-year">1959</div><div class="ms-text"><strong>Revenue Ruling 59-60</strong> c&#7911;a IRS &mdash; h&#432;&#7899;ng d&#7851;n &#273;&#7847;u ti&ecirc;n v&#7873; &#273;&#7883;nh gi&aacute; c&#7893; ph&#7847;n c&ocirc;ng ty t&#432; nh&acirc;n</div></div>
+        <div class="milestone"><div class="ms-year">1989</div><div class="ms-text">&#272;&#7841;o lu&#7853;t <strong>FIRREA</strong> &rarr; ra &#273;&#7901;i <strong>USPAP</strong> (ti&ecirc;u chu&#7849;n qu&#7889;c gia M&#7929;) v&agrave; <strong>Appraisal Foundation</strong></div></div>
+        <div class="milestone"><div class="ms-year">1990s</div><div class="ms-text"><strong>NACVA</strong> t&#7841;o ch&#7913;ng ch&#7881; CVA, <strong>AICPA</strong> t&#7841;o ch&#7913;ng ch&#7881; ABV, <strong>ASA</strong> m&#7903; r&#7897;ng sang business valuation</div></div>
+        <div class="milestone"><div class="ms-year">2007</div><div class="ms-text">AICPA ban h&agrave;nh <strong>SSVS No. 1</strong> &mdash; ti&ecirc;u chu&#7849;n b&#7855;t bu&#7897;c cho th&agrave;nh vi&ecirc;n AICPA</div></div>
+        <div class="milestone"><div class="ms-year">2017</div><div class="ms-text">Ra &#273;&#7901;i ch&#7913;ng ch&#7881; <strong>CEIV</strong> (&#273;&atilde; ng&#7915;ng 2023) v&agrave; <strong>MPF</strong> (Mandatory Performance Framework)</div></div>
+        <div class="org-tags">
+          <span class="org-tag">IRS</span>
+          <span class="org-tag">USPAP</span>
+          <span class="org-tag">AICPA (ABV)</span>
+          <span class="org-tag">ASA</span>
+          <span class="org-tag">NACVA (CVA)</span>
+          <span class="org-tag">CBV Institute</span>
+          <span class="org-tag">MPF</span>
+        </div>
+      </div>
+      <div class="click-hint">&#9654; B&#7845;m &#273;&#7875; xem chi ti&#7871;t</div>
+    </div>
+
+    <!-- EUROPE -->
+    <div class="region r-eu" onclick="this.classList.toggle('open')">
+      <div class="reg-header">
+        <div class="reg-flag">&#127466;&#127482;</div>
+        <div class="reg-name">Ch&acirc;u &Acirc;u &mdash; "H&agrave;i H&ograve;a H&oacute;a"</div>
+      </div>
+      <div class="reg-summary">T&#7915; ph&acirc;n m&#7843;nh &#273;&#7871;n chuy&ecirc;n nghi&#7879;p h&oacute;a nh&#7901; IVS v&agrave; c&aacute;c t&#7893; ch&#7913;c qu&#7889;c gia.</div>
+      <div class="reg-detail">
+        <div class="milestone"><div class="ms-year">&#127468;&#127463;</div><div class="ms-text"><strong>RICS</strong> &mdash; t&#7915; b&#7845;t &#273;&#7897;ng s&#7843;n m&#7903; r&#7897;ng sang business valuation. 2020: h&#432;&#7899;ng d&#7851;n IP valuation</div></div>
+        <div class="milestone"><div class="ms-year">&#127466;&#127482;</div><div class="ms-text"><strong>EACVA</strong> &mdash; ch&#432;&#417;ng Ch&acirc;u &Acirc;u c&#7911;a GACVA, c&#7845;p ch&#7913;ng ch&#7881; Certified Valuation Analyst</div></div>
+        <div class="milestone"><div class="ms-year">&#127467;&#127479;</div><div class="ms-text"><strong>FFEE</strong> &mdash; hi&#7879;p h&#7897;i chuy&ecirc;n gia &#273;&#7883;nh gi&aacute; Ph&aacute;p, ti&ecirc;u chu&#7849;n ph&ugrave; h&#7907;p IVS</div></div>
+        <div class="milestone"><div class="ms-year">&#127470;&#127481;</div><div class="ms-text"><strong>OIV</strong> &mdash; t&#7893; ch&#7913;c ti&ecirc;u chu&#7849;n &#273;&#7883;nh gi&aacute; c&#7911;a &Yacute;, h&#432;&#7899;ng d&#7851;n k&#7929; thu&#7853;t qu&#7889;c gia</div></div>
+        <div class="milestone"><div class="ms-year">&#127475;&#127473;</div><div class="ms-text"><strong>NIRV</strong> &mdash; hi&#7879;p h&#7897;i th&#7849;m &#273;&#7883;nh vi&ecirc;n H&agrave; Lan, ch&#7913;ng nh&#7853;n chuy&ecirc;n gia</div></div>
+        <div class="milestone"><div class="ms-year">PE/VC</div><div class="ms-text"><strong>IPEV</strong> &mdash; h&#432;&#7899;ng d&#7851;n ri&ecirc;ng cho private equity/venture capital, ph&ugrave; h&#7907;p US GAAP &amp; IFRS</div></div>
+        <div class="org-tags">
+          <span class="org-tag">RICS</span>
+          <span class="org-tag">EACVA</span>
+          <span class="org-tag">FFEE</span>
+          <span class="org-tag">OIV</span>
+          <span class="org-tag">NIRV</span>
+          <span class="org-tag">CISI</span>
+          <span class="org-tag">ICAEW</span>
+          <span class="org-tag">IPEV</span>
+        </div>
+      </div>
+      <div class="click-hint">&#9654; B&#7845;m &#273;&#7875; xem chi ti&#7871;t</div>
+    </div>
+
+    <!-- MIDDLE EAST -->
+    <div class="region r-me" onclick="this.classList.toggle('open')">
+      <div class="reg-header">
+        <div class="reg-flag">&#127474;&#127466;</div>
+        <div class="reg-name">Trung &#272;&ocirc;ng &mdash; "Taqeem"</div>
+      </div>
+      <div class="reg-summary">Taqeem (Saudi Arabia) l&agrave; ng&ocirc;i sao duy nh&#7845;t &mdash; c&#417; quan qu&#7843;n l&yacute; v&agrave; c&#7845;p ph&eacute;p b&#7855;t bu&#7897;c.</div>
+      <div class="reg-detail">
+        <div class="milestone"><div class="ms-year">2012</div><div class="ms-text">Th&agrave;nh l&#7853;p <strong>Taqeem</strong> &mdash; c&#417; quan qu&#7843;n l&yacute; t&#7841;i Saudi Arabia, c&#7845;p ph&eacute;p b&#7855;t bu&#7897;c cho th&#7849;m &#273;&#7883;nh vi&ecirc;n</div></div>
+        <div class="milestone"><div class="ms-year">2017</div><div class="ms-text">Taqeem <strong>d&#7883;ch IVS sang ti&#7871;ng &#7842; R&#7853;p</strong>, th&uacute;c &#273;&#7849;y &#225;p d&#7909;ng IVS trong khu v&#7921;c</div></div>
+        <div class="milestone"><div class="ms-year">&#127758;</div><div class="ms-text">&#272;&agrave;o t&#7841;o IVS t&#7841;i <strong>Ai C&#7853;p, Kuwait, UAE</strong>. G&oacute;p ph&#7847;n s&#7917;a &#273;&#7893;i International Glossary 2021</div></div>
+        <div class="milestone"><div class="ms-year">2024</div><div class="ms-text">IVSC m&#7903; <strong>v&#259;n ph&ograve;ng khu v&#7921;c t&#7841;i Riyadh</strong> v&#7899;i s&#7921; h&#7895; tr&#7907; c&#7911;a Taqeem</div></div>
+        <div class="org-tags">
+          <span class="org-tag">Taqeem</span>
+        </div>
+      </div>
+      <div class="click-hint">&#9654; B&#7845;m &#273;&#7875; xem chi ti&#7871;t</div>
+    </div>
+
+    <!-- ASIA-PACIFIC -->
+    <div class="region r-ap" onclick="this.classList.toggle('open')">
+      <div class="reg-header">
+        <div class="reg-flag">&#127462;&#127480;</div>
+        <div class="reg-name">Ch&acirc;u &Aacute;-TBD &mdash; "V&#432;&#417;n L&ecirc;n"</div>
+      </div>
+      <div class="reg-summary">Ph&aacute;t tri&#7875;n nhanh theo kinh t&#7871; khu v&#7921;c. CAS, IVAS, APESB l&agrave; c&aacute;c tr&#7909; c&#7897;t ch&iacute;nh.</div>
+      <div class="reg-detail">
+        <div class="milestone"><div class="ms-year">1993</div><div class="ms-text"><strong>CAS</strong> (China Appraisal Society) &mdash; c&#417; quan qu&#7843;n l&yacute; ng&agrave;nh t&#7841;i Trung Qu&#7889;c, d&#7847;n h&#7897;i t&#7909; IVS</div></div>
+        <div class="milestone"><div class="ms-year">2013</div><div class="ms-text"><strong>IVAS</strong> (Singapore) th&agrave;nh l&#7853;p, thu&#7897;c ACRA. 2016: b&#7855;t &#273;&#7847;u c&#7845;p ch&#7913;ng ch&#7881; <strong>CVA</strong> benchmarked theo IVS</div></div>
+        <div class="milestone"><div class="ms-year">&#127462;&#127482;</div><div class="ms-text"><strong>APESB</strong> (&#218;c) v&agrave; <strong>CAANZ</strong> (NZ) &mdash; th&#7849;m &#273;&#7883;nh g&#7855;n v&#7899;i ngh&#7873; k&#7871; to&aacute;n, ch&#7911; y&#7871;u cho M&amp;A, tax, IFRS</div></div>
+        <div class="milestone"><div class="ms-year">2025</div><div class="ms-text">IVSC k&yacute; <strong>MOU v&#7899;i B&#7897; T&agrave;i ch&iacute;nh Vi&#7879;t Nam</strong> v&agrave; H&#7897;i Th&#7849;m &#273;&#7883;nh gi&aacute; Vi&#7879;t Nam</div></div>
+        <div class="org-tags">
+          <span class="org-tag">CAS (Trung Qu&#7889;c)</span>
+          <span class="org-tag">IVAS (Singapore)</span>
+          <span class="org-tag">APESB (&#218;c)</span>
+          <span class="org-tag">CAANZ (NZ)</span>
+          <span class="org-tag">CVA</span>
+        </div>
+      </div>
+      <div class="click-hint">&#9654; B&#7845;m &#273;&#7875; xem chi ti&#7871;t</div>
+    </div>
+  </div>
+
+  <!-- KEY TIMELINE -->
+  <h2 class="timeline-title">&#9200; D&ograve;ng Th&#7901;i Gian Quan Tr&#7885;ng</h2>
+  <div class="timeline">
+    <div class="tl-item tl-na"><div class="tl-dot"></div><div class="tl-year">1959 <span class="tl-region">B&#7855;c M&#7929;</span></div><div class="tl-text"><strong>Revenue Ruling 59-60</strong> &mdash; IRS ban h&agrave;nh h&#432;&#7899;ng d&#7851;n &#273;&#7883;nh gi&aacute; c&#7893; ph&#7847;n t&#432; nh&acirc;n &#273;&#7847;u ti&ecirc;n</div></div>
+    <div class="tl-item tl-na"><div class="tl-dot"></div><div class="tl-year">1989 <span class="tl-region">B&#7855;c M&#7929;</span></div><div class="tl-text">&#272;&#7841;o lu&#7853;t <strong>FIRREA</strong> &rarr; ra &#273;&#7901;i <strong>USPAP</strong> &amp; Appraisal Foundation</div></div>
+    <div class="tl-item tl-na"><div class="tl-dot"></div><div class="tl-year">1990s <span class="tl-region">B&#7855;c M&#7929;</span></div><div class="tl-text">Ch&#7913;ng ch&#7881; <strong>CVA</strong> (NACVA), <strong>ABV</strong> (AICPA), ASA m&#7903; r&#7897;ng</div></div>
+    <div class="tl-item tl-ap"><div class="tl-dot"></div><div class="tl-year">1993 <span class="tl-region">Ch&acirc;u &Aacute;</span></div><div class="tl-text"><strong>CAS</strong> th&agrave;nh l&#7853;p t&#7841;i Trung Qu&#7889;c</div></div>
+    <div class="tl-item tl-na"><div class="tl-dot"></div><div class="tl-year">2007 <span class="tl-region">B&#7855;c M&#7929;</span></div><div class="tl-text">AICPA ban h&agrave;nh <strong>SSVS No. 1</strong></div></div>
+    <div class="tl-item tl-me"><div class="tl-dot"></div><div class="tl-year">2012 <span class="tl-region">Trung &#272;&ocirc;ng</span></div><div class="tl-text"><strong>Taqeem</strong> th&agrave;nh l&#7853;p t&#7841;i Saudi Arabia</div></div>
+    <div class="tl-item tl-ap"><div class="tl-dot"></div><div class="tl-year">2013 <span class="tl-region">Ch&acirc;u &Aacute;</span></div><div class="tl-text"><strong>IVAS</strong> th&agrave;nh l&#7853;p t&#7841;i Singapore</div></div>
+    <div class="tl-item tl-me"><div class="tl-dot"></div><div class="tl-year">2017 <span class="tl-region">Trung &#272;&ocirc;ng</span></div><div class="tl-text">Taqeem <strong>d&#7883;ch IVS sang ti&#7871;ng &#7842; R&#7853;p</strong></div></div>
+    <div class="tl-item tl-eu"><div class="tl-dot"></div><div class="tl-year">2020 <span class="tl-region">Ch&acirc;u &Acirc;u</span></div><div class="tl-text">RICS xu&#7845;t b&#7843;n <strong>h&#432;&#7899;ng d&#7851;n IP valuation</strong></div></div>
+    <div class="tl-item tl-eu"><div class="tl-dot"></div><div class="tl-year">2022 <span class="tl-region">Singapore</span></div><div class="tl-text">IVSC m&#7903; <strong>v&#259;n ph&ograve;ng Singapore</strong> &mdash; v&#259;n ph&ograve;ng &#273;&#7847;u ti&ecirc;n ngo&agrave;i London</div></div>
+    <div class="tl-item tl-me"><div class="tl-dot"></div><div class="tl-year">2024 <span class="tl-region">Trung &#272;&ocirc;ng</span></div><div class="tl-text">IVSC m&#7903; <strong>v&#259;n ph&ograve;ng Riyadh</strong></div></div>
+    <div class="tl-item tl-ap"><div class="tl-dot"></div><div class="tl-year">2025 <span class="tl-region">Vi&#7879;t Nam</span></div><div class="tl-text">IVSC k&yacute; <strong>MOU v&#7899;i B&#7897; T&agrave;i ch&iacute;nh Vi&#7879;t Nam</strong></div></div>
+  </div>
+
+  <!-- QUIZ -->
+  <div class="quiz-box">
+    <h2>&#127919; Quiz: Ai Thu&#7897;c Khu V&#7921;c N&agrave;o?</h2>
+    <p class="quiz-sub">&#272;&#7885;c c&acirc;u h&#7887;i v&agrave; ch&#7885;n &#273;&aacute;p &aacute;n &#273;&uacute;ng</p>
+    <div class="q-progress" id="qProgress"></div>
+    <div class="q-card" id="qCard"></div>
+    <div class="q-options" id="qOpts"></div>
+    <div class="q-feedback" id="qFeedback"></div>
+    <div class="q-controls">
+      <button class="q-btn" id="qNext" onclick="nextQ()" style="display:none">C&acirc;u ti&#7871;p &rarr;</button>
+      <button class="q-btn sec" onclick="startQ()">&#128260; L&agrave;m l&#7841;i</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const quizData=[
+  {q:"Revenue Ruling 59-60 (1959) thu\u1ed9c khu v\u1ef1c n\u00e0o?",ai:0,opts:["B\u1eafc M\u1ef9","Ch\u00e2u \u00c2u","Trung \u0110\u00f4ng","Ch\u00e2u \u00c1-TBD"]},
+  {q:"RICS (Royal Institution of Chartered Surveyors) ho\u1ea1t \u0111\u1ed9ng ch\u1ee7 y\u1ebfu \u1edf \u0111\u00e2u?",ai:1,opts:["B\u1eafc M\u1ef9","Ch\u00e2u \u00c2u","Trung \u0110\u00f4ng","Ch\u00e2u \u00c1-TBD"]},
+  {q:"Taqeem \u2014 c\u01a1 quan c\u1ea5p ph\u00e9p b\u1eaft bu\u1ed9c cho th\u1ea9m \u0111\u1ecbnh vi\u00ean \u2014 \u1edf \u0111\u00e2u?",ai:2,opts:["B\u1eafc M\u1ef9","Ch\u00e2u \u00c2u","Trung \u0110\u00f4ng","Ch\u00e2u \u00c1-TBD"]},
+  {q:"IVAS v\u00e0 ch\u1ee9ng ch\u1ec9 CVA benchmarked theo IVS thu\u1ed9c khu v\u1ef1c n\u00e0o?",ai:3,opts:["B\u1eafc M\u1ef9","Ch\u00e2u \u00c2u","Trung \u0110\u00f4ng","Ch\u00e2u \u00c1-TBD"]},
+  {q:"USPAP ra \u0111\u1eddi sau \u0111\u1ea1o lu\u1eadt FIRREA 1989 \u1edf \u0111\u00e2u?",ai:0,opts:["B\u1eafc M\u1ef9","Ch\u00e2u \u00c2u","Trung \u0110\u00f4ng","Ch\u00e2u \u00c1-TBD"]},
+  {q:"IPEV \u2014 h\u01b0\u1edbng d\u1eabn cho Private Equity/Venture Capital \u2014 thu\u1ed9c khu v\u1ef1c n\u00e0o?",ai:1,opts:["B\u1eafc M\u1ef9","Ch\u00e2u \u00c2u","Trung \u0110\u00f4ng","Ch\u00e2u \u00c1-TBD"]},
+  {q:"CAS (China Appraisal Society) th\u00e0nh l\u1eadp n\u0103m 1993 \u1edf \u0111\u00e2u?",ai:3,opts:["B\u1eafc M\u1ef9","Ch\u00e2u \u00c2u","Trung \u0110\u00f4ng","Ch\u00e2u \u00c1-TBD"]},
+  {q:"AICPA c\u1ea5p ch\u1ee9ng ch\u1ec9 ABV (Accredited in Business Valuation) \u1edf \u0111\u00e2u?",ai:0,opts:["B\u1eafc M\u1ef9","Ch\u00e2u \u00c2u","Trung \u0110\u00f4ng","Ch\u00e2u \u00c1-TBD"]},
+  {q:"T\u1ed5 ch\u1ee9c n\u00e0o \u0111\u00e3 d\u1ecbch IVS sang ti\u1ebfng \u1ea2 R\u1eadp n\u0103m 2017?",ai:1,opts:["RICS (Ch\u00e2u \u00c2u)","Taqeem (Trung \u0110\u00f4ng)","CAS (Ch\u00e2u \u00c1)","AICPA (B\u1eafc M\u1ef9)"]},
+  {q:"APESB v\u00e0 CAANZ qu\u1ea3n l\u00fd th\u1ea9m \u0111\u1ecbnh vi\u00ean \u1edf qu\u1ed1c gia n\u00e0o?",ai:1,opts:["Singapore v\u00e0 Malaysia","\u00dac v\u00e0 New Zealand","Trung Qu\u1ed1c v\u00e0 Nh\u1eadt","M\u1ef9 v\u00e0 Canada"]},
+];
+
+let cq=0,sc=0,ans=false,shuffled=[];
+
+function shuffle(a){const b=[...a];for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]]}return b}
+
+function startQ(){
+  // Prepare shuffled questions, each with shuffled opts but tracking correct answer index
+  shuffled=shuffle(quizData).map(q=>{
+    const correctText=q.opts[q.ai];
+    const sOpts=shuffle([...q.opts]);
+    const newAi=sOpts.indexOf(correctText);
+    return {...q, sOpts, correctIdx:newAi};
+  });
+  cq=0;sc=0;ans=false;renderProgress();renderQ();
+}
+
+function renderProgress(){
+  document.getElementById('qProgress').innerHTML=shuffled.map((_,i)=>{
+    let c='q-dot';
+    if(i<cq) c+=shuffled[i]._ok?' right':' wrong';
+    return '<div class="'+c+'"></div>';
+  }).join('');
+}
+
+function renderQ(){
+  if(cq>=shuffled.length){
+    document.getElementById('qCard').innerHTML='<div class="q-text" style="font-size:20px">K\u1ebft qu\u1ea3: '+sc+'/'+shuffled.length+'</div>';
+    document.getElementById('qOpts').innerHTML='';
+    document.getElementById('qFeedback').innerHTML=sc>=8
+      ?'<span style="color:#4ade80">\ud83c\udf89 Tuy\u1ec7t v\u1eddi!</span>'
+      :sc>=5?'<span style="color:#fbbf24">\ud83d\udcaa Kh\u00e1 t\u1ed1t!</span>'
+      :'<span style="color:#fb923c">\ud83d\udcd6 \u00d4n l\u1ea1i nh\u00e9!</span>';
+    document.getElementById('qNext').style.display='none';
+    return;
+  }
+  ans=false;
+  const q=shuffled[cq];
+  document.getElementById('qCard').innerHTML='<div class="q-text">'+q.q+'</div>';
+  document.getElementById('qOpts').innerHTML=q.sOpts.map((o,i)=>
+    '<div class="q-opt" data-idx="'+i+'" onclick="checkQ(this,'+i+')">'+o+'</div>'
+  ).join('');
+  document.getElementById('qFeedback').innerHTML='<span style="color:#64748b">C\u00e2u '+(cq+1)+'/'+shuffled.length+'</span>';
+  document.getElementById('qNext').style.display='none';
+}
+
+function checkQ(el,chosenIdx){
+  if(ans)return; ans=true;
+  const q=shuffled[cq];
+  if(chosenIdx===q.correctIdx){
+    el.classList.add('correct');
+    q._ok=true;
+    sc++;
+    document.getElementById('qFeedback').innerHTML='<span style="color:#4ade80">\u2705 Ch\u00ednh x\u00e1c!</span>';
+  } else {
+    el.classList.add('wrong');
+    q._ok=false;
+    document.querySelectorAll('.q-opt').forEach(o=>{
+      if(parseInt(o.dataset.idx)===q.correctIdx) o.classList.add('correct');
+    });
+    document.getElementById('qFeedback').innerHTML='<span style="color:#f87171">\u274c \u0110\u00e1p \u00e1n: '+q.sOpts[q.correctIdx]+'</span>';
+  }
+  renderProgress();
+  document.getElementById('qNext').style.display='inline-block';
+}
+function nextQ(){cq++;renderQ();renderProgress()}
+startQ();
+</script>
+</body>
+</html>

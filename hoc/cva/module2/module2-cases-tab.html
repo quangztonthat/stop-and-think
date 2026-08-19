@@ -1,0 +1,1330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CVA Module 2 — Án Lệ (Key Cases Interactive)</title>
+<style>
+:root {
+  --bg: #faf6ee;
+  --bg-card: #ffffff;
+  --bg-card-hover: #fffaf0;
+  --ink: #1f1d18;
+  --ink-soft: #4a463d;
+  --ink-muted: #7a7468;
+  --line: #e5dfd0;
+  --line-soft: #f0ebdd;
+  --gold: #b88a3c;
+  --gold-soft: #f0e2c0;
+  --green: #4a7c3a;
+  --green-soft: #d9e9d2;
+  --red: #b04545;
+  --red-soft: #f0d9d9;
+  --blue: #3e6d99;
+  --blue-soft: #d4e3f0;
+  --purple: #6f4d8a;
+  --purple-soft: #e2d6ed;
+  --orange: #c2691f;
+  --orange-soft: #f5dec5;
+  --teal: #2f7a72;
+  --teal-soft: #d0e8e5;
+  --pink: #b04680;
+  --pink-soft: #f0d4e3;
+  --shadow: 0 1px 2px rgba(0,0,0,0.04), 0 4px 12px rgba(31,29,24,0.06);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Geist', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  line-height: 1.6;
+  font-size: 15px;
+  padding: 24px 16px 80px;
+  min-height: 100vh;
+}
+.container { max-width: 980px; margin: 0 auto; }
+
+/* HEADER */
+.header {
+  text-align: center;
+  margin-bottom: 28px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--line);
+}
+.header h1 {
+  font-family: 'Fraunces', 'Times New Roman', serif;
+  font-size: 32px;
+  font-weight: 500;
+  letter-spacing: -0.5px;
+  margin-bottom: 6px;
+}
+.header h1 em { font-style: italic; color: var(--gold); }
+.header p { color: var(--ink-muted); font-size: 13px; }
+.stats-bar {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  margin-top: 12px;
+  font-size: 12px;
+  color: var(--ink-soft);
+}
+.stats-bar strong { color: var(--gold); font-weight: 600; }
+
+/* MODE TABS */
+.mode-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 24px;
+  background: var(--bg-card);
+  padding: 6px;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow);
+}
+.mode-tab {
+  flex: 1;
+  padding: 10px 14px;
+  text-align: center;
+  cursor: pointer;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink-soft);
+  transition: all 0.2s;
+  user-select: none;
+}
+.mode-tab:hover { background: var(--bg-card-hover); }
+.mode-tab.active {
+  background: var(--ink);
+  color: var(--bg);
+}
+.mode-tab .icon { font-size: 16px; display: block; margin-bottom: 2px; }
+.mode-tab .label { font-size: 12px; }
+
+/* THEME FILTER */
+.theme-filter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 24px;
+}
+.theme-pill {
+  padding: 6px 12px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  background: var(--bg-card);
+  color: var(--ink-soft);
+  transition: all 0.2s;
+  user-select: none;
+}
+.theme-pill:hover { background: var(--bg-card-hover); }
+.theme-pill.active {
+  background: var(--ink);
+  color: var(--bg);
+  border-color: var(--ink);
+}
+.theme-pill .count {
+  font-size: 10px;
+  opacity: 0.7;
+  margin-left: 4px;
+}
+
+/* MODE CONTAINERS */
+.mode-container { display: none; }
+.mode-container.active { display: block; animation: fadeIn 0.25s ease; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+
+/* ===== FLASHCARD MODE ===== */
+.flashcard-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+.flashcard {
+  width: 100%;
+  max-width: 720px;
+  min-height: 320px;
+  background: var(--bg-card);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 32px;
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  position: relative;
+  transition: transform 0.3s, box-shadow 0.3s;
+  display: flex;
+  flex-direction: column;
+}
+.flashcard:hover {
+  box-shadow: 0 4px 8px rgba(0,0,0,0.06), 0 12px 24px rgba(31,29,24,0.08);
+}
+.flashcard .flip-hint {
+  position: absolute;
+  top: 14px;
+  right: 16px;
+  font-size: 11px;
+  color: var(--ink-muted);
+  background: var(--line-soft);
+  padding: 4px 10px;
+  border-radius: 999px;
+}
+.flashcard .case-counter {
+  position: absolute;
+  top: 14px;
+  left: 16px;
+  font-size: 11px;
+  color: var(--ink-muted);
+  font-variant-numeric: tabular-nums;
+}
+.flashcard .theme-tag {
+  display: inline-block;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 4px;
+  margin-bottom: 14px;
+  align-self: flex-start;
+  margin-top: 16px;
+}
+.flashcard .case-name {
+  font-family: 'Fraunces', serif;
+  font-size: 24px;
+  font-weight: 500;
+  font-style: italic;
+  color: var(--ink);
+  margin-bottom: 8px;
+  line-height: 1.3;
+}
+.flashcard .case-citation {
+  font-size: 13px;
+  color: var(--ink-muted);
+  margin-bottom: 18px;
+  font-family: 'Geist Mono', monospace;
+}
+.flashcard .case-content {
+  font-size: 14px;
+  color: var(--ink-soft);
+  line-height: 1.7;
+  flex: 1;
+}
+.flashcard .case-content strong { color: var(--ink); }
+.flashcard .case-content .label {
+  font-weight: 600;
+  color: var(--gold);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-top: 12px;
+  display: block;
+  margin-bottom: 4px;
+}
+.flashcard.flipped .face-front { display: none; }
+.flashcard.flipped .face-back { display: flex; flex-direction: column; flex: 1; }
+.face-back { display: none; }
+.face-front { display: flex; flex-direction: column; flex: 1; }
+
+.flashcard-controls {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-top: 8px;
+}
+.btn {
+  padding: 9px 16px;
+  border: 1px solid var(--line);
+  background: var(--bg-card);
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  color: var(--ink);
+  transition: all 0.15s;
+  font-family: inherit;
+}
+.btn:hover { background: var(--bg-card-hover); border-color: var(--ink-muted); }
+.btn:active { transform: translateY(1px); }
+.btn-primary { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.btn-primary:hover { background: var(--ink-soft); border-color: var(--ink-soft); }
+.btn-success { background: var(--green); color: white; border-color: var(--green); }
+.btn-fail { background: var(--red); color: white; border-color: var(--red); }
+.btn-shuffle { background: var(--gold); color: white; border-color: var(--gold); }
+
+.score-display {
+  font-size: 12px;
+  color: var(--ink-muted);
+  margin-left: 12px;
+  font-variant-numeric: tabular-nums;
+}
+.score-display strong { color: var(--ink); }
+
+/* ===== MATCH MODE ===== */
+.match-area {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.match-instructions {
+  background: var(--bg-card);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 14px 18px;
+  font-size: 13px;
+  color: var(--ink-soft);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.match-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+.match-col h3 {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--ink-muted);
+  margin-bottom: 10px;
+  font-weight: 600;
+}
+.match-card {
+  padding: 12px 14px;
+  background: var(--bg-card);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  margin-bottom: 8px;
+  cursor: pointer;
+  font-size: 13px;
+  line-height: 1.5;
+  transition: all 0.15s;
+  user-select: none;
+}
+.match-card:hover { background: var(--bg-card-hover); border-color: var(--gold); }
+.match-card.selected {
+  border-color: var(--gold);
+  background: var(--gold-soft);
+  border-width: 2px;
+  padding: 11px 13px;
+}
+.match-card.matched {
+  background: var(--green-soft);
+  border-color: var(--green);
+  cursor: default;
+  opacity: 0.7;
+}
+.match-card.wrong {
+  background: var(--red-soft);
+  border-color: var(--red);
+  animation: shake 0.3s;
+}
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-4px); }
+  75% { transform: translateX(4px); }
+}
+.match-card.matched .case-name { font-style: italic; }
+.match-card .case-name { font-style: italic; font-family: 'Fraunces', serif; }
+
+.match-progress {
+  font-size: 13px;
+  color: var(--ink-soft);
+  font-weight: 500;
+}
+.match-progress strong { color: var(--green); }
+
+/* ===== FILL-IN MODE ===== */
+.fill-area {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.fill-card {
+  background: var(--bg-card);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 18px 20px;
+  box-shadow: var(--shadow);
+}
+.fill-card.solved {
+  background: var(--green-soft);
+  border-color: var(--green);
+}
+.fill-prompt {
+  font-size: 14px;
+  color: var(--ink-soft);
+  line-height: 1.6;
+  margin-bottom: 14px;
+}
+.fill-prompt strong { color: var(--ink); }
+.fill-prompt .theme-tag-small {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  padding: 2px 8px;
+  border-radius: 4px;
+  margin-right: 8px;
+  vertical-align: middle;
+  letter-spacing: 0.5px;
+}
+.fill-input-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.fill-input {
+  flex: 1;
+  min-width: 200px;
+  padding: 9px 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  font-size: 14px;
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  background: var(--bg);
+  color: var(--ink);
+}
+.fill-input:focus { outline: 2px solid var(--gold); border-color: var(--gold); }
+.fill-input.correct {
+  background: var(--green-soft);
+  border-color: var(--green);
+  color: var(--green);
+}
+.fill-input.wrong {
+  background: var(--red-soft);
+  border-color: var(--red);
+}
+.fill-feedback {
+  font-size: 12px;
+  margin-top: 8px;
+  color: var(--ink-muted);
+  font-style: italic;
+}
+.fill-feedback.correct { color: var(--green); }
+.fill-feedback.wrong { color: var(--red); }
+.fill-hint {
+  font-size: 11px;
+  color: var(--ink-muted);
+  margin-top: 4px;
+}
+.fill-show-answer {
+  background: var(--gold-soft);
+  color: var(--gold);
+  border: 1px solid var(--gold);
+  padding: 6px 12px;
+  font-size: 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-family: inherit;
+  font-weight: 500;
+}
+.fill-show-answer:hover { background: var(--gold); color: white; }
+
+/* THEME COLORS */
+.theme-contract { background: var(--blue-soft); color: var(--blue); }
+.theme-tort { background: var(--red-soft); color: var(--red); }
+.theme-insolvency { background: var(--orange-soft); color: var(--orange); }
+.theme-ip { background: var(--purple-soft); color: var(--purple); }
+.theme-matrimonial { background: var(--pink-soft); color: var(--pink); }
+.theme-expert { background: var(--gold-soft); color: var(--gold); }
+.theme-company { background: var(--teal-soft); color: var(--teal); }
+.theme-arbitration { background: var(--green-soft); color: var(--green); }
+
+.theme-pill.active.t-contract { background: var(--blue); border-color: var(--blue); color: white; }
+.theme-pill.active.t-tort { background: var(--red); border-color: var(--red); color: white; }
+.theme-pill.active.t-insolvency { background: var(--orange); border-color: var(--orange); color: white; }
+.theme-pill.active.t-ip { background: var(--purple); border-color: var(--purple); color: white; }
+.theme-pill.active.t-matrimonial { background: var(--pink); border-color: var(--pink); color: white; }
+.theme-pill.active.t-expert { background: var(--gold); border-color: var(--gold); color: white; }
+.theme-pill.active.t-company { background: var(--teal); border-color: var(--teal); color: white; }
+.theme-pill.active.t-arbitration { background: var(--green); border-color: var(--green); color: white; }
+
+/* RESPONSIVE */
+@media (max-width: 700px) {
+  body { padding: 16px 10px 60px; font-size: 14px; }
+  .header h1 { font-size: 24px; }
+  .mode-tab { padding: 8px 6px; }
+  .mode-tab .label { font-size: 10px; }
+  .flashcard { padding: 24px 18px; min-height: 280px; }
+  .flashcard .case-name { font-size: 19px; }
+  .match-grid { grid-template-columns: 1fr; }
+  .stats-bar { flex-wrap: wrap; gap: 10px; font-size: 11px; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="header">
+    <h1>CVA Module 2 <em>—</em> Án Lệ Tương Tác</h1>
+    <p>Học các án lệ Singapore quan trọng theo 3 cách · Flashcard · Match · Fill-in</p>
+    <div class="stats-bar">
+      <span>Tổng: <strong id="totalCount">0</strong> cases</span>
+      <span>·</span>
+      <span>Đang xem: <strong id="filteredCount">0</strong></span>
+      <span>·</span>
+      <span>Đã ôn: <strong id="reviewedCount">0</strong></span>
+    </div>
+  </div>
+
+  <!-- MODE TABS -->
+  <div class="mode-tabs">
+    <div class="mode-tab active" data-mode="flashcard" onclick="switchMode('flashcard')">
+      <span class="icon">🎴</span><span class="label">Flashcard</span>
+    </div>
+    <div class="mode-tab" data-mode="match" onclick="switchMode('match')">
+      <span class="icon">🔗</span><span class="label">Match</span>
+    </div>
+    <div class="mode-tab" data-mode="fill" onclick="switchMode('fill')">
+      <span class="icon">✍️</span><span class="label">Điền tên case</span>
+    </div>
+  </div>
+
+  <!-- THEME FILTER -->
+  <div class="theme-filter" id="themeFilter">
+    <!-- populated by JS -->
+  </div>
+
+  <!-- FLASHCARD MODE -->
+  <div class="mode-container active" id="mode-flashcard">
+    <div class="flashcard-area">
+      <div class="flashcard" id="flashcard" onclick="flipCard()">
+        <span class="case-counter" id="cardCounter">1 / 80</span>
+        <span class="flip-hint" id="flipHint">👆 Nhấn để lật</span>
+        <div class="face-front" id="faceFront">
+          <span class="theme-tag" id="frontThemeTag">Theme</span>
+          <div class="case-name" id="frontCaseName">Loading…</div>
+          <div class="case-citation" id="frontCitation">[Year] Citation</div>
+          <div class="case-content" id="frontHint" style="margin-top: auto; color: var(--ink-muted); font-style: italic; font-size: 13px;">
+            👇 Nhấn vào thẻ để xem nội dung
+          </div>
+        </div>
+        <div class="face-back" id="faceBack">
+          <span class="theme-tag" id="backThemeTag">Theme</span>
+          <div class="case-name" id="backCaseName">Loading…</div>
+          <div class="case-citation" id="backCitation">[Year] Citation</div>
+          <div class="case-content" id="backContent">Loading…</div>
+        </div>
+      </div>
+      <div class="flashcard-controls">
+        <button class="btn" onclick="prevCard()">← Trước</button>
+        <button class="btn btn-shuffle" onclick="shuffleCards()">🔀 Trộn</button>
+        <button class="btn btn-primary" onclick="nextCard()">Tiếp →</button>
+        <span class="score-display">Đã xem: <strong id="seenCount">0</strong></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- MATCH MODE -->
+  <div class="mode-container" id="mode-match">
+    <div class="match-area">
+      <div class="match-instructions">
+        <span>💡</span>
+        <span>Nhấn vào 1 thẻ bên trái (case name), rồi 1 thẻ bên phải (principle/holding) — nếu khớp đúng sẽ chuyển sang xanh.</span>
+      </div>
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <span class="match-progress">Tiến độ: <strong id="matchScore">0</strong> / <span id="matchTotal">10</span> · Sai: <span id="matchWrong">0</span></span>
+        <button class="btn btn-shuffle" onclick="newMatchRound()">🔀 Vòng mới</button>
+      </div>
+      <div class="match-grid">
+        <div class="match-col">
+          <h3>Case Names</h3>
+          <div id="matchLeft"></div>
+        </div>
+        <div class="match-col">
+          <h3>Principles / Holdings</h3>
+          <div id="matchRight"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FILL MODE -->
+  <div class="mode-container" id="mode-fill">
+    <div class="fill-area" id="fillArea">
+      <!-- populated -->
+    </div>
+    <div style="text-align: center; margin-top: 16px;">
+      <button class="btn btn-shuffle" onclick="newFillRound()">🔀 Câu mới</button>
+      <span class="score-display">Đúng: <strong id="fillScore">0</strong> / <span id="fillTotal">0</span></span>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ============================================================
+// CASE DATABASE — 80+ cases organized by theme
+// ============================================================
+const CASES = [
+  // === CONTRACT (Hợp đồng) ===
+  { name: "Hadley v Baxendale", citation: "(1854) 9 Exch 341", theme: "contract",
+    principle: "Remoteness — 2 limbs",
+    holding: "Damages recoverable if (1) arise naturally from breach (1st limb); or (2) within reasonable contemplation of both parties at contracting time (2nd limb).",
+    significance: "The classic English authority on remoteness; foundation of contract damages worldwide. Singapore applies via Out of the Box v Wanin and MFM Restaurants v Fish & Co." },
+  
+  { name: "Robinson v Harman", citation: "(1848) 1 Exch 850", theme: "contract",
+    principle: "Compensatory principle (expectation interest)",
+    holding: "Damages aim to place the innocent party in the position they would have been in had the contract been performed.",
+    significance: "The foundational rule of contract damages — restitutio in integrum applied to expectation interest." },
+
+  { name: "The Achilleas (Transfield Shipping v Mercator)", citation: "[2008] UKHL 48", theme: "contract",
+    principle: "Assumption of responsibility",
+    holding: "Charterer not liable for follow-on charter losses caused by 9-day late redelivery — parties did not assume responsibility for such losses as a type of risk.",
+    significance: "Lord Hoffmann's modern approach to remoteness. Singapore retains Hadley v Baxendale as the touchstone, with assumption of responsibility for suitable cases (MFM Restaurants v Fish & Co)." },
+
+  { name: "MFM Restaurants v Fish & Co Restaurants", citation: "[2011] 1 SLR 150", theme: "contract",
+    principle: "Singapore approach to remoteness",
+    holding: "Court of Appeal analysed remoteness through commercial expectation and contemplated risk — Hadley v Baxendale remains the touchstone in Singapore.",
+    significance: "Confirms Singapore retains the orthodox 2-limb test rather than fully adopting Achilleas." },
+
+  { name: "Out of the Box v Wanin Industries", citation: "[2013] SGHC 121", theme: "contract",
+    principle: "Hadley v Baxendale applied in Singapore",
+    holding: "Court applied Hadley v Baxendale: damages limited to losses arising naturally OR within reasonable contemplation of both parties at contracting.",
+    significance: "Leading Singapore authority on contract damages remoteness." },
+
+  { name: "PH Hydraulics v Airtrust (Hong Kong)", citation: "[2017] SGCA 26", theme: "contract",
+    principle: "No punitive damages in contract",
+    holding: "Punitive damages NOT available for pure breach of contract — only available in tort cases with 'outrageous' conduct.",
+    significance: "Singapore diverges from some other jurisdictions on punitive damages. Compare ACB v Thomson Medical (tort)." },
+
+  { name: "Denka Advantech v Seraya Energy", citation: "[2020] SGCA 119", theme: "contract",
+    principle: "Penalty doctrine — Dunlop test retained",
+    holding: "Singapore retained the Dunlop test for penalty clauses (genuine pre-estimate analysis) and REJECTED the UK Cavendish modernisation.",
+    significance: "Major Singapore divergence from UK Supreme Court (Cavendish v Makdessi [2015]). Important for cross-border contract drafting." },
+
+  { name: "Dunlop Pneumatic Tyre v New Garage", citation: "[1915] AC 79", theme: "contract",
+    principle: "Liquidated damages vs penalty",
+    holding: "Lord Dunedin's tests: genuine pre-estimate; not 'a sum payable on any breach'; not 'sum greatly exceeding greatest possible loss'; difficulty of estimation does not make it a penalty.",
+    significance: "The classic English test still applied in Singapore (Denka Advantech)." },
+
+  { name: "Cavendish Square Holding v Makdessi", citation: "[2015] UKSC 67", theme: "contract",
+    principle: "UK modern penalty test (legitimate interest)",
+    holding: "UK Supreme Court replaced Dunlop with 'legitimate interest + proportionality' test focusing on whether the clause is exorbitant or unconscionable.",
+    significance: "REJECTED by Singapore in Denka Advantech [2020] — important cross-border drafting consideration." },
+
+  { name: "Koh Chew Chee v Liu Shu Ming and Tong Xin", citation: "[2022] SGHC 25", theme: "contract",
+    principle: "No over-compensation principle",
+    holding: "Innocent party should not be put in a better position than if the contract had been performed; collateral or incidental advantages from mitigation may be disregarded.",
+    significance: "Confirms the compensatory principle — no windfalls in contract damages." },
+
+  { name: "Wishing Star v Jurong Town Corporation", citation: "[2008] SGCA", theme: "contract",
+    principle: "Date flexibility for valuation",
+    holding: "Courts may depart from date-of-breach rule and select a later date if it better reflects actual economic loss, particularly under fluctuating market conditions.",
+    significance: "Important for valuers — date selection can materially change damages quantum, especially in volatile markets." },
+
+  { name: "Johnson v Agnew", citation: "[1980] AC 367", theme: "contract",
+    principle: "Date-of-breach rule (general)",
+    holding: "Damages generally assessed at date of breach as the standard rule for measuring loss.",
+    significance: "The foundational rule that Wishing Star qualifies — flexibility only where justice requires." },
+
+  { name: "Bain v Fothergill", citation: "(1874) LR 7 HL 158", theme: "contract",
+    principle: "Old rule — defective title in real estate",
+    holding: "Vendor with defective title not liable for buyer's loss of profits — only return of deposit + reasonable expenses.",
+    significance: "ABOLISHED by UK Law of Property (Misc Provisions) Act 1989; modern position under Hadley v Baxendale (Wroth v Tyler [1974])." },
+
+  { name: "Wroth v Tyler", citation: "[1974] Ch 30", theme: "contract",
+    principle: "Specific performance & date for damages",
+    holding: "Where specific performance refused, damages assessed at date of judgment, not date of breach — date flexibility for real estate.",
+    significance: "Modern approach to real estate damages; abolished Bain v Fothergill restriction." },
+
+  // === TORT (Vô ý/cố ý gây thiệt hại) ===
+  { name: "Spandeck Engineering v DSTA", citation: "[2007] 4 SLR(R) 100", theme: "tort",
+    principle: "Duty of care — unified 2-stage test",
+    holding: "Stage 1: factual foreseeability. Stage 2: legal proximity (physical/causal/circumstantial/relational) + policy considerations. NO duty here due to contractual context.",
+    significance: "THE seminal Singapore duty of care framework — applies to all negligence claims including pure economic loss." },
+
+  { name: "Hedley Byrne v Heller", citation: "[1964] AC 465", theme: "tort",
+    principle: "Negligent misstatement",
+    holding: "Professionals owe duty of care to third parties who rely on their opinion where there is special relationship + reasonable reliance + foreseeable harm.",
+    significance: "Foundation for valuer liability to third parties. Singapore now applies via Spandeck framework." },
+
+  { name: "Sunny Metal & Engineering v Ng Khim Ming Eric", citation: "[2007] 3 SLR(R) 782", theme: "tort",
+    principle: "Causation — material contribution",
+    holding: "Plaintiff must prove the defendant's conduct materially contributed to the loss on balance of probabilities. Counterfactual analysis required.",
+    significance: "Court of Appeal causation framework — relevant for valuers building counterfactual scenarios." },
+
+  { name: "Tesa Tape Asia Pacific v Wing Seng Logistics", citation: "[2006] 3 SLR(R) 116", theme: "tort",
+    principle: "Duty of care + foreseeability (neighbour)",
+    holding: "Container-depot owed duty to adjacent property; tropical wind not extraordinary enough for force majeure; collapse risk foreseeable given stack height/proximity.",
+    significance: "Foreseeability test in Singapore for property damage. Force majeure rejected for ordinary weather events." },
+
+  { name: "ACB v Thomson Medical", citation: "[2017] 1 SLR 918", theme: "tort",
+    principle: "Punitive damages in tort",
+    holding: "Punitive damages available in tort only for 'outrageous' conduct showing reckless disregard for plaintiff's rights.",
+    significance: "Compare PH Hydraulics — no punitive in pure contract." },
+
+  { name: "Asia Hotel v Starwood (\"The Asia Star\")", citation: "[2010] 2 SLR 1154", theme: "tort",
+    principle: "Property damage — diminution in value",
+    holding: "Basic measure of damages = diminution in market value (before vs after); repair cost may substitute if reasonable and not exceeding pre-tort value.",
+    significance: "Standard measure for property damage tort claims; valuation must reflect economic reality." },
+
+  { name: "Sim Poh Ping v Winsta Holding", citation: "[2020] SGCA 35", theme: "tort",
+    principle: "Account of profits in fiduciary breach",
+    holding: "Account of profits focuses on defendant's gain (disgorgement), not plaintiff's loss. Plaintiff must elect between damages and account.",
+    significance: "Singapore's leading authority on the choice between compensation and account of profits." },
+
+  { name: "Allied Maples v Simmons & Simmons", citation: "[1995] 1 WLR 1602", theme: "tort",
+    principle: "Loss of chance methodology",
+    holding: "Where loss depends on hypothetical conduct of a third party, damages = probability of success × value of opportunity (e.g., 60% × $10M = $6M).",
+    significance: "Modern alternative to but-for causation when proving full loss is impossible." },
+
+  { name: "Wells v Wells", citation: "[1999] 1 AC 345", theme: "tort",
+    principle: "Discount rate for personal injury lump sum",
+    holding: "Real return on Index-Linked Government Securities (ILGS) — set in UK at ~3% (later varied). Singapore applies case-by-case discretion.",
+    significance: "Standard for converting future losses to present value in PI cases." },
+
+  { name: "Teo Sing Keng v Sim Ban Kiat", citation: "[1994] 1 SLR(R) 64", theme: "tort",
+    principle: "Multiplicand × multiplier method",
+    holding: "Loss of future earnings = annual loss × adjusted multiplier (years discounted for vicissitudes, contingencies, time value of money).",
+    significance: "Standard Singapore methodology for personal injury future-loss calculation; distinguished loss of earnings vs loss of earning capacity." },
+
+  { name: "Miliangos v George Frank (Textiles)", citation: "[1976] AC 443", theme: "tort",
+    principle: "Currency conversion in damages",
+    holding: "Damages may be awarded in the currency that best expresses the plaintiff's loss — not always the forum currency. Conversion at date of judgment.",
+    significance: "Foundational rule for cross-border damages claims with multiple currencies." },
+
+  { name: "British Westinghouse v Underground Electric Railways", citation: "[1912] AC 673", theme: "tort",
+    principle: "Mitigation principle",
+    holding: "Plaintiff must take reasonable steps to mitigate loss; benefits flowing from mitigation must be deducted from damages.",
+    significance: "Classic authority on the mitigation duty in both contract and tort." },
+
+  // === COMPANY LAW & SHAREHOLDER (Luật công ty) ===
+  { name: "Foss v Harbottle", citation: "(1843) 67 ER 189", theme: "company",
+    principle: "Proper plaintiff rule",
+    holding: "When a wrong is done to a company, the proper plaintiff is the company itself — shareholders cannot generally sue directly.",
+    significance: "Foundation of derivative action regimes. Statutory exceptions: s.216A Companies Act (Singapore)." },
+
+  { name: "Salomon v Salomon & Co", citation: "[1897] AC 22", theme: "company",
+    principle: "Separate legal personality",
+    holding: "A company is a separate legal person from its shareholders — even when one shareholder owns nearly all the shares.",
+    significance: "The corporate veil principle. Statutory and equitable exceptions exist (Prest v Petrodel)." },
+
+  { name: "Prest v Petrodel Resources", citation: "[2013] UKSC 34", theme: "company",
+    principle: "Piercing the corporate veil — evasion principle",
+    holding: "Veil pierced only in 'evasion' cases — where a person under existing legal obligation interposes a company to defeat or evade it.",
+    significance: "Modern test for piercing the corporate veil; restricts the doctrine to specific abuse situations." },
+
+  { name: "Ng Kek Wee v Sim City Technology", citation: "[2014] SGCA 47", theme: "company",
+    principle: "Section 216 oppression — commercial unfairness",
+    holding: "Oppression claims focus on commercial unfairness in the conduct of affairs, NOT merely breaches of strict legal rights.",
+    significance: "Modern Singapore framework for minority oppression; emphasises fairness over technical breach." },
+
+  { name: "Over & Over Ltd v Bonvests Holdings", citation: "[2010] 2 SLR 776", theme: "company",
+    principle: "Fair value in oppression buyout",
+    holding: "Valuation must reflect the nature of the interest being acquired; fairness over formula. Court of Appeal's framework for s.216 buyouts.",
+    significance: "Leading Singapore CA case on minority discount/control premium decisions in s.216 buyouts." },
+
+  { name: "Ang Thiam Swee v Low Hian Chor", citation: "[2013] SGCA 11", theme: "company",
+    principle: "Section 216A derivative action",
+    holding: "Statutory derivative action: applicants must affirmatively satisfy good faith and prima facie interest of company tests.",
+    significance: "Refined approach to s.216A applications in Singapore." },
+
+  { name: "Thio Syn Kym Wendy v Thio Syn Pyn", citation: "[2018] 2 SLR 788", theme: "company",
+    principle: "Oppression in family companies",
+    holding: "Minority oppression remains fact-specific; acts at subsidiary level may be considered against holding company where holding's sole assets/function tied to subsidiaries.",
+    significance: "Clarifies oppression analysis in family-owned group structures." },
+
+  { name: "Re Bird Precision Bellows", citation: "[1986] Ch 658", theme: "company",
+    principle: "Valuation date in oppression buyout",
+    holding: "Court has discretion on valuation date for s.216-equivalent buyouts — typically date of judgment/order.",
+    significance: "English authority frequently applied in Singapore oppression cases." },
+
+  { name: "Sakae Holdings v Gryphon", citation: "[Series of judgments]", theme: "company",
+    principle: "Court-appointed valuer + s.216",
+    holding: "Court ordered buyout; appointed KPMG as independent valuer; refused plaintiff's later requests for disclosure/comments to maintain expert independence.",
+    significance: "Procedural framework for court-appointed valuations; emphasises independence + finality." },
+
+  // === IP, INSOLVENCY & DIGITAL ASSETS ===
+  { name: "Kiri Industries v Senda International Capital", citation: "[2024] 2 SLR 1", theme: "ip",
+    principle: "IP in oppression — notional licence fees",
+    holding: "SGCA: notional licence fee for related-party use of O288 Patent must be written back into DyStar's value; uncertainties from oppressor's non-disclosure should not dilute IP value.",
+    significance: "Landmark Singapore CA decision on IP valuation in oppression remedies." },
+
+  { name: "Kiri Industries v Senda (SICC tranche)", citation: "[2021] SGHC(I) 2", theme: "ip",
+    principle: "Coherent DCF valuation in multi-tranche oppression",
+    holding: "Once a valuation model is judicially accepted, subsequent adjustments must be made coherently within that model. Patent expiry treated as finite, not perpetual.",
+    significance: "Methodology playbook for ongoing oppression valuations." },
+
+  { name: "Main-Line Corporate Holdings v UOB", citation: "[2016]", theme: "ip",
+    principle: "IP infringement — 3 damages methods",
+    holding: "Damages for patent infringement: (1) lost profits the patentee would have earned; (2) reasonable royalty; (3) bespoke assessment where neither benchmark fits.",
+    significance: "Singapore's framework for IP damages methodology selection." },
+
+  { name: "Ericsson v TCL Communication", citation: "No. 18-2003 (Fed. Cir. 2020)", theme: "ip",
+    principle: "Standard essential patents (SEP) royalty",
+    holding: "Royalty must capture the incremental value of the patented technology, not the entire market value of the product.",
+    significance: "US authority on SEP/FRAND valuation — referenced in Singapore SEP discussions." },
+
+  { name: "InterDigital v Lenovo", citation: "[2024] EWCA Civ 743", theme: "ip",
+    principle: "Comparable real-world licences as evidence",
+    holding: "FRAND royalty calculations must match true scale of commercial exploitation; sales volumes, pricing structures, and market penetration considered.",
+    significance: "English Court of Appeal authority on SEP valuation methodology." },
+
+  { name: "Sun Electric Power v RCMA Asia", citation: "[2021] SGCA 60", theme: "insolvency",
+    principle: "Cash flow test for insolvency",
+    holding: "Cash flow test under s.226(2) IRDA: current assets vs current liabilities within 12-month timeframe (standard accounting definition).",
+    significance: "Working-capital approach to solvency assessment in Singapore." },
+
+  { name: "Re Sun Electric Power", citation: "[2021] SGCA", theme: "insolvency",
+    principle: "Departure from stare decisis",
+    holding: "Singapore CA may depart from its own prior decisions when: (1) precedent clearly wrong + serious injustice; (2) significant social/commercial change; (3) widely criticised + unworkable.",
+    significance: "Singapore parallel to UK Practice Statement (1966)." },
+
+  { name: "Buildspeed Construction v Theme Corp", citation: "[2000] 1 SLR(R) 287", theme: "insolvency",
+    principle: "Insolvency clawback valuation",
+    holding: "Court will undertake 'robust and pragmatic' valuation of benefits received and conferred to assess undervalue transactions.",
+    significance: "Foundation for s.224 IRDA undervalue clawback assessment methodology." },
+
+  { name: "SW Trustees v Teodros Ashenafi Tesemma", citation: "[2024] SGHC 322", theme: "insolvency",
+    principle: "Market value vs equitable value in clawback",
+    holding: "Court chose 'market value' (open arm's-length transaction) over 'equitable value' (worth to specific buyer with special reasons) in undervalue analysis.",
+    significance: "Modern Singapore authority on valuation method selection in clawback." },
+
+  { name: "Re Yap Shiaw Wei", citation: "[2024] SGHC 232", theme: "insolvency",
+    principle: "Individual Voluntary Arrangement (IVA)",
+    holding: "Court rejected IVA proposal: $42.5M valuation was over 50% premium above $28M actual market value; proposals must rest on realistic, not optimistic, valuations.",
+    significance: "Court's supervisory role in IVAs — must be 'serious and viable'." },
+
+  { name: "Re All Measure Technology", citation: "[2023] 5 SLR 1421", theme: "insolvency",
+    principle: "Scheme of arrangement — feasibility",
+    holding: "Court dismissed second moratorium application; scheme must demonstrate compromise at least as favourable to creditors as alternative (liquidation/JM).",
+    significance: "Singapore standard for scheme feasibility under IRDA." },
+
+  { name: "Victory International Holdings v Borrelli", citation: "[2024] SGHC 79", theme: "insolvency",
+    principle: "Receiver's duty of care",
+    holding: "Receiver must exercise reasonable care to obtain true market value when selling secured assets; bona fide sale not a breach even if higher price possible.",
+    significance: "Modern Singapore authority on mortgagee/receiver sale duties." },
+
+  { name: "ByBit Fintech v Ho Kai Xin", citation: "[2024] SGHC 113 / 124", theme: "insolvency",
+    principle: "Crypto as property",
+    holding: "Cryptocurrency is property capable of being held on trust; constructive trust available; tracing through wallets allowed; proprietary remedies apply.",
+    significance: "Singapore's landmark decision aligning with UK (AA v Persons Unknown), NZ (Cryptopia), Australia (Wang v Darby)." },
+
+  { name: "Janesh s/o Rajkumar v Unknown Person", citation: "[2022] SGHC 264", theme: "insolvency",
+    principle: "NFT as property + freezing order",
+    holding: "NFTs are recognised as property; proprietary injunction granted to freeze stolen NFT.",
+    significance: "Earlier Singapore authority confirming digital asset property status." },
+
+  { name: "CLM v CLN", citation: "[2022] SGHC 46", theme: "insolvency",
+    principle: "Crypto recovery proceedings",
+    holding: "Singapore HC granted proprietary remedies to recover stolen cryptocurrency; tracing permitted.",
+    significance: "Earlier crypto-as-property authority preceding ByBit." },
+
+  { name: "AA v Persons Unknown", citation: "[2019] EWHC 3556 (Comm)", theme: "insolvency",
+    principle: "UK: Bitcoin = property",
+    holding: "English High Court: Bitcoin is property; proprietary injunction available.",
+    significance: "Key UK authority influencing Singapore's ByBit v Ho." },
+
+  { name: "Ruscoe v Cryptopia (in liquidation)", citation: "[2020] NZHC 728", theme: "insolvency",
+    principle: "NZ: Crypto = property held on trust",
+    holding: "Cryptocurrencies are property capable of being held on trust under New Zealand law.",
+    significance: "Common-law consensus on crypto property status." },
+
+  { name: "Wang v Darby", citation: "[2021] EWHC 3054 (Comm)", theme: "insolvency",
+    principle: "Australia/UK: Crypto property + interim relief",
+    holding: "Crypto-assets recognised as property; interim relief granted to preserve assets pending substantive proceedings.",
+    significance: "Reinforces emerging international consensus." },
+
+  { name: "Fantom Foundation v Multichain", citation: "[2024] SGHC 173", theme: "insolvency",
+    principle: "Damages for misappropriated digital assets",
+    holding: "Default judgment + damages assessment for stolen digital assets (USDT, USDC, DAI, FTM) following security breach.",
+    significance: "Practical framework for crypto damages assessment in Singapore." },
+
+  { name: "Tang Man Sit v Capacious Investments", citation: "[1996] AC 514 (PC)", theme: "insolvency",
+    principle: "Election between damages and account; highest intermediate value",
+    holding: "Plaintiff must elect between damages and account of profits; highest intermediate value approach available where assets misappropriated.",
+    significance: "Privy Council authority on remedy election; relevant for crypto/asset misappropriation cases." },
+
+  // === MATRIMONIAL ===
+  { name: "BPC v BPB", citation: "[2019] 1 SLR 608", theme: "matrimonial",
+    principle: "Adverse inference test",
+    holding: "Adverse inference may be drawn where: (1) substratum of evidence establishes prima facie case; AND (2) party had particular access to hidden information.",
+    significance: "Singapore's leading authority on adverse inference in matrimonial proceedings." },
+
+  { name: "XIK v XIL", citation: "[2025] SGHCF 16", theme: "matrimonial",
+    principle: "Joint expert valuation in matrimonial",
+    holding: "Where parties jointly agree on a valuer for non-listed shares, expert evidence forms basis for share valuation; not a simple matter of taking offering price or NAV.",
+    significance: "Modern approach to matrimonial company share valuation." },
+
+  { name: "XIB v XIA", citation: "[2025] SGHCF 40", theme: "matrimonial",
+    principle: "'Transformed' matrimonial assets",
+    holding: "Pre-marriage shares NOT 'transformed matrimonial assets' where caregiving did not amount to substantial improvement of company; book value from unaudited statements 'far from ideal'.",
+    significance: "Test for whether pre-marital business assets enter the matrimonial pool; valuation methodology critique." },
+
+  // === EXPERT WITNESS DUTY (Nghĩa vụ chuyên gia) ===
+  { name: "Khoo Bee Keong v Ang Chun Hong (Gunapathy)", citation: "[2002] SGCA", theme: "expert",
+    principle: "'No hiding and siding' duty",
+    holding: "Expert must NOT hide (conceal) opinions or limitations and must NOT side (advocate) with the client. Independent + transparent + defensible opinions required.",
+    significance: "THE foundational Singapore expert witness duty case. Now codified in O.12 r.5(2) ROC 2021." },
+
+  { name: "Kua Kok Kim v Ernst & Young", citation: "[1999] 3 SLR(R) 1184", theme: "expert",
+    principle: "Standard of care for valuers",
+    holding: "Standard = ordinarily competent valuer with reasonable skill and care. Valuation is inexact science; competent professionals may reasonably differ. Need error of principle, not mere disagreement.",
+    significance: "THE seminal case on professional negligence claims against valuers in Singapore." },
+
+  { name: "Mühlbauer AG v Manufacturing Integration Technology", citation: "[2010] 2 SLR 724", theme: "expert",
+    principle: "Expert assists, court decides",
+    holding: "Expert must NOT decide legal issues (claim construction, validity = for the court). Court must independently scrutinise methodology + can weigh credibility holistically.",
+    significance: "Boundary between expert opinion and judicial determination; bias evaluation framework." },
+
+  { name: "BOI v BOJ", citation: "[2018] SGHCF 11", theme: "expert",
+    principle: "Advocacy-driven stance criticised",
+    holding: "Court criticised expert for adopting an 'advocacy-driven stance inconsistent with the duty of independence'.",
+    significance: "Modern reminder of independence duty; partisan experts lose evidentiary weight." },
+
+  { name: "CGU International Insurance v PT Garuda Indonesia", citation: "[2004] SGHC 56", theme: "expert",
+    principle: "Argumentative ≠ analytical",
+    holding: "High Court gave little weight to expert testimony that was 'more argumentative than analytical' — expert acted as advocate rather than reasoned analyst.",
+    significance: "Pattern in Singapore: experts who argue rather than analyse get discounted." },
+
+  { name: "Ting Shwu Ping v Scanone", citation: "[2016] SGCA 65", theme: "expert",
+    principle: "Court-ordered fair value buyout",
+    holding: "Buy-out at fair value is appropriate remedy under s.216 + s.254(2A) CA where shareholder relationship has irretrievably broken down. Court may appoint independent valuer.",
+    significance: "Procedural framework for court-ordered s.216 buyouts in Singapore." },
+
+  { name: "Lim Siew Fern v Tan Beng Yong", citation: "[2023]", theme: "expert",
+    principle: "Expert independence within terms of reference",
+    holding: "Expert must work independently without interference from parties or the court, provided they act within their terms of reference (scope of engagement).",
+    significance: "Modern reaffirmation of expert independence triangle." },
+
+  { name: "Basil Anthony Herman v Premier Security", citation: "[2010]", theme: "expert",
+    principle: "Court approval of expert",
+    holding: "Expert must be approved by the court before acting (now O.12 r.2(1) ROC 2021).",
+    significance: "Procedural requirement for expert appointment in Singapore litigation." },
+
+  { name: "Longyuan-Arrk v Show and Tell", citation: "[2013]", theme: "expert",
+    principle: "Factual witness ≠ expert witness",
+    holding: "A factual witness cannot also act as an expert witness in the same matter — roles are distinct.",
+    significance: "Important boundary in expert witness selection." },
+
+  { name: "Abdul Razak v Keppel", citation: "[2002]", theme: "expert",
+    principle: "Expert overreaching criticised",
+    holding: "Court criticised 2 experts for going beyond their expertise into legal interpretation matters reserved for the court.",
+    significance: "Experts must stay within technical expertise; not interpret contracts or apply law." },
+
+  { name: "JSI Shipping v Teofoongwonglcloong", citation: "[2007] 4 SLR(R) 460", theme: "expert",
+    principle: "Auditor's professional negligence",
+    holding: "Auditing firm liable for failing to detect director misappropriations during statutory audits.",
+    significance: "Standard of care for accounting/audit professionals; relevant analogue for valuers." },
+
+  { name: "Stanton v Callaghan", citation: "[2000] QB 75", theme: "expert",
+    principle: "Old: expert immunity from suit",
+    holding: "Experts had immunity from negligence suits by their own clients (under English law).",
+    significance: "OVERRULED by Jones v Kaney [2011] — expert immunity abolished." },
+
+  { name: "Jones v Kaney", citation: "[2011] UKSC 13", theme: "expert",
+    principle: "Expert immunity abolished",
+    holding: "UK Supreme Court abolished expert witness immunity for negligence claims by their own clients (overruling Stanton v Callaghan).",
+    significance: "Modern position: experts can be sued by their instructing party for negligent advice/testimony." },
+
+  { name: "Ikarian Reefer (National Justice Compania v Prudential Assurance)", citation: "[1993] 2 Lloyd's Rep 68", theme: "expert",
+    principle: "7 duties of an expert witness",
+    holding: "Cresswell J's 7 duties: (1) independent; (2) unbiased; (3) within expertise; (4) state material facts; (5) state if matters outside expertise; (6) note range of opinions; (7) communicate change of view.",
+    significance: "Foundational expert witness conduct framework; widely applied internationally including Singapore." },
+
+  // === ARBITRATION & DISPUTE RESOLUTION ===
+  { name: "Re Sanum Investments v Government of Laos", citation: "[2019] SGHC(I) 11", theme: "arbitration",
+    principle: "Concurrent expert evidence in SG arbitration",
+    holding: "Singapore-seated arbitral panels routinely use concurrent evidence (hot-tubbing) as a tool for expert testimony to streamline economic and valuation evidence.",
+    significance: "Confirms hot-tubbing is mainstream in Singapore arbitration." },
+
+  { name: "Tiger Pictures Entertainment v Encore Films", citation: "[2024] 3 SLR 795", theme: "arbitration",
+    principle: "Simplified Process under SCJ(IP)R",
+    holding: "Two ways to trigger Simplified Process: (1) rule 5 — claimant elects + abandons claims >$500K; (2) rule 6(2) — court orders on motion or party application.",
+    significance: "Procedural framework for IP disputes in Singapore under simplified track." },
+];
+
+// ============================================================
+// THEME METADATA
+// ============================================================
+const THEMES = {
+  contract:    { label: "Contract",     vi: "Hợp đồng",      icon: "📜", colorClass: "t-contract" },
+  tort:        { label: "Tort",          vi: "Bồi thường tort", icon: "⚖️", colorClass: "t-tort" },
+  company:     { label: "Company",       vi: "Luật công ty",  icon: "🏢", colorClass: "t-company" },
+  ip:          { label: "IP",            vi: "Sở hữu trí tuệ", icon: "💡", colorClass: "t-ip" },
+  insolvency:  { label: "Insolvency",    vi: "Phá sản & Crypto", icon: "💸", colorClass: "t-insolvency" },
+  matrimonial: { label: "Matrimonial",   vi: "Hôn nhân",      icon: "💍", colorClass: "t-matrimonial" },
+  expert:      { label: "Expert duty",   vi: "Nghĩa vụ chuyên gia", icon: "🎓", colorClass: "t-expert" },
+  arbitration: { label: "Arbitration",   vi: "Trọng tài",     icon: "⚖", colorClass: "t-arbitration" },
+};
+
+// ============================================================
+// STATE
+// ============================================================
+let activeTheme = 'all';
+let activeMode = 'flashcard';
+let cardOrder = [];
+let cardIndex = 0;
+let seenCards = new Set();
+let reviewedCards = new Set();
+
+// MATCH STATE
+let matchPairs = [];
+let matchSelectedLeft = null;
+let matchSelectedRight = null;
+let matchScore = 0;
+let matchWrong = 0;
+let matchRoundSize = 6;
+
+// FILL STATE
+let fillRound = [];
+let fillScore = 0;
+let fillTotal = 0;
+
+// ============================================================
+// FILTERED CASE LIST
+// ============================================================
+function filteredCases() {
+  if (activeTheme === 'all') return CASES;
+  return CASES.filter(c => c.theme === activeTheme);
+}
+
+// ============================================================
+// INIT
+// ============================================================
+function init() {
+  buildThemeFilter();
+  document.getElementById('totalCount').textContent = CASES.length;
+  resetForFilter();
+  renderFlashcard();
+  newMatchRound();
+  newFillRound();
+}
+
+function buildThemeFilter() {
+  const filter = document.getElementById('themeFilter');
+  let html = `<div class="theme-pill active" onclick="setTheme('all')">📚 All <span class="count">${CASES.length}</span></div>`;
+  for (const [key, meta] of Object.entries(THEMES)) {
+    const count = CASES.filter(c => c.theme === key).length;
+    html += `<div class="theme-pill ${meta.colorClass}" onclick="setTheme('${key}')">${meta.icon} ${meta.vi} <span class="count">${count}</span></div>`;
+  }
+  filter.innerHTML = html;
+}
+
+function setTheme(theme) {
+  activeTheme = theme;
+  document.querySelectorAll('.theme-pill').forEach(p => p.classList.remove('active'));
+  event.target.closest('.theme-pill').classList.add('active');
+  resetForFilter();
+  renderFlashcard();
+  newMatchRound();
+  newFillRound();
+}
+
+function resetForFilter() {
+  const cases = filteredCases();
+  document.getElementById('filteredCount').textContent = cases.length;
+  cardOrder = cases.map((_, i) => i);
+  cardIndex = 0;
+  seenCards.clear();
+  document.getElementById('seenCount').textContent = 0;
+}
+
+// ============================================================
+// MODE SWITCHING
+// ============================================================
+function switchMode(mode) {
+  activeMode = mode;
+  document.querySelectorAll('.mode-tab').forEach(t => t.classList.remove('active'));
+  document.querySelector(`.mode-tab[data-mode="${mode}"]`).classList.add('active');
+  document.querySelectorAll('.mode-container').forEach(c => c.classList.remove('active'));
+  document.getElementById(`mode-${mode}`).classList.add('active');
+}
+
+// ============================================================
+// FLASHCARD MODE
+// ============================================================
+function renderFlashcard() {
+  const cases = filteredCases();
+  if (cases.length === 0) return;
+  const idx = cardOrder[cardIndex];
+  const c = cases[idx];
+  const theme = THEMES[c.theme];
+
+  document.getElementById('cardCounter').textContent = `${cardIndex + 1} / ${cases.length}`;
+
+  // Front face
+  document.getElementById('frontThemeTag').textContent = `${theme.icon} ${theme.vi}`;
+  document.getElementById('frontThemeTag').className = `theme-tag theme-${c.theme}`;
+  document.getElementById('frontCaseName').textContent = c.name;
+  document.getElementById('frontCitation').textContent = c.citation;
+
+  // Back face
+  document.getElementById('backThemeTag').textContent = `${theme.icon} ${theme.vi}`;
+  document.getElementById('backThemeTag').className = `theme-tag theme-${c.theme}`;
+  document.getElementById('backCaseName').textContent = c.name;
+  document.getElementById('backCitation').textContent = c.citation;
+  document.getElementById('backContent').innerHTML = `
+    <span class="label">Principle</span>
+    <strong>${c.principle}</strong>
+    <span class="label">Holding</span>
+    ${c.holding}
+    <span class="label">Significance</span>
+    ${c.significance}
+  `;
+
+  // Reset to front
+  document.getElementById('flashcard').classList.remove('flipped');
+  document.getElementById('flipHint').textContent = '👆 Nhấn để lật';
+
+  // Mark seen
+  seenCards.add(idx);
+  document.getElementById('seenCount').textContent = seenCards.size;
+}
+
+function flipCard() {
+  const card = document.getElementById('flashcard');
+  card.classList.toggle('flipped');
+  document.getElementById('flipHint').textContent = card.classList.contains('flipped') ? '👆 Nhấn để xem tên' : '👆 Nhấn để lật';
+  if (card.classList.contains('flipped')) {
+    const cases = filteredCases();
+    const idx = cardOrder[cardIndex];
+    reviewedCards.add(`${activeTheme}-${idx}-${cases[idx].name}`);
+    document.getElementById('reviewedCount').textContent = reviewedCards.size;
+  }
+}
+
+function nextCard() {
+  const cases = filteredCases();
+  cardIndex = (cardIndex + 1) % cases.length;
+  renderFlashcard();
+}
+
+function prevCard() {
+  const cases = filteredCases();
+  cardIndex = (cardIndex - 1 + cases.length) % cases.length;
+  renderFlashcard();
+}
+
+function shuffleCards() {
+  const cases = filteredCases();
+  cardOrder = cases.map((_, i) => i);
+  for (let i = cardOrder.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [cardOrder[i], cardOrder[j]] = [cardOrder[j], cardOrder[i]];
+  }
+  cardIndex = 0;
+  seenCards.clear();
+  document.getElementById('seenCount').textContent = 0;
+  renderFlashcard();
+}
+
+// ============================================================
+// MATCH MODE
+// ============================================================
+function newMatchRound() {
+  const cases = filteredCases();
+  const size = Math.min(matchRoundSize, cases.length);
+  const shuffled = [...cases].sort(() => Math.random() - 0.5).slice(0, size);
+  matchPairs = shuffled.map((c, i) => ({ id: i, name: c.name, principle: c.principle, theme: c.theme }));
+  matchScore = 0;
+  matchWrong = 0;
+  matchSelectedLeft = null;
+  matchSelectedRight = null;
+  document.getElementById('matchScore').textContent = 0;
+  document.getElementById('matchWrong').textContent = 0;
+  document.getElementById('matchTotal').textContent = size;
+  renderMatch();
+}
+
+function renderMatch() {
+  const leftEl = document.getElementById('matchLeft');
+  const rightEl = document.getElementById('matchRight');
+  const leftItems = [...matchPairs].sort(() => Math.random() - 0.5);
+  const rightItems = [...matchPairs].sort(() => Math.random() - 0.5);
+
+  leftEl.innerHTML = leftItems.map(p =>
+    `<div class="match-card" data-id="${p.id}" data-side="L" onclick="selectMatch(this)">
+      <div class="case-name">${p.name}</div>
+    </div>`
+  ).join('');
+
+  rightEl.innerHTML = rightItems.map(p =>
+    `<div class="match-card" data-id="${p.id}" data-side="R" onclick="selectMatch(this)">
+      ${p.principle}
+    </div>`
+  ).join('');
+}
+
+function selectMatch(el) {
+  if (el.classList.contains('matched')) return;
+  const side = el.dataset.side;
+  const id = parseInt(el.dataset.id);
+
+  if (side === 'L') {
+    if (matchSelectedLeft) matchSelectedLeft.classList.remove('selected');
+    matchSelectedLeft = el;
+    el.classList.add('selected');
+  } else {
+    if (matchSelectedRight) matchSelectedRight.classList.remove('selected');
+    matchSelectedRight = el;
+    el.classList.add('selected');
+  }
+
+  if (matchSelectedLeft && matchSelectedRight) {
+    const lid = parseInt(matchSelectedLeft.dataset.id);
+    const rid = parseInt(matchSelectedRight.dataset.id);
+    if (lid === rid) {
+      matchSelectedLeft.classList.remove('selected');
+      matchSelectedRight.classList.remove('selected');
+      matchSelectedLeft.classList.add('matched');
+      matchSelectedRight.classList.add('matched');
+      matchScore++;
+      document.getElementById('matchScore').textContent = matchScore;
+      matchSelectedLeft = null;
+      matchSelectedRight = null;
+      if (matchScore === matchPairs.length) {
+        setTimeout(() => alert(`🎉 Hoàn thành! Đúng ${matchScore}/${matchPairs.length}, sai ${matchWrong} lần.`), 300);
+      }
+    } else {
+      const wrongL = matchSelectedLeft;
+      const wrongR = matchSelectedRight;
+      wrongL.classList.add('wrong');
+      wrongR.classList.add('wrong');
+      matchWrong++;
+      document.getElementById('matchWrong').textContent = matchWrong;
+      setTimeout(() => {
+        wrongL.classList.remove('wrong', 'selected');
+        wrongR.classList.remove('wrong', 'selected');
+      }, 600);
+      matchSelectedLeft = null;
+      matchSelectedRight = null;
+    }
+  }
+}
+
+// ============================================================
+// FILL-IN MODE
+// ============================================================
+function newFillRound() {
+  const cases = filteredCases();
+  const size = Math.min(8, cases.length);
+  const shuffled = [...cases].sort(() => Math.random() - 0.5).slice(0, size);
+  fillRound = shuffled;
+  fillScore = 0;
+  fillTotal = size;
+  document.getElementById('fillScore').textContent = 0;
+  document.getElementById('fillTotal').textContent = size;
+  renderFillRound();
+}
+
+function renderFillRound() {
+  const area = document.getElementById('fillArea');
+  area.innerHTML = fillRound.map((c, i) => {
+    const theme = THEMES[c.theme];
+    return `
+      <div class="fill-card" id="fill-card-${i}">
+        <div class="fill-prompt">
+          <span class="theme-tag-small theme-${c.theme}">${theme.icon} ${theme.vi}</span>
+          <strong>${c.principle}.</strong> ${c.holding}
+        </div>
+        <div class="fill-input-row">
+          <input type="text" class="fill-input" id="fill-input-${i}" placeholder="Tên case (ví dụ: Hadley v Baxendale)" autocomplete="off" onkeypress="if(event.key==='Enter') checkFill(${i})">
+          <button class="btn btn-primary" onclick="checkFill(${i})">Kiểm tra</button>
+          <button class="fill-show-answer" onclick="showFillAnswer(${i})">Xem đáp án</button>
+        </div>
+        <div class="fill-feedback" id="fill-feedback-${i}"></div>
+        <div class="fill-hint" id="fill-hint-${i}">Gợi ý: <em>${c.citation}</em></div>
+      </div>
+    `;
+  }).join('');
+}
+
+function normalize(s) {
+  return s.toLowerCase()
+    .replace(/[\.\(\)\[\]:;,'"\-–—_&]/g, ' ')
+    .replace(/\bv\b\.?/g, ' v ')
+    .replace(/\bvs\b\.?/g, ' v ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function checkFill(i) {
+  const input = document.getElementById(`fill-input-${i}`);
+  const feedback = document.getElementById(`fill-feedback-${i}`);
+  const card = document.getElementById(`fill-card-${i}`);
+  if (card.classList.contains('solved')) return;
+
+  const userAnswer = input.value.trim();
+  if (!userAnswer) return;
+
+  const correctName = fillRound[i].name;
+  const userNorm = normalize(userAnswer);
+  const correctNorm = normalize(correctName);
+
+  // Check if user's answer matches significantly
+  // Strategy: split by " v " and check both sides; or fuzzy match key terms
+  let isCorrect = false;
+
+  if (userNorm === correctNorm) {
+    isCorrect = true;
+  } else {
+    // Extract main parties (split on " v ")
+    const userParts = userNorm.split(' v ').map(s => s.trim());
+    const correctParts = correctNorm.split(' v ').map(s => s.trim());
+    
+    if (userParts.length >= 2 && correctParts.length >= 2) {
+      // Check if first key word of user matches first key word of correct
+      const userFirst = userParts[0].split(' ').filter(w => w.length > 2);
+      const correctFirst = correctParts[0].split(' ').filter(w => w.length > 2);
+      const userSecond = userParts[1].split(' ').filter(w => w.length > 2);
+      const correctSecond = correctParts[1].split(' ').filter(w => w.length > 2);
+      
+      const firstMatches = userFirst.some(w => correctFirst.includes(w));
+      const secondMatches = userSecond.some(w => correctSecond.includes(w));
+      
+      if (firstMatches && secondMatches) isCorrect = true;
+    } else {
+      // Single-word case names — accept if main word is present
+      const keyWords = correctNorm.split(' ').filter(w => w.length > 3);
+      const userWords = userNorm.split(' ').filter(w => w.length > 3);
+      const matches = keyWords.filter(w => userWords.includes(w)).length;
+      if (matches >= Math.min(2, keyWords.length)) isCorrect = true;
+    }
+  }
+
+  if (isCorrect) {
+    input.classList.add('correct');
+    input.classList.remove('wrong');
+    input.disabled = true;
+    feedback.textContent = `✓ Đúng — ${correctName}`;
+    feedback.className = 'fill-feedback correct';
+    card.classList.add('solved');
+    fillScore++;
+    document.getElementById('fillScore').textContent = fillScore;
+  } else {
+    input.classList.add('wrong');
+    input.classList.remove('correct');
+    feedback.textContent = `✗ Chưa đúng. Thử lại hoặc bấm "Xem đáp án".`;
+    feedback.className = 'fill-feedback wrong';
+  }
+}
+
+function showFillAnswer(i) {
+  const input = document.getElementById(`fill-input-${i}`);
+  const feedback = document.getElementById(`fill-feedback-${i}`);
+  const card = document.getElementById(`fill-card-${i}`);
+  if (card.classList.contains('solved')) return;
+  
+  input.value = fillRound[i].name;
+  input.classList.remove('wrong');
+  input.classList.add('correct');
+  input.disabled = true;
+  feedback.textContent = `Đáp án: ${fillRound[i].name} ${fillRound[i].citation}`;
+  feedback.className = 'fill-feedback correct';
+  card.classList.add('solved');
+}
+
+// Init
+init();
+</script>
+</body>
+</html>

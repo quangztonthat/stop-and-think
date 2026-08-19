@@ -1,0 +1,1931 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CVA Module 2 — Exam-Style Mock (Official 60 + New 30)</title>
+<style>
+:root {
+  --bg: #faf6ee;
+  --bg-card: #ffffff;
+  --bg-card-hover: #fffaf0;
+  --ink: #1f1d18;
+  --ink-soft: #4a463d;
+  --ink-muted: #7a7468;
+  --line: #e5dfd0;
+  --line-soft: #f0ebdd;
+  --gold: #b88a3c;
+  --gold-soft: #f0e2c0;
+  --green: #4a7c3a;
+  --green-soft: #d9e9d2;
+  --red: #b04545;
+  --red-soft: #f0d9d9;
+  --blue: #3e6d99;
+  --blue-soft: #d4e3f0;
+  --teal: #2f7a72;
+  --teal-soft: #d0e8e5;
+  --shadow: 0 1px 2px rgba(0,0,0,0.04), 0 4px 12px rgba(31,29,24,0.06);
+  --serif: 'Fraunces', 'Times New Roman', serif;
+  --sans: 'Geist', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  --mono: 'Geist Mono', ui-monospace, monospace;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: var(--sans);
+  background: var(--bg);
+  color: var(--ink);
+  line-height: 1.6;
+  font-size: 15px;
+  padding: 20px 16px 80px;
+  min-height: 100vh;
+}
+.container { max-width: 880px; margin: 0 auto; }
+
+.header {
+  text-align: center;
+  margin-bottom: 24px;
+  padding-bottom: 22px;
+  border-bottom: 1px solid var(--line);
+}
+.header h1 {
+  font-family: var(--serif);
+  font-size: 30px;
+  font-weight: 500;
+  letter-spacing: -0.5px;
+  margin-bottom: 4px;
+}
+.header h1 em { font-style: italic; color: var(--gold); }
+.header p { color: var(--ink-muted); font-size: 13px; }
+
+/* HOME */
+.set-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 14px;
+  margin-bottom: 24px;
+}
+.set-card {
+  background: var(--bg-card);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 22px;
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+}
+.set-card:hover { transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.06), 0 12px 24px rgba(31,29,24,0.08); }
+.set-card.official { border-color: var(--gold); border-width: 2px; }
+.set-card .badge {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 4px;
+}
+.set-card.official .badge { background: var(--gold-soft); color: var(--gold); }
+.set-card.new .badge { background: var(--blue-soft); color: var(--blue); }
+.set-card .title {
+  font-family: var(--serif);
+  font-size: 22px;
+  font-weight: 500;
+  font-style: italic;
+  margin-bottom: 6px;
+  margin-top: 8px;
+}
+.set-card .desc { font-size: 13px; color: var(--ink-muted); line-height: 1.5; margin-bottom: 14px; }
+.set-card .meta {
+  display: flex;
+  gap: 14px;
+  font-size: 12px;
+  color: var(--ink-soft);
+  font-variant-numeric: tabular-nums;
+}
+.set-card .status {
+  margin-top: 10px;
+  font-size: 12px;
+  color: var(--green);
+  font-weight: 600;
+}
+
+.info-box {
+  background: var(--bg-card);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 18px 22px;
+  margin-bottom: 22px;
+  box-shadow: var(--shadow);
+  font-size: 13px;
+  color: var(--ink-soft);
+}
+.info-box h3 {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 16px;
+  color: var(--ink);
+  margin-bottom: 8px;
+}
+.info-box p { margin-bottom: 6px; }
+
+/* EXAM VIEW */
+.exam-view { display: none; }
+.exam-view.active { display: block; }
+
+.exam-header {
+  background: var(--bg-card);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 14px 18px;
+  margin-bottom: 18px;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+  box-shadow: var(--shadow);
+}
+.exam-header .back-btn {
+  padding: 8px 14px;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 13px;
+  font-family: inherit;
+  color: var(--ink);
+}
+.exam-header .back-btn:hover { background: var(--line-soft); }
+.exam-header .title {
+  flex: 1;
+  font-family: var(--serif);
+  font-size: 18px;
+  font-weight: 500;
+  font-style: italic;
+}
+.exam-header .timer {
+  font-family: var(--mono);
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--green);
+  background: var(--green-soft);
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-variant-numeric: tabular-nums;
+}
+.exam-header .timer.warning { color: var(--gold); background: var(--gold-soft); }
+.exam-header .timer.critical { color: var(--red); background: var(--red-soft); animation: pulse 1s infinite; }
+@keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.65; } }
+.exam-header .progress { font-size: 12px; color: var(--ink-soft); font-variant-numeric: tabular-nums; }
+
+/* QUESTION */
+.q-card {
+  background: var(--bg-card);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 22px;
+  margin-bottom: 14px;
+  box-shadow: var(--shadow);
+}
+.q-card.flagged { border-color: var(--gold); border-width: 2px; padding: 21px; }
+.q-card.answered-during { border-left: 3px solid var(--teal); padding-left: 19px; }
+
+.q-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+.q-num {
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink-muted);
+  background: var(--line-soft);
+  padding: 3px 10px;
+  border-radius: 6px;
+  min-width: 32px;
+  text-align: center;
+}
+.q-topic {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 13px;
+  color: var(--ink-muted);
+  flex: 1;
+}
+.q-flag {
+  cursor: pointer;
+  font-size: 15px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  user-select: none;
+  transition: all 0.15s;
+}
+.q-flag:hover { background: var(--gold-soft); }
+.q-flag.active { background: var(--gold); color: white; }
+
+.q-text {
+  font-size: 15px;
+  margin-bottom: 14px;
+  line-height: 1.65;
+  white-space: pre-wrap;
+}
+
+.q-options {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.q-option {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 11px 14px;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  line-height: 1.55;
+  transition: all 0.15s;
+  user-select: none;
+}
+.q-option:hover { background: var(--bg-card-hover); border-color: var(--ink-muted); }
+.q-option .letter {
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--line-soft);
+  color: var(--ink-soft);
+  font-weight: 600;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 1px;
+}
+.q-option.selected {
+  background: var(--blue-soft);
+  border-color: var(--blue);
+  border-width: 2px;
+  padding: 10px 13px;
+}
+.q-option.selected .letter { background: var(--blue); color: white; }
+
+.q-card.submitted .q-option { cursor: default; }
+.q-card.submitted .q-option.correct {
+  background: var(--green-soft);
+  border-color: var(--green);
+  border-width: 2px;
+  padding: 10px 13px;
+}
+.q-card.submitted .q-option.correct .letter { background: var(--green); color: white; }
+.q-card.submitted .q-option.incorrect {
+  background: var(--red-soft);
+  border-color: var(--red);
+  border-width: 2px;
+  padding: 10px 13px;
+}
+.q-card.submitted .q-option.incorrect .letter { background: var(--red); color: white; }
+.q-reasoning {
+  margin-top: 14px;
+  padding: 12px 16px;
+  background: var(--line-soft);
+  border-left: 3px solid var(--gold);
+  border-radius: 0 8px 8px 0;
+  font-size: 13px;
+  line-height: 1.6;
+}
+.q-reasoning .label {
+  font-weight: 600;
+  color: var(--gold);
+  text-transform: uppercase;
+  font-size: 11px;
+  letter-spacing: 0.5px;
+  margin-bottom: 4px;
+  display: block;
+}
+.q-reasoning.correct { background: var(--green-soft); border-left-color: var(--green); }
+.q-reasoning.correct .label { color: var(--green); }
+.q-reasoning.wrong { background: var(--red-soft); border-left-color: var(--red); }
+.q-reasoning.wrong .label { color: var(--red); }
+.q-user-ans {
+  font-size: 12px;
+  color: var(--ink-soft);
+  margin-bottom: 6px;
+}
+
+/* SUBMIT BAR */
+.submit-bar {
+  position: sticky;
+  bottom: 14px;
+  background: var(--bg-card);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 13px 18px;
+  margin-top: 24px;
+  box-shadow: 0 -4px 12px rgba(0,0,0,0.05), 0 4px 16px rgba(31,29,24,0.1);
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.submit-bar .progress-text { flex: 1; font-size: 13px; color: var(--ink-soft); font-variant-numeric: tabular-nums; }
+.btn {
+  padding: 10px 18px;
+  border: 1px solid var(--line);
+  background: var(--bg);
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  font-family: inherit;
+  color: var(--ink);
+  transition: all 0.15s;
+}
+.btn:hover { background: var(--bg-card-hover); }
+.btn-primary { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.btn-primary:hover { background: var(--ink-soft); }
+
+/* RESULTS */
+.results-card {
+  background: linear-gradient(135deg, var(--bg-card), var(--gold-soft));
+  border: 2px solid var(--gold);
+  border-radius: 16px;
+  padding: 28px;
+  margin-bottom: 24px;
+  text-align: center;
+}
+.results-score {
+  font-family: var(--serif);
+  font-size: 62px;
+  font-weight: 500;
+  font-style: italic;
+  line-height: 1;
+  margin-bottom: 6px;
+}
+.results-score .denom { color: var(--ink-muted); font-size: 30px; font-style: normal; }
+.results-pct { font-size: 18px; font-weight: 600; margin-bottom: 16px; }
+.results-pct.pass { color: var(--green); }
+.results-pct.fail { color: var(--red); }
+.results-time { font-size: 13px; color: var(--ink-muted); margin-bottom: 12px; }
+
+/* MODAL */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(31,29,24,0.5);
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.modal-overlay.active { display: flex; }
+.modal {
+  background: var(--bg-card);
+  border-radius: 16px;
+  padding: 28px;
+  max-width: 480px;
+  width: 100%;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+}
+.modal h3 { font-family: var(--serif); font-size: 22px; margin-bottom: 12px; }
+.modal p { font-size: 14px; color: var(--ink-soft); margin-bottom: 18px; }
+.modal-actions { display: flex; gap: 10px; justify-content: flex-end; }
+
+@media (max-width: 700px) {
+  body { padding: 14px 10px 60px; }
+  .header h1 { font-size: 24px; }
+  .exam-header .title { font-size: 15px; }
+  .q-card { padding: 16px; }
+  .q-text { font-size: 14px; }
+  .q-option { font-size: 13px; padding: 10px 12px; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="header">
+    <h1>CVA Module 2 <em>—</em> Exam-Style Mock</h1>
+    <p>Official 60 + New 30 · 3 options · plain-principle reasoning · matches actual exam format</p>
+  </div>
+
+  <!-- HOME -->
+  <div id="home-view">
+    <div class="info-box">
+      <h3>About this mock</h3>
+      <p><strong>Set 1 — Official 60</strong>: 60 questions extracted verbatim from the CVA Module 2 textbook's mock exam paper. These are the closest match to the real exam.</p>
+      <p><strong>Set 2 — New 30</strong>: 30 additional questions in the same format, covering similar topics with different fact patterns. Use for extra practice after Set 1.</p>
+      <p style="margin-top: 8px;"><strong>Format</strong>: 3 options (A/B/C), 90-minute timer, feedback shown only after submission.</p>
+    </div>
+    
+    <div class="set-grid" id="setGrid"></div>
+  </div>
+
+  <!-- EXAM VIEW -->
+  <div id="exam-view" class="exam-view">
+    <div class="exam-header">
+      <button class="back-btn" onclick="confirmExit()">← Back</button>
+      <div class="title" id="examTitle">Set 1 — Official 60</div>
+      <div class="progress" id="progressMini">0 / 60</div>
+      <div class="timer" id="timer">90:00</div>
+    </div>
+    <div id="questionsArea"></div>
+    <div class="submit-bar" id="submitBar">
+      <span class="progress-text" id="progressText">0 / 60 answered · 0 flagged</span>
+      <button class="btn" onclick="jumpToUnanswered()">Next unanswered</button>
+      <button class="btn btn-primary" onclick="confirmSubmit()">Submit exam</button>
+    </div>
+  </div>
+
+  <!-- RESULTS VIEW -->
+  <div id="results-view" class="exam-view">
+    <div class="exam-header">
+      <button class="back-btn" onclick="goHome()">← Home</button>
+      <div class="title" id="resultsTitle">Results</div>
+    </div>
+    <div class="results-card" id="resultsCard"></div>
+    <div id="resultsQuestionsArea"></div>
+    <div class="submit-bar">
+      <span class="progress-text">Review mode — answers + reasoning shown</span>
+      <button class="btn" onclick="goHome()">Back to home</button>
+    </div>
+  </div>
+
+</div>
+
+<div class="modal-overlay" id="confirmModal">
+  <div class="modal">
+    <h3 id="modalTitle">Submit exam?</h3>
+    <p id="modalBody"></p>
+    <div class="modal-actions">
+      <button class="btn" onclick="closeModal()">Keep working</button>
+      <button class="btn btn-primary" id="modalConfirm" onclick="confirmModalAction()">Submit</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const OFFICIAL_60 = [
+    {
+      num: 1,
+      topic: 'Bifurcation',
+      text: 'In the context of Singapore civil proceedings, why might a court order a bifurcation, such that the issue of assessment of damages (including valuation) is heard separately from liability?',
+      options: [
+        'To allow expert valuers to decide liability before the judge considers damages.',
+        'To streamline the proceedings so that valuation work is only undertaken if liability is first established, and damages will be determined thereafter.',
+        'To ensure that expert evidence is always heard before any factual evidence.'
+      ],
+      answer: 1,
+      reasoning: 'Bifurcation allows the court to determine liability first. Only if liability is found does the court proceed to a separate assessment of damages, which often requires detailed valuation evidence. This avoids unnecessary valuation work and costs where the claim fails on liability.'
+    },
+    {
+      num: 2,
+      topic: 'Arbitration vs litigation',
+      text: 'Which of the following best distinguishes arbitration from court litigation in Singapore, from a valuer\'s perspective?',
+      options: [
+        'Arbitration always uses informal valuation methods that are not accepted in court.',
+        'Arbitration is typically confidential and procedurally flexible, which can affect how valuation evidence is presented.',
+        'Arbitration decisions are advisory only and cannot be enforced, so valuation evidence is usually ignored.'
+      ],
+      answer: 1,
+      reasoning: 'Arbitration can only be initiated with agreement from all parties involved and is confidential with flexible procedures. This can influence how expert valuation reports are prepared, exchanged and discussed. Arbitration awards are generally enforceable, and accepted valuation methodologies must still be applied.'
+    },
+    {
+      num: 3,
+      topic: 'Valuer\'s proper role',
+      text: 'A client asks a valuer to advise on a dispute over the interpretation of a shareholders\' agreement, without asking for any opinion on value. Which statement best describes the valuer\'s proper role?',
+      options: [
+        'The valuer should give detailed legal advice on how the contract ought to be interpreted.',
+        'The valuer should decline to express views on legal interpretation and focus on any valuation issues that may arise once counsel frames the legal position.',
+        'The valuer is free to decide both the meaning of the contract and the outcome of the dispute, as long as they explain their reasoning.'
+      ],
+      answer: 1,
+      reasoning: 'Valuers are not engaged as legal advisers. Their role is to assist on financial and valuation issues. Questions of contractual interpretation are for lawyers and the court or tribunal. The valuer should confine their opinion to valuation consequences once the legal framework is clarified.'
+    },
+    {
+      num: 4,
+      topic: 'Business forms — multi-statement',
+      text: 'Read the following statements about common business forms used to carry on business in Singapore:\n(I) A sole proprietorship does not create a separate legal entity from its owner.\n(II) A private company limited by shares has a separate legal personality from its shareholders.\n(III) A general partnership always shields all partners from personal liability for partnership debts.\nWhich of the above statements are true?',
+      options: [
+        '(I) and (II) only.',
+        '(II) and (III) only.',
+        '(I), (II) and (III).'
+      ],
+      answer: 0,
+      reasoning: 'Sole proprietorships are not separate legal persons, so the proprietor is personally liable. A company limited by shares is a separate legal entity distinct from its shareholders. A general partnership does not automatically insulate partners from personal liability, so statement (III) is incorrect.'
+    },
+    {
+      num: 5,
+      topic: 'Need for expert valuation',
+      text: 'In a dispute involving a family-owned private company, which of the following scenarios most clearly points to the need for expert valuation evidence in court or arbitration?',
+      options: [
+        'The parties only disagree about whether the company logo infringes a trade mark.',
+        'The parties agree that one sibling will buy out another\'s shares, but dispute what price reflects "fair value" under their agreement.',
+        'The parties only disagree about which third party to attribute liability on.'
+      ],
+      answer: 1,
+      reasoning: 'A buyout at "fair value" requires an assessment of share value. When the parties disagree on that value, expert business valuation evidence is central to resolving the dispute. Trade mark infringement and third party liability do not inherently require valuation evidence, even if expert evidence may be necessary in assessing liability in trade mark infringement cases.'
+    },
+    {
+      num: 6,
+      topic: 'Mitigation',
+      text: 'A valuer is engaged to assess economic loss arising from a cancelled long term service contract. Which scenario most clearly reflects the legal principle of mitigation that the valuer must consider?',
+      options: [
+        'The claimant made no attempt to replace the cancelled contract even though substitute work was readily available.',
+        'The claimant obtained a new contract that partly replaced the lost income.',
+        'The claimant changed its corporate logo immediately after the breach.'
+      ],
+      answer: 1,
+      reasoning: 'Mitigation requires the claimant to take reasonable steps to reduce loss, for example by entering a replacement contract. The valuer may need to consider the income from the replacement contract when quantifying recoverable loss. A total failure to seek substitute work may raise mitigation issues for the court, but the clearest example of mitigation in action is the partial replacement of lost income.'
+    },
+    {
+      num: 7,
+      topic: 'Valuer liability — multi-statement',
+      text: 'Which of the following best describes a valuer\'s potential liability when preparing a report for use in a commercial dispute?\n(I) The valuer can never be liable because ultimate decisions are made by the court.\n(II) The valuer may be liable in contract to the client and, in some circumstances, in negligence to third parties who reasonably rely on the valuation.\n(III) The valuer is only liable if the valuation causes the client to lose the case entirely.\nWhich of the above statements is/are true?',
+      options: [
+        '(I) and (III) only.',
+        '(II) and (III).',
+        '(II) only.'
+      ],
+      answer: 2,
+      reasoning: 'A valuer owes contractual duties to the instructing client and may owe a duty of care in tort to foreseeable third parties who rely on the report. Liability does not depend on the outcome of the litigation alone, but on whether the valuer fell below the standard of a reasonably competent professional and caused loss.'
+    },
+    {
+      num: 8,
+      topic: 'Client information assessment',
+      text: 'When preparing a valuation report for a dispute, which of the following best reflects the valuer\'s obligation when using information provided by the client?',
+      options: [
+        'The valuer must evaluate whether the information is reasonable and suitable for valuation purposes, and should request clarification where gaps or inconsistencies appear.',
+        'The valuer may adopt the information without further inquiry because responsibility for accuracy lies solely with the client.',
+        'The valuer should disregard all client-provided information and rely only on publicly available sources to ensure independence.'
+      ],
+      answer: 0,
+      reasoning: 'Valuers are entitled to rely on information from the client, but they must assess its reasonableness, identify inconsistencies, and seek clarification where necessary. Independence does not require rejecting client inputs, nor does it permit blind reliance on them.'
+    },
+    {
+      num: 9,
+      topic: 'Expert witness role — multi-statement',
+      text: 'Read the following statements about the role of a valuer when he or she appears as an expert witness in proceedings:\n(I) The expert\'s primary duty is to assist the court or tribunal objectively.\n(II) The expert is expected to argue the instructing party\'s case as forcefully as possible.\n(III) The expert should explain the assumptions, data sources and methodology used in reaching the opinion.\nWhich of the above statements are true?',
+      options: [
+        '(I) and (III) only.',
+        '(II) and (III) only.',
+        '(I), (II) and (III).'
+      ],
+      answer: 0,
+      reasoning: 'An expert\'s overriding duty is to the court or tribunal, not to the party who retained them. They must act objectively and transparently, explaining how their conclusion was reached. Acting as an advocate for one side conflicts with this duty, so statement (II) is incorrect.'
+    },
+    {
+      num: 10,
+      topic: 'Ownership interests and value',
+      text: 'Which of the following statements best reflects how ownership interests affect valuation?',
+      options: [
+        'A non-controlling interest is generally valued the same way as a controlling interest, since both represent proportional shares of the same enterprise value.',
+        'Differences in rights, powers, and economic benefits attached to each ownership interest can lead to materially different values, even within the same company.',
+        'Ownership interests are always valued using the same approach regardless of voting rights, protective provisions, or liquidity constraints.'
+      ],
+      answer: 1,
+      reasoning: 'Ownership interests may vary significantly in terms of control, rights, restrictions, and access to economic benefits. These differences affect both the appropriate valuation approach and the resulting value, so they cannot be assumed to be equivalent.'
+    },
+    {
+      num: 11,
+      topic: 'Client forecasts',
+      text: 'Which of the following best describes a valuer\'s responsibility when reviewing client-provided forecasts?',
+      options: [
+        'Accept the forecasts unless they contain mathematical errors.',
+        'Assess the assumptions for supportability, internal consistency, and alignment with available evidence.',
+        'Replace the forecasts entirely with the valuer\'s own projections.'
+      ],
+      answer: 1,
+      reasoning: 'Client-provided forecasts must be evaluated to ensure they are supportable and consistent with evidence. The valuer should neither accept them uncritically nor fully substitute their own projections without justification.'
+    },
+    {
+      num: 12,
+      topic: 'Client info in damages',
+      text: 'When valuing a business for the purpose of assessing damages in a Singapore commercial dispute, which of the following statements best reflects the correct approach to using information provided by the client?',
+      options: [
+        'The valuer may adopt the client\'s figures without adjustment so long as the client confirms them in writing.',
+        'The valuer must independently assess whether the information is reasonable and consistent with the valuation purpose before relying on it.',
+        'The valuer should replace the client\'s figures entirely with industry averages to avoid potential bias.'
+      ],
+      answer: 1,
+      reasoning: 'The valuer has an independent duty to exercise professional judgement. Even when information is provided by the client, the valuer must evaluate whether it is reliable, reasonable, and aligned with the purpose of the valuation, particularly in disputes where the evidence will be scrutinised. Using client-provided numbers without assessment or substituting them blindly with generic industry averages would not meet expected professional standards.'
+    },
+    {
+      num: 13,
+      topic: 'Valuation approach selection',
+      text: 'Which of the following statements is true regarding the selection of valuation approaches?',
+      options: [
+        'The market, income, and cost approaches must always be applied together in every valuation.',
+        'The valuer should consider all three approaches but apply only those that are appropriate and supportable based on the characteristics of the subject.',
+        'The cost approach is always preferred because it avoids subjective assumptions.'
+      ],
+      answer: 1,
+      reasoning: 'Valuers are required to consider the applicability of all three approaches, but the choice of method depends on the nature of the asset, data availability, and the purpose of the valuation.'
+    },
+    {
+      num: 14,
+      topic: 'Internal vs external factors',
+      text: 'Which of the following factors is an internal factor relevant to developing valuation assumptions?',
+      options: [
+        'Regulatory restrictions affecting the industry.',
+        'The company\'s operational capabilities and management expertise.',
+        'Broader macroeconomic conditions such as inflation.'
+      ],
+      answer: 1,
+      reasoning: 'Internal factors relate to company-specific characteristics, such as management quality, operational capacity, and strategic direction, which directly influence future performance.'
+    },
+    {
+      num: 15,
+      topic: 'Valuation date',
+      text: 'Which statement best reflects how the valuation date affects the valuation analysis?',
+      options: [
+        'The valuation date may be adjusted after the report is issued if new information becomes available.',
+        'Only information known or knowable as at the valuation date may be considered in the valuation.',
+        'Prospective information should always be excluded because it relates to the future.'
+      ],
+      answer: 1,
+      reasoning: 'Valuers must restrict their analysis to information available or knowable at the valuation date, even if later events become known before the report is issued.'
+    },
+    {
+      num: 16,
+      topic: 'Scope of work',
+      text: 'Which of the following best describes the purpose of a scope of work in a valuation engagement?',
+      options: [
+        'To set out the valuation figure the client expects the valuer to reach.',
+        'To define the purpose, responsibilities, limitations and extent of work, agreed in writing before the valuation is completed.',
+        'To describe the company\'s business model in detail.'
+      ],
+      answer: 1,
+      reasoning: 'A written scope of work is required to document the agreed purpose, assumptions, responsibilities and limitations before the valuation report is finalised.'
+    },
+    {
+      num: 17,
+      topic: 'Legal causation',
+      text: 'Which statement best reflects the role of legal causation in a valuer\'s assessment of damages?',
+      options: [
+        'Causation requires the valuer to quantify all financial losses suffered by the claimant, whether or not they arise from the defendant\'s conduct.',
+        'Causation requires the valuer to assist the Court by identifying losses that would not have occurred but for the wrongful act, forming the basis of the compensable quantum.',
+        'Causation allows the valuer to include hypothetical opportunities the claimant might have pursued if market conditions had been more favourable.'
+      ],
+      answer: 1,
+      reasoning: 'Causation limits recovery to losses attributable to the defendant\'s conduct. The valuer must therefore identify and quantify losses that would not have occurred "but for" the breach. Losses unrelated to the wrongdoing or speculative opportunities cannot be included.'
+    },
+    {
+      num: 18,
+      topic: 'Orderly liquidation',
+      text: 'Which of the following most accurately describes an orderly liquidation premise?',
+      options: [
+        'A sale conducted without regard to time, typically at distressed prices.',
+        'A sale where the seller has sufficient time to market the assets and maximise realisable value.',
+        'A sale that must occur at the valuation date.'
+      ],
+      answer: 1,
+      reasoning: 'Under an orderly liquidation premise, the seller is assumed to have reasonable time to market assets, unlike a forced sale where the time horizon is compressed.'
+    },
+    {
+      num: 19,
+      topic: 'Valuer in litigation',
+      text: 'Which statement best reflects a valuer\'s role when preparing a report for potential litigation?',
+      options: [
+        'To present an independent analysis capable of withstanding scrutiny in cross-examination.',
+        'To advocate for the client\'s desired outcome.',
+        'To adjust valuation conclusions to align with legal counsel\'s strategy.'
+      ],
+      answer: 0,
+      reasoning: 'In litigation-related valuations, the valuer acts as an expert whose duty is to provide an independent, defensible opinion rather than advocate for a party.'
+    },
+    {
+      num: 20,
+      topic: 'Common valuation modelling errors',
+      text: 'Which of the following is a common error in valuation modelling?',
+      options: [
+        'Ensuring that assumptions are explicitly linked to model outputs.',
+        'Including formulas that are not transparent or reconcilable to the valuation narrative.',
+        'Reconciling each valuation approach to explain differences.'
+      ],
+      answer: 1,
+      reasoning: 'Lack of transparency in formulas and logic undermines the reliability and defensibility of the valuation. Clear linkage between narrative assumptions and model design is essential.'
+    },
+    {
+      num: 21,
+      topic: 'Remoteness',
+      text: 'Which of the following best describes the effect of remoteness on recoverable damages?',
+      options: [
+        'It restricts recovery to losses reasonably within the parties\' contemplation at the time of contracting or the wrongful act.',
+        'It permits recovery of all economic consequences flowing from the breach.',
+        'It allows recovery of speculative losses if they reflect the claimant\'s expectations.'
+      ],
+      answer: 0,
+      reasoning: 'Remoteness limits recoverable loss to what was reasonably foreseeable, speculative or unexpected losses fall outside scope.'
+    },
+    {
+      num: 22,
+      topic: 'Compensatory vs account of profits',
+      text: 'Which option correctly distinguishes compensatory damages from an account of profits?',
+      options: [
+        'Compensatory damages address the claimant\'s loss, whereas an account of profits requires the defendant to surrender gains made through wrongdoing.',
+        'Both remedies measure only the defendant\'s gain.',
+        'Both remedies assess what the claimant would have earned but for the breach.'
+      ],
+      answer: 0,
+      reasoning: 'The former is loss-based; the latter is gain-based.'
+    },
+    {
+      num: 23,
+      topic: 'Lost profits inputs',
+      text: 'Which input would most appropriately support a valuer\'s calculation of lost profits?',
+      options: [
+        'Optimistic projections prepared without reference to past results.',
+        'Assumptions chosen solely to reflect anticipated growth in the claimant\'s industry.',
+        'Forecasts that reflect historical trends adjusted for the impact of the wrongful act.'
+      ],
+      answer: 2,
+      reasoning: 'Damages must be grounded in evidence; adjustments must relate directly to the breach.'
+    },
+    {
+      num: 24,
+      topic: 'Mitigation doctrine',
+      text: 'The doctrine of mitigation of losses can best be explained as follows:',
+      options: [
+        'The claimant takes reasonable steps to avoid unnecessary loss, which the valuer must reflect in the quantum.',
+        'The claimant eliminates all loss before commencing proceedings.',
+        'The defendant must prove the claimant contributed to the loss before mitigation is considered.'
+      ],
+      answer: 0,
+      reasoning: 'Avoidable loss is not recoverable; the valuer must incorporate reasonable mitigation.'
+    },
+    {
+      num: 25,
+      topic: 'Diminution in value',
+      text: 'Diminution in value is generally assessed by comparing:',
+      options: [
+        'The pre-breach book value and post-breach market value of the business.',
+        'The value the business would have had but for the breach against its actual value after the breach.',
+        'Replacement cost of assets and operational expenditure saved.'
+      ],
+      answer: 1,
+      reasoning: 'Diminution in value rests on a "but for" counterfactual analysis.'
+    },
+    {
+      num: 26,
+      topic: 'Date of damages assessment',
+      text: 'On the issue of date of assessing damages, which of the following statements is most accurate in a case involving breach of contract:',
+      options: [
+        'Damages are normally assessed at the date of breach unless fairness requires another date.',
+        'The claimant may select whichever valuation date results in higher damages.',
+        'Damages must always be assessed at the date of decision.'
+      ],
+      answer: 0,
+      reasoning: 'The breach date is the default. C represents the stop date of the assessment of damages and is only applicable in the cases of a continuing cause of action: Order 15 r 15(6) of the ROC.'
+    },
+    {
+      num: 27,
+      topic: 'Adjusting client information',
+      text: 'A valuer may need to adjust information provided by the client when:',
+      options: [
+        'The information contains assumptions that are unsupported or inconsistent with available evidence.',
+        'The client prefers a higher damages figure.',
+        'The valuer disagrees with the client on commercial strategy after the breach.'
+      ],
+      answer: 0,
+      reasoning: 'Valuation requires independent assessment; assumptions must be defensible.'
+    },
+    {
+      num: 28,
+      topic: 'Legal-valuation interaction',
+      text: 'Which statement correctly describes the interaction between legal principles and valuation?',
+      options: [
+        'Valuation must operate within the limits imposed by causation, remoteness, and mitigation.',
+        'Valuation can include all losses identified by financial modelling, regardless of legal constraints.',
+        'Legal principles determine quantum, while valuation determines liability.'
+      ],
+      answer: 0,
+      reasoning: 'Legal principles define which losses can be recovered; valuation quantifies them.'
+    },
+    {
+      num: 29,
+      topic: 'Recoverability of losses',
+      text: 'Which of the following is least likely to be recoverable in a damages assessment?',
+      options: [
+        'Business opportunities not sufficiently defined or foreseeable.',
+        'Lost revenue directly attributable to the wrongful act.',
+        'Mitigation expenses.'
+      ],
+      answer: 0,
+      reasoning: 'Courts reject recovery of vague or speculative future opportunities.'
+    },
+    {
+      num: 30,
+      topic: 'Loss of business value',
+      text: 'In assessing the loss of business value in a dispute, which factor most appropriately falls within the valuer\'s scope?',
+      options: [
+        'The specific financial impact that the breach had on cash flows or earnings.',
+        'Economic losses arising solely from unrelated market downturns.',
+        'Losses caused by voluntary management decisions made independently of the breach.'
+      ],
+      answer: 0,
+      reasoning: 'Only losses causally linked to the wrongful act are recoverable and must be quantified.'
+    },
+    {
+      num: 31,
+      topic: 'Legal cause of action',
+      text: 'Which statement best reflects the purpose of identifying the legal cause of action before undertaking valuation work?',
+      options: [
+        'It determines which valuation methodologies are legally permissible.',
+        'It defines what types of loss are compensable and therefore what the valuer may quantify.',
+        'It ensures the valuer can prepare a valuation that satisfies all parties\' commercial expectations.'
+      ],
+      answer: 1,
+      reasoning: 'The legal claim frames the boundaries of recoverable loss; valuation cannot extend beyond the legally recognised heads of damage.'
+    },
+    {
+      num: 32,
+      topic: 'Expert witness limitations',
+      text: 'Which option correctly identifies a limitation that applies to valuers giving expert evidence?',
+      options: [
+        'They may advocate for the client so long as the facts are accurately stated.',
+        'They must provide an independent opinion even if it does not support the client\'s position.',
+        'They are not permitted to review documents provided by opposing experts.'
+      ],
+      answer: 1,
+      reasoning: 'Expert evidence requires independence; the duty is owed to the court or tribunal.'
+    },
+    {
+      num: 33,
+      topic: 'Business interruption damages',
+      text: 'When assessing damages for interruption to a business, a valuer should:',
+      options: [
+        'Quantify the entire decline in profits, regardless of other contributing factors.',
+        'Isolate foreseeable losses attributable to the wrongful act using a supported counterfactual.',
+        'Prioritise management\'s expectations over historical performance when calculating loss.'
+      ],
+      answer: 1,
+      reasoning: 'Only foreseeable losses that are caused by the breach may be recovered; the counterfactual is essential.'
+    },
+    {
+      num: 34,
+      topic: 'Asset-based approach',
+      text: 'Which factor would not typically justify the use of an asset-based approach in dispute valuation?',
+      options: [
+        'The business is insolvent or nearing liquidation.',
+        'The business generates value mainly from tangible assets.',
+        'The business is a high-growth enterprise where value arises from future earnings.'
+      ],
+      answer: 2,
+      reasoning: 'High-growth, earnings-driven businesses are better valued using income or market approaches.'
+    },
+    {
+      num: 35,
+      topic: 'Confidentiality',
+      text: 'Which statement best reflects a valuer\'s confidentiality obligations when engaged in a dispute-related valuation?',
+      options: [
+        'A valuer may disclose client information to third parties if doing so would help strengthen the appointing party\'s litigation position.',
+        'A valuer must maintain confidentiality over all information obtained during the engagement unless disclosure is required by law or ordered by a court or tribunal.',
+        'A valuer may disclose confidential information freely once the valuation report has been issued.'
+      ],
+      answer: 1,
+      reasoning: 'Valuers are subject to confidentiality duties. Information obtained during an engagement cannot be disclosed unless legally required or expressly authorised. This applies equally in litigation contexts.'
+    },
+    {
+      num: 36,
+      topic: 'Partnership vs company',
+      text: 'In distinguishing business forms, which feature most clearly differentiates a partnership from a company?',
+      options: [
+        'Partners typically have unlimited liability unless otherwise agreed.',
+        'A partnership has perpetual succession.',
+        'A company cannot distribute profits to its members.'
+      ],
+      answer: 0,
+      reasoning: 'Unlimited liability is a key distinguishing feature; companies generally offer limited liability.'
+    },
+    {
+      num: 37,
+      topic: 'Ownership interests in companies',
+      text: 'In relation to ownership interests within companies, which of the following statements is correct?',
+      options: [
+        'All ownership interests confer the same economic and control rights.',
+        'Minority interests may require valuation adjustments reflecting lack of control or marketability.',
+        'A 50 percent ownership interest always results in effective control.'
+      ],
+      answer: 1,
+      reasoning: 'Economic rights differ; minority positions often warrant discounts.'
+    },
+    {
+      num: 38,
+      topic: 'Valuer role in disputes',
+      text: 'Which of the following best reflects the role of the valuer in disputes?',
+      options: [
+        'To quantify any loss claimed by the client without considering legal constraints.',
+        'To quantify only losses that fall within the legally recoverable scope defined by the cause of action.',
+        'To determine liability and quantum for the court.'
+      ],
+      answer: 1,
+      reasoning: 'Valuers assess quantum within legal boundaries; liability is determined by the court.'
+    },
+    {
+      num: 39,
+      topic: 'Contract vs tort valuation',
+      text: 'Which statement best captures the theoretical difference between valuation in contract and valuation in tort in Singapore law?',
+      options: [
+        'In contract, valuation aims to restore the claimant to the pre-breach position, while in tort it gives the claimant the benefit of the bargain.',
+        'In both contract and tort, valuation always focuses on the same measure, namely the loss of market value of the relevant asset.',
+        'In contract, valuation is generally forward-looking and measures the value of the promised performance that has not been received, whereas in tort it is generally backward-looking and measures what has been taken away from the claimant by the wrongful act.'
+      ],
+      answer: 2,
+      reasoning: 'Contract damages in Singapore primarily protect the expectation interest by putting the claimant, so far as money can, in the position as if the contract had been properly performed; this is generally forward-looking and values the promised performance not received. Tort damages, by contrast, aim to restore the claimant to the position they would have been in had the tort not occurred, which is conceptually backward-looking and anchored in the pre-wrong position rather than any contractual bargain.'
+    },
+    {
+      num: 40,
+      topic: 'Valuer professional risk',
+      text: 'Which statement best describes a valuer\'s professional risk in litigation work?',
+      options: [
+        'Errors of judgment attract strict liability.',
+        'Valuers are immune from liability when acting as experts.',
+        'Failing to exercise reasonable care in preparing valuation opinions may expose the valuer to negligence claims.'
+      ],
+      answer: 2,
+      reasoning: 'Valuers owe a duty of care; negligence liability remains possible.'
+    },
+    {
+      num: 41,
+      topic: 'Arbitration feature',
+      text: 'Which option correctly identifies a key feature of arbitration relevant to valuation?',
+      options: [
+        'Expert evidence is generally inadmissible.',
+        'All damages must be calculated exclusively using the income approach.',
+        'Procedural flexibility allows valuers to present technical evidence tailored to the dispute.'
+      ],
+      answer: 2,
+      reasoning: 'Arbitration permits flexible evidential and procedural handling of valuations.'
+    },
+    {
+      num: 42,
+      topic: 'But-for test',
+      text: 'Which of the following represents a correct application of the "but for" test?',
+      options: [
+        'The valuer quantifies loss by comparing actual outcomes to what the business claims it intended to achieve.',
+        'The valuer compares actual outcomes with what would reasonably have occurred absent the wrongful act.',
+        'The valuer quantifies the loss by applying industry averages without reference to the claimant\'s circumstances.'
+      ],
+      answer: 1,
+      reasoning: 'The counterfactual must be grounded in reasonable, evidence-based expectations.'
+    },
+    {
+      num: 43,
+      topic: 'Legal liability examination',
+      text: 'Which factor would not typically be part of a valuer\'s examination of legal liabilities?',
+      options: [
+        'Whether the valuer exercised reasonable care in forming opinions.',
+        'Whether the valuer properly documented assumptions and limitations.',
+        'Whether the valuer adopted a methodology preferred by the client\'s management.'
+      ],
+      answer: 2,
+      reasoning: 'Client preference does not determine professional liability; independence and documentation do.'
+    },
+    {
+      num: 44,
+      topic: 'Business forms — multi-statement',
+      text: 'In analysing the characteristics of business forms, which of the following statements is correct?',
+      options: [
+        'Companies allow separation of ownership and management, unlike sole proprietorships.',
+        'Sole proprietorships offer limited liability to the owner.',
+        'Limited liability partnerships cannot enter into contracts in their own name.'
+      ],
+      answer: 0,
+      reasoning: 'Corporate structures typically separate ownership and management; the other statements are incorrect.'
+    },
+    {
+      num: 45,
+      topic: 'Information scepticism',
+      text: 'Which type of information would a valuer treat with the highest degree of scepticism?',
+      options: [
+        'Contemporaneous financial statements.',
+        'Projections provided by the client that contain optimistic assumptions without evidential support.',
+        'Industry reports produced by independent third parties.'
+      ],
+      answer: 1,
+      reasoning: 'Unsupported assumptions require scrutiny and independent verification.'
+    },
+    {
+      num: 46,
+      topic: 'Valuer duties in litigation',
+      text: 'Which statement best reflects the duties of valuers acting in litigation?',
+      options: [
+        'They must advocate for whichever argument maximises damages.',
+        'They must remain independent and limit their opinion to matters within their expertise.',
+        'They must align their valuation methodology with the client\'s litigation strategy.'
+      ],
+      answer: 1,
+      reasoning: 'Independence and expertise define the expert\'s duties.'
+    },
+    {
+      num: 47,
+      topic: 'Management information',
+      text: 'In assessing reliance on management-provided information, a valuer should:',
+      options: [
+        'Accept all information as long as it is internally consistent.',
+        'Verify the information to the extent necessary to ensure it is reasonable and supportable.',
+        'Reject all management information to avoid bias.'
+      ],
+      answer: 1,
+      reasoning: 'Verification is required; blanket acceptance or rejection is improper.'
+    },
+    {
+      num: 48,
+      topic: 'Valuation and dispute strategy',
+      text: 'Which of the following best describes the relationship between valuation and dispute strategy?',
+      options: [
+        'The valuer\'s role includes determining which legal remedy the claimant should pursue.',
+        'The valuer quantifies loss within parameters determined by legal strategy chosen by counsel.',
+        'The valuer designs litigation strategy to maximise quantum.'
+      ],
+      answer: 1,
+      reasoning: 'Lawyers determine remedies; valuers quantify losses accordingly.'
+    },
+    {
+      num: 49,
+      topic: 'Business forms — multi-statement',
+      text: 'Read the following statements:\n(I) A partnership can be formed without any filing formalities and arises automatically when two or more persons carry on business in common for profit.\n(II) A limited partnership provides all partners with limited liability protection.\n(III) A company limited by shares is a separate legal person distinct from its shareholders.\nWhich of the above statements is / are true?',
+      options: [
+        '(I) and (III) only.',
+        '(II) only.',
+        '(I), (II) and (III).'
+      ],
+      answer: 0,
+      reasoning: 'A general partnership can arise without formal registration and a company limited by shares has separate legal personality. A limited partnership does not provide limited liability to all partners, so statement (II) is incorrect.'
+    },
+    {
+      num: 50,
+      topic: 'Separate legal personality',
+      text: 'Which of the following scenarios best illustrates the concept of separate legal personality?',
+      options: [
+        'A shareholder sues the company\'s supplier directly for breach of contract.',
+        'The company enters into a contract in its own name even though all decisions are made by the directors.',
+        'A director automatically becomes personally liable for the company\'s debts.'
+      ],
+      answer: 1,
+      reasoning: 'A company contracts in its own name because it is legally distinct from shareholders and directors.'
+    },
+    {
+      num: 51,
+      topic: 'Ownership interests — multi-statement',
+      text: 'Evaluate the following statements regarding ownership interests:\n(I) A member of a company limited by shares holds an interest defined by the share structure and voting rights attached.\n(II) A partner in a general partnership holds an undivided interest in partnership assets.\n(III) An LLP member has no liability for the LLP\'s debts under any circumstances.\nWhich of the following are correct?',
+      options: [
+        '(I) and (II) only.',
+        '(II) and (III) only.',
+        '(I), (II) and (III).'
+      ],
+      answer: 0,
+      reasoning: 'LLP members may still face liability for their own wrongful acts.'
+    },
+    {
+      num: 52,
+      topic: 'Contract breach remedies',
+      text: 'A valuer is engaged in litigation concerning alleged breach of contract. Which area of law is most likely to require a valuation in determining the appropriate remedy?',
+      options: [
+        'Determining the quantum of expectation loss.',
+        'Deciding whether the defendant owed a duty of care.',
+        'Determining the validity of contract formation.'
+      ],
+      answer: 0,
+      reasoning: 'Expectation damages often require a valuation that is most reflective of the lost commercial position.'
+    },
+    {
+      num: 53,
+      topic: 'Restitutionary remedies — multi-statement',
+      text: 'Read the following statements regarding restitutionary remedies:\n(I) Restitution focuses on reversing unjust enrichment rather than compensating loss.\n(II) Valuation may be required to determine the value of benefits received by a defendant.\n(III) Restitution always produces the same result as compensatory damages.\nWhich of the following is true?',
+      options: [
+        '(I) and (II) only.',
+        '(III) only.',
+        '(I), (II) and (III).'
+      ],
+      answer: 0,
+      reasoning: 'Restitution and compensation are conceptually distinct and often yield different outcomes.'
+    },
+    {
+      num: 54,
+      topic: 'Duty of care — proximity',
+      text: 'In considering whether a duty of care is owed to a valuer\'s client, which factor best reflects the legal proximity element?',
+      options: [
+        'Whether the valuer\'s report was lengthy and detailed.',
+        'Whether the client relied on the valuer\'s expertise for a specific decision.',
+        'Whether the valuer charged a high professional fee.'
+      ],
+      answer: 1,
+      reasoning: 'Reliance and the relationship of assumption of responsibility form key aspects of proximity.'
+    },
+    {
+      num: 55,
+      topic: 'Negligence liability',
+      text: 'Which of the following situations would most likely expose a valuer to potential liability in negligence?',
+      options: [
+        'The valuer clearly documents all assumptions and limitations in the report.',
+        'The valuer adopts a methodology inconsistent with established practice without explaining why.',
+        'The valuer declines an engagement due to insufficient information.'
+      ],
+      answer: 1,
+      reasoning: 'Deviation from accepted practice without justification may amount to a breach of the standard of care.'
+    },
+    {
+      num: 56,
+      topic: 'Joint expert — confidentiality',
+      text: 'Scenario: A valuer is appointed jointly by two disputing parties to provide a neutral valuation. Both parties later instruct the valuer separately and request private discussions.\nWhat should the valuer do?',
+      options: [
+        'Meet each party separately to preserve confidentiality.',
+        'Decline both requests and communicate only through joint channels unless both parties expressly agree otherwise.',
+        'Proceed with private meetings as long as notes are kept.'
+      ],
+      answer: 1,
+      reasoning: 'A jointly appointed expert must avoid unilateral communication to preserve fairness and independence.'
+    },
+    {
+      num: 57,
+      topic: 'Expert witness — multi-statement',
+      text: 'Read the following statements regarding expert witnesses in Singapore proceedings:\n(I) An expert\'s opinion must fall within their recognised area of expertise.\n(II) An expert may advocate for the client\'s preferred outcome if they believe it is fair.\n(III) Experts of either parties may be required to confer and produce a joint statement identifying points of agreement and disagreement.\nWhich is true?',
+      options: [
+        '(I) and (III) only.',
+        '(II) only.',
+        '(I), (II) and (III).'
+      ],
+      answer: 0,
+      reasoning: 'Experts cannot act as advocates; they owe an overriding duty of independence.'
+    },
+    {
+      num: 58,
+      topic: 'ValuCo scenario — primary duty',
+      text: 'Scenario: ValuCo Pte Ltd is a private company with three shareholders. Minority shareholder Ms Tan brings an oppression claim under section 216 of the Companies Act. The High Court finds oppression established and orders that Ms Tan\'s 30 percent shareholding be bought out at fair value as at 1 January 2025, with no minority discount.\n\nThe court directs the parties to appoint a single independent valuer, Mr Lee, to conduct the valuation. The court order specifies the valuation date, requires Mr Lee to assume a going concern premise, and instructs him to disregard any value arising from future restructuring plans announced after 1 January 2025.\n\nMr Lee issues a draft report and sends it to both parties for comments on factual errors only. One party writes to Mr Lee privately, suggesting that he "tone down" certain criticisms of management and increase the valuation multiple "to reflect how strongly we believe in the business".\n\nWhat is Mr Lee\'s primary duty when preparing his valuation report?',
+      options: [
+        'To maximise the price Ms Tan receives, because she is the oppressed shareholder.',
+        'To both parties equally, as they are paying his fees.',
+        'To the court, to provide an impartial, methodologically sound valuation in accordance with the court\'s directions.'
+      ],
+      answer: 2,
+      reasoning: 'As a court appointed expert, Mr Lee\'s overriding duty is to assist the court with an independent valuation, not to advance the interests of either party.'
+    },
+    {
+      num: 59,
+      topic: 'ValuCo scenario — response to pressure',
+      text: 'Continuing the ValuCo Pte Ltd scenario from Question 58: How should Mr Lee respond to the private request to "tone down" criticisms and increase the valuation multiple?',
+      options: [
+        'Accept the suggestions to keep the client happy, as long as the other party does not find out.',
+        'Ignore the improper suggestions, ensure that all substantive communications are shared with both parties, and maintain his independent professional judgment.',
+        'He disagrees but the parties are unable to accept so he withdraws immediately without informing the court.'
+      ],
+      answer: 1,
+      reasoning: 'Private attempts to influence the expert\'s opinion are improper. Mr Lee must maintain independence, communicate transparently and apply his own professional judgment.'
+    },
+    {
+      num: 60,
+      topic: 'ValuCo scenario — constraints',
+      text: 'Continuing the ValuCo Pte Ltd scenario: Which of the following best describes the constraints on Mr Lee\'s valuation under the court order?',
+      options: [
+        'He must use any valuation date and premise he thinks is suitable for the context, even if it may deviate from the order.',
+        'He must value the 30 percent shareholding at fair value as at 1 January 2025 on a going concern basis, excluding post 1 January 2025 restructuring plans and applying no minority discount.',
+        'He may apply a minority discount if he believes it better reflects market practice, even though the court has directed otherwise.'
+      ],
+      answer: 1,
+      reasoning: 'Mr Lee must comply with the court\'s specific directions on valuation date, basis, premise and exclusion of minority discount. Departing from these directions would be inconsistent with the court order and his primary obligations to the court.'
+    }
+];
+
+const NEW_30 = [
+    {
+      num: 1,
+      topic: 'Sources of law — multi-statement',
+      text: 'Read the following statements about sources of law in Singapore:\n(I) The Constitution is the supreme source of law and statutes inconsistent with it may be struck down.\n(II) Written law and case law operate independently with no interaction.\n(III) International law forms one of the recognised sources of law in Singapore.\nWhich of the above statements are true?',
+      options: [
+        '(I) and (II) only.',
+        '(I) and (III) only.',
+        '(I), (II) and (III).'
+      ],
+      answer: 1,
+      reasoning: 'The Constitution is supreme and inconsistent statutes can be struck down. International law (treaties and customary international law) is recognised as a source. Written law and case law interact constantly: case law interprets statutes, while statutes can modify common law. Statement (II) is therefore incorrect.'
+    },
+    {
+      num: 2,
+      topic: 'Dispute resolution — multi-statement',
+      text: 'Consider the following statements about Singapore dispute resolution mechanisms:\n(I) Arbitration is generally confidential, while court proceedings are typically public.\n(II) Mediation produces a binding decision imposed by the mediator.\n(III) Arbitration awards may be enforced under the New York Convention in over 170 jurisdictions.\nWhich of the above is/are true?',
+      options: [
+        '(I) and (II) only.',
+        '(I) and (III) only.',
+        '(I), (II) and (III).'
+      ],
+      answer: 1,
+      reasoning: 'Confidentiality is a distinguishing feature of arbitration vs litigation. Arbitral awards enjoy wide international enforceability through the New York Convention. Mediation, however, is consensual: the mediator facilitates but does not impose any decision. Any settlement is a voluntary agreement between the parties. Statement (II) is therefore incorrect.'
+    },
+    {
+      num: 3,
+      topic: 'Valuer independence — multi-statement',
+      text: 'Read the following statements regarding the independence of a valuer engaged in dispute work:\n(I) The valuer\'s primary duty is owed to the court or tribunal, not the instructing party.\n(II) A contingent fee tied to the outcome of the dispute is generally acceptable for expert valuers.\n(III) The valuer should reach the same conclusion whether instructed by the claimant or the defendant on the same facts.\nWhich of the above are correct?',
+      options: [
+        '(I) and (II) only.',
+        '(I) and (III) only.',
+        '(I), (II) and (III).'
+      ],
+      answer: 1,
+      reasoning: 'The primary duty to the tribunal and the requirement of internal consistency in opinion are core principles of expert independence. Contingent fees, however, are generally prohibited or strongly discouraged because they create financial incentives in the outcome and undermine objectivity. Statement (II) is therefore incorrect.'
+    },
+    {
+      num: 4,
+      topic: 'Damages limiting principles — multi-statement',
+      text: 'Consider the following statements about the recovery of contractual damages:\n(I) The claimant may recover any loss flowing from the breach without any limit.\n(II) Damages are limited by causation, remoteness, and the duty to mitigate.\n(III) Loss that the claimant could reasonably have avoided is generally not recoverable.\nWhich of the following is/are true?',
+      options: [
+        '(I) and (III) only.',
+        '(I), (II) and (III).',
+        '(II) and (III) only.'
+      ],
+      answer: 2,
+      reasoning: 'Three limiting principles restrict recovery: the loss must be caused by the breach, must not be too remote, and the claimant must take reasonable steps to mitigate. Unlimited recovery is inconsistent with these doctrines, so statement (I) is incorrect.'
+    },
+    {
+      num: 5,
+      topic: 'Expert report — multi-statement',
+      text: 'Read the following statements about the contents of an expert report in Singapore civil proceedings:\n(I) The report should state the qualifications of the expert and identify the issues addressed.\n(II) The report may omit material assumptions if doing so simplifies the analysis.\n(III) The report should disclose any range of professional opinion on the issues and give reasons for the expert\'s chosen view.\nWhich of the following are correct?',
+      options: [
+        '(I) and (II) only.',
+        '(I) and (III) only.',
+        '(I), (II) and (III).'
+      ],
+      answer: 1,
+      reasoning: 'The report must state qualifications, identify issues, set out material assumptions and disclose any range of opinion with reasons. Concealing material assumptions or alternative views to simplify the report would undermine its evidential value and independence. Statement (II) is therefore incorrect.'
+    },
+    {
+      num: 6,
+      topic: 'Insolvency tests — multi-statement',
+      text: 'Read the following statements about tests of insolvency in Singapore:\n(I) The cash flow test asks whether the company can pay its debts as they fall due in the foreseeable future.\n(II) The balance sheet test compares total assets and total liabilities, including contingent and prospective liabilities.\n(III) A company is insolvent only if both tests are satisfied.\nWhich are correct?',
+      options: [
+        '(I) and (II) only.',
+        '(II) and (III) only.',
+        '(I), (II) and (III).'
+      ],
+      answer: 0,
+      reasoning: 'The cash flow test focuses on the ability to pay debts as they fall due; the balance sheet test compares assets against total liabilities including contingent and prospective ones. Either test, on its own, can establish insolvency — they are alternative grounds, not cumulative. Statement (III) is therefore incorrect.'
+    },
+    {
+      num: 7,
+      topic: 'Specific performance — multi-statement',
+      text: 'Consider the following statements about the equitable remedy of specific performance:\n(I) Specific performance is generally available where damages would be an inadequate remedy.\n(II) Specific performance is a primary remedy under Singapore law and is awarded as of right whenever a contract is breached.\n(III) Specific performance is unlikely to be granted for contracts of personal service.\nWhich are true?',
+      options: [
+        '(I) and (III) only.',
+        '(I) and (II) only.',
+        '(I), (II) and (III).'
+      ],
+      answer: 0,
+      reasoning: 'Specific performance is an equitable, discretionary remedy granted where damages are inadequate (typically unique assets such as land or rare goods) and is unlikely to be granted for personal service contracts due to supervision difficulties. It is not awarded as of right; damages remain the primary remedy. Statement (II) is therefore incorrect.'
+    },
+    {
+      num: 8,
+      topic: 'Cross-examination — multi-statement',
+      text: 'Read the following statements about the cross-examination of an expert valuer:\n(I) The valuer should answer questions honestly even where the answer may not favour the instructing party.\n(II) The valuer is permitted to refuse to answer questions that are outside their direct area of expertise.\n(III) The valuer should defend the report\'s conclusions aggressively at all costs to maintain credibility.\nWhich is/are correct?',
+      options: [
+        '(I) only.',
+        '(I) and (II) only.',
+        '(I), (II) and (III).'
+      ],
+      answer: 1,
+      reasoning: 'An expert must answer honestly, even where the answer is adverse to the instructing party. They should also acknowledge the limits of their expertise. Aggressive defence at all costs would undermine independence and credibility — a composed, balanced approach is required. Statement (III) is therefore incorrect.'
+    },
+    {
+      num: 9,
+      topic: 'Hot-tubbing — multi-statement',
+      text: 'Consider the following statements about concurrent expert evidence ("hot-tubbing"):\n(I) Hot-tubbing allows experts to give evidence concurrently, often with the tribunal facilitating discussion of disputed points.\n(II) Hot-tubbing eliminates the need for individual expert reports.\n(III) Singapore-seated arbitrations and court proceedings have used hot-tubbing in valuation disputes.\nWhich are true?',
+      options: [
+        '(I) and (II) only.',
+        '(I) and (III) only.',
+        '(I), (II) and (III).'
+      ],
+      answer: 1,
+      reasoning: 'Hot-tubbing permits concurrent presentation of expert evidence and is increasingly used in Singapore. However, written expert reports remain essential — they form the foundation of expert evidence on which hot-tubbing builds. Statement (II) is therefore incorrect.'
+    },
+    {
+      num: 10,
+      topic: 'Section 216 oppression — multi-statement',
+      text: 'Read the following statements about minority oppression under section 216 of the Companies Act:\n(I) The court may order one set of shareholders to purchase the shares of another.\n(II) The valuation date for a buyout is always fixed at the date the proceedings were commenced.\n(III) The remedy aims to address commercial unfairness in the conduct of the company\'s affairs.\nWhich are correct?',
+      options: [
+        '(I) and (II) only.',
+        '(I) and (III) only.',
+        '(I), (II) and (III).'
+      ],
+      answer: 1,
+      reasoning: 'Buy-out is a standard remedy under section 216 and the doctrine addresses commercial unfairness, not just legal breach. The valuation date is, however, within the court\'s discretion — it may be date of oppression, date of judgment, or another date that achieves fairness on the specific facts. Statement (II) is therefore incorrect.'
+    },
+    {
+      num: 11,
+      topic: 'Scenario — Engagement letter',
+      text: 'A valuer is engaged by a law firm acting for a claimant in a commercial dispute. Shortly before trial, the law firm asks the valuer to revise certain sensitivity assumptions to produce a higher loss figure that better aligns with the client\'s pleaded case. The valuer believes the proposed assumptions are not supported by the evidence. What should the valuer do?',
+      options: [
+        'Decline to make the revisions if they are not supported by the evidence, and document both the request and the refusal.',
+        'Make the revisions and disclose them in the report, since the instructing party determines the scope of the analysis.',
+        'Withdraw from the engagement immediately without responding to the law firm.'
+      ],
+      answer: 0,
+      reasoning: 'Independence requires the valuer to refuse instructions that would compromise the objectivity of the opinion. Documenting the request and the refusal protects the valuer and preserves transparency. Withdrawal is a last resort; constructive refusal with documentation is appropriate.'
+    },
+    {
+      num: 12,
+      topic: 'Scenario — Forecast assumptions',
+      text: 'A claimant in a breach of contract case provides projections showing significant future growth in a new product line. The product was launched only six months before the breach, and the projections are based largely on the founder\'s commercial belief. The valuer is asked to use these projections to compute lost profits. What is the most appropriate approach?',
+      options: [
+        'Adopt the projections without adjustment, as they reflect the claimant\'s view of the business.',
+        'Reject the projections entirely and use industry averages instead.',
+        'Test the projections against historical performance, market data and external evidence; flag the limitations clearly in the report.'
+      ],
+      answer: 2,
+      reasoning: 'Forecasts based largely on subjective belief, especially for a new product without historical track record, must be tested against objective evidence. The valuer\'s role is to assess supportability and reflect any uncertainty in sensitivity analysis or alternative scenarios, not to accept blindly or replace wholesale.'
+    },
+    {
+      num: 13,
+      topic: 'Scenario — Third party reliance',
+      text: 'A bank seeks to extend credit to a borrower and relies on a valuation report originally prepared by a valuer for the borrower\'s tax purposes. The bank suffers a loss when the valuation proves to be inflated. The valuer was unaware that the bank would rely on the report. Which of the following best reflects the valuer\'s potential liability?',
+      options: [
+        'The valuer is automatically liable to the bank because anyone who relied on the report can sue.',
+        'The valuer has no liability whatsoever because the bank was not the instructing party.',
+        'Liability depends on whether the valuer assumed responsibility to the bank, the bank\'s reliance was reasonable, and the bank\'s identity was reasonably foreseeable.'
+      ],
+      answer: 2,
+      reasoning: 'Liability to third parties in negligence depends on whether the valuer assumed responsibility, the third party reasonably relied, and the harm was reasonably foreseeable. Liability is not automatic, nor is it excluded merely because the third party was not the instructing party.'
+    },
+    {
+      num: 14,
+      topic: 'Scenario — Mitigation',
+      text: 'A supplier wrongfully terminates a 5-year supply contract with a buyer. The buyer has two reasonable substitute suppliers available within weeks but chooses to keep its production lines idle for 12 months while seeking redress in court. The buyer claims the full 12 months of lost profits. How should the valuer approach the quantum?',
+      options: [
+        'Award the full 12 months of lost profits, since the breach caused all the loss.',
+        'Reduce the recoverable loss to reflect what the buyer would have lost had it taken reasonable mitigation steps.',
+        'Disallow all recovery, since the buyer failed to mitigate.'
+      ],
+      answer: 1,
+      reasoning: 'Mitigation requires reasonable steps to reduce loss. Where substitutes were available, the claimant\'s failure to take them does not extinguish recovery, but it reduces it to the loss that would have been suffered had reasonable steps been taken. Total disallowance is not the typical outcome.'
+    },
+    {
+      num: 15,
+      topic: 'Scenario — Valuation date selection',
+      text: 'A claimant alleges breach of a contract for the supply of commodities in a volatile market. The commodity price spiked sharply between the date of breach and the date of trial. The claimant argues damages should be assessed at the higher trial-date price. What is the most likely judicial approach?',
+      options: [
+        'Adopt the trial date because it produces the highest figure for the claimant.',
+        'Apply the breach date as the default, unless the claimant can show that fairness requires a different date in the circumstances.',
+        'Average the prices between breach and trial to produce a fair compromise.'
+      ],
+      answer: 1,
+      reasoning: 'The default rule is to assess damages at the date of breach. Courts may depart from this where fairness requires, but the burden rests on the party seeking a different date to justify the departure on the specific facts. Averaging is not a recognised methodology.'
+    },
+    {
+      num: 16,
+      topic: 'Scenario — Implied terms',
+      text: 'Two parties enter a written agreement that does not address a specific operational matter that later becomes contentious. One party argues that a term should be implied because it would have been reasonable to include it. Under Singapore law, when will the court imply a term?',
+      options: [
+        'Whenever the proposed term would be reasonable in the circumstances.',
+        'Whenever one party wishes to add a clause that was not negotiated.',
+        'Only where the parties did not contemplate the issue, the term is necessary to give the contract business efficacy, and the parties would have agreed to it had it been raised.'
+      ],
+      answer: 2,
+      reasoning: 'A term is implied only when there is a true gap (parties did not contemplate the issue), the term is necessary for business efficacy (not merely reasonable), and the parties would obviously have agreed to it had it been raised at the time of contracting. Mere reasonableness is insufficient.'
+    },
+    {
+      num: 17,
+      topic: 'Scenario — Cross-border enforcement',
+      text: 'A creditor obtains an arbitral award in Singapore against a debtor whose assets are located in a different jurisdiction that is party to the New York Convention. Which of the following best describes the next step for enforcement?',
+      options: [
+        'The creditor must apply to the courts of the debtor\'s jurisdiction to recognise and enforce the award, subject to the limited grounds of refusal in the Convention.',
+        'The award is automatically enforceable in the debtor\'s jurisdiction without further procedural steps.',
+        'Enforcement is impossible unless the parties enter a fresh arbitration in the debtor\'s jurisdiction.'
+      ],
+      answer: 0,
+      reasoning: 'Under the New York Convention, foreign arbitral awards are enforceable through application to the courts of the relevant jurisdiction, which review only the limited grounds of refusal (e.g., procedural irregularity, public policy). Enforcement is not automatic but is broadly available and not contingent on fresh arbitration.'
+    },
+    {
+      num: 18,
+      topic: 'Scenario — Standard of care',
+      text: 'A valuer adopts an unconventional methodology for a complex valuation engagement. The methodology is not yet widely recognised in the profession, but the valuer documents the rationale clearly and considers multiple alternatives. A dispute later arises about whether the valuer breached the standard of care. What is the most likely judicial approach?',
+      options: [
+        'Strict liability — any deviation from established practice constitutes a breach of the standard of care.',
+        'The court will consider whether the choice of methodology was a reasonable professional judgment supported by adequate reasoning, even if not the most common approach.',
+        'Liability is automatic if any other valuer would have used a different method.'
+      ],
+      answer: 1,
+      reasoning: 'The standard of care is that of an ordinarily competent valuer exercising reasonable skill and care. Reasonable differences in professional judgment are permitted; what matters is whether the methodology was justifiable on the evidence and explained. Strict liability for any deviation from common practice is not the law.'
+    },
+    {
+      num: 19,
+      topic: 'Scenario — Concurrent claims',
+      text: 'A claimant suffers loss as a result of both a breach of contract and a tortious act by the same defendant arising from the same conduct. The claimant pleads both causes of action. Which of the following best reflects how a valuer should approach the damages assessment?',
+      options: [
+        'Compute damages separately under each head and add them together to maximise recovery.',
+        'Recognise that the two measures may produce different quantums and that double recovery for the same loss is not permitted.',
+        'Recommend that the claimant pursue only one cause of action.'
+      ],
+      answer: 1,
+      reasoning: 'Contract and tort damages may differ in measure (forward-looking expectation vs backward-looking restoration), but a claimant cannot recover the same loss twice. The valuer should distinguish the heads of loss and avoid double recovery. The choice of cause of action is for legal counsel, not the valuer.'
+    },
+    {
+      num: 20,
+      topic: 'Scenario — Disclosure of working papers',
+      text: 'During litigation, the opposing party requests the valuer\'s working papers, including draft calculations and email correspondence with the instructing solicitor. The valuer\'s working papers contain extensive professional notes. What is the most appropriate position?',
+      options: [
+        'Factual underlying data and material assumptions are typically disclosable, while communications prepared for the dominant purpose of litigation may attract litigation privilege.',
+        'All working papers are absolutely privileged and cannot be disclosed.',
+        'All working papers must be handed over without exception.'
+      ],
+      answer: 0,
+      reasoning: 'Litigation privilege protects communications prepared for the dominant purpose of contemplated or actual litigation. The factual data and assumptions underlying the report are typically not privileged. Valuers should therefore maintain working papers as professional, accurate documents — they may be inspected.'
+    },
+    {
+      num: 21,
+      topic: 'AlphaTech scenario — duty of care',
+      text: 'Scenario: AlphaTech Pte Ltd is a technology company with two key shareholders. Mr Lim, holding 30 percent, alleges that the majority shareholder, Mr Wong, has been diverting company funds to a personal venture and excluding him from key decisions for the past three years. Mr Lim commences a section 216 oppression action and obtains a court order for the majority to buy out his shares.\n\nThe court appoints Ms Chua, an independent valuer, to determine fair value as at the date the oppression commenced. The court order specifies a going concern premise and instructs Ms Chua to ignore any impact of the alleged diversions on company performance.\n\nIn her draft report, Ms Chua is approached by Mr Wong\'s solicitor with a 20-page submission setting out why the company\'s growth projections should be reduced. Mr Lim\'s solicitor sends a separate letter requesting a private meeting to "clarify" issues.\n\nWhat is Ms Chua\'s primary duty as a court-appointed valuer?',
+      options: [
+        'To advance the position of Mr Lim, since the court has found oppression in his favour.',
+        'To assist the court with an independent and methodologically sound valuation, regardless of the parties\' positions.',
+        'To take the average of the parties\' submitted positions, as a neutral compromise.'
+      ],
+      answer: 1,
+      reasoning: 'A court-appointed expert owes the primary duty to the court, not to either party. The valuation must be independent and methodologically sound. The valuer should not adopt either party\'s preferred outcome merely because they are the appointing or oppressed party.'
+    },
+    {
+      num: 22,
+      topic: 'AlphaTech scenario — handling submissions',
+      text: 'Continuing the AlphaTech Pte Ltd scenario: How should Ms Chua handle the 20-page submission from Mr Wong\'s solicitor and the private meeting request from Mr Lim\'s solicitor?',
+      options: [
+        'Accept the submission and meet privately with Mr Lim\'s solicitor to maintain a balanced approach to both parties.',
+        'Refuse to receive any submissions from either party so as not to be influenced.',
+        'Receive any submission through joint channels, share material received from one party with the other, and decline unilateral private meetings unless both parties agree.'
+      ],
+      answer: 2,
+      reasoning: 'A jointly appointed expert must operate transparently. Submissions from one party should be shared with the other, and private meetings are inappropriate unless expressly authorised by both parties. Total refusal of input would be inappropriate; transparency is the safeguard.'
+    },
+    {
+      num: 23,
+      topic: 'AlphaTech scenario — methodology',
+      text: 'Continuing the AlphaTech Pte Ltd scenario: The court order directs Ms Chua to ignore the impact of the alleged diversions on company performance. In applying this direction, Ms Chua should:',
+      options: [
+        'Construct a counterfactual that adjusts the financial performance to remove the impact of the alleged diversions on company earnings.',
+        'Use the company\'s actual reported earnings, as these reflect what the company has historically achieved.',
+        'Decline to value the company until the diversions are fully proven and quantified by the court.'
+      ],
+      answer: 0,
+      reasoning: 'Where the court directs the valuer to ignore certain impacts, the valuer must construct a counterfactual or adjusted scenario that excludes those impacts. Adopting actual reported figures would contradict the court order. The valuer must implement the directions given, not pause the valuation.'
+    },
+    {
+      num: 24,
+      topic: 'BuildCo scenario — heads of loss',
+      text: 'Scenario: BuildCo Pte Ltd entered a 3-year construction contract with Property Developer Pte Ltd in January 2023, valued at S$50 million. In June 2024, Property Developer wrongfully terminated the contract halfway through. BuildCo had already incurred S$12 million in costs and had projected total profit of S$8 million on the project.\n\nFollowing the termination, BuildCo secured a smaller substitute project worth S$15 million with an expected profit of S$2 million. BuildCo also had to maintain its workforce and equipment, incurring additional costs of S$1 million during the period before the substitute project began.\n\nA valuer is engaged to quantify BuildCo\'s recoverable loss.\n\nWhich of the following best identifies the legitimate heads of loss?',
+      options: [
+        'Only the lost profit of S$8 million on the original contract.',
+        'The full contract value of S$50 million regardless of mitigation.',
+        'Lost profit on the original contract (less profit earned on the substitute), plus the additional S$1 million of maintenance costs reasonably incurred while seeking a substitute.'
+      ],
+      answer: 2,
+      reasoning: 'Recoverable loss reflects the claimant\'s expectation interest. The lost profit must be reduced by the profit earned on mitigation (the substitute). Mitigation costs (the additional S$1 million) are recoverable as they are reasonably incurred. The full contract value is not the loss; profit and reasonably incurred costs are.'
+    },
+    {
+      num: 25,
+      topic: 'BuildCo scenario — substitute profit',
+      text: 'Continuing the BuildCo Pte Ltd scenario: How should the profit earned on the substitute project (S$2 million) be treated in the damages calculation?',
+      options: [
+        'Deducted from the lost profit claim, as the substitute project arose from BuildCo\'s reasonable mitigation efforts.',
+        'Ignored, since the substitute project was a separate commercial undertaking unrelated to the breach.',
+        'Added to the damages claim as additional recoverable loss.'
+      ],
+      answer: 0,
+      reasoning: 'Profits earned through reasonable mitigation must be set off against the lost profits, to prevent over-recovery. The substitute project arose directly from the mitigation effort following the breach and is therefore connected, not unrelated. Adding it would result in double recovery.'
+    },
+    {
+      num: 26,
+      topic: 'BuildCo scenario — counterfactual',
+      text: 'Continuing the BuildCo Pte Ltd scenario: In quantifying BuildCo\'s expected profit on the cancelled contract, the valuer should base the analysis on:',
+      options: [
+        'Reasonable assumptions supported by historical performance, agreed contractual terms, and market conditions at the time of contracting.',
+        'BuildCo\'s optimistic internal projections that assumed favourable supply chain conditions.',
+        'An industry average margin applied uniformly to BuildCo\'s revenue.'
+      ],
+      answer: 0,
+      reasoning: 'Lost profit projections must rest on a supportable counterfactual: historical performance, contractual terms, and prevailing market conditions. Purely optimistic projections fail evidential scrutiny. Industry averages may inform but cannot replace company-specific evidence.'
+    },
+    {
+      num: 27,
+      topic: 'Scenario — IP damages methodology',
+      text: 'A patent holder sues an infringer who has sold competing products incorporating the patented technology. The patent holder operates in a related but non-overlapping market. The valuer is asked to quantify damages. Which methodology is most likely appropriate?',
+      options: [
+        'Lost profits, since the patent holder always loses sales when its patent is infringed.',
+        'Reasonable royalty, since the patent holder was not selling in the infringer\'s market and could not have made those sales.',
+        'An account of profits as a punitive measure against the infringer.'
+      ],
+      answer: 1,
+      reasoning: 'Where the claimant could not have made the sales in question (different markets), lost profits is inappropriate. A reasonable royalty better reflects the value of the infringer\'s use of the patent. Account of profits is a gain-based remedy requiring an election, not a punitive measure.'
+    },
+    {
+      num: 28,
+      topic: 'Scenario — Valuation premise',
+      text: 'A company subject to a section 216 buyout has experienced declining performance. The majority argues for a liquidation premise as the company would be worth more broken up. The court order, however, directs the valuer to apply a going concern premise. What should the valuer do?',
+      options: [
+        'Apply the going concern premise as directed by the court, regardless of which premise produces a higher value.',
+        'Apply both premises and adopt the higher of the two, to do justice to both parties.',
+        'Apply the liquidation premise, as it better reflects the company\'s actual condition.'
+      ],
+      answer: 0,
+      reasoning: 'Where the court has directed a specific premise, the valuer must comply with that direction. The valuer\'s role is to implement the court\'s instructions, not to override them based on their own view of which premise is more appropriate.'
+    },
+    {
+      num: 29,
+      topic: 'Scenario — Punitive damages claim',
+      text: 'A claimant in a breach of contract case asks the valuer to compute both compensatory damages and a punitive damages figure to reflect the defendant\'s deliberate conduct. The breach was clearly intentional but caused only compensable economic loss. How should the valuer respond?',
+      options: [
+        'Explain that punitive damages are generally not available for pure breach of contract in Singapore and limit the analysis to compensatory damages.',
+        'Compute both figures, since punitive damages are routinely available for deliberate breaches.',
+        'Refuse to compute any damages until the punitive nature of the conduct is finally determined by the court.'
+      ],
+      answer: 0,
+      reasoning: 'Punitive damages are generally not available in Singapore for pure breach of contract, even where the breach is deliberate. The valuer should confine the analysis to compensatory measures. Refusing to compute any damages would unhelpfully halt the engagement; the appropriate approach is to advise and proceed with permissible heads of loss.'
+    },
+    {
+      num: 30,
+      topic: 'Scenario — Joint expert direction',
+      text: 'In a complex commercial dispute, the court directs the parties to use a single joint expert valuer to streamline the proceedings. Both parties agree on the appointment. The claimant subsequently requests a separate "shadow expert" to advise privately on the joint expert\'s report. How should this be assessed?',
+      options: [
+        'It is prohibited, since the joint expert appointment excludes any further expert involvement.',
+        'It is permissible as advisory support for the party\'s legal team, but the shadow expert cannot give evidence at trial without the court\'s leave.',
+        'It is required as part of due process, since each party must have its own expert.'
+      ],
+      answer: 1,
+      reasoning: 'Engaging a shadow expert for advisory purposes is generally permissible — it helps the legal team understand and engage with the joint expert\'s report. However, the shadow expert cannot give evidence at trial without the court\'s leave, as that would defeat the purpose of joint appointment. The arrangement is neither prohibited nor required.'
+    }
+];
+
+const SETS = [
+  { id: 'official', title: 'Official 60', subtitle: 'From CVA textbook', questions: OFFICIAL_60, duration: 90 * 60 },
+  { id: 'new', title: 'New 30', subtitle: 'Same format, fresh scenarios', questions: NEW_30, duration: 45 * 60 },
+];
+
+let currentSet = null;
+let answers = {};
+let flagged = new Set();
+let timerInterval = null;
+let timeRemaining = 0;
+let isSubmitted = false;
+let modalAction = null;
+
+// STORAGE
+function getProgress() {
+  try {
+    const p = localStorage.getItem('cva_official_mock_progress');
+    return p ? JSON.parse(p) : {};
+  } catch { return {}; }
+}
+function saveProgress(progress) {
+  try { localStorage.setItem('cva_official_mock_progress', JSON.stringify(progress)); } catch {}
+}
+function saveSetState(setId, state) {
+  const p = getProgress();
+  p[setId] = state;
+  saveProgress(p);
+}
+
+// HOME
+function renderHome() {
+  document.getElementById('home-view').style.display = 'block';
+  document.getElementById('exam-view').classList.remove('active');
+  document.getElementById('results-view').classList.remove('active');
+  
+  const grid = document.getElementById('setGrid');
+  const progress = getProgress();
+  let html = '';
+  SETS.forEach(set => {
+    const state = progress[set.id];
+    let badge = set.id === 'official' ? 'OFFICIAL' : 'NEW';
+    let cls = set.id;
+    let status = '';
+    if (state && state.completed) {
+      const pct = (state.score / state.total * 100).toFixed(0);
+      status = `<div class="status">Last score: ${state.score}/${state.total} (${pct}%)</div>`;
+    } else if (state && state.timeRemaining !== undefined) {
+      const mins = Math.floor(state.timeRemaining / 60);
+      status = `<div class="status" style="color: var(--gold);">In progress · ${mins} min left</div>`;
+    }
+    html += `
+      <div class="set-card ${cls}" onclick="startSet('${set.id}')">
+        <span class="badge">${badge}</span>
+        <div class="title">${set.title}</div>
+        <div class="desc">${set.subtitle}</div>
+        <div class="meta">
+          <span>📝 ${set.questions.length} questions</span>
+          <span>⏱️ ${Math.floor(set.duration/60)} min</span>
+        </div>
+        ${status}
+      </div>
+    `;
+  });
+  grid.innerHTML = html;
+}
+
+function startSet(setId) {
+  currentSet = SETS.find(s => s.id === setId);
+  const state = getProgress()[setId];
+  
+  if (state && state.completed) {
+    answers = state.answers || {};
+    flagged = new Set(state.flagged || []);
+    isSubmitted = true;
+    showResults();
+    return;
+  }
+  
+  if (state && !state.completed) {
+    const resume = confirm(`Resume ${currentSet.title}? Click Cancel to start fresh.`);
+    if (resume) {
+      answers = state.answers || {};
+      flagged = new Set(state.flagged || []);
+      timeRemaining = state.timeRemaining || currentSet.duration;
+    } else {
+      answers = {};
+      flagged = new Set();
+      timeRemaining = currentSet.duration;
+    }
+  } else {
+    answers = {};
+    flagged = new Set();
+    timeRemaining = currentSet.duration;
+  }
+  
+  isSubmitted = false;
+  document.getElementById('home-view').style.display = 'none';
+  document.getElementById('exam-view').classList.add('active');
+  document.getElementById('results-view').classList.remove('active');
+  document.getElementById('examTitle').textContent = currentSet.title;
+  
+  renderQuestions();
+  startTimer();
+  updateProgress();
+  window.scrollTo({ top: 0 });
+}
+
+function renderQuestions() {
+  const questions = currentSet.questions;
+  const area = document.getElementById('questionsArea');
+  let html = '';
+  questions.forEach((q, i) => {
+    const isFlagged = flagged.has(i);
+    const selected = answers[i];
+    const optionsHtml = q.options.map((opt, j) => {
+      const sel = selected === j ? ' selected' : '';
+      return `
+        <div class="q-option${sel}" onclick="selectAnswer(${i}, ${j})">
+          <span class="letter">${String.fromCharCode(65 + j)}</span>
+          <span>${escapeHtml(opt)}</span>
+        </div>
+      `;
+    }).join('');
+    
+    html += `
+      <div class="q-card${isFlagged ? ' flagged' : ''}${selected !== undefined ? ' answered-during' : ''}" id="qcard-${i}">
+        <div class="q-header">
+          <span class="q-num">${i + 1}</span>
+          <span class="q-topic">${escapeHtml(q.topic)}</span>
+          <span class="q-flag${isFlagged ? ' active' : ''}" onclick="event.stopPropagation(); toggleFlag(${i})" title="Flag for review">🚩</span>
+        </div>
+        <div class="q-text">${escapeHtml(q.text)}</div>
+        <div class="q-options">${optionsHtml}</div>
+      </div>
+    `;
+  });
+  area.innerHTML = html;
+}
+
+function selectAnswer(qIdx, optIdx) {
+  if (isSubmitted) return;
+  answers[qIdx] = optIdx;
+  saveState();
+  const card = document.getElementById(`qcard-${qIdx}`);
+  card.classList.add('answered-during');
+  const opts = card.querySelectorAll('.q-option');
+  opts.forEach((el, j) => {
+    if (j === optIdx) el.classList.add('selected');
+    else el.classList.remove('selected');
+  });
+  updateProgress();
+}
+
+function toggleFlag(qIdx) {
+  if (flagged.has(qIdx)) flagged.delete(qIdx);
+  else flagged.add(qIdx);
+  saveState();
+  const card = document.getElementById(`qcard-${qIdx}`);
+  const flag = card.querySelector('.q-flag');
+  if (flagged.has(qIdx)) {
+    card.classList.add('flagged');
+    flag.classList.add('active');
+  } else {
+    card.classList.remove('flagged');
+    flag.classList.remove('active');
+  }
+  updateProgress();
+}
+
+function jumpToUnanswered() {
+  const questions = currentSet.questions;
+  for (let i = 0; i < questions.length; i++) {
+    if (answers[i] === undefined) {
+      document.getElementById(`qcard-${i}`).scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
+  }
+  alert('All questions answered. You can submit now.');
+}
+
+function updateProgress() {
+  const answered = Object.keys(answers).length;
+  const total = currentSet.questions.length;
+  document.getElementById('progressText').textContent = `${answered} / ${total} answered · ${flagged.size} flagged`;
+  document.getElementById('progressMini').textContent = `${answered} / ${total}`;
+}
+
+function saveState() {
+  saveSetState(currentSet.id, {
+    answers, flagged: Array.from(flagged),
+    timeRemaining, completed: false,
+  });
+}
+
+function startTimer() {
+  updateTimer();
+  if (timerInterval) clearInterval(timerInterval);
+  timerInterval = setInterval(() => {
+    timeRemaining--;
+    updateTimer();
+    if (timeRemaining % 15 === 0) saveState();
+    if (timeRemaining <= 0) {
+      clearInterval(timerInterval);
+      alert("Time's up! Auto-submitting your exam.");
+      submitExam();
+    }
+  }, 1000);
+}
+
+function updateTimer() {
+  const t = document.getElementById('timer');
+  const mins = Math.floor(timeRemaining / 60);
+  const secs = timeRemaining % 60;
+  t.textContent = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+  t.classList.remove('warning', 'critical');
+  if (timeRemaining <= 60) t.classList.add('critical');
+  else if (timeRemaining <= 600) t.classList.add('warning');
+}
+
+function stopTimer() {
+  if (timerInterval) clearInterval(timerInterval);
+  timerInterval = null;
+}
+
+function confirmSubmit() {
+  const total = currentSet.questions.length;
+  const answered = Object.keys(answers).length;
+  const unanswered = total - answered;
+  document.getElementById('modalTitle').textContent = 'Submit exam?';
+  if (unanswered > 0) {
+    document.getElementById('modalBody').innerHTML = `You have <strong>${unanswered}</strong> unanswered. They will be marked incorrect. Submit?`;
+  } else {
+    document.getElementById('modalBody').innerHTML = `All <strong>${total}</strong> answered. Submit and see results?`;
+  }
+  document.getElementById('modalConfirm').textContent = 'Submit';
+  modalAction = 'submit';
+  document.getElementById('confirmModal').classList.add('active');
+}
+
+function confirmExit() {
+  document.getElementById('modalTitle').textContent = 'Leave exam?';
+  document.getElementById('modalBody').innerHTML = `Progress is saved. Resume anytime.`;
+  document.getElementById('modalConfirm').textContent = 'Leave';
+  modalAction = 'exit';
+  document.getElementById('confirmModal').classList.add('active');
+}
+
+function closeModal() {
+  document.getElementById('confirmModal').classList.remove('active');
+  modalAction = null;
+}
+
+function confirmModalAction() {
+  closeModal();
+  if (modalAction === 'submit') submitExam();
+  else if (modalAction === 'exit') {
+    saveState();
+    stopTimer();
+    goHome();
+  }
+}
+
+function submitExam() {
+  stopTimer();
+  isSubmitted = true;
+  const questions = currentSet.questions;
+  let score = 0;
+  questions.forEach((q, i) => {
+    if (answers[i] === q.answer) score++;
+  });
+  const timeUsed = currentSet.duration - timeRemaining;
+  saveSetState(currentSet.id, {
+    answers, flagged: Array.from(flagged), timeRemaining,
+    completed: true, score, total: questions.length,
+    timeUsed, submittedAt: new Date().toISOString(),
+  });
+  showResults();
+}
+
+function showResults() {
+  document.getElementById('home-view').style.display = 'none';
+  document.getElementById('exam-view').classList.remove('active');
+  document.getElementById('results-view').classList.add('active');
+  
+  const questions = currentSet.questions;
+  let score = 0;
+  questions.forEach((q, i) => {
+    if (answers[i] === q.answer) score++;
+  });
+  const pct = (score / questions.length * 100).toFixed(0);
+  const passClass = pct >= 70 ? 'pass' : 'fail';
+  const passText = pct >= 70 ? 'Pass' : 'Below 70%';
+  
+  const state = getProgress()[currentSet.id];
+  const timeUsedMin = state && state.timeUsed ? Math.floor(state.timeUsed / 60) : 0;
+  
+  document.getElementById('resultsTitle').textContent = `Results — ${currentSet.title}`;
+  document.getElementById('resultsCard').innerHTML = `
+    <div class="results-score">${score}<span class="denom">/${questions.length}</span></div>
+    <div class="results-pct ${passClass}">${pct}% — ${passText}</div>
+    <div class="results-time">Time used: ${timeUsedMin} min / ${Math.floor(currentSet.duration/60)} min</div>
+  `;
+  
+  const area = document.getElementById('resultsQuestionsArea');
+  let html = '';
+  questions.forEach((q, i) => {
+    const userAns = answers[i];
+    const isCorrect = userAns === q.answer;
+    const optionsHtml = q.options.map((opt, j) => {
+      let cls = '';
+      if (j === q.answer) cls = 'correct';
+      else if (j === userAns) cls = 'incorrect';
+      return `
+        <div class="q-option ${cls}">
+          <span class="letter">${String.fromCharCode(65 + j)}</span>
+          <span>${escapeHtml(opt)}</span>
+        </div>
+      `;
+    }).join('');
+    
+    const reasoningCls = userAns === undefined ? '' : (isCorrect ? 'correct' : 'wrong');
+    const userAnsLine = userAns === undefined 
+      ? '<div class="q-user-ans"><em>Not answered</em></div>' 
+      : (isCorrect 
+        ? `<div class="q-user-ans">✓ Correct — you chose ${String.fromCharCode(65 + userAns)}</div>` 
+        : `<div class="q-user-ans">✗ Incorrect — you chose ${String.fromCharCode(65 + userAns)}, correct is ${String.fromCharCode(65 + q.answer)}</div>`);
+    
+    html += `
+      <div class="q-card submitted">
+        <div class="q-header">
+          <span class="q-num">${i + 1}</span>
+          <span class="q-topic">${escapeHtml(q.topic)}</span>
+        </div>
+        <div class="q-text">${escapeHtml(q.text)}</div>
+        <div class="q-options">${optionsHtml}</div>
+        ${userAnsLine}
+        <div class="q-reasoning ${reasoningCls}">
+          <span class="label">Reasoning</span>
+          ${escapeHtml(q.reasoning)}
+        </div>
+      </div>
+    `;
+  });
+  area.innerHTML = html;
+  window.scrollTo({ top: 0 });
+}
+
+function goHome() {
+  stopTimer();
+  currentSet = null;
+  renderHome();
+  window.scrollTo({ top: 0 });
+}
+
+function escapeHtml(s) {
+  return String(s)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;')
+    .replace(/\n/g, '<br>');
+}
+
+renderHome();
+</script>
+</body>
+</html>
