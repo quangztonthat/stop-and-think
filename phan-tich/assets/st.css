@@ -288,8 +288,17 @@ html[data-theme="light"] .bval.hot{color:#0b74c4}
 
 @media (max-width:560px){
   .dch{gap:16px}
-  .tline li{flex:1 1 100%}
+  /* v50 — ĐO 2026-08-23: một thẻ chiếm hết bề ngang thì chữ trong thẻ chỉ lấp
+     0,24–0,58 bề rộng đó (đo trên 2 bài, 3 bề rộng máy) — đọc ra thành sáu hàng
+     rỗng. `min-width:180px` của luật gốc là thứ ép xuống một thẻ/hàng: ở 390px
+     bề ngang dùng được chỉ 358px nên hai thẻ 180px không lọt. Hạ sàn xuống và
+     chia theo BAND: 481–560px ba thẻ/hàng, ≤480px hai thẻ/hàng. Sau vá, tỉ lệ
+     lấp đầy 0,49–1,19 và không bề rộng nào sinh cuộn ngang. */
+  .tline li{flex:1 1 calc(33.333% - 6px);min-width:0}
   .leg{padding-left:0}
+}
+@media (max-width:480px){
+  .tline li{flex:1 1 calc(50% - 4px);min-width:132px}
 }
 
 /* Số trích dẫn: một con số nhỏ nhấc lên, KHÔNG có khối nền.
@@ -352,9 +361,14 @@ footer.site{border-top:1px solid var(--line-soft);padding:18px 22px;text-align:c
 .art main .tbl .cap{font-weight:700;font-size:15.5px;color:var(--ink);margin:0 0 10px;line-height:1.45}
 .art main .tbl .scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
 .art main .tbl table{border-collapse:collapse;width:100%;font-size:14.5px}
+/* v50 — ĐO 2026-08-23, Chromium 1194, trên chính trang đã dựng. `white-space:nowrap` ở
+   NHÃN CỘT là thủ phạm chính: sáu nhãn không xuống dòng chiếm 682,6px trong cột chữ
+   740px, chỉ chừa 57px cho toàn bộ nội dung ⇒ thuật toán bảng ép mọi cột về min-content
+   và ô "Điện mặt trời hưởng FIT1" cao 7,7 dòng ở MỌI bề rộng màn hình (kể cả 1440px).
+   Bỏ nowrap: 7,7 -> 4,7 dòng, cột nhãn 67px -> 112px. */
 .art main .tbl th{text-align:left;font-weight:700;color:var(--ink-soft);font-size:12.5px;
   letter-spacing:.02em;text-transform:uppercase;padding:0 14px 8px 0;
-  border-bottom:1px solid var(--line);white-space:nowrap}
+  border-bottom:1px solid var(--line);white-space:normal}
 .art main .tbl td{padding:9px 14px 9px 0;border-bottom:1px solid var(--line-soft);
   color:var(--ink);vertical-align:top}
 .art main .tbl tr:last-child td{border-bottom:0}
@@ -362,9 +376,37 @@ footer.site{border-top:1px solid var(--line-soft);padding:18px 22px;text-align:c
 .art main .tbl .num{text-align:right;font-variant-numeric:tabular-nums}
 .art main .tbl .ctr{text-align:center}
 .art main .tbl .src{font-size:12px;color:var(--ink-dim);margin:10px 0 0;line-height:1.5}
-@media (max-width:620px){
+/* Bảng 6 cột không sống nổi trong cột chữ 740px: max-content của bảng này là 1.864px.
+   Màn rộng thì cho bảng TRÀN ra ngoài cột chữ (chỉ bảng, không đụng văn xuôi); dùng
+   `calc(100% + N)` chứ KHÔNG dùng 100vw — 100vw tính cả thanh cuộn nên trên Windows
+   desktop nó đẩy tràn ngang cả trang. Đo sau khi vá: 1120px+ -> 2,7 dòng. */
+@media (min-width:960px) and (max-width:1119px){
+  .art main .tbl{width:calc(100% + 160px);margin-left:-80px}
+}
+@media (min-width:1120px){
+  .art main .tbl{width:calc(100% + 320px);margin-left:-160px}
+}
+/* Màn hẹp: KHÔNG cuộn ngang, mỗi hàng thành một THẺ với nhãn cột đứng trước từng ô.
+   Cuộn ngang trên điện thoại là thứ CSS cũ tự hứa mà chưa bao giờ làm được (bảng
+   `width:100%` thì `.scroll` không bao giờ tràn ở dải rộng). Nhãn lấy từ `data-th`
+   do build_essays.py gắn — sửa ở đây thì phải giữ chỗ gắn đó. */
+@media (max-width:760px){
+  .art main .tbl .scroll{overflow-x:visible}
+  .art main .tbl table,.art main .tbl tbody,.art main .tbl tr,.art main .tbl td{
+    display:block;width:auto}
+  .art main .tbl thead{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
   .art main .tbl table{font-size:13.5px}
-  .art main .tbl th,.art main .tbl td{padding-right:10px}
+  .art main .tbl tr{border:1px solid var(--line);border-left:2px solid var(--ey-blue);
+    padding:11px 13px;margin:0 0 10px}
+  .art main .tbl tr.hi{background:color-mix(in srgb,var(--mc) 12%,transparent)}
+  .art main .tbl tr.hi td{background:transparent}
+  .art main .tbl td{border-bottom:0;padding:0 0 7px;display:grid;
+    grid-template-columns:minmax(84px,34%) 1fr;gap:10px;align-items:baseline}
+  .art main .tbl td:last-child{padding-bottom:0}
+  .art main .tbl td:empty{display:none}
+  .art main .tbl td::before{content:attr(data-th);font-size:11px;font-weight:700;
+    text-transform:uppercase;letter-spacing:.02em;color:var(--ink-soft);line-height:1.35}
+  .art main .tbl .num{text-align:left}
 }
 
 /* ── MỐC THỜI GIAN (engine-essay v46) ─────────────────────────────────────────
