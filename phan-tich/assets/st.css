@@ -252,7 +252,11 @@ html[data-theme="light"] .bval.hot{color:#0b74c4}
    chart — đo được: dải mốc bắt đầu ở 166px trong khi hình bắt đầu ở 142px. */
 .art main ol.tline,.art main ul.dkey,.art main ul.leg,.art main ul.hb-k{margin-left:0;padding-left:0}
 .art main ul.leg{padding-left:48px}
-.art main ol.tline li,.art main ul.dkey li,.art main ul.leg li,.art main ul.hb-k li{margin:0}
+.art main ol.tline li,.art main ul.dkey li,.art main ul.leg li,.art main ul.hb-k li,
+/* v48: `.art main li{margin:7px 0}` đẻ ra khe 14px giữa hai mốc, làm đoạn nối dọc HỤT
+   đúng 14px ở bản màn hẹp. Danh sách miễn trừ này đã có sẵn từ trước — .tmline chỉ là
+   chưa được thêm vào. Thêm một dạng chart dạng-danh-sách thì phải thêm vào ĐÂY. */
+.art main ol.tmline li{margin:0}
 
 /* ---- DẢI MỐC THỜI GIAN */
 .tline{list-style:none;display:flex;flex-wrap:wrap;gap:8px;margin:16px 0 0;padding:0}
@@ -367,13 +371,34 @@ footer.site{border-top:1px solid var(--line-soft);padding:18px 22px;text-align:c
    Vẽ bằng HTML/CSS thay cho PNG vì trang có theme tối: một ảnh nền trắng dán
    vào nền tối là ô sáng chói giữa bài. Màn rộng thì mốc chạy ngang trên một
    trục; màn hẹp xếp dọc — mốc so le hai bên không co xuống 360px được. */
-.art main .tmline{list-style:none;margin:26px 0 30px;padding:0;
+.art main .tmline{
+  /* v48 — ĐO 2026-08-21 trong Chromium, không căn bằng mắt. Bản cũ hỏng HAI chỗ:
+     (1) `*{box-sizing:border-box}` KHÔNG áp cho pseudo-element, nên chấm khai 13px + viền
+         2,5px vẽ ra đường kính THẬT 17px; ray đặt theo con số 13px nên chạy qua đúng MÉP
+         TRÊN của chấm — lệch tâm 8,50px.
+     (2) ray là MỘT vạch chạy hết bề ngang `ol`, còn chấm thì nằm ở ĐẦU mỗi cột 1fr, nên
+         thừa ra 139,50px sau chấm cuối — bằng gần trọn một cột.
+     Nay ray không còn là vạch của `ol`: nó là ĐOẠN NỐI giữa hai mốc liền nhau, vẽ trên chính
+     `li` và ăn CÙNG bộ biến với cái chấm. Lệch nhau thành chuyện không xảy ra được, và đuôi
+     thừa biến mất theo cấu tạo chứ không theo một con số căn tay. */
+  --tm-dot:17px;      /* đường kính THẬT của chấm, ĐÃ gồm viền */
+  --tm-bd:2.5px;      /* bề dày viền */
+  --tm-rail:2px;      /* bề dày đoạn nối */
+  --tm-top:8px;       /* mép trên của chấm, tính từ đỉnh li */
+  --tm-gap:12px;      /* khoảng hở giữa chấm và chữ ở bản dọc */
+  list-style:none;margin:26px 0 30px;padding:0;
   display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:0;position:relative}
-.art main .tmline::before{content:"";position:absolute;left:0;right:0;top:14px;
-  height:2px;background:var(--line)}
 .art main .tmline li{position:relative;padding:30px 12px 0 0}
-.art main .tmline li::before{content:"";position:absolute;left:0;top:8px;width:13px;height:13px;
-  border-radius:50%;background:var(--card);border:2.5px solid var(--line)}
+.art main .tmline li::before,.art main .tmline li::after{content:"";position:absolute;
+  box-sizing:border-box}
+.art main .tmline li::before{left:0;top:var(--tm-top);
+  width:var(--tm-dot);height:var(--tm-dot);border-radius:50%;
+  background:var(--card);border:var(--tm-bd) solid var(--line);z-index:1}
+.art main .tmline li::after{                       /* TÂM chấm này -> TÂM chấm kế */
+  left:calc(var(--tm-dot)/2);right:calc(var(--tm-dot)/-2);
+  top:calc(var(--tm-top) + (var(--tm-dot) - var(--tm-rail))/2);
+  height:var(--tm-rail);background:var(--line)}
+.art main .tmline li:last-child::after{display:none}
 .art main .tmline li.hot::before{background:var(--mc);border-color:var(--mc)}
 .art main .tmline .tm-d{display:block;font-size:12.5px;font-weight:700;color:var(--mc);
   letter-spacing:.01em;margin-bottom:3px}
@@ -381,10 +406,15 @@ footer.site{border-top:1px solid var(--line-soft);padding:18px 22px;text-align:c
 .art main .tmline .tm-l{display:block;font-size:13.5px;color:var(--ink);line-height:1.45}
 .art main .tmline li.hot .tm-l{font-weight:600}
 @media (max-width:640px){
-  .art main .tmline{grid-auto-flow:row;grid-auto-columns:auto;padding-left:24px}
-  .art main .tmline::before{left:5px;right:auto;top:6px;bottom:6px;width:2px;height:auto}
+  .art main .tmline{grid-auto-flow:row;grid-auto-columns:auto;
+    padding-left:calc(var(--tm-dot) + var(--tm-gap))}
   .art main .tmline li{padding:0 0 18px 0}
-  .art main .tmline li::before{left:-24px;top:3px}
+  .art main .tmline li::before{left:calc(-1*(var(--tm-dot) + var(--tm-gap)))}
+  .art main .tmline li::after{
+    left:calc(-1*(var(--tm-dot)/2 + var(--tm-gap)) - var(--tm-rail)/2);right:auto;
+    top:calc(var(--tm-top) + var(--tm-dot)/2);
+    bottom:calc(-1*(var(--tm-top) + var(--tm-dot)/2));
+    width:var(--tm-rail);height:auto}
 }
 
 /* ── SƠ ĐỒ CẤU TRÚC qua các trạng thái (engine-essay v47) ─────────────────── */
