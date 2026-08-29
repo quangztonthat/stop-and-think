@@ -396,13 +396,49 @@ footer.site{border-top:1px solid var(--line-soft);padding:18px 22px;text-align:c
 /* Bảng 6 cột không sống nổi trong cột chữ 740px: max-content của bảng này là 1.864px.
    Màn rộng thì cho bảng TRÀN ra ngoài cột chữ (chỉ bảng, không đụng văn xuôi); dùng
    `calc(100% + N)` chứ KHÔNG dùng 100vw — 100vw tính cả thanh cuộn nên trên Windows
-   desktop nó đẩy tràn ngang cả trang. Đo sau khi vá: 1120px+ -> 2,7 dòng. */
+   desktop nó đẩy tràn ngang cả trang. Đo sau khi vá: 1120px+ -> 2,7 dòng.
+
+   v61 — ĐO 2026-08-29 trên bài phat-dat, Quang bắt bằng mắt: "trống quá mà lại tràn ra
+   cả trang". Số: bảng 3 cột ấy lệch trái cột chữ -160px, lệch phải +160px, mà TỈ LỆ LẤP
+   ĐẦY chỉ 0,44. Gốc: luật tràn ở trên viết cho MỘT bảng 6 cột rồi áp cho MỌI bảng, và
+   `margin-left` âm là hằng số nên bảng hẹp vẫn bị dịch trái đúng bằng bảng rộng.
+   Vá: BỎ margin âm (mép trái bảng luôn thẳng cột chữ), và chuyển phần nới sang
+   `.scroll` với `width:max-content` — bảng chỉ chiếm đúng chỗ chữ thật cần, và chỉ nới
+   SANG PHẢI khi max-content vượt cột chữ. Bảng hẹp: lấp đầy ~1,0, lệch 0/0.
+   Bảng rộng: vẫn được tới +320px như cũ.
+   KHÔNG áp dưới 960px — ở đó mỗi hàng là một THẺ, `max-content` sẽ co theo thẻ hẹp nhất. */
+/* v61 — ĐO 2026-08-29, Chromium, trên chính trang đã dựng. Quang bắt bằng mắt ở bài
+   phat-dat: "trống quá mà lại tràn ra cả trang". Số: bảng 3 cột đó lệch trái cột chữ
+   −160px, lệch phải +160px, mà TỈ LỆ LẤP ĐẦY chỉ 0,44.
+
+   Gốc: luật tràn v45 là HẰNG SỐ (`width:calc(100%+320px); margin-left:-160px`) áp cho
+   MỌI bảng, không hỏi bảng có cần không. Kiểm kê max-content thật của cả 5 bảng trên
+   site: 470 · 952 · 1149 · 1368 · 1862px — cột chữ là 740px. Tức có bảng chỉ cần 2/3
+   cột chữ, có bảng cần gấp 2,5 lần. Một hằng số không phục vụ được cả hai.
+
+   Đã thử và BỎ hai hướng:
+   (a) chỉ nới sang phải, bỏ margin âm -> bảng rộng đẩy TRÀN NGANG cả trang, đo được
+       130px ở 1120px (mép phải trang chỉ còn 190px lề mà bảng đòi 320px);
+   (b) ước lượng bề rộng bằng số ký tự trong build_essays.py -> ước 733px cho bảng mà
+       trình duyệt đo 1862px. Sai gần 3 lần; một hằng số bịa thì tệ hơn hằng số cũ.
+
+   Vá: giữ nguyên HỘP tràn đối xứng cũ (thứ đã đo 0px tràn ngang ở cả 9 bề rộng) nhưng
+   đẩy nội dung vào bằng `padding-left` + `box-sizing:border-box`, nên MÉP TRÁI bảng,
+   chú thích và dòng nguồn đều thẳng cột chữ. `.scroll` lấy `width:max-content` nên bảng
+   chỉ chiếm đúng chỗ chữ thật cần, và `max-width:100%` chặn nó ở mép hộp.
+   Kết quả: bảng hẹp lấp đầy ~1,0 và lệch 0/0; bảng rộng vẫn được nới sang phải. */
+@media (min-width:960px){
+  .art main .tbl{box-sizing:border-box}
+  .art main .tbl .scroll{width:max-content;max-width:100%}
+  .art main .tbl table{width:100%}
+}
 @media (min-width:960px) and (max-width:1119px){
-  .art main .tbl{width:calc(100% + 160px);margin-left:-80px}
+  .art main .tbl{width:calc(100% + 160px);margin-left:-80px;padding-left:80px}
 }
 @media (min-width:1120px){
-  .art main .tbl{width:calc(100% + 320px);margin-left:-160px}
+  .art main .tbl{width:calc(100% + 320px);margin-left:-160px;padding-left:160px}
 }
+
 /* Màn hẹp: KHÔNG cuộn ngang, mỗi hàng thành một THẺ với nhãn cột đứng trước từng ô.
    Cuộn ngang trên điện thoại là thứ CSS cũ tự hứa mà chưa bao giờ làm được (bảng
    `width:100%` thì `.scroll` không bao giờ tràn ở dải rộng). Nhãn lấy từ `data-th`
@@ -477,6 +513,66 @@ footer.site{border-top:1px solid var(--line-soft);padding:18px 22px;text-align:c
 }
 
 /* ── SƠ ĐỒ CẤU TRÚC qua các trạng thái (engine-essay v47) ─────────────────── */
+/* ── SƠ ĐỒ CẤU TRÚC THƯƠNG VỤ (deal_structure, v61) ───────────────────────────
+   Mỗi dòng chảy một hàng: hộp NGUỒN → huy hiệu bước + nhãn → hộp ĐÍCH. Không dùng mũi
+   tên chéo như bản slide vì toạ độ chéo phải đo lại theo bề rộng hộp; hàng ngang thì
+   xuống 360px tự xếp dọc mà không chữ nào đè lên mũi tên. */
+.art main .dealf{margin:26px 0 30px;display:grid;gap:12px}
+.art main .df-r{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:12px}
+.art main .df-b{border:1px solid var(--line-soft);background:var(--card);border-radius:8px;
+  padding:9px 11px;font-size:13.5px;font-weight:600;color:var(--ink);text-align:center;line-height:1.35}
+.art main .df-b.dashed{border-style:dashed;border-color:var(--mc)}
+.art main .df-a{display:flex;flex-direction:column;align-items:center;gap:4px;min-width:110px;
+  position:relative;padding-top:10px}
+.art main .df-a::before{content:"";position:absolute;top:2px;left:0;right:0;height:1px;background:var(--line)}
+.art main .df-a::after{content:"";position:absolute;top:-2px;right:0;border-top:4px solid transparent;
+  border-bottom:4px solid transparent;border-left:6px solid var(--line)}
+.art main .df-a.dashed::before{background:repeating-linear-gradient(90deg,var(--line) 0 5px,transparent 5px 10px)}
+.art main .df-n{display:inline-flex;align-items:center;justify-content:center;width:19px;height:19px;
+  border-radius:50%;background:var(--mc);color:#fff;font-size:11.5px;font-weight:700}
+.art main .df-l{font-size:12px;color:var(--ink-dim);text-align:center;line-height:1.35}
+.art main .df-rest{grid-template-columns:1fr}
+@media (max-width:640px){
+  .art main .df-r{grid-template-columns:1fr;gap:6px}
+  .art main .df-a{min-width:0;padding-top:0;flex-direction:row}
+  .art main .df-a::before,.art main .df-a::after{display:none}
+}
+
+/* ── SƠ ĐỒ CƠ CẤU SỞ HỮU (orgchart, v61) ─────────────────────────────────────
+   Vẽ bằng HTML chứ không dán PNG: cùng lý do đã đo cho timeline — ảnh 2.400px co vào
+   cột 360px thì chữ còn ~3,5px, và nền trắng chói giữa theme tối. Hàng cổ đông trên,
+   mũi tên xuống, hộp công ty dưới. Màn hẹp xếp dọc, % vào trong ô. */
+.art main .orgc{margin:26px 0 30px}
+.art main .og-row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.art main .og-par{align-items:stretch}
+.art main .og-b{flex:1 1 0;min-width:130px;max-width:260px;border-radius:8px;padding:9px 11px;
+  text-align:center;line-height:1.35;border:1px solid var(--line-soft);background:var(--card);
+  display:flex;flex-direction:column;gap:2px;justify-content:center}
+.art main .og-l{font-weight:700;font-size:13.5px;color:var(--ink)}
+.art main .og-s{font-size:12px;color:var(--ink-dim)}
+.art main .og-p{font-size:12.5px;font-weight:700;color:var(--mc2);letter-spacing:.01em}
+.art main .og-target{background:color-mix(in srgb,var(--mc) 16%,transparent);border-color:var(--mc)}
+.art main .og-acquirer{background:var(--ink);border-color:var(--ink)}
+.art main .og-acquirer .og-l,.art main .og-acquirer .og-s,.art main .og-acquirer .og-p{color:var(--bg)}
+.art main .og-root{margin-top:0}
+.art main .og-root .og-b{flex:0 1 auto;min-width:200px;max-width:340px}
+.art main .og-arr{height:22px;position:relative}
+.art main .og-arr::before{content:"";position:absolute;left:50%;top:0;bottom:6px;width:1px;
+  background:var(--line)}
+.art main .og-arr::after{content:"";position:absolute;left:50%;bottom:0;width:0;height:0;
+  transform:translateX(-50%);border-left:4px solid transparent;border-right:4px solid transparent;
+  border-top:6px solid var(--line)}
+.art main .og-lgs{display:flex;flex-wrap:wrap;gap:14px;margin-top:14px;justify-content:center}
+.art main .og-lg{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--ink-dim)}
+.art main .og-sw{width:11px;height:11px;border-radius:3px;border:1px solid var(--line);
+  background:var(--card);display:inline-block}
+.art main .og-sw.og-target{background:color-mix(in srgb,var(--mc) 16%,transparent);border-color:var(--mc)}
+.art main .og-sw.og-acquirer{background:var(--ink);border-color:var(--ink)}
+@media (max-width:640px){
+  .art main .og-row{flex-direction:column}
+  .art main .og-b{max-width:none}
+}
+
 .art main .sevo{display:flex;align-items:flex-start;gap:10px;margin:26px 0 30px;overflow-x:auto}
 .art main .sev-col{flex:1 1 0;min-width:150px}
 .art main .sev-h{background:var(--inset);border:1px solid var(--line);border-radius:8px;
