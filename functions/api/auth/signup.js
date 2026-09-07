@@ -6,7 +6,8 @@
 
 import {
   hashPassword, isValidEmail, passwordStrength,
-  randomToken, json
+  randomToken, json,
+  loginAllowed, recordLoginFailure
 } from './_lib.js';
 
 const MAX_NAME = 80;
@@ -15,15 +16,26 @@ export async function onRequestPost({ request, env }) {
   let body;
   try { body = await request.json(); } catch { return json({ error: 'Invalid JSON' }, 400); }
 
-  const email = (body.email || '').trim().toLowerCase();
-  const password = body.password || '';
-  const name = (body.name || '').trim();
-  const honeypot = (body.website || '').trim();
+  const str = (v) => (typeof v === 'string' ? v : '');
+  const email = str(body?.email).trim().toLowerCase();
+  const password = str(body?.password);
+  const name = str(body?.name).trim();
+  const honeypot = str(body?.website).trim();
 
   // Honeypot — silent success for bots
   if (honeypot) {
     return json({ success: true, message: 'Đã gửi link xác nhận đến email.' });
   }
+
+  // Mỗi lần gọi thành công là một email rời máy chủ tới địa chỉ do người gọi gõ vào.
+  // Không có lớp chặn thì đây là máy gửi thư rác miễn phí, và là đường dò xem một email
+  // đã đăng ký hay chưa (ba câu trả lời khác nhau ở dưới). Bộ đếm để riêng cho cửa đăng
+  // ký, không trộn với bộ đếm dò mật khẩu ở /login.
+  if (!(await loginAllowed(env, request, email, 'signup'))) {
+    return json({ error: 'Bạn thử quá nhiều lần. Chờ ít phút rồi thử lại.' }, 429,
+                { 'Retry-After': '900' });
+  }
+  await recordLoginFailure(env, request, email, 'signup');
 
   if (!name || name.length > MAX_NAME) return json({ error: 'Tên không hợp lệ' }, 400);
   if (!isValidEmail(email))            return json({ error: 'Email không hợp lệ' }, 400);

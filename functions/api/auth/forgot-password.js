@@ -3,14 +3,17 @@
 // Gửi link reset mật khẩu nếu email tồn tại. Trả message giống nhau dù email
 // có hay không (chống enumeration).
 
-import { isValidEmail, randomToken, json } from './_lib.js';
+import { isValidEmail, randomToken, json,
+  loginAllowed, recordLoginFailure
+} from './_lib.js';
 
 export async function onRequestPost({ request, env }) {
   let body;
   try { body = await request.json(); } catch { return json({ error: 'Invalid JSON' }, 400); }
 
-  const email = (body.email || '').trim().toLowerCase();
-  const honeypot = (body.website || '').trim();
+  const str = (v) => (typeof v === 'string' ? v : '');
+  const email = str(body?.email).trim().toLowerCase();
+  const honeypot = str(body?.website).trim();
 
   if (honeypot) {
     // Silent success cho bot
@@ -19,6 +22,14 @@ export async function onRequestPost({ request, env }) {
   if (!isValidEmail(email)) {
     return json({ error: 'Email không hợp lệ' }, 400);
   }
+
+  // Lớp chặn cũ chỉ đếm 5 lần/giờ cho MỘT user đã tồn tại; email lạ thì không đếm gì,
+  // nên vẫn bắn được vô hạn request để dò và để ép máy chủ gửi thư. Thêm đếm theo IP.
+  if (!(await loginAllowed(env, request, email, 'forgot'))) {
+    return json({ error: 'Bạn thử quá nhiều lần. Chờ ít phút rồi thử lại.' }, 429,
+                { 'Retry-After': '900' });
+  }
+  await recordLoginFailure(env, request, email, 'forgot');
 
   const user = await env.DB.prepare(
     `SELECT id, name, email_verified, google_sub FROM users WHERE email = ?`
