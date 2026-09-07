@@ -196,7 +196,33 @@ export async function onRequestGet({ request, env, params, waitUntil }) {
       'x-robots-tag': 'noindex, nofollow, noarchive, nosnippet',
       'referrer-policy': 'no-referrer',
       'x-content-type-options': 'nosniff',
-      'x-frame-options': 'SAMEORIGIN',
+      'x-frame-options': 'DENY',
+      // NHỐT TRANG KHÁCH VÀO GỐC RIÊNG (soát bảo mật 2026-09-07).
+      // Trước bản vá này, trang trả ở /d/<token> chạy JS trên chính gốc
+      // flamindi.com. Bộ lọc "tự chứa" chỉ soi ĐỊA CHỈ, không soi JS — nên một
+      // trang nội dung bị sửa (hay chỉ vô ý thêm script) sẽ: gọi được /api/share
+      // để liệt kê và xoá mọi link, đọc trang riêng trong /hoc rồi đẩy ra ngoài,
+      // đọc sessionStorage (nơi trang quản trị để mật khẩu admin), ghi đè tiến độ
+      // học. Cookie HttpOnly không cứu được: JS không cần ĐỌC cookie, chỉ cần GỌI,
+      // trình duyệt tự gửi kèm.
+      //   sandbox allow-scripts -> trang chạy JS nhưng ở gốc "null": mọi lời gọi
+      //     cùng site thành khác gốc và bị chặn; localStorage/cookie của
+      //     flamindi.com không với tới được.
+      //   connect-src 'none'    -> không fetch/XHR/sendBeacon đi đâu được.
+      //   form-action/base-uri  -> không dựng được form lừa đăng nhập mang tên miền thật.
+      //   'unsafe-eval'         -> BẮT BUỘC giữ: máy tính trong bài dùng new Function().
+      'content-security-policy': [
+        "sandbox allow-scripts",
+        "default-src 'none'",
+        "style-src 'unsafe-inline' https://fonts.googleapis.com",
+        "font-src https://fonts.gstatic.com data:",
+        "img-src data:",
+        "script-src 'unsafe-inline' 'unsafe-eval'",
+        "connect-src 'none'",
+        "form-action 'none'",
+        "base-uri 'none'",
+        "frame-ancestors 'none'",
+      ].join('; '),
     },
   });
 }
