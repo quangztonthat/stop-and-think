@@ -83,6 +83,7 @@ td.acts{white-space:nowrap;text-align:right}
     <h2>Tạo link mới</h2>
     <div class="row">
       <select id="slug"><option value="">Đang tải danh sách bài…</option></select>
+      <input type="text" id="path" maxlength="200" placeholder="…hoặc dán đường dẫn trang khác, vd /hoc/CVA/module3/cva-module3-study-vi.html">
       <input type="text" id="label" maxlength="80" placeholder="Ghi chú: gửi cho ai (tuỳ chọn)">
       <select id="days" class="short">
         <option value="0">Không hết hạn</option>
@@ -169,8 +170,8 @@ function render(links,now){
                        : '<span class="pill off">Đã tắt</span>';
     var url = location.origin+'/d/'+L.token;
     return '<tr data-token="'+esc(L.token)+'" data-url="'+esc(url)+'">'
-      + '<td><span class="ttl">'+esc(titles[L.slug]||L.slug)+'</span>'
-      +     '<span class="slug">'+esc(L.slug)+'</span>'
+      + '<td><span class="ttl">'+esc(L.path ? L.path.split('/').pop() : (titles[L.slug]||L.slug))+'</span>'
+      +     '<span class="slug">'+esc(L.path || L.slug)+'</span>'
       +     (L.label?'<div class="lbl">'+esc(L.label)+'</div>':'')+'</td>'
       + '<td><div class="lnk" title="'+esc(url)+'">'+esc(short(url))+'</div></td>'
       + '<td>'+pill+'</td>'
@@ -226,10 +227,13 @@ listEl.addEventListener('click',async function(ev){
 
 $('mk').addEventListener('click',async function(){
   var slug=$('slug').value;
-  if(!slug){ say('Chọn một bài trước.','err'); return; }
+  var path=($('path').value||'').trim();
+  if(!slug && !path){ say('Chọn một bài, hoặc dán đường dẫn trang.','err'); return; }
   this.disabled=true;
   try{
-    var r=await api('POST',{slug:slug,label:$('label').value,days:Number($('days').value)});
+    var r=await api('POST', path
+      ? {path:path, label:$('label').value, days:Number($('days').value)}
+      : {slug:slug, label:$('label').value, days:Number($('days').value)});
     $('label').value='';
     try{ await navigator.clipboard.writeText(location.origin+r.url); say('Đã tạo link và chép vào clipboard.'); }
     catch(e){ say('Đã tạo link.'); }

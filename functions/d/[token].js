@@ -23,6 +23,19 @@ const ART_DIR  = '/phan-tich/';
 const TOKEN_RE = /^[a-f0-9]{64}$/;
 const SLUG_RE  = /^[a-z0-9][a-z0-9-]{0,80}$/;
 
+// MỞ RỘNG 2026-09-07 — chia sẻ được cả trang ở khu khác, KHÔNG nới lỏng gì của
+// đường cũ. Bản ghi cũ chỉ có `slug` (bài /phan-tich); bản ghi mới có `path`.
+// Đường dẫn lấy từ D1 vẫn bị soi lại bằng regex Y HỆT lúc tạo, và vẫn phải nằm
+// trong khu cho phép — DB có bị sửa bậy cũng không đi lạc sang /api, /quan-ly.
+const PATH_RE = /^\/(?:[A-Za-z0-9][A-Za-z0-9._-]{0,60}\/){1,6}[A-Za-z0-9][A-Za-z0-9._-]{0,80}\.html$/;
+const ALLOW_PREFIXES = ['/phan-tich/', '/hoc/', '/books/', '/en/', '/pages/'];
+
+// Dải báo cho trang tự chứa. Trang khu khác không có <header class="site"> của
+// bài phân tích nên không thay được như bên kia; chèn ngay sau <body>.
+const STANDALONE_BAR =
+  '<div style="background:#1B2A5E;color:#fff;font:13px/1.5 system-ui,sans-serif;' +
+  'padding:8px 16px;text-align:center">Bản chia sẻ riêng &middot; Stop &amp; Think</div>';
+
 const SHARED_MARK = 'Bản chia sẻ riêng';
 const SHARED_HEADER =
   '<header class="site"><div class="hd-in">' +
@@ -77,17 +90,69 @@ export function sharedView(html) {  // export để test được bằng node
   return ok ? out : null;
 }
 
+// Bộ lọc cho trang TỰ CHỨA ở khu khác (/hoc, /books, /en, /pages).
+// Trang loại này đã được kiểm tự chứa NGAY LÚC TẠO link, nên ở đây không cắt
+// gọt gì cả — chỉ chèn dải báo và chốt lại bằng đúng những bất biến của đường
+// cũ, vì cùng một câu hỏi: bản gửi khách có còn sót bề mặt riêng của chủ không.
+// Trượt bất kỳ điều kiện nào -> trả null -> 404, không phục vụ nửa vời.
+// Cùng câu hỏi ngược như lúc tạo link: MỌI địa chỉ trong trang phải nằm trong
+// danh sách được phép (https:// · #neo · data: · mailto:/tel:). Trang được kiểm
+// lúc tạo rồi, nhưng nội dung có thể đổi ở lần deploy sau, nên phải kiểm lại
+// mỗi lần phục vụ — bản gửi khách chịu trách nhiệm cho chính nó.
+const URL_ATTR_RE = /\b(?:href|src|poster|action)\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s">]+))/gi;
+const CSS_URL_RE  = /url\(\s*(?:"([^"]*)"|'([^']*)'|([^)\s]*))\s*\)/gi;
+const OK_URL_RE   = /^(?:https:\/\/|data:|#|mailto:|tel:)/i;
+
+function hasBadUrl(html) {
+  for (const re of [URL_ATTR_RE, CSS_URL_RE]) {
+    re.lastIndex = 0;
+    let m;
+    while ((m = re.exec(html)) !== null) {
+      const v = (m[1] !== undefined ? m[1] : m[2] !== undefined ? m[2] : m[3] || '').trim();
+      if (v && !OK_URL_RE.test(v)) return true;
+    }
+  }
+  return false;
+}
+
+export function standaloneView(html) {
+  // Chèn sau thẻ <body> THẬT. Lấy match đầu tiên là sai khi trong <head> có
+  // đoạn script chứa chuỗi "<body>": dải báo chui vào giữa mã JS. Nên tìm từ
+  // sau </head> trở đi, không có </head> mới chịu lấy match đầu.
+  const headEnd = html.search(/<\/head\s*>/i);
+  const from = headEnd >= 0 ? headEnd : 0;
+  const m = /<body\b[^>]*>/i.exec(html.slice(from));
+  if (!m) return null;
+  const at = from + m.index + m[0].length;
+  const out = html.slice(0, at) + STANDALONE_BAR + html.slice(at);
+
+  const ok = out.includes('Bản chia sẻ riêng')
+    && !hasBadUrl(out)
+    && !/\/api\/|shareNav|shareBtn|\/quan-ly\//.test(out);
+  return ok ? out : null;
+}
+
 export async function onRequestGet({ request, env, params, waitUntil }) {
   const token = typeof params.token === 'string' ? params.token : '';
   if (!TOKEN_RE.test(token)) return notFound();
 
+  // Cột `path` được thêm bằng ALTER ở /api/share. Nếu bản deploy này chạy TRƯỚC
+  // khi chủ gọi API lần nào, bảng còn là bảng cũ và câu SELECT có `path` sẽ ném
+  // lỗi — nuốt trọn thì MỌI link cũ chết 404. Nên: thử câu mới, hỏng thì lùi về
+  // câu cũ; chỉ khi cả hai hỏng mới coi là DB lỗi và fail-closed.
   let row = null;
   try {
     row = await env.DB.prepare(
-      'SELECT slug, enabled, expires_at FROM share_links WHERE token = ?'
+      'SELECT slug, path, enabled, expires_at FROM share_links WHERE token = ?'
     ).bind(token).first();
   } catch (_) {
-    return notFound(); // DB lỗi -> fail-closed
+    try {
+      row = await env.DB.prepare(
+        'SELECT slug, enabled, expires_at FROM share_links WHERE token = ?'
+      ).bind(token).first();
+    } catch (_e) {
+      return notFound(); // DB lỗi -> fail-closed
+    }
   }
 
   const now = Math.floor(Date.now() / 1000);
@@ -95,15 +160,26 @@ export async function onRequestGet({ request, env, params, waitUntil }) {
   if (Number(row.enabled) !== 1) return notFound();
   if (row.expires_at && Number(row.expires_at) <= now) return notFound();
 
-  const slug = String(row.slug || '');
-  if (!SLUG_RE.test(slug)) return notFound();
+  // Hai loại bản ghi. Cả hai đều phải qua regex trước khi ghép đường dẫn.
+  const rawPath = String(row.path || '');
+  let target = '';
+  if (rawPath) {
+    if (!PATH_RE.test(rawPath)) return notFound();
+    if (rawPath.includes('..')) return notFound();
+    if (!ALLOW_PREFIXES.some((p) => rawPath.startsWith(p))) return notFound();
+    target = rawPath;
+  } else {
+    const slug = String(row.slug || '');
+    if (!SLUG_RE.test(slug)) return notFound();
+    target = ART_DIR + slug + '/index.html';
+  }
 
-  const asset = await env.ASSETS.fetch(
-    new URL(ART_DIR + slug + '/index.html', request.url)
-  );
+  const asset = await env.ASSETS.fetch(new URL(target, request.url));
   if (!asset.ok) return notFound();
 
-  const html = sharedView(await asset.text());
+  // Bài /phan-tich đi đúng đường cũ, không đổi một chữ nào của nó.
+  const raw = await asset.text();
+  const html = target.startsWith(ART_DIR) ? sharedView(raw) : standaloneView(raw);
   if (html === null) return notFound(); // markup lạ -> không phục vụ nửa vời
 
   waitUntil(
