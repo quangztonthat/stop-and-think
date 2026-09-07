@@ -143,4 +143,76 @@ function updateCounters(){var td=0,tt=0;document.querySelectorAll('section.cat')
 document.addEventListener('click',function(e){var p=e.target.closest?e.target.closest('.pill'):null;if(!p)return;e.preventDefault();var card=p.closest('.card[data-id]');if(!card)return;var id=card.dataset.id;var st=(prog[id]||0)+1;if(st>2)st=0;if(st===0)delete prog[id];else prog[id]=st;touched=true;scheduleSave();applyAll();});
 var rs=document.getElementById('resetProg');if(rs)rs.addEventListener('click',function(){if(confirm('Đặt lại toàn bộ tiến độ?')){prog={};touched=true;scheduleSave();applyAll();}});
 applyAll();pullServer();
+</script><style>
+.shr{font:inherit;font-size:11px;font-weight:700;padding:5px 8px;border-radius:8px;border:1px solid var(--line);background:var(--paper2);color:var(--muted);cursor:pointer;transition:.12s}
+.shr:hover{border-color:var(--rust);color:var(--ink)}
+.shr.on{background:#0e9f6e;border-color:#0e9f6e;color:#fff}
+.shrbox{flex:1 1 100%;display:flex;gap:6px;align-items:center;margin-top:6px}
+.shrbox input{flex:1;min-width:120px;font:inherit;font-size:11.5px;padding:6px 9px;border:1px solid var(--line);border-radius:8px;background:var(--paper);color:var(--ink)}
+.shrmsg{font-size:11.5px;color:var(--muted)}
+html[data-theme="dark"] .shr{background:#161f30;border-color:#2c3850;color:#b7c2d8}
+html[data-theme="dark"] .shrbox input{background:#0d1420;border-color:#26314a;color:#e8edf7}
+</style>
+<script>
+/* Nút chia sẻ trên hub /hoc — CHỈ CHỦ THẤY.
+   Phép thử quyền chủ là gọi chính API của chủ: GET /api/share -> 200 là chủ,
+   401 là không. KHÔNG dùng /api/auth/me: nó chỉ nói "đã đăng nhập", mà site có
+   đăng ký công khai, nên mọi tài khoản thường cũng sẽ thấy nút.
+   (Bài học đã ghi trong CLAUDE.md của flamindi, đợt làm share cho Góc phân tích.) */
+(function(){
+  /* PHẢI KHỚP PATH_RE ở functions/api/share.js và functions/d/[token].js — lệch một chữ
+     thì hoặc hub gắn nút rồi bấm vào báo lỗi, hoặc bỏ sót trang lẽ ra chia sẻ được. */
+  var PATH_OK=/^\/(?:[A-Za-z0-9][A-Za-z0-9._-]{0,120}\/){1,6}[A-Za-z0-9][A-Za-z0-9._-]{0,120}\.html$/;
+  fetch('/api/share',{credentials:'same-origin'})
+    .then(function(r){ if(r.ok) init(); })
+    .catch(function(){});
+
+  function pathOf(a){
+    try{ return decodeURIComponent(new URL(a.getAttribute('href'), location.href).pathname); }
+    catch(e){ return ''; }
+  }
+  function init(){
+    document.querySelectorAll('.views a[href]').forEach(function(a){
+      var p=pathOf(a);
+      /* Tên file có khoảng trắng hay dấu ngoặc sẽ bị API từ chối; không gắn nút
+         còn hơn gắn một nút bấm vào là báo lỗi. */
+      if(!PATH_OK.test(p)) return;
+      var b=document.createElement('button');
+      b.type='button'; b.className='shr'; b.textContent='Chia sẻ'; b.title='Tạo link chia sẻ riêng cho: '+p;
+      b.addEventListener('click', function(){ make(b, a, p); });
+      a.parentNode.insertBefore(b, a.nextSibling);
+    });
+  }
+  function make(b, a, p){
+    if(b.dataset.busy) return;
+    b.dataset.busy='1'; b.textContent='Đang tạo…';
+    fetch('/api/share',{method:'POST',credentials:'same-origin',
+      headers:{'content-type':'application/json'},
+      body:JSON.stringify({path:p, label:(a.closest('.card')||{}).querySelector? (a.closest('.card').querySelector('.t')||{}).textContent||'' : ''})})
+      .then(function(r){ return r.json().then(function(j){ return {ok:r.ok, j:j}; }); })
+      .then(function(res){
+        b.dataset.busy='';
+        if(!res.ok){ b.textContent='Chia sẻ'; show(a, (res.j && res.j.error) || 'Không tạo được link', null); return; }
+        b.textContent='Đã tạo'; b.classList.add('on');
+        show(a, null, location.origin + res.j.url);
+      })
+      .catch(function(){ b.dataset.busy=''; b.textContent='Chia sẻ'; show(a,'Lỗi mạng',null); });
+  }
+  function show(a, err, url){
+    var card=a.closest('.card'); if(!card) return;
+    var old=card.querySelector('.shrbox'); if(old) old.remove();
+    var box=document.createElement('div'); box.className='shrbox';
+    if(err){ box.innerHTML='<span class="shrmsg">'+err.replace(/[&<>]/g,'')+'</span>'; }
+    else{
+      var inp=document.createElement('input'); inp.type='text'; inp.readOnly=true; inp.value=url;
+      var cp=document.createElement('button'); cp.type='button'; cp.className='shr'; cp.textContent='Chép';
+      cp.addEventListener('click',function(){ inp.select();
+        try{ navigator.clipboard.writeText(url); }catch(e){ document.execCommand('copy'); }
+        cp.textContent='Đã chép'; });
+      var mg=document.createElement('a'); mg.className='shr'; mg.href='/quan-ly/chia-se.html'; mg.textContent='Quản lý';
+      box.appendChild(inp); box.appendChild(cp); box.appendChild(mg);
+    }
+    card.appendChild(box);
+  }
+})();
 </script><div id="hocTheme"><button type="button" id="hocThemeBtn" aria-label="Chế độ sáng/tối" title="Chế độ sáng/tối">🌙</button></div><script>(function(){var K='hoc:theme',r=document.documentElement,b=document.getElementById('hocThemeBtn');function c(){return r.getAttribute('data-theme')==='dark'?'dark':'light'}function render(){b.textContent=c()==='dark'?'☀️':'🌙'}b.addEventListener('click',function(){var n=c()==='dark'?'light':'dark';r.setAttribute('data-theme',n);try{localStorage.setItem(K,n)}catch(e){}render()});render()})();</script></body></html>

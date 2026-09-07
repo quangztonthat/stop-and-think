@@ -21,7 +21,7 @@ const SLUG_RE = /^[a-z0-9][a-z0-9-]{0,80}$/;
 //   2. ALLOW_PREFIXES — chỉ những khu nội dung. Trang quản lý, API, assets
 //      không nằm trong danh sách nên không tạo link được, dù gõ đúng tên file.
 //   3. Kiểm TRANG CÓ THẬT + TỰ CHỨA ngay lúc tạo link (xem checkStandalone).
-const PATH_RE = /^\/(?:[A-Za-z0-9][A-Za-z0-9._-]{0,60}\/){1,6}[A-Za-z0-9][A-Za-z0-9._-]{0,80}\.html$/;
+const PATH_RE = /^\/(?:[A-Za-z0-9][A-Za-z0-9._-]{0,120}\/){1,6}[A-Za-z0-9][A-Za-z0-9._-]{0,120}\.html$/;
 const ALLOW_PREFIXES = ['/phan-tich/', '/hoc/', '/books/', '/en/', '/pages/'];
 const MAX_LABEL = 80;
 const MAX_LINKS = 200; // chặn tạo tràn

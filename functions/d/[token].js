@@ -27,7 +27,7 @@ const SLUG_RE  = /^[a-z0-9][a-z0-9-]{0,80}$/;
 // đường cũ. Bản ghi cũ chỉ có `slug` (bài /phan-tich); bản ghi mới có `path`.
 // Đường dẫn lấy từ D1 vẫn bị soi lại bằng regex Y HỆT lúc tạo, và vẫn phải nằm
 // trong khu cho phép — DB có bị sửa bậy cũng không đi lạc sang /api, /quan-ly.
-const PATH_RE = /^\/(?:[A-Za-z0-9][A-Za-z0-9._-]{0,60}\/){1,6}[A-Za-z0-9][A-Za-z0-9._-]{0,80}\.html$/;
+const PATH_RE = /^\/(?:[A-Za-z0-9][A-Za-z0-9._-]{0,120}\/){1,6}[A-Za-z0-9][A-Za-z0-9._-]{0,120}\.html$/;
 const ALLOW_PREFIXES = ['/phan-tich/', '/hoc/', '/books/', '/en/', '/pages/'];
 
 // Dải báo cho trang tự chứa. Trang khu khác không có <header class="site"> của
