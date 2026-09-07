@@ -99,9 +99,22 @@ export function sharedView(html) {  // export để test được bằng node
 // danh sách được phép (https:// · #neo · data: · mailto:/tel:). Trang được kiểm
 // lúc tạo rồi, nhưng nội dung có thể đổi ở lần deploy sau, nên phải kiểm lại
 // mỗi lần phục vụ — bản gửi khách chịu trách nhiệm cho chính nó.
-const URL_ATTR_RE = /\b(?:href|src|poster|action)\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s">]+))/gi;
+const URL_ATTR_RE = /\b(?:href|src|poster|action|data|srcset)\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s">]+))/gi;
 const CSS_URL_RE  = /url\(\s*(?:"([^"]*)"|'([^']*)'|([^)\s]*))\s*\)/gi;
 const OK_URL_RE   = /^(?:https:\/\/|data:|#|mailto:|tel:)/i;
+// Link BẤM SANG TRANG KHÁC trong site: khách không vào được những chỗ đó, mà giữ
+// lại thì địa chỉ nội bộ lọt ra ngoài. Gỡ href, để nguyên chữ — người đọc thấy
+// tên mục, bấm không đi đâu cả. (Trước bản này, một trang có link kiểu
+// "luyen-nghe-noi.html" bị TỪ CHỐI hẳn, dù link đó không ảnh hưởng gì tới việc đọc.)
+const NAV_TAG_RE = /<(a|area|form)\b([^>]*?)\b(href|action)\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s">]+))([^>]*)>/gi;
+
+function stripInternalNavLinks(html) {
+  return html.replace(NAV_TAG_RE, (full, tag, pre, attr, q1, q2, q3, post) => {
+    const v = (q1 !== undefined ? q1 : q2 !== undefined ? q2 : q3 || '').trim();
+    if (!v || OK_URL_RE.test(v)) return full;
+    return '<' + tag + pre + 'data-shared-off="1"' + post + '>';
+  });
+}
 
 function hasBadUrl(html) {
   for (const re of [URL_ATTR_RE, CSS_URL_RE]) {
@@ -124,7 +137,12 @@ export function standaloneView(html) {
   const m = /<body\b[^>]*>/i.exec(html.slice(from));
   if (!m) return null;
   const at = from + m.index + m[0].length;
-  const out = html.slice(0, at) + STANDALONE_BAR + html.slice(at);
+  let out = html.slice(0, at) + STANDALONE_BAR + html.slice(at);
+  // Gỡ link điều hướng nội bộ TRƯỚC khi chốt bất biến: sau bước này trong trang
+  // không được còn địa chỉ nội bộ nào, dù là tài nguyên hay điều hướng.
+  out = stripInternalNavLinks(out);
+  out = out.replace(/<a\b([^>]*)data-shared-off="1"([^>]*)>/gi,
+                    '<a$1data-shared-off="1" style="color:inherit;text-decoration:none;cursor:default"$2>');
 
   const ok = out.includes('Bản chia sẻ riêng')
     && !hasBadUrl(out)

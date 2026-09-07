@@ -130,16 +130,27 @@ export function cleanPath(v) {  // export để test được bằng node
 //   https://…  (ngoài site)   #…  (neo trong trang)
 //   data:…     (nhúng sẵn)    mailto:/tel:
 // Thiếu một kiểu markup nào thì hậu quả là TỪ CHỐI, không phải cho lọt.
-const URL_ATTR_RE = /\b(?:href|src|poster|action)\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s">]+))/gi;
+// TÀI NGUYÊN: thứ trang cần để hiện ra cho đúng (CSS, JS, ảnh, iframe, font).
+// Thiếu là trang vỡ, nên nội bộ ở đây thì TỪ CHỐI ngay lúc tạo link.
+const RES_ATTR_RE = /<(?:link|script|img|iframe|source|video|audio|object|embed|track)\b[^>]*?\b(?:src|href|data|poster|srcset)\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s">]+))/gi;
 const CSS_URL_RE  = /url\(\s*(?:"([^"]*)"|'([^']*)'|([^)\s]*))\s*\)/gi;
+// ĐIỀU HƯỚNG: link bấm sang trang khác. Không cần cho việc ĐỌC trang này, nên
+// không từ chối — lúc phục vụ sẽ gỡ href, link thành chữ thường, khách đọc bình
+// thường mà vẫn không có địa chỉ nội bộ nào lọt ra ngoài.
+const NAV_ATTR_RE = /<(?:a|area|form)\b[^>]*?\b(?:href|action)\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s">]+))/gi;
 const OK_URL_RE   = /^(?:https:\/\/|data:|#|mailto:|tel:)/i;
 
+function pick(m) {
+  return (m[1] !== undefined ? m[1] : m[2] !== undefined ? m[2] : m[3] || '').trim();
+}
+
+/** Địa chỉ TÀI NGUYÊN nội bộ đầu tiên, hoặc null. Link điều hướng không tính. */
 export function firstBadUrl(html) {  // export để test được bằng node
-  for (const re of [URL_ATTR_RE, CSS_URL_RE]) {
+  for (const re of [RES_ATTR_RE, CSS_URL_RE]) {
     re.lastIndex = 0;
     let m;
     while ((m = re.exec(html)) !== null) {
-      const v = (m[1] !== undefined ? m[1] : m[2] !== undefined ? m[2] : m[3] || '').trim();
+      const v = pick(m);
       if (!v) continue;
       if (!OK_URL_RE.test(v)) return v.slice(0, 80);
     }
@@ -147,9 +158,20 @@ export function firstBadUrl(html) {  // export để test được bằng node
   return null;
 }
 
+/** Có link ĐIỀU HƯỚNG nội bộ không (để báo cho chủ biết chúng sẽ bị gỡ). */
+export function countInternalNavLinks(html) {
+  let n = 0, m;
+  NAV_ATTR_RE.lastIndex = 0;
+  while ((m = NAV_ATTR_RE.exec(html)) !== null) {
+    const v = pick(m);
+    if (v && !OK_URL_RE.test(v)) n++;
+  }
+  return n;
+}
+
 export function checkStandalone(html) {  // export để test được bằng node
   const bad = firstBadUrl(html);
-  if (bad) return 'trang trỏ tới địa chỉ trong site: "' + bad + '". Chỉ chia sẻ được trang tự chứa (mọi liên kết là https://, #neo hoặc data:)';
+  if (bad) return 'trang cần tệp trong site để hiện đúng: "' + bad + '". Ảnh/CSS/JS nội bộ không đi theo link chia sẻ được nên trang sẽ vỡ. (Link bấm sang trang khác thì không sao — chúng sẽ được gỡ bỏ trong bản gửi khách.)';
   return null;
 }
 
