@@ -1,0 +1,598 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>IVAS-IVSC 2026 Field Kit</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: dải navy đầu trang, thanh mục dính, các mục full width; bảng cuộn ngang riêng; một font duy nhất */
+:root{
+  --navy:#1B2A5E; --accent:#1A9AFA; --ink:#22222B; --muted:#6E6E7C;
+  --rule:#D8D8E0; --g1:#747480; --g2:#C4C4CD; --g3:#ECECF2;
+  --bg:#FFFFFF; --card:#F6F7FA; --onnavy:#FFFFFF; --onnavy2:#C9D3EE;
+  --hi:#E8F4FF; --warn:#B4472B; --warnbg:#FBEDE8; --ok:#0D7575; --okbg:#E7F6F5;
+  --f:"Be Vietnam Pro","Segoe UI",Arial,sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --navy:#16224A; --accent:#5CB8FF; --ink:#ECEDF3; --muted:#A3A5B5; --rule:#363A4C;
+  --g1:#9A9CAD; --g2:#4A4E63; --g3:#23273A; --bg:#12141D; --card:#1A1D2A; --onnavy:#FFFFFF; --onnavy2:#AEB9DA;
+  --hi:#17304A; --warn:#F08A6C; --warnbg:#3A2420; --ok:#5FD3C8; --okbg:#15302F; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --navy:#16224A; --accent:#5CB8FF; --ink:#ECEDF3; --muted:#A3A5B5; --rule:#363A4C;
+  --g1:#9A9CAD; --g2:#4A4E63; --g3:#23273A; --bg:#12141D; --card:#1A1D2A; --onnavy:#FFFFFF; --onnavy2:#AEB9DA;
+  --hi:#17304A; --warn:#F08A6C; --warnbg:#3A2420; --ok:#5FD3C8; --okbg:#15302F; color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f);font-size:15px;line-height:1.55;font-variant-numeric:tabular-nums}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--navy)}
+.wrap{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3{font-family:var(--f);text-wrap:balance;margin:0}
+a{color:var(--accent)}
+/* Đầu trang */
+.hero{background:var(--navy);color:var(--onnavy)}
+.hero .wrap{padding-block:28px 22px;display:grid;gap:14px}
+.eyebrow{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--onnavy2);font-weight:600}
+.hero h1{font-size:clamp(24px,3.4vw,36px);font-weight:700;line-height:1.2}
+.hero .theme{color:var(--onnavy2);font-size:15px}
+.facts{display:flex;flex-wrap:wrap;gap:8px 22px;font-size:14px}
+.facts span b{color:var(--onnavy);font-weight:600}
+.facts span{color:var(--onnavy2)}
+/* Thanh mục */
+nav.tabs{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);border-bottom:1px solid var(--rule)}
+nav.tabs .wrap{display:flex;gap:4px;overflow-x:auto;padding-block:6px;scrollbar-width:none}
+nav.tabs a{flex:0 0 auto;text-decoration:none;color:var(--muted);font-weight:500;font-size:14px;padding:7px 12px;border-radius:6px}
+nav.tabs a.kt{color:var(--accent);font-weight:600}
+a.back{color:var(--onnavy);font-weight:600;text-decoration:underline;text-underline-offset:3px}
+nav.tabs a:hover,nav.tabs a:focus-visible{background:var(--g3);color:var(--ink);outline:none}
+section{border-bottom:1px solid var(--rule)}
+section .wrap{padding-block:30px;display:grid;gap:18px}
+.sh{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+.sh h2{font-size:22px;font-weight:700}
+.sh .tag{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);font-weight:600}
+.lead{color:var(--muted);max-width:110ch;margin:0}
+/* Lưới thẻ */
+.grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+.card{background:var(--card);border:1px solid var(--rule);border-radius:8px;padding:16px;display:grid;gap:8px;align-content:start;min-width:0}
+.card h3{font-size:16px;font-weight:700}
+.card .who{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);font-weight:600}
+.card p{margin:0}
+.card .measure{font-size:13px;color:var(--muted);border-top:1px dashed var(--rule);padding-top:8px}
+.grid.g5{grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+ul.tight{margin:0;padding-left:18px;display:grid;gap:4px}
+/* Ô số */
+.kpis{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(170px,1fr))}
+.kpi{border-left:3px solid var(--accent);padding:4px 0 4px 12px}
+.kpi b{display:block;font-size:26px;font-weight:700;line-height:1.1}
+.kpi span{font-size:13px;color:var(--muted)}
+/* Flow gate */
+.flow{display:flex;gap:0;overflow-x:auto;padding-bottom:4px}
+.step{flex:1 0 150px;position:relative;background:var(--card);border:1px solid var(--rule);padding:12px 14px 12px 22px;margin-right:10px;min-width:0}
+.step::after{content:"";position:absolute;right:-11px;top:50%;transform:translateY(-50%);border:10px solid transparent;border-left-color:var(--rule)}
+.step:last-child::after{display:none}
+.step .g{font-weight:700;color:var(--accent);font-size:13px}
+.step .t{font-weight:600;font-size:14px}
+.step .d{font-size:12px;color:var(--muted)}
+.step.key{background:var(--hi);border-color:var(--accent)}
+.gates{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
+.gate{border:1px solid var(--rule);border-radius:8px;overflow:hidden;display:grid;align-content:start;min-width:0}
+.gate header{background:var(--navy);color:var(--onnavy);padding:10px 14px;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.gate header b{font-weight:700}
+.gate header span{color:var(--onnavy2);font-size:13px}
+.gate .body{padding:12px 14px;display:grid;gap:8px}
+.chk{display:flex;gap:10px;align-items:flex-start;font-size:14px;cursor:pointer}
+.chk input{margin-top:4px;width:17px;height:17px;accent-color:var(--accent);flex:0 0 auto}
+.chk input:checked + span{color:var(--muted);text-decoration:line-through}
+.exit{font-size:13px;background:var(--okbg);color:var(--ink);padding:8px 10px;border-radius:6px}
+.exit b{color:var(--ok)}
+.prog{font-size:13px;color:var(--muted)}
+/* Bảng */
+.tw{overflow-x:auto;border:1px solid var(--rule);border-radius:8px}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th{background:var(--navy);color:var(--onnavy);text-align:left;font-weight:600;padding:9px 12px;white-space:nowrap;font-size:13px}
+td{padding:9px 12px;border-top:1px solid var(--rule);vertical-align:top}
+tr.brk td{background:var(--g3);color:var(--muted);font-size:13px}
+tr.p3 td:first-child{box-shadow:inset 3px 0 0 var(--accent)}
+td.t{white-space:nowrap;font-weight:600}
+td.t small{display:block;font-weight:400;color:var(--muted)}
+.star{color:var(--accent);letter-spacing:1px;white-space:nowrap;font-weight:700}
+.star.dim{color:var(--g1);font-weight:400}
+@media (max-width:700px){
+  table.stack thead{display:none}
+  table.stack,table.stack tbody,table.stack tr,table.stack td{display:block;width:100%}
+  table.stack tr{border-top:1px solid var(--rule);padding-block:8px}
+  table.stack tr:first-child{border-top:0}
+  table.stack td{border:0;padding:3px 12px;white-space:normal}
+  table.stack td[data-label]::before{content:attr(data-label);display:block;font-size:11px;color:var(--muted);font-weight:600;letter-spacing:.05em;text-transform:uppercase}
+  table.stack tr.p3{box-shadow:inset 3px 0 0 var(--accent)}
+  table.stack tr.p3 td:first-child{box-shadow:none}
+  table.stack tr.brk{background:var(--g3)}
+  .contacts input{min-width:0}
+  table.sched tr:not(.brk),table.ppl tr{display:grid;grid-template-columns:1fr auto;column-gap:10px}
+  table.sched td,table.ppl td{grid-column:1 / -1}
+  table.sched td.t,table.ppl td:nth-child(2){grid-column:1;grid-row:1}
+  table.sched td.star,table.ppl td.star{grid-column:2;grid-row:1;align-self:start}
+  table.sched td.t::before,table.sched td.star::before,table.ppl td.star::before,table.ppl td:nth-child(2)::before{display:none}
+  table.ppl td:nth-child(2){font-size:16px}
+}
+.pill{display:inline-block;font-size:11px;font-weight:600;letter-spacing:.04em;padding:2px 8px;border-radius:99px;background:var(--hi);color:var(--accent);white-space:nowrap}
+.pill.ey{background:var(--navy);color:var(--onnavy)}
+/* Câu hỏi */
+.qs{display:grid;gap:14px}
+.q{border:1px solid var(--rule);border-radius:8px;display:grid;grid-template-columns:minmax(200px,260px) 1fr;min-width:0;overflow:hidden}
+.q .meta{background:var(--card);padding:14px;display:grid;gap:6px;align-content:start;border-right:1px solid var(--rule)}
+.q .meta b{font-size:15px}
+.q .meta span{font-size:13px;color:var(--muted)}
+.q .ask{padding:14px;display:grid;gap:10px;min-width:0}
+.en{font-size:15px;border-left:3px solid var(--accent);padding:2px 0 2px 12px;margin:0}
+.en.b{border-left-color:var(--g2);color:var(--muted);font-size:14px}
+.why{font-size:13px;color:var(--muted);margin:0}
+.why b{color:var(--ink);font-weight:600}
+.copy{justify-self:start;font-family:var(--f);font-size:12px;font-weight:600;border:1px solid var(--rule);background:var(--bg);color:var(--ink);border-radius:6px;padding:4px 10px;cursor:pointer}
+.copy:hover,.copy:focus-visible{border-color:var(--accent);color:var(--accent);outline:none}
+@media (max-width:700px){.q{grid-template-columns:1fr}.q .meta{border-right:0;border-bottom:1px solid var(--rule)}}
+/* Hộp */
+.box{border-radius:8px;padding:12px 14px;font-size:14px}
+.box.warn{background:var(--warnbg);border:1px solid var(--warn)}
+.box.warn b{color:var(--warn)}
+.box.info{background:var(--hi);border:1px solid var(--accent)}
+.pitch{font-size:16px;line-height:1.6;margin:0;max-width:95ch}
+pre.mail{white-space:pre-wrap;font-family:var(--f);font-size:14px;margin:0;background:var(--bg);border:1px solid var(--rule);border-radius:6px;padding:12px;max-width:95ch}
+/* Ghi chép */
+.notes{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(320px,1fr))}
+.note{border:1px solid var(--rule);border-radius:8px;padding:12px;display:grid;gap:8px;min-width:0}
+.note h3{font-size:14px;font-weight:700}
+.note h3 small{display:block;font-weight:400;color:var(--muted);font-size:12px}
+label.l{font-size:12px;color:var(--muted);font-weight:600;letter-spacing:.03em}
+textarea,input[type=text]{width:100%;font-family:var(--f);font-size:14px;color:var(--ink);background:var(--bg);border:1px solid var(--rule);border-radius:6px;padding:8px}
+textarea{min-height:56px;resize:vertical}
+textarea:focus,input[type=text]:focus{outline:2px solid var(--accent);outline-offset:-1px;border-color:var(--accent)}
+.btns{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.btn{font-family:var(--f);font-size:14px;font-weight:600;border:0;border-radius:6px;padding:9px 16px;cursor:pointer;background:var(--accent);color:#fff}
+.btn.sec{background:var(--g3);color:var(--ink)}
+.btn:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+#saved{font-size:13px;color:var(--muted)}
+.contacts td{padding:6px 8px}
+.contacts input{min-width:130px}
+/* Căn cứ */
+.src td:nth-child(3){white-space:nowrap}
+.inf{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.04em;color:var(--warn);border:1px solid var(--warn);border-radius:4px;padding:0 5px;margin-right:4px}
+footer .wrap{padding-block:20px;color:var(--muted);font-size:13px}
+@media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+html{scroll-behavior:smooth}
+section{scroll-margin-top:52px}
+</style>
+</head>
+<body>
+<header class="hero">
+  <div class="wrap">
+    <div class="eyebrow">Bộ chuẩn bị hội nghị · EY-Parthenon Vietnam · Valuation &amp; Business Modelling</div>
+    <h1>IVAS-IVSC Business Valuation Conference 2026</h1>
+    <div class="theme">Chủ đề: “Navigating New Realities in Corporate Markets” · lần đầu đồng tổ chức với CFA Society Singapore</div>
+    <div class="facts">
+      <span><b>Thứ Sáu 23/10/2026</b></span>
+      <span><b>9:00-18:00</b> giờ Singapore = 8:00-17:00 giờ VN</span>
+      <span><b>Heliconia Main Ballroom, Level 3</b>, Marina Bay Sands Expo &amp; Convention Centre</span>
+      <span><b>6 giờ CPD</b> (phải đăng ký và có mặt ngày 23/10)</span>
+      <span>Tiệc cuối ngày <b>18:00-20:00</b>, Heliconia Junior Ballroom (vé trực tiếp)</span>
+      <span><a class="back" href="IVSC_2026_kien_thuc.html">Đọc trước: 7 chủ đề chính của hội nghị</a></span>
+      <span><a class="back" href="IVSC_2026_viet_nam.html">Việt Nam với từng chủ đề</a></span>
+    </div>
+  </div>
+</header>
+
+<nav class="tabs" aria-label="Các mục">
+  <div class="wrap">
+    <a href="#tomtat">Tóm tắt</a><a href="#gate">Gate</a><a href="#lich">Lịch &amp; ưu tiên</a><a href="#cauhoi">Câu hỏi</a><a href="#ketnoi">Kết nối</a><a href="#ghichep">Ghi chép</a><a href="#mangve">Mang về</a><a href="#cancu">Căn cứ</a><a href="IVSC_2026_kien_thuc.html" class="kt">Kiến thức trước hội nghị</a><a href="IVSC_2026_viet_nam.html" class="kt">Việt Nam trong hội nghị</a>
+  </div>
+</nav>
+
+<main>
+<!-- 1. TÓM TẮT -->
+<section id="tomtat"><div class="wrap">
+  <div class="sh"><h2>Đi để mang về ba thứ</h2><span class="tag">Mục tiêu</span></div>
+  <div class="kpis">
+    <div class="kpi"><b>37</b><span>diễn giả trên trang Speakers</span></div>
+    <div class="kpi"><b>2</b><span>partner EY-Parthenon Singapore lên sân khấu</span></div>
+    <div class="kpi"><b>9 + 1</b><span>phiên chuyên môn + keynote</span></div>
+    <div class="kpi"><b>8</b><span>người cần gặp: 3 ưu tiên A, gồm hai partner EY</span></div>
+  </div>
+  <div class="grid">
+    <div class="card">
+      <div class="who">Cho sếp</div>
+      <h3>Quan hệ khu vực + tín hiệu thị trường</h3>
+      <ul class="tight">
+        <li>Mở kênh với <b>Andre Toh</b> và <b>Chua Ai Leng</b> (EY-Parthenon Singapore) cho các dự án qua biên giới vào Việt Nam.</li>
+        <li>3 tín hiệu thị trường (dòng vốn vào VN, nhu cầu nhà mua, giá phí), mỗi tín hiệu ghi rõ ai nói, ở phiên nào.</li><li>2-3 cơ hội BD từ nhà đầu tư và partner gặp được.</li>
+      </ul>
+      <div class="measure">Đo bằng: 1 cuộc gọi 30 phút với Andre Toh hẹn trong 2 tuần · 2-3 cơ hội có tên người, nhu cầu, bước tiếp · debrief 1 trang gửi sếp Thứ Ba 27/10.</div>
+    </div>
+    <div class="card">
+      <div class="who">Cho team</div>
+      <h3>Cập nhật chuẩn mực đưa vào buổi training 3 tiếng</h3>
+      <ul class="tight">
+        <li>IVS sửa đổi (bản dự thảo 2026, dự kiến hiệu lực 01/2028): đổi gì, ảnh hưởng hồ sơ của mình ra sao.</li>
+        <li>Intangibles, AI trong định giá, rủi ro quốc gia Việt Nam.</li>
+      </ul>
+      <div class="measure">Đo bằng: 5-7 điểm có nguồn · một phần 20-30 phút “Từ hội nghị” trong deck training.</div>
+    </div>
+    <div class="card">
+      <div class="who">Cho bản thân</div>
+      <h3>Mạng lưới CVA và IVAS</h3>
+      <ul class="tight">
+        <li>Quen 2-3 người trong IVAS Council hoặc nhóm Standards &amp; Technical (Lie Kok Keong, Ashish McLaren, Qiu Wenqi).</li>
+        <li>Hỏi kinh nghiệm thực hành PPA ở Singapore, hữu ích cho kỳ thi tháng 11.</li>
+      </ul>
+      <div class="measure">Đo bằng: kết nối LinkedIn trong 24 giờ, kèm 1 câu nhắc lại cuộc nói chuyện.</div>
+    </div>
+  </div>
+  <div class="box info"><b>Nếu dự online:</b> đăng nhập microsite 8:45-9:00 giờ Singapore (7:45 giờ VN), thông tin đăng nhập hoặc mã QR được gửi về email đã đăng ký. Phần kết nối chuyển hết sang LinkedIn và email sau hội nghị (gate G4); tiệc cuối ngày chỉ dành cho vé trực tiếp.</div>
+</div></section>
+
+<!-- 2. GATE -->
+<section id="gate"><div class="wrap">
+  <div class="sh"><h2>Bảy cổng, mỗi cổng có điều kiện qua</h2><span class="tag">Task · Gate</span><span class="prog" id="prog"></span></div>
+  <div class="flow" aria-label="Trình tự các cổng">
+    <div class="step"><div class="g">G0</div><div class="t">Tối nay</div><div class="d">22/10 · chuẩn bị</div></div>
+    <div class="step"><div class="g">G1</div><div class="t">Sáng sớm</div><div class="d">23/10 · trước 9:00</div></div>
+    <div class="step key"><div class="g">G2</div><div class="t">Trong phiên</div><div class="d">ghi · hỏi</div></div>
+    <div class="step key"><div class="g">G3</div><div class="t">Giải lao · tiệc</div><div class="d">kết nối</div></div>
+    <div class="step"><div class="g">G4</div><div class="t">T+1</div><div class="d">24/10 · follow-up</div></div>
+    <div class="step"><div class="g">G5</div><div class="t">Debrief sếp</div><div class="d">Thứ Ba 27/10</div></div>
+    <div class="step"><div class="g">G6</div><div class="t">Chia sẻ team</div><div class="d">Thứ Sáu 30/10</div></div>
+  </div>
+  <div class="gates">
+    <div class="gate"><header><b>G0 · Tối nay 22/10</b><span>chuẩn bị</span></header><div class="body">
+      <label class="chk"><input type="checkbox" id="c01"><span>Mở email đăng ký, tìm mã QR hoặc thông tin đăng nhập.</span></label>
+      <label class="chk"><input type="checkbox" id="c02"><span>Gửi email chào trước cho Andre Toh và Chua Ai Leng (mẫu ở mục Kết nối).</span></label>
+      <label class="chk"><input type="checkbox" id="c03"><span>Tập câu giới thiệu 20 giây, nói thành tiếng 3 lần.</span></label>
+      <label class="chk"><input type="checkbox" id="c04"><span>Chọn 3 câu hỏi chính cho 3 phiên ★★★.</span></label>
+      <label class="chk"><input type="checkbox" id="c05"><span>Danh thiếp 30-40 cái, QR LinkedIn để sẵn trên điện thoại, sạc dự phòng.</span></label>
+      <label class="chk"><input type="checkbox" id="c06"><span>Nhắn sếp một dòng: muốn em hỏi thêm gì, gặp thêm ai không. Debrief sẽ trả lời đúng câu sếp quan tâm.</span></label>
+      <div class="exit"><b>Qua cổng khi:</b> nói trôi câu giới thiệu, có 3 câu hỏi, danh sách 8 người ưu tiên, và đã hỏi sếp cần gì.</div>
+    </div></div>
+    <div class="gate"><header><b>G1 · Sáng 23/10</b><span>trước 9:00 SGT</span></header><div class="body">
+      <label class="chk"><input type="checkbox" id="c11"><span>Có mặt 8:15-8:30 giờ Singapore (đăng ký mở 8:00), lấy badge.</span></label>
+      <label class="chk"><input type="checkbox" id="c12"><span>Ngồi khu giữa, gần lối đi để dễ lên micro và ra gặp diễn giả sau phiên.</span></label>
+      <label class="chk"><input type="checkbox" id="c13"><span>Mở trang này ở mục Ghi chép.</span></label>
+      <label class="chk"><input type="checkbox" id="c14"><span>Hỏi bàn đăng ký: slide và bản ghi có gửi lại sau không (làm tài liệu cho team).</span></label>
+      <div class="exit"><b>Qua cổng khi:</b> đã vào chỗ trước 9:00, điện thoại sẵn sàng ghi.</div>
+    </div></div>
+    <div class="gate"><header><b>G2 · Trong phiên</b><span>9:00-18:00</span></header><div class="body">
+      <label class="chk"><input type="checkbox" id="c21"><span>Mỗi phiên ★★★ ghi đủ 3 ô: ý chính (ai nói) · cơ hội cho EY-Parthenon VN · việc tiếp.</span></label>
+      <label class="chk"><input type="checkbox" id="c22"><span>Hỏi ít nhất 1 câu trên micro, mở đầu: “Quang, EY-Parthenon Vietnam”.</span></label>
+      <label class="chk"><input type="checkbox" id="c23"><span>Chụp slide có số liệu hoặc khung phương pháp, ghi tên phiên vào ảnh.</span></label>
+      <div class="exit"><b>Qua cổng khi:</b> 3 phiên ★★★ có ghi chép đủ 3 ô, ít nhất 1 câu đã hỏi.</div>
+    </div></div>
+    <div class="gate"><header><b>G3 · Giải lao, trưa, tiệc</b><span>10:00 · 12:20 · 15:20 · 18:00</span></header><div class="body">
+      <label class="chk"><input type="checkbox" id="c31"><span>Ăn trưa 80 phút (12:20-13:40) là cửa sổ dài nhất: gặp Chua Ai Leng và Konialidis.</span></label>
+      <label class="chk"><input type="checkbox" id="c32"><span>Sau panel 13:40 hoặc giải lao 15:20: gặp Andre Toh.</span></label>
+      <label class="chk"><input type="checkbox" id="c33"><span>Tiệc 18:00: Teo Yee Hean, Brandon Aw, Yun Weizhong, Ashish McLaren.</span></label>
+      <label class="chk"><input type="checkbox" id="c34"><span>Mỗi cuộc nói chuyện: ghi ngay 1 dòng vào bảng liên hệ (hoặc mặt sau danh thiếp).</span></label>
+      <div class="exit"><b>Qua cổng khi:</b> 6-8 cuộc nói chuyện có nội dung, đã nói chuyện trực tiếp với cả hai partner EY.</div>
+    </div></div>
+    <div class="gate"><header><b>G4 · T+1, 24/10</b><span>follow-up</span></header><div class="body">
+      <label class="chk"><input type="checkbox" id="c41"><span>Gửi kết nối LinkedIn kèm 1 câu nhắc lại cuộc nói chuyện.</span></label>
+      <label class="chk"><input type="checkbox" id="c42"><span>Email cảm ơn Andre Toh, Chua Ai Leng, đề xuất cuộc gọi 30 phút.</span></label>
+      <label class="chk"><input type="checkbox" id="c43"><span>Điền xong bảng liên hệ, bấm “Gom ghi chép” rồi lưu lại.</span></label>
+      <div class="exit"><b>Qua cổng khi:</b> mọi người trong bảng liên hệ đã nhận lời nhắn trong 24 giờ.</div>
+    </div></div>
+    <div class="gate"><header><b>G5 · Thứ Ba 27/10</b><span>debrief sếp</span></header><div class="body">
+      <label class="chk"><input type="checkbox" id="c51"><span>Viết debrief 1 trang theo khung ở mục Mang về.</span></label>
+      <label class="chk"><input type="checkbox" id="c52"><span>Mỗi ý có người nói và phiên; ý của mình ghi riêng là nhận định.</span></label>
+      <label class="chk"><input type="checkbox" id="c53"><span>Kết bằng 2-3 đề xuất có người làm và hạn.</span></label>
+      <div class="exit"><b>Qua cổng khi:</b> sếp nhận được 1 trang, đọc trong 3 phút là biết làm gì tiếp.</div>
+    </div></div>
+    <div class="gate"><header><b>G6 · Thứ Sáu 30/10</b><span>chia sẻ team</span></header><div class="body">
+      <label class="chk"><input type="checkbox" id="c61"><span>Thêm phần “Từ hội nghị” 20-30 phút vào buổi training IVS/PPA.</span></label>
+      <label class="chk"><input type="checkbox" id="c62"><span>Thêm 1 trang “IVS sắp đổi gì” cạnh trang IFRS và IVS của deck training.</span></label>
+      <label class="chk"><input type="checkbox" id="c63"><span>Chốt 3 việc team làm khác đi từ tuần sau.</span></label>
+      <div class="exit"><b>Qua cổng khi:</b> team có 3 việc cụ thể để áp vào hồ sơ đang làm.</div>
+    </div></div>
+  </div>
+</div></section>
+
+<!-- 3. LỊCH -->
+<section id="lich"><div class="wrap">
+  <div class="sh"><h2>Lịch cả ngày và nên dồn sức vào đâu</h2><span class="tag">Chương trình</span></div>
+  <p class="lead">Theo trang Programme của ban tổ chức (trang ghi chương trình có thể thay đổi). ★★★ là phiên phải ngồi đầy đủ và hỏi; ★ là nghe nếu còn sức, hoặc dùng để gặp người bên ngoài.</p>
+  <div class="tw"><table class="stack sched">
+    <thead><tr><th>Giờ SGT / VN</th><th>Phiên</th><th>Diễn giả chính</th><th>Ưu tiên</th><th>Dùng cho việc gì</th></tr></thead>
+    <tbody>
+      <tr class="brk"><td class="t">08:00-09:00<small>07:00-08:00</small></td><td colspan="4">Đăng ký trực tiếp · online đăng nhập từ 08:45</td></tr>
+      <tr><td class="t">09:00-09:30<small>08:00-08:30</small></td><td>Chào mừng của IVAS, IVSC, CFA Society Singapore</td><td>Lie Kok Keong (IVAS, PwC) · Lim Hwee Hua (IVSC) · Cindy Tan (CFA SG)</td><td class="star dim">★</td><td>Nghe định hướng của IVAS, IVSC; lấy cớ mở chuyện với Lie Kok Keong lúc tiệc</td></tr>
+      <tr><td class="t">09:30-10:00<small>08:30-09:00</small></td><td>Phát biểu khai mạc · Keynote “Long-Term Thinking in an Era of Global Disruption”</td><td>Indranee Rajah · Heng Swee Keat</td><td class="star dim">★</td><td>Bối cảnh vĩ mô làm câu mở đầu cho debrief sếp</td></tr>
+      <tr class="brk"><td class="t">10:00-10:30<small>09:00-09:30</small></td><td colspan="4">Giải lao · chào nhanh, chưa cần nói dài</td></tr>
+      <tr class="p3"><td class="t">10:30-11:20<small>09:30-10:20</small></td><td><b>Unlocking Intangible Value in the New Economy</b></td><td>Điều phối: <b>Chua Ai Leng</b> <span class="pill ey">EY-P SG</span> · Gian Yi Hsen (Nanofilm) · Keoy Soo Earn · Mark Teng · Tan Kong Hwee (IPOS)</td><td class="star">★★★</td><td>Doanh nghiệp định giá tài sản vô hình lúc nào; đưa dịch vụ lên trước ký deal; gặp Chua Ai Leng</td></tr>
+      <tr><td class="t">11:20-11:35<small>10:20-10:35</small></td><td>AI-Driven Valuation: How to Assess the Real Impact of AI Initiatives</td><td>Dave Wang (Wall Street Prompt)</td><td class="star">★★</td><td>Khách sẽ trả tiền cho gì khi AI làm mô hình nhanh hơn</td></tr>
+      <tr><td class="t">11:35-12:20<small>10:35-11:20</small></td><td>Beyond the Hype: How AI is Reshaping Valuation Practice</td><td>Điều phối: Mark Chua · Dave Wang · Loh Yee Chuan (KPMG) · Sng Ren Yeong (Temus) · Tee Chyng Wen (SMU)</td><td class="star">★★</td><td>Giá phí, cách khách chọn advisor; nhu cầu thẩm định business case AI</td></tr>
+      <tr class="brk"><td class="t">12:20-13:40<small>11:20-12:40</small></td><td colspan="4">Ăn trưa 80 phút · cửa sổ kết nối dài nhất trong ngày</td></tr>
+      <tr class="p3"><td class="t">13:40-14:30<small>12:40-13:30</small></td><td><b>Credible Valuation in Emerging Asia: Standards, Practice, and the Pursuit of Market Confidence</b></td><td>Điều phối: <b>Nicolas Konialidis</b> (IVSC) · <b>Andre Toh</b> <span class="pill ey">EY-P SG</span> · Ahmad Zubir Zahid · Roger Loh · Teodoro Kalaw IV</td><td class="star">★★★</td><td>Nhà mua Nhật, Hàn kỳ vọng gì ở định giá tại VN; nói đúng tệp khách của team trước Andre Toh và IVSC</td></tr>
+      <tr><td class="t">14:30-14:50<small>13:30-13:50</small></td><td>Valuing the Unproven: Early-Stage, Pre-Revenue Companies</td><td>Qiu Wenqi (RSM)</td><td class="star dim">★</td><td>Nhu cầu định giá startup trong khu vực đến từ đâu</td></tr>
+      <tr><td class="t">14:50-15:20<small>13:50-14:20</small></td><td>Price, Value and Conviction: A Private Markets Dialogue</td><td>Điều phối: Angela Lai · Kon Yin Tong · Alex Ma (AO Holdings, family office)</td><td class="star">★★</td><td>Vì sao nhà đầu tư thuê định giá độc lập, khi nào họ đổi nhà cung cấp</td></tr>
+      <tr class="brk"><td class="t">15:20-15:50<small>14:20-14:50</small></td><td colspan="4">Giải lao · gặp Andre Toh nếu chưa gặp sau panel</td></tr>
+      <tr><td class="t">15:50-16:30<small>14:50-15:30</small></td><td>Beyond the Yield: Risk and Opportunity in Private Credit</td><td>Điều phối: Andrew Ooi (Deloitte) · Brandon Aw (Granite Asia) · Yun Weizhong (Allianz GI)</td><td class="star">★★</td><td>Quỹ tín dụng tư nhân vào VN cần thuê làm gì; gặp Brandon Aw, Yun Weizhong</td></tr>
+      <tr class="p3"><td class="t">16:30-17:20<small>15:30-16:20</small></td><td><b>Beyond the Volatility: Finding Value in Emerging and Frontier Markets</b></td><td>Điều phối: Shihan Abeyguna · <b>Ashish McLaren</b> (Kroll) · Boh Hui Ling · Pratik Sengupta · <b>Teo Yee Hean</b> (ADB)</td><td class="star">★★★</td><td>Dòng vốn vào VN sau nâng hạng, ngành nào đi trước; gặp Teo Yee Hean</td></tr>
+      <tr><td class="t">17:20-18:00<small>16:20-17:00</small></td><td>Beyond the Token: Ownership, Liquidity and Value</td><td>Eric M Pascal · Gerald Goh · Mun Siong Yoong · Samuel Lee</td><td class="star dim">★</td><td>Nghe nếu còn sức</td></tr>
+      <tr class="p3"><td class="t">18:00-20:00<small>17:00-19:00</small></td><td><b>Tiệc cuối ngày</b>, Heliconia Junior Ballroom</td><td>Vé trực tiếp</td><td class="star">★★★</td><td>Gặp nhà đầu tư (Teo Yee Hean, Brandon Aw, Yun Weizhong) và partner các hãng</td></tr>
+    </tbody>
+  </table></div>
+</div></section>
+
+<!-- 4. CÂU HỎI -->
+<section id="cauhoi"><div class="wrap">
+  <div class="sh"><h2>Câu hỏi cấp partner</h2><span class="tag">Business development</span></div>
+  <p class="lead">Mục đích: người nghe thấy anh đang ở giữa dòng deal vào Việt Nam và hiểu nhà đầu tư cần gì. Không hỏi kỹ thuật. Mỗi câu hỏi về khách, nhu cầu, thị trường, và kết bằng điều người trả lời muốn kể. Không nêu tên khách hay deal.</p>
+  <div class="box info"><b>Cách dùng:</b> hỏi trên micro bằng “Quang, EY-Parthenon Vietnam”, rồi ngay khi phiên kết thúc tìm người trả lời: “Thanks for taking my question. I’d like to hear more about …”. Câu hỏi trên sân khấu là cái cớ; cuộc nói chuyện sau đó mới là việc chính.</div>
+  <h3 style="font-size:17px">Hỏi trên sân khấu</h3>
+  <div class="qs">
+    <div class="q"><div class="meta"><span class="star">★★★</span><b>Intangibles</b><span>10:30 · hỏi Gian Yi Hsen (Nanofilm), Tan Kong Hwee (IPOS) · Chua Ai Leng điều phối</span></div><div class="ask">
+      <p class="en" id="q1">For the corporates on the panel: when you buy or partner with a business in Southeast Asia, do you value its intangibles before signing, to shape the price, or only after closing for the accounts? What would make you do it earlier?</p>
+      <button class="copy" data-c="q1">Chép câu hỏi</button>
+      <p class="en b">Backup (Tan Kong Hwee): IPOS has pushed intangibles disclosure in Singapore. Are regional groups starting to use intangible valuations to raise financing, and is that spreading beyond Singapore?</p>
+      <p class="why"><b>Mở ra gì:</b> đưa việc định giá tài sản vô hình từ sau deal (PPA) lên trước khi ký; ý tưởng dịch vụ cho khách Singapore, Nhật có hoạt động ở Việt Nam; cớ để nói chuyện với Chua Ai Leng ngay sau phiên.</p>
+    </div></div>
+    <div class="q"><div class="meta"><span class="star">★★</span><b>AI</b><span>11:20-12:20 · hỏi cả panel · Sng Ren Yeong (Temus), Loh Yee Chuan (KPMG)</span></div><div class="ask">
+      <p class="en" id="q2">If AI makes model-building much faster, what will clients still pay a premium for in valuation work: the judgement, the defence of the number, or the speed? And are clients already asking advisors how they use AI?</p>
+      <button class="copy" data-c="q2">Chép câu hỏi</button>
+      <p class="en b">Backup (Sng Ren Yeong): When companies invest in AI transformation, how do boards decide what it is worth, and who do they ask to test the business case?</p>
+      <p class="why"><b>Mở ra gì:</b> hướng giá phí và cách chào dịch vụ khi AI phổ biến; nhu cầu mới là thẩm định business case AI cho hội đồng quản trị.</p>
+    </div></div>
+    <div class="q"><div class="meta"><span class="star">★★★</span><b>Emerging Asia</b><span>13:40 · Konialidis (IVSC) điều phối · Andre Toh (EY-P) trên panel</span></div><div class="ask">
+      <p class="en" id="q3">Japanese, Korean and Thai strategics are among the most active foreign buyers in Vietnam. What do these buyers and their auditors now expect from a valuation in an emerging market that they did not expect five years ago, and where do local providers still fall short?</p>
+      <button class="copy" data-c="q3">Chép câu hỏi</button>
+      <p class="en b">Backup (Konialidis): Is IVSC working with Vietnamese regulators on IVS adoption, and is there a way for practitioners in Vietnam to contribute to that work?</p>
+      <p class="why"><b>Mở ra gì:</b> nói đúng tệp khách của team trước mặt Andre Toh và IVSC; câu trả lời của panel là luận điểm bán hàng cho khách Nhật; câu dự phòng mở đường tham gia công việc của IVSC ở châu Á.</p>
+    </div></div>
+    <div class="q"><div class="meta"><span class="star">★★</span><b>Private markets</b><span>14:50 · hỏi Alex Ma (family office), Kon Yin Tong</span></div><div class="ask">
+      <p class="en" id="q4">From the investor’s seat: what makes you hire an independent valuer instead of relying on the deal team’s number, and what would make you change provider?</p>
+      <button class="copy" data-c="q4">Chép câu hỏi</button>
+      <p class="why"><b>Mở ra gì:</b> hiểu nhà đầu tư chọn và giữ advisor thế nào, áp vào cách chào dịch vụ cho quỹ và family office.</p>
+    </div></div>
+    <div class="q"><div class="meta"><span class="star">★★</span><b>Private credit</b><span>15:50 · hỏi Brandon Aw (Granite Asia), Yun Weizhong (Allianz GI)</span></div><div class="ask">
+      <p class="en" id="q5">Private credit is starting to look at Vietnam. When you underwrite a deal there, what independent work do you commission, a valuation of the business, of the collateral, or ongoing monitoring, and what is hardest to get locally?</p>
+      <button class="copy" data-c="q5">Chép câu hỏi</button>
+      <p class="why"><b>Mở ra gì:</b> nhóm khách mới là quỹ tín dụng tư nhân; nghe họ thiếu gì ở Việt Nam là biết nên chào gì.</p>
+    </div></div>
+    <div class="q"><div class="meta"><span class="star">★★★</span><b>Emerging &amp; frontier</b><span>16:30 · hỏi Teo Yee Hean (ADB), Ashish McLaren (Kroll), Pratik Sengupta (A&amp;M)</span></div><div class="ask">
+      <p class="en" id="q6">Since Vietnam moved to FTSE secondary emerging status on 21 September, are you seeing more foreign investors preparing deals there, and which sectors are they looking at first?</p>
+      <button class="copy" data-c="q6">Chép câu hỏi</button>
+      <p class="en b">Backup (Teo Yee Hean): Which sectors in Vietnam are the fund managers you back most active in, and what do they find hardest to underwrite there?</p>
+      <p class="why"><b>Mở ra gì:</b> đọc dòng vốn vào Việt Nam để chọn ngành ưu tiên cho BD; cớ để gặp Teo Yee Hean ở tiệc.</p>
+    </div></div>
+    <div class="q"><div class="meta"><span class="star dim">★</span><b>Pre-revenue · Tokenisation</b><span>14:30 · 17:20 · chỉ hỏi nếu còn thời gian</span></div><div class="ask">
+      <p class="en" id="q7">Where is demand for valuations of early-stage companies coming from now, fund reporting, employee share plans or M&amp;A, and is it growing in Southeast Asia outside Singapore?</p>
+      <button class="copy" data-c="q7">Chép câu hỏi</button>
+    </div></div>
+  </div>
+  <h3 style="font-size:17px">Hỏi khi nói chuyện riêng</h3>
+  <div class="grid g5">
+    <div class="card"><div class="who">Andre Toh · EY-Parthenon</div>
+      <p class="en">Which of your clients have Vietnam on their agenda for the next 12 months, and how can our team come in earlier, before the deal is signed?</p>
+      <p class="en">How do you see work being shared across the Asia East valuation network? Where could Vietnam take more of the modelling and delivery?</p>
+      <p class="en">What would make you call us first on a Vietnam piece?</p>
+    </div>
+    <div class="card"><div class="who">Chua Ai Leng · EY-Parthenon</div>
+      <p class="en">Which sectors are driving intangibles work in Singapore right now, and do any of those clients have operations in Vietnam?</p>
+      <p class="en">Would a short joint piece on intangibles in Southeast Asia be useful for your clients? We can bring the Vietnam side.</p>
+    </div>
+    <div class="card"><div class="who">Nicolas Konialidis · IVSC</div>
+      <p class="en">How can EY-Parthenon Vietnam contribute to IVSC’s work in Asia, roundtables, committees or consultation responses?</p>
+      <p class="en">Which markets in the region do you see moving fastest on IVS adoption, and where does Vietnam sit?</p>
+    </div>
+    <div class="card"><div class="who">Nhà đầu tư · ADB, Granite Asia, Allianz GI, family office</div>
+      <p class="en">What does your pipeline in Vietnam look like for the next year?</p>
+      <p class="en">Who do you use today for valuation and diligence in Vietnam, and what would you want done differently?</p>
+    </div>
+    <div class="card"><div class="who">Partner các hãng khác · Kroll, PwC, KPMG, Deloitte, RSM, A&amp;M</div>
+      <p class="en">How does this year compare with last year for you, and what is driving the work?</p>
+      <p class="en">When you are conflicted on a Vietnam piece, who do you usually refer it to?</p>
+      <p class="why">Chỉ hỏi chung về thị trường; không nói pipeline, khách hay phí của mình.</p>
+    </div>
+  </div>
+</div></section>
+
+<!-- 5. KẾT NỐI -->
+<section id="ketnoi"><div class="wrap">
+  <div class="sh"><h2>Gặp ai, nói gì, xin gì</h2><span class="tag">Kết nối</span></div>
+  <div class="card">
+    <div class="who">Câu giới thiệu 20 giây</div>
+    <p class="pitch" id="pitch">Hi, I’m Quang, a Director in Valuation and Business Modelling at EY-Parthenon in Ho Chi Minh City. We support Japanese and regional investors on their Vietnam deals, from pre-deal valuation and business modelling through to purchase price allocation. I’m here to hear where investors see Vietnam going, and I’d love your view on the point you made about …</p>
+    <button class="copy" data-c="pitch">Chép câu giới thiệu</button>
+  </div>
+  <div class="tw"><table class="stack ppl">
+    <thead><tr><th>Ưu tiên</th><th>Người</th><th>Vai trò (theo trang Speakers)</th><th>Vì sao gặp</th><th>Xin gì</th><th>Gặp lúc nào</th></tr></thead>
+    <tbody>
+      <tr class="p3"><td class="star">A</td><td><b>Andre Toh</b> <span class="pill ey">EY</span></td><td>Partner EY-Parthenon; Asia East Leader, Valuation, Modelling &amp; Economics; IVAS Council</td><td>Lãnh đạo khu vực của mảng mình; nguồn dự án Nhật, Singapore vào Việt Nam</td><td>Cuộc gọi 30 phút: khách nào có Việt Nam trong kế hoạch 12 tháng, cách team vào sớm hơn</td><td>Sau panel 14:30 · giải lao 15:20</td></tr>
+      <tr class="p3"><td class="star">A</td><td><b>Chua Ai Leng</b> <span class="pill ey">EY</span></td><td>Valuation Partner EY-Parthenon Singapore; IVAS Council; điều phối panel Intangibles</td><td>Partner định giá cùng hãng; khách Singapore có hoạt động ở Việt Nam</td><td>Danh sách khách có hoạt động ở Việt Nam; đề xuất một bài viết chung về intangibles ở Đông Nam Á</td><td>Ngay sau phiên 11:20 · ăn trưa</td></tr>
+      <tr class="p3"><td class="star">A</td><td><b>Nicolas Konialidis</b></td><td>IVSC Director (Asia), Technical Director, Business Valuation Board</td><td>Người của IVSC phụ trách châu Á</td><td>Cách EY-Parthenon Việt Nam tham gia công việc của IVSC ở châu Á (tạo hình ảnh cho hãng)</td><td>Ăn trưa · sau panel 14:30</td></tr>
+      <tr><td class="star">B</td><td>Teo Yee Hean</td><td>Principal Investment Officer, Asian Development Bank (đầu tư quỹ PE)</td><td>Nhìn thấy các quỹ đang vào Việt Nam</td><td>Ngành nào các quỹ đang vào; họ đang dùng ai cho định giá, diligence</td><td>Tiệc 18:00</td></tr>
+      <tr><td class="star">B</td><td>Brandon Aw</td><td>Managing Director, Granite Asia (tín dụng tư nhân, structured finance, hạ tầng)</td><td>Nhóm khách mới: quỹ tín dụng tư nhân</td><td>Họ có nhìn Việt Nam không, cần thuê làm gì khi underwrite</td><td>Sau phiên 16:30 · tiệc</td></tr>
+      <tr><td class="star">B</td><td>Yun Weizhong</td><td>Senior Portfolio Manager, Asia Private Credit, Allianz Global Investors</td><td>Nhà đầu tư tín dụng tư nhân lớn trong khu vực</td><td>Như trên</td><td>Sau phiên 16:30 · tiệc</td></tr>
+      <tr><td class="star">B</td><td>Ashish McLaren</td><td>Kroll Singapore, MD và SEA Leader Valuation Advisory; chủ trì IVAS Standards &amp; Technical WG</td><td>Đối thủ trong khu vực; nguồn tin thị trường và việc chuyển giao khi họ bị xung đột lợi ích</td><td>Thị trường năm nay thế nào; khi xung đột ở Việt Nam họ chuyển cho ai</td><td>Tiệc 18:00</td></tr>
+      <tr><td class="star">C</td><td>Lie Kok Keong</td><td>IVAS Council Chairperson; Partner, Co-Head M&amp;A và Valuation Leader, PwC Singapore</td><td>Chủ tịch IVAS</td><td>Hoạt động của IVAS dành cho người ngoài Singapore</td><td>Tiệc 18:00</td></tr>
+    </tbody>
+  </table></div>
+  <div class="box warn"><b>Ba điều không làm:</b> không nhắc tên khách, deal, số liệu hồ sơ (bảo mật và độc lập) · với PwC, KPMG, Deloitte, Kroll, RSM, A&amp;M chỉ trao đổi chuyên môn, không nói pipeline hay phí · không hứa gì thay sếp, chỉ hẹn “trao đổi tiếp”.</div>
+  <div class="grid">
+    <div class="card"><div class="who">Email tối nay · gửi Andre Toh, Chua Ai Leng</div>
+<pre class="mail" id="m1">Subject: See you at the IVAS-IVSC Conference tomorrow
+
+Hi Andre, hi Ai Leng,
+
+I’m Quang, Director, Valuation & Business Modelling at EY-Parthenon Vietnam. I’ll be attending the conference tomorrow and look forward to your sessions. If you have a few minutes at a break, I’d love to say hello in person.
+
+Best regards,
+Quang</pre>
+      <button class="copy" data-c="m1">Chép email</button></div>
+    <div class="card"><div class="who">Email T+1 · sau khi đã gặp</div>
+<pre class="mail" id="m2">Subject: Great to meet at the IVAS-IVSC Conference
+
+Hi Andre,
+
+Thank you for your time at the conference. Your point on […] was very relevant to what we see in Vietnam.
+
+As mentioned, our team in Ho Chi Minh City supports Japanese and regional investors on their Vietnam deals, from pre-deal valuation and modelling through to PPA. I’d welcome 30 minutes in the coming weeks to understand which of your clients have Vietnam on their agenda, and how we can come in early and support your teams.
+
+Best regards,
+Quang</pre>
+      <button class="copy" data-c="m2">Chép email</button></div>
+  </div>
+</div></section>
+
+<!-- 6. GHI CHÉP -->
+<section id="ghichep"><div class="wrap">
+  <div class="sh"><h2>Ghi chép tại chỗ</h2><span class="tag">Tự lưu trên trình duyệt này</span></div>
+  <p class="lead">Mỗi phiên 3 ô. Ghi ai nói và con số nếu có. Cuối ngày bấm “Gom ghi chép” để có một bản chữ liền, chép sang debrief. Ghi chép chỉ lưu trên thiết bị và trình duyệt đang mở (bản trên điện thoại và file trên máy tính không đồng bộ với nhau), nên dùng một nơi cho cả ngày.</p>
+  <div class="notes" id="notes"></div>
+  <h3 style="font-size:16px">Bảng liên hệ</h3>
+  <div class="tw"><table class="contacts stack">
+    <thead><tr><th>Tên</th><th>Tổ chức</th><th>Đã nói gì</th><th>Hẹn làm gì · hạn</th></tr></thead>
+    <tbody id="ctb"></tbody>
+  </table></div>
+  <div class="btns">
+    <button class="btn" id="gom">Gom ghi chép</button>
+    <button class="btn sec" id="addrow">Thêm dòng liên hệ</button>
+    <span id="saved"></span>
+  </div>
+  <textarea id="out" readonly hidden style="min-height:220px" aria-label="Bản gom ghi chép"></textarea>
+  <div class="btns"><button class="btn sec" id="copyout" hidden>Chép bản gom</button></div>
+</div></section>
+
+<!-- 7. MANG VỀ -->
+<section id="mangve"><div class="wrap">
+  <div class="sh"><h2>Mang về cho sếp và cho team</h2><span class="tag">Sau hội nghị</span></div>
+  <div class="grid">
+    <div class="card">
+      <div class="who">Debrief 1 trang cho sếp · G5</div>
+      <h3>IVAS-IVSC Business Valuation Conference 2026 · Ghi nhận chính</h3>
+      <div class="tw"><table>
+        <thead><tr><th>Phần</th><th>Viết gì</th></tr></thead>
+        <tbody>
+          <tr><td class="t">1. Tín hiệu thị trường</td><td>3 dòng: điều gì · ai nói, phiên nào · ý nghĩa cho EY-Parthenon Việt Nam</td></tr>
+          <tr><td class="t">2. Chuẩn mực, nghề</td><td>IVS sửa đổi (dự kiến hiệu lực 01/2028) · intangibles · AI và kiểm soát chất lượng</td></tr>
+          <tr><td class="t">3. Cơ hội và quan hệ</td><td>Bảng: người · tổ chức · nhu cầu nghe được · đã thống nhất gì · bước tiếp và hạn</td></tr>
+          <tr><td class="t">4. Đề xuất</td><td>2-3 việc, mỗi việc có người làm và hạn</td></tr>
+        </tbody>
+      </table></div>
+      <p class="why">Ý của mình ghi riêng là nhận định, không trộn vào phần có người nói.</p>
+    </div>
+    <div class="card">
+      <div class="who">Phần “Từ hội nghị” cho team · G6</div>
+      <h3>20-30 phút, chèn vào buổi training IVS/PPA 3 tiếng</h3>
+      <div class="tw"><table>
+        <thead><tr><th>Phút</th><th>Nội dung</th><th>Gắn vào phần nào của deck</th></tr></thead>
+        <tbody>
+          <tr><td class="t">5</td><td>Bức tranh hội nghị: ai nói gì về thị trường</td><td>Mở đầu</td></tr>
+          <tr><td class="t">10</td><td>IVS sắp đổi gì, hồ sơ của mình phải làm khác ở đâu</td><td>Sau trang IFRS và IVS</td></tr>
+          <tr><td class="t">5</td><td>Intangibles: điều nhà đầu tư nhìn vào</td><td>Phần nhận diện tài sản vô hình</td></tr>
+          <tr><td class="t">5</td><td>Rủi ro quốc gia Việt Nam sau nâng hạng</td><td>Phần tỷ suất chiết khấu, WARA</td></tr>
+          <tr><td class="t">5</td><td>3 việc team làm khác từ tuần sau</td><td>Kết buổi</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+  </div>
+</div></section>
+
+<!-- 8. CĂN CỨ -->
+<section id="cancu"><div class="wrap">
+  <div class="sh"><h2>Bối cảnh cần nắm trước khi đi</h2><span class="tag">Căn cứ · truy cập 22/10/2026</span></div>
+  <div class="tw"><table class="src">
+    <thead><tr><th>Dữ kiện</th><th>Nguồn</th><th>Ngày của nguồn</th></tr></thead>
+    <tbody>
+      <tr><td>Ngày, giờ, địa điểm, chủ đề, 6 giờ CPD; tiệc 18:00-20:00 cho vé trực tiếp</td><td><a href="https://www.ivasconference.com/" target="_blank" rel="noopener">ivasconference.com</a></td><td>truy cập 22/10/2026</td></tr>
+      <tr><td>Chương trình, giờ từng phiên, người điều phối và diễn giả</td><td><a href="https://www.ivasconference.com/programme" target="_blank" rel="noopener">ivasconference.com/programme</a></td><td>trang không ghi ngày cập nhật</td></tr>
+      <tr><td>Chức danh, chuyên môn 37 diễn giả (Grace Lui, CLA Global TS, có trên trang Speakers nhưng chưa có trong chương trình)</td><td><a href="https://www.ivasconference.com/speakers" target="_blank" rel="noopener">ivasconference.com/speakers</a></td><td>truy cập 22/10/2026</td></tr>
+      <tr><td>Trang IVSC ghi kết thúc 17:45; trang ban tổ chức ghi 18:00. Bộ này theo trang ban tổ chức</td><td><a href="https://ivsonline.org/event/ivas-ivsc-business-valuation-conference-2026/" target="_blank" rel="noopener">ivsonline.org</a></td><td>truy cập 22/10/2026</td></tr>
+      <tr><td>Bản dự thảo IVS 2026: lấy ý kiến 30/01-30/04/2026; dự kiến ban hành 01/2027, hiệu lực 01/2028; trọng tâm: rủi ro định giá, công nghệ và AI, bền vững, kiểm soát chất lượng</td><td><a href="https://ivsc.org/consultations/ivs-exposure-draft-for-consultation-2026/" target="_blank" rel="noopener">IVSC · IVS Exposure Draft 2026</a></td><td>01/2026</td></tr>
+      <tr><td>Singapore Intangibles Disclosure Framework (IPOS và ACRA, 09/2023, thuộc Singapore IP Strategy 2030) lấy định nghĩa tài sản vô hình từ IVS 210</td><td><a href="https://training.ivsc.org/?p=4839" target="_blank" rel="noopener">IVSC Training · Intangibles move to the centre of valuation</a></td><td>06/2026</td></tr>
+      <tr><td>FTSE Russell xác nhận ngày 07/04/2026 nâng hạng Việt Nam lên thị trường mới nổi thứ cấp, hiệu lực 21/09/2026</td><td><a href="https://en.vietstock.vn/2026/04/ftse-russell-confirms-vietnam-market-reclassification-36-630315.htm" target="_blank" rel="noopener">Vietstock</a></td><td>08/04/2026</td></tr>
+      <tr><td>Đưa cổ phiếu Việt Nam vào chỉ số theo 4 đợt, từ 09/2026 đến 09/2027</td><td><a href="https://www.lseg.com/en/insights/ftse-russell/why-vietnam-is-joining-the-ftse-geis" target="_blank" rel="noopener">LSEG · Why Vietnam is joining the FTSE GEIS</a></td><td>06/05/2026</td></tr>
+      <tr><td>Đã có hiệu lực: “On Sept. 21, Vietnamese stocks entered FTSE Russell’s emerging market ranks”</td><td><a href="https://fortune.com/2026/09/24/vietnam-ftse-emerging-market-upgrade-foreign-investment-mismatch/" target="_blank" rel="noopener">Fortune</a></td><td>24/09/2026</td></tr>
+      <tr><td>Chuẩn mực thẩm định giá Việt Nam ban hành năm 2024, ví dụ Thông tư 32/2024/TT-BTC ngày 16/05/2024 (cách tiếp cận thị trường, chi phí, thu nhập)</td><td><a href="https://hethongphapluat.com/circular-no-32-2024-tt-btc-dated-may-16-2024-on-the-issuance-of-vietnam-valuation-standards-for-the-market-approach-cost-approach-and-income-approach.html" target="_blank" rel="noopener">Hệ thống pháp luật</a></td><td>16/05/2024</td></tr>
+      <tr><td>Nhà mua nước ngoài lớn ở Việt Nam năm 2025: Thái Lan 1.298,3 triệu USD; Nhật 461,6 triệu USD, 22 giao dịch; Hàn Quốc đứng sau Thái Lan (số trong báo cáo không khớp giữa chữ và biểu đồ). Dùng cho câu hỏi phiên Emerging Asia</td><td><a href="https://www.grantthornton.com.vn/contentassets/38fb344fef5e4fd4ba6c73db60642fdd/ma-outlook-2026---eng.pdf" target="_blank" rel="noopener">Grant Thornton · M&amp;A Outlook 2026</a></td><td>02/2026</td></tr>
+      <tr><td><span class="inf">NHẬN ĐỊNH</span>Mức ưu tiên ★, người cần gặp, câu hỏi, cơ hội BD và thời điểm gặp là đề xuất của bộ chuẩn bị, dựa trên chức danh trên trang Speakers và mảng việc của team; không phải thông tin của ban tổ chức</td><td>-</td><td>-</td></tr>
+    </tbody>
+  </table></div>
+</div></section>
+</main>
+<footer><div class="wrap">Bộ chuẩn bị · dựng 22/10/2026 · chương trình có thể thay đổi, xem lại trang Programme sáng 23/10.</div></footer>
+
+<script>
+(function(){
+  var KEY='ivsc2026_kit_v1';
+  function load(){try{return JSON.parse(localStorage.getItem(KEY)||'{}')}catch(e){return {}}}
+  var st=load();
+  function save(){try{localStorage.setItem(KEY,JSON.stringify(st));var s=document.getElementById('saved');s.textContent='Đã lưu '+new Date().toLocaleTimeString('vi-VN',{hour:'2-digit',minute:'2-digit'});}catch(e){document.getElementById('saved').textContent='Trình duyệt không cho lưu; nhớ bấm Gom ghi chép rồi chép ra ngoài.';}}
+  // checklist
+  var boxes=document.querySelectorAll('.chk input');
+  function prog(){var n=0;boxes.forEach(function(b){if(b.checked)n++});document.getElementById('prog').textContent=n+'/'+boxes.length+' việc đã xong';}
+  boxes.forEach(function(b){b.checked=!!(st.chk&&st.chk[b.id]);b.addEventListener('change',function(){st.chk=st.chk||{};st.chk[b.id]=b.checked;save();prog();});});
+  prog();
+  // notes
+  var S=[
+    ['s1','Intangibles','10:30 · ★★★'],
+    ['s2','AI trong định giá','11:20-12:20 · ★★'],
+    ['s3','Emerging Asia','13:40 · ★★★'],
+    ['s4','Private markets','14:50 · ★★'],
+    ['s5','Private credit','15:50 · ★★'],
+    ['s6','Emerging & frontier','16:30 · ★★★'],
+    ['s7','Phiên khác / keynote','tuỳ chọn']
+  ];
+  var F=[['a','Ý chính (ai nói, số liệu)'],['b','Cơ hội cho EY-Parthenon VN (ai, nhu cầu gì)'],['c','Việc tiếp']];
+  var wrap=document.getElementById('notes');
+  st.notes=st.notes||{};
+  S.forEach(function(s){
+    var d=document.createElement('div');d.className='note';
+    var h=document.createElement('h3');h.textContent=s[1];var sm=document.createElement('small');sm.textContent=s[2];h.appendChild(sm);d.appendChild(h);
+    F.forEach(function(f){
+      var id='n_'+s[0]+'_'+f[0];
+      var l=document.createElement('label');l.className='l';l.htmlFor=id;l.textContent=f[1];
+      var t=document.createElement('textarea');t.id=id;t.value=st.notes[id]||'';
+      t.addEventListener('input',function(){st.notes[id]=t.value;save();});
+      d.appendChild(l);d.appendChild(t);
+    });
+    wrap.appendChild(d);
+  });
+  // contacts
+  var tb=document.getElementById('ctb');
+  st.ct=st.ct||[['','','',''],['','','',''],['','','',''],['','','','']];
+  function row(i){
+    var tr=document.createElement('tr');
+    for(var j=0;j<4;j++){(function(j){
+      var td=document.createElement('td');var inp=document.createElement('input');inp.type='text';inp.id='ct_'+i+'_'+j;inp.value=st.ct[i][j]||'';
+      inp.setAttribute('aria-label',['Tên','Tổ chức','Đã nói gì','Hẹn làm gì'][j]+' dòng '+(i+1));
+      inp.addEventListener('input',function(){st.ct[i][j]=inp.value;save();});
+      td.appendChild(inp);tr.appendChild(td);})(j);}
+    tb.appendChild(tr);
+  }
+  st.ct.forEach(function(_,i){row(i)});
+  // nhãn cột cho bảng xếp dọc trên điện thoại
+  function labelAll(){document.querySelectorAll('table.stack').forEach(function(t){var hs=[].map.call(t.querySelectorAll('thead th'),function(h){return h.textContent});t.querySelectorAll('tbody tr').forEach(function(tr){[].forEach.call(tr.children,function(td,i){if(!td.hasAttribute('colspan'))td.setAttribute('data-label',hs[i]||'');});});});}
+  labelAll();
+  document.getElementById('addrow').addEventListener('click',function(){st.ct.push(['','','','']);row(st.ct.length-1);labelAll();save();});
+  // compile
+  document.getElementById('gom').addEventListener('click',function(){
+    var L=['IVAS-IVSC Business Valuation Conference 2026 · ghi chép · 23/10/2026',''];
+    S.forEach(function(s){
+      var a=st.notes['n_'+s[0]+'_a']||'',b=st.notes['n_'+s[0]+'_b']||'',c=st.notes['n_'+s[0]+'_c']||'';
+      if(!(a||b||c))return;
+      L.push('## '+s[1]+' ('+s[2]+')');
+      if(a)L.push('- Ý chính: '+a);if(b)L.push('- Cơ hội: '+b);if(c)L.push('- Việc tiếp: '+c);L.push('');
+    });
+    var rows=st.ct.filter(function(r){return r.join('').trim()});
+    if(rows.length){L.push('## Liên hệ');rows.forEach(function(r){L.push('- '+r[0]+' · '+r[1]+' · '+r[2]+' · hẹn: '+r[3]);});}
+    var o=document.getElementById('out');o.value=L.join('\n');o.hidden=false;document.getElementById('copyout').hidden=false;
+  });
+  // copy
+  function copyText(txt,el){
+    function sel(){try{var r=document.createRange();r.selectNodeContents(el);var s=getSelection();s.removeAllRanges();s.addRange(r);}catch(e){}}
+    if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(txt).then(function(){},function(){sel()});}else{sel();}
+  }
+  document.querySelectorAll('.copy').forEach(function(b){b.addEventListener('click',function(){var el=document.getElementById(b.dataset.c);copyText(el.textContent,el);var o=b.textContent;b.textContent='Đã chép';setTimeout(function(){b.textContent=o},1400);});});
+  document.getElementById('copyout').addEventListener('click',function(){var o=document.getElementById('out');o.select();copyText(o.value,o);});
+})();
+</script>
+</body>
+</html>

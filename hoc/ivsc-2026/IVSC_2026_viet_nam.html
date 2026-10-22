@@ -1,0 +1,466 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Vietnam Conference Lens</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap">
+<style>
+:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+
+/* Layout: dải navy đầu trang, thanh mục dính, các mục full width; bảng cuộn ngang riêng; một font duy nhất */
+:root{
+  --navy:#1B2A5E; --accent:#1A9AFA; --ink:#22222B; --muted:#6E6E7C;
+  --rule:#D8D8E0; --g1:#747480; --g2:#C4C4CD; --g3:#ECECF2;
+  --bg:#FFFFFF; --card:#F6F7FA; --onnavy:#FFFFFF; --onnavy2:#C9D3EE;
+  --hi:#E8F4FF; --warn:#B4472B; --warnbg:#FBEDE8; --ok:#0D7575; --okbg:#E7F6F5;
+  --f:"Be Vietnam Pro","Segoe UI",Arial,sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --navy:#16224A; --accent:#5CB8FF; --ink:#ECEDF3; --muted:#A3A5B5; --rule:#363A4C;
+  --g1:#9A9CAD; --g2:#4A4E63; --g3:#23273A; --bg:#12141D; --card:#1A1D2A; --onnavy:#FFFFFF; --onnavy2:#AEB9DA;
+  --hi:#17304A; --warn:#F08A6C; --warnbg:#3A2420; --ok:#5FD3C8; --okbg:#15302F; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --navy:#16224A; --accent:#5CB8FF; --ink:#ECEDF3; --muted:#A3A5B5; --rule:#363A4C;
+  --g1:#9A9CAD; --g2:#4A4E63; --g3:#23273A; --bg:#12141D; --card:#1A1D2A; --onnavy:#FFFFFF; --onnavy2:#AEB9DA;
+  --hi:#17304A; --warn:#F08A6C; --warnbg:#3A2420; --ok:#5FD3C8; --okbg:#15302F; color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f);font-size:15px;line-height:1.55;font-variant-numeric:tabular-nums}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--navy)}
+.wrap{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3{font-family:var(--f);text-wrap:balance;margin:0}
+a{color:var(--accent)}
+/* Đầu trang */
+.hero{background:var(--navy);color:var(--onnavy)}
+.hero .wrap{padding-block:28px 22px;display:grid;gap:14px}
+.eyebrow{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--onnavy2);font-weight:600}
+.hero h1{font-size:clamp(24px,3.4vw,36px);font-weight:700;line-height:1.2}
+.hero .theme{color:var(--onnavy2);font-size:15px}
+.facts{display:flex;flex-wrap:wrap;gap:8px 22px;font-size:14px}
+.facts span b{color:var(--onnavy);font-weight:600}
+.facts span{color:var(--onnavy2)}
+/* Thanh mục */
+nav.tabs{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);border-bottom:1px solid var(--rule)}
+nav.tabs .wrap{display:flex;gap:4px;overflow-x:auto;padding-block:6px;scrollbar-width:none}
+nav.tabs a{flex:0 0 auto;text-decoration:none;color:var(--muted);font-weight:500;font-size:14px;padding:7px 12px;border-radius:6px}
+nav.tabs a:hover,nav.tabs a:focus-visible{background:var(--g3);color:var(--ink);outline:none}
+section{border-bottom:1px solid var(--rule)}
+section .wrap{padding-block:30px;display:grid;gap:18px}
+.sh{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+.sh h2{font-size:22px;font-weight:700}
+.sh .tag{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);font-weight:600}
+.lead{color:var(--muted);max-width:110ch;margin:0}
+/* Lưới thẻ */
+.grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+.card{background:var(--card);border:1px solid var(--rule);border-radius:8px;padding:16px;display:grid;gap:8px;align-content:start;min-width:0}
+.card h3{font-size:16px;font-weight:700}
+.card .who{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);font-weight:600}
+.card p{margin:0}
+.card .measure{font-size:13px;color:var(--muted);border-top:1px dashed var(--rule);padding-top:8px}
+.grid.g5{grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+ul.tight{margin:0;padding-left:18px;display:grid;gap:4px}
+/* Ô số */
+.kpis{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(170px,1fr))}
+.kpi{border-left:3px solid var(--accent);padding:4px 0 4px 12px}
+.kpi b{display:block;font-size:26px;font-weight:700;line-height:1.1}
+.kpi span{font-size:13px;color:var(--muted)}
+/* Flow gate */
+.flow{display:flex;gap:0;overflow-x:auto;padding-bottom:4px}
+.step{flex:1 0 150px;position:relative;background:var(--card);border:1px solid var(--rule);padding:12px 14px 12px 22px;margin-right:10px;min-width:0}
+.step::after{content:"";position:absolute;right:-11px;top:50%;transform:translateY(-50%);border:10px solid transparent;border-left-color:var(--rule)}
+.step:last-child::after{display:none}
+.step .g{font-weight:700;color:var(--accent);font-size:13px}
+.step .t{font-weight:600;font-size:14px}
+.step .d{font-size:12px;color:var(--muted)}
+.step.key{background:var(--hi);border-color:var(--accent)}
+.gates{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
+.gate{border:1px solid var(--rule);border-radius:8px;overflow:hidden;display:grid;align-content:start;min-width:0}
+.gate header{background:var(--navy);color:var(--onnavy);padding:10px 14px;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.gate header b{font-weight:700}
+.gate header span{color:var(--onnavy2);font-size:13px}
+.gate .body{padding:12px 14px;display:grid;gap:8px}
+.chk{display:flex;gap:10px;align-items:flex-start;font-size:14px;cursor:pointer}
+.chk input{margin-top:4px;width:17px;height:17px;accent-color:var(--accent);flex:0 0 auto}
+.chk input:checked + span{color:var(--muted);text-decoration:line-through}
+.exit{font-size:13px;background:var(--okbg);color:var(--ink);padding:8px 10px;border-radius:6px}
+.exit b{color:var(--ok)}
+.prog{font-size:13px;color:var(--muted)}
+/* Bảng */
+.tw{overflow-x:auto;border:1px solid var(--rule);border-radius:8px}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th{background:var(--navy);color:var(--onnavy);text-align:left;font-weight:600;padding:9px 12px;white-space:nowrap;font-size:13px}
+td{padding:9px 12px;border-top:1px solid var(--rule);vertical-align:top}
+tr.brk td{background:var(--g3);color:var(--muted);font-size:13px}
+tr.p3 td:first-child{box-shadow:inset 3px 0 0 var(--accent)}
+td.t{white-space:nowrap;font-weight:600}
+td.t small{display:block;font-weight:400;color:var(--muted)}
+.star{color:var(--accent);letter-spacing:1px;white-space:nowrap;font-weight:700}
+.star.dim{color:var(--g1);font-weight:400}
+@media (max-width:700px){
+  table.stack thead{display:none}
+  table.stack,table.stack tbody,table.stack tr,table.stack td{display:block;width:100%}
+  table.stack tr{border-top:1px solid var(--rule);padding-block:8px}
+  table.stack tr:first-child{border-top:0}
+  table.stack td{border:0;padding:3px 12px;white-space:normal}
+  table.stack td[data-label]::before{content:attr(data-label);display:block;font-size:11px;color:var(--muted);font-weight:600;letter-spacing:.05em;text-transform:uppercase}
+  table.stack tr.p3{box-shadow:inset 3px 0 0 var(--accent)}
+  table.stack tr.p3 td:first-child{box-shadow:none}
+  table.stack tr.brk{background:var(--g3)}
+  .contacts input{min-width:0}
+  table.sched tr:not(.brk),table.ppl tr{display:grid;grid-template-columns:1fr auto;column-gap:10px}
+  table.sched td,table.ppl td{grid-column:1 / -1}
+  table.sched td.t,table.ppl td:nth-child(2){grid-column:1;grid-row:1}
+  table.sched td.star,table.ppl td.star{grid-column:2;grid-row:1;align-self:start}
+  table.sched td.t::before,table.sched td.star::before,table.ppl td.star::before,table.ppl td:nth-child(2)::before{display:none}
+  table.ppl td:nth-child(2){font-size:16px}
+}
+.pill{display:inline-block;font-size:11px;font-weight:600;letter-spacing:.04em;padding:2px 8px;border-radius:99px;background:var(--hi);color:var(--accent);white-space:nowrap}
+.pill.ey{background:var(--navy);color:var(--onnavy)}
+/* Câu hỏi */
+.qs{display:grid;gap:14px}
+.q{border:1px solid var(--rule);border-radius:8px;display:grid;grid-template-columns:minmax(200px,260px) 1fr;min-width:0;overflow:hidden}
+.q .meta{background:var(--card);padding:14px;display:grid;gap:6px;align-content:start;border-right:1px solid var(--rule)}
+.q .meta b{font-size:15px}
+.q .meta span{font-size:13px;color:var(--muted)}
+.q .ask{padding:14px;display:grid;gap:10px;min-width:0}
+.en{font-size:15px;border-left:3px solid var(--accent);padding:2px 0 2px 12px;margin:0}
+.en.b{border-left-color:var(--g2);color:var(--muted);font-size:14px}
+.why{font-size:13px;color:var(--muted);margin:0}
+.why b{color:var(--ink);font-weight:600}
+.copy{justify-self:start;font-family:var(--f);font-size:12px;font-weight:600;border:1px solid var(--rule);background:var(--bg);color:var(--ink);border-radius:6px;padding:4px 10px;cursor:pointer}
+.copy:hover,.copy:focus-visible{border-color:var(--accent);color:var(--accent);outline:none}
+@media (max-width:700px){.q{grid-template-columns:1fr}.q .meta{border-right:0;border-bottom:1px solid var(--rule)}}
+/* Hộp */
+.box{border-radius:8px;padding:12px 14px;font-size:14px}
+.box.warn{background:var(--warnbg);border:1px solid var(--warn)}
+.box.warn b{color:var(--warn)}
+.box.info{background:var(--hi);border:1px solid var(--accent)}
+.pitch{font-size:16px;line-height:1.6;margin:0;max-width:95ch}
+pre.mail{white-space:pre-wrap;font-family:var(--f);font-size:14px;margin:0;background:var(--bg);border:1px solid var(--rule);border-radius:6px;padding:12px;max-width:95ch}
+/* Ghi chép */
+.notes{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(320px,1fr))}
+.note{border:1px solid var(--rule);border-radius:8px;padding:12px;display:grid;gap:8px;min-width:0}
+.note h3{font-size:14px;font-weight:700}
+.note h3 small{display:block;font-weight:400;color:var(--muted);font-size:12px}
+label.l{font-size:12px;color:var(--muted);font-weight:600;letter-spacing:.03em}
+textarea,input[type=text]{width:100%;font-family:var(--f);font-size:14px;color:var(--ink);background:var(--bg);border:1px solid var(--rule);border-radius:6px;padding:8px}
+textarea{min-height:56px;resize:vertical}
+textarea:focus,input[type=text]:focus{outline:2px solid var(--accent);outline-offset:-1px;border-color:var(--accent)}
+.btns{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.btn{font-family:var(--f);font-size:14px;font-weight:600;border:0;border-radius:6px;padding:9px 16px;cursor:pointer;background:var(--accent);color:#fff}
+.btn.sec{background:var(--g3);color:var(--ink)}
+.btn:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+#saved{font-size:13px;color:var(--muted)}
+.contacts td{padding:6px 8px}
+.contacts input{min-width:130px}
+/* Căn cứ */
+.src td:nth-child(3){white-space:nowrap}
+.inf{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.04em;color:var(--warn);border:1px solid var(--warn);border-radius:4px;padding:0 5px;margin-right:4px}
+footer .wrap{padding-block:20px;color:var(--muted);font-size:13px}
+@media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+html{scroll-behavior:smooth}
+section{scroll-margin-top:52px}
+
+:root{--navy2:#42618F}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--navy2:#8FA6CC}}
+:root[data-theme="dark"]{--navy2:#8FA6CC}
+.two{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(320px,1fr))}
+.kpis.k7{grid-template-columns:repeat(auto-fit,minmax(165px,1fr))}
+.kpi b{font-size:22px}
+a.back{color:var(--onnavy);font-weight:600;text-decoration:underline;text-underline-offset:3px}
+.card p{margin:0}
+.bars{display:grid;gap:10px}
+.bar{display:grid;grid-template-columns:130px 1fr 44px;align-items:center;gap:10px;font-size:14px}
+.bar i{display:block;height:16px;background:var(--accent);border-radius:2px}
+.bar i.g{background:var(--g1)}
+.bar b{text-align:right;font-weight:700}
+.lv{display:inline-block;font-size:12px;font-weight:600;padding:2px 8px;border-radius:99px;white-space:nowrap}
+.lv.up{background:var(--okbg);color:var(--ok)}
+.lv.mid{background:var(--hi);color:var(--accent)}
+.lv.low{background:var(--g3);color:var(--muted)}
+ol.tl{list-style:none;margin:0;padding:0;display:grid;gap:0;border-left:2px solid var(--rule);margin-left:6px}
+ol.tl li{position:relative;padding:6px 0 10px 18px;display:grid;grid-template-columns:110px 1fr;gap:12px}
+ol.tl li::before{content:"";position:absolute;left:-7px;top:11px;width:12px;height:12px;border-radius:50%;background:var(--bg);border:2px solid var(--g1)}
+ol.tl li.k::before{background:var(--accent);border-color:var(--accent)}
+ol.tl li b{font-weight:700;white-space:nowrap}
+ol.tl li.k b{color:var(--accent)}
+@media (max-width:520px){ol.tl li{grid-template-columns:1fr;gap:2px}}
+.stackbar{display:flex;height:22px;border-radius:3px;overflow:hidden}
+.stackbar i{display:block;height:100%}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:13px;color:var(--muted)}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:6px;vertical-align:-1px}
+table.sum td:first-child{white-space:nowrap}
+@media (max-width:700px){table.sum td:first-child{white-space:normal;font-size:16px}table.sum td:first-child::before{display:none}}
+</style>
+</head>
+<body>
+<header class="hero">
+  <div class="wrap">
+    <div class="eyebrow">Việt Nam trong bức tranh hội nghị · số liệu truy cập 22/10/2026</div>
+    <h1>Việt Nam đang ở đâu với từng chủ đề của hội nghị</h1>
+    <div class="theme">Tám chủ đề: chuẩn mực, tài sản vô hình, AI, thị trường vốn, M&amp;A, PE và VC, tín dụng, token hoá. Mỗi chủ đề: hiện trạng có số liệu, cách nói ở hội nghị, cơ hội cho EY-Parthenon Việt Nam.</div>
+    <div class="facts"><span><a class="back" href="IVSC_2026_chuan_bi.html">Bộ chuẩn bị</a></span><span><a class="back" href="IVSC_2026_kien_thuc.html">Kiến thức 7 chủ đề</a></span></div>
+  </div>
+</header>
+
+<nav class="tabs" aria-label="Các chủ đề">
+  <div class="wrap">
+    <a href="#tongquan">Tổng quan</a><a href="#moc">Mốc pháp lý</a><a href="#chuanmuc">Chuẩn mực</a><a href="#vohinh">Tài sản vô hình</a><a href="#ai">AI</a><a href="#thitruong">Thị trường vốn</a><a href="#mna">M&amp;A</a><a href="#pevc">PE, VC</a><a href="#tindung">Tín dụng</a><a href="#token">Token hoá</a><a href="#nguon">Nguồn</a>
+  </div>
+</nav>
+
+<main>
+<section id="tongquan"><div class="wrap">
+  <div class="sh"><h2>Một màn hình: chủ đề hội nghị và Việt Nam</h2><span class="tag">Tổng quan</span></div>
+  <div class="kpis k7">
+    <div class="kpi"><b>8,02%</b><span>GDP 2025</span></div>
+    <div class="kpi"><b>8,7 tỷ USD</b><span>M&amp;A 2025, 367 giao dịch</span></div>
+    <div class="kpi"><b>4,5 tỷ USD</b><span>PE và VC 2025, 149 giao dịch</span></div>
+    <div class="kpi"><b>19,1%</b><span>tăng trưởng tín dụng 2025; mục tiêu 2026 là 15%</span></div>
+    <div class="kpi"><b>575,4 nghìn tỷ đồng</b><span>trái phiếu doanh nghiệp phát hành 2025</span></div>
+    <div class="kpi"><b>44/139</b><span>xếp hạng đổi mới sáng tạo GII 2025</span></div>
+  </div>
+  <div class="tw"><table class="stack sum">
+    <thead><tr><th>Chủ đề hội nghị</th><th>Việt Nam hiện nay</th><th>Đánh giá</th><th>Cơ hội cho EY-P VN</th><th>Phiên</th></tr></thead>
+    <tbody>
+      <tr><td><b>Chuẩn mực định giá</b></td><td>Bộ chuẩn thẩm định giá mới năm 2024 (TT 30, 31, 32, 36, 37 hiệu lực 01/07/2024; bất động sản TT 42 từ 05/08/2024); chế độ kế toán mới (TT 99) từ 2026; lộ trình IFRS bắt buộc sau 2025 chưa thấy cập nhật</td><td><span class="lv mid">Đang bắt kịp</span></td><td>Định giá theo IVS cho nhà mua nước ngoài và báo cáo IFRS</td><td>13:40</td></tr>
+      <tr><td><b>Tài sản vô hình</b></td><td>Đã có chuẩn thẩm định giá tài sản vô hình riêng (TT 37/2024, có MPEEM, tiền bản quyền); Luật SHTT sửa đổi cho phép định giá, góp vốn, thế chấp quyền SHTT từ 01/04/2026, quy định chi tiết chờ Chính phủ</td><td><span class="lv up">Mở cửa mới</span></td><td>Định giá SHTT để vay và góp vốn; định giá trước deal</td><td>10:30</td></tr>
+      <tr><td><b>AI</b></td><td>Luật Công nghiệp công nghệ số hiệu lực 01/01/2026; Luật AI hiệu lực 01/03/2026, hệ thống AI ngành tài chính có hạn tới 01/09/2027</td><td><span class="lv up">Khung pháp lý đi sớm</span></td><td>Định giá doanh nghiệp AI, data center; thẩm định business case AI</td><td>11:20</td></tr>
+      <tr><td><b>Thị trường mới nổi</b></td><td>FTSE mới nổi từ 21/09/2026; MSCI chưa đưa vào danh sách theo dõi, vướng giới hạn sở hữu nước ngoài</td><td><span class="lv mid">Nửa đường</span></td><td>Phần bù rủi ro quốc gia, giá trị quyền kiểm soát, cổ phần thiểu số</td><td>16:30</td></tr>
+      <tr><td><b>M&amp;A</b></td><td>8,7 tỷ USD (+26%), ít giao dịch hơn; nước ngoài khoảng 54% giá trị; Thái Lan lớn nhất</td><td><span class="lv up">Tăng</span></td><td>PPA, định giá giao dịch cho nhà mua chiến lược</td><td>13:40</td></tr>
+      <tr><td><b>Private markets</b></td><td>PE kỷ lục 4 tỷ USD năm 2025; VC nhỏ và giảm nhiều năm</td><td><span class="lv mid">PE mạnh, VC yếu</span></td><td>Định giá thoái vốn PE, báo cáo NAV</td><td>14:50</td></tr>
+      <tr><td><b>Private credit</b></td><td>Tín dụng ngân hàng khoảng 135% GDP (cuối 2024); trái phiếu doanh nghiệp 90,6% phát hành riêng lẻ</td><td><span class="lv low">Còn sơ khai</span></td><td>Định giá doanh nghiệp vay, tài sản đảm bảo cho quỹ tín dụng</td><td>15:50</td></tr>
+      <tr><td><b>Token hoá</b></td><td>Thí điểm 5 năm theo NQ 05/2025 từ 09/09/2025; chỉ tài sản thật làm cơ sở</td><td><span class="lv low">Thí điểm</span></td><td>Theo dõi; định giá tài sản cơ sở</td><td>17:20</td></tr>
+    </tbody>
+  </table></div>
+  <p class="why"><span class="inf">NHẬN ĐỊNH</span>Cột “Đánh giá” và “Cơ hội” là nhận định của bộ chuẩn bị, dựa trên số liệu ở các mục dưới. Cột “Việt Nam hiện nay” là dữ kiện có nguồn.</p>
+</div></section>
+
+<section id="moc"><div class="wrap">
+  <div class="sh"><h2>Mốc pháp lý và thị trường 2024-2028</h2><span class="tag">Dòng thời gian</span></div>
+  <ol class="tl">
+    <li><b>01/07/2024</b><span>Chuẩn thẩm định giá Việt Nam mới có hiệu lực: TT 30, 31, 32, 36 (doanh nghiệp), 37 (tài sản vô hình)</span></li>
+    <li><b>05/08/2024</b><span>TT 42/2024 chuẩn thẩm định giá bất động sản có hiệu lực (không áp dụng cho định giá đất theo luật đất đai)</span></li>
+    <li><b>09/09/2025</b><span>NQ 05/2025/NQ-CP: thí điểm 5 năm thị trường tài sản mã hoá</span></li>
+    <li><b>11/09/2025</b><span>NĐ 245/2025/NĐ-CP: bỏ quyền điều lệ đặt giới hạn sở hữu nước ngoài thấp hơn; rút thời gian từ IPO tới giao dịch</span></li>
+    <li><b>01/01/2026</b><span>Chế độ kế toán TT 99/2025 thay TT 200; Luật Công nghiệp công nghệ số có hiệu lực</span></li>
+    <li><b>01/03/2026</b><span>Luật Trí tuệ nhân tạo có hiệu lực</span></li>
+    <li><b>01/04/2026</b><span>Luật Sở hữu trí tuệ sửa đổi có hiệu lực</span></li>
+    <li class="k"><b>21/09/2026</b><span>Việt Nam vào nhóm mới nổi thứ cấp của FTSE Russell</span></li>
+    <li><b>01/09/2027</b><span>Hạn cuối cho hệ thống AI đang chạy trong y tế, giáo dục, tài chính theo Luật AI</span></li>
+    <li><b>09/2027</b><span>Đợt cuối đưa cổ phiếu Việt Nam vào chỉ số FTSE</span></li>
+    <li><b>31/01/2028</b><span>IVS mới dự kiến có hiệu lực (IVSC)</span></li>
+  </ol>
+</div></section>
+
+<!-- CHUẨN MỰC -->
+<section id="chuanmuc"><div class="wrap">
+  <div class="sh"><h2>Chuẩn mực định giá và kế toán</h2><span class="tag">Phiên 13:40 Emerging Asia</span></div>
+  <div class="two">
+    <div class="card"><div class="who">Hiện trạng</div>
+      <ul class="tight">
+        <li>Bộ chuẩn thẩm định giá Việt Nam ban hành năm 2024: TT 30 (đạo đức nghề nghiệp, phạm vi công việc, cơ sở giá trị, hồ sơ), TT 31 (thu thập và phân tích thông tin), TT 32 (ba cách tiếp cận), TT 36 (doanh nghiệp), TT 37 (tài sản vô hình): cùng ký 16/05/2024, hiệu lực 01/07/2024. TT 42 (bất động sản) ký 20/06/2024, hiệu lực 05/08/2024.</li>
+        <li>Cách tiếp cận thị trường theo chuẩn Việt Nam yêu cầu tối thiểu 3 tài sản so sánh, giao dịch trong vòng 24 tháng (TT 32; TT 37 cho tài sản vô hình). Đây là ràng buộc cụ thể cần lưu ý khi làm song song với IVS.</li>
+        <li>TT 36 cho định giá doanh nghiệp: so sánh công ty niêm yết, so sánh giao dịch; phương pháp tài sản; DCF, chiết khấu cổ tức, FCFE.</li>
+        <li>TT 99/2025/TT-BTC ký 27/10/2025, áp dụng cho kỳ kế toán từ 01/01/2026, thay TT 200; “Bảng cân đối kế toán” đổi thành “Báo cáo tình hình tài chính”.</li>
+        <li>Lộ trình IFRS (QĐ 345/QĐ-BTC, 16/03/2020): tự nguyện 2022-2025, bắt buộc sau 2025 cho các doanh nghiệp trong danh sách của Bộ Tài chính. Chưa tìm được nguồn cập nhật tình trạng giai đoạn bắt buộc.</li>
+      </ul>
+    </div>
+    <div class="card"><div class="who">Nói ở hội nghị</div>
+      <p class="en">Vietnam refreshed its national valuation standards in 2024 and its accounting regime in 2026, but cross-border buyers still ask for IVS and IFRS. That gap is where advisors who work in both systems add value.</p>
+      <div class="who" style="margin-top:6px"><span class="inf">NHẬN ĐỊNH</span>Cơ hội</div>
+      <p>Team làm được cả chuẩn Việt Nam lẫn IVS, IFRS là lợi thế khi khách nước ngoài cần một báo cáo dùng được cho cả hai phía. Cần một bảng đối chiếu ngắn chuẩn Việt Nam và IVS để dùng khi chào khách.</p>
+    </div>
+  </div>
+</div></section>
+
+<!-- VÔ HÌNH -->
+<section id="vohinh"><div class="wrap">
+  <div class="sh"><h2>Tài sản vô hình và sở hữu trí tuệ</h2><span class="tag">Phiên 10:30 Intangibles</span></div>
+  <div class="two">
+    <div class="card"><div class="who">Hiện trạng</div>
+      <ul class="tight">
+        <li>Chuẩn thẩm định giá tài sản vô hình (TT 37/2024, hiệu lực 01/07/2024): bốn nhóm tài sản (quyền SHTT; quyền theo hợp đồng; quan hệ khách hàng, cơ sở dữ liệu; tài sản nhận diện được khác); cách tiếp cận thu nhập gồm tiền sử dụng tài sản vô hình, lợi nhuận vượt trội (MPEEM), thu nhập tăng thêm; tài sản không nhận diện được thuộc chuẩn định giá doanh nghiệp.</li>
+        <li>Luật sửa đổi Luật Sở hữu trí tuệ số 131/2025/QH15, thông qua 10/12/2025, hiệu lực 01/04/2026: quyền SHTT được định giá, chuyển nhượng, góp vốn, dùng làm tài sản bảo đảm, theo quy tắc định giá.</li>
+        <li>Luật giao Chính phủ ban hành quy định chi tiết về kế toán, công bố và định giá; được tự định giá cho mục đích nội bộ; mục tiêu là sáng chế, nhãn hiệu, bản quyền có thể ghi lên bảng cân đối và dùng để vay (theo Bộ KH&amp;CN).</li>
+        <li>Việt Nam xếp 44/139 trong Global Innovation Index 2025, thứ 3 ASEAN sau Singapore và Malaysia, thứ 2 nhóm thu nhập trung bình thấp sau Ấn Độ.</li>
+      </ul>
+    </div>
+    <div class="card"><div class="who">Nói ở hội nghị</div>
+      <p class="en">Vietnam has just made IP bankable: from April 2026, patents and trademarks can be valued, contributed as capital and pledged as collateral. The detailed valuation rules are still to come.</p>
+      <div class="who" style="margin-top:6px"><span class="inf">NHẬN ĐỊNH</span>Cơ hội</div>
+      <p>Nhu cầu mới: định giá SHTT cho ngân hàng và cho góp vốn. Theo dõi nghị định hướng dẫn; khi ra, đây là đề tài tốt để viết chung với Chua Ai Leng (khung công bố của Singapore và luật mới của Việt Nam).</p>
+    </div>
+  </div>
+</div></section>
+
+<!-- AI -->
+<section id="ai"><div class="wrap">
+  <div class="sh"><h2>AI và kinh tế số</h2><span class="tag">Phiên 11:20-12:20 AI</span></div>
+  <div class="two">
+    <div class="card"><div class="who">Hiện trạng</div>
+      <ul class="tight">
+        <li>Luật Công nghiệp công nghệ số thông qua 14/06/2025 (441/445 đại biểu tán thành), hiệu lực 01/01/2026; phân biệt tài sản ảo và tài sản mã hoá; có cơ chế thử nghiệm có kiểm soát.</li>
+        <li>Luật Trí tuệ nhân tạo (số 134/2025/QH15) thông qua 10/12/2025, hiệu lực 01/03/2026; phân loại rủi ro cao, trung bình, thấp; thay khung AI chung trong Luật Công nghiệp công nghệ số.</li>
+        <li>Hệ thống AI đang vận hành có hạn tới 01/03/2027; riêng y tế, giáo dục, tài chính tới 01/09/2027.</li>
+        <li>Đầu tư vào AI năm 2025 gấp 13 lần năm 2023 (BCG, NIC).</li>
+      </ul>
+    </div>
+    <div class="card"><div class="who">Nói ở hội nghị</div>
+      <p class="en">Vietnam passed a dedicated AI law that took effect in March, with risk tiers and a deadline of September 2027 for AI already used in finance. Investment into AI was 13 times its 2023 level last year.</p>
+      <div class="who" style="margin-top:6px"><span class="inf">NHẬN ĐỊNH</span>Cơ hội</div>
+      <p>Định giá các doanh nghiệp AI, trung tâm dữ liệu đang thu hút vốn; thẩm định business case AI cho khách. Bản thân team dùng AI thì cần ghi nhận rủi ro theo luật mới khi làm cho khách tài chính.</p>
+    </div>
+  </div>
+</div></section>
+
+<!-- THỊ TRƯỜNG VỐN -->
+<section id="thitruong"><div class="wrap">
+  <div class="sh"><h2>Thị trường vốn và nâng hạng</h2><span class="tag">Phiên 16:30 Emerging &amp; frontier</span></div>
+  <div class="two">
+    <div class="card"><div class="who">Hiện trạng</div>
+      <ul class="tight">
+        <li>Vĩ mô 2025: GDP +8,02%; FDI giải ngân khoảng 27,6 tỷ USD (+9%); tổng FDI đăng ký 38,4 tỷ USD, trong đó vốn dự án cấp mới 17,3 tỷ, điều chỉnh 14,1 tỷ, góp vốn mua cổ phần hơn 7 tỷ. Trong vốn cấp mới, Singapore dẫn đầu (4,8 tỷ USD), Nhật thứ 4 (1,6 tỷ USD). CPI +3,31%.</li>
+        <li>VN-Index tăng 41% năm 2025, cao nhất ASEAN (BCG).</li>
+        <li>FTSE: hiệu lực 21/09/2026, đưa vào chỉ số 4 đợt tới 09/2027; BCG ước 5-8 tỷ USD vốn mới.</li>
+        <li>MSCI (24/06/2026): chưa vào danh sách theo dõi; giới hạn sở hữu nước ngoài ảnh hưởng hơn 10% vốn hoá; 8/18 tiêu chí cần cải thiện; chờ hệ thống bù trừ trung tâm (CCP).</li>
+        <li>NĐ 245/2025 (11/09/2025): bỏ quyền điều lệ tự đặt giới hạn sở hữu nước ngoài thấp hơn; từ chấp thuận IPO tới giao dịch rút từ 90 xuống 30 ngày. TT 68/2024: công bố thông tin song ngữ.</li>
+      </ul>
+    </div>
+    <div class="card"><div class="who">Nói ở hội nghị</div>
+      <p class="en">FTSE has moved, MSCI has not. Foreign ownership limits still affect more than 10% of the market, so for foreign buyers control, minority stakes and liquidity remain the core valuation questions in Vietnam.</p>
+      <div class="who" style="margin-top:6px"><span class="inf">NHẬN ĐỊNH</span>Cơ hội</div>
+      <p>Dòng vốn mới qua chỉ số chủ yếu vào cổ phiếu niêm yết lớn; cơ hội cho team nằm ở giao dịch chiến lược đi kèm (mua cổ phần chi phối, IPO nhanh hơn theo NĐ 245) và câu hỏi chênh lệch giá khi hết room nước ngoài.</p>
+    </div>
+  </div>
+</div></section>
+
+<!-- M&A -->
+<section id="mna"><div class="wrap">
+  <div class="sh"><h2>M&amp;A và nhà mua nước ngoài</h2><span class="tag">Phiên 13:40 · tiệc</span></div>
+  <div class="two">
+    <div class="card"><div class="who">Hiện trạng (Grant Thornton, 02/2026)</div>
+      <ul class="tight">
+        <li>2025: 367 giao dịch, khoảng 8,7 tỷ USD, +26% về giá trị; 2024: 447 giao dịch, 6,9 tỷ USD. Ít giao dịch hơn nhưng lớn hơn.</li>
+        <li>Nước ngoài khoảng 53,6% giá trị. Thái Lan lớn nhất 1.298,3 triệu USD; Nhật 461,6 triệu USD, 22 giao dịch.</li>
+        <li>Ngành theo giá trị: công nghiệp 2.126 triệu USD, bất động sản 1.644 triệu, tiêu dùng 1.478 triệu, năng lượng 747 triệu, y tế 611 triệu.</li>
+        <li>Triển vọng 2026: deal cỡ vừa 50-200 triệu USD; nhà mua chiến lược dẫn dắt; nguồn deal từ chuyển giao thế hệ chủ, thoái vốn PE 2019-2020, thoái vốn nhà nước.</li>
+      </ul>
+    </div>
+    <div class="card"><div class="who">Giá trị M&amp;A Việt Nam (tỷ USD)</div>
+      <div class="bars" role="img" aria-label="2024 6,9 tỷ USD; 2025 8,7 tỷ USD">
+        <div class="bar"><span>2024 · 447 deal</span><i class="g" style="width:79%"></i><b>6,9</b></div>
+        <div class="bar"><span>2025 · 367 deal</span><i style="width:100%"></i><b>8,7</b></div>
+      </div>
+      <p class="why">Thang 0-8,7 tỷ USD. Nguồn: Grant Thornton, M&amp;A Outlook 2026.</p>
+      <div class="who" style="margin-top:6px">Nói ở hội nghị</div>
+      <p class="en">Vietnam M&amp;A rose to about USD 8.7 billion in 2025 with fewer, larger deals. Thailand was the largest foreign buyer by value, with Korean and Japanese strategics also active, and the outlook is for mid-sized deals of USD 50-200 million.</p>
+    </div>
+  </div>
+  <p class="why"><span class="inf">NHẬN ĐỊNH</span>Đúng tệp khách của team: nhà mua chiến lược, deal cỡ vừa. Ba ngành nên nói khi gặp nhà đầu tư: công nghiệp và logistics, năng lượng, y tế.</p>
+</div></section>
+
+<!-- PE VC -->
+<section id="pevc"><div class="wrap">
+  <div class="sh"><h2>PE, VC và private markets</h2><span class="tag">Phiên 14:30 · 14:50</span></div>
+  <div class="two">
+    <div class="card"><div class="who">Hiện trạng</div>
+      <ul class="tight">
+        <li>BCG cùng Vietnam Private Capital Agency và Trung tâm Đổi mới sáng tạo Quốc gia (NIC) (29/05/2026): PE và VC năm 2025 đạt 4,5 tỷ USD, 149 giao dịch; PE kỷ lục 4 tỷ USD; VC 509 triệu USD.</li>
+        <li>VinVentures (01/2026): VC năm 2025 khoảng 215 triệu USD, khoảng 41 giao dịch, năm giảm thứ năm liên tiếp. Hai nguồn đo khác nhau nên số VC lệch nhau; dùng kèm tên nguồn.</li>
+        <li>Grant Thornton nêu thoái vốn các khoản PE 2019-2020 là một nguồn deal năm 2026.</li>
+      </ul>
+    </div>
+    <div class="card"><div class="who">Nói ở hội nghị</div>
+      <p class="en">Private equity in Vietnam hit a record of about USD 4 billion in 2025, while venture funding stayed thin. The next wave is exits from 2019-2020 vintages, which need independent valuation.</p>
+      <div class="who" style="margin-top:6px"><span class="inf">NHẬN ĐỊNH</span>Cơ hội</div>
+      <p>Định giá phục vụ thoái vốn, continuation vehicle, báo cáo NAV cho quỹ; phiên pre-revenue ít liên quan vì VC Việt Nam còn nhỏ.</p>
+    </div>
+  </div>
+</div></section>
+
+<!-- TÍN DỤNG -->
+<section id="tindung"><div class="wrap">
+  <div class="sh"><h2>Tín dụng, trái phiếu và chỗ cho private credit</h2><span class="tag">Phiên 15:50 Private credit</span></div>
+  <div class="two">
+    <div class="card"><div class="who">Hiện trạng</div>
+      <ul class="tight">
+        <li>Tín dụng tăng 19,1% cả năm 2025 (số NHNN tới 24/12 là 17,87%, dư nợ hơn 18,4 triệu tỷ đồng, khoảng 670 tỷ USD).</li>
+        <li>Năm 2026: mục tiêu tín dụng 15%; NHNN vẫn phân bổ hạn mức cho từng tổ chức tín dụng theo điểm xếp hạng (dù Thủ tướng từng yêu cầu bỏ hạn mức từ 2026); tín dụng bất động sản không vượt mức tăng chung cuối 2025.</li>
+        <li>Tín dụng khoảng 135% GDP cuối 2024, mức Fitch đã lưu ý (tác giả bài viết cho rằng khoảng gấp đôi các nước cùng hạng rủi ro).</li>
+        <li>Trái phiếu doanh nghiệp phát hành 2025: 575,4 nghìn tỷ đồng (21,8 tỷ USD), +11,3%; 90,6% phát hành riêng lẻ; ngân hàng 67,7%, bất động sản 22,9%, chứng khoán 2,9% (Hiệp hội Thị trường Trái phiếu Việt Nam).</li>
+      </ul>
+    </div>
+    <div class="card"><div class="who">Cơ cấu trái phiếu doanh nghiệp phát hành 2025</div>
+      <div class="stackbar" role="img" aria-label="Ngân hàng 67,7%, bất động sản 22,9%, chứng khoán 2,9%, khác 6,5%">
+        <i style="width:67.7%;background:var(--accent)"></i><i style="width:22.9%;background:var(--navy2)"></i><i style="width:2.9%;background:var(--g1)"></i><i style="width:6.5%;background:var(--g2)"></i>
+      </div>
+      <div class="legend"><span><i style="background:var(--accent)"></i>Ngân hàng 67,7%</span><span><i style="background:var(--navy2)"></i>Bất động sản 22,9%</span><span><i style="background:var(--g1)"></i>Chứng khoán 2,9%</span><span><i style="background:var(--g2)"></i>Khác 6,5% (phần còn lại)</span></div>
+      <div class="who" style="margin-top:6px">Nói ở hội nghị</div>
+      <p class="en">Vietnam is a bank-led system: credit is around 135% of GDP and banks issue two-thirds of corporate bonds. Mid-sized companies outside the banks’ quotas are where private credit can step in.</p>
+    </div>
+  </div>
+  <p class="why"><span class="inf">NHẬN ĐỊNH</span>Chưa tìm được số quy mô private credit riêng cho Việt Nam. Hạn mức tín dụng và trái phiếu phát hành riêng lẻ là lý do để hỏi Brandon Aw, Yun Weizhong xem họ có nhìn Việt Nam không.</p>
+</div></section>
+
+<!-- TOKEN -->
+<section id="token"><div class="wrap">
+  <div class="sh"><h2>Token hoá tài sản</h2><span class="tag">Keynote 09:45 · phiên 17:20</span></div>
+  <div class="two">
+    <div class="card"><div class="who">Hiện trạng</div>
+      <ul class="tight">
+        <li>NQ 05/2025/NQ-CP ngày 09/09/2025: thí điểm 5 năm; sàn phải có vốn điều lệ tối thiểu 10.000 tỷ đồng, sở hữu nước ngoài tối đa 49%, ít nhất 65% vốn của tổ chức; tài sản mã hoá phải dựa trên tài sản thật, không dùng chứng khoán và tiền pháp định làm tài sản cơ sở.</li>
+        <li>Luật Công nghiệp công nghệ số (hiệu lực 01/01/2026) phân biệt tài sản ảo và tài sản mã hoá.</li>
+      </ul>
+    </div>
+    <div class="card"><div class="who">Nói ở hội nghị</div>
+      <p class="en">Vietnam opened a five-year pilot for tokenised assets in September 2025, limited to real underlying assets and with high capital thresholds for exchanges. It is early, but the legal base now exists.</p>
+      <div class="who" style="margin-top:6px"><span class="inf">NHẬN ĐỊNH</span>Cơ hội</div>
+      <p>Chưa phải mảng chính. Nếu bất động sản hoặc tài sản thật được token hoá, việc định giá tài sản cơ sở vẫn là việc của team.</p>
+    </div>
+  </div>
+</div></section>
+
+<!-- NGUỒN -->
+<section id="nguon"><div class="wrap">
+  <div class="sh"><h2>Nguồn</h2><span class="tag">Truy cập 22/10/2026</span></div>
+  <div class="tw"><table class="src">
+    <thead><tr><th>Dữ kiện</th><th>Nguồn</th><th>Ngày của nguồn</th></tr></thead>
+    <tbody>
+      <tr><td>TT 36/2024/TT-BTC: ký 16/05/2024, hiệu lực 01/07/2024, các phương pháp</td><td><a href="https://english.luatvietnam.vn/tai-chinh/circular-36-2024-tt-btc-vietnam-valuation-standards-on-enterprise-valuation-350709-d1.html" target="_blank" rel="noopener">LuatVietnam</a></td><td>16/05/2024</td></tr>
+      <tr><td>TT 37/2024 tài sản vô hình: ký 16/05/2024, hiệu lực 01/07/2024; phân loại; các phương pháp</td><td><a href="https://luatvietnam.vn/tai-chinh/thong-tu-37-2024-tt-btc-cua-bo-tai-chinh-ban-hanh-chuan-muc-tham-dinh-gia-viet-nam-ve-tham-dinh-gia-tai-san-vo-hinh-350215-d1.html" target="_blank" rel="noopener">LuatVietnam (TT 37)</a></td><td>16/05/2024</td></tr>
+      <tr><td>TT 42/2024: ký 20/06/2024, hiệu lực 05/08/2024, không áp dụng cho định giá đất</td><td><a href="https://luatvietnam.vn/tin-van-ban-moi/chuan-muc-tham-dinh-gia-bat-dong-san-tu-05-8-2024-186-98117-article.html" target="_blank" rel="noopener">LuatVietnam (TT 42)</a></td><td>20/06/2024</td></tr>
+      <tr><td>TT 30/2024: bốn chuẩn (đạo đức, phạm vi công việc, cơ sở giá trị, hồ sơ), ký 16/05/2024, hiệu lực 01/07/2024 · TT 31/2024: thu thập và phân tích thông tin, hiệu lực 01/07/2024 · TT 32/2024: ba cách tiếp cận, hiệu lực 01/07/2024, tối thiểu 3 tài sản so sánh trong 24 tháng</td><td><a href="https://pbgdpl.cantho.gov.vn/cac-chuan-muc-tham-dinh-gia-viet-nam-tu-ngay-0172024" target="_blank" rel="noopener">Cổng PBGDPL Cần Thơ (TT 30)</a> · <a href="https://luatvietnam.vn/tai-chinh/thong-tu-31-2024-tt-btc-chuan-muc-tham-dinh-gia-viet-nam-ve-tai-san-tham-dinh-gia-347183-d1.html" target="_blank" rel="noopener">LuatVietnam (TT 31)</a> · <a href="https://luatvietnam.vn/tai-chinh/thong-tu-32-2024-tt-btc-cua-bo-tai-chinh-ban-hanh-cac-chuan-muc-tham-dinh-gia-viet-nam-ve-cach-tiep-can-tu-thi-truong-cach-tiep-can-tu-chi-phi-cach-tiep-can-tu-thu-nhap-350700-d1.html" target="_blank" rel="noopener">LuatVietnam (TT 32)</a></td><td>16/05/2024</td></tr>
+      <tr><td>TT 99/2025/TT-BTC: ký 27/10/2025, áp dụng từ 01/01/2026, thay TT 200</td><td><a href="https://kpmg.com/vn/en/home/insights/2025/11/key-changes-in-vietnamese-accounting-system-for-enterprises.html" target="_blank" rel="noopener">KPMG Việt Nam</a></td><td>11/2025</td></tr>
+      <tr><td>Lộ trình IFRS theo QĐ 345/QĐ-BTC (16/03/2020)</td><td><a href="https://www.forvismazars.com/vn/en/insights/vietnam-updates/newsletters-alerts/accounting-insights/implementation-of-ifrs-in-vietnam" target="_blank" rel="noopener">Forvis Mazars</a></td><td>không ghi ngày</td></tr>
+      <tr><td>Luật SHTT sửa đổi: số 131/2025/QH15, 10/12/2025, hiệu lực 01/04/2026; định giá, góp vốn, thế chấp</td><td><a href="https://www.vietnam-briefing.com/news/vietnam-amends-intellectual-property-law-key-changes-for-businesses.html" target="_blank" rel="noopener">Vietnam Briefing</a> · <a href="https://english.luatvietnam.vn/law-amending-and-supplementing-a-number-of-articles-of-the-law-on-intellectual-property-dated-december-10-2025-of-the-national-assembly-no-131-2025-423358-doc1.html" target="_blank" rel="noopener">LuatVietnam</a></td><td>23/12/2025</td></tr>
+      <tr><td>Quy định chi tiết kế toán, công bố, định giá; tự định giá cho mục đích nội bộ; ghi lên bảng cân đối, dùng để vay</td><td><a href="https://english.mst.gov.vn/viet-nam-turns-intellectual-property-into-bankable-assets-in-new-law-19725121523085651.htm" target="_blank" rel="noopener">Bộ Khoa học và Công nghệ</a></td><td>15/12/2025</td></tr>
+      <tr><td>GII 2025: 44/139, thứ 3 ASEAN, thứ 2 nhóm thu nhập trung bình thấp</td><td><a href="https://vietnamnews.vn/economy/1725440/viet-nam-ranks-44th-in-2025-global-innovation-index.html" target="_blank" rel="noopener">Việt Nam News</a></td><td>18/09/2025</td></tr>
+      <tr><td>Luật Công nghiệp công nghệ số: 14/06/2025, 441/445, hiệu lực 01/01/2026; tài sản ảo và tài sản mã hoá</td><td><a href="https://www.vietnam-briefing.com/news/vietnam-passes-first-ever-law-on-digital-technology-industry.html" target="_blank" rel="noopener">Vietnam Briefing</a></td><td>19/06/2025</td></tr>
+      <tr><td>Luật AI: 10/12/2025, hiệu lực 01/03/2026; hạn 01/03/2027 và 01/09/2027; ba mức rủi ro</td><td><a href="https://www.bakermckenzie.com/en/insight/publications/2026/02/vietnam-artificial-intelligence-law-foundation-and-outlook" target="_blank" rel="noopener">Baker McKenzie</a> · <a href="https://apolatlegal.com/laws/law-on-artificial-intelligence-2025-no-134-2025-qh15/" target="_blank" rel="noopener">Apolat Legal (số 134/2025/QH15)</a></td><td>24/02/2026</td></tr>
+      <tr><td>PE và VC 2025: 4,5 tỷ USD, 149 giao dịch; PE 4 tỷ; VC 509 triệu; AI gấp 13 lần 2023; VN-Index +41%; FTSE có thể mang 5-8 tỷ USD</td><td><a href="https://www.bcg.com/publications/2026/vietnam-innovation-and-private-capital-report" target="_blank" rel="noopener">BCG · Vietnam Innovation and Private Capital Report</a></td><td>29/05/2026</td></tr>
+      <tr><td>VC 2025 khoảng 215 triệu USD, khoảng 41 giao dịch (VinVentures)</td><td><a href="https://vietnamnews.vn/economy/1763677/venture-capital-falls-for-fifth-straight-year-in-2025.html" target="_blank" rel="noopener">Việt Nam News</a></td><td>14/01/2026</td></tr>
+      <tr><td>GDP, FDI, CPI 2025; FDI theo nước (bài gọi 38,4 tỷ là “newly registered” nhưng số chi tiết cho thấy đây là tổng của cấp mới 17,3 tỷ, điều chỉnh 14,1 tỷ, góp vốn hơn 7 tỷ)</td><td><a href="https://www.vietnam-briefing.com/news/vietnam-economy-gdp-fdi-and-trade-2025.html" target="_blank" rel="noopener">Vietnam Briefing (dẫn Tổng cục Thống kê)</a></td><td>22/01/2026</td></tr>
+      <tr><td>FTSE hiệu lực 21/09/2026; 4 đợt tới 09/2027</td><td><a href="https://fortune.com/2026/09/24/vietnam-ftse-emerging-market-upgrade-foreign-investment-mismatch/" target="_blank" rel="noopener">Fortune</a> · <a href="https://www.lseg.com/en/insights/ftse-russell/why-vietnam-is-joining-the-ftse-geis" target="_blank" rel="noopener">LSEG</a></td><td>24/09/2026 · 06/05/2026</td></tr>
+      <tr><td>MSCI 2026: chưa vào danh sách theo dõi; trên 10% vốn hoá vướng giới hạn sở hữu; 8/18 tiêu chí; CCP</td><td><a href="https://vietnamnews.vn/economy/1784056/msci-keeps-viet-nam-off-upgrade-watch-list.html" target="_blank" rel="noopener">Việt Nam News</a></td><td>24/06/2026</td></tr>
+      <tr><td>NĐ 245/2025/NĐ-CP (11/09/2025); TT 68/2024 công bố song ngữ</td><td><a href="https://blogs.duanemorris.com/vietnam/2025/09/18/vietnam-new-decree-245-on-attracting-foreign-investment-and-accelerating-vietnams-market-upgrade-to-emerging-market-status/" target="_blank" rel="noopener">Duane Morris</a></td><td>18/09/2025</td></tr>
+      <tr><td>M&amp;A 2025 và 2024; theo nước; theo ngành; triển vọng 2026 (số Hàn Quốc không dùng vì chữ và biểu đồ không khớp)</td><td><a href="https://www.grantthornton.com.vn/contentassets/38fb344fef5e4fd4ba6c73db60642fdd/ma-outlook-2026---eng.pdf" target="_blank" rel="noopener">Grant Thornton · M&amp;A Outlook 2026</a></td><td>02/2026</td></tr>
+      <tr><td>Tín dụng 2025 tăng 19,1%; mục tiêu 2026 15%; vẫn phân bổ hạn mức theo điểm xếp hạng (TT 52/2018)</td><td><a href="https://vietnamnews.vn/economy/1763602/credit-growth-plans-at-15-in-2026-focusing-on-macroeconomic-stability.html" target="_blank" rel="noopener">Việt Nam News</a></td><td>13/01/2026</td></tr>
+      <tr><td>Tín dụng +17,87% (tới 24/12/2025), dư nợ hơn 18,4 triệu tỷ đồng</td><td><a href="https://happyvietnam.vnanet.vn/en/credit-growth-nears-18-in-2025-central-bank/50517.html" target="_blank" rel="noopener">TTXVN (họp báo NHNN 29/12/2025)</a></td><td>29/12/2025</td></tr>
+      <tr><td>Tín dụng khoảng 135% GDP cuối 2024 (Fitch); hạn mức tín dụng</td><td><a href="https://fulcrum.sg/article/commentaries/vietnam-should-keep-its-credit-caps-and-carry-on-structural-reforms/" target="_blank" rel="noopener">Fulcrum (ISEAS)</a></td><td>29/07/2025</td></tr>
+      <tr><td>Trái phiếu doanh nghiệp 2025: 575,4 nghìn tỷ đồng; 90,6% riêng lẻ; ngân hàng 67,7%, bất động sản 22,9%, chứng khoán 2,9%</td><td><a href="https://vietnamnews.vn/economy/1733106/corporate-bond-issuance-totalled-21-8-billion-in-2025.html" target="_blank" rel="noopener">Việt Nam News (dẫn VBMA)</a></td><td>03/01/2026</td></tr>
+      <tr><td>NQ 05/2025/NQ-CP: 09/09/2025; 5 năm; 10.000 tỷ đồng; 49%; 65% tổ chức; tài sản cơ sở</td><td><a href="https://www.dfdl.com/insights/legal-and-tax-updates/vietnam-government-sets-legal-framework-and-launches-pilot-program-for-tokenized-assets/" target="_blank" rel="noopener">DFDL</a></td><td>19/09/2025</td></tr>
+    </tbody>
+  </table></div>
+  <p class="why">Chưa có: số private credit riêng của Việt Nam; tình trạng giai đoạn IFRS bắt buộc sau 2025; nghị định hướng dẫn định giá SHTT (chưa thấy ban hành trong nguồn tìm được).</p>
+</div></section>
+</main>
+<footer><div class="wrap">Việt Nam trong bức tranh hội nghị · dựng 22/10/2026 · <a href="IVSC_2026_chuan_bi.html">Bộ chuẩn bị</a> · <a href="IVSC_2026_kien_thuc.html">Kiến thức 7 chủ đề</a></div></footer>
+
+<script>
+(function(){document.querySelectorAll('table.stack').forEach(function(t){var hs=[].map.call(t.querySelectorAll('thead th'),function(h){return h.textContent});t.querySelectorAll('tbody tr').forEach(function(tr){[].forEach.call(tr.children,function(td,i){td.setAttribute('data-label',hs[i]||'')})})})})();
+</script>
+</body>
+</html>

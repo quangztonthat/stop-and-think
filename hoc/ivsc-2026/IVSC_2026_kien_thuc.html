@@ -1,0 +1,424 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>IVAS-IVSC 2026 Briefing</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap">
+<style>
+:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+
+/* Layout: dải navy đầu trang, thanh mục dính, các mục full width; bảng cuộn ngang riêng; một font duy nhất */
+:root{
+  --navy:#1B2A5E; --accent:#1A9AFA; --ink:#22222B; --muted:#6E6E7C;
+  --rule:#D8D8E0; --g1:#747480; --g2:#C4C4CD; --g3:#ECECF2;
+  --bg:#FFFFFF; --card:#F6F7FA; --onnavy:#FFFFFF; --onnavy2:#C9D3EE;
+  --hi:#E8F4FF; --warn:#B4472B; --warnbg:#FBEDE8; --ok:#0D7575; --okbg:#E7F6F5;
+  --f:"Be Vietnam Pro","Segoe UI",Arial,sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --navy:#16224A; --accent:#5CB8FF; --ink:#ECEDF3; --muted:#A3A5B5; --rule:#363A4C;
+  --g1:#9A9CAD; --g2:#4A4E63; --g3:#23273A; --bg:#12141D; --card:#1A1D2A; --onnavy:#FFFFFF; --onnavy2:#AEB9DA;
+  --hi:#17304A; --warn:#F08A6C; --warnbg:#3A2420; --ok:#5FD3C8; --okbg:#15302F; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --navy:#16224A; --accent:#5CB8FF; --ink:#ECEDF3; --muted:#A3A5B5; --rule:#363A4C;
+  --g1:#9A9CAD; --g2:#4A4E63; --g3:#23273A; --bg:#12141D; --card:#1A1D2A; --onnavy:#FFFFFF; --onnavy2:#AEB9DA;
+  --hi:#17304A; --warn:#F08A6C; --warnbg:#3A2420; --ok:#5FD3C8; --okbg:#15302F; color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f);font-size:15px;line-height:1.55;font-variant-numeric:tabular-nums}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--navy)}
+.wrap{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3{font-family:var(--f);text-wrap:balance;margin:0}
+a{color:var(--accent)}
+/* Đầu trang */
+.hero{background:var(--navy);color:var(--onnavy)}
+.hero .wrap{padding-block:28px 22px;display:grid;gap:14px}
+.eyebrow{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--onnavy2);font-weight:600}
+.hero h1{font-size:clamp(24px,3.4vw,36px);font-weight:700;line-height:1.2}
+.hero .theme{color:var(--onnavy2);font-size:15px}
+.facts{display:flex;flex-wrap:wrap;gap:8px 22px;font-size:14px}
+.facts span b{color:var(--onnavy);font-weight:600}
+.facts span{color:var(--onnavy2)}
+/* Thanh mục */
+nav.tabs{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);border-bottom:1px solid var(--rule)}
+nav.tabs .wrap{display:flex;gap:4px;overflow-x:auto;padding-block:6px;scrollbar-width:none}
+nav.tabs a{flex:0 0 auto;text-decoration:none;color:var(--muted);font-weight:500;font-size:14px;padding:7px 12px;border-radius:6px}
+nav.tabs a:hover,nav.tabs a:focus-visible{background:var(--g3);color:var(--ink);outline:none}
+section{border-bottom:1px solid var(--rule)}
+section .wrap{padding-block:30px;display:grid;gap:18px}
+.sh{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+.sh h2{font-size:22px;font-weight:700}
+.sh .tag{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);font-weight:600}
+.lead{color:var(--muted);max-width:110ch;margin:0}
+/* Lưới thẻ */
+.grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+.card{background:var(--card);border:1px solid var(--rule);border-radius:8px;padding:16px;display:grid;gap:8px;align-content:start;min-width:0}
+.card h3{font-size:16px;font-weight:700}
+.card .who{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);font-weight:600}
+.card p{margin:0}
+.card .measure{font-size:13px;color:var(--muted);border-top:1px dashed var(--rule);padding-top:8px}
+.grid.g5{grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+ul.tight{margin:0;padding-left:18px;display:grid;gap:4px}
+/* Ô số */
+.kpis{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(170px,1fr))}
+.kpi{border-left:3px solid var(--accent);padding:4px 0 4px 12px}
+.kpi b{display:block;font-size:26px;font-weight:700;line-height:1.1}
+.kpi span{font-size:13px;color:var(--muted)}
+/* Flow gate */
+.flow{display:flex;gap:0;overflow-x:auto;padding-bottom:4px}
+.step{flex:1 0 150px;position:relative;background:var(--card);border:1px solid var(--rule);padding:12px 14px 12px 22px;margin-right:10px;min-width:0}
+.step::after{content:"";position:absolute;right:-11px;top:50%;transform:translateY(-50%);border:10px solid transparent;border-left-color:var(--rule)}
+.step:last-child::after{display:none}
+.step .g{font-weight:700;color:var(--accent);font-size:13px}
+.step .t{font-weight:600;font-size:14px}
+.step .d{font-size:12px;color:var(--muted)}
+.step.key{background:var(--hi);border-color:var(--accent)}
+.gates{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
+.gate{border:1px solid var(--rule);border-radius:8px;overflow:hidden;display:grid;align-content:start;min-width:0}
+.gate header{background:var(--navy);color:var(--onnavy);padding:10px 14px;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.gate header b{font-weight:700}
+.gate header span{color:var(--onnavy2);font-size:13px}
+.gate .body{padding:12px 14px;display:grid;gap:8px}
+.chk{display:flex;gap:10px;align-items:flex-start;font-size:14px;cursor:pointer}
+.chk input{margin-top:4px;width:17px;height:17px;accent-color:var(--accent);flex:0 0 auto}
+.chk input:checked + span{color:var(--muted);text-decoration:line-through}
+.exit{font-size:13px;background:var(--okbg);color:var(--ink);padding:8px 10px;border-radius:6px}
+.exit b{color:var(--ok)}
+.prog{font-size:13px;color:var(--muted)}
+/* Bảng */
+.tw{overflow-x:auto;border:1px solid var(--rule);border-radius:8px}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th{background:var(--navy);color:var(--onnavy);text-align:left;font-weight:600;padding:9px 12px;white-space:nowrap;font-size:13px}
+td{padding:9px 12px;border-top:1px solid var(--rule);vertical-align:top}
+tr.brk td{background:var(--g3);color:var(--muted);font-size:13px}
+tr.p3 td:first-child{box-shadow:inset 3px 0 0 var(--accent)}
+td.t{white-space:nowrap;font-weight:600}
+td.t small{display:block;font-weight:400;color:var(--muted)}
+.star{color:var(--accent);letter-spacing:1px;white-space:nowrap;font-weight:700}
+.star.dim{color:var(--g1);font-weight:400}
+@media (max-width:700px){
+  table.stack thead{display:none}
+  table.stack,table.stack tbody,table.stack tr,table.stack td{display:block;width:100%}
+  table.stack tr{border-top:1px solid var(--rule);padding-block:8px}
+  table.stack tr:first-child{border-top:0}
+  table.stack td{border:0;padding:3px 12px;white-space:normal}
+  table.stack td[data-label]::before{content:attr(data-label);display:block;font-size:11px;color:var(--muted);font-weight:600;letter-spacing:.05em;text-transform:uppercase}
+  table.stack tr.p3{box-shadow:inset 3px 0 0 var(--accent)}
+  table.stack tr.p3 td:first-child{box-shadow:none}
+  table.stack tr.brk{background:var(--g3)}
+  .contacts input{min-width:0}
+  table.sched tr:not(.brk),table.ppl tr{display:grid;grid-template-columns:1fr auto;column-gap:10px}
+  table.sched td,table.ppl td{grid-column:1 / -1}
+  table.sched td.t,table.ppl td:nth-child(2){grid-column:1;grid-row:1}
+  table.sched td.star,table.ppl td.star{grid-column:2;grid-row:1;align-self:start}
+  table.sched td.t::before,table.sched td.star::before,table.ppl td.star::before,table.ppl td:nth-child(2)::before{display:none}
+  table.ppl td:nth-child(2){font-size:16px}
+}
+.pill{display:inline-block;font-size:11px;font-weight:600;letter-spacing:.04em;padding:2px 8px;border-radius:99px;background:var(--hi);color:var(--accent);white-space:nowrap}
+.pill.ey{background:var(--navy);color:var(--onnavy)}
+/* Câu hỏi */
+.qs{display:grid;gap:14px}
+.q{border:1px solid var(--rule);border-radius:8px;display:grid;grid-template-columns:minmax(200px,260px) 1fr;min-width:0;overflow:hidden}
+.q .meta{background:var(--card);padding:14px;display:grid;gap:6px;align-content:start;border-right:1px solid var(--rule)}
+.q .meta b{font-size:15px}
+.q .meta span{font-size:13px;color:var(--muted)}
+.q .ask{padding:14px;display:grid;gap:10px;min-width:0}
+.en{font-size:15px;border-left:3px solid var(--accent);padding:2px 0 2px 12px;margin:0}
+.en.b{border-left-color:var(--g2);color:var(--muted);font-size:14px}
+.why{font-size:13px;color:var(--muted);margin:0}
+.why b{color:var(--ink);font-weight:600}
+.copy{justify-self:start;font-family:var(--f);font-size:12px;font-weight:600;border:1px solid var(--rule);background:var(--bg);color:var(--ink);border-radius:6px;padding:4px 10px;cursor:pointer}
+.copy:hover,.copy:focus-visible{border-color:var(--accent);color:var(--accent);outline:none}
+@media (max-width:700px){.q{grid-template-columns:1fr}.q .meta{border-right:0;border-bottom:1px solid var(--rule)}}
+/* Hộp */
+.box{border-radius:8px;padding:12px 14px;font-size:14px}
+.box.warn{background:var(--warnbg);border:1px solid var(--warn)}
+.box.warn b{color:var(--warn)}
+.box.info{background:var(--hi);border:1px solid var(--accent)}
+.pitch{font-size:16px;line-height:1.6;margin:0;max-width:95ch}
+pre.mail{white-space:pre-wrap;font-family:var(--f);font-size:14px;margin:0;background:var(--bg);border:1px solid var(--rule);border-radius:6px;padding:12px;max-width:95ch}
+/* Ghi chép */
+.notes{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(320px,1fr))}
+.note{border:1px solid var(--rule);border-radius:8px;padding:12px;display:grid;gap:8px;min-width:0}
+.note h3{font-size:14px;font-weight:700}
+.note h3 small{display:block;font-weight:400;color:var(--muted);font-size:12px}
+label.l{font-size:12px;color:var(--muted);font-weight:600;letter-spacing:.03em}
+textarea,input[type=text]{width:100%;font-family:var(--f);font-size:14px;color:var(--ink);background:var(--bg);border:1px solid var(--rule);border-radius:6px;padding:8px}
+textarea{min-height:56px;resize:vertical}
+textarea:focus,input[type=text]:focus{outline:2px solid var(--accent);outline-offset:-1px;border-color:var(--accent)}
+.btns{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.btn{font-family:var(--f);font-size:14px;font-weight:600;border:0;border-radius:6px;padding:9px 16px;cursor:pointer;background:var(--accent);color:#fff}
+.btn.sec{background:var(--g3);color:var(--ink)}
+.btn:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+#saved{font-size:13px;color:var(--muted)}
+.contacts td{padding:6px 8px}
+.contacts input{min-width:130px}
+/* Căn cứ */
+.src td:nth-child(3){white-space:nowrap}
+.inf{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.04em;color:var(--warn);border:1px solid var(--warn);border-radius:4px;padding:0 5px;margin-right:4px}
+footer .wrap{padding-block:20px;color:var(--muted);font-size:13px}
+@media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+html{scroll-behavior:smooth}
+section{scroll-margin-top:52px}
+
+.two{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(320px,1fr))}
+.kpis.k7{grid-template-columns:repeat(auto-fit,minmax(165px,1fr))}
+.kpi b{font-size:22px}
+a.back{color:var(--onnavy);font-weight:600;text-decoration:underline;text-underline-offset:3px}
+.flow .step .g{white-space:nowrap}
+.bars{display:grid;gap:10px}
+.bar{display:grid;grid-template-columns:120px 1fr 44px;align-items:center;gap:10px;font-size:14px}
+.bar i{display:block;height:16px;background:var(--accent);border-radius:2px}
+.bar i.g{background:var(--g1)}
+.bar b{text-align:right;font-weight:700}
+.card p{margin:0}
+@media (max-width:420px){.bar{grid-template-columns:96px 1fr 40px}}
+</style>
+</head>
+<body>
+<header class="hero">
+  <div class="wrap">
+    <div class="eyebrow">Cập nhật kiến thức trước hội nghị · đọc tối 22/10</div>
+    <h1>Bảy chủ đề cần nắm trước khi vào phòng</h1>
+    <div class="theme">Mỗi chủ đề: gắn với phiên nào · nắm trong 30 giây · số liệu có nguồn · câu nói được ở cấp partner · ý nghĩa cho EY-Parthenon Việt Nam.</div>
+    <div class="facts"><span><a class="back" href="IVSC_2026_chuan_bi.html">Quay lại bộ chuẩn bị</a></span><span><a class="back" href="IVSC_2026_viet_nam.html">Việt Nam với từng chủ đề</a></span><span>Số liệu truy cập 22/10/2026</span></div>
+  </div>
+</header>
+
+<nav class="tabs" aria-label="Các chủ đề">
+  <div class="wrap">
+    <a href="#nho">Con số cần nhớ</a><a href="#ivs">IVS</a><a href="#vohinh">Intangibles</a><a href="#ai">AI</a><a href="#thucap">Secondaries</a><a href="#tindung">Private credit</a><a href="#vn">Việt Nam</a><a href="#token">Tokenisation</a><a href="IVSC_2026_viet_nam.html">Việt Nam trong hội nghị</a>
+  </div>
+</nav>
+
+<main>
+<section id="nho"><div class="wrap">
+  <div class="sh"><h2>Bảy con số mang vào phòng</h2><span class="tag">Tóm tắt</span></div>
+  <div class="kpis k7">
+    <div class="kpi"><b>31/01/2028</b><span>IVS mới dự kiến có hiệu lực (IVSC)</span></div>
+    <div class="kpi"><b>97 nghìn tỷ USD</b><span>giá trị tài sản vô hình doanh nghiệp toàn cầu 2025 (WIPO, Brand Finance)</span></div>
+    <div class="kpi"><b>240 tỷ USD</b><span>giao dịch thứ cấp PE 2025, cao nhất từ trước tới nay (Jefferies)</span></div>
+    <div class="kpi"><b>~1,7 nghìn tỷ USD</b><span>tín dụng tư nhân đang quản lý (Preqin, báo cáo 12/2024)</span></div>
+    <div class="kpi"><b>8,02%</b><span>tăng trưởng GDP Việt Nam 2025 (GSO)</span></div>
+    <div class="kpi"><b>8,7 tỷ USD</b><span>giá trị M&amp;A Việt Nam 2025, 367 giao dịch (Grant Thornton)</span></div>
+    <div class="kpi"><b>21/09/2026</b><span>Việt Nam vào nhóm mới nổi của FTSE Russell</span></div>
+  </div>
+</div></section>
+
+<!-- IVS -->
+<section id="ivs"><div class="wrap">
+  <div class="sh"><h2>IVS: từ bản 2025 đến bản dự kiến hiệu lực 2028</h2><span class="tag">Phiên 13:40 Emerging Asia · Konialidis, Andre Toh</span></div>
+  <div class="flow" aria-label="Mốc thời gian IVS">
+    <div class="step"><div class="g">31/01/2025</div><div class="t">IVS 2025 có hiệu lực</div><div class="d">thêm IVS 104, 105</div></div>
+    <div class="step"><div class="g">30/01-30/04/2026</div><div class="t">Lấy ý kiến dự thảo</div><div class="d">đã đóng</div></div>
+    <div class="step key"><div class="g">31/01/2027</div><div class="t">Dự kiến ban hành</div><div class="d">nếu ý kiến ủng hộ</div></div>
+    <div class="step key"><div class="g">31/01/2028</div><div class="t">Dự kiến hiệu lực</div><div class="d">IVS 107 mới</div></div>
+  </div>
+  <div class="two">
+    <div class="card"><div class="who">Nắm trong 30 giây</div>
+      <ul class="tight">
+        <li><b>IVS 2025</b> đã thêm hai chuẩn riêng về <b>dữ liệu đầu vào (IVS 104)</b> và <b>mô hình định giá (IVS 105)</b>, thêm khái niệm soát xét định giá (valuation review) và phụ lục ESG.</li>
+        <li><b>Dự thảo cho bản 2028</b> thêm yêu cầu khi dùng AI hoặc công nghệ ở mức đáng kể (IVS 101, 104, 105, 106), thêm chương mới <b>IVS 107 Quality Controls</b> bắt buộc.</li>
+        <li><b>IVS 200 (doanh nghiệp)</b> trong dự thảo: thêm phần <b>calibration</b>, và <b>Scenario-Based Methods</b> thay đoạn PWERM hiện tại. Đây là chỗ nối với phiên pre-revenue và phiên private markets.</li>
+      </ul>
+    </div>
+    <div class="card"><div class="who">Câu nói được</div>
+      <p class="en">The next IVS makes quality controls mandatory and sets requirements for AI use. Clients will start asking how a valuation was produced, not only what the number is.</p>
+      <div class="who" style="margin-top:6px"><span class="inf">NHẬN ĐỊNH</span>Ý nghĩa cho EY-P Việt Nam</div>
+      <p>Định giá theo IVS có kiểm soát chất lượng là điểm khác biệt so với bên làm trong nước. Nên rà lại mẫu hồ sơ và quy trình soát xét trước 2028, và dùng điều này khi chào khách nước ngoài.</p>
+    </div>
+  </div>
+  <div class="tw"><table>
+    <thead><tr><th>Dữ kiện</th><th>Nguồn</th><th>Ngày</th></tr></thead>
+    <tbody>
+      <tr><td>IVS 2025: IVS 104 Data and Inputs, IVS 105 Valuation Models là phần mới; IVS 101 thêm Valuation Review; phụ lục ESG trong IVS 104</td><td><a href="https://acumentis.com.au/news/new-international-valuation-standards-ivs-effective-january-2025" target="_blank" rel="noopener">Acumentis</a></td><td>30/01/2025</td></tr>
+      <tr><td>Dự thảo: thêm yêu cầu dùng AI ở IVS 101, 104, 105, 106; IVS 107 Quality Controls bắt buộc; IVS 200 thêm calibration, Scenario-Based Methods thay PWERM</td><td><a href="https://ivsc.org/_ivs_effective_31_january-2028_exposure-draft-summary-and-consultation-questions-final_" target="_blank" rel="noopener">IVSC · Summary and Consultation Questions</a></td><td>01/2026</td></tr>
+      <tr><td>Lấy ý kiến 30/01-30/04/2026; ban hành 01/2027, hiệu lực 01/2028</td><td><a href="https://ivsc.org/consultations/ivs-exposure-draft-for-consultation-2026/" target="_blank" rel="noopener">IVSC · Exposure Draft 2026</a></td><td>01/2026</td></tr>
+      <tr><td>Chuẩn thẩm định giá Việt Nam về định giá doanh nghiệp: Thông tư 36/2024/TT-BTC, ký 16/05/2024, hiệu lực 01/07/2024 (so sánh công ty niêm yết, so sánh giao dịch; tài sản; DCF, chiết khấu cổ tức, FCFE)</td><td><a href="https://english.luatvietnam.vn/tai-chinh/circular-36-2024-tt-btc-vietnam-valuation-standards-on-enterprise-valuation-350709-d1.html" target="_blank" rel="noopener">LuatVietnam</a></td><td>16/05/2024</td></tr>
+    </tbody>
+  </table></div>
+</div></section>
+
+<!-- INTANGIBLES -->
+<section id="vohinh"><div class="wrap">
+  <div class="sh"><h2>Intangibles: gần 100 nghìn tỷ USD, phần lớn không lên bảng cân đối</h2><span class="tag">Phiên 10:30 · Chua Ai Leng, Tan Kong Hwee (IPOS)</span></div>
+  <div class="two">
+    <div class="card"><div class="who">Nắm trong 30 giây</div>
+      <ul class="tight">
+        <li>Giá trị tài sản vô hình doanh nghiệp toàn cầu vượt <b>97 nghìn tỷ USD năm 2025</b>, tăng 23% so với 2024.</li>
+        <li>Theo cùng nguồn, <b>79-83%</b> giá trị đó là phần chuẩn mực kế toán không cho ghi lên bảng cân đối.</li>
+        <li>Singapore ra <b>Intangibles Disclosure Framework</b> ngày 04/09/2023 (IPOS, ACRA), <b>tự nguyện</b>, bốn trụ: chiến lược, nhận diện, đo lường, quản lý. Định nghĩa tài sản vô hình trùng câu chữ của IVS 210.</li>
+        <li>IASB đang rà soát toàn diện <b>IAS 38</b>, còn ở giai đoạn khám phá; họp 22/09/2026 chưa có quyết định, mốc tiếp là chọn hướng dự án.</li>
+      </ul>
+    </div>
+    <div class="card"><div class="who">Câu nói được</div>
+      <p class="en">Intangibles are close to USD 100 trillion globally, and most of that value never reaches the balance sheet. For many companies, the PPA is the only moment it is measured. Buyers who look at it before signing negotiate better.</p>
+      <div class="who" style="margin-top:6px"><span class="inf">NHẬN ĐỊNH</span>Ý nghĩa cho EY-P Việt Nam</div>
+      <p>Chào định giá tài sản vô hình trước khi ký deal, không chỉ PPA sau deal. Dự án IAS 38 còn sớm, chưa nên nói như một thay đổi chắc chắn.</p>
+    </div>
+  </div>
+  <div class="tw"><table>
+    <thead><tr><th>Dữ kiện</th><th>Nguồn</th><th>Ngày</th></tr></thead>
+    <tbody>
+      <tr><td>“Intangible assets crossed USD 97 trillion in 2025 … growing 23% from 2024”; 79-83% giá trị nằm ngoài bảng cân đối; dữ liệu Brand Finance GIFT 2025, khoảng 72.500 công ty</td><td><a href="https://www.wipo.int/es/web/global-innovation-index/w/blogs/2026/the-value-of-corporate-intangible-assets-worldwide" target="_blank" rel="noopener">WIPO · GII Insight</a></td><td>31/03/2026</td></tr>
+      <tr><td>Intangibles Disclosure Framework: 04/09/2023, IPOS và ACRA, tự nguyện, bốn trụ</td><td><a href="https://www.ipos.gov.sg/news/news-collection/new-framework-to-disclose-intangible-assets/" target="_blank" rel="noopener">IPOS</a></td><td>04/09/2023</td></tr>
+      <tr><td>Định nghĩa trong khung: “a non-monetary resource that manifests itself by its economic properties … does not have physical substance but grants rights and/or economic benefits to its owner” (cùng câu chữ IVS 210); khung lấy định nghĩa từ IVS 210</td><td><a href="https://www.allenandgledhill.com/sg/publication/articles/26237/ipos-and-acra-launch-intangibles-disclosure-framework-to-disclose-and-communicate-value-of-intangible-assets" target="_blank" rel="noopener">Allen &amp; Gledhill</a> · <a href="https://training.ivsc.org/?p=4839" target="_blank" rel="noopener">IVSC Training</a></td><td>09/2023 · 06/2026</td></tr>
+      <tr><td>IASB rà soát IAS 38: hai mảng (nhu cầu thông tin của người dùng; định nghĩa và tiêu chí ghi nhận, lấy SaaS làm ca thử); 22/09/2026 không có quyết định</td><td><a href="https://www.ifrs.org/projects/work-plan/intangible-assets" target="_blank" rel="noopener">IFRS Foundation</a></td><td>truy cập 22/10/2026</td></tr>
+    </tbody>
+  </table></div>
+</div></section>
+
+<!-- AI -->
+<section id="ai"><div class="wrap">
+  <div class="sh"><h2>AI trong định giá: hỗ trợ người định giá, không thay thế</h2><span class="tag">Phiên 11:20-12:20 · Dave Wang, Loh Yee Chuan, Sng Ren Yeong</span></div>
+  <div class="two">
+    <div class="card"><div class="who">Nắm trong 30 giây</div>
+      <ul class="tight">
+        <li>IVSC ra Perspectives Paper <b>“Navigating the Rise of AI in Valuation”</b> ngày 23/07/2025: AI hỗ trợ được nhưng không thay người định giá; rủi ro về minh bạch, kiểm soát chất lượng, bảo mật.</li>
+        <li>Dự thảo IVS 2028 đưa yêu cầu về AI vào phạm vi công việc, dữ liệu, mô hình, báo cáo. Đề xuất sửa IVS 105 nói rõ xét đoán thuộc về người định giá.</li>
+        <li>Khảo sát trong webinar IVSC và 73 Strings: hơn 50% kỳ vọng định giá theo tháng, tuần hoặc khi cần; chưa tới 1/6 công ty đủ khả năng chạy lại định giá ngay khi thị trường biến động.</li>
+        <li>IPEV Valuation Guidelines 2025 (áp dụng từ 01/04/2026) đồng ý với kết luận của IVSC về mô hình tự động và AI.</li>
+      </ul>
+    </div>
+    <div class="card"><div class="who">Câu nói được</div>
+      <p class="en">The standard setters are aligned: AI can support the valuer, but the judgement stays with the valuer. The firms that win will be the ones whose work is fast and still explainable.</p>
+      <div class="who" style="margin-top:6px"><span class="inf">NHẬN ĐỊNH</span>Ý nghĩa cho EY-P Việt Nam</div>
+      <p>Khách sẽ hỏi “các anh dùng AI thế nào”. Chuẩn bị sẵn câu trả lời: dùng ở đâu, ai kiểm, truy vết thế nào. Nhu cầu định giá thường xuyên hơn là cơ hội cho dịch vụ định kỳ với quỹ.</p>
+    </div>
+  </div>
+  <div class="tw"><table>
+    <thead><tr><th>Dữ kiện</th><th>Nguồn</th><th>Ngày</th></tr></thead>
+    <tbody>
+      <tr><td>Perspectives Paper về AI; “while AI can be a powerful tool to support valuers, it cannot replace them”</td><td><a href="https://ivsc.org/?p=11301" target="_blank" rel="noopener">IVSC</a></td><td>23/07/2025</td></tr>
+      <tr><td>“50%+” kỳ vọng định giá theo tháng, tuần hoặc khi cần; “&lt;1 in 6” công ty đủ khả năng chạy lại ngay; Valuation Pulse ra mắt 05/2026; IPEV 2025 áp dụng từ 01/04/2026</td><td><a href="https://training.ivsc.org/?p=4868" target="_blank" rel="noopener">IVSC Training · AI arrives in valuation</a></td><td>15/06/2026</td></tr>
+    </tbody>
+  </table></div>
+</div></section>
+
+<!-- SECONDARIES -->
+<section id="thucap"><div class="wrap">
+  <div class="sh"><h2>Private markets: thị trường thứ cấp lập kỷ lục</h2><span class="tag">Phiên 14:50 · Alex Ma, Kon Yin Tong</span></div>
+  <div class="two">
+    <div class="card"><div class="who">Nắm trong 30 giây</div>
+      <ul class="tight">
+        <li>Giao dịch thứ cấp toàn cầu năm 2025: <b>240 tỷ USD</b>, tăng 48%, cao nhất từ trước tới nay. LP-led 125 tỷ, GP-led 115 tỷ.</li>
+        <li>Giá mua so với NAV: buyout 92%, tín dụng 91%, venture và growth 78%, bình quân danh mục LP 87%.</li>
+        <li>Jefferies kỳ vọng nửa đầu 2026 vượt 100 tỷ USD và cả năm có thể tiến tới 300 tỷ USD trong 12-24 tháng.</li>
+      </ul>
+    </div>
+    <div class="card"><div class="who">Giá mua thứ cấp so với NAV, 2025</div>
+      <div class="bars" role="img" aria-label="Buyout 92%, tín dụng 91%, bình quân 87%, venture 78% so với NAV">
+        <div class="bar"><span>Buyout</span><i style="width:92%"></i><b>92%</b></div>
+        <div class="bar"><span>Tín dụng</span><i style="width:91%"></i><b>91%</b></div>
+        <div class="bar"><span>Bình quân LP</span><i class="g" style="width:87%"></i><b>87%</b></div>
+        <div class="bar"><span>Venture, growth</span><i style="width:78%"></i><b>78%</b></div>
+      </div>
+      <p class="why">Thang 0-100% NAV. Nguồn: Jefferies, 10/02/2026.</p>
+    </div>
+  </div>
+  <div class="two">
+    <div class="card"><div class="who">Câu nói được</div>
+      <p class="en">Secondaries hit a record USD 240 billion in 2025, and venture stakes still trade at around 78% of NAV. That gap between price and reported value is exactly where independent valuation earns its fee.</p>
+    </div>
+    <div class="card"><div class="who"><span class="inf">NHẬN ĐỊNH</span>Ý nghĩa cho EY-P Việt Nam</div>
+      <p>Grant Thornton nêu thoái vốn của các khoản PE đầu tư 2019-2020 là một nguồn deal năm 2026 ở Việt Nam. Đó là nhu cầu định giá cho continuation vehicle, fairness và báo cáo NAV.</p>
+    </div>
+  </div>
+  <div class="tw"><table>
+    <thead><tr><th>Dữ kiện</th><th>Nguồn</th><th>Ngày</th></tr></thead>
+    <tbody>
+      <tr><td>240 tỷ USD (+48%); LP-led 125 tỷ, GP-led 115 tỷ; giá 92/91/78/87% NAV; H1 2026 trên 100 tỷ; hướng tới 300 tỷ</td><td><a href="https://www.jefferies.com/insights/the-big-picture/2025-global-secondary-market-review-another-record-breaking-year/" target="_blank" rel="noopener">Jefferies · 2025 Global Secondary Market Review</a></td><td>10/02/2026</td></tr>
+    </tbody>
+  </table></div>
+</div></section>
+
+<!-- PRIVATE CREDIT -->
+<section id="tindung"><div class="wrap">
+  <div class="sh"><h2>Private credit: châu Á - Thái Bình Dương tăng nhanh nhất</h2><span class="tag">Phiên 15:50 · Brandon Aw, Yun Weizhong</span></div>
+  <div class="two">
+    <div class="card"><div class="who">Nắm trong 30 giây</div>
+      <ul class="tight">
+        <li>Tín dụng tư nhân toàn cầu khoảng <b>1,7 nghìn tỷ USD</b> đang quản lý (Preqin, 12/2024); Preqin dự báo 2,64 nghìn tỷ năm 2029, Moody’s dự báo 3 nghìn tỷ năm 2028.</li>
+        <li>IMF (04/2024) tính cả vốn cam kết thì đã vượt 2,1 nghìn tỷ USD, khoảng 3/4 ở Mỹ; cảnh báo chuẩn cho vay và điều khoản lỏng dần.</li>
+        <li>Châu Á - Thái Bình Dương được kỳ vọng tăng nhanh nhất năm 2026: ngân hàng rút về khách lớn; nhu cầu tập trung ở bất động sản, trung tâm dữ liệu, chuyển dịch năng lượng; lan sang Hàn Quốc, Malaysia, Thái Lan và một phần Đông Nam Á.</li>
+      </ul>
+    </div>
+    <div class="card"><div class="who">Câu nói được</div>
+      <p class="en">As regional banks step back to their largest borrowers, private credit is filling the gap in Asia. Those lenders need independent views on the business and the collateral, at entry and through the life of the loan.</p>
+      <div class="who" style="margin-top:6px"><span class="inf">NHẬN ĐỊNH</span>Ý nghĩa cho EY-P Việt Nam</div>
+      <p>Nhóm khách mới: quỹ tín dụng tư nhân. Dịch vụ: định giá doanh nghiệp vay, tài sản đảm bảo, theo dõi định kỳ. Nguồn chưa nêu riêng Việt Nam, nên hỏi trực tiếp ở phiên 15:50.</p>
+    </div>
+  </div>
+  <div class="tw"><table>
+    <thead><tr><th>Dữ kiện</th><th>Nguồn</th><th>Ngày</th></tr></thead>
+    <tbody>
+      <tr><td>Khoảng 1,7 nghìn tỷ USD (Preqin, 12/2024); 2,64 nghìn tỷ năm 2029 (Preqin); 3 nghìn tỷ năm 2028 (Moody’s, 21/01/2025)</td><td><a href="https://www.brookfield.com/views-news/insights/private-credit-opportunities-universe-keeps-expanding" target="_blank" rel="noopener">Brookfield (dẫn Preqin, Moody’s)</a></td><td>03/2025</td></tr>
+      <tr><td>“topped $2.1 trillion globally last year in assets and committed capital”</td><td><a href="https://www.opalesque.com/702538/IMF_warns_of_in_rapidly_growing253.html" target="_blank" rel="noopener">Opalesque (dẫn blog IMF 08/04/2024)</a></td><td>09/04/2024</td></tr>
+      <tr><td>APAC tăng nhanh nhất 2026; động lực và ngành; lan sang Đông Nam Á</td><td><a href="https://www.garp.org/risk-intelligence/credit/why-asia-pacific-260106" target="_blank" rel="noopener">GARP (Michel Lowy, SC Lowy)</a></td><td>06/02/2026</td></tr>
+    </tbody>
+  </table></div>
+</div></section>
+
+<!-- VIETNAM -->
+<section id="vn"><div class="wrap">
+  <div class="sh"><h2>Việt Nam: tăng trưởng 8%, vào FTSE mới nổi, MSCI chưa</h2><span class="tag">Phiên 16:30 Emerging &amp; frontier · Teo Yee Hean, McLaren</span></div>
+  <div class="two">
+    <div class="card"><div class="who">Nắm trong 30 giây</div>
+      <ul class="tight">
+        <li><b>Vĩ mô 2025:</b> GDP +8,02%; FDI giải ngân khoảng 27,6 tỷ USD (+9%); FDI đăng ký mới 38,4 tỷ USD; xuất khẩu 475 tỷ USD; CPI +3,31%.</li>
+        <li><b>FTSE:</b> xác nhận 07/04/2026, có hiệu lực 21/09/2026; đưa vào chỉ số 4 đợt đến 09/2027.</li>
+        <li><b>MSCI (24/06/2026):</b> vẫn chưa đưa Việt Nam vào danh sách theo dõi nâng hạng; trở ngại lớn nhất là giới hạn sở hữu nước ngoài, ảnh hưởng hơn 10% vốn hoá.</li>
+        <li><b>M&amp;A 2025:</b> 8,7 tỷ USD, 367 giao dịch (2024: 6,9 tỷ USD, 447 giao dịch). Nhà đầu tư nước ngoài chiếm khoảng 53,6% giá trị; Thái Lan lớn nhất (1,3 tỷ USD); Nhật 461,6 triệu USD, 22 giao dịch.</li>
+        <li><b>Triển vọng 2026 (Grant Thornton):</b> deal cỡ vừa 50-200 triệu USD, nhà mua chiến lược dẫn dắt; ngành ưu tiên y tế, năng lượng, giáo dục, công nghiệp và logistics.</li>
+      </ul>
+    </div>
+    <div class="card"><div class="who">Câu nói được</div>
+      <p class="en">Vietnam grew 8% last year and joined FTSE emerging in September, but MSCI still points to foreign ownership limits. For buyers, that keeps minority stakes, control and liquidity at the centre of every valuation.</p>
+      <div class="who" style="margin-top:6px"><span class="inf">NHẬN ĐỊNH</span>Ý nghĩa cho EY-P Việt Nam</div>
+      <p>Tệp khách đúng là nhà mua chiến lược, deal cỡ vừa. Ba ngành nên nói khi gặp nhà đầu tư: y tế, năng lượng, công nghiệp và logistics. Giới hạn sở hữu nước ngoài là đề tài chuyên môn tốt để mở chuyện với McLaren và Roger Loh.</p>
+    </div>
+  </div>
+  <div class="tw"><table>
+    <thead><tr><th>Dữ kiện</th><th>Nguồn</th><th>Ngày</th></tr></thead>
+    <tbody>
+      <tr><td>GDP 8,02%; FDI đăng ký mới 38,4 tỷ, giải ngân khoảng 27,6 tỷ USD; xuất khẩu 475 tỷ USD; CPI 3,31% (dẫn Tổng cục Thống kê)</td><td><a href="https://www.vietnam-briefing.com/news/vietnam-economy-gdp-fdi-and-trade-2025.html" target="_blank" rel="noopener">Vietnam Briefing</a></td><td>22/01/2026</td></tr>
+      <tr><td>FTSE: xác nhận 07/04/2026, hiệu lực 21/09/2026</td><td><a href="https://en.vietstock.vn/2026/04/ftse-russell-confirms-vietnam-market-reclassification-36-630315.htm" target="_blank" rel="noopener">Vietstock</a></td><td>08/04/2026</td></tr>
+      <tr><td>Đưa vào chỉ số 4 đợt, 09/2026 đến 09/2027</td><td><a href="https://www.lseg.com/en/insights/ftse-russell/why-vietnam-is-joining-the-ftse-geis" target="_blank" rel="noopener">LSEG</a></td><td>06/05/2026</td></tr>
+      <tr><td>Đã có hiệu lực: “On Sept. 21, Vietnamese stocks entered FTSE Russell’s emerging market ranks”</td><td><a href="https://fortune.com/2026/09/24/vietnam-ftse-emerging-market-upgrade-foreign-investment-mismatch/" target="_blank" rel="noopener">Fortune</a></td><td>24/09/2026</td></tr>
+      <tr><td>MSCI chưa đưa vào danh sách theo dõi; giới hạn sở hữu nước ngoài ảnh hưởng hơn 10% vốn hoá; 8/18 tiêu chí cần cải thiện</td><td><a href="https://vietnamnews.vn/economy/1784056/msci-keeps-viet-nam-off-upgrade-watch-list.html" target="_blank" rel="noopener">Việt Nam News</a></td><td>24/06/2026</td></tr>
+      <tr><td>M&amp;A 2025: 8.715 triệu USD, 367 giao dịch; Thái Lan 1.298,3 triệu; Nhật 461,6 triệu, 22 giao dịch; trong nước 46,4%; triển vọng 2026 (số liệu Hàn Quốc trong báo cáo không khớp giữa chữ và biểu đồ nên không dùng)</td><td><a href="https://www.grantthornton.com.vn/contentassets/38fb344fef5e4fd4ba6c73db60642fdd/ma-outlook-2026---eng.pdf" target="_blank" rel="noopener">Grant Thornton · M&amp;A Outlook 2026</a></td><td>02/2026</td></tr>
+    </tbody>
+  </table></div>
+</div></section>
+
+<!-- TOKENISATION -->
+<section id="token"><div class="wrap">
+  <div class="sh"><h2>Tokenisation: Singapore thử từ 2022, Việt Nam thí điểm từ 09/2025</h2><span class="tag">Keynote 09:45 · phiên 17:20</span></div>
+  <div class="two">
+    <div class="card"><div class="who">Nắm trong 30 giây</div>
+      <ul class="tight">
+        <li><b>MAS Project Guardian</b> ra mắt 31/05/2022 để thử tiềm năng của token hoá tài sản; người công bố là ông Heng Swee Keat, diễn giả keynote ngày mai.</li>
+        <li><b>Việt Nam:</b> Nghị quyết 05/2025/NQ-CP ngày 09/09/2025, thí điểm 5 năm thị trường tài sản mã hoá. Sàn phải có vốn điều lệ tối thiểu 10.000 tỷ đồng, sở hữu nước ngoài tối đa 49%. Tài sản mã hoá phải dựa trên tài sản thật, không dùng chứng khoán và tiền pháp định làm tài sản cơ sở.</li>
+      </ul>
+    </div>
+    <div class="card"><div class="who">Câu nói được</div>
+      <p class="en">Tokenisation changes how an asset is held and traded, not what it earns. The valuation question is mostly about liquidity, and Vietnam’s pilot will test that on real assets.</p>
+      <div class="who" style="margin-top:6px"><span class="inf">NHẬN ĐỊNH</span>Ý nghĩa cho EY-P Việt Nam</div>
+      <p>Chưa phải mảng chính; theo dõi. Nhắc Project Guardian khi nói chuyện về keynote là cách mở chuyện tự nhiên.</p>
+    </div>
+  </div>
+  <div class="tw"><table>
+    <thead><tr><th>Dữ kiện</th><th>Nguồn</th><th>Ngày</th></tr></thead>
+    <tbody>
+      <tr><td>Project Guardian ra mắt 31/05/2022, do Phó Thủ tướng Heng Swee Keat công bố</td><td><a href="https://www.edb.gov.sg/en/news-and-insights/mas-launches-blockchain-project-to-study-decentralised-finance-potential-and-how-to-regulate-it" target="_blank" rel="noopener">Singapore EDB</a></td><td>31/05/2022</td></tr>
+      <tr><td>Nghị quyết 05/2025/NQ-CP: 09/09/2025, thí điểm 5 năm; vốn tối thiểu 10.000 tỷ đồng; sở hữu nước ngoài tối đa 49%; tài sản cơ sở là tài sản thật, trừ chứng khoán và tiền pháp định</td><td><a href="https://www.dfdl.com/insights/legal-and-tax-updates/vietnam-government-sets-legal-framework-and-launches-pilot-program-for-tokenized-assets/" target="_blank" rel="noopener">DFDL</a></td><td>19/09/2025</td></tr>
+    </tbody>
+  </table></div>
+</div></section>
+</main>
+<footer><div class="wrap">Trang kiến thức · dựng 22/10/2026 · số liệu lấy từ nguồn ghi ở từng bảng; các ô “Ý nghĩa cho EY-P Việt Nam” và “Câu nói được” là nhận định, không phải dữ kiện. <a href="IVSC_2026_chuan_bi.html">Quay lại bộ chuẩn bị</a></div></footer>
+
+</body>
+</html>
