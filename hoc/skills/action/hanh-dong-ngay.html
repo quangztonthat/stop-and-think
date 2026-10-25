@@ -1,0 +1,604 @@
+<!doctype html><html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"></head><body>
+<title>Hành động ngay</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* Bố cục: thanh tab dính trên cùng · nội dung full width · thẻ là khối lớn bấm bằng ngón cái */
+*{box-sizing:border-box}
+:root{
+  --bg:#FFFFFF;--surface:#F2F5F8;--surface2:#E4EBF1;--ink:#051C2C;--muted:#55687A;--line:#D3DCE4;
+  --accent:#2251FF;--accent-ink:#FFFFFF;--cyan:#00A9F4;--good:#0B8A62;--good-bg:#DDF3EA;--bad:#C8372A;--bad-bg:#FBE3DF;
+  --warn:#A86A00;--warn-bg:#FFF1D6;--hero:#051C2C;--hero-ink:#FFFFFF;--hero-muted:#A6BBCA;
+  --font:"Be Vietnam Pro",system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#03111C;--surface:#0A2132;--surface2:#112E45;--ink:#E8F0F6;--muted:#9AB0C1;--line:#1D3C53;
+    --accent:#6584FF;--accent-ink:#FFFFFF;--cyan:#3CC4FF;--good:#3CCB97;--good-bg:#0F3A2C;--bad:#FF7B68;--bad-bg:#43201B;
+    --warn:#F2B544;--warn-bg:#3A2A0C;--hero:#0A2132;--hero-ink:#FFFFFF;--hero-muted:#9AB0C1;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#03111C;--surface:#0A2132;--surface2:#112E45;--ink:#E8F0F6;--muted:#9AB0C1;--line:#1D3C53;
+  --accent:#6584FF;--accent-ink:#FFFFFF;--cyan:#3CC4FF;--good:#3CCB97;--good-bg:#0F3A2C;--bad:#FF7B68;--bad-bg:#43201B;
+  --warn:#F2B544;--warn-bg:#3A2A0C;--hero:#0A2132;--hero-ink:#FFFFFF;--hero-muted:#9AB0C1;
+  color-scheme:dark;
+}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font);font-size:16px;line-height:1.5}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+h1,h2,h3,h4{margin:0;line-height:1.25;text-wrap:balance}
+p{margin:0}
+button{font:inherit;color:inherit}
+input,textarea,select{font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:10px 12px;width:100%}
+textarea{min-height:56px;resize:vertical}
+label.f{display:grid;gap:4px;font-weight:600;font-size:14px}
+:focus-visible{outline:3px solid var(--cyan);outline-offset:2px}
+.num{font-variant-numeric:tabular-nums}
+.nw{white-space:nowrap}
+
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--bg);border-bottom:1px solid var(--line)}
+.top-in{display:flex;align-items:center;gap:20px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.brand{font-weight:800;font-size:17px;white-space:nowrap;display:flex;align-items:center;gap:8px}
+.tabs{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none;flex:1}
+.tabs::-webkit-scrollbar{display:none}
+.tabs a{padding:16px 12px 13px;text-decoration:none;color:var(--muted);font-weight:600;font-size:15px;white-space:nowrap;border-bottom:3px solid transparent}
+.tabs a.on{color:var(--ink);border-bottom-color:var(--accent)}
+.sync{font-size:12px;color:var(--muted);white-space:nowrap}
+@media (max-width:640px){.brand span,.sync{display:none}}
+
+main{padding-block:20px 56px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+section.view{display:none}
+section.view.on{display:block}
+.sec{margin-top:28px}
+.sec:first-child{margin-top:0}
+.sec>h2{font-size:20px;margin-bottom:10px}
+.muted{color:var(--muted)}
+.small{font-size:14px}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px}
+.grid>*{min-width:0}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;background:var(--accent);color:var(--accent-ink);border:0;border-radius:10px;padding:12px 18px;font-weight:700;cursor:pointer;font-size:15px}
+.btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+.btn.sm{padding:8px 12px;font-size:14px;font-weight:600}
+.btn.good{background:var(--good);color:#fff}
+.btn:disabled{opacity:.45;cursor:default}
+.pill{display:inline-flex;align-items:center;font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:3px 9px;border-radius:999px;background:var(--surface2);color:var(--muted)}
+.pill.good{background:var(--good-bg);color:var(--good)}
+.pill.warn{background:var(--warn-bg);color:var(--warn)}
+.pill.bad{background:var(--bad-bg);color:var(--bad)}
+
+/* thẻ */
+.cardbtn{display:grid;gap:10px;text-align:left;background:var(--surface);border:2px solid transparent;border-radius:16px;padding:18px;cursor:pointer;width:100%;align-content:start}
+.cardbtn:hover{border-color:var(--accent)}
+.cardbtn .nm{font-size:20px;font-weight:800}
+.cardbtn .if{color:var(--muted);font-size:14px}
+.cardbtn ol{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.cardbtn li{display:grid;grid-template-columns:26px 1fr;gap:8px;align-items:start;background:var(--bg);border-radius:10px;padding:8px 10px;font-weight:600;font-size:15px}
+.cardbtn li b{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;background:var(--accent);color:var(--accent-ink);font-size:13px}
+.wait{display:flex;flex-wrap:wrap;gap:8px}
+
+/* màn dùng thẻ */
+.run{max-width:900px}
+.ifbox{background:var(--surface);border-radius:14px;padding:14px 18px;margin-top:12px;font-weight:700}
+.lbl{display:block;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:2px}
+.pick{margin-top:12px;background:var(--hero);color:var(--hero-ink);border-radius:16px;padding:18px}
+.cdrow{display:flex;align-items:center;gap:14px}
+.cdnum{font-size:clamp(44px,10vw,60px);font-weight:800;line-height:1;color:var(--cyan);min-width:1.2em;text-align:center}
+.cdbar{flex:1;height:8px;border-radius:4px;background:rgba(255,255,255,.14);overflow:hidden}
+.cdbar i{display:block;height:100%;width:100%;background:var(--cyan);transition:width linear}
+.cdmsg{color:var(--hero-muted);font-size:14px;min-height:1.5em;margin-top:4px}
+.opts{display:grid;gap:10px;margin-top:10px}
+.opt{display:grid;grid-template-columns:48px 1fr;gap:12px;align-items:center;text-align:left;background:rgba(255,255,255,.08);color:var(--hero-ink);border:2px solid transparent;border-radius:14px;padding:14px;cursor:pointer;width:100%;font-size:clamp(17px,2.6vw,21px);font-weight:700;line-height:1.3}
+.opt:hover{border-color:var(--cyan)}
+.opt b.k{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;background:var(--accent);color:var(--accent-ink);font-size:19px}
+.opt.pulse{border-color:var(--cyan);animation:pulse 1s ease-in-out infinite}
+@keyframes pulse{50%{box-shadow:0 0 0 6px color-mix(in srgb,var(--cyan) 35%,transparent)}}
+@media (prefers-reduced-motion:reduce){.opt.pulse{animation:none}.cdbar i{transition:none}}
+.done{background:var(--good-bg);border-radius:14px;padding:14px 18px;margin-top:12px}
+.done b{color:var(--good)}
+.nextbox{margin-top:12px;background:var(--surface);border-radius:14px;padding:14px 18px}
+.nextbox .t{font-size:clamp(19px,3vw,24px);font-weight:800}
+
+/* luyện */
+.qwrap{max-width:900px}
+.qtop{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px}
+.prog{display:flex;gap:4px;flex:1}
+.prog i{flex:1;height:6px;border-radius:3px;background:var(--surface2)}
+.prog i.ok{background:var(--good)}.prog i.no{background:var(--bad)}.prog i.cur{background:var(--accent)}
+.qcard{background:var(--surface);border-radius:16px;padding:18px}
+.qcard .q{font-size:clamp(19px,3vw,24px);font-weight:800;margin:6px 0 4px}
+.qcard .sub{color:var(--muted);font-size:15px}
+.qcard .big{background:var(--bg);border-radius:10px;padding:10px 12px;font-weight:700;margin-top:6px}
+.ch{display:grid;gap:10px;margin-top:14px}
+.ch button{text-align:left;background:var(--bg);border:2px solid var(--line);border-radius:12px;padding:14px 16px;cursor:pointer;font-weight:600}
+.ch button.ok{border-color:var(--good);background:var(--good-bg)}
+.ch button.no{border-color:var(--bad);background:var(--bad-bg)}
+.timer{font-weight:800;font-size:20px;min-width:64px;text-align:right}
+
+/* bảng */
+.tw{overflow-x:auto;border:1px solid var(--line);border-radius:12px}
+table{border-collapse:collapse;width:100%;font-size:14px}
+.tw table{min-width:560px}
+th,td{padding:9px 12px;text-align:left;vertical-align:top;border-bottom:1px solid var(--line)}
+th{background:var(--surface);font-weight:700;white-space:nowrap}
+tr:last-child td{border-bottom:0}
+td.n,th.n{text-align:right;font-variant-numeric:tabular-nums}
+
+/* lịch 14 ngày */
+.cal{display:grid;gap:6px;overflow-x:auto}
+.cal .r{display:grid;grid-template-columns:minmax(84px,190px) repeat(14,minmax(12px,1fr));gap:4px;align-items:center}
+.cal .r>span:first-child{font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cal i{display:block;height:22px;border-radius:5px;background:var(--surface2)}
+.cal i.ok{background:var(--good)}.cal i.no{background:var(--bad)}
+.cal .h span{font-size:11px;color:var(--muted);text-align:center}
+.missbox{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:12px}
+.missbox select{width:auto;min-width:200px;flex:0 1 260px}
+
+/* luật */
+.flow{display:flex;flex-wrap:wrap;align-items:stretch}
+.flow .st{flex:1 1 150px;min-width:0;background:var(--surface);padding:12px 14px;border-right:3px solid var(--bg)}
+.flow .st:first-child{border-radius:12px 0 0 12px}
+.flow .st:last-child{border-radius:0 12px 12px 0;border-right:0}
+.flow .st b{display:block;font-size:12px;color:var(--accent);letter-spacing:.05em}
+.flow .st h4{font-size:15px;margin-top:2px}
+.flow .st.key{background:var(--hero);color:var(--hero-ink)}
+.flow .st.key b{color:var(--cyan)}
+@media (max-width:700px){.flow{flex-direction:column}.flow .st{border-right:0;border-bottom:3px solid var(--bg);border-radius:0!important}.flow .st:first-child{border-radius:12px 12px 0 0!important}.flow .st:last-child{border-radius:0 0 12px 12px!important;border-bottom:0}}
+ol.rules{margin:0;padding-left:22px;display:grid;gap:6px;max-width:90ch}
+
+/* sửa thẻ */
+.editor{background:var(--surface);border-radius:16px;padding:18px;display:grid;gap:12px;max-width:900px}
+.editor .two{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+.clist{display:grid;gap:8px}
+.ci{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;background:var(--surface);border-radius:12px;padding:12px 14px}
+@media (max-width:640px){.ci{grid-template-columns:1fr}}
+.toggle{display:inline-flex;border:1px solid var(--line);border-radius:999px;overflow:hidden}
+.toggle button{border:0;background:transparent;padding:7px 12px;font-size:13px;font-weight:600;cursor:pointer;color:var(--muted)}
+.toggle button.on{background:var(--accent);color:var(--accent-ink)}
+.note{border-radius:10px;padding:10px 12px;background:var(--warn-bg);font-size:14px}
+.confirm{display:flex;gap:8px;align-items:center;flex-wrap:wrap;background:var(--bad-bg);border-radius:10px;padding:10px 12px;margin-top:8px;font-size:14px}
+.chart{width:100%;height:auto;display:block;max-width:640px}
+.cardbtn,.opt,.ci,.ifbox,.nextbox,.done,.qcard{overflow-wrap:anywhere}
+@media (max-width:640px){#cardTable{min-width:0}#cardTable th{white-space:normal}#cardTable th,#cardTable td{padding:8px 6px}}
+</style>
+
+<header class="top">
+  <div class="top-in">
+    <div class="brand"><svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M10 7.5l6 4.5-6 4.5z" fill="currentColor"/></svg><span>Hành động ngay</span></div>
+    <nav class="tabs" id="tabs">
+      <a href="#dung" data-v="dung">Dùng</a>
+      <a href="#luyen" data-v="luyen">Luyện</a>
+      <a href="#tiendo" data-v="tiendo">Tiến độ</a>
+      <a href="#the" data-v="the">Thẻ</a>
+      <a href="#luat" data-v="luat">Luật</a>
+    </nav>
+    <div class="sync" id="sync">Lưu trên máy này</div>
+  </div>
+</header>
+
+<main>
+<!-- ============ DÙNG ============ -->
+<section class="view" id="v-dung">
+  <div id="home">
+    <div class="grid" id="actCards"></div>
+    <div class="sec" id="waitSec"><h2>Thẻ chờ</h2><div class="wait" id="waitCards"></div></div>
+  </div>
+  <div id="run" class="run" hidden></div>
+</section>
+
+<!-- ============ LUYỆN ============ -->
+<section class="view" id="v-luyen"><div class="qwrap" id="quiz"></div></section>
+
+<!-- ============ TIẾN ĐỘ ============ -->
+<section class="view" id="v-tiendo">
+  <div class="sec">
+    <h2>14 ngày</h2>
+    <div class="cal" id="cal"></div>
+    <div class="missbox"><select id="missCard" aria-label="Thẻ bị bỏ lỡ"></select><select id="missDay" aria-label="Ngày bỏ lỡ" style="flex:0 0 auto;min-width:0"><option value="0">Hôm nay</option><option value="1">Hôm qua</option></select><button class="btn sm ghost" id="missBtn">Ghi bỏ lỡ</button><span class="small muted" id="missMsg"></span></div>
+  </div>
+  <div class="sec">
+    <h2>Từng thẻ</h2>
+    <div class="tw"><table id="cardTable"></table></div>
+  </div>
+  <div class="sec">
+    <h2>Giây trung bình mỗi câu luyện</h2>
+    <div id="quizChart"></div>
+  </div>
+</section>
+
+<!-- ============ SỬA THẺ ============ -->
+<section class="view" id="v-the">
+  <div class="sec">
+    <div id="activeWarn"></div>
+    <div class="clist" id="clist"></div>
+    <div class="row" style="margin-top:12px">
+      <button class="btn" id="addCard">Thêm thẻ</button>
+      <button class="btn ghost" id="resetCards">Khôi phục thẻ mẫu</button>
+    </div>
+    <div id="resetBox"></div>
+  </div>
+  <div class="sec" id="editSec" hidden>
+    <h2 id="editTitle">Sửa thẻ</h2>
+    <form class="editor" id="editor">
+      <div class="two">
+        <label class="f">Tên thẻ<input id="e-name" required maxlength="60"></label>
+        
+      </div>
+      <label class="f">NẾU<textarea id="e-ifs" required></textarea></label>
+      <div class="two">
+        <label class="f">Việc 1 (làm khi hết giờ)<textarea id="e-o0" required></textarea></label>
+        <label class="f">Việc 2<textarea id="e-o1" required></textarea></label>
+        <label class="f">Việc 3<textarea id="e-o2" required></textarea></label>
+      </div>
+      <div id="optWarn"></div>
+      <div class="two">
+        <label class="f">Bước tiếp<textarea id="e-next"></textarea></label>
+        <label class="f">Chuẩn bị trước<textarea id="e-prep"></textarea></label>
+      </div>
+      <div class="row">
+        <button class="btn" type="submit">Lưu thẻ</button>
+        <button class="btn ghost" type="button" id="cancelEdit">Huỷ</button>
+      </div>
+    </form>
+  </div>
+</section>
+
+<!-- ============ LUẬT ============ -->
+<section class="view" id="v-luat">
+  <div class="sec">
+    <div class="flow">
+      <div class="st"><b>1</b><h4>Nhận ra tình huống</h4></div>
+      <div class="st"><b>2</b><h4>Mở thẻ, đếm 5 giây</h4></div>
+      <div class="st key"><b>3</b><h4>Chọn 1 trong 3</h4></div>
+      <div class="st"><b>4</b><h4>Làm ngay + bước tiếp</h4></div>
+      <div class="st"><b>5</b><h4>Bấm Xong</h4></div>
+    </div>
+  </div>
+  <div class="sec">
+    <h2>Luật</h2>
+    <ol class="rules">
+      <li>Mỗi thẻ: 3 việc tích cực, làm được ngay, bắt đầu bằng một cử động.</li>
+      <li>Chọn trong 5 giây. Hết giờ thì làm việc 1.</li>
+      <li>Mới đầu chỉ dùng 3 thẻ.</li>
+      <li>Tuần 1: luyện 2 lần/ngày (sáng, tối) và làm hết phần "Chuẩn bị trước". Thuộc khi 3 lần liền đúng hết, dưới 3 giây/câu.</li>
+      <li>Tuần 2: dùng thật, lần nào bỏ lỡ thì ghi ở Tiến độ (chọn Hôm nay hoặc Hôm qua).</li>
+      <li>Tuần 3: thẻ bỏ lỡ từ 3 lần/tuần thì đổi việc cho dễ hơn. Thẻ hay chọn sau 5 giây thì đưa việc anh hay chọn nhất lên làm việc 1. Thẻ ổn thì mở thêm 1 thẻ chờ.</li>
+    </ol>
+  </div>
+  <div class="sec">
+    <h2>Căn cứ</h2>
+    <div class="tw"><table>
+      <tr><th>Nguồn</th><th>Số liệu</th><th>Áp vào</th></tr>
+      <tr><td><a href="https://kops.uni-konstanz.de/entities/publication/2e749bfb-8533-437c-8203-7e788c910c5f" target="_blank" rel="noopener">Gollwitzer &amp; Sheeran (2006)</a></td><td>94 thử nghiệm: kế hoạch NẾU–THÌ tăng khả năng đạt mục tiêu, d = 0,65</td><td>Thẻ NẾU–THÌ</td></tr>
+      <tr><td><a href="https://selfdeterminationtheory.org/wp-content/uploads/2019/10/2008_PatallCooperRobinson_PsychBulletin.pdf" target="_blank" rel="noopener">Patall và cộng sự (2008)</a></td><td>41 nghiên cứu: 3-5 lựa chọn tăng động lực d = 0,38; 2 lựa chọn 0,20; trên 5 lựa chọn 0,26 (khác biệt giữa các nhóm p ≈ 0,06, chưa chắc)</td><td>3 việc mỗi thẻ</td></tr>
+      <tr><td><a href="https://www.sciencedaily.com/releases/2012/05/120516152448.htm" target="_blank" rel="noopener">Dalton &amp; Spiller (2012)</a></td><td>Kế hoạch cụ thể giúp khi có 1 mục tiêu, không giúp khi có 6</td><td>Bắt đầu 3 thẻ (số 3 là mốc tự chọn)</td></tr>
+      <tr><td><a href="https://aasm.org/late-afternoon-and-early-evening-caffeine-can-disrupt-sleep-at-night/" target="_blank" rel="noopener">Drake và cộng sự (2013)</a></td><td>12 người: 400 mg caffeine (2-3 ly) uống 6 giờ trước giờ ngủ làm mất hơn 1 giờ ngủ (đo bằng máy); người uống không tự nhận ra</td><td>Đi ngủ 22h30 nên cà phê chỉ trước 16h</td></tr>
+      <tr><td><a href="https://news.web.baylor.edu/news/story/2018/can-writing-your-dos-help-you-doze-baylor-study-suggests-jotting-down-tasks-can" target="_blank" rel="noopener">Scullin và cộng sự (2018)</a></td><td>57 người: viết 5 phút việc sắp làm giúp ngủ nhanh hơn</td><td>Thẻ Tới giờ đi ngủ, việc 3</td></tr>
+      <tr><td><a href="https://www.racgp.org.au/clinical-resources/clinical-guidelines/key-racgp-guidelines/view-all-racgp-guidelines/drugs-of-dependence/part-b/resources/resource-g-gp-guide-to-behavioural-therapy-for-ins" target="_blank" rel="noopener">RACGP</a></td><td>Không ngủ được sau 15-20 phút thì ra khỏi giường; dậy cùng giờ mỗi ngày</td><td>Thẻ Nằm 20 phút; thẻ Chuông sáng reo</td></tr>
+      <tr><td><a href="https://public.websites.umich.edu/~bbushman/PSPB02.pdf" target="_blank" rel="noopener">Bushman (2002)</a></td><td>600 sinh viên đang giận: nhóm đấm bao cát trong lúc nghĩ về người làm mình giận thì giận và gây hấn nhiều nhất; nhóm ngồi yên 2 phút ít hơn</td><td>Thẻ Đang giận: không có việc "xả giận", chỉ rời chỗ, thở, viết</td></tr>
+      <tr><td><a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC9873947" target="_blank" rel="noopener">Balban và cộng sự (2023)</a></td><td>108 người, 5 phút mỗi ngày trong 28 ngày: thở hít 2 lần, thở ra dài làm tăng cảm xúc tích cực và giảm nhịp thở nhiều hơn thiền chánh niệm</td><td>Thẻ Đang giận, việc 2. Nghiên cứu không đo lúc đang giận; lo âu giảm ngang thiền; thẻ làm 2 phút là suy luận</td></tr>
+      <tr><td><a href="https://pubmed.ncbi.nlm.nih.gov/24936656/" target="_blank" rel="noopener">Ekers và cộng sự (2014)</a></td><td>25 thử nghiệm, 1.088 người trầm cảm: làm việc có kế hoạch trước, không chờ có hứng, giảm triệu chứng rõ so với nhóm đối chứng (SMD -0,74)</td><td>Thẻ Thấy trống rỗng: làm trước, tâm trạng theo sau. Nghiên cứu trên người trầm cảm, không phải ai thấy trống rỗng cũng vậy</td></tr>
+      <tr><td><a href="https://www.sciencedaily.com/releases/2006/11/061101151005.htm" target="_blank" rel="noopener">Puetz và cộng sự (2006)</a></td><td>70 thử nghiệm, 6.807 người: tập đều trong nhiều tuần làm tăng cảm giác có năng lượng 0,37 độ lệch chuẩn so với nhóm không tập. Chưa đo một lần đi bộ 5-10 phút</td><td>Suy luận cho thẻ Đang mệt và Thấy trống rỗng, việc 1</td></tr>
+      <tr><td>Suy luận</td><td>Đếm 5 giây, hết giờ làm việc 1; mốc luyện 3 giây, 2 lần/ngày, 3 lần liền; mốc 3 lần bỏ lỡ/tuần và 3 lần làm để báo Ổn; các mốc phút trong thẻ; ánh sáng, uống nước, rửa mặt khi giận, ngủ ngắn trước 15h; mốc 2 tuần đi khám: chưa có nguồn đã tra, chưa đo trên anh</td><td>Kiểm ở Tiến độ sau 2 tuần</td></tr>
+    </table></div>
+    <p class="small muted" style="margin-top:10px">Mất ngủ, mệt hoặc trống rỗng kéo dài hơn 2 tuần thì nói với người thân và gặp bác sĩ. Có ý nghĩ tự làm hại mình thì gọi ngay người thân hoặc 115.</p>
+  </div>
+</section>
+</main>
+
+<script>
+/* ================= THẺ MẪU ================= */
+const DEF=[
+ {id:"luoi",grp:"Làm biếng",name:"Đang nằm lười",on:true,
+  ifs:"Đang nằm hoặc ngồi lướt điện thoại, biết là nên dậy mà chưa dậy",
+  opts:["Đứng dậy, ra rửa mặt bằng nước mát","Đứng dậy, làm 10 cái squat","Đứng dậy, pha cà phê (sau 16h thì rót ly nước lạnh)"],
+  next:"Mở việc tiếp theo và làm đúng 2 phút",
+  prep:"Để sẵn ly nước trên bàn. Ban ngày không mang điện thoại lên giường hoặc sofa."},
+ {id:"ngu",grp:"Ngủ sớm",name:"Tới giờ đi ngủ",on:true,
+  ifs:"Chuông 22h30 reo mà vẫn đang xem điện thoại hoặc làm việc",
+  opts:["Đứng dậy, mang điện thoại ra ngoài phòng ngủ cắm sạc","Đứng dậy, đi đánh răng, rửa mặt, tắt đèn lớn","Cầm sổ, viết 3-5 việc của ngày mai trong 5 phút"],
+  next:"Điện thoại ở ngoài phòng ngủ. Buồn ngủ thì lên giường.",
+  prep:"Đặt chuông 22h30 lặp mỗi ngày. Dây sạc để sẵn ngoài phòng ngủ. Sổ và bút ở đầu giường."},
+ {id:"day",grp:"Dậy sớm",name:"Chuông sáng reo",on:true,
+  ifs:"Chuông báo thức buổi sáng reo",
+  opts:["Đứng dậy tắt chuông, uống ly nước để sẵn","Đứng dậy tắt chuông, mở rèm, đứng ở cửa sổ 1 phút","Đứng dậy tắt chuông, xỏ giày ngay"],
+  next:"Xỏ giày, ra khỏi cửa. Ngày tệ nhất ra tới đầu ngõ rồi về.",
+  prep:"Điện thoại để xa giường, phải đứng dậy mới tắt được. Ly nước và giày để sẵn. Dậy cùng giờ cả cuối tuần."},
+ {id:"thuc",grp:"Ngủ sớm",name:"Nằm 20 phút không ngủ được",on:false,
+  ifs:"Đã nằm khoảng 20 phút mà vẫn tỉnh",
+  opts:["Ra ghế ngoài, đọc sách giấy dưới đèn mờ","Ra ghế ngoài, viết điều đang lo ra giấy","Ra ghế ngoài, ngồi thở chậm 5 phút"],
+  next:"Buồn ngủ mới quay lại giường",
+  prep:"Để sẵn sách giấy và đèn mờ ở ghế ngoài giường."},
+ {id:"tre",grp:"Làm biếng",name:"Ngồi vào bàn mà né việc",on:false,
+  ifs:"Đã ngồi vào bàn nhưng đang mở mạng xã hội hoặc tin tức thay vì việc chính",
+  opts:["Đóng tab, mở đúng file, viết một dòng đầu tiên","Đóng tab, mở đúng file, làm phần dễ nhất trong 2 phút","Cầm giấy, viết ra bước nhỏ nhất kế tiếp"],
+  next:"Hẹn giờ 25 phút, làm tới khi chuông reo",
+  prep:"Cuối ngày ghi sẵn việc đầu tiên của sáng mai."},
+ {id:"gian",grp:"Cảm xúc",name:"Đang giận",on:false,
+  ifs:"Nóng mặt, tim đập nhanh, muốn nói lại hoặc gõ trả lời ngay",
+  opts:["Đứng dậy, rời chỗ đó, đi bộ 5 phút","Ngồi xuống, thở: hít 2 lần (dài rồi ngắn), thở ra thật dài, làm 2 phút","Đứng dậy, rửa mặt nước mát, uống một ly nước"],
+  next:"Chưa trả lời ai trong 20 phút. Nói lại khi giọng đã bình thường.",
+  prep:"Lúc bình tĩnh, thuộc sẵn một câu để rời chỗ: \"Cho tôi 5 phút rồi mình nói tiếp.\""},
+ {id:"rong",grp:"Cảm xúc",name:"Thấy trống rỗng",on:false,
+  ifs:"Cả buổi không thấy vui với việc gì, kể cả việc thường thích",
+  opts:["Đứng dậy, ra ngoài đi bộ 10 phút","Đứng dậy, gọi (không nhắn) cho một người, vừa nói vừa đi","Đứng dậy, làm một việc tay chân 10 phút: dọn bàn, rửa ly, tưới cây"],
+  next:"Làm xong, ghi 1 dòng: tâm trạng trước và sau, thang 0-10.",
+  prep:"Viết sẵn 5 người có thể nhắn và 5 việc nhỏ làm trong 10 phút."},
+ {id:"met",grp:"Năng lượng",name:"Đang mệt",on:false,
+  ifs:"Ban ngày buồn ngủ: mắt nặng, đọc lại một câu nhiều lần",
+  opts:["Đứng dậy, đi bộ nhẹ 5-10 phút, ra chỗ có ánh sáng","Đứng dậy, uống một ly nước lớn, ăn nhẹ nếu đói","Đứng dậy, đặt chuông 15 phút, ngồi ghế nhắm mắt (chỉ trước 15h, không lên giường)"],
+  next:"Quay lại việc đang dở 10 phút. Vẫn mệt thì đổi sang việc nhẹ hơn.",
+  prep:"Để sẵn chai nước và đồ ăn nhẹ ở bàn làm việc."}
+];
+const NEG=/(nằm thêm|ngủ thêm|để sau|làm sau|lát nữa|lát sau|chút nữa|tí nữa|phút nữa|bỏ qua|để mai|mai làm|báo lại|tính sau|từ từ|hoãn)/i;
+
+/* ================= TRẠNG THÁI & LƯU ================= */
+const KEY="hanhdong.v1";
+function blank(){return {v:1,cv:4,u:0,cards:null,log:[],quiz:[]}}
+let S=blank();
+try{const r=localStorage.getItem(KEY);if(r){const o=JSON.parse(r);if(o&&o.v===1){S=Object.assign(blank(),o);S.cv=o.cv||1}}}catch(e){}
+function migrate(){
+  const cv=S.cv||1;
+  /* bản 1 có "động tác 1" riêng: bỏ trường đó, giữ 3 việc */
+  if(cv<2&&S.cards)S.cards=S.cards.map(c=>({id:c.id,grp:c.grp,name:c.name,on:c.on,ifs:c.ifs,opts:(c.opts||[]).slice(0,3),next:c.next||"",prep:c.prep||""}));
+  /* bản 3 thêm 3 thẻ mẫu (giận, trống rỗng, mệt): đưa vào danh sách đã sửa của anh dưới dạng thẻ chờ, không đụng thẻ cũ */
+  if(cv<3&&S.cards){const ids=new Set(S.cards.map(c=>c.id));DEF.filter(c=>["gian","rong","met"].includes(c.id)&&!ids.has(c.id)).forEach(c=>S.cards.push(JSON.parse(JSON.stringify(c))))}
+  /* bản 4 sửa câu chữ 6 chỗ sau soát: chỉ thay khi anh chưa sửa câu đó */
+  if(cv<4&&S.cards){const P=[["luoi", "o2", "Đứng dậy, pha cà phê (sau 17h thì rót ly nước lạnh)", "Đứng dậy, pha cà phê (sau 16h thì rót ly nước lạnh)"], ["gian", "o2", "Cầm giấy, viết ra điều làm mình giận, chưa gửi gì cho ai", "Đứng dậy, rửa mặt nước mát, uống một ly nước"], ["rong", "ifs", "Ngồi không hoặc lướt điện thoại, không muốn làm gì, không thấy vui", "Cả buổi không thấy vui với việc gì, kể cả việc thường thích"], ["rong", "o1", "Cầm điện thoại, gọi hoặc nhắn hỏi thăm một người", "Đứng dậy, gọi (không nhắn) cho một người, vừa nói vừa đi"], ["met", "ifs", "Mắt nặng, đọc lại một câu nhiều lần, muốn nằm", "Ban ngày buồn ngủ: mắt nặng, đọc lại một câu nhiều lần"], ["met", "o2", "Nhắm mắt nghỉ 10-20 phút, đặt chuông (chỉ trước 15h)", "Đứng dậy, đặt chuông 15 phút, ngồi ghế nhắm mắt (chỉ trước 15h, không lên giường)"]];P.forEach(([id,f,o,n])=>{const c=S.cards.find(x=>x.id===id);if(!c)return;if(f==="ifs"){if(c.ifs===o)c.ifs=n}else{const i=+f.slice(1);if(c.opts&&c.opts[i]===o)c.opts[i]=n}})}
+  S.cv=4;
+}
+migrate();
+let docRef=null,saveT=null;
+function save(){S.u=Date.now();if(S.log.length>2000)S.log=S.log.slice(-2000);if(S.quiz.length>400)S.quiz=S.quiz.slice(-400);try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}clearTimeout(saveT);saveT=setTimeout(pushDb,800)}
+async function pushDb(){if(!docRef)return;try{await docRef.set(JSON.parse(JSON.stringify(S)))}catch(e){}}
+async function initDb(){
+  try{
+    if(!window.claude||typeof window.claude.use!=="function")return;
+    const [db,user]=await Promise.all([window.claude.use("db"),window.claude.use("user")]);
+    if(!db||!user)return;
+    const id=await user.id(); if(!id)return;
+    docRef=db.doc("data/users/"+id+"/state");
+    const snap=await docRef.get();
+    if(snap.exists){
+      const o=JSON.parse(JSON.stringify(snap.data()||{}));
+      if((o.u||0)>(S.u||0)&&o.v===1){S=Object.assign(blank(),o);S.cv=o.cv||1;migrate();try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}renderAll()}
+      else if((S.u||0)>(o.u||0))pushDb();
+    }else if(S.u)pushDb();
+    document.getElementById("sync").textContent="Đồng bộ theo tài khoản";
+  }catch(e){}
+}
+
+/* ================= TIỆN ÍCH ================= */
+const $=(s,r=document)=>r.querySelector(s);
+const esc=s=>String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const escN=s=>esc(s).replace(/(\d+(?:-\d+)+)/g,'<span class="nw">$1</span>');
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const uniq=a=>[...new Set(a.filter(Boolean))];
+const clone=o=>JSON.parse(JSON.stringify(o));
+const cards=()=>S.cards||clone(DEF);
+const cardById=id=>cards().find(c=>c.id===id);
+const dk=t=>{const d=new Date(t);return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")};
+const sec=ms=>(ms/1000).toFixed(1).replace(".",",");
+
+/* đã thuộc: 3 lần luyện gần nhất có câu về thẻ, lần nào cũng đúng hết và mỗi câu dưới 3 giây */
+function mastered(id){
+  let n=0;for(let i=S.quiz.length-1;i>=0&&n<3;i--){const it=(S.quiz[i].items||[]).filter(x=>x.cid===id&&x.k==="pick");if(!it.length)continue;if(!it.every(x=>x.ok&&x.ms<3000))return false;n++}
+  return n===3;
+}
+
+/* ================= ĐIỀU HƯỚNG ================= */
+const VIEWS=["dung","luyen","tiendo","the","luat"];
+function go(v){
+  if(!VIEWS.includes(v))v="dung";
+  VIEWS.forEach(x=>{$("#v-"+x).classList.toggle("on",x===v)});
+  document.querySelectorAll("#tabs a").forEach(a=>a.classList.toggle("on",a.dataset.v===v));
+  if(v==="dung")closeRun();else stopTimers();
+  if(v!=="luyen"&&Q.active){Q.active=false;clearInterval(Q.tick)}
+  if(v==="luyen"&&!Q.active)renderQuizHome();
+  if(v==="tiendo")renderProgress();
+  if(v==="the")renderCardList();
+  window.scrollTo(0,0);
+}
+window.addEventListener("hashchange",()=>go(location.hash.slice(1)));
+document.querySelector('#tabs a[data-v="dung"]').addEventListener("click",()=>{if(location.hash==="#dung")closeRun()});
+
+/* ================= DÙNG ================= */
+function renderHome(){
+  const all=cards(),act=all.filter(c=>c.on),wait=all.filter(c=>!c.on);
+  $("#actCards").innerHTML=act.length?act.map(c=>`<button class="cardbtn" data-run="${esc(c.id)}">
+      <div class="nm">${esc(c.name)}</div>
+      <div class="if">NẾU: ${escN(c.ifs)}</div>
+      <ol>${c.opts.map((o,i)=>o?`<li><b>${i+1}</b><span>${escN(o)}</span></li>`:"").join("")}</ol>
+    </button>`).join(""):'<p class="muted">Chưa có thẻ đang dùng. Bật thẻ ở tab Thẻ.</p>';
+  $("#waitSec").hidden=!wait.length;
+  $("#waitCards").innerHTML=wait.map(c=>`<button class="btn sm ghost" data-run="${esc(c.id)}">${esc(c.name)}</button>`).join("");
+}
+document.addEventListener("click",e=>{const b=e.target.closest("[data-run]");if(b)openRun(b.dataset.run)});
+
+let R=null,cdT=null,cdEnd=0;
+function stopTimers(){clearInterval(cdT);cdT=null}
+function openRun(id){
+  const c=cardById(id);if(!c)return;
+  if(!$("#v-dung").classList.contains("on")){history.replaceState(null,"","#dung");VIEWS.forEach(x=>$("#v-"+x).classList.toggle("on",x==="dung"));document.querySelectorAll("#tabs a").forEach(a=>a.classList.toggle("on",a.dataset.v==="dung"))}
+  stopTimers();R={c,step:1,late:false};$("#home").hidden=true;$("#run").hidden=false;drawRun();window.scrollTo(0,0);
+}
+function closeRun(){stopTimers();R=null;$("#run").hidden=true;$("#home").hidden=false;renderHome()}
+function drawRun(){
+  const c=R.c,el=$("#run");
+  let h=`<button class="btn ghost sm" id="runBack">← Thẻ</button><div class="ifbox"><span class="lbl">Nếu</span>${escN(c.ifs)}</div>`;
+  if(R.step===1){
+    h+=`<div class="pick"><div class="cdrow"><div class="cdnum num" id="cdNum">5</div><div class="cdbar"><i id="cdBar"></i></div></div>
+      <div class="cdmsg" id="cdMsg">Chọn 1, làm ngay.</div>
+      <div class="opts">${c.opts.map((o,i)=>o?`<button class="opt" data-opt="${i}"><b class="k">${i+1}</b><span>${escN(o)}</span></button>`:"").join("")}</div></div>`;
+  }else{
+    h+=`<div class="done"><b>Việc ${R.opt+1}:</b> ${escN(c.opts[R.opt])}</div>
+      ${c.next?`<div class="nextbox"><span class="lbl">Bước tiếp</span><div class="t">${escN(c.next)}</div></div>`:""}
+      <div class="row" style="margin-top:14px"><button class="btn good" id="finish">Xong</button></div>`;
+  }
+  el.innerHTML=h;
+  $("#runBack").onclick=closeRun;
+  if(R.step===1){
+    el.querySelectorAll("[data-opt]").forEach(b=>b.onclick=()=>{R.late=cdT===null&&Date.now()>=cdEnd;stopTimers();R.opt=+b.dataset.opt;R.step=2;drawRun()});
+    startCount();
+  }else{
+    $("#finish").onclick=()=>{S.log.push({t:Date.now(),id:R.c.id,ok:true,opt:R.opt,late:R.late});save();closeRun()};
+  }
+}
+function startCount(){
+  stopTimers();cdEnd=Date.now()+5000;const bar=$("#cdBar");
+  requestAnimationFrame(()=>{bar.style.transitionDuration="5s";bar.style.width="0%"});
+  cdT=setInterval(()=>{
+    const left=Math.ceil((cdEnd-Date.now())/1000);const n=$("#cdNum");if(!n){stopTimers();return}
+    if(left>0)n.textContent=left;
+    else{stopTimers();n.textContent="0";$("#cdMsg").innerHTML="<b>Hết giờ: làm việc 1.</b>";const a=$('#run [data-opt="0"]');if(a)a.classList.add("pulse")}
+  },200);
+}
+
+/* ================= LUYỆN ================= */
+const Q={active:false,qs:[],i:0,items:[],t0:0,tick:null,locked:false};
+function mkChoices(ans,pool){return shuffle([ans,...shuffle(uniq(pool).filter(x=>x!==ans)).slice(0,3)])}
+function buildQuiz(){
+  const all=cards(),act=all.filter(c=>c.on);if(!act.length)return [];
+  const pool=[];
+  act.forEach(c=>{
+    const own=c.opts.filter(Boolean);
+    const others=uniq(act.filter(x=>x.id!==c.id).flatMap(x=>x.opts)).filter(x=>!own.includes(x));
+    own.forEach(o=>pool.push({cid:c.id,k:"pick",tag:c.name,q:"Việc nào thuộc thẻ này?",sub:"NẾU: "+c.ifs,ans:o,ch:mkChoices(o,others)}));
+  });
+  const ok=pool.filter(q=>q.ch.length>=2),n=8,qs=[];
+  act.forEach(c=>{const p=shuffle(ok.filter(q=>q.cid===c.id&&q.k==="pick"))[0];if(p&&qs.length<n)qs.push(p)});
+  shuffle(ok).forEach(p=>{if(qs.length<n&&!qs.includes(p))qs.push(p)});
+  return shuffle(qs);
+}
+function renderQuizHome(){
+  Q.active=false;clearInterval(Q.tick);
+  const nq=buildQuiz().length,lq=S.quiz[S.quiz.length-1];
+  $("#quiz").innerHTML=`<div class="qcard"><div class="q">${nq?nq+" câu, tính giờ":"Chưa luyện được"}</div><div class="sub">${nq?`Mốc: đúng hết, câu nào cũng dưới 3 giây, 3 lần liền.${lq?` Lần trước: ${lq.ok}/${lq.n} · ${sec(lq.ms)} giây/câu.`:""}`:"Cần ít nhất 2 thẻ đang dùng. Bật thêm thẻ ở tab Thẻ."}</div>
+    <div class="row" style="margin-top:14px"><button class="btn" id="qStart" ${nq?"":"disabled"}>Bắt đầu</button></div></div>`;
+  $("#qStart").onclick=startQuiz;
+}
+function startQuiz(){Q.qs=buildQuiz();if(!Q.qs.length)return;Q.active=true;Q.i=0;Q.items=[];drawQ()}
+function drawQ(){
+  const q=Q.qs[Q.i];Q.locked=false;
+  $("#quiz").innerHTML=`<div class="qtop"><div class="prog">${Q.qs.map((_,j)=>`<i class="${j<Q.i?(Q.items[j].ok?"ok":"no"):j===Q.i?"cur":""}"></i>`).join("")}</div><div class="timer num" id="qT">0,0 s</div></div>
+    <div class="qcard"><span class="pill">${esc(q.tag)}</span><div class="q">${esc(q.q)}</div>${q.sub?`<div class="sub">${escN(q.sub)}</div>`:""}${q.big?`<div class="big">${escN(q.big)}</div>`:""}
+    <div class="ch">${q.ch.map((c,j)=>`<button data-c="${j}">${escN(c)}</button>`).join("")}</div><div id="qFb"></div></div>
+    <div class="row" style="margin-top:12px"><button class="btn ghost sm" id="qQuit">Dừng</button></div>`;
+  Q.t0=performance.now();clearInterval(Q.tick);
+  Q.tick=setInterval(()=>{const t=$("#qT");if(t)t.textContent=sec(performance.now()-Q.t0)+" s"},100);
+  document.querySelectorAll("#quiz [data-c]").forEach(b=>b.onclick=()=>answer(+b.dataset.c));
+  $("#qQuit").onclick=renderQuizHome;
+}
+function answer(j){
+  if(Q.locked)return;Q.locked=true;clearInterval(Q.tick);
+  const q=Q.qs[Q.i],ms=Math.round(performance.now()-Q.t0),ok=q.ch[j]===q.ans;
+  Q.items.push({cid:q.cid,k:q.k,ok,ms});
+  document.querySelectorAll("#quiz [data-c]").forEach((b,x)=>{if(q.ch[x]===q.ans)b.classList.add("ok");else if(x===j)b.classList.add("no")});
+  const next=()=>{Q.i++;if(Q.i<Q.qs.length)drawQ();else finishQuiz()};
+  if(ok)setTimeout(next,600);
+  else{$("#qFb").innerHTML=`<button class="btn sm" id="qNext" style="margin-top:12px">Câu tiếp</button>`;$("#qNext").onclick=next}
+}
+function finishQuiz(){
+  Q.active=false;
+  const n=Q.items.length,ok=Q.items.filter(x=>x.ok).length,ms=Math.round(Q.items.reduce((a,x)=>a+x.ms,0)/n);
+  S.quiz.push({t:Date.now(),n,ok,ms,items:Q.items});save();
+  const pass=Q.items.every(x=>x.ok&&x.ms<3000);
+  const wrong=Q.qs.map((q,j)=>({q,it:Q.items[j]})).filter(x=>!x.it.ok);
+  $("#quiz").innerHTML=`<div class="qcard"><span class="pill ${pass?"good":"warn"}">${pass?"Đạt mốc":"Chưa đạt mốc (đúng hết, câu nào cũng dưới 3 giây)"}</span>
+    <div class="q num">${ok}/${n} đúng · ${sec(ms)} giây/câu</div>
+    ${wrong.length?`<div class="sub" style="margin-top:8px"><b>Cần nhớ lại:</b></div><ul style="margin:6px 0 0;padding-left:20px">${wrong.map(x=>`<li>${x.q.k==="which"?escN(x.q.big)+" → <b>"+esc(x.q.ans)+"</b>":"<b>"+esc(x.q.tag)+"</b>: "+escN(x.q.ans)}</li>`).join("")}</ul>`:""}
+    <div class="row" style="margin-top:14px"><button class="btn" id="qAgain">Luyện lại</button><button class="btn ghost" id="qHome">Xong</button></div></div>`;
+  $("#qAgain").onclick=startQuiz;$("#qHome").onclick=renderQuizHome;
+}
+
+/* ================= SỬA THẺ ================= */
+let editId=null,confirmDel=null;
+function renderCardList(){
+  const all=cards(),act=all.filter(c=>c.on).length;
+  $("#activeWarn").innerHTML=act>3?`<div class="note" style="margin-bottom:10px">Đang dùng ${act} thẻ. Nên giữ 3.</div>`:"";
+  $("#clist").innerHTML=all.map(c=>`<div><div class="ci"><div style="min-width:0"><b>${esc(c.name)}</b></div>
+    <div class="row"><div class="toggle"><button data-tg="${esc(c.id)}" data-on="1" class="${c.on?"on":""}">Dùng</button><button data-tg="${esc(c.id)}" data-on="0" class="${c.on?"":"on"}">Chờ</button></div>
+    <button class="btn sm ghost" data-ed="${esc(c.id)}">Sửa</button><button class="btn sm ghost" data-del="${esc(c.id)}">Xoá</button></div></div>
+    ${confirmDel===c.id?`<div class="confirm">Xoá "${esc(c.name)}"?<button class="btn sm" style="background:var(--bad)" data-delok="${esc(c.id)}">Xoá</button><button class="btn sm ghost" data-delno="1">Không</button></div>`:""}</div>`).join("");
+}
+function setCards(arr){S.cards=arr;save();renderHome()}
+$("#clist").addEventListener("click",e=>{
+  const t=e.target.closest("button");if(!t)return;const all=cards();
+  if(t.dataset.tg){const c=all.find(x=>x.id===t.dataset.tg);c.on=t.dataset.on==="1";setCards(all);renderCardList()}
+  else if(t.dataset.ed)openEditor(t.dataset.ed);
+  else if(t.dataset.del){confirmDel=t.dataset.del;renderCardList()}
+  else if(t.dataset.delok){setCards(all.filter(x=>x.id!==t.dataset.delok));confirmDel=null;if(editId===t.dataset.delok)closeEditor();renderCardList()}
+  else if(t.dataset.delno){confirmDel=null;renderCardList()}
+});
+$("#addCard").onclick=()=>openEditor(null);
+$("#resetCards").onclick=()=>{$("#resetBox").innerHTML=`<div class="confirm">Đưa thẻ về bản mẫu? Câu chữ đã sửa sẽ mất, nhật ký vẫn giữ.<button class="btn sm" style="background:var(--bad)" id="rsOk">Khôi phục</button><button class="btn sm ghost" id="rsNo">Không</button></div>`;
+  $("#rsOk").onclick=()=>{S.cards=null;save();renderHome();renderCardList();$("#resetBox").innerHTML="";closeEditor()};$("#rsNo").onclick=()=>{$("#resetBox").innerHTML=""}};
+const F=["name","ifs","o0","o1","o2","next","prep"];
+function openEditor(id){
+  editId=id;const c=id?cardById(id):{name:"",grp:"",ifs:"",opts:["","",""],next:"",prep:""};if(!c)return;
+  $("#editSec").hidden=false;$("#editTitle").textContent=id?c.name:"Thẻ mới";
+  const v={name:c.name,grp:c.grp,ifs:c.ifs,o0:c.opts[0]||"",o1:c.opts[1]||"",o2:c.opts[2]||"",next:c.next,prep:c.prep};
+  F.forEach(k=>$("#e-"+k).value=v[k]||"");checkOpts();
+  $("#editSec").scrollIntoView({behavior:"smooth",block:"start"});
+}
+function closeEditor(){editId=null;$("#editSec").hidden=true}
+function checkOpts(){
+  const bad=["o0","o1","o2"].map((k,i)=>NEG.test($("#e-"+k).value.normalize("NFC"))?i+1:0).filter(Boolean);
+  $("#optWarn").innerHTML=bad.length?`<div class="note">Việc ${bad.join(", ")} đang là hoãn lại. Phải là việc làm được ngay.</div>`:"";
+}
+["o0","o1","o2"].forEach(k=>$("#e-"+k).addEventListener("input",checkOpts));
+$("#cancelEdit").onclick=closeEditor;
+$("#editor").addEventListener("submit",e=>{
+  e.preventDefault();const g=k=>$("#e-"+k).value.trim();const all=cards();
+  const old=editId?all.find(x=>x.id===editId):null;
+  const data={name:g("name"),grp:old?old.grp||"":"",ifs:g("ifs"),opts:[g("o0"),g("o1"),g("o2")],next:g("next"),prep:g("prep")};
+  if(!data.name||!data.ifs||data.opts.some(o=>!o)){$("#optWarn").innerHTML='<div class="note">Cần đủ tên thẻ, tình huống NẾU và cả 3 việc.</div>';return}
+  if(editId){Object.assign(all.find(x=>x.id===editId),data)}
+  else all.push({id:"c"+Date.now().toString(36),on:false,...data});
+  setCards(all);closeEditor();renderCardList();
+});
+
+/* ================= TIẾN ĐỘ ================= */
+$("#missBtn").onclick=()=>{const id=$("#missCard").value;if(!id)return;S.log.push({t:Date.now()-(+$("#missDay").value)*864e5,id,ok:false});save();$("#missMsg").textContent="Đã ghi.";renderProgress();setTimeout(()=>{const m=$("#missMsg");if(m)m.textContent=""},2000)};
+function renderProgress(){
+  const all=cards(),now=new Date(),days=[];for(let i=13;i>=0;i--){const d=new Date(now);d.setDate(d.getDate()-i);days.push(dk(d))}
+  const sel=$("#missCard"),cur=sel.value;sel.innerHTML=all.map(c=>`<option value="${esc(c.id)}">${esc(c.name)}</option>`).join("");if(cur)sel.value=cur;
+  const ids=uniq([...all.filter(c=>c.on).map(c=>c.id),...S.log.filter(x=>days.includes(dk(x.t))).map(x=>x.id)]);
+  const name=id=>(cardById(id)||{name:"(thẻ đã xoá)"}).name;
+  $("#cal").innerHTML=`<div class="r h"><span></span>${days.map(d=>`<span>${+d.slice(8)}</span>`).join("")}</div>`+
+    ids.map(id=>`<div class="r"><span title="${esc(name(id))}">${esc(name(id))}</span>${days.map(d=>{const l=S.log.filter(x=>x.id===id&&dk(x.t)===d);return `<i class="${l.some(x=>x.ok)?"ok":l.length?"no":""}" title="${d}: ${l.filter(x=>x.ok).length} làm, ${l.filter(x=>!x.ok).length} bỏ lỡ"></i>`}).join("")}</div>`).join("");
+  const wk=Date.now()-7*864e5;
+  const rows=all.filter(c=>c.on||S.log.some(x=>x.id===c.id&&x.t>=wk)).map(c=>{const l=S.log.filter(x=>x.id===c.id&&x.t>=wk);const ok=l.filter(x=>x.ok);const miss=l.length-ok.length;const late=ok.filter(x=>x.late).length;
+    const tip=miss>=3?'<span class="pill bad">Đổi việc dễ hơn</span>':(ok.length>=4&&late/ok.length>=.5)?'<span class="pill warn">Đổi việc 1</span>':(ok.length>=3&&miss===0)?'<span class="pill good">Ổn</span>':l.length?'<span class="pill">Theo dõi</span>':'<span class="pill">Chưa dùng</span>';
+    return `<tr><td><b>${esc(c.name)}</b></td><td>${tip}</td><td class="n">${ok.length}</td><td class="n">${miss}</td><td class="n">${late}</td><td>${mastered(c.id)?'<span class="pill good">Thuộc</span>':'<span class="pill warn">Chưa</span>'}</td></tr>`});
+  $("#cardTable").innerHTML=`<tr><th>Thẻ (7 ngày)</th><th>Việc cần làm</th><th class="n">Làm</th><th class="n">Bỏ lỡ</th><th class="n">Trễ</th><th>Luyện</th></tr>`+rows.join("");
+  const qs=S.quiz.slice(-15);
+  $("#quizChart").innerHTML=qs.length?lineChart(qs.map(s=>s.ms/1000),3):'<p class="muted">Chưa luyện lần nào.</p>';
+}
+function lineChart(v,target){
+  const W=560,H=190,pl=30,pr=12,pt=14,pb=24,mx=Math.max(6,Math.ceil(Math.max(...v)));
+  const x=i=>pl+(v.length===1?(W-pl-pr)/2:i*(W-pl-pr)/(v.length-1)),y=a=>pt+(H-pt-pb)*(1-a/mx);
+  let g="";for(let t=0;t<=mx;t+=Math.max(1,Math.round(mx/3))){g+=`<line x1="${pl}" x2="${W-pr}" y1="${y(t)}" y2="${y(t)}" stroke="var(--line)"/><text x="${pl-6}" y="${y(t)+4}" font-size="11" text-anchor="end" fill="var(--muted)">${t}</text>`}
+  const pts=v.map((a,i)=>x(i)+","+y(a)).join(" "),last=v.length-1;
+  return `<svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="Giây trung bình mỗi câu, mốc 3 giây">${g}
+    <polygon points="${x(0)},${y(0)} ${pts} ${x(last)},${y(0)}" fill="var(--accent)" opacity=".10"/>
+    <line x1="${pl}" x2="${W-pr}" y1="${y(target)}" y2="${y(target)}" stroke="var(--good)" stroke-dasharray="5 4" stroke-width="1.5"/>
+    <text x="${W-pr}" y="${y(target)-5}" font-size="11" text-anchor="end" fill="var(--good)">mốc 3 giây</text>
+    <polyline points="${pts}" fill="none" stroke="var(--accent)" stroke-width="2.5"/>
+    ${v.map((a,i)=>`<circle cx="${x(i)}" cy="${y(a)}" r="${i===last?5:3}" fill="var(--accent)"/>`).join("")}
+    <text x="${x(last)}" y="${y(v[last])-10}" font-size="12" font-weight="700" text-anchor="${last?"end":"middle"}" fill="var(--ink)">${sec(v[last]*1000)}</text></svg>`;
+}
+
+/* ================= KHỞI ĐỘNG ================= */
+function renderAll(){renderHome();renderCardList();if($("#v-tiendo").classList.contains("on"))renderProgress();if($("#v-luyen").classList.contains("on")&&!Q.active)renderQuizHome()}
+renderAll();
+go(location.hash.slice(1)||"dung");
+initDb();
+</script>
+
+</body></html>
