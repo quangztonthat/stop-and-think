@@ -12,9 +12,12 @@
   var me = document.currentScript;
   if (!me || !window.fetch || !window.localStorage) return;
   var HIST_SRC = me.getAttribute('data-history') || '';           // khoá đáp án cần lưu lịch sử
-  var HIST = HIST_SRC ? HIST_SRC.replace(/_answers$/, '') + '_history' : '';
+  var HIST = me.getAttribute('data-hist-key') || (HIST_SRC ? HIST_SRC.replace(/_answers$/, '') + '_history' : '');
+  var HIST_EXAM = me.getAttribute('data-hist-exam') || '';         // khoá tiến độ kiểu đề thi giờ: {mã đề: {completed, score, total, submittedAt...}}
+  var HIST_NAME = me.getAttribute('data-hist-name') || 'Đề ';
   var KEYS = (me.getAttribute('data-keys') || '').split(',').map(function (s) { return s.trim(); }).filter(Boolean);
   if (HIST && KEYS.indexOf(HIST) < 0) KEYS.push(HIST);
+  if (HIST_EXAM && KEYS.indexOf(HIST_EXAM) < 0) KEYS.push(HIST_EXAM);
   if (!KEYS.length) return;
   var API = '/api/hoc/kv';
   var M = 'cvasync:';                                              // khoá phụ: base, dirty
@@ -117,6 +120,8 @@
 
   /* ---------- lịch sử các lần làm (đề thi thử, câu hỏi sổ tay) ---------- */
   function summary() {
+    if (typeof window.cvaSyncCurrent === 'function') { try { return window.cvaSyncCurrent(); } catch (e) { return null; } }
+    if (!HIST_SRC) return null;
     var a = {}; try { a = JSON.parse(g(HIST_SRC) || '{}') || {}; } catch (e) {}
     var cards = document.querySelectorAll('.q-card'), done = 0, cor = 0, byT = {};
     cards.forEach(function (c) {
@@ -131,17 +136,41 @@
   function loadHist() { try { var h = JSON.parse(g(HIST) || '[]'); return Array.isArray(h) ? h : []; } catch (e) { return []; } }
   function archive() {
     var x = summary();
-    if (!x.done) return;
+    if (!x || !x.done) return;
     var h = loadHist();
     h.push({ at: new Date().toISOString(), done: x.done, cor: x.cor, total: x.total, byT: x.byT });
     oSet.call(LS, HIST, JSON.stringify(h));
     schedule(HIST, true);
   }
 
+  function examScan() {                                            // đề đã nộp (completed + submittedAt) -> thêm vào lịch sử nếu chưa có
+    if (!HIST_EXAM || !HIST) return;
+    var pr; try { pr = JSON.parse(g(HIST_EXAM) || '{}') || {}; } catch (e) { return; }
+    var h = loadHist(), have = {}, add = false;
+    h.forEach(function (x) { have[(x.set || '') + '|' + x.at] = 1; });
+    Object.keys(pr).forEach(function (id) {
+      var st = pr[id];
+      if (!st || !st.completed || !st.submittedAt || have[id + '|' + st.submittedAt]) return;
+      h.push({ at: st.submittedAt, set: id, label: (typeof window.cvaSyncLabel === 'function' && window.cvaSyncLabel(id)) || (HIST_NAME + id), exam: 1, done: Object.keys(st.answers || {}).length,
+        cor: st.score || 0, total: st.total || 0, mins: st.timeUsed ? Math.round(st.timeUsed / 60) : undefined });
+      add = true;
+    });
+    if (add) { h.sort(function (x, y) { return x.at < y.at ? -1 : 1; }); oSet.call(LS, HIST, JSON.stringify(h)); schedule(HIST, false); }
+  }
+  // trang tự lưu (đề không có localStorage riêng) gọi window.cvaSync.archive({label, done, cor, total})
+  window.cvaSync = { archive: function (e) {
+    if (!HIST || !e) return;
+    var h = loadHist(); e.at = e.at || new Date().toISOString(); h.push(e);
+    oSet.call(LS, HIST, JSON.stringify(h)); schedule(HIST, true);
+  } };
+
   /* ---------- theo dõi ghi của trang ---------- */
   S.setItem = function (k, v) {
     oSet.call(this, k, v);
-    if (this === LS && watched[k] && k.indexOf(M) !== 0) schedule(k, false);
+    if (this === LS && watched[k] && k.indexOf(M) !== 0) {
+      schedule(k, false);
+      if (k === HIST_EXAM) { try { examScan(); } catch (e) {} }
+    }
   };
   S.removeItem = function (k) {
     if (this === LS && watched[k]) {
@@ -188,6 +217,7 @@
             return;
           }
           sessionStorage.removeItem('cvasync-rl');
+          try { examScan(); } catch (e) {}
           status('✓ Đã đồng bộ ' + hhmm());
         };
         if (pend.length) Promise.all(pend.map(function (k) { return push(k); })).then(done); else done();
@@ -197,36 +227,47 @@
 
   /* ---------- bảng lịch sử ---------- */
   function histUI() {
+    if (!HIST) return;
     var btn = document.getElementById('resetQuiz');
-    if (!HIST || !btn) return;
     var b = document.createElement('button');
     b.type = 'button'; b.id = 'histBtn'; b.textContent = 'Lịch sử các lần làm';
-    b.className = btn.className; b.style.marginLeft = '6px';
-    btn.parentNode.insertBefore(b, btn.nextSibling);
     var box = document.createElement('div');
     box.id = 'histBox';
-    box.style.cssText = 'display:none;margin:10px 0 4px;padding:10px 14px;border:1px solid var(--line,#39456b);border-radius:12px;background:var(--card,#151d33);font-size:15px';
-    var bar = btn.closest('.mock-bar') || btn.parentNode;
-    bar.parentNode.insertBefore(box, bar.nextSibling);
-    var NAME = { official: 'Đề gốc', recall: 'Ôn lại', hard: 'Nâng cao', review: 'Ôn tập cuối chương', all: 'Câu hỏi' };
+    if (btn) {                                                     // đề có nút "Làm lại từ đầu": đặt cạnh nút đó
+      b.className = btn.className; b.style.marginLeft = '6px';
+      btn.parentNode.insertBefore(b, btn.nextSibling);
+      box.style.cssText = 'display:none;margin:10px 0 4px;padding:10px 14px;border:1px solid var(--line,#39456b);border-radius:12px;background:var(--card,#151d33);font-size:15px';
+      var bar = btn.closest('.mock-bar') || btn.parentNode;
+      bar.parentNode.insertBefore(box, bar.nextSibling);
+    } else {                                                       // trang khác: nút nổi góc dưới phải, bảng nổi
+      b.style.cssText = 'position:fixed;right:12px;bottom:12px;z-index:9998;font:600 13px/1 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;' +
+        'padding:9px 14px;border-radius:999px;border:1px solid #39456b;background:#18213a;color:#e9eef9;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.3)';
+      box.style.cssText = 'display:none;position:fixed;right:12px;bottom:56px;z-index:9998;max-width:min(680px,calc(100vw - 24px));max-height:60vh;overflow:auto;' +
+        'padding:12px 16px;border:1px solid #39456b;border-radius:12px;background:#151d33;color:#e9eef9;font:14px/1.45 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;box-shadow:0 8px 24px rgba(0,0,0,.4)';
+      document.body.appendChild(b); document.body.appendChild(box);
+    }
+    var SOFT = btn ? 'var(--ink-soft,#98a3bb)' : '#98a3bb';         // bảng nổi tự có nền tối: không dùng màu của trang
+    var NAME = { official: 'Đề gốc', recall: 'Ôn lại', hard: 'Nâng cao', review: 'Ôn tập cuối chương', all: 'Câu hỏi',
+      multi_statement: 'Multi-statement', scenario: 'Scenario', cluster_q: 'Cluster' };
     function row(lbl, x, cur) {
-      var p = x.done ? Math.round(x.cor / x.done * 100) : 0;
+      var den = x.exam ? x.total : x.done;                         // bài thi đã nộp: câu bỏ trống tính sai
+      var p = den ? Math.round(x.cor / den * 100) : 0;
       var parts = Object.keys(x.byT || {}).filter(function (t) { return x.byT[t][0] > 0; })
         .map(function (t) { var v = x.byT[t]; return (NAME[t] || t) + ' ' + v[1] + '/' + v[0]; }).join(' · ');
-      return '<tr' + (cur ? ' style="font-weight:600"' : '') + '><td style="padding:4px 10px 4px 0;white-space:nowrap">' + lbl + '</td>' +
+      return '<tr' + (cur ? ' style="font-weight:600"' : '') + '><td style="padding:4px 10px 4px 0;min-width:9em">' + lbl + '</td>' +
         '<td style="padding:4px 10px;text-align:right">' + x.done + '/' + x.total + '</td>' +
         '<td style="padding:4px 10px;text-align:right">' + x.cor + '</td>' +
         '<td style="padding:4px 10px;text-align:right">' + p + '%</td>' +
-        '<td style="padding:4px 0 4px 10px;color:var(--ink-soft,#98a3bb)">' + parts + '</td></tr>';
+        '<td style="padding:4px 0 4px 10px;color:'+SOFT+'">' + parts + '</td></tr>';
     }
     function fmt(iso) { var d = new Date(iso); return ('0' + d.getDate()).slice(-2) + '/' + ('0' + (d.getMonth() + 1)).slice(-2) + '/' + d.getFullYear() + ' ' + ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2); }
     function render() {
       var h = loadHist(), cur = summary();
-      var html = '<div style="margin-bottom:6px;color:var(--ink-soft,#98a3bb)">Mỗi lần bấm "Làm lại từ đầu", kết quả lần đó được lưu ở đây (đồng bộ máy tính và điện thoại).</div>' +
-        '<div style="overflow-x:auto"><table style="border-collapse:collapse"><tr style="color:var(--ink-soft,#98a3bb)"><td style="padding:4px 10px 4px 0">Lần</td><td style="padding:4px 10px;text-align:right">Đã làm</td><td style="padding:4px 10px;text-align:right">Đúng</td><td style="padding:4px 10px;text-align:right">Tỷ lệ</td><td style="padding:4px 0 4px 10px">Đúng/đã làm theo phần</td></tr>';
-      html += row('Đang làm', cur, true);
-      for (var i = h.length - 1; i >= 0; i--) html += row('Lần ' + (i + 1) + ' · ' + fmt(h[i].at), h[i], false);
-      if (!h.length) html += '<tr><td colspan="5" style="padding:6px 0;color:var(--ink-soft,#98a3bb)">Chưa có lần làm nào được lưu.</td></tr>';
+      var html = '<div style="margin-bottom:6px;color:'+SOFT+'">Mỗi lần nộp bài hoặc bấm làm lại, kết quả lần đó được lưu ở đây (đồng bộ máy tính và điện thoại).</div>' +
+        '<div style="overflow-x:auto"><table style="border-collapse:collapse"><tr style="color:'+SOFT+'"><td style="padding:4px 10px 4px 0">Lần</td><td style="padding:4px 10px;text-align:right">Đã làm</td><td style="padding:4px 10px;text-align:right">Đúng</td><td style="padding:4px 10px;text-align:right">Tỷ lệ</td><td style="padding:4px 0 4px 10px">Theo phần (đúng/đã làm)</td></tr>';
+      if (cur) html += row('Đang làm', cur, true);
+      for (var i = h.length - 1; i >= 0; i--) html += row('Lần ' + (i + 1) + (h[i].label ? ' · ' + h[i].label : '') + ' · ' + fmt(h[i].at) + (h[i].mins ? ' · ' + h[i].mins + ' phút' : ''), h[i], false);
+      if (!h.length) html += '<tr><td colspan="5" style="padding:6px 0;color:'+SOFT+'">Chưa có lần làm nào được lưu.</td></tr>';
       box.innerHTML = html + '</table></div>';
     }
     b.addEventListener('click', function () { var on = box.style.display === 'none'; box.style.display = on ? 'block' : 'none'; if (on) render(); });

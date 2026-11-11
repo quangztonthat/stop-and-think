@@ -1352,5 +1352,16 @@ function escapeHtml(s) {
 // Init
 renderQuestions();
 </script>
+<script src="/hoc/CVA/cva-sync.js?v=20261111b" data-keys="cva-m2-exstyle_state" data-hist-key="cva-m2-exstyle_history"></script><!--cva-sync-->
+<script>/* cva-save: lưu tiến độ trang này vào máy, cva-sync đẩy lên máy chủ */
+(function(){var K='cva-m2-exstyle_state';if(typeof QUESTIONS==='undefined')return;
+function save(){try{localStorage.setItem(K,JSON.stringify({answers:answers,flagged:Array.from(flagged)}));}catch(e){}}
+function tally(){var d=0,c=0,t=0,by={};QUESTIONS.forEach(function(q,i){if(!q.options)return;t++;var k=q.format==='multi_statement'?'multi_statement':(q.format==='cluster_q'?'cluster_q':'scenario');by[k]=by[k]||[0,0,0];by[k][2]++;if(answers[i]!==undefined){d++;by[k][0]++;if(answers[i]===q.answer){c++;by[k][1]++;}}});return{done:d,cor:c,total:t,byT:by};}
+window.cvaSyncCurrent=tally;
+try{var sv=JSON.parse(localStorage.getItem(K)||'null');if(sv&&sv.answers&&Object.keys(sv.answers).length){answers=sv.answers;flagged=new Set(sv.flagged||[]);renderQuestions();updateProgress();}}catch(e){}
+['selectAnswer','toggleFlag','showAnswer'].forEach(function(n){var o=window[n];if(typeof o==='function')window[n]=function(){var r=o.apply(this,arguments);save();return r;};});
+var oS=window.submitExam;window.submitExam=function(){var was=isSubmitted;var r=oS.apply(this,arguments);if(!was&&isSubmitted&&window.cvaSync){var x=tally();x.label='Nộp bài'+(mode==='exam'?' (thi tính giờ)':'');x.exam=1;window.cvaSync.archive(x);}save();return r;};
+var oR=window.resetAll;window.resetAll=function(){var x=tally(),was=isSubmitted;var r=oR.apply(this,arguments);if(!Object.keys(answers).length&&x.done&&!was&&window.cvaSync){x.label='Làm lại (chưa nộp)';window.cvaSync.archive(x);}save();return r;};
+})();</script><!--cva-save-->
 </body>
 </html>
