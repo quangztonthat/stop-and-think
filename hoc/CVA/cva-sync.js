@@ -63,7 +63,11 @@
     if (isObj(a) && isObj(b)) {                                    // đáp án, thẻ, mục đã đọc: hợp hai bên
       var o = {}, k;
       for (k in a) o[k] = a[k];
-      for (k in b) o[k] = b[k];
+      for (k in b) {                                               // sổ câu từng sai {n, p}: giữ số lần sai lớn hơn
+        if (isObj(o[k]) && isObj(b[k]) && typeof o[k].n === 'number' && typeof b[k].n === 'number')
+          o[k] = { n: Math.max(o[k].n, b[k].n), p: b[k].p };
+        else o[k] = b[k];
+      }
       return JSON.stringify(o);
     }
     if (Array.isArray(a) && Array.isArray(b)) {                    // lịch sử: hợp theo mốc thời gian
