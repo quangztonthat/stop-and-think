@@ -270,7 +270,29 @@
       if (!h.length) html += '<tr><td colspan="5" style="padding:6px 0;color:'+SOFT+'">Chưa có lần làm nào được lưu.</td></tr>';
       box.innerHTML = html + '</table></div>';
     }
-    b.addEventListener('click', function () { var on = box.style.display === 'none'; box.style.display = on ? 'block' : 'none'; if (on) render(); });
+    // vòng 42: thanh đề thi thử dính trên màn hình — đang cuộn giữa trang thì bảng nằm khuất tít phía trên,
+    // nên khi đó cho bảng nổi ngay dưới thanh (gắn vào body để không bị phóng chữ của main làm lệch toạ độ)
+    var INLINE = box.style.cssText, FLOAT = 0;
+    function place() {
+      if (!btn) return;
+      var bar = btn.closest('.mock-bar') || btn.parentNode, r = bar.getBoundingClientRect(), br = box.getBoundingClientRect();
+      if (br.top >= r.bottom - 2 && br.top < window.innerHeight - 80) return;      // thấy được ngay dưới thanh: để yên
+      FLOAT = 1; document.body.appendChild(box);
+      var top = Math.max(8, Math.round(r.bottom + 6));
+      box.style.cssText = INLINE + ';display:block;position:fixed;z-index:60;margin:0;left:' + Math.max(8, Math.round(r.left)) + 'px;' +
+        'width:' + Math.round(Math.min(r.width, window.innerWidth - 16)) + 'px;max-height:calc(100vh - ' + (top + 16) + 'px);overflow:auto;' +
+        'top:' + top + 'px;box-shadow:0 8px 24px rgba(0,0,0,.35)';
+    }
+    function unplace() {
+      if (!FLOAT) return;
+      FLOAT = 0; box.style.cssText = INLINE;
+      var bar = btn.closest('.mock-bar') || btn.parentNode; bar.parentNode.insertBefore(box, bar.nextSibling);
+    }
+    b.addEventListener('click', function () {
+      var on = box.style.display === 'none';
+      if (on) { box.style.display = 'block'; render(); place(); }
+      else { box.style.display = 'none'; unplace(); }
+    });
   }
 
   /* ---------- chạy ---------- */
