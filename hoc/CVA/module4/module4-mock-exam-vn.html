@@ -1143,21 +1143,48 @@ const SLUG = "cva-module4-mock";
     try { rate = parseFloat(localStorage.getItem(SLUG + '_hs_rate')) || 1; } catch(e){}
     var rb = document.getElementById('hsRate'), pa = document.getElementById('hsPlayAll');
     function fmt(x){ x = Math.max(0, Math.round(x)); return Math.floor(x / 60) + ':' + ('0' + x % 60).slice(-2); }
+    var SILENT = 'data:audio/mpeg;base64,SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjYwLjE2LjEwMAAAAAAAAAAAAAAA//tAwAAAAAAAAAAAAAAAAAAAAAAASW5mbwAAAA8AAAALAAAFMwA3Nzc3Nzc3NzdLS0tLS0tLS0tfX19fX19fX19zc3Nzc3Nzc3OHh4eHh4eHh4ebm5ubm5ubm5uvr6+vr6+vr6/Dw8PDw8PDw8PX19fX19fX19fr6+vr6+vr6+v///////////8AAAAATGF2YzYwLjMxAAAAAAAAAAAAAAAAJAQvAAAAAAAABTMXaDvoAAAAAAD/+xDEAAPAAAGkAAAAIAAANIAAAARMQU1FMy4xMDBVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVTEFNRTMuMTAwVf/7EsQpg8AAAaQAAAAgAAA0gAAABFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVTEFNRTMuMTAwVf/7EMRTg8AAAaQAAAAgAAA0gAAABFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVMQU1FMy4xMDBV//sSxH0DwAABpAAAACAAADSAAAAEVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVMQU1FMy4xMDBV//sQxKcDwAABpAAAACAAADSAAAAEVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVUxBTUUzLjEwMFX/+xLE0IPAAAGkAAAAIAAANIAAAARVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVX/+xDE1gPAAAGkAAAAIAAANIAAAARVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVf/7EsTVg8AAAaQAAAAgAAA0gAAABFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVf/7EMTWA8AAAaQAAAAgAAA0gAAABFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV//sSxNWDwAABpAAAACAAADSAAAAEVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV//sQxNYDwAABpAAAACAAADSAAAAEVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVU=', blobs = {}, ready = {};
+    function real(){ return au.src && au.src.indexOf('data:') !== 0; }
+    // tải mp3 bằng fetch (đi kèm phiên đăng nhập như phần đồng bộ) rồi phát từ bộ nhớ: iPhone không phải xin file qua cổng đăng nhập lần nữa
+    function getBlob(src){
+      if (!blobs[src]) {
+        blobs[src] = fetch(src, {credentials: 'same-origin'}).then(function(r){ if (!r.ok) throw new Error(r.status); return r.blob(); })
+          .then(function(bl){ ready[src] = URL.createObjectURL(bl); return ready[src]; });
+        blobs[src].catch(function(){ delete blobs[src]; });
+      }
+      return blobs[src];
+    }
     function lab(b, playing){
-      var len = au.duration && isFinite(au.duration) && b === cp ? au.duration : +b.dataset.len;
-      var left = b === cp && au.currentTime ? len - au.currentTime : len;
+      if (b === cp && b.dataset.err) { b.textContent = '⚠ Lỗi tải · bấm lại'; return; }
+      if (b === cp && b.dataset.wait) { b.textContent = '⏳ Đang tải'; return; }
+      var len = real() && au.duration && isFinite(au.duration) && b === cp ? au.duration : +b.dataset.len;
+      var left = b === cp && real() && au.currentTime ? len - au.currentTime : len;
       b.textContent = (playing ? '❚❚ ' : '▶ ') + fmt(left);
-      b.style.setProperty('--p', b === cp && len ? Math.min(100, au.currentTime / len * 100) + '%' : '0%');
+      b.style.setProperty('--p', b === cp && real() && len ? Math.min(100, au.currentTime / len * 100) + '%' : '0%');
     }
     function showRate(){ if (rb) rb.textContent = 'Tốc độ ' + String(rate).replace('.', ',') + '×'; }
     function play(b){
       if (cp && cp !== b) { var old = cp; cp = null; old.classList.remove('on'); old.closest('.hs-card').classList.remove('hs-playing'); lab(old, false); }
-      if (cp !== b) { cp = b; au.src = b.dataset.src; }
-      au.playbackRate = rate; var pr = au.play(); if (pr && pr.catch) pr.catch(function(){});
+      var src = b.dataset.src;
+      if (cp !== b || b.dataset.err) {
+        cp = b; delete b.dataset.err;
+        if (ready[src]) { au.src = ready[src]; start(); }
+        else {
+          au.src = SILENT; var p0 = au.play(); if (p0 && p0.catch) p0.catch(function(){});   // mở khoá loa ngay trong lần chạm (iPhone)
+          b.dataset.wait = 1; lab(b, false);
+          getBlob(src).then(function(u){ delete b.dataset.wait; if (cp !== b) return; au.src = u; start(); })
+            .catch(function(){ delete b.dataset.wait; if (cp !== b) return; au.src = src; start(); });   // tải hỏng thì thử phát thẳng
+        }
+        var v = visible(), nb = v[v.indexOf(b) + 1]; if (nb) getBlob(nb.dataset.src).catch(function(){});   // tải sẵn thẻ kế
+      } else start();
       if ('mediaSession' in navigator && window.MediaMetadata) {
         var h = b.closest('.hs-card').querySelector('h3');
         navigator.mediaSession.metadata = new MediaMetadata({title: h ? h.textContent : 'Hay sai', artist: 'CVA · Hay sai'});
       }
+    }
+    function start(){
+      au.playbackRate = rate; var pr = au.play();
+      if (pr && pr.catch) pr.catch(function(e){ if (cp && e && e.name !== 'AbortError') { cp.dataset.err = 1; lab(cp, false); } });
     }
     function visible(){ return plays.filter(function(b){ return b.closest('.hs-card').offsetParent !== null; }); }
     function next(){
@@ -1165,10 +1192,11 @@ const SLUG = "cva-module4-mock";
       if (i >= 0 && i + 1 < v.length) { var b = v[i + 1]; b.closest('.hs-card').scrollIntoView({block:'center'}); play(b); }
       else { qmode = false; if (pa) { pa.classList.remove('on'); pa.textContent = '▶ Nghe liên tục'; } }
     }
-    au.addEventListener('play', function(){ au.playbackRate = rate; if (cp) { cp.classList.add('on'); cp.closest('.hs-card').classList.add('hs-playing'); lab(cp, true); } });
+    au.addEventListener('error', function(){ if (cp && real()) { cp.dataset.err = 1; lab(cp, false); } });
+    au.addEventListener('play', function(){ au.playbackRate = rate; if (cp && real()) { cp.classList.add('on'); cp.closest('.hs-card').classList.add('hs-playing'); lab(cp, true); } });
     au.addEventListener('pause', function(){ if (cp) lab(cp, false); });
     au.addEventListener('timeupdate', function(){ if (cp) lab(cp, !au.paused); });
-    au.addEventListener('ended', function(){ if (cp) { cp.classList.remove('on'); cp.closest('.hs-card').classList.remove('hs-playing'); au.currentTime = 0; lab(cp, false); } if (qmode) next(); });
+    au.addEventListener('ended', function(){ if (!real()) return; if (cp) { cp.classList.remove('on'); cp.closest('.hs-card').classList.remove('hs-playing'); au.currentTime = 0; lab(cp, false); } if (qmode) next(); });
     if ('mediaSession' in navigator) { try { navigator.mediaSession.setActionHandler('nexttrack', function(){ next(); }); } catch(e){} }
     panel.addEventListener('click', function(e){
       var b = e.target.closest('.hs-play');
