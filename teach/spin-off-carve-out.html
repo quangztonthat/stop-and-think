@@ -142,7 +142,7 @@ pre{white-space:pre-wrap;word-break:break-word;font-family:var(--font);font-size
 .nghebar .thanh i{display:block;height:100%;width:0;background:#1A9AFA}
 .les .ui.nghemuc{display:inline-block;margin:0 0 8px}
 .les .ui.nghemuc button{background:var(--accent-nhat);color:var(--accent-chu);border:1.5px solid var(--accent-line);border-radius:14px;padding:3px 12px;font-size:15px;font-weight:600;display:inline-flex;align-items:center;gap:6px}
-.les.dangnghe{box-shadow:inset 4px 0 0 var(--accent-line)}
+.les{position:relative}.les.dangnghe::before{content:"";position:absolute;left:-11px;top:14px;bottom:10px;width:4px;border-radius:2px;background:var(--accent-line)}
 /* cot loi giang ben phai (v1.3.3): chu cua doan dang nghe, to cau dang doc; nut An/Hien o thanh nghe */
 .lg{display:none}
 .lg .lgdau{font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
@@ -232,7 +232,9 @@ function fmt(x,d){if(typeof x==='string')return x;if(typeof x==='boolean')return
  var ng=Math.floor(y+1e-9),le='';if(d>0){le=String(lamTron((y-ng)*Math.pow(10,d),0));while(le.length<d)le='0'+le;if(le.length>d){ng+=1;le=new Array(d+1).join('0')}}
  var s=String(ng).replace(/\B(?=(\d{3})+(?!\d))/g,'.');if(d>0)s+=','+le;if(am&&(ng!==0||/[1-9]/.test(le)))s='-'+s;return s}
 function npv(r){var t=0;for(var i=1;i<arguments.length;i++)t+=arguments[i]/Math.pow(1+r,i);return t}
-var HAM={max:Math.max,min:Math.min,abs:Math.abs,round:function(x,d){return lamTron(x,d|0)},pow:Math.pow,npv:npv,fmt:fmt};
+function ncdf(x){var xa=Math.abs(x),c,e,b;if(xa>37)c=0;else{e=Math.exp(-xa*xa/2);if(xa<7.07106781186547){b=3.52624965998911e-02*xa+0.700383064443688;b=b*xa+6.37396220353165;b=b*xa+33.912866078383;b=b*xa+112.079291497871;b=b*xa+221.213596169931;b=b*xa+220.206867912376;c=e*b;b=8.83883476483184e-02*xa+1.75566716318264;b=b*xa+16.064177579207;b=b*xa+86.7807322029461;b=b*xa+296.564248779674;b=b*xa+637.333633378831;b=b*xa+793.826512519948;b=b*xa+440.413735824752;c=c/b}else{b=xa+0.65;b=xa+4/b;b=xa+3/b;b=xa+2/b;b=xa+1/b;c=e/b/2.506628274631}}return x>0?1-c:c}
+function bs(phi,s,k,r,q,v,t){if(t<=0||v<=0){var tt=Math.max(t,0);return Math.max(phi*(s*Math.exp(-q*tt)-k*Math.exp(-r*tt)),0)}if(s<=0)return Math.max(phi*(0-k*Math.exp(-r*t)),0);var d1=(Math.log(s/k)+(r-q+v*v/2)*t)/(v*Math.sqrt(t)),d2=d1-v*Math.sqrt(t);return phi*(s*Math.exp(-q*t)*ncdf(phi*d1)-k*Math.exp(-r*t)*ncdf(phi*d2))}
+var HAM={max:Math.max,min:Math.min,abs:Math.abs,round:function(x,d){return lamTron(x,d|0)},pow:Math.pow,npv:npv,fmt:fmt,ln:Math.log,exp:Math.exp,sqrt:Math.sqrt,ncdf:ncdf,bs:bs};
 function soOf(v){if(typeof v==='boolean')return v?1:0;if(typeof v==='number')return v;throw new Error('cần số, nhận chữ '+v)}
 function dung(v){return typeof v==='string'?v!=='':!!v}
 function BT(s,env){if(typeof s==='number'||typeof s==='boolean')return s;var t=tach(s),i=0;env=env||{};
