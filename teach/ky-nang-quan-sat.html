@@ -1433,14 +1433,17 @@ if(D.am){(function(){var bar=document.createElement('div');bar.className='ngheba
   if(k===lgCau)return;lgCau=k;var ps=LG.querySelectorAll('p.cau');
   ps.forEach(function(x,j){x.classList.toggle('dang',j===k);x.classList.toggle('qua',j<k)});
   var el=ps[k];if(el&&document.body.classList.contains('co-lg')){var r=el.getBoundingClientRect(),q=LG.getBoundingClientRect();if(r.top<q.top+40||r.bottom>q.bottom-20)LG.scrollTop+=r.top-q.top-q.height/3}}
- function chon(i,phat){if(i<0||i>=D.muc.length)return;var doi=i!==cur||!au.src;cur=i;if(doi){au.src=AM()[i];au.playbackRate=TOC[ti]}
+ /* v1.4.4 (Quang 24-11-2026: "chuyển từ mục này qua mục khác thì hay bị nhanh ... chờ một xíu rồi nói thì sẽ hay hơn"): het doan tu sang muc sau thi
+    cuon + hien chu ngay nhung NGHI NGHI_MUC ms roi moi doc; bam bat ky nut nao trong luc nghi thi huy cho */
+ var NGHI_MUC=2000,CHO=0;function huyCho(){if(CHO){clearTimeout(CHO);CHO=0}}
+ function chon(i,phat){huyCho();if(i<0||i>=D.muc.length)return;var doi=i!==cur||!au.src;cur=i;if(doi){au.src=AM()[i];au.playbackRate=TOC[ti]}
   if($('ngCuon').checked){var el=document.getElementById('muc-'+(i+1));if(el)el.scrollIntoView({block:'start'})}
   veLG(i);toLG();if(phat){var pr=au.play();if(pr&&pr.catch)pr.catch(function(){})}nhan()}
- $('ngPlay').addEventListener('click',function(){if(au.paused){if(!au.src)chon(cur,true);else{var pr=au.play();if(pr&&pr.catch)pr.catch(function(){})}}else au.pause();nhan()});
+ $('ngPlay').addEventListener('click',function(){huyCho();if(au.paused){if(!au.src)chon(cur,true);else{var pr=au.play();if(pr&&pr.catch)pr.catch(function(){})}}else au.pause();nhan()});
  $('ngTruoc').addEventListener('click',function(){chon(Math.max(0,cur-1),true)});
  $('ngSau').addEventListener('click',function(){chon(Math.min(D.muc.length-1,cur+1),true)});
  $('ngToc').addEventListener('click',function(){ti=(ti+1)%TOC.length;au.playbackRate=TOC[ti];this.textContent='Tốc độ '+String(TOC[ti]).replace('.',',')+'x'});
- au.addEventListener('ended',function(){if(cur<D.muc.length-1)chon(cur+1,true);else{au.currentTime=0;nhan()}});
+ au.addEventListener('ended',function(){if(cur<D.muc.length-1){chon(cur+1,false);CHO=setTimeout(function(){CHO=0;var pr=au.play();if(pr&&pr.catch)pr.catch(function(){});nhan()},NGHI_MUC)}else{au.currentTime=0;nhan()}});
  au.addEventListener('play',nhan);au.addEventListener('pause',nhan);
  au.addEventListener('timeupdate',function(){$('ngGio').textContent=mm(au.currentTime)+' / '+mm(au.duration);$('ngThanh').style.width=(au.duration?100*au.currentTime/au.duration:0)+'%';toLG()});
  $('ngLG').addEventListener('click',function(){lgHien(!document.body.classList.contains('co-lg'))});
@@ -1448,10 +1451,10 @@ if(D.am){(function(){var bar=document.createElement('div');bar.className='ngheba
  lgHien(lgMo===null?window.matchMedia('(min-width:1200px)').matches:lgMo==='1');veLG(0);
  document.querySelectorAll('button.nghe').forEach(function(b){b.addEventListener('click',function(){chon(+b.getAttribute('data-muc')-1,true)})});
  function veNN(){if(VI)$('ngNN').innerHTML='<span'+(NG==='vi'?' class="on"':'')+'>VI</span><span'+(NG==='en'?' class="on"':'')+'>EN</span>'}
- if(VI){veNN();$('ngNN').addEventListener('click',function(){var dang=!au.paused;au.pause();NG=NG==='vi'?'en':'vi';
+ if(VI){veNN();$('ngNN').addEventListener('click',function(){var dang=!au.paused||!!CHO;huyCho();au.pause();NG=NG==='vi'?'en':'vi';
   try{localStorage.setItem('ngonngu',NG)}catch(e){}au.src=AM()[cur];au.playbackRate=TOC[ti];lgMuc=-1;veLG(cur);toLG();
   if(dang){var pr=au.play();if(pr&&pr.catch)pr.catch(function(){})}veNN();nhan()})}
- NGHE={au:au,chon:chon,ngon:function(){return NG},cur:function(){return cur},dangPhat:function(){return !au.paused},toLG:toLG,lgHien:lgHien};window.__trangNghe=NGHE;nhan()})()}
+ NGHE={au:au,chon:chon,cho:function(){return !!CHO},nghiMuc:NGHI_MUC,ngon:function(){return NG},cur:function(){return cur},dangPhat:function(){return !au.paused},toLG:toLG,lgHien:lgHien};window.__trangNghe=NGHE;nhan()})()}
 
 /* ===== Muc luc ben trai ===== */
 (function(){var ml=$('mucluc'),ds=[];
