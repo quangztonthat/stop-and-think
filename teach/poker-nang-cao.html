@@ -75,7 +75,9 @@ svg text{font-family:var(--font)}
 .dan-hoi{margin:6px 0 4px}.dan-hoi .btns{margin-top:6px}
 .dan-ph{font-size:calc(17px*var(--kk,1));line-height:1.55;margin:6px 0 4px;padding:8px 12px;border-radius:8px;background:var(--bg);border:1.5px solid var(--rule)}
 .dan-ph.dung{border-color:var(--accent-line)}.dan-ph.sai{border-color:var(--chot-line)}
-.dan-nut{display:flex;gap:10px;margin-top:8px}.dan-nut .btn.het{opacity:.4}
+.dan-nut{display:flex;gap:6px;flex-wrap:wrap;margin:0 6px 0 0}.dan-nut .btn.het{opacity:.4}.dan-nut .btn{padding:6px 10px}.dan-dau{row-gap:6px}
+/* v1.4.1 (Quang 24-11-2026: "thêm nút tới hết luôn hay về từ đầu" · "màn hình 14inch ... phải kéo lên kéo xuống"): nut ve dau / toi cuoi; thanh nut o DAU khoi (khong xe dich theo do dai chu); hinh + khoi dan dat gom vao .dan-cum, hinh thu nho cho ca cum vua mot man hinh */
+.dan-cum{scroll-margin-top:var(--dan-tren,60px);scroll-margin-bottom:var(--dan-duoi,90px)}.dan-cum>.fig,.dan-cum>.row2{margin-bottom:8px}.dan-cum .dan{margin-top:0}.dan-noi{overflow:hidden}
 .dan .key{margin:12px 0 2px}.dan .key::before{content:"Rút ra: ";font-weight:700}
 .ghi{display:inline-block;background:var(--use-nhat);border-left:5px solid var(--use-line);padding:8px 14px;border-radius:0 6px 6px 0;font-size:calc(17px*var(--kk,1));margin:8px 0 10px}
 .fig{border:1px solid var(--rule);border-radius:8px;padding:10px;background:var(--bg);margin-bottom:10px;min-width:0}
@@ -151,6 +153,7 @@ pre{white-space:pre-wrap;word-break:break-word;font-family:var(--font);font-size
 .nghebar .nhan{font-size:15px;font-weight:600;flex:1 1 220px;min-width:0}
 .nghebar .gio{font-size:14px;opacity:.85}
 .nghebar label{font-size:14px;display:inline-flex;align-items:center;gap:6px}
+.nghebar #ngNN span{padding:0 6px;border-radius:10px;opacity:.7}.nghebar #ngNN span.on{background:#fff;color:#2E2E38;opacity:1}
 .nghebar .thanh{flex:1 1 100%;height:4px;background:rgba(255,255,255,.25);border-radius:2px;overflow:hidden}
 .nghebar .thanh i{display:block;height:100%;width:0;background:#1A9AFA}
 .les .ui.nghemuc{display:inline-block;margin:0 0 8px}
@@ -167,7 +170,8 @@ pre{white-space:pre-wrap;word-break:break-word;font-family:var(--font);font-size
 .lg .lgan{float:right;background:transparent;border:1px solid var(--rule);color:var(--muted);border-radius:12px;padding:1px 10px;font-size:calc(13px*var(--kk,1))}
 body.co-lg .lg{display:block}
 @media(min-width:1200px){
- body.co-lg .khungtrang{grid-template-columns:260px minmax(0,1fr) 340px}
+ body.co-lg .khungtrang{grid-template-columns:260px minmax(0,1fr) 340px}}
+@media(min-width:1200px){
  body.co-lg .lg{position:sticky;top:52px;align-self:start;max-height:calc(100vh - 140px);overflow:auto;padding:18px 18px 18px 16px;border-left:1px solid var(--rule)}
 }
 @media(max-width:1199px){
@@ -215,6 +219,9 @@ body.co-lg .lg{display:block}
 @media(max-width:1199px){
  .ml.mo{display:block;position:fixed;z-index:30;top:48px;left:0;bottom:0;width:min(320px,86vw);overflow:auto;background:var(--bg);padding:16px;box-shadow:4px 0 18px rgba(0,0,0,.25)}
 }
+/* v1.4.1 laptop 14 inch (1200-1439 px): hai cot ben hep lai de phan giua du cho hinh + buoc dan dat vua mot man hinh */
+@media(min-width:1200px) and (max-width:1439px){
+ body.co-lg .khungtrang{grid-template-columns:220px minmax(0,1fr) 300px}.khungtrang{grid-template-columns:220px minmax(0,1fr)}}
 </style>
 </head>
 <body>
@@ -419,13 +426,18 @@ function khoi(b,host){
  if(b.ghi){var g=document.createElement('div');g.className='ghi';g.textContent=b.ghi;host.appendChild(g);return}
  /* v1.3.12 dan dat tung buoc: moi buoc mot doan ngan + gan bien de hinh doi theo; toi da 1 cau doan; cau chot (.key) chuyen vao cuoi khoi, an toi buoc cuoi */
  if(b.dan){var w=document.createElement('div');w.className='dan';host.appendChild(w);
-  w.innerHTML='<div class="dan-dau"><span class="dan-so"></span><span class="dan-cham"></span></div><div class="dan-than"></div><div class="dan-hoi"></div><div class="ui dan-nut"><button type="button" class="btn dan-lui">‹ Lùi</button><button type="button" class="btn dan-toi">Tiếp ›</button></div>';
-  var sec=host.closest('section'),key=sec&&sec.querySelector('.key');if(key)w.appendChild(key);
-  var o={d:b.dan,w:w,i:0,chon:-1,key:key,base:{}};b.dan.forEach(function(st){Object.keys(st.gan||{}).forEach(function(k){if(!(k in o.base))o.base[k]=V[k]})});
+  w.innerHTML='<div class="dan-dau"><div class="ui dan-nut"><button type="button" class="btn dan-ve-dau" aria-label="Về bước đầu">« Về đầu</button><button type="button" class="btn dan-lui">‹ Lùi</button><button type="button" class="btn dan-toi">Tiếp ›</button><button type="button" class="btn dan-ve-cuoi" aria-label="Tới bước cuối">Tới cuối »</button></div><span class="dan-so"></span><span class="dan-cham"></span></div><div class="dan-noi"><div class="dan-than"></div><div class="dan-hoi"></div></div>';
+  var sec=host.closest('section'),key=sec&&sec.querySelector('.key');if(key)w.querySelector('.dan-noi').appendChild(key);
+  /* v1.4.1: hinh dung ngay truoc khoi dan dat -> gom chung mot cum de do vua man hinh */
+  var truoc=w.previousElementSibling,cum=null;if(truoc&&(truoc.classList.contains('fig')||truoc.classList.contains('row2'))){cum=document.createElement('div');cum.className='dan-cum';host.insertBefore(cum,truoc);cum.appendChild(truoc);cum.appendChild(w)}
+  /* v1.4.3 (Quang 24-11-2026: "để mặc định là cái nút ở sau cùng luôn, rồi khi nào cần thì tôi mới back lại"): mo trang o BUOC CUOI (du hinh + cau chot); Ve dau / Lui de xem tung buoc */
+  var o={d:b.dan,w:w,i:b.dan.length-1,chon:-1,key:key,base:{},cum:cum};b.dan.forEach(function(st){Object.keys(st.gan||{}).forEach(function(k){if(!(k in o.base))o.base[k]=V[k]})});
   b.dan.forEach(function(st){if(st.chon)st.chon.forEach(function(c){Object.keys(c.gan||{}).forEach(function(k){if(!(k in o.base))o.base[k]=V[k]})})});
   var ch=w.querySelector('.dan-cham');b.dan.forEach(function(){ch.appendChild(document.createElement('i'))});
   w.querySelector('.dan-lui').addEventListener('click',function(){if(o.i>0){o.i--;danVe(o,true)}});
   w.querySelector('.dan-toi').addEventListener('click',function(){if(o.i<o.d.length-1){o.i++;danVe(o,true)}});
+  w.querySelector('.dan-ve-dau').addEventListener('click',function(){if(o.i>0){o.i=0;danVe(o,true)}});
+  w.querySelector('.dan-ve-cuoi').addEventListener('click',function(){if(o.i<o.d.length-1){o.i=o.d.length-1;danVe(o,true)}});
   DAN.push(o);danVe(o,false);return}
  /* v1.3.11 doan giang tieng Viet loi thuong (Quang 19-11-2026: "mô tả nhiều hơn, chứ ko phải khô khan") */
  if(b.giang){var gd=document.createElement('div');gd.className='giang';b.giang.forEach(function(t){var p=document.createElement('p');p.textContent=t;gd.appendChild(p)});host.appendChild(gd);return}
@@ -464,8 +476,23 @@ function danVe(o,veLai){var st=o.d[o.i],w=o.w,n=o.d.length;danGan(o);
   if(o.chon>=0){var c=st.chon[o.chon],ph=document.createElement('div');ph.className='dan-ph '+(c.dung?'dung':'sai');var b0=document.createElement('b');b0.textContent=c.dung?'Đúng. ':'Chưa đúng. ';ph.appendChild(b0);ph.appendChild(document.createTextNode(c.vi_sao));hq.appendChild(ph)}}
  if(o.key)o.key.hidden=o.i<n-1;
  w.querySelector('.dan-lui').classList.toggle('het',o.i===0);w.querySelector('.dan-toi').classList.toggle('het',o.i===n-1);
+ w.querySelector('.dan-ve-dau').classList.toggle('het',o.i===0);w.querySelector('.dan-ve-cuoi').classList.toggle('het',o.i===n-1);
  w.querySelector('.dan-toi').textContent=o.i===n-1?'Hết bước':'Tiếp ›';
- if(veLai)ve()}
+ if(veLai){ve();danThay(o)}}
+/* v1.4.1 vua man hinh: chieu cao phan chu = buoc dai nhat (nut khong nhay, hinh khong co gian theo buoc); hinh thu lai cho ca cum nam trong khoang giua thanh tren va thanh nghe */
+function danThanh(){var t=document.querySelector('.top'),b=document.querySelector('.nghebar');return {tren:(t?t.offsetHeight:0)+8,duoi:(b&&b.offsetParent!==null?b.offsetHeight:0)+8}}
+function danDo(o){var nn=o.w.querySelector('.dan-noi'),th=o.w.querySelector('.dan-than'),hq=o.w.querySelector('.dan-hoi'),i0=o.i,c0=o.chon,mx=0;nn.style.minHeight='';
+ for(var j=0;j<o.d.length;j++){var st=o.d[j],ds=[-1];if(st.chon){ds=[];st.chon.forEach(function(c,ci){ds.push(ci)})}
+  ds.forEach(function(ci){o.i=j;o.chon=ci;danVe(o,false);mx=Math.max(mx,th.offsetHeight+hq.offsetHeight+(o.key&&!o.key.hidden?o.key.offsetHeight+14:0))})}
+ o.i=i0;o.chon=c0;danVe(o,false);nn.style.minHeight=mx+'px'}
+function danVua(){var th=danThanh(),k=document.documentElement;k.style.setProperty('--dan-tren',th.tren+'px');k.style.setProperty('--dan-duoi',th.duoi+'px');
+ DAN.forEach(function(o){if(!o.cum)return;var svs=o.cum.querySelectorAll('.fig>svg');svs.forEach(function(x){x.style.maxHeight=''});
+  if(window.innerWidth<=600)return;danDo(o);
+  var con=window.innerHeight-th.tren-th.duoi-o.w.offsetHeight-24,cao=0;svs.forEach(function(x){cao=Math.max(cao,x.getBoundingClientRect().height)});
+  if(cao>con){var m=Math.max(200,con);svs.forEach(function(x){x.style.maxHeight=m+'px'})}})}
+function danThay(o){if(!o.cum||window.innerWidth<=600)return;var th=danThanh(),r=o.cum.getBoundingClientRect(),cao=window.innerHeight-th.tren-th.duoi;
+ if(r.top<th.tren-1||(r.bottom>window.innerHeight-th.duoi+1&&r.height<=cao))window.scrollBy(0,r.top-th.tren);else if(r.height>cao&&r.top>th.tren+1)window.scrollBy(0,r.top-th.tren)}
+window.addEventListener('resize',function(){try{danVua()}catch(e){}});
 /* dien thoai: be rong toi thieu cua hinh de chu nho nhat van >= 11 px (CSS chi ap duoi 600 px); hinh rong hon khung thi hien goi y keo ngang */
 function coDT(){HINH.forEach(function(x){var mn=99;x.svg.querySelectorAll('text').forEach(function(t){if(t.textContent.trim()){var f=parseFloat(t.getAttribute('font-size')),q=t.closest('svg');if(q!==x.svg)f*=q.width.baseVal.value/q.viewBox.baseVal.width;if(f&&f<mn)mn=f}});
   if(mn<99)x.svg.style.setProperty('--minw',Math.min(x.h.rong,Math.ceil(x.h.rong*11.5/mn))+'px');
@@ -644,28 +671,32 @@ if(window.showDirectoryPicker)syncMsg('Lần đầu bấm: chọn thư mục «'
 /* ===== Thanh nghe: moi muc mot doan am thanh (doc san), het doan thi sang muc sau va cuon toi muc do ===== */
 var NGHE=null;
 if(D.am){(function(){var bar=document.createElement('div');bar.className='nghebar';bar.id='nghebar';
+ /* v1.4.0 (23/11): hai bo loi giang EN / VI — nut doi ngon ngu, nho lua chon; mac dinh tieng Viet khi trang co */
+ var VI=!!(D.am_vi&&D.am_vi.length===D.muc.length),NG='en';if(VI){var nn=null;try{nn=localStorage.getItem('ngonngu')}catch(e){}NG=nn==='en'?'en':'vi'}
+ function AM(){return NG==='vi'?D.am_vi:D.am}function CAUs(){return (NG==='vi'?D.am_cau_vi:D.am_cau)||[]}
+ function TEN(){return NG==='vi'?'Lời giảng tiếng Việt':'Lời giảng tiếng Anh'}
  bar.innerHTML='<div class="wrap"><button type="button" class="chinh" id="ngPlay"></button><button type="button" id="ngTruoc">Mục trước</button><button type="button" id="ngSau">Mục sau</button>'+
-  '<span class="nhan" id="ngNhan"></span><span class="gio num" id="ngGio"></span><button type="button" id="ngToc">Tốc độ 1x</button>'+
+  '<span class="nhan" id="ngNhan"></span><span class="gio num" id="ngGio"></span><button type="button" id="ngToc">Tốc độ 1x</button>'+(VI?'<button type="button" id="ngNN" aria-label="Đổi ngôn ngữ lời giảng"></button>':'')+
   '<button type="button" id="ngLG" aria-controls="loigiang"></button><label><input type="checkbox" id="ngCuon" checked> Tự cuộn theo lời đọc</label><div class="thanh"><i id="ngThanh"></i></div></div>';
  document.body.appendChild(bar);var au=new Audio();au.preload='metadata';au.id='ngAudio';var cur=0,TOC=[1,1.25,1.5,0.85],ti=0;
- function nhan(){$('ngNhan').textContent='Lời giảng tiếng Anh · mục '+(cur+1)+'/'+D.muc.length+': '+D.muc[cur].tieu_de;
+ function nhan(){$('ngNhan').textContent=TEN()+' · mục '+(cur+1)+'/'+D.muc.length+': '+D.muc[cur].tieu_de;
   $('ngPlay').innerHTML=(au.paused?IC_PLAY+'<span>Nghe</span>':IC_PAUSE+'<span>Dừng</span>');
   document.querySelectorAll('section.les').forEach(function(x,j){x.classList.toggle('dangnghe',j===cur&&!au.paused)})}
  function mm(t){t=Math.max(0,Math.floor(t||0));return Math.floor(t/60)+':'+('0'+t%60).slice(-2)}
- var LG=$('loigiang'),lgMuc=-1,lgCau=-1,CAU=D.am_cau||[];
+ var LG=$('loigiang'),lgMuc=-1,lgCau=-1;
  function lgHien(on){document.body.classList.toggle('co-lg',on);$('ngLG').textContent=on?'Ẩn lời giảng':'Hiện lời giảng';$('ngLG').setAttribute('aria-pressed',on?'true':'false');
   try{localStorage.setItem('lg',on?'1':'0')}catch(e){}}
  function veLG(i){if(lgMuc===i)return;lgMuc=i;lgCau=-1;LG.innerHTML='';
   var an=document.createElement('button');an.type='button';an.className='lgan';an.textContent='Ẩn';an.addEventListener('click',function(){lgHien(false)});LG.appendChild(an);
-  var d=document.createElement('div');d.className='lgdau';d.textContent='Lời giảng tiếng Anh · mục '+(i+1)+'/'+D.muc.length;LG.appendChild(d);
+  var d=document.createElement('div');d.className='lgdau';d.textContent=TEN()+' · mục '+(i+1)+'/'+D.muc.length;LG.appendChild(d);
   var t=document.createElement('div');t.className='lgten';t.textContent=D.muc[i].tieu_de;LG.appendChild(t);
-  (CAU[i]||[]).forEach(function(c,k){var p=document.createElement('p');p.className='cau';p.setAttribute('data-i',k);p.textContent=c.chu;
+  (CAUs()[i]||[]).forEach(function(c,k){var p=document.createElement('p');p.className='cau';p.setAttribute('data-i',k);p.textContent=c.chu;
    p.addEventListener('click',function(){if(cur!==i)chon(i,false);au.currentTime=c.bd+0.01;var pr=au.play();if(pr&&pr.catch)pr.catch(function(){});toLG()});LG.appendChild(p)})}
- function toLG(){var cs=CAU[cur]||[],t=au.currentTime||0,k=-1;for(var j=0;j<cs.length;j++){if(t>=cs[j].bd-0.05)k=j}
+ function toLG(){var cs=CAUs()[cur]||[],t=au.currentTime||0,k=-1;for(var j=0;j<cs.length;j++){if(t>=cs[j].bd-0.05)k=j}
   if(k===lgCau)return;lgCau=k;var ps=LG.querySelectorAll('p.cau');
   ps.forEach(function(x,j){x.classList.toggle('dang',j===k);x.classList.toggle('qua',j<k)});
   var el=ps[k];if(el&&document.body.classList.contains('co-lg')){var r=el.getBoundingClientRect(),q=LG.getBoundingClientRect();if(r.top<q.top+40||r.bottom>q.bottom-20)LG.scrollTop+=r.top-q.top-q.height/3}}
- function chon(i,phat){if(i<0||i>=D.muc.length)return;var doi=i!==cur||!au.src;cur=i;if(doi){au.src=D.am[i];au.playbackRate=TOC[ti]}
+ function chon(i,phat){if(i<0||i>=D.muc.length)return;var doi=i!==cur||!au.src;cur=i;if(doi){au.src=AM()[i];au.playbackRate=TOC[ti]}
   if($('ngCuon').checked){var el=document.getElementById('muc-'+(i+1));if(el)el.scrollIntoView({block:'start'})}
   veLG(i);toLG();if(phat){var pr=au.play();if(pr&&pr.catch)pr.catch(function(){})}nhan()}
  $('ngPlay').addEventListener('click',function(){if(au.paused){if(!au.src)chon(cur,true);else{var pr=au.play();if(pr&&pr.catch)pr.catch(function(){})}}else au.pause();nhan()});
@@ -679,7 +710,11 @@ if(D.am){(function(){var bar=document.createElement('div');bar.className='ngheba
  var lgMo=null;try{lgMo=localStorage.getItem('lg')}catch(e){}
  lgHien(lgMo===null?window.matchMedia('(min-width:1200px)').matches:lgMo==='1');veLG(0);
  document.querySelectorAll('button.nghe').forEach(function(b){b.addEventListener('click',function(){chon(+b.getAttribute('data-muc')-1,true)})});
- NGHE={au:au,chon:chon,cur:function(){return cur},dangPhat:function(){return !au.paused},toLG:toLG,lgHien:lgHien};window.__trangNghe=NGHE;nhan()})()}
+ function veNN(){if(VI)$('ngNN').innerHTML='<span'+(NG==='vi'?' class="on"':'')+'>VI</span><span'+(NG==='en'?' class="on"':'')+'>EN</span>'}
+ if(VI){veNN();$('ngNN').addEventListener('click',function(){var dang=!au.paused;au.pause();NG=NG==='vi'?'en':'vi';
+  try{localStorage.setItem('ngonngu',NG)}catch(e){}au.src=AM()[cur];au.playbackRate=TOC[ti];lgMuc=-1;veLG(cur);toLG();
+  if(dang){var pr=au.play();if(pr&&pr.catch)pr.catch(function(){})}veNN();nhan()})}
+ NGHE={au:au,chon:chon,ngon:function(){return NG},cur:function(){return cur},dangPhat:function(){return !au.paused},toLG:toLG,lgHien:lgHien};window.__trangNghe=NGHE;nhan()})()}
 
 /* ===== Muc luc ben trai ===== */
 (function(){var ml=$('mucluc'),ds=[];
@@ -701,10 +736,14 @@ var root=document.documentElement;try{var th=localStorage.getItem('thm');if(th)r
 /* v1.3.10 (Quang 18-11-2026 tren iPhone: "giảm hết cỡ rồi mà vẫn bự, tiêu đề không bị giảm"): bo CSS zoom (Safari iOS khong co dinh), doi co chu bang bien --k nhan vao moi font-size cua vung noi dung; dien thoai mac dinh nho hon 15% */
 var CO_CHU=[0.7,0.8,0.9,1,1.15,1.3],coI=3;try{var cl=parseInt(localStorage.getItem('trang_hoc_co2'),10);if(cl>=0&&cl<CO_CHU.length)coI=cl}catch(e){}
 function datCo(i){coI=Math.max(0,Math.min(CO_CHU.length-1,i));var k=document.querySelector('.khungtrang');if(k)k.style.setProperty('--k',String(CO_CHU[coI]));
- $('coNho').classList.toggle('het',coI===0);$('coLon').classList.toggle('het',coI===CO_CHU.length-1);try{localStorage.setItem('trang_hoc_co2',String(coI))}catch(e){}}
+ $('coNho').classList.toggle('het',coI===0);$('coLon').classList.toggle('het',coI===CO_CHU.length-1);try{localStorage.setItem('trang_hoc_co2',String(coI))}catch(e){}try{if(DAN.length)danVua()}catch(e){}}
 $('coNho').addEventListener('click',function(){datCo(coI-1)});$('coLon').addEventListener('click',function(){datCo(coI+1)});datCo(coI);
 $('thm').addEventListener('click',function(){var n2=root.getAttribute('data-theme')==='dark'?'light':'dark';root.setAttribute('data-theme',n2);try{localStorage.setItem('thm',n2)}catch(e){}});
 ve();prog();
+/* v1.4.1: do lai cum dan dat khi be rong phan giua doi (an/hien loi giang, doi cua so) va khi font nhung tai xong */
+try{danVua()}catch(e){}
+try{var DV_W=0,DV_T=0,ro=new ResizeObserver(function(es){var w=Math.round(es[0].contentRect.width);if(w===DV_W)return;DV_W=w;clearTimeout(DV_T);DV_T=setTimeout(function(){try{danVua()}catch(e){}},80)});ro.observe($('trang'))}catch(e){}
+try{if(document.fonts)document.fonts.ready.then(function(){try{danVua()}catch(e){}})}catch(e){}
 })();
 </script>
 </body>
